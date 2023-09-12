@@ -221,7 +221,9 @@ public final class EntityService implements AuxiliaryServer {
     javalin.post(URL_JAVA_SERIALIZATION + "select", new SelectHandler());
     javalin.post(URL_JSON_SERIALIZATION + "select", new SelectJsonHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "insert", new InsertHandler());
+    javalin.post(URL_JAVA_SERIALIZATION + "insertSelect", new InsertSelectHandler());
     javalin.post(URL_JSON_SERIALIZATION + "insert", new InsertJsonHandler());
+    javalin.post(URL_JSON_SERIALIZATION + "insertSelect", new InsertSelectJsonHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "update", new UpdateHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "updateSelect", new UpdateSelectHandler());
     javalin.post(URL_JSON_SERIALIZATION + "update", new UpdateJsonHandler());
@@ -671,6 +673,23 @@ public final class EntityService implements AuxiliaryServer {
     }
   }
 
+  private final class InsertSelectHandler implements Handler {
+
+    @Override
+    public void handle(Context context) {
+      try {
+        RemoteEntityConnection connection = authenticate(context);
+        Collection<Entity> entities = connection.insertSelect((Collection<Entity>) deserialize(context.req));
+        context.status(HttpStatus.OK_200)
+                .contentType(ContentType.APPLICATION_OCTET_STREAM)
+                .result(Serializer.serialize(entities));
+      }
+      catch (Exception e) {
+        handleException(context, e);
+      }
+    }
+  }
+
   private final class InsertJsonHandler implements Handler {
 
     @Override
@@ -683,6 +702,25 @@ public final class EntityService implements AuxiliaryServer {
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(mapper.writeValueAsString(keys));
+      }
+      catch (Exception e) {
+        handleException(context, e);
+      }
+    }
+  }
+
+  private final class InsertSelectJsonHandler implements Handler {
+
+    @Override
+    public void handle(Context context) {
+      try {
+        RemoteEntityConnection connection = authenticate(context);
+        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
+        Collection<Entity> entities = mapper.deserializeEntities(context.req.getInputStream());
+        Collection<Entity> inserted = connection.insertSelect(entities);
+        context.status(HttpStatus.OK_200)
+                .contentType(ContentType.APPLICATION_JSON)
+                .result(mapper.writeValueAsString(inserted));
       }
       catch (Exception e) {
         handleException(context, e);

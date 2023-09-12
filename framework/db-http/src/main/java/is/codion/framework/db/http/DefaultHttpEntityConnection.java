@@ -201,11 +201,32 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
+  public Entity insertSelect(Entity entity) throws DatabaseException {
+    return insertSelect(singletonList(entity)).iterator().next();
+  }
+
+  @Override
   public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {
         return onResponse(execute(createHttpPost("insert", byteArrayEntity(entities))));
+      }
+    }
+    catch (DatabaseException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw logAndWrap(e);
+    }
+  }
+
+  @Override
+  public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities);
+    try {
+      synchronized (this.entities) {
+        return onResponse(execute(createHttpPost("insertSelect", byteArrayEntity(entities))));
       }
     }
     catch (DatabaseException e) {

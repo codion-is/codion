@@ -407,11 +407,11 @@ public class EntityServiceTest {
         assertEquals(2, EntityServiceTest.<List<Entity.Key>>deserialize(response.getEntity().getContent()).size());
       }
       entities.forEach(entity -> entity.put(Department.ID, entity.get(Department.ID) + 1));
-      post = new HttpPost(createJsonURI("insert"));
+      post = new HttpPost(createJsonURI("insertSelect"));
       post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(entities)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeKeys(response.getEntity().getContent()).size());
+        assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent()).size());
       }
     }
   }
