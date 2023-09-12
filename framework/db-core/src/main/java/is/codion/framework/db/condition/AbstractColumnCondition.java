@@ -53,7 +53,7 @@ abstract class AbstractColumnCondition<T> extends AbstractCondition implements C
 
   @Override
   public final String toString() {
-    return super.toString() + ": " + column;
+    return getClass().getSimpleName() + ": " + column;
   }
 
   @Override
