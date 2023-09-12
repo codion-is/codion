@@ -70,7 +70,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   private final State pausedState = State.state();
   private final State collectChartDataState = State.state();
-  private final State autoRefreshApplicationsState = State.state();
+  private final State autoRefreshApplicationsState = State.state(true);
   private final StateObserver chartUpdateSchedulerEnabledState =
           State.and(pausedState.reversed(), collectChartDataState);
   private final StateObserver applicationsRefreshSchedulerEnabledState =

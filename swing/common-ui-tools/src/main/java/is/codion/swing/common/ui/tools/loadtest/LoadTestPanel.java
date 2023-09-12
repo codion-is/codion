@@ -183,6 +183,11 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel createCenterPanel() {
     return borderLayoutPanel()
             .centerComponent(tabbedPane()
+                    .tab("Applications", createApplicationsPanel())
+                    .tab("Scenarios", borderLayoutPanel()
+                            .westComponent(createScenarioPanel())
+                            .centerComponent(scenarioBase)
+                            .build())
                     .tab("Overview", borderLayoutPanel()
                             .centerComponent(splitPane()
                                     .orientation(JSplitPane.VERTICAL_SPLIT)
@@ -191,11 +196,6 @@ public final class LoadTestPanel<T> extends JPanel {
                                     .bottomComponent(createSouthChartPanel())
                                     .resizeWeight(RESIZE_WEIGHT)
                                     .build())
-                            .build())
-                    .tab("Applications", createApplicationsPanel())
-                    .tab("Scenarios", borderLayoutPanel()
-                            .westComponent(createScenarioPanel())
-                            .centerComponent(scenarioBase)
                             .build())
                     .build())
             .build();
