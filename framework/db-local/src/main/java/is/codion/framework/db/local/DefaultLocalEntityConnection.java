@@ -80,6 +80,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String RECORD_MODIFIED = "record_modified";
   private static final String CONDITION = "condition";
   private static final String ENTITIES = "entities";
+  private static final String ENTITY = "entity";
 
   private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
@@ -205,12 +206,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Entity.Key insert(Entity entity) throws DatabaseException {
-    return insert(singletonList(requireNonNull(entity, "entity"))).iterator().next();
+    return insert(singletonList(requireNonNull(entity, ENTITY))).iterator().next();
   }
 
   @Override
   public Entity insertSelect(Entity entity) throws DatabaseException {
-    return select(insert(entity));
+    return insertSelect(singletonList(requireNonNull(entity, ENTITY))).iterator().next();
   }
 
   @Override
@@ -218,65 +219,29 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
-    checkIfReadOnly(entities);
 
-    List<Entity.Key> insertedKeys = new ArrayList<>(entities.size());
-    List<Object> statementValues = new ArrayList<>();
-    List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-    PreparedStatement statement = null;
-    String insertQuery = null;
-    synchronized (connection) {
-      try {
-        for (Entity entity : entities) {
-          EntityDefinition entityDefinition = domainEntities.definition(entity.entityType());
-          KeyGenerator keyGenerator = entityDefinition.keyGenerator();
-          keyGenerator.beforeInsert(entity, connection);
-
-          populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.isInserted()),
-                  statementColumns, statementValues, columnDefinition -> entity.contains(columnDefinition.attribute()));
-          if (keyGenerator.isInserted() && statementColumns.isEmpty()) {
-            throw new SQLException("Unable to insert entity " + entity.entityType() + ", no values to insert");
-          }
-
-          insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
-          statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
-          executeStatement(statement, insertQuery, statementColumns, statementValues, StatementType.INSERT);
-          keyGenerator.afterInsert(entity, connection, statement);
-
-          insertedKeys.add(entity.primaryKey());
-
-          statement.close();
-          statementColumns.clear();
-          statementValues.clear();
-        }
-        commitIfTransactionIsNotOpen();
-
-        return insertedKeys;
-      }
-      catch (SQLException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
-      }
-      finally {
-        closeSilently(statement);
-      }
-    }
+    return insert(entities, null);
   }
 
   @Override
   public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException {
-    return select(insert(entities));
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
+      return emptyList();
+    }
+    Collection<Entity> insertedEntities = new ArrayList<>(entities.size());
+    insert(entities, insertedEntities);
+
+    return insertedEntities;
   }
 
   @Override
   public void update(Entity entity) throws DatabaseException {
-    update(singletonList(requireNonNull(entity, "entity")));
+    update(singletonList(requireNonNull(entity, ENTITY)));
   }
 
   @Override
   public Entity updateSelect(Entity entity) throws DatabaseException {
-    return updateSelect(singletonList(requireNonNull(entity, "entity"))).iterator().next();
+    return updateSelect(singletonList(requireNonNull(entity, ENTITY))).iterator().next();
   }
 
   @Override
@@ -789,6 +754,58 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return domain;
   }
 
+  private Collection<Entity.Key> insert(Collection<? extends Entity> entities, Collection<Entity> insertedEntities) throws DatabaseException {
+    checkIfReadOnly(entities);
+
+    List<Entity.Key> insertedKeys = new ArrayList<>(entities.size());
+    List<Object> statementValues = new ArrayList<>();
+    List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
+    PreparedStatement statement = null;
+    String insertQuery = null;
+    synchronized (connection) {
+      try {
+        for (Entity entity : entities) {
+          EntityDefinition entityDefinition = domainEntities.definition(entity.entityType());
+          KeyGenerator keyGenerator = entityDefinition.keyGenerator();
+          keyGenerator.beforeInsert(entity, connection);
+
+          populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.isInserted()),
+                  statementColumns, statementValues, columnDefinition -> entity.contains(columnDefinition.attribute()));
+          if (keyGenerator.isInserted() && statementColumns.isEmpty()) {
+            throw new SQLException("Unable to insert entity " + entity.entityType() + ", no values to insert");
+          }
+
+          insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
+          statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
+          executeStatement(statement, insertQuery, statementColumns, statementValues, StatementType.INSERT);
+          keyGenerator.afterInsert(entity, connection, statement);
+
+          insertedKeys.add(entity.primaryKey());
+
+          statement.close();
+          statementColumns.clear();
+          statementValues.clear();
+        }
+        if (insertedEntities != null) {
+          for (List<Entity.Key> entityTypeKeys : Entity.mapKeysToType(insertedKeys).values()) {
+            insertedEntities.addAll(doSelect(Select.where(keys(entityTypeKeys)).build(), 0));//bypass caching
+          }
+        }
+        commitIfTransactionIsNotOpen();
+
+        return insertedKeys;
+      }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, e), e);
+        throw translateSQLException(e);
+      }
+      finally {
+        closeSilently(statement);
+      }
+    }
+  }
+
   private void update(Collection<? extends Entity> entities, List<Entity> updatedEntities) throws DatabaseException {
     Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     checkIfReadOnly(entitiesByEntityType.keySet());
@@ -880,24 +897,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
-                                   List<Object> statementValues) throws UpdateException {
-    EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
-    for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
-      ColumnDefinition<Object> columnDefinition = entityDefinition.columnDefinition((Column<Object>) columnValue.getKey());
-      if (!columnDefinition.isUpdatable()) {
-        throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
-      }
-      statementColumns.add(columnDefinition);
-      statementValues.add(columnDefinition.attribute().validateType(columnValue.getValue()));
-    }
-    String updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
-    statementColumns.addAll(columnDefinitions(entityDefinition, update.where().columns()));
-    statementValues.addAll(update.where().values());
-
-    return updateQuery;
-  }
-
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Entity.Key> originalKeys = Entity.originalPrimaryKeys(entities);
     Select selectForUpdate = Select.where(keys(originalKeys))
@@ -919,6 +918,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
       }
     }
+  }
+
+  private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
+                                   List<Object> statementValues) throws UpdateException {
+    EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
+    for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
+      ColumnDefinition<Object> columnDefinition = entityDefinition.columnDefinition((Column<Object>) columnValue.getKey());
+      if (!columnDefinition.isUpdatable()) {
+        throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
+      }
+      statementColumns.add(columnDefinition);
+      statementValues.add(columnDefinition.attribute().validateType(columnValue.getValue()));
+    }
+    String updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
+    statementColumns.addAll(columnDefinitions(entityDefinition, update.where().columns()));
+    statementValues.addAll(update.where().values());
+
+    return updateQuery;
   }
 
   private List<Entity> doSelect(Select select) throws SQLException {
