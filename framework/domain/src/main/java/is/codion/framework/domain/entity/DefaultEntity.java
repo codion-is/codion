@@ -539,7 +539,9 @@ class DefaultEntity implements Entity, Serializable {
       throw new IllegalArgumentException("Entity of type " + referencedType +
               " expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.entityType());
     }
-    foreignKeyDefinition.references().forEach(reference -> throwIfModifiesReadOnlyReference(foreignKeyDefinition, foreignKeyValue, reference));
+    for (ForeignKey.Reference<?> reference : foreignKeyDefinition.references()) {
+      throwIfModifiesReadOnlyReference(foreignKeyDefinition, foreignKeyValue, reference);
+    }
   }
 
   private void throwIfModifiesReadOnlyReference(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue,

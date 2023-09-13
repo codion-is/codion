@@ -84,6 +84,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
+  private static final Function<Entity, Entity> IS_ENTITY_IMMUTABLE = Entity::immutable;
 
   // For counting queries.
   private enum StatementType {
@@ -526,10 +527,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                 .fetchDepth(1)
                 .build())
                 .stream()
-                .map(Entity::immutable)
+                .map(IS_ENTITY_IMMUTABLE)
                 .collect(toList());
         if (!dependencies.isEmpty()) {
-          dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
+          dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
+          dependencyMap.get(foreignKeyReference.entityType()).addAll(dependencies);
         }
       }
     }
@@ -1037,7 +1039,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               .attributes(attributesToSelect(foreignKeyDefinition, keyColumns))
               .build();
       referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1).stream()
-              .map(Entity::immutable)
+              .map(IS_ENTITY_IMMUTABLE)
               .collect(toList()));
     }
 
