@@ -164,7 +164,7 @@ final class DomainToString {
       return "blobColumn()";
     }
 
-    return primaryKey ? "primaryKeyColumn()" : "column()";
+    return primaryKey ? "primaryKey()" : "column()";
   }
 
   private static String interfaceName(String tableName, boolean uppercase) {

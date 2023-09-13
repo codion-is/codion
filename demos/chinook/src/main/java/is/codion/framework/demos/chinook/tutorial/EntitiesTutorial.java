@@ -77,7 +77,7 @@ public final class EntitiesTutorial {
       // create columns for the table 'chinook.artist'
       ColumnDefinition.Builder<Long, ?> artistId =
               Artist.ID
-                      .primaryKeyColumn();
+                      .primaryKey();
 
       ColumnDefinition.Builder<String, ?> artistName =
               Artist.NAME
@@ -100,7 +100,7 @@ public final class EntitiesTutorial {
       // create columns and foreign key for the table 'chinook.album'
       ColumnDefinition.Builder<Long, ?> albumId =
               Album.ID
-                      .primaryKeyColumn();
+                      .primaryKey();
 
       ColumnDefinition.Builder<String, ?> albumTitle =
               Album.TITLE

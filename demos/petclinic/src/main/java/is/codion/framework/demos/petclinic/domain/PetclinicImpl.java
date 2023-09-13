@@ -38,7 +38,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void vet() {
     add(Vet.TYPE.define(
             Vet.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Vet.FIRST_NAME
                     .column()
                     .caption("First name")
@@ -65,7 +65,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void specialty() {
     add(Specialty.TYPE.define(
             Specialty.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Specialty.NAME
                     .column()
                     .caption("Name")
@@ -81,7 +81,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void vetSpecialty() {
     add(VetSpecialty.TYPE.define(
             VetSpecialty.VET
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .primaryKeyIndex(0),
             VetSpecialty.SPECIALTY
                     .column()
@@ -103,7 +103,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void petType() {
     add(PetType.TYPE.define(
             PetType.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             PetType.NAME
                     .column()
                     .caption("Name")
@@ -120,7 +120,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void owner() {
     add(Owner.TYPE.define(
             Owner.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Owner.FIRST_NAME
                     .column()
                     .caption("First name")
@@ -175,7 +175,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void pet() {
     add(Pet.TYPE.define(
             Pet.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Pet.NAME
                     .column()
                     .caption("Name")
@@ -207,7 +207,7 @@ public final class PetclinicImpl extends DefaultDomain {
   private void visit() {
     add(Visit.TYPE.define(
             Visit.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Visit.PET_ID
                     .column()
                     .nullable(false),

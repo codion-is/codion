@@ -15,7 +15,7 @@ public interface Address {
 void address() {
 	add(Address.TYPE.define(
 		Address.ADDRESSID
-			.primaryKeyColumn(),
+			.primaryKey(),
 		Address.STREET1
 			.column()
 			.caption("Street1")

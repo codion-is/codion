@@ -47,7 +47,7 @@ public final class Petstore extends DefaultDomain {
   void address() {
     add(Address.TYPE.define(
             Address.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .columnName("addressid"),
             Address.STREET_1
                     .column()
@@ -114,7 +114,7 @@ public final class Petstore extends DefaultDomain {
   void category() {
     add(Category.TYPE.define(
             Category.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .columnName("categoryid"),
             Category.NAME
                     .column()
@@ -155,7 +155,7 @@ public final class Petstore extends DefaultDomain {
   void product() {
     add(Product.TYPE.define(
             Product.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .columnName("productid"),
             Product.CATEGORY_ID
                     .column()
@@ -204,7 +204,7 @@ public final class Petstore extends DefaultDomain {
   void sellerContactInfo() {
     add(SellerContactInfo.TYPE.define(
             SellerContactInfo.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .columnName("contactinfoid"),
             SellerContactInfo.FIRST_NAME
                     .column()
@@ -259,7 +259,7 @@ public final class Petstore extends DefaultDomain {
   void item() {
     add(Item.TYPE.define(
             Item.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .columnName("itemid"),
             Item.PRODUCT_ID
                     .column()
@@ -338,7 +338,7 @@ public final class Petstore extends DefaultDomain {
   void tag() {
     add(Tag.TYPE.define(
             Tag.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .columnName("tagid"),
             Tag.TAG
                     .column()
@@ -347,7 +347,7 @@ public final class Petstore extends DefaultDomain {
                     .maximumLength(30)
                     .nullable(false),
             Tag.REFCOUNT
-                    .subqueryColumn("select count(*) from petstore.tag_item where tagid = tag.tagid")
+                    .subquery("select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .caption(Tag.REFCOUNT.name())
                     .columnName("refcount"))
             .tableName("petstore.tag")

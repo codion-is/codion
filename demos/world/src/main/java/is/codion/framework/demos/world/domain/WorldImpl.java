@@ -49,7 +49,7 @@ public final class WorldImpl extends DefaultDomain implements World {
   void city() {
     add(City.TYPE.define(
             City.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             City.NAME
                     .column()
                     .caption("Name")
@@ -99,7 +99,7 @@ public final class WorldImpl extends DefaultDomain implements World {
     add(Country.TYPE.define(
             // tag::primaryKey[]
             Country.CODE
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .caption("Code")
                     .updatable(true)
                     .maximumLength(3),
@@ -112,7 +112,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(52),
             // tag::item[]
             Country.CONTINENT
-                    .itemColumn(CONTINENT_ITEMS)
+                    .column()
+                    .items(CONTINENT_ITEMS)
                     .caption("Continent")
                     .nullable(false),
             // end::item[]
@@ -186,13 +187,13 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::denormalizedAttribute[]
             // tag::subqueryColumn[]
             Country.NO_OF_CITIES
-                    .subqueryColumn(
+                    .subquery(
                             "select count(*) from world.city " +
                             "where city.countrycode = country.code")
                     .caption("No. of cities"),
             // end::subqueryColumn[]
             Country.NO_OF_LANGUAGES
-                    .subqueryColumn(
+                    .subquery(
                             "select count(*) from world.countrylanguage " +
                             "where countrylanguage.countrycode = country.code")
                     .caption("No. of languages"),
@@ -269,7 +270,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .column()
                     .caption("Country name"),
             Lookup.COUNTRY_CONTINENT
-                    .itemColumn(CONTINENT_ITEMS)
+                    .column()
+                    .items(CONTINENT_ITEMS)
                     .caption("Continent"),
             Lookup.COUNTRY_REGION
                     .column()

@@ -3,11 +3,9 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.sql.Statement;
-import java.util.List;
 import java.util.Objects;
 
 import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction.INSERT;
@@ -28,23 +26,22 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKeyColumn() {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey() {
     return (ColumnDefinition.Builder<T, B>) column().primaryKeyIndex(0);
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery) {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery) {
     return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(this, subquery);
-  }
-
-  @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> itemColumn(List<Item<T>> validItems) {
-    return new DefaultItemColumnDefinition.DefaultItemColumnDefinitionBuilder<>(this, validItems);
   }
 
   @Override
   public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
                                                                                                                 C trueValue, C falseValue) {
+    if (!isBoolean()) {
+      throw new IllegalStateException(this + " is not a boolean column");
+    }
+
     return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(this)
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }

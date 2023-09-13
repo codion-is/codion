@@ -33,11 +33,11 @@ public final class EntitySerializerTest {
   @Test
   void mismatch() throws IOException, ClassNotFoundException {
     SerialDomain domain1 = new SerialDomain(TestTable.TYPE.define(
-            TestTable.ID.primaryKeyColumn(),
+            TestTable.ID.primaryKey(),
             TestTable.NAME.column())
             .build());
     SerialDomain domain2 = new SerialDomain(TestTable.TYPE.define(
-            TestTable.ID.primaryKeyColumn(),
+            TestTable.ID.primaryKey(),
             TestTable.NAME.column(),
             TestTable.EXTRA.column())
             .build());

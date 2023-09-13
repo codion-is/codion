@@ -44,7 +44,7 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKeyColumn(),
+            Master.ID.primaryKey(),
             Master.NAME.column(),
             Master.CODE.column())
             .comparator((o1, o2) -> {//keep like this for equality test in SwingEntityTableModelTest.testSortComparator()
@@ -83,7 +83,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKeyColumn(),
+            Detail.ID.primaryKey(),
             Detail.INT.column()
                     .caption(Detail.INT.name()),
             Detail.DOUBLE.column()
@@ -110,7 +110,8 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Detail.MASTER_NAME.name()),
             Detail.MASTER_CODE.denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.itemColumn(ITEMS)
+            Detail.INT_VALUE_LIST.column()
+                    .items(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
             Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
@@ -137,7 +138,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKeyColumn()
+            Department.ID.primaryKey()
                     .caption(Department.ID.name())
                     .updatable(true).nullable(false),
             Department.NAME.column()
@@ -177,7 +178,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKeyColumn()
+            Employee.ID.primaryKey()
                     .caption(Employee.ID.name()),
             Employee.NAME.column()
                     .caption(Employee.NAME.name())
@@ -189,8 +190,8 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name())
                     .attributes(Department.NAME),
-            Employee.JOB.itemColumn(
-                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+            Employee.JOB.column()
+                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
             Employee.SALARY.column()
@@ -239,7 +240,7 @@ public final class TestDomain extends DefaultDomain {
 
   void enumEntity() {
     add(EnumEntity.TYPE.define(
-            EnumEntity.ID.primaryKeyColumn(),
+            EnumEntity.ID.primaryKey(),
             EnumEntity.ENUM_TYPE.column()));
   }
 }

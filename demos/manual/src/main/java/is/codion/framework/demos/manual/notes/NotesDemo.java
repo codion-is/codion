@@ -78,7 +78,7 @@ public final class NotesDemo {
       super(DOMAIN);
       add(Note.TYPE.define(
               Note.ID
-                      .primaryKeyColumn(),
+                      .primaryKey(),
               Note.NOTE
                       .column()
                       .caption("Note")

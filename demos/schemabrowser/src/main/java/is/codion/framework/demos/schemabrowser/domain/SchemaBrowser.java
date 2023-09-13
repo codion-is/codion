@@ -55,7 +55,7 @@ public final class SchemaBrowser extends DefaultDomain {
   void schema() {
     add(Schema.TYPE.define(
             Schema.NAME
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .caption("Name"))
             .tableName(bundle.getString("t_schema"))
             .orderBy(ascending(Schema.NAME))

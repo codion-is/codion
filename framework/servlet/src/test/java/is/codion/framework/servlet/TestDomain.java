@@ -46,7 +46,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKeyColumn()
+            Department.ID.primaryKey()
                     .caption(Department.ID.name())
                     .updatable(true)
                     .nullable(false),
@@ -84,7 +84,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKeyColumn()
+            Employee.ID.primaryKey()
                     .caption(Employee.ID.name()),
             Employee.NAME.column()
                     .caption(Employee.NAME.name())
@@ -95,8 +95,8 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.itemColumn(
-                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+            Employee.JOB.column()
+                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
             Employee.SALARY.column()

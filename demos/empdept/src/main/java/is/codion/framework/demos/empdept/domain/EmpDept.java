@@ -139,7 +139,7 @@ public final class EmpDept extends DefaultDomain {
     /*Defining the entity Department.TYPE*/
     add(Department.TYPE.define(
             Department.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .caption("Department no.")
                     .updatable(true)
                     .nullable(false)
@@ -167,7 +167,7 @@ public final class EmpDept extends DefaultDomain {
     /*Defining the entity Employee.TYPE*/
     add(Employee.TYPE.define(
             Employee.ID
-                    .primaryKeyColumn()
+                    .primaryKey()
                     .caption("Employee no.")
                     .beanProperty("id"),
             Employee.NAME
@@ -185,7 +185,8 @@ public final class EmpDept extends DefaultDomain {
                     .caption("Department")
                     .beanProperty("department"),
             Employee.JOB
-                    .itemColumn(Employee.JOB_VALUES)
+                    .column()
+                    .items(Employee.JOB_VALUES)
                     .caption("Job")
                     .beanProperty("job"),
             Employee.SALARY

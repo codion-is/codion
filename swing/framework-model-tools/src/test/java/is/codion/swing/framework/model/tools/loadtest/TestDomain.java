@@ -24,7 +24,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(T_DEPARTMENT.define(
-            DEPARTMENT_ID.primaryKeyColumn()
+            DEPARTMENT_ID.primaryKey()
                     .caption(DEPARTMENT_ID.name())
                     .updatable(true).nullable(false),
             DEPARTMENT_NAME.column()
