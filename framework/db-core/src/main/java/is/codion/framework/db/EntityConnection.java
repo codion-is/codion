@@ -32,8 +32,7 @@ import java.util.function.Consumer;
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
  * {@link #execute(FunctionType)}  and {@link #execute(ProcedureType)}
- * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)}, {@link #update(Entity)}, {@link #update(Collection)},
- * {@link #updateSelect(Entity)}, {@link #updateSelect(Collection)}, {@link #delete(Entity.Key)} and {@link #delete(Collection)}
+ * do not perform any transaction control whereas the select, insert, update and delete methods
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
  * @see #beginTransaction()

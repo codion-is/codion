@@ -477,11 +477,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     private Entity insertPlaylist(EntityConnection connection, String playlistName,
                                   List<Long> trackIds) throws DatabaseException {
-      Entity.Key playlistKey = connection.insert(createPlaylist(playlistName));
+      Entity playlist = connection.insertSelect(createPlaylist(playlistName));
 
-      connection.insert(createPlaylistTracks(playlistKey.get(), trackIds));
+      connection.insert(createPlaylistTracks(playlist.primaryKey().get(), trackIds));
 
-      return connection.select(playlistKey);
+      return playlist;
     }
 
     private Entity createPlaylist(String playlistName) {

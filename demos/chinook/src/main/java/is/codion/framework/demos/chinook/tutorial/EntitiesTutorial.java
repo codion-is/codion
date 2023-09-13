@@ -204,14 +204,8 @@ public final class EntitiesTutorial {
     // we start a transaction
     connection.beginTransaction();
 
-    // we insert the Entity, the insert() method returns the primary key
-    // of the inserted record, but we don't need it right now, so we ignore it.
-    // Note that because we're running with a local connection in a single VM
-    // the primary key of the entity instance is populated during insert,
-    // with a remote connection the insert happens in another VM, so you have
-    // to select the entity after insert to get an instance containing
-    // the generated key value or use the key received via the return value
-    connection.insert(myBand);
+    // we insert the Entity
+    myBand = connection.insertSelect(myBand);
 
     // now for our first album
     Entity album = entities.entity(Album.TYPE);
@@ -223,7 +217,7 @@ public final class EntitiesTutorial {
     album.put(Album.TITLE, "My first album");
 
     // and insert the album
-    connection.insert(album);
+    album = connection.insertSelect(album);
 
     // and finally we commit
     connection.commitTransaction();

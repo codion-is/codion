@@ -293,21 +293,21 @@ public final class Example {
             .with(Customer.LAST_NAME, "Doe")
             .build();
 
-    connection.insert(customer);
+    customer = connection.insertSelect(customer);
 
     Entity address = entities.builder(Address.TYPE)
             .with(Address.STREET, "Elm Street 321")
             .with(Address.CITY, "Syracuse")
             .build();
 
-    connection.insert(address);
+    address = connection.insertSelect(address);
 
     Entity customerAddress = entities.builder(CustomerAddress.TYPE)
             .with(CustomerAddress.CUSTOMER_FK, customer)
             .with(CustomerAddress.ADDRESS_FK, address)
             .build();
 
-    connection.insert(customerAddress);
+    customerAddress = connection.insertSelect(customerAddress);
 
     customer.put(Customer.FIRST_NAME, "Jonathan");
 

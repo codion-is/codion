@@ -9550,3 +9550,4 @@
   EntityConnection.insertSelect() added
   AbstractEntityEditModel.doInsert() now returns entities instead of keys
   DefaultLocalEntityConnection.insertSelect() properly implemented
+  Demos and tests updated using insertSelect() where applicable
