@@ -26,18 +26,22 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKeyColumn() {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey() {
     return (ColumnDefinition.Builder<T, B>) column().primaryKeyIndex(0);
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery) {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery) {
     return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(this, subquery);
   }
 
   @Override
   public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
                                                                                                                 C trueValue, C falseValue) {
+    if (!isBoolean()) {
+      throw new IllegalStateException(this + " is not a boolean column");
+    }
+
     return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(this)
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }

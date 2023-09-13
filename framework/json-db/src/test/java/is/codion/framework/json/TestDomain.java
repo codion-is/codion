@@ -70,7 +70,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.DEPTNO.primaryKeyColumn()
+            Department.DEPTNO.primaryKey()
                     .updatable(true).nullable(false),
             Department.NAME.column()
                     .searchColumn(true)
@@ -100,7 +100,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.EMPNO.primaryKeyColumn(),
+            Employee.EMPNO.primaryKey(),
             Employee.NAME.column()
                     .searchColumn(true).maximumLength(10).nullable(false),
             Employee.DEPARTMENT.column()

@@ -100,7 +100,7 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKeyColumn()
+            Master.ID.primaryKey()
                     .beanProperty("id"),
             Master.NAME.column()
                     .beanProperty("name"),
@@ -170,7 +170,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKeyColumn()
+            Detail.ID.primaryKey()
                     .beanProperty("id"),
             Detail.SHORT.column()
                     .caption(Detail.SHORT.name()),
@@ -254,7 +254,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.NO.primaryKeyColumn()
+            Department.NO.primaryKey()
                     .caption(Department.NO.name())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
@@ -318,7 +318,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKeyColumn()
+            Employee.ID.primaryKey()
                     .caption(Employee.ID.name())
                     .columnName("empno")
                     .beanProperty("id"),
@@ -399,11 +399,11 @@ public final class TestDomain extends DefaultDomain {
 
   void keyTest() {
     add(KeyTest.TYPE.define(
-            KeyTest.ID1.primaryKeyColumn()
+            KeyTest.ID1.primaryKey()
                     .primaryKeyIndex(0),
-            KeyTest.ID2.primaryKeyColumn()
+            KeyTest.ID2.primaryKey()
                     .primaryKeyIndex(1),
-            KeyTest.ID3.primaryKeyColumn()
+            KeyTest.ID3.primaryKey()
                     .primaryKeyIndex(2)
                     .nullable(true)));
   }
@@ -431,7 +431,7 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifies() {
     add(TransModifies.TYPE.define(
-            TransModifies.ID.primaryKeyColumn(),
+            TransModifies.ID.primaryKey(),
             TransModifies.TRANS.attribute()));
   }
 
@@ -444,7 +444,7 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifiesNot() {
     add(TransModifiesNot.TYPE.define(
-            TransModifiesNot.ID.primaryKeyColumn(),
+            TransModifiesNot.ID.primaryKey(),
             TransModifiesNot.TRANS.attribute()
                     .modifiesEntity(false)));
   }
@@ -459,7 +459,7 @@ public final class TestDomain extends DefaultDomain {
 
   void nullString() {
     add(NullString.TYPE.define(
-            NullString.ID.primaryKeyColumn(),
+            NullString.ID.primaryKey(),
             NullString.ATTR.column(),
             NullString.ATTR2.column())
             .stringFactory(entity -> null));
@@ -475,7 +475,7 @@ public final class TestDomain extends DefaultDomain {
 
   void invalidDerived() {
     add(InvalidDerived.TYPE.define(
-            InvalidDerived.ID.primaryKeyColumn(),
+            InvalidDerived.ID.primaryKey(),
             InvalidDerived.INT.column(),
             InvalidDerived.INVALID_DERIVED.derivedAttribute(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
             .caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception

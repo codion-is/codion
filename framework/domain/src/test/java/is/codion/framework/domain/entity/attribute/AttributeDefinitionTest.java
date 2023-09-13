@@ -186,11 +186,11 @@ public final class AttributeDefinitionTest {
 
   @Test
   void subqueryColumns() {
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").readOnly(true));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").readOnly(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").updatable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").insertable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").columnExpression("expression"));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").readOnly(true));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").readOnly(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").updatable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").insertable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").columnExpression("expression"));
   }
 
   @Test

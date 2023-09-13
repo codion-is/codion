@@ -28,7 +28,7 @@ final class ConfigureDb extends DefaultDomain {
   }
 
   void configured() {
-    add(Configured.TYPE.define(Configured.ID.primaryKeyColumn()));
+    add(Configured.TYPE.define(Configured.ID.primaryKey()));
   }
 
   @Override

@@ -37,7 +37,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKeyColumn()
+            Department.ID.primaryKey()
                     .caption(Department.ID.name())
                     .updatable(true).nullable(false),
             Department.NAME.column()
@@ -77,7 +77,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKeyColumn()
+            Employee.ID.primaryKey()
                     .caption(Employee.ID.name()),
             Employee.NAME.column()
                     .caption(Employee.NAME.name())

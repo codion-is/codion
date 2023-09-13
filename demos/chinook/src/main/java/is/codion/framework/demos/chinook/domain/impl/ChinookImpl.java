@@ -49,18 +49,18 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void artist() {
     add(Artist.TYPE.define(
             Artist.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Artist.NAME
                     .column()
                     .searchColumn(true)
                     .nullable(false)
                     .maximumLength(120),
             Artist.NUMBER_OF_ALBUMS
-                    .subqueryColumn("select count(*) " +
+                    .subquery("select count(*) " +
                             "from chinook.album " +
                             "where album.artistid = artist.artistid"),
             Artist.NUMBER_OF_TRACKS
-                    .subqueryColumn("select count(*) " +
+                    .subquery("select count(*) " +
                             "from chinook.track " +
                             "join chinook.album on track.albumid = album.albumid " +
                             "where album.artistid = artist.artistid"))
@@ -73,7 +73,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void album() {
     add(Album.TYPE.define(
             Album.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Album.ARTIST_ID
                     .column()
                     .nullable(false),
@@ -92,7 +92,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             Album.COVERIMAGE
                     .derivedAttribute(new CoverArtImageProvider(), Album.COVER),
             Album.NUMBER_OF_TRACKS
-                    .subqueryColumn("select count(*) " +"from chinook.track " +
+                    .subquery("select count(*) " +"from chinook.track " +
                             "where track.albumid = album.albumid"))
             .tableName("chinook.album")
             .keyGenerator(identity())
@@ -103,7 +103,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void employee() {
     add(Employee.TYPE.define(
             Employee.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Employee.LASTNAME
                     .column()
                     .searchColumn(true)
@@ -170,7 +170,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void customer() {
     add(Customer.TYPE.define(
             Customer.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Customer.LASTNAME
                     .column()
                     .searchColumn(true)
@@ -227,7 +227,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void genre() {
     add(Genre.TYPE.define(
             Genre.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Genre.NAME
                     .column()
                     .searchColumn(true)
@@ -243,7 +243,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void mediaType() {
     add(MediaType.TYPE.define(
             MediaType.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             MediaType.NAME
                     .column()
                     .nullable(false)
@@ -257,7 +257,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void track() {
     add(Track.TYPE.define(
             Track.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Track.ARTIST_DENORM
                     .denormalizedAttribute(Track.ALBUM_FK, Album.ARTIST_FK),
             Track.ALBUM_ID
@@ -313,7 +313,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void invoice() {
     add(Invoice.TYPE.define(
             Invoice.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Invoice.CUSTOMER_ID
                     .column()
                     .nullable(false),
@@ -348,7 +348,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false)
                     .maximumFractionDigits(2),
             Invoice.CALCULATED_TOTAL
-                    .subqueryColumn("select sum(unitprice * quantity) " +
+                    .subquery("select sum(unitprice * quantity) " +
                             "from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
                     .maximumFractionDigits(2))
@@ -368,7 +368,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void invoiceLine() {
     add(InvoiceLine.TYPE.define(
             InvoiceLine.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             InvoiceLine.INVOICE_ID
                     .column()
                     .nullable(false),
@@ -400,7 +400,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void playlist() {
     add(Playlist.TYPE.define(
             Playlist.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Playlist.NAME
                     .column()
                     .searchColumn(true)
@@ -417,7 +417,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void playlistTrack() {
     add(PlaylistTrack.TYPE.define(
             PlaylistTrack.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             PlaylistTrack.PLAYLIST_ID
                     .column()
                     .nullable(false),

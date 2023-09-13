@@ -63,7 +63,7 @@ public class Store extends DefaultDomain {
     // This entity definition is then added to the domain model.
     add(Customer.TYPE.define(           // returns EntityDefinition.Builder
             Customer.ID
-                    .primaryKeyColumn(),// returns ColumnDefinition.Builder
+                    .primaryKey(),// returns ColumnDefinition.Builder
             Customer.FIRST_NAME
                     .column()           // returns ColumnDefinition.Builder
                     .caption("First name")
@@ -96,7 +96,7 @@ public class Store extends DefaultDomain {
     // This entity definition is then added to the domain model.
     add(Address.TYPE.define(
             Address.ID
-                    .primaryKeyColumn(),
+                    .primaryKey(),
             Address.CUSTOMER_ID
                     .column()
                     .nullable(false),
@@ -125,7 +125,7 @@ public class Store extends DefaultDomain {
   void addressExpanded() {
     ColumnDefinition.Builder<Long, ?> id =
             Address.ID
-                    .primaryKeyColumn();
+                    .primaryKey();
 
     ColumnDefinition.Builder<Long, ?> customerId =
             Address.CUSTOMER_ID

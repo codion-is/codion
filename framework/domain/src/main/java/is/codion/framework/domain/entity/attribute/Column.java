@@ -28,7 +28,7 @@ public interface Column<T> extends Attribute<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder} with primary key index 0
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKeyColumn();
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey();
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.
@@ -36,7 +36,7 @@ public interface Column<T> extends Attribute<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery);
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
@@ -46,6 +46,7 @@ public interface Column<T> extends Attribute<T> {
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnDefinition.Builder}
+   * @throws IllegalStateException in case this columnn is note a boolean column
    */
   <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
                                                                                                          C trueValue, C falseValue);
@@ -53,6 +54,7 @@ public interface Column<T> extends Attribute<T> {
   /**
    * Creates a new {@link BlobColumnDefinition.Builder} instance.
    * @return a new {@link BlobColumnDefinition.Builder}
+   * @throws IllegalStateException in case this columnn is note a byte array column
    */
   BlobColumnDefinition.Builder blobColumn();
 
