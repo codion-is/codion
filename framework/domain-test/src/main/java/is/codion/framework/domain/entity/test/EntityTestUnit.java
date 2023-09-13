@@ -282,7 +282,7 @@ public class EntityTestUnit {
         }
       }
 
-      return connection.select(connection.insert(entity));
+      return connection.insertSelect(entity);
     }
     catch (DatabaseException e) {
       LOG.error("EntityTestUnit.insertOrSelect()", e);

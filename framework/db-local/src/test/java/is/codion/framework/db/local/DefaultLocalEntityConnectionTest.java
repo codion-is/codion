@@ -566,7 +566,7 @@ public class DefaultLocalEntityConnectionTest {
             .with(Employee.SALARY, salary)
             .build();
 
-    emp = connection.select(connection.insert(emp));
+    emp = connection.insertSelect(emp);
     assertEquals(sales, emp.get(Employee.DEPARTMENT_FK));
     assertEquals(name, emp.get(Employee.NAME));
     assertEquals(salary, emp.get(Employee.SALARY));
@@ -574,7 +574,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.delete(emp.primaryKey());
 
     emp.put(Employee.COMMISSION, null);//default value should not kick in
-    emp = connection.select(connection.insert(emp));
+    emp = connection.insertSelect(emp);
     assertEquals(sales, emp.get(Employee.DEPARTMENT_FK));
     assertEquals(name, emp.get(Employee.NAME));
     assertEquals(salary, emp.get(Employee.SALARY));
@@ -582,7 +582,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.delete(emp.primaryKey());
 
     emp.remove(Employee.COMMISSION);//default value should kick in
-    emp = connection.select(connection.insert(emp));
+    emp = connection.insertSelect(emp);
     assertEquals(sales, emp.get(Employee.DEPARTMENT_FK));
     assertEquals(name, emp.get(Employee.NAME));
     assertEquals(salary, emp.get(Employee.SALARY));

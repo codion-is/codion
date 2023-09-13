@@ -357,8 +357,7 @@ public final class AbstractEntityEditModelTest {
               .with(Department.NAME, "Judgment")
               .build();
 
-      Entity department = connection
-              .select(connection.insert(tmpDept));
+      Entity department = connection.insertSelect(tmpDept);
 
       employeeEditModel.put(Employee.DEPARTMENT_FK, department);
 
