@@ -162,7 +162,7 @@ public interface EntityConnection extends AutoCloseable {
   Entity insertSelect(Entity entity) throws DatabaseException;
 
   /**
-   * Inserts the given entities, returning the primary keys in the same order as they were received.
+   * Inserts the given entities, returning the primary keys.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
    * @return the primary keys of the inserted entities
