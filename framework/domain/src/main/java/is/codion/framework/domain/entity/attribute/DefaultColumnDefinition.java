@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
 import is.codion.framework.domain.entity.attribute.Column.ValueFetcher;
 
@@ -19,7 +20,10 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -217,6 +221,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private boolean aggregate;
     private boolean selectable;
 
+    List<Item<T>> items;
+
     DefaultColumnDefinitionBuilder(Column<T> column) {
       super(column);
       this.primaryKeyIndex = -1;
@@ -235,6 +241,10 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
     @Override
     public AttributeDefinition<T> build() {
+      if (items != null) {
+        return new DefaultItemColumnDefinition<>(this);
+      }
+
       return new DefaultColumnDefinition<>(this);
     }
 
@@ -332,6 +342,23 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
       return (B) this;
     }
 
+    @Override
+    public final B items(List<Item<T>> items) {
+      this.items = validateItems(items);
+      return (B) this;
+    }
+
+    private static <T> List<Item<T>> validateItems(List<Item<T>> items) {
+      if (requireNonNull(items).size() != items.stream()
+              .map(new GetItemValue<>())
+              .collect(Collectors.toSet())
+              .size()) {
+        throw new IllegalArgumentException("Item list contains duplicate values: " + items);
+      }
+
+      return items;
+    }
+
     /**
      * Returns the default sql type for the given class.
      * @param clazz the class
@@ -351,6 +378,14 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
       }
 
       return (ValueFetcher<T>) VALUE_FETCHERS.get(columnType);
+    }
+
+    private static final class GetItemValue<T> implements Function<Item<T>, T> {
+
+      @Override
+      public T apply(Item<T> item) {
+        return item.get();
+      }
     }
   }
 

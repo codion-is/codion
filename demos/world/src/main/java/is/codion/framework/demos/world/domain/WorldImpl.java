@@ -112,7 +112,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(52),
             // tag::item[]
             Country.CONTINENT
-                    .itemColumn(CONTINENT_ITEMS)
+                    .column()
+                    .items(CONTINENT_ITEMS)
                     .caption("Continent")
                     .nullable(false),
             // end::item[]
@@ -269,7 +270,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .column()
                     .caption("Country name"),
             Lookup.COUNTRY_CONTINENT
-                    .itemColumn(CONTINENT_ITEMS)
+                    .column()
+                    .items(CONTINENT_ITEMS)
                     .caption("Continent"),
             Lookup.COUNTRY_REGION
                     .column()

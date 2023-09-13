@@ -3,10 +3,12 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Specifies a attribute definition based on a table column
@@ -213,5 +215,12 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
      * @throws IllegalStateException in case this column type is not String
      */
     B searchColumn(boolean searchColumn);
+
+    /**
+     * @param items the Items representing all the valid values for this attribute
+     * @return this instance
+     * @throws IllegalArgumentException in case the valid item list contains duplicate values
+     */
+    B items(List<Item<T>> items);
   }
 }

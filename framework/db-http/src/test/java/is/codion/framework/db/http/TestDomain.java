@@ -107,8 +107,8 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.itemColumn(
-                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+            Employee.JOB.column()
+                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
             Employee.SALARY.column()

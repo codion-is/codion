@@ -106,8 +106,8 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT.column()
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey(),
-            Employee.JOB.itemColumn(
-                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+            Employee.JOB.column()
+                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchColumn(true),
             Employee.SALARY.column()
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),

@@ -3,11 +3,9 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.sql.Statement;
-import java.util.List;
 import java.util.Objects;
 
 import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction.INSERT;
@@ -35,11 +33,6 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   @Override
   public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery) {
     return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(this, subquery);
-  }
-
-  @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> itemColumn(List<Item<T>> validItems) {
-    return new DefaultItemColumnDefinition.DefaultItemColumnDefinitionBuilder<>(this, validItems);
   }
 
   @Override

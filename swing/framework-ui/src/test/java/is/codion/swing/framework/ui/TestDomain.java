@@ -127,7 +127,8 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Detail.MASTER_NAME.name()),
             Detail.MASTER_CODE.denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.itemColumn(ITEMS)
+            Detail.INT_VALUE_LIST.column()
+                    .items(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
             Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
@@ -208,8 +209,8 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.itemColumn(
-                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+            Employee.JOB.column()
+                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
             Employee.SALARY.column()

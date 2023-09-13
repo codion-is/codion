@@ -3,13 +3,11 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 /**
  * An {@link Attribute} representing a table column.
@@ -39,15 +37,6 @@ public interface Column<T> extends Attribute<T> {
    * @return a new {@link ColumnDefinition.Builder}
    */
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery);
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, based on the given items.
-   * @param validItems the Items representing all the valid values for this attribute
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   * @throws IllegalArgumentException in case the valid item list contains duplicate values
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> itemColumn(List<Item<T>> validItems);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.

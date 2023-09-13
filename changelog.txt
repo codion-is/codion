@@ -9552,3 +9552,4 @@
   DefaultLocalEntityConnection.insertSelect() properly implemented
   Demos and tests updated using insertSelect() where applicable
   EntityResultPacker now caches non-derived transient attributes and lazy loaded blob columns, related changes
+  Column.itemColumn() removed, ColumnDefinitionBuilder.items() added

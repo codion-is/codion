@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
-
 final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> implements ItemColumnDefinition<T> {
 
   private static final long serialVersionUID = 1;
@@ -23,7 +21,7 @@ final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> im
   private final List<Item<T>> items;
   private final Map<T, Item<T>> itemMap;
 
-  private DefaultItemColumnDefinition(DefaultItemColumnDefinitionBuilder<T, ?> builder) {
+  DefaultItemColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
     super(builder);
     this.items = builder.items;
     this.itemMap = items.stream()
@@ -63,38 +61,5 @@ final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> im
     }
 
     return item.caption();
-  }
-
-  static final class DefaultItemColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>> extends DefaultColumnDefinitionBuilder<T, B> {
-
-    private final List<Item<T>> items;
-
-    DefaultItemColumnDefinitionBuilder(Column<T> column, List<Item<T>> items) {
-      super(column);
-      validateItems(items);
-      this.items = items;
-    }
-
-    @Override
-    public AttributeDefinition<T> build() {
-      return new DefaultItemColumnDefinition<>(this);
-    }
-
-    private static <T> void validateItems(List<Item<T>> items) {
-      if (requireNonNull(items).size() != items.stream()
-              .map(new GetItemValue<>())
-              .collect(Collectors.toSet())
-              .size()) {
-        throw new IllegalArgumentException("Item list contains duplicate values: " + items);
-      }
-    }
-  }
-
-  private static final class GetItemValue<T> implements Function<Item<T>, T> {
-
-    @Override
-    public T apply(Item<T> item) {
-      return item.get();
-    }
   }
 }
