@@ -4,9 +4,9 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.model.EntitySearchModelConditionModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.JasperReports.fillReport;
 import static java.util.Collections.singletonMap;
@@ -57,7 +56,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
     public Condition get() {
       EntityConnection connection = connectionProvider().connection();
       try {
-        return column(City.ID).in(connection.select(Country.CAPITAL));
+        return City.ID.in(connection.select(Country.CAPITAL));
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

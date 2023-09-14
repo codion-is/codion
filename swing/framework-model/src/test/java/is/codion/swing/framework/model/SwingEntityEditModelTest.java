@@ -20,7 +20,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,7 +90,7 @@ public class SwingEntityEditModelTest {
   @Test
   void replaceForeignKeyValues() throws DatabaseException {
     Entity blake = employeeEditModel.connectionProvider().connection()
-            .selectSingle(column(Employee.NAME).equalTo("BLAKE"));
+            .selectSingle(Employee.NAME.equalTo("BLAKE"));
     employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
     employeeEditModel.refreshComboBoxModels();
     assertNotSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)

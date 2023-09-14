@@ -23,7 +23,7 @@ public final class DefaultEntityBuilderTest {
   @Test
   void valueOrder() {
     Entity department = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 10)
+            .with(Department.ID, 10)
             .with(Department.NAME, "Test")
             .build();
     Entity employee = ENTITIES.builder(Employee.TYPE)

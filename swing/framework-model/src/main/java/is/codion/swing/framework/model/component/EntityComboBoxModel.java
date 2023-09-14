@@ -7,12 +7,12 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityEditEvents;
@@ -34,7 +34,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.db.condition.Condition.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -458,7 +457,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Consumer<Entity> listener = selected -> {
-      setConditionSupplier(() -> foreignKey(foreignKey).equalTo(selected));
+      setConditionSupplier(() -> foreignKey.equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);

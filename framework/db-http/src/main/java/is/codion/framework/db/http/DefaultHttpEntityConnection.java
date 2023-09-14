@@ -13,11 +13,11 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.conn.HttpClientConnectionManager;
@@ -34,8 +34,8 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.key;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;

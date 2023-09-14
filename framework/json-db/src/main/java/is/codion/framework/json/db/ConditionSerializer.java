@@ -3,11 +3,11 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.ColumnCondition;
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Condition.All;
-import is.codion.framework.db.condition.Condition.Combination;
-import is.codion.framework.db.condition.CustomCondition;
+import is.codion.framework.domain.entity.attribute.ColumnCondition;
+import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.attribute.Condition.All;
+import is.codion.framework.domain.entity.attribute.Condition.Combination;
+import is.codion.framework.domain.entity.attribute.CustomCondition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;

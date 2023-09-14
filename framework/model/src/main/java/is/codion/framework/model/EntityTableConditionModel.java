@@ -8,9 +8,9 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.util.Collection;
 import java.util.function.Consumer;

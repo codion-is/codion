@@ -17,7 +17,6 @@ import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.tools.randomizer.ItemRandomizerPanel;
 
@@ -78,7 +77,6 @@ public final class LoadTestPanel<T> extends JPanel {
 
   static {
     FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))

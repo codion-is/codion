@@ -7,11 +7,11 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.util.Collection;
 import java.util.Comparator;

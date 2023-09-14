@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.ColumnCondition;
+import is.codion.framework.domain.entity.attribute.ColumnCondition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;

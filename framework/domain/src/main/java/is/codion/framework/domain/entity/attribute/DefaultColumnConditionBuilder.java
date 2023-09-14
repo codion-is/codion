@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
-
-import is.codion.framework.domain.entity.attribute.Column;
+package is.codion.framework.domain.entity.attribute;
 
 import java.util.Collection;
 

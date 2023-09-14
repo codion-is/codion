@@ -21,8 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.domain.entity.attribute.Condition.all;
 import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
@@ -85,7 +84,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      client.connection().select(column(Department.NAME).equalTo("ACCOUNTING"));
+      client.connection().select(Department.NAME.equalTo("ACCOUNTING"));
     }
   }
 
@@ -101,7 +100,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     protected void perform(EntityConnectionProvider client) throws Exception {
       List<Entity> departments = client.connection().select(all(Department.TYPE));
 
-      client.connection().select(column(Employee.DEPARTMENT)
+      client.connection().select(Employee.DEPARTMENT
               .equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.ID)));
     }
   }

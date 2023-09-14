@@ -16,7 +16,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -38,7 +37,7 @@ public class EntityComboBoxTest {
   void inputProvider() throws Exception {
     EntityComboBoxModel model = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
     model.refresh();
-    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("OPERATIONS"));
+    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
     model.setSelectedItem(operations);
     ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
             .buildValue();
@@ -46,7 +45,7 @@ public class EntityComboBoxTest {
     assertNotNull(value.get());
 
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
-            column(Department.NAME).equalTo("SALES"));
+            Department.NAME.equalTo("SALES"));
 
     model.setSelectedItem(sales);
     assertEquals(sales, value.get());

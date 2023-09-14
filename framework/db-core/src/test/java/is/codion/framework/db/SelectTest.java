@@ -6,12 +6,11 @@ package is.codion.framework.db;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.db.TestDomain.Employee;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -19,7 +18,7 @@ public final class SelectTest {
 
   @Test
   void select() {
-    Select select = Select.where(column(Department.LOCATION).equalTo("New York"))
+    Select select = Select.where(Department.LOCATION.equalTo("New York"))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertEquals(-1, select.limit());
@@ -32,8 +31,8 @@ public final class SelectTest {
 
   @Test
   void equals() {
-    Condition condition1 = column(Employee.NAME).in("Luke", "John");
-    Condition condition2 = column(Employee.NAME).in("Luke", "John");
+    Condition condition1 = Employee.NAME.in("Luke", "John");
+    Condition condition2 = Employee.NAME.in("Luke", "John");
     assertEquals(Select.where(condition1).build(), Select.where(condition2).build());
     assertEquals(Select.where(condition1)
                     .orderBy(OrderBy.ascending(Employee.NAME))

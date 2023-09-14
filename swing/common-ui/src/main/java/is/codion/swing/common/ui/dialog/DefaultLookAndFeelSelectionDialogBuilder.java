@@ -24,7 +24,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
   private static final int PADDING = 10;
 
   private JComponent owner;
-  private boolean changeOnSelection = LookAndFeelComboBox.CHANGE_ON_SELECTION.get();
+  private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.get();
   private String userPreferencePropertyName;
 
   @Override
@@ -34,8 +34,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
   }
 
   @Override
-  public LookAndFeelSelectionDialogBuilder changeOnSelection(boolean changeOnSelection) {
-    this.changeOnSelection = changeOnSelection;
+  public LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection) {
+    this.enableOnSelection = enableOnSelection;
     return this;
   }
 
@@ -62,7 +62,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
   @Override
   public Optional<LookAndFeelProvider> selectLookAndFeel() {
-    LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(changeOnSelection);
+    LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(enableOnSelection);
     JPanel basePanel = new JPanel(new BorderLayout());
     basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
     basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);

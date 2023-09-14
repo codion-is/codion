@@ -22,9 +22,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.function.Consumer;
 
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
+import static is.codion.framework.domain.entity.attribute.Condition.all;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -80,7 +79,7 @@ public class EntityConnectionTest {
             .entityTypes(Employee.TYPE)
             .batchSize(2)
             .includePrimaryKeys(false)
-            .condition(column(Employee.SALARY).greaterThan(1000d))
+            .condition(Employee.SALARY.greaterThan(1000d))
             .execute();
     assertEquals(13, DESTINATION_CONNECTION.count(all(Employee.TYPE)));
 

@@ -9,7 +9,6 @@ import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
-import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -59,7 +58,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING

@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.lang.Double.parseDouble;
@@ -271,8 +270,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .caption("Country name"),
             Lookup.COUNTRY_CONTINENT
                     .column()
-                    .items(CONTINENT_ITEMS)
-                    .caption("Continent"),
+                    .caption("Continent")
+                    .items(CONTINENT_ITEMS),
             Lookup.COUNTRY_REGION
                     .column()
                     .caption("Region"),
@@ -428,7 +427,7 @@ public final class WorldImpl extends DefaultDomain implements World {
     @Override
     public Double execute(EntityConnection connection, String countryCode) throws DatabaseException {
       return connection.select(City.POPULATION,
-                      column(City.COUNTRY_CODE).equalTo(countryCode))
+                      City.COUNTRY_CODE.equalTo(countryCode))
               .stream()
               .mapToInt(Integer::intValue)
               .average()

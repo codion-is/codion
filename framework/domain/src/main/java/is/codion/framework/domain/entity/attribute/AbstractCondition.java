@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Column;
 
 import java.io.Serializable;
 import java.util.ArrayList;

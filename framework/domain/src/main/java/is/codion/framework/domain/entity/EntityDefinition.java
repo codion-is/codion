@@ -452,7 +452,7 @@ public interface EntityDefinition {
     /**
      * Sets the select query to use when selecting entities of this type,
      * use with care. If the query contains a columns clause, the order
-     * of the attributes when defining the entity  must match the column order in the given query.
+     * of the attributes when defining the entity must match the column order in the given query.
      * @param selectQuery the select query to use for this entity type
      * @return this {@link Builder} instance
      */

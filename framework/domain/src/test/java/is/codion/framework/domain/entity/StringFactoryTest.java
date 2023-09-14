@@ -23,7 +23,7 @@ public class StringFactoryTest {
   @Test
   void builder() {
     Entity department = entities.builder(Department.TYPE)
-            .with(Department.NO, -10)
+            .with(Department.ID, -10)
             .with(Department.LOCATION, "Reykjavik")
             .with(Department.NAME, "Sales")
             .build();

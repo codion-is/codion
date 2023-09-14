@@ -12,8 +12,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.column;
-
 public final class EntityPopupMenuTest {
 
   private static final User UNIT_TEST_USER =
@@ -25,7 +23,7 @@ public final class EntityPopupMenuTest {
             .domain(new TestDomain())
             .user(UNIT_TEST_USER)
             .build()) {
-      Entity blake = connectionProvider.connection().selectSingle(column(Employee.NAME).equalTo("BLAKE"));
+      Entity blake = connectionProvider.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
       blake.put(Employee.NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
       blake.put(Employee.SALARY, 100d);
 

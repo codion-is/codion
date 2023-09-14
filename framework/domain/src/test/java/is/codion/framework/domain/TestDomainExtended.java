@@ -21,7 +21,7 @@ public final class TestDomainExtended extends DefaultDomain {
   public static final Column<Integer> EXTENDED_ID = T_EXTENDED.integerColumn("id");
   public static final Column<String> EXTENDED_NAME = T_EXTENDED.stringColumn("name");
   public static final Column<Integer> EXTENDED_DEPT_ID = T_EXTENDED.integerColumn("dept_id");
-  public static final ForeignKey EXTENDED_DEPT_FK = T_EXTENDED.foreignKey("dept_fk", EXTENDED_DEPT_ID, TestDomain.Department.NO);
+  public static final ForeignKey EXTENDED_DEPT_FK = T_EXTENDED.foreignKey("dept_fk", EXTENDED_DEPT_ID, TestDomain.Department.ID);
 
   public static final ProcedureType<?, ?> PROC_TYPE = ProcedureType.procedureType("proc");
   public static final FunctionType<Object, Object, Object> FUNC_TYPE = FunctionType.functionType("func");

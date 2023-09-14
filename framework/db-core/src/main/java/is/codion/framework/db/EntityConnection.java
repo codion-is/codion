@@ -10,7 +10,6 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -18,6 +17,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 

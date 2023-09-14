@@ -1,13 +1,12 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.db.condition.Condition.Combination;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition.Combination;
 
 import java.io.Serializable;
 import java.util.ArrayList;

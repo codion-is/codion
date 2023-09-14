@@ -9594,3 +9594,7 @@
   EntityResultPacker now caches non-derived transient attributes and lazy loaded blob columns, related changes
   Column.itemColumn() removed, ColumnDefinitionBuilder.items() added
   ColumnDefinitionBuilder.primaryKeyColumn() and subqueryColumn() renamed primaryKey() and subquery() respectively
+  LookAndFeelComboBox.CHANGE_ON_SELECTION renamed to ENABLE_ON_SELECTION, now default true
+  Condition moved from db.condition to domain.entity.attribute package
+  Column implements ColumnCondition.Builder
+  ForeignKey implements ForeignKeyCondition.Builder

@@ -4,11 +4,11 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;

@@ -100,7 +100,7 @@ public class DefaultEntityDefinitionTest {
 
     defaultSelectAttributes = domain.entities()
             .definition(Department.TYPE).selectAttributes();
-    assertTrue(defaultSelectAttributes.contains(Department.NO));
+    assertTrue(defaultSelectAttributes.contains(Department.ID));
     assertTrue(defaultSelectAttributes.contains(Department.NAME));
     assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
     assertTrue(defaultSelectAttributes.contains(Department.ACTIVE));

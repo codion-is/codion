@@ -13,8 +13,6 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.column;
-import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.petstore.domain.Petstore.Category;
 import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
@@ -50,9 +48,9 @@ public final class EntitiesInAction {
     connection.insert(smallBeetles);
 
     //see what products are available for the Cats category
-    Entity categoryCats = connection.selectSingle(column(Category.NAME).equalTo("Cats"));
+    Entity categoryCats = connection.selectSingle(Category.NAME.equalTo("Cats"));
 
-    List<Entity> cats = connection.select(foreignKey(Product.CATEGORY_FK).equalTo(categoryCats));
+    List<Entity> cats = connection.select(Product.CATEGORY_FK.equalTo(categoryCats));
 
     cats.forEach(System.out::println);
     // end::entitiesInAction[]

@@ -5,11 +5,11 @@ package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.attribute.CustomCondition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.json.TestDomain;
 import is.codion.framework.json.TestDomain.Department;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.domain.entity.attribute.Condition.*;
 import static is.codion.framework.json.db.ConditionObjectMapper.conditionObjectMapper;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static java.util.Arrays.asList;
@@ -43,10 +43,10 @@ public final class ConditionObjectMapperTest {
             .build();
 
     Select select = Select.where(and(
-                    foreignKey(Employee.DEPARTMENT_FK).notIn(dept1, dept2),
-                    column(Employee.NAME).equalToIgnoreCase("Loc"),
-                    column(Employee.EMPNO).between(10, 40),
-                    column(Employee.COMMISSION).isNotNull()))
+                    Employee.DEPARTMENT_FK.notIn(dept1, dept2),
+                    Employee.NAME.equalToIgnoreCase("Loc"),
+                    Employee.EMPNO.between(10, 40),
+                    Employee.COMMISSION.isNotNull()))
             .build();
 
     String jsonString = mapper.writeValueAsString(select);
@@ -59,7 +59,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void nullCondition() throws JsonProcessingException {
-    Condition condition = column(Employee.COMMISSION).isNotNull();
+    Condition condition = Employee.COMMISSION.isNotNull();
 
     String jsonString = mapper.writeValueAsString(condition);
     Condition readCondition = mapper.readValue(jsonString, Condition.class);
@@ -87,7 +87,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void select() throws JsonProcessingException {
-    Select select = Select.where(column(Employee.EMPNO).equalTo(1))
+    Select select = Select.where(Employee.EMPNO.equalTo(1))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
                     .descendingNullsLast(Employee.NAME)
@@ -118,7 +118,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(42, readCondition.queryTimeout());
     assertEquals(select, readCondition);
 
-    select = Select.where(column(Employee.EMPNO).equalTo(1)).build();
+    select = Select.where(Employee.EMPNO.equalTo(1)).build();
 
     jsonString = mapper.writeValueAsString(select);
     readCondition = mapper.readValue(jsonString, Select.class);
@@ -126,7 +126,7 @@ public final class ConditionObjectMapperTest {
     assertFalse(readCondition.orderBy().isPresent());
     assertFalse(readCondition.fetchDepth().isPresent());
 
-    select = Select.where(column(Employee.EMPNO).equalTo(2)).build();
+    select = Select.where(Employee.EMPNO.equalTo(2)).build();
     jsonString = mapper.writeValueAsString(select);
 
     select = mapper.readValue(jsonString, Select.class);
@@ -134,7 +134,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void update() throws JsonProcessingException {
-    Update update = Update.where(column(Department.DEPTNO)
+    Update update = Update.where(Department.DEPTNO
                     .between(1, 2))
             .set(Department.LOCATION, "loc")
             .set(Department.DEPTNO, 3)
@@ -160,9 +160,9 @@ public final class ConditionObjectMapperTest {
   @Test
   void combinationOfCombinations() throws JsonProcessingException {
     Select select = Select.where(and(
-                    column(Employee.COMMISSION).equalTo(100d),
-                    or(column(Employee.JOB).notEqualTo("test"),
-                            column(Employee.JOB).isNotNull())))
+                    Employee.COMMISSION.equalTo(100d),
+                    or(Employee.JOB.notEqualTo("test"),
+                            Employee.JOB.isNotNull())))
             .build();
 
     String jsonString = mapper.writeValueAsString(select);

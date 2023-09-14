@@ -13,11 +13,11 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

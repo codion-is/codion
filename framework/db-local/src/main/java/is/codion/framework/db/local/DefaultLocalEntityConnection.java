@@ -23,7 +23,6 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -33,6 +32,7 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.query.SelectQuery;
@@ -60,9 +60,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
-import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Condition.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -453,7 +453,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     ColumnDefinition<T> columnDefinition = entityDefinition.columnDefinition(column);
     verifyColumnIsSelectable(columnDefinition, entityDefinition);
-    Condition combinedCondition = and(select.where(), column(column).isNotNull());
+    Condition combinedCondition = and(select.where(), column.isNotNull());
     String selectQuery = selectQueries.builder(entityDefinition)
             .select(select, false)
             .columns(columnDefinition.columnExpression())
@@ -523,7 +523,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     synchronized (connection) {
       for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entityTypes.iterator().next())) {
-        List<Entity> dependencies = select(Select.where(foreignKey(foreignKeyReference.attribute()).in(entities))
+        List<Entity> dependencies = select(Select.where(foreignKeyReference.attribute().in(entities))
                 .fetchDepth(1)
                 .build())
                 .stream()

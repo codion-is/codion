@@ -31,8 +31,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.column;
-import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
@@ -262,11 +260,11 @@ public final class Example {
                     Database.instance(), domain, User.parse("scott:tiger"));
 
     //select customer where last name = Doe
-    Entity johnDoe = connection.selectSingle(column(Customer.LAST_NAME).equalTo("Doe"));
+    Entity johnDoe = connection.selectSingle(Customer.LAST_NAME.equalTo("Doe"));
 
     //select all customer addresses
     List<Entity> customerAddresses = //where customer = john doe
-            connection.select(foreignKey(CustomerAddress.CUSTOMER_FK).equalTo(johnDoe));
+            connection.select(CustomerAddress.CUSTOMER_FK.equalTo(johnDoe));
 
     Entity customerAddress = customerAddresses.get(0);
 

@@ -11,9 +11,9 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.sql.Connection;
 

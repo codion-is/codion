@@ -11,12 +11,11 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.ColumnCondition;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.domain.entity.attribute.Condition.and;
+import static is.codion.framework.domain.entity.attribute.Condition.or;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -252,17 +252,16 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     Collection<Condition> conditions = new ArrayList<>();
     String[] searchStrings = singleSelection.get() ?
             new String[] {searchString.get()} : searchString.get().split(multipleItemSeparator.get());
-    for (Column<String> searchColumn : searchColumns) {
-      SearchSettings searchSettings = columnSearchSettings.get(searchColumn);
+    for (Column<String> column : searchColumns) {
+      SearchSettings searchSettings = columnSearchSettings.get(column);
       for (String rawSearchString : searchStrings) {
-        ColumnCondition.Builder<String> builder = column(searchColumn);
         String preparedSearchString = prepareSearchString(rawSearchString, searchSettings);
         boolean containsWildcards = containsWildcards(preparedSearchString);
         if (searchSettings.caseSensitive().get()) {
-          conditions.add(containsWildcards ? builder.like(preparedSearchString) : builder.equalTo(preparedSearchString));
+          conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
         }
         else {
-          conditions.add(containsWildcards ? builder.likeIgnoreCase(preparedSearchString) : builder.equalToIgnoreCase(preparedSearchString));
+          conditions.add(containsWildcards ? column.likeIgnoreCase(preparedSearchString) : column.equalToIgnoreCase(preparedSearchString));
         }
       }
     }

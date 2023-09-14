@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Objects;
 
 import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction.INSERT;
@@ -113,6 +114,136 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
     }
 
     return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) this, UPDATE);
+  }
+
+  @Override
+  public ColumnCondition<T> equalTo(T value) {
+    return new DefaultColumnConditionBuilder<>(this).equalTo(value);
+  }
+
+  @Override
+  public ColumnCondition<T> notEqualTo(T value) {
+    return new DefaultColumnConditionBuilder<>(this).notEqualTo(value);
+  }
+
+  @Override
+  public ColumnCondition<String> equalToIgnoreCase(String value) {
+    return new DefaultColumnConditionBuilder<>(this).equalToIgnoreCase(value);
+  }
+
+  @Override
+  public ColumnCondition<String> notEqualToIgnoreCase(String value) {
+    return new DefaultColumnConditionBuilder<>(this).notEqualToIgnoreCase(value);
+  }
+
+  @Override
+  public ColumnCondition<String> like(String value) {
+    return new DefaultColumnConditionBuilder<>(this).like(value);
+  }
+
+  @Override
+  public ColumnCondition<String> notLike(String value) {
+    return new DefaultColumnConditionBuilder<>(this).notLike(value);
+  }
+
+  @Override
+  public ColumnCondition<String> likeIgnoreCase(String value) {
+    return new DefaultColumnConditionBuilder<>(this).likeIgnoreCase(value);
+  }
+
+  @Override
+  public ColumnCondition<String> notLikeIgnoreCase(String value) {
+    return new DefaultColumnConditionBuilder<>(this).notLikeIgnoreCase(value);
+  }
+
+  @Override
+  public ColumnCondition<T> in(T... values) {
+    return new DefaultColumnConditionBuilder<>(this).in(values);
+  }
+
+  @Override
+  public ColumnCondition<T> notIn(T... values) {
+    return new DefaultColumnConditionBuilder<>(this).notIn(values);
+  }
+
+  @Override
+  public ColumnCondition<T> in(Collection<? extends T> values) {
+    return new DefaultColumnConditionBuilder<>(this).in(values);
+  }
+
+  @Override
+  public ColumnCondition<T> notIn(Collection<? extends T> values) {
+    return new DefaultColumnConditionBuilder<>(this).notIn(values);
+  }
+
+  @Override
+  public ColumnCondition<String> inIgnoreCase(String... values) {
+    return new DefaultColumnConditionBuilder<>(this).inIgnoreCase(values);
+  }
+
+  @Override
+  public ColumnCondition<String> notInIgnoreCase(String... values) {
+    return new DefaultColumnConditionBuilder<>(this).notInIgnoreCase(values);
+  }
+
+  @Override
+  public ColumnCondition<String> inIgnoreCase(Collection<String> values) {
+    return new DefaultColumnConditionBuilder<>(this).inIgnoreCase(values);
+  }
+
+  @Override
+  public ColumnCondition<String> notInIgnoreCase(Collection<String> values) {
+    return new DefaultColumnConditionBuilder<>(this).notInIgnoreCase(values);
+  }
+
+  @Override
+  public ColumnCondition<T> lessThan(T value) {
+    return new DefaultColumnConditionBuilder<>(this).lessThan(value);
+  }
+
+  @Override
+  public ColumnCondition<T> lessThanOrEqualTo(T value) {
+    return new DefaultColumnConditionBuilder<>(this).lessThanOrEqualTo(value);
+  }
+
+  @Override
+  public ColumnCondition<T> greaterThan(T value) {
+    return new DefaultColumnConditionBuilder<>(this).greaterThan(value);
+  }
+
+  @Override
+  public ColumnCondition<T> greaterThanOrEqualTo(T value) {
+    return new DefaultColumnConditionBuilder<>(this).greaterThanOrEqualTo(value);
+  }
+
+  @Override
+  public ColumnCondition<T> betweenExclusive(T lowerBound, T upperBound) {
+    return new DefaultColumnConditionBuilder<>(this).betweenExclusive(lowerBound, upperBound);
+  }
+
+  @Override
+  public ColumnCondition<T> between(T lowerBound, T upperBound) {
+    return new DefaultColumnConditionBuilder<>(this).between(lowerBound, upperBound);
+  }
+
+  @Override
+  public ColumnCondition<T> notBetweenExclusive(T lowerBound, T upperBound) {
+    return new DefaultColumnConditionBuilder<>(this).notBetweenExclusive(lowerBound, upperBound);
+  }
+
+  @Override
+  public ColumnCondition<T> notBetween(T lowerBound, T upperBound) {
+    return new DefaultColumnConditionBuilder<>(this).notBetween(lowerBound, upperBound);
+  }
+
+  @Override
+  public ColumnCondition<T> isNull() {
+    return new DefaultColumnConditionBuilder<>(this).isNull();
+  }
+
+  @Override
+  public ColumnCondition<T> isNotNull() {
+    return new DefaultColumnConditionBuilder<>(this).isNotNull();
   }
 
   private static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {

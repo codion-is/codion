@@ -16,9 +16,9 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
+import static is.codion.framework.domain.entity.attribute.Condition.and;
 import static java.util.Arrays.asList;
 
 public class StoreDatabase {
@@ -38,22 +38,22 @@ public class StoreDatabase {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> customersNamedDoe =
-            connection.select(column(Customer.LAST_NAME).equalTo("Doe"));
+            connection.select(Customer.LAST_NAME.equalTo("Doe"));
 
     List<Entity> doesAddresses =
-            connection.select(foreignKey(Address.CUSTOMER_FK).in(customersNamedDoe));
+            connection.select(Address.CUSTOMER_FK.in(customersNamedDoe));
 
     List<Entity> customersWithoutEmail =
-            connection.select(column(Customer.EMAIL).isNull());
+            connection.select(Customer.EMAIL.isNull());
 
     List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
-                    column(Customer.IS_ACTIVE).equalTo(true));
+                    Customer.IS_ACTIVE.equalTo(true));
 
     List<Entity> activeCustomersWithEmailAddresses =
             connection.select(and(
-                    column(Customer.IS_ACTIVE).equalTo(true),
-                    column(Customer.EMAIL).isNotNull()));
+                    Customer.IS_ACTIVE.equalTo(true),
+                    Customer.EMAIL.isNotNull()));
 
     // The domain model entities, a factory for Entity instances.
     Entities entities = connection.entities();
