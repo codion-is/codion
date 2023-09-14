@@ -10,6 +10,9 @@
  * {@link is.codion.framework.domain.entity.attribute.ColumnDefinition}<br>
  * {@link is.codion.framework.domain.entity.attribute.ForeignKey}<br>
  * {@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition}<br>
+ * {@link is.codion.framework.domain.entity.attribute.Condition}<br>
+ * {@link is.codion.framework.domain.entity.attribute.ColumnCondition}<br>
+ * {@link is.codion.framework.domain.entity.attribute.ForeignKeyCondition}<br>
  */
 module is.codion.framework.domain {
   requires org.slf4j;
