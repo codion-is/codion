@@ -1524,7 +1524,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static void closeSilently(AutoCloseable closeable) {
     try {
-      closeable.close();
+      if (closeable != null) {
+        closeable.close();
+      }
     }
     catch (Exception ignored) {/*ignored*/}
   }

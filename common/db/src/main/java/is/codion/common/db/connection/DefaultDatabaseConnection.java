@@ -88,7 +88,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       System.err.println("DefaultDatabaseConnection.close(), connection invalid");
     }
     try {
-      connection.close();
+      if (connection != null) {
+        connection.close();
+      }
     }
     catch (Exception ignored) {/*ignored*/}
     connection = null;
