@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -90,7 +89,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     EntityApplicationPanel.builder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
             .domainType(EmpDept.DOMAIN)

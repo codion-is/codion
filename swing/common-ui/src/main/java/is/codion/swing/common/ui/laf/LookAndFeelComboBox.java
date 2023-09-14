@@ -35,23 +35,23 @@ import static java.util.Objects.requireNonNull;
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvider>> {
 
   /**
-   * Specifies whether to change the Look and Feel dynamically when selecting<br>
+   * Specifies whether to enable the Look and Feel dynamically when selected<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
-  public static final PropertyValue<Boolean> CHANGE_ON_SELECTION =
-          Configuration.booleanValue("is.codion.swing.common.ui.dialog.LookAndFeelComboBox.changeOnSelection", false);
+  public static final PropertyValue<Boolean> ENABLE_ON_SELECTION =
+          Configuration.booleanValue("is.codion.swing.common.ui.dialog.LookAndFeelComboBox.enableOnSelection", true);
 
   private final LookAndFeelProvider originalLookAndFeel;
 
-  private LookAndFeelComboBox(FilteredComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel, boolean changeOnSelection) {
+  private LookAndFeelComboBox(FilteredComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel, boolean enableOnSelection) {
     super(requireNonNull(comboBoxModel));
     Item<LookAndFeelProvider> selectedValue = comboBoxModel.selectedValue();
     originalLookAndFeel = selectedValue == null ? null : selectedValue.get();
     setRenderer(new LookAndFeelRenderer());
     setEditor(new LookAndFeelEditor());
     enableMouseWheelSelection(this);
-    if (changeOnSelection) {
+    if (enableOnSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
               SwingUtilities.invokeLater(() -> enableLookAndFeel(lookAndFeelProvider.get())));
     }
@@ -95,16 +95,16 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
    * @return a new {@link LookAndFeelComboBox} instance
    */
   public static LookAndFeelComboBox lookAndFeelComboBox() {
-    return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), CHANGE_ON_SELECTION.get());
+    return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), ENABLE_ON_SELECTION.get());
   }
 
   /**
    * Instantiates a new {@link LookAndFeelComboBox} displaying the available look and feels
-   * @param changeOnSelection if true the look and feel is changed dynamically when selected
+   * @param enableOnSelection if true the look and feel is enabled dynamically when selected
    * @return a new {@link LookAndFeelComboBox} instance
    */
-  public static LookAndFeelComboBox lookAndFeelComboBox(boolean changeOnSelection) {
-    return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), changeOnSelection);
+  public static LookAndFeelComboBox lookAndFeelComboBox(boolean enableOnSelection) {
+    return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), enableOnSelection);
   }
 
   private static final class LookAndFeelEditor extends BasicComboBoxEditor {

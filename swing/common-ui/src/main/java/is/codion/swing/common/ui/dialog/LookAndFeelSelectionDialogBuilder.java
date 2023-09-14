@@ -21,10 +21,10 @@ public interface LookAndFeelSelectionDialogBuilder {
   LookAndFeelSelectionDialogBuilder owner(JComponent owner);
 
   /**
-   * @param changeOnSelection true if the Look and Feel should change dynamically when selecting
+   * @param enableOnSelection true if the Look and Feel should be enabled dynamically when selecting
    * @return this builder
    */
-  LookAndFeelSelectionDialogBuilder changeOnSelection(boolean changeOnSelection);
+  LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection);
 
   /**
    * @param userPreferencePropertyName the name of the property to use when saving the selected look and feel as a user preference

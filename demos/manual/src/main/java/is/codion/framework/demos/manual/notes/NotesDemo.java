@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -261,8 +260,6 @@ public final class NotesDemo {
   private static void startApplication() throws Exception {
     // Change the default horizontal alignment for temporal table columns
     FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-    // Change the Look & Feel dynamically when selecting
-    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     // Make all the IntelliJ themes from Flat Look and Feel available (View -> Select Look & Feel)
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
