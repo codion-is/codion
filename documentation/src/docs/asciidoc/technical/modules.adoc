@@ -201,7 +201,6 @@ image::modules/framework/domain-test/build/reports/dependency-graph/dependency-g
 Core database connection related classes.
 
 * {url-javadoc}{framework-db-core}/is/codion/framework/db/package-summary.html[is.codion.framework.db]
-* {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/package-summary.html[is.codion.framework.db.condition]
 
 .Dependency graph
 [%collapsible]

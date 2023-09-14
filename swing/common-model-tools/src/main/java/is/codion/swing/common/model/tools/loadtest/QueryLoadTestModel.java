@@ -172,7 +172,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
   private static void closeSilently(AutoCloseable closeable) {
     try {
-      closeable.close();
+      if (closeable != null) {
+        closeable.close();
+      }
     }
     catch (Exception ignored) {/*ignored*/}
   }

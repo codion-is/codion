@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * An {@link Attribute} representing a foreign key relation.
  */
-public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Builder {
+public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Factory {
 
   /**
    * @return the entity type referenced by this foreign key

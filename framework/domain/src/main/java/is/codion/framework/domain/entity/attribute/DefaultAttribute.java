@@ -5,6 +5,8 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -177,20 +179,20 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute() {
-    return new DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder<>(this);
+    return new DefaultTransientAttributeDefinitionBuilder<>(this);
   }
 
   @Override
   public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalizedAttribute(Attribute<Entity> entityAttribute,
                                                                                                                      Attribute<T> denormalizedAttribute) {
-    return new DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder<>(this,
+    return new DefaultDerivedAttributeDefinitionBuilder<>(this,
             new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
   }
 
   @Override
   public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derivedAttribute(DerivedAttribute.Provider<T> valueProvider,
                                                                                                                 Attribute<?>... sourceAttributes) {
-    return new DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder<>(this, valueProvider, sourceAttributes);
+    return new DefaultDerivedAttributeDefinitionBuilder<>(this, valueProvider, sourceAttributes);
   }
 
   private boolean isType(Class<?> valueClass) {

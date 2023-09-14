@@ -22,13 +22,13 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Builder {
+final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Factory {
 
   private static final String VALUES_PARAMETER = "values";
 
   private final ForeignKey foreignKey;
 
-  DefaultForeignKeyConditionBuilder(ForeignKey foreignKey) {
+  DefaultForeignKeyConditionFactory(ForeignKey foreignKey) {
     this.foreignKey = requireNonNull(foreignKey, "foreignKey");
   }
 
@@ -41,12 +41,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
     if (references.size() == 1) {
       Reference<Object> reference = (Reference<Object>) references.get(0);
 
-      return new DefaultColumnConditionBuilder<>(reference.column()).equalTo(value.get(reference.referencedColumn()));
+      return new DefaultColumnConditionFactory<>(reference.column()).equalTo(value.get(reference.referencedColumn()));
     }
 
     List<Condition> conditions = references.stream()
             .map(reference -> (Reference<Object>) reference)
-            .map(reference -> new DefaultColumnConditionBuilder<>(reference.column()).equalTo(value.get(reference.referencedColumn())))
+            .map(reference -> new DefaultColumnConditionFactory<>(reference.column()).equalTo(value.get(reference.referencedColumn())))
             .collect(toList());
 
     return new DefaultConditionCombination(AND, conditions);
@@ -62,12 +62,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
     if (references.size() == 1) {
       Reference<Object> reference = (Reference<Object>) references.get(0);
 
-      return new DefaultColumnConditionBuilder<>(reference.column()).notEqualTo(value.get(reference.referencedColumn()));
+      return new DefaultColumnConditionFactory<>(reference.column()).notEqualTo(value.get(reference.referencedColumn()));
     }
 
     List<Condition> conditions = references.stream()
             .map(reference -> (Reference<Object>) reference)
-            .map(reference -> new DefaultColumnConditionBuilder<>(reference.column()).notEqualTo(value.get(reference.referencedColumn())))
+            .map(reference -> new DefaultColumnConditionFactory<>(reference.column()).notEqualTo(value.get(reference.referencedColumn())))
             .collect(toList());
 
     return new DefaultConditionCombination(AND, conditions);
@@ -101,12 +101,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
     if (columns.size() == 1) {
       Column<Object> column = (Column<Object>) columns.get(0);
 
-      return new DefaultColumnConditionBuilder<>(column).isNull();
+      return new DefaultColumnConditionFactory<>(column).isNull();
     }
 
     List<Condition> conditions = columns.stream()
             .map(column -> (Column<Object>) column)
-            .map(column -> new DefaultColumnConditionBuilder<>(column).isNull())
+            .map(column -> new DefaultColumnConditionFactory<>(column).isNull())
             .collect(toList());
 
     return new DefaultConditionCombination(AND, conditions);
@@ -120,12 +120,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
     if (columns.size() == 1) {
       Column<Object> column = (Column<Object>) columns.get(0);
 
-      return new DefaultColumnConditionBuilder<>(column).isNotNull();
+      return new DefaultColumnConditionFactory<>(column).isNotNull();
     }
 
     List<Condition> conditions = columns.stream()
             .map(column -> (Column<Object>) column)
-            .map(column -> new DefaultColumnConditionBuilder<>(column).isNotNull())
+            .map(column -> new DefaultColumnConditionFactory<>(column).isNotNull())
             .collect(toList());
 
     return new DefaultConditionCombination(AND, conditions);

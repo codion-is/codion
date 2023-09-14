@@ -55,42 +55,42 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   @Override
   public Condition equalTo(Entity value) {
-    return new DefaultForeignKeyConditionBuilder(this).equalTo(value);
+    return new DefaultForeignKeyConditionFactory(this).equalTo(value);
   }
 
   @Override
   public Condition notEqualTo(Entity value) {
-    return new DefaultForeignKeyConditionBuilder(this).notEqualTo(value);
+    return new DefaultForeignKeyConditionFactory(this).notEqualTo(value);
   }
 
   @Override
   public Condition in(Entity... values) {
-    return new DefaultForeignKeyConditionBuilder(this).in(values);
+    return new DefaultForeignKeyConditionFactory(this).in(values);
   }
 
   @Override
   public Condition notIn(Entity... values) {
-    return new DefaultForeignKeyConditionBuilder(this).notIn(values);
+    return new DefaultForeignKeyConditionFactory(this).notIn(values);
   }
 
   @Override
   public Condition in(Collection<? extends Entity> values) {
-    return new DefaultForeignKeyConditionBuilder(this).in(values);
+    return new DefaultForeignKeyConditionFactory(this).in(values);
   }
 
   @Override
   public Condition notIn(Collection<? extends Entity> values) {
-    return new DefaultForeignKeyConditionBuilder(this).notIn(values);
+    return new DefaultForeignKeyConditionFactory(this).notIn(values);
   }
 
   @Override
   public Condition isNull() {
-    return new DefaultForeignKeyConditionBuilder(this).isNull();
+    return new DefaultForeignKeyConditionFactory(this).isNull();
   }
 
   @Override
   public Condition isNotNull() {
-    return new DefaultForeignKeyConditionBuilder(this).isNotNull();
+    return new DefaultForeignKeyConditionFactory(this).isNotNull();
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {
