@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 
 /**
  * Defines an Attribute. Factory for {@link AttributeDefinition} instances.
- *
  * @param <T> the underlying type
  */
 public interface AttributeDefinition<T> {
