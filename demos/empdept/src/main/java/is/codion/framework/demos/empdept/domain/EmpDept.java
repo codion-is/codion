@@ -186,8 +186,8 @@ public final class EmpDept extends DefaultDomain {
                     .beanProperty("department"),
             Employee.JOB
                     .column()
-                    .items(Employee.JOB_VALUES)
                     .caption("Job")
+                    .items(Employee.JOB_VALUES)
                     .beanProperty("job"),
             Employee.SALARY
                     .column()

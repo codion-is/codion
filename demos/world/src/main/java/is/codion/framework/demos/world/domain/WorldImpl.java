@@ -271,8 +271,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .caption("Country name"),
             Lookup.COUNTRY_CONTINENT
                     .column()
-                    .items(CONTINENT_ITEMS)
-                    .caption("Continent"),
+                    .caption("Continent")
+                    .items(CONTINENT_ITEMS),
             Lookup.COUNTRY_REGION
                     .column()
                     .caption("Region"),
