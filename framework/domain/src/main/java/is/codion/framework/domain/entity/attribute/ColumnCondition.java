@@ -29,10 +29,10 @@ public interface ColumnCondition<T> extends Condition {
   boolean caseSensitive();
 
   /**
-   * A builder for {@link ColumnCondition}.
+   * Creates {@link ColumnCondition}s.
    * @param <T> the attribute value type
    */
-  interface Builder<T> {
+  interface Factory<T> {
 
     /**
      * Returns a 'equalTo' {@link ColumnCondition} or 'isNull' in case the value is null.

@@ -13,9 +13,9 @@ import java.util.Collection;
 public interface ForeignKeyCondition extends Condition {
 
   /**
-   * Builds a ForeignKey based condition.
+   * Creates {@link ForeignKeyCondition}s.
    */
-  interface Builder {
+  interface Factory {
 
     /**
      * Returns a 'equalTo' {@link Condition} or 'isNull' in case the value is null.

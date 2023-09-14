@@ -107,7 +107,7 @@ public interface Condition {
       Map<Column<?>, Object> valueMap = new HashMap<>();
       key.columns().forEach(column -> valueMap.put(column, key.get(column)));
 
-      return DefaultForeignKeyConditionBuilder.compositeEqualCondition(columnMap, EQUAL, valueMap);
+      return DefaultForeignKeyConditionFactory.compositeEqualCondition(columnMap, EQUAL, valueMap);
     }
 
     return key.column().equalTo(key.get());
@@ -140,7 +140,7 @@ public interface Condition {
         valueMaps.add(valueMap);
       });
 
-      return DefaultForeignKeyConditionBuilder.compositeKeyCondition(columnMap, EQUAL, valueMaps);
+      return DefaultForeignKeyConditionFactory.compositeKeyCondition(columnMap, EQUAL, valueMaps);
     }
 
     return firstKey.column().in(Entity.values(keys));

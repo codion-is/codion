@@ -118,132 +118,132 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
 
   @Override
   public ColumnCondition<T> equalTo(T value) {
-    return new DefaultColumnConditionBuilder<>(this).equalTo(value);
+    return new DefaultColumnConditionFactory<>(this).equalTo(value);
   }
 
   @Override
   public ColumnCondition<T> notEqualTo(T value) {
-    return new DefaultColumnConditionBuilder<>(this).notEqualTo(value);
+    return new DefaultColumnConditionFactory<>(this).notEqualTo(value);
   }
 
   @Override
   public ColumnCondition<String> equalToIgnoreCase(String value) {
-    return new DefaultColumnConditionBuilder<>(this).equalToIgnoreCase(value);
+    return new DefaultColumnConditionFactory<>(this).equalToIgnoreCase(value);
   }
 
   @Override
   public ColumnCondition<String> notEqualToIgnoreCase(String value) {
-    return new DefaultColumnConditionBuilder<>(this).notEqualToIgnoreCase(value);
+    return new DefaultColumnConditionFactory<>(this).notEqualToIgnoreCase(value);
   }
 
   @Override
   public ColumnCondition<String> like(String value) {
-    return new DefaultColumnConditionBuilder<>(this).like(value);
+    return new DefaultColumnConditionFactory<>(this).like(value);
   }
 
   @Override
   public ColumnCondition<String> notLike(String value) {
-    return new DefaultColumnConditionBuilder<>(this).notLike(value);
+    return new DefaultColumnConditionFactory<>(this).notLike(value);
   }
 
   @Override
   public ColumnCondition<String> likeIgnoreCase(String value) {
-    return new DefaultColumnConditionBuilder<>(this).likeIgnoreCase(value);
+    return new DefaultColumnConditionFactory<>(this).likeIgnoreCase(value);
   }
 
   @Override
   public ColumnCondition<String> notLikeIgnoreCase(String value) {
-    return new DefaultColumnConditionBuilder<>(this).notLikeIgnoreCase(value);
+    return new DefaultColumnConditionFactory<>(this).notLikeIgnoreCase(value);
   }
 
   @Override
   public ColumnCondition<T> in(T... values) {
-    return new DefaultColumnConditionBuilder<>(this).in(values);
+    return new DefaultColumnConditionFactory<>(this).in(values);
   }
 
   @Override
   public ColumnCondition<T> notIn(T... values) {
-    return new DefaultColumnConditionBuilder<>(this).notIn(values);
+    return new DefaultColumnConditionFactory<>(this).notIn(values);
   }
 
   @Override
   public ColumnCondition<T> in(Collection<? extends T> values) {
-    return new DefaultColumnConditionBuilder<>(this).in(values);
+    return new DefaultColumnConditionFactory<>(this).in(values);
   }
 
   @Override
   public ColumnCondition<T> notIn(Collection<? extends T> values) {
-    return new DefaultColumnConditionBuilder<>(this).notIn(values);
+    return new DefaultColumnConditionFactory<>(this).notIn(values);
   }
 
   @Override
   public ColumnCondition<String> inIgnoreCase(String... values) {
-    return new DefaultColumnConditionBuilder<>(this).inIgnoreCase(values);
+    return new DefaultColumnConditionFactory<>(this).inIgnoreCase(values);
   }
 
   @Override
   public ColumnCondition<String> notInIgnoreCase(String... values) {
-    return new DefaultColumnConditionBuilder<>(this).notInIgnoreCase(values);
+    return new DefaultColumnConditionFactory<>(this).notInIgnoreCase(values);
   }
 
   @Override
   public ColumnCondition<String> inIgnoreCase(Collection<String> values) {
-    return new DefaultColumnConditionBuilder<>(this).inIgnoreCase(values);
+    return new DefaultColumnConditionFactory<>(this).inIgnoreCase(values);
   }
 
   @Override
   public ColumnCondition<String> notInIgnoreCase(Collection<String> values) {
-    return new DefaultColumnConditionBuilder<>(this).notInIgnoreCase(values);
+    return new DefaultColumnConditionFactory<>(this).notInIgnoreCase(values);
   }
 
   @Override
   public ColumnCondition<T> lessThan(T value) {
-    return new DefaultColumnConditionBuilder<>(this).lessThan(value);
+    return new DefaultColumnConditionFactory<>(this).lessThan(value);
   }
 
   @Override
   public ColumnCondition<T> lessThanOrEqualTo(T value) {
-    return new DefaultColumnConditionBuilder<>(this).lessThanOrEqualTo(value);
+    return new DefaultColumnConditionFactory<>(this).lessThanOrEqualTo(value);
   }
 
   @Override
   public ColumnCondition<T> greaterThan(T value) {
-    return new DefaultColumnConditionBuilder<>(this).greaterThan(value);
+    return new DefaultColumnConditionFactory<>(this).greaterThan(value);
   }
 
   @Override
   public ColumnCondition<T> greaterThanOrEqualTo(T value) {
-    return new DefaultColumnConditionBuilder<>(this).greaterThanOrEqualTo(value);
+    return new DefaultColumnConditionFactory<>(this).greaterThanOrEqualTo(value);
   }
 
   @Override
   public ColumnCondition<T> betweenExclusive(T lowerBound, T upperBound) {
-    return new DefaultColumnConditionBuilder<>(this).betweenExclusive(lowerBound, upperBound);
+    return new DefaultColumnConditionFactory<>(this).betweenExclusive(lowerBound, upperBound);
   }
 
   @Override
   public ColumnCondition<T> between(T lowerBound, T upperBound) {
-    return new DefaultColumnConditionBuilder<>(this).between(lowerBound, upperBound);
+    return new DefaultColumnConditionFactory<>(this).between(lowerBound, upperBound);
   }
 
   @Override
   public ColumnCondition<T> notBetweenExclusive(T lowerBound, T upperBound) {
-    return new DefaultColumnConditionBuilder<>(this).notBetweenExclusive(lowerBound, upperBound);
+    return new DefaultColumnConditionFactory<>(this).notBetweenExclusive(lowerBound, upperBound);
   }
 
   @Override
   public ColumnCondition<T> notBetween(T lowerBound, T upperBound) {
-    return new DefaultColumnConditionBuilder<>(this).notBetween(lowerBound, upperBound);
+    return new DefaultColumnConditionFactory<>(this).notBetween(lowerBound, upperBound);
   }
 
   @Override
   public ColumnCondition<T> isNull() {
-    return new DefaultColumnConditionBuilder<>(this).isNull();
+    return new DefaultColumnConditionFactory<>(this).isNull();
   }
 
   @Override
   public ColumnCondition<T> isNotNull() {
-    return new DefaultColumnConditionBuilder<>(this).isNotNull();
+    return new DefaultColumnConditionFactory<>(this).isNotNull();
   }
 
   private static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {

@@ -13,7 +13,7 @@ import java.sql.Statement;
  * An {@link Attribute} representing a table column.
  * @param <T> the column value type
  */
-public interface Column<T> extends Attribute<T>, ColumnCondition.Builder<T> {
+public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance.

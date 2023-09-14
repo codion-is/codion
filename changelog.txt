@@ -9558,3 +9558,4 @@
   Condition moved from db.condition to domain.entity.attribute package
   Column implements ColumnCondition.Builder
   ForeignKey implements ForeignKeyCondition.Builder
+  ColumnCondition.Builder and ForeignKeyCondition.Builder renamed Factory
