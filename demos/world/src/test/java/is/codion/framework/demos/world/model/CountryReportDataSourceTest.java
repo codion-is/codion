@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,8 +50,8 @@ public final class CountryReportDataSourceTest {
 
       EntityConnection connection = connectionProvider.connection();
       List<Entity> countries =
-              connection.select(Select.where(column(Country.NAME)
-                      .in("Denmark", "Iceland"))
+              connection.select(Select.where(Country.NAME
+                              .in("Denmark", "Iceland"))
                       .orderBy(ascending(Country.NAME))
                       .build());
       CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries, connection, progressReporter);

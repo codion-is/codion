@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.db.condition.Condition.column;
-import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
@@ -448,7 +446,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public Collection<Entity> execute(EntityConnection connection,
                                       Collection<Long> invoiceIds) throws DatabaseException {
       return connection.updateSelect(Entity.castTo(Invoice.class,
-                      connection.select(where(column(Invoice.ID).in(invoiceIds))
+                      connection.select(where(Invoice.ID.in(invoiceIds))
                               .forUpdate()
                               .fetchDepth(0)
                               .build()))
@@ -506,7 +504,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     private static List<Long> randomTrackIds(EntityConnection connection, int noOfTracks,
                                              Collection<Entity> genres) throws DatabaseException {
       return connection.select(Track.ID,
-              where(foreignKey(Track.GENRE_FK).in(genres))
+              where(Track.GENRE_FK.in(genres))
                       .orderBy(ascending(Track.RANDOM))
                       .limit(noOfTracks)
                       .build());
@@ -519,7 +517,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public Collection<Entity> execute(EntityConnection entityConnection,
                                       RaisePriceParameters parameters) throws DatabaseException {
       Select select =
-              where(column(Track.ID).in(parameters.trackIds()))
+              where(Track.ID.in(parameters.trackIds()))
                       .forUpdate()
                       .build();
 

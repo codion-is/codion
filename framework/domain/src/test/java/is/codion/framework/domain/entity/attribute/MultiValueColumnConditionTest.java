@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.Operator;
-import is.codion.framework.db.TestDomain;
-import is.codion.framework.db.TestDomain.Employee;
+import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.entity.EntityDefinition;
 
 import org.junit.jupiter.api.Test;

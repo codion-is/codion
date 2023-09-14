@@ -126,7 +126,7 @@ public final class EntitySerializerTest {
 
   private static DefaultEntity createTestEntity(int id) {
     Entity department = ENTITIES.builder(TestDomain.Department.TYPE)
-            .with(TestDomain.Department.NO, 2)
+            .with(TestDomain.Department.ID, 2)
             .with(TestDomain.Department.NAME, "Dept")
             .build()
             .immutable();

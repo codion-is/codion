@@ -117,27 +117,27 @@ public final class DefaultKeyTest {
     assertEquals(detailKey2, detailKey);
 
     Entity department1 = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     Entity department2 = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
 
     assertEquals(department1.primaryKey(), department2.primaryKey());
 
-    department2.put(Department.NO, 2);
+    department2.put(Department.ID, 2);
     assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-    department1.put(Department.NO, null);
+    department1.put(Department.ID, null);
     assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-    department2.put(Department.NO, null);
+    department2.put(Department.ID, null);
     assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-    department1.remove(Department.NO);
+    department1.remove(Department.ID);
     assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-    department2.remove(Department.NO);
+    department2.remove(Department.ID);
     assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
     Entity.Key departmentKey = ENTITIES.primaryKey(Department.TYPE, 42);

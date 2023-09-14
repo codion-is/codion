@@ -7,12 +7,12 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -138,7 +137,7 @@ public final class EntityComboBoxModelTest {
   @Test
   void setForeignKeyFilterEntities() throws Exception {
     comboBoxModel.refresh();
-    Entity blake = comboBoxModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("BLAKE"));
+    Entity blake = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
     comboBoxModel.setForeignKeyFilterKeys(Employee.MGR_FK, singletonList(blake.primaryKey()));
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -146,7 +145,7 @@ public final class EntityComboBoxModelTest {
       assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
     }
 
-    Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(column(Department.NAME).equalTo("SALES"));
+    Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -155,7 +154,7 @@ public final class EntityComboBoxModelTest {
       assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
     }
 
-    Entity accounting = comboBoxModel.connectionProvider().connection().selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
+    Entity accounting = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
     EntityComboBoxModel deptComboBoxModel = comboBoxModel.createForeignKeyFilterComboBoxModel(Employee.DEPARTMENT_FK);
     deptComboBoxModel.setSelectedItem(accounting);
     assertEquals(3, comboBoxModel.getSize());
@@ -190,7 +189,7 @@ public final class EntityComboBoxModelTest {
   @Test
   void setSelectedEntityByKey() throws DatabaseException {
     comboBoxModel.refresh();
-    Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("CLARK"));
+    Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
     comboBoxModel.selectByKey(clark.primaryKey());
     assertEquals(clark, comboBoxModel.selectedValue());
     comboBoxModel.setSelectedItem(null);
@@ -271,7 +270,7 @@ public final class EntityComboBoxModelTest {
     assertTrue(comboBoxModel.getSize() > 0);
     assertFalse(comboBoxModel.isCleared());
 
-    Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("CLARK"));
+    Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
     comboBoxModel.setSelectedItem(clark);
     assertEquals(clark, comboBoxModel.selectedValue());
 

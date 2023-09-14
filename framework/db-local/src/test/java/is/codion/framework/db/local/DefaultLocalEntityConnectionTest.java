@@ -18,12 +18,12 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,10 +47,10 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
 
-import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.descending;
+import static is.codion.framework.domain.entity.attribute.Condition.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -116,8 +116,8 @@ public class DefaultLocalEntityConnectionTest {
     try {
       //scott, james, adams
       assertEquals(3, connection.delete(and(
-              column(Employee.NAME).like("%S%"),
-              column(Employee.JOB).equalTo("CLERK"))));
+              Employee.NAME.like("%S%"),
+              Employee.JOB.equalTo("CLERK"))));
     }
     finally {
       connection.rollbackTransaction();
@@ -149,7 +149,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateUniqueConstraint() throws DatabaseException {
-    Entity department = connection.selectSingle(column(Department.DEPTNO).equalTo(20));
+    Entity department = connection.selectSingle(Department.DEPTNO.equalTo(20));
     department.put(Department.DNAME, "SALES");
     assertThrows(UniqueConstraintException.class, () -> connection.update(department));
   }
@@ -180,21 +180,21 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateNoParentKey() throws DatabaseException {
-    Entity emp = connection.selectSingle(column(Employee.ID).equalTo(3));
+    Entity emp = connection.selectSingle(Employee.ID.equalTo(3));
     emp.put(Employee.DEPARTMENT, -1010);//not available
     assertThrows(ReferentialIntegrityException.class, () -> connection.update(emp));
   }
 
   @Test
   void deleteByKeyWithForeignKeys() throws DatabaseException {
-    Entity accounting = connection.selectSingle(column(Department.DNAME).equalTo("ACCOUNTING"));
+    Entity accounting = connection.selectSingle(Department.DNAME.equalTo("ACCOUNTING"));
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(accounting.primaryKey()));
   }
 
   @Test
   void deleteByConditionWithForeignKeys() {
     assertThrows(ReferentialIntegrityException.class, () ->
-            connection.delete(column(Department.DNAME).equalTo("ACCOUNTING")));
+            connection.delete(Department.DNAME.equalTo("ACCOUNTING")));
   }
 
   @Test
@@ -208,25 +208,25 @@ public class DefaultLocalEntityConnectionTest {
   void dependencies() throws Exception {
     Map<EntityType, Collection<Entity>> empty = connection.dependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
-    List<Entity> accounting = connection.select(column(Department.DNAME).equalTo("ACCOUNTING"));
+    List<Entity> accounting = connection.select(Department.DNAME.equalTo("ACCOUNTING"));
     Map<EntityType, Collection<Entity>> emps = connection.dependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(Employee.TYPE));
     assertEquals(7, emps.get(Employee.TYPE).size());
     emps.get(Employee.TYPE).forEach(entity -> assertTrue(entity.isImmutable()));
 
-    Entity emp = connection.selectSingle(column(Employee.NAME).equalTo("KING"));
+    Entity emp = connection.selectSingle(Employee.NAME.equalTo("KING"));
     Map<EntityType, Collection<Entity>> deps = connection.dependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
 
     //multiple foreign keys referencing the same entity
-    Entity master1 = connection.selectSingle(column(Master.ID).equalTo(1));
-    Entity master2 = connection.selectSingle(column(Master.ID).equalTo(2));
-    Entity master3 = connection.selectSingle(column(Master.ID).equalTo(3));
-    Entity master4 = connection.selectSingle(column(Master.ID).equalTo(4));
+    Entity master1 = connection.selectSingle(Master.ID.equalTo(1));
+    Entity master2 = connection.selectSingle(Master.ID.equalTo(2));
+    Entity master3 = connection.selectSingle(Master.ID.equalTo(3));
+    Entity master4 = connection.selectSingle(Master.ID.equalTo(4));
 
-    Entity detail1 = connection.selectSingle(column(Detail.ID).equalTo(1));
-    Entity detail2 = connection.selectSingle(column(Detail.ID).equalTo(2));
+    Entity detail1 = connection.selectSingle(Detail.ID.equalTo(1));
+    Entity detail2 = connection.selectSingle(Detail.ID.equalTo(2));
 
     deps = connection.dependencies(singletonList(master1));
     Collection<Entity> dependantEntities = deps.get(Detail.TYPE);
@@ -261,7 +261,7 @@ public class DefaultLocalEntityConnectionTest {
     deps = connection.dependencies(singletonList(master4));
     assertFalse(deps.containsKey(Detail.TYPE));
 
-    Entity jones = connection.selectSingle(column(EmployeeFk.NAME).equalTo("JONES"));
+    Entity jones = connection.selectSingle(EmployeeFk.NAME.equalTo("JONES"));
     assertTrue(connection.dependencies(singletonList(jones)).isEmpty());//soft reference
 
     assertThrows(IllegalArgumentException.class, () -> connection.dependencies(Arrays.asList(master1, jones)));
@@ -291,7 +291,7 @@ public class DefaultLocalEntityConnectionTest {
   void select() throws Exception {
     Collection<Entity> result = connection.select(new ArrayList<>());
     assertTrue(result.isEmpty());
-    result = connection.select(column(Department.DEPTNO).in(10, 20));
+    result = connection.select(Department.DEPTNO.in(10, 20));
     assertEquals(2, result.size());
     result = connection.select(primaryKeys(result));
     assertEquals(2, result.size());
@@ -352,13 +352,13 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    assertEquals(4, connection.count(column(Employee.ID).in(asList(1, 2, 3, 4))));
-    assertEquals(0, connection.count(column(Employee.DEPARTMENT).isNull()));
-    assertEquals(0, connection.count(foreignKey(Employee.DEPARTMENT_FK).isNull()));
-    assertEquals(1, connection.count(column(Employee.MGR).isNull()));
-    assertEquals(1, connection.count(foreignKey(Employee.MGR_FK).isNull()));
+    assertEquals(4, connection.count(Employee.ID.in(asList(1, 2, 3, 4))));
+    assertEquals(0, connection.count(Employee.DEPARTMENT.isNull()));
+    assertEquals(0, connection.count(Employee.DEPARTMENT_FK.isNull()));
+    assertEquals(1, connection.count(Employee.MGR.isNull()));
+    assertEquals(1, connection.count(Employee.MGR_FK.isNull()));
 
-    assertFalse(connection.select(foreignKey(Employee.DEPARTMENT_FK).in(connection.select(column(Department.DEPTNO).equalTo(20)))).isEmpty());
+    assertFalse(connection.select(Employee.DEPARTMENT_FK.in(connection.select(Department.DEPTNO.equalTo(20)))).isEmpty());
   }
 
   @Test
@@ -388,7 +388,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void foreignKeyAttributes() throws DatabaseException {
-    List<Entity> emps = connection.select(Select.where(foreignKey(EmployeeFk.MGR_FK).isNotNull())
+    List<Entity> emps = connection.select(Select.where(EmployeeFk.MGR_FK.isNotNull())
             .fetchDepth(EmployeeFk.MGR_FK, 2)
             .build());
     for (Entity emp : emps) {
@@ -448,13 +448,13 @@ public class DefaultLocalEntityConnectionTest {
   void count() throws Exception {
     int rowCount = connection.count(all(Department.TYPE));
     assertEquals(4, rowCount);
-    Condition deptNoCondition = column(Department.DEPTNO).greaterThanOrEqualTo(30);
+    Condition deptNoCondition = Department.DEPTNO.greaterThanOrEqualTo(30);
     rowCount = connection.count(deptNoCondition);
     assertEquals(2, rowCount);
 
     rowCount = connection.count(all(EmpnoDeptno.TYPE));
     assertEquals(16, rowCount);
-    deptNoCondition = column(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30);
+    deptNoCondition = EmpnoDeptno.DEPTNO.greaterThanOrEqualTo(30);
     rowCount = connection.count(deptNoCondition);
     assertEquals(4, rowCount);
 
@@ -464,18 +464,18 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectSingle() throws Exception {
-    Entity sales = connection.selectSingle(column(Department.DNAME).equalTo("SALES"));
+    Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.select(sales.primaryKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.selectSingle(Condition.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
-    Entity king = connection.selectSingle(column(Employee.NAME).equalTo("KING"));
+    Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
     assertTrue(king.contains(Employee.MGR_FK));
     assertNull(king.get(Employee.MGR_FK));
 
-    king = connection.selectSingle(foreignKey(Employee.MGR_FK).isNull());
+    king = connection.selectSingle(Employee.MGR_FK.isNull());
     assertNull(king.get(Employee.MGR_FK));
   }
 
@@ -497,12 +497,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectSingleNotFound() {
-    assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(column(Department.DNAME).equalTo("NO_NAME")));
+    assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(Department.DNAME.equalTo("NO_NAME")));
   }
 
   @Test
   void selectSingleManyFound() {
-    assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(column(Employee.JOB).equalTo("MANAGER")));
+    assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(Employee.JOB.equalTo("MANAGER")));
   }
 
   @Test
@@ -521,7 +521,7 @@ public class DefaultLocalEntityConnectionTest {
   void updateNoModifiedValues() throws DatabaseException {
     connection.beginTransaction();
     try {
-      Entity department = connection.selectSingle(column(Department.DEPTNO).equalTo(10));
+      Entity department = connection.selectSingle(Department.DEPTNO.equalTo(10));
       assertThrows(DatabaseException.class, () -> connection.update(department));
     }
     finally {
@@ -531,7 +531,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void dateTime() throws DatabaseException {
-    Entity sales = connection.selectSingle(column(Department.DNAME).equalTo("SALES"));
+    Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
     final double salary = 1500;
 
     Entity emp = ENTITIES.builder(Employee.TYPE)
@@ -555,7 +555,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void insertWithNullValues() throws DatabaseException {
-    Entity sales = connection.selectSingle(column(Department.DNAME).equalTo("SALES"));
+    Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
     final String name = "Nobody";
     final double salary = 1500;
     final double defaultCommission = 200;
@@ -599,8 +599,8 @@ public class DefaultLocalEntityConnectionTest {
   void updateDifferentEntities() throws DatabaseException {
     connection.beginTransaction();
     try {
-      Entity sales = connection.selectSingle(column(Department.DNAME).equalTo("SALES"));
-      Entity king = connection.selectSingle(column(Employee.NAME).equalTo("KING"));
+      Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
+      Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
       final String newName = "New name";
       sales.put(Department.DNAME, newName);
       king.put(Employee.NAME, newName);
@@ -618,7 +618,7 @@ public class DefaultLocalEntityConnectionTest {
   void updateNonExisting() throws DatabaseException {
     //otherwise the optimistic locking triggers an error
     connection.setOptimisticLockingEnabled(false);
-    Entity employee = connection.selectSingle(column(Employee.ID).equalTo(4));
+    Entity employee = connection.selectSingle(Employee.ID.equalTo(4));
     employee.put(Employee.ID, -888);//non existing
     employee.save();
     employee.put(Employee.NAME, "New name");
@@ -632,7 +632,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateNonUpdatable() {
-    assertThrows(UpdateException.class, () -> connection.update(Update.where(column(Employee.ID).equalTo(1))
+    assertThrows(UpdateException.class, () -> connection.update(Update.where(Employee.ID.equalTo(1))
             .set(Employee.ID, 999)
             .build()));
   }
@@ -645,11 +645,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithCondition() throws DatabaseException {
-    Condition condition = column(Employee.COMMISSION).isNull();
+    Condition condition = Employee.COMMISSION.isNull();
 
     List<Entity> entities = connection.select(condition);
 
-    Update update = Update.where(column(Employee.COMMISSION).isNull())
+    Update update = Update.where(Employee.COMMISSION.isNull())
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();
@@ -670,7 +670,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithConditionNoRows() throws DatabaseException {
-    Update update = Update.where(column(Employee.ID).isNull())
+    Update update = Update.where(Employee.ID.isNull())
             .set(Employee.SALARY, 4200d)
             .build();
     connection.beginTransaction();
@@ -695,7 +695,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals("RESEARCH", result.get(2));
     assertEquals("SALES", result.get(3));
 
-    result = connection.select(Department.DNAME, column(Department.DEPTNO).equalTo(10));
+    result = connection.select(Department.DNAME, Department.DEPTNO.equalTo(10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
@@ -713,7 +713,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void selectValuesIncorrectAttribute() {
     assertThrows(IllegalArgumentException.class, () -> connection.select(Department.DNAME,
-            column(Employee.ID).equalTo(1)));
+            Employee.ID.equalTo(1)));
   }
 
   @Test
@@ -732,7 +732,7 @@ public class DefaultLocalEntityConnectionTest {
     LocalEntityConnection connection2 = createConnection();
     String originalLocation;
     try {
-      Select select = Select.where(column(Department.DNAME).equalTo("SALES")).forUpdate().build();
+      Select select = Select.where(Department.DNAME.equalTo("SALES")).forUpdate().build();
 
       Entity sales = connection.selectSingle(select);
       originalLocation = sales.get(Department.LOC);
@@ -770,7 +770,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLockingEnabled(true);
     Entity allen;
     try {
-      Condition condition = column(Employee.NAME).equalTo("ALLEN");
+      Condition condition = Employee.NAME.equalTo("ALLEN");
 
       allen = connection.selectSingle(condition);
 
@@ -808,7 +808,7 @@ public class DefaultLocalEntityConnectionTest {
     String oldLocation = null;
     Entity updatedDepartment = null;
     try {
-      Entity department = baseConnection.selectSingle(column(Department.DNAME).equalTo("SALES"));
+      Entity department = baseConnection.selectSingle(Department.DNAME.equalTo("SALES"));
       oldLocation = department.put(Department.LOC, "NEWLOC");
       updatedDepartment = baseConnection.updateSelect(department);
       try {
@@ -846,7 +846,7 @@ public class DefaultLocalEntityConnectionTest {
       byte[] bytes = new byte[1024];
       random.nextBytes(bytes);
 
-      Entity employee = baseConnection.selectSingle(column(Employee.NAME).equalTo("BLAKE"));
+      Entity employee = baseConnection.selectSingle(Employee.NAME.equalTo("BLAKE"));
       employee.put(Employee.DATA, bytes);
       updatedEmployee = baseConnection.updateSelect(employee);
 
@@ -909,7 +909,7 @@ public class DefaultLocalEntityConnectionTest {
          ResultIterator<Entity> deptIterator = connection.iterator(all(Department.TYPE))) {
       while (deptIterator.hasNext()) {
         try (ResultIterator<Entity> empIterator =
-                     connection.iterator(foreignKey(Employee.DEPARTMENT_FK).equalTo(deptIterator.next()))) {
+                     connection.iterator(Employee.DEPARTMENT_FK.equalTo(deptIterator.next()))) {
           while (empIterator.hasNext()) {
             empIterator.next();
           }
@@ -966,7 +966,7 @@ public class DefaultLocalEntityConnectionTest {
     random.nextBytes(lazyBytes);
     random.nextBytes(bytes);
 
-    Entity scott = connection.selectSingle(column(Employee.ID).equalTo(7));
+    Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
     connection.writeBlob(scott.primaryKey(), Employee.DATA_LAZY, lazyBytes);
     connection.writeBlob(scott.primaryKey(), Employee.DATA, bytes);
     assertArrayEquals(lazyBytes, connection.readBlob(scott.primaryKey(), Employee.DATA_LAZY));
@@ -992,7 +992,7 @@ public class DefaultLocalEntityConnectionTest {
     random.nextBytes(lazyBytes);
     random.nextBytes(bytes);
 
-    Entity scott = connection.selectSingle(column(Employee.ID).equalTo(7));
+    Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
     scott.put(Employee.DATA_LAZY, lazyBytes);
     scott.put(Employee.DATA, bytes);
     connection.update(scott);
@@ -1051,8 +1051,8 @@ public class DefaultLocalEntityConnectionTest {
     List<Entity> entities = connection.select(all(NoPrimaryKey.TYPE));
     assertEquals(6, entities.size());
     entities = connection.select(or(
-            column(NoPrimaryKey.COL_1).equalTo(2),
-            column(NoPrimaryKey.COL_3).equalTo("5")));
+            NoPrimaryKey.COL_1.equalTo(2),
+            NoPrimaryKey.COL_3.equalTo("5")));
     assertEquals(4, entities.size());
   }
 
@@ -1110,48 +1110,48 @@ public class DefaultLocalEntityConnectionTest {
     connection.setQueryCacheEnabled(true);
     assertTrue(connection.isQueryCacheEnabled());
 
-    List<Entity> result = connection.select(column(Department.DEPTNO)
+    List<Entity> result = connection.select(Department.DEPTNO
             .greaterThanOrEqualTo(20));
-    List<Entity> result2 = connection.select(column(Department.DEPTNO).greaterThanOrEqualTo(20));
+    List<Entity> result2 = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
     assertSame(result, result2);
 
-    result2 = connection.select(Select.where(column(Department.DEPTNO)
+    result2 = connection.select(Select.where(Department.DEPTNO
                     .greaterThanOrEqualTo(20))
             .orderBy(descending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
-    result = connection.select(Select.where(column(Department.DEPTNO)
+    result = connection.select(Select.where(Department.DEPTNO
                     .greaterThanOrEqualTo(20))
             .orderBy(descending(Department.DEPTNO))
             .build());
     assertSame(result, result2);
 
-    result2 = connection.select(Select.where(column(Department.DEPTNO)
+    result2 = connection.select(Select.where(Department.DEPTNO
                     .greaterThanOrEqualTo(20))
             .orderBy(OrderBy.ascending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
-    result = connection.select(Select.where(column(Department.DEPTNO)
+    result = connection.select(Select.where(Department.DEPTNO
                     .greaterThanOrEqualTo(20))
             .forUpdate()
             .build());
-    result2 = connection.select(Select.where(column(Department.DEPTNO)
+    result2 = connection.select(Select.where(Department.DEPTNO
                     .greaterThanOrEqualTo(20))
             .forUpdate()
             .build());
     assertNotSame(result, result2);
 
-    result = connection.select(column(Department.DEPTNO).equalTo(20));
-    result2 = connection.select(column(Department.DEPTNO).equalTo(20));
+    result = connection.select(Department.DEPTNO.equalTo(20));
+    result2 = connection.select(Department.DEPTNO.equalTo(20));
     assertSame(result, result2);
 
     connection.setQueryCacheEnabled(false);
     assertFalse(connection.isQueryCacheEnabled());
 
-    result = connection.select(column(Department.DEPTNO).greaterThanOrEqualTo(20));
-    result2 = connection.select(column(Department.DEPTNO).greaterThanOrEqualTo(20));
+    result = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
+    result2 = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
     assertNotSame(result, result2);
   }
 
@@ -1204,19 +1204,19 @@ public class DefaultLocalEntityConnectionTest {
       assertTrue(connection1.isTransactionOpen());
       assertFalse(connection2.isTransactionOpen());
       connection1.insert(department);
-      assertTrue(connection2.select(column(Department.DEPTNO).equalTo(-42)).isEmpty());
+      assertTrue(connection2.select(Department.DEPTNO.equalTo(-42)).isEmpty());
       connection1.commitTransaction();
       assertThrows(IllegalStateException.class, connection1::rollbackTransaction);
       assertThrows(IllegalStateException.class, connection1::commitTransaction);
       assertFalse(connection1.isTransactionOpen());
-      assertFalse(connection2.select(column(Department.DEPTNO).equalTo(-42)).isEmpty());
+      assertFalse(connection2.select(Department.DEPTNO.equalTo(-42)).isEmpty());
       connection2.beginTransaction();
       assertTrue(connection2.isTransactionOpen());
       assertFalse(connection1.isTransactionOpen());
       connection2.delete(department.primaryKey());
-      assertFalse(connection1.select(column(Department.DEPTNO).equalTo(-42)).isEmpty());
+      assertFalse(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
       connection2.commitTransaction();
-      assertTrue(connection1.select(column(Department.DEPTNO).equalTo(-42)).isEmpty());
+      assertTrue(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
     }
   }
 
@@ -1225,14 +1225,14 @@ public class DefaultLocalEntityConnectionTest {
     try (LocalEntityConnection connection = createConnection()) {
       connection.setLimitForeignKeyFetchDepth(false);
       assertFalse(connection.isLimitForeignKeyFetchDepth());
-      Entity employee = connection.selectSingle(column(Employee.ID).equalTo(10));
+      Entity employee = connection.selectSingle(Employee.ID.equalTo(10));
       Entity manager = employee.get(Employee.MGR_FK);
       assertNotNull(manager);
       Entity managersManager = manager.get(Employee.MGR_FK);
       assertNotNull(managersManager);
       connection.setLimitForeignKeyFetchDepth(true);
       assertTrue(connection.isLimitForeignKeyFetchDepth());
-      employee = connection.selectSingle(column(Employee.ID).equalTo(10));
+      employee = connection.selectSingle(Employee.ID.equalTo(10));
       manager = employee.get(Employee.MGR_FK);
       assertNotNull(manager);
       managersManager = manager.get(Employee.MGR_FK);

@@ -17,7 +17,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SearchValueLinkTest {
@@ -41,11 +40,11 @@ public class SearchValueLinkTest {
     componentValue.link(model.value(Employee.DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.component().model();
     assertEquals(0, searchModel.getSelectedEntities().size());
-    Entity department = model.connectionProvider().connection().selectSingle(column(Department.NAME).equalTo("SALES"));
+    Entity department = model.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
     model.put(Employee.DEPARTMENT_FK, department);
     assertEquals(searchModel.getSelectedEntities().size(), 1);
     assertEquals(searchModel.getSelectedEntities().iterator().next(), department);
-    department = model.connectionProvider().connection().selectSingle(column(Department.NAME).equalTo("OPERATIONS"));
+    department = model.connectionProvider().connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
     searchModel.setSelectedEntity(department);
     assertEquals(model.get(Employee.DEPARTMENT_FK), department);
   }

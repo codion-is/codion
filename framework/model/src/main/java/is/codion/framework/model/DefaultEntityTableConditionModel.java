@@ -10,14 +10,13 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.ColumnCondition;
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.ForeignKeyCondition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnCondition;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.ArrayList;
@@ -29,7 +28,8 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.domain.entity.attribute.Condition.all;
+import static is.codion.framework.domain.entity.attribute.Condition.combination;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -179,91 +179,88 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
     ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
     Collection<Entity> values = conditionModel.equalValues().get();
-    ForeignKeyCondition.Builder builder = foreignKey(foreignKey);
     switch (conditionModel.operator().get()) {
       case EQUAL:
-        return values.isEmpty() ? builder.isNull() : builder.in(values);
+        return values.isEmpty() ? foreignKey.isNull() : foreignKey.in(values);
       case NOT_EQUAL:
-        return values.isEmpty() ? builder.isNotNull() : builder.notIn(values);
+        return values.isEmpty() ? foreignKey.isNotNull() : foreignKey.notIn(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + conditionModel.operator().get() + " for foreign key condition");
     }
   }
 
   private static <T> ColumnCondition<T> columnCondition(ColumnConditionModel<?, T> conditionModel) {
-    ColumnCondition.Builder<T> builder = column((Column<T>) conditionModel.columnIdentifier());
+    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
     switch (conditionModel.operator().get()) {
       case EQUAL:
-        return equalCondition(conditionModel, builder);
+        return equalCondition(conditionModel, column);
       case NOT_EQUAL:
-        return notEqualCondition(conditionModel, builder);
+        return notEqualCondition(conditionModel, column);
       case LESS_THAN:
-        return builder.lessThan(conditionModel.getUpperBound());
+        return column.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:
-        return builder.lessThanOrEqualTo(conditionModel.getUpperBound());
+        return column.lessThanOrEqualTo(conditionModel.getUpperBound());
       case GREATER_THAN:
-        return builder.greaterThan(conditionModel.getLowerBound());
+        return column.greaterThan(conditionModel.getLowerBound());
       case GREATER_THAN_OR_EQUAL:
-        return builder.greaterThanOrEqualTo(conditionModel.getLowerBound());
+        return column.greaterThanOrEqualTo(conditionModel.getLowerBound());
       case BETWEEN_EXCLUSIVE:
-        return builder.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+        return column.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case BETWEEN:
-        return builder.between(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+        return column.between(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case NOT_BETWEEN_EXCLUSIVE:
-        return builder.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+        return column.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case NOT_BETWEEN:
-        return builder.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+        return column.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
     }
   }
 
   private static <T> ColumnCondition<T> equalCondition(ColumnConditionModel<?, T> conditionModel,
-                                                       ColumnCondition.Builder<T> builder) {
+                                                       Column<T> column) {
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
     if (equalToValues.isEmpty()) {
-      return builder.isNull();
+      return column.isNull();
     }
     if (column.isString() && equalToValues.size() == 1) {
-      return singleStringEqualCondition(conditionModel, builder, (String) equalToValues.iterator().next());
+      return singleStringEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
     }
 
-    return builder.in(equalToValues);
+    return column.in(equalToValues);
   }
 
   private static <T> ColumnCondition<T> notEqualCondition(ColumnConditionModel<?, T> conditionModel,
-                                                          ColumnCondition.Builder<T> builder) {
+                                                          Column<T> column) {
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
     if (equalToValues.isEmpty()) {
-      return builder.isNotNull();
+      return column.isNotNull();
     }
     if (column.isString() && equalToValues.size() == 1) {
-      return singleStringNotEqualCondition(conditionModel, builder, (String) equalToValues.iterator().next());
+      return singleStringNotEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
     }
 
-    return builder.notIn(equalToValues);
+    return column.notIn(equalToValues);
   }
 
   private static <T> ColumnCondition<T> singleStringEqualCondition(ColumnConditionModel<?, T> conditionModel,
-                                                                   ColumnCondition.Builder<T> builder, String value) {
+                                                                   Column<T> column, String value) {
     boolean caseSensitive = conditionModel.caseSensitive().get();
     if (containsWildcards(value)) {
-      return (ColumnCondition<T>) (caseSensitive ? builder.like(value) : builder.likeIgnoreCase(value));
+      return (ColumnCondition<T>) (caseSensitive ? column.like(value) : column.likeIgnoreCase(value));
     }
 
-    return caseSensitive ? builder.equalTo((T) value) : (ColumnCondition<T>) builder.equalToIgnoreCase(value);
+    return caseSensitive ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
   }
 
   private static <T> ColumnCondition<T> singleStringNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
-                                                                      ColumnCondition.Builder<T> builder, String value) {
+                                                                      Column<T> column, String value) {
     boolean caseSensitive = conditionModel.caseSensitive().get();
     if (containsWildcards(value)) {
-      return (ColumnCondition<T>) (caseSensitive ? builder.notLike(value) : builder.notLikeIgnoreCase(value));
+      return (ColumnCondition<T>) (caseSensitive ? column.notLike(value) : column.notLikeIgnoreCase(value));
     }
 
-    return caseSensitive ? builder.notEqualTo((T) value) : (ColumnCondition<T>) builder.notEqualToIgnoreCase(value);
+    return caseSensitive ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
   }
 
   private static boolean containsWildcards(String value) {

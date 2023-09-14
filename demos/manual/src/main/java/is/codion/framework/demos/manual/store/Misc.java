@@ -23,7 +23,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.util.Iterator;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.domain.entity.attribute.Condition.all;
 import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 
 public final class Misc {

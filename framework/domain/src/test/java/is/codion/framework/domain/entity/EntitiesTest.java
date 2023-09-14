@@ -134,7 +134,7 @@ public final class EntitiesTest {
   @Test
   void selectedAttributes() {
     List<Attribute<?>> attributes = new ArrayList<>();
-    attributes.add(TestDomain.Department.NO);
+    attributes.add(TestDomain.Department.ID);
     attributes.add(TestDomain.Department.NAME);
 
     EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
@@ -142,7 +142,7 @@ public final class EntitiesTest {
             .map(definition::attributeDefinition)
             .collect(toList());
     assertEquals(2, definitions.size());
-    assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.NO)));
+    assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.ID)));
     assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.NAME)));
   }
 
@@ -231,7 +231,7 @@ public final class EntitiesTest {
   @Test
   void attributes() {
     EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
-    AttributeDefinition<Integer> id = definition.columnDefinition(TestDomain.Department.NO);
+    AttributeDefinition<Integer> id = definition.columnDefinition(TestDomain.Department.ID);
     AttributeDefinition<String> location = definition.columnDefinition(TestDomain.Department.LOCATION);
     AttributeDefinition<String> name = definition.columnDefinition(TestDomain.Department.NAME);
     AttributeDefinition<Boolean> active = definition.columnDefinition(TestDomain.Department.ACTIVE);
@@ -423,12 +423,12 @@ public final class EntitiesTest {
   @Test
   void copyEntities() {
     Entity dept1 = entities.builder(TestDomain.Department.TYPE)
-            .with(TestDomain.Department.NO, 1)
+            .with(TestDomain.Department.ID, 1)
             .with(TestDomain.Department.LOCATION, "location")
             .with(TestDomain.Department.NAME, "name")
             .build();
     Entity dept2 = entities.builder(TestDomain.Department.TYPE)
-            .with(TestDomain.Department.NO, 2)
+            .with(TestDomain.Department.ID, 2)
             .with(TestDomain.Department.LOCATION, "location2")
             .with(TestDomain.Department.NAME, "name2")
             .build();
@@ -466,7 +466,7 @@ public final class EntitiesTest {
     final Boolean deptActive = true;
 
     Entity department = entities.builder(TestDomain.Department.TYPE)
-            .with(TestDomain.Department.NO, deptNo)
+            .with(TestDomain.Department.ID, deptNo)
             .with(TestDomain.Department.NAME, deptName)
             .with(TestDomain.Department.LOCATION, deptLocation)
             .with(TestDomain.Department.ACTIVE, deptActive)
@@ -483,9 +483,9 @@ public final class EntitiesTest {
     departmentBean.setDeptNo(42);
 
     assertFalse(department.get(TestDomain.Department.ACTIVE));
-    assertEquals(42, department.get(TestDomain.Department.NO));
+    assertEquals(42, department.get(TestDomain.Department.ID));
 
-    department.put(TestDomain.Department.NO, null);
+    department.put(TestDomain.Department.ID, null);
     assertEquals(0d, departmentBean.deptNo());
 
     departmentBean.setDeptNo(deptNo);

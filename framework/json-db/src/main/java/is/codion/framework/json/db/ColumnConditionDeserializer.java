@@ -4,9 +4,9 @@
 package is.codion.framework.json.db;
 
 import is.codion.common.Operator;
-import is.codion.framework.db.condition.ColumnCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnCondition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Objects.requireNonNull;
 
 final class ColumnConditionDeserializer implements Serializable {
@@ -40,86 +39,86 @@ final class ColumnConditionDeserializer implements Serializable {
     for (JsonNode valueNode : valuesNode) {
       values.add(entityObjectMapper.readValue(valueNode.toString(), columnDefinition.attribute().valueClass()));
     }
-    ColumnCondition.Builder<T> builder = column(columnDefinition.attribute());
+    Column<T> column = columnDefinition.attribute();
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
-        return equalColumnCondition(values, builder, caseSensitive);
+        return equalColumnCondition(values, column, caseSensitive);
       case NOT_EQUAL:
-        return notEqualColumnCondition(values, builder, caseSensitive);
+        return notEqualColumnCondition(values, column, caseSensitive);
       case LESS_THAN:
-        return builder.lessThan(values.get(0));
+        return column.lessThan(values.get(0));
       case LESS_THAN_OR_EQUAL:
-        return builder.lessThanOrEqualTo(values.get(0));
+        return column.lessThanOrEqualTo(values.get(0));
       case GREATER_THAN:
-        return builder.greaterThan(values.get(0));
+        return column.greaterThan(values.get(0));
       case GREATER_THAN_OR_EQUAL:
-        return builder.greaterThanOrEqualTo(values.get(0));
+        return column.greaterThanOrEqualTo(values.get(0));
       case BETWEEN_EXCLUSIVE:
-        return builder.betweenExclusive(values.get(0), values.get(1));
+        return column.betweenExclusive(values.get(0), values.get(1));
       case BETWEEN:
-        return builder.between(values.get(0), values.get(1));
+        return column.between(values.get(0), values.get(1));
       case NOT_BETWEEN_EXCLUSIVE:
-        return builder.notBetweenExclusive(values.get(0), values.get(1));
+        return column.notBetweenExclusive(values.get(0), values.get(1));
       case NOT_BETWEEN:
-        return builder.notBetween(values.get(0), values.get(1));
+        return column.notBetween(values.get(0), values.get(1));
       default:
         throw new IllegalArgumentException("Unknown operator: " + Operator.valueOf(conditionNode.get("operator").asText()));
     }
   }
 
-  private static <T> ColumnCondition<T> equalColumnCondition(List<T> values, ColumnCondition.Builder<T> builder,
+  private static <T> ColumnCondition<T> equalColumnCondition(List<T> values, Column<T> column,
                                                              boolean caseSensitive) {
     if (values.isEmpty()) {
-      return builder.isNull();
+      return column.isNull();
     }
     if (caseSensitive) {
-      return caseSensitiveEqualColumnCondition(values, builder);
+      return caseSensitiveEqualColumnCondition(values, column);
     }
 
-    return caseInsitiveEqualColumnCondition(values, builder);
+    return caseInsitiveEqualColumnCondition(values, column);
   }
 
-  private static <T> ColumnCondition<T> notEqualColumnCondition(List<T> values, ColumnCondition.Builder<T> builder,
+  private static <T> ColumnCondition<T> notEqualColumnCondition(List<T> values, Column<T> column,
                                                                 boolean caseSensitive) {
     if (values.isEmpty()) {
-      return builder.isNotNull();
+      return column.isNotNull();
     }
     if (caseSensitive) {
-      return caseSensitiveNotEqualColumnCondition(values, builder);
+      return caseSensitiveNotEqualColumnCondition(values, column);
     }
 
-    return caseInsensitiveNotEqualColumnCondition(values, builder);
+    return caseInsensitiveNotEqualColumnCondition(values, column);
   }
 
-  private static <T> ColumnCondition<T> caseSensitiveEqualColumnCondition(List<T> values, ColumnCondition.Builder<T> builder) {
+  private static <T> ColumnCondition<T> caseSensitiveEqualColumnCondition(List<T> values, Column<T> column) {
     if (values.size() == 1) {
-      return builder.equalTo(values.iterator().next());
+      return column.equalTo(values.iterator().next());
     }
 
-    return builder.in(values);
+    return column.in(values);
   }
 
-  private static <T> ColumnCondition<T> caseSensitiveNotEqualColumnCondition(List<T> values, ColumnCondition.Builder<T> builder) {
+  private static <T> ColumnCondition<T> caseSensitiveNotEqualColumnCondition(List<T> values, Column<T> column) {
     if (values.size() == 1) {
-      return builder.notEqualTo(values.iterator().next());
+      return column.notEqualTo(values.iterator().next());
     }
 
-    return builder.notIn(values);
+    return column.notIn(values);
   }
 
-  private static <T> ColumnCondition<T> caseInsitiveEqualColumnCondition(List<T> values, ColumnCondition.Builder<T> builder) {
+  private static <T> ColumnCondition<T> caseInsitiveEqualColumnCondition(List<T> values, Column<T> column) {
     if (values.size() == 1) {
-      return (ColumnCondition<T>) builder.equalToIgnoreCase((String) values.iterator().next());
+      return (ColumnCondition<T>) column.equalToIgnoreCase((String) values.iterator().next());
     }
 
-    return (ColumnCondition<T>) builder.inIgnoreCase((Collection<String>) values);
+    return (ColumnCondition<T>) column.inIgnoreCase((Collection<String>) values);
   }
 
-  private static <T> ColumnCondition<T> caseInsensitiveNotEqualColumnCondition(List<T> values, ColumnCondition.Builder<T> builder) {
+  private static <T> ColumnCondition<T> caseInsensitiveNotEqualColumnCondition(List<T> values, Column<T> column) {
     if (values.size() == 1) {
-      return (ColumnCondition<T>) builder.notEqualToIgnoreCase((String) values.iterator().next());
+      return (ColumnCondition<T>) column.notEqualToIgnoreCase((String) values.iterator().next());
     }
 
-    return (ColumnCondition<T>) builder.notInIgnoreCase((Collection<String>) values);
+    return (ColumnCondition<T>) column.notInIgnoreCase((Collection<String>) values);
   }
 }

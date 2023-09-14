@@ -14,7 +14,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {
@@ -41,7 +40,7 @@ public final class EntityEditPanelTest {
     editPanel.setActive(true);
     assertTrue(editPanel.isActive());
 
-    Entity martin = editModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("MARTIN"));
+    Entity martin = editModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
     editModel.setEntity(martin);
     assertFalse(editModel.isEntityNew());
     editPanel.clearAndRequestFocus();

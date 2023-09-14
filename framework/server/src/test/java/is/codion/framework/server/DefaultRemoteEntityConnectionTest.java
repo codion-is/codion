@@ -10,9 +10,9 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.server.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import java.lang.reflect.Proxy;
 import java.rmi.registry.Registry;
 import java.util.Collection;
 
-import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.domain.entity.attribute.Condition.all;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 

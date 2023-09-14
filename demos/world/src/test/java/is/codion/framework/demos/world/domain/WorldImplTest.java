@@ -17,8 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.column;
-
 public final class WorldImplTest extends EntityTestUnit {
 
   public WorldImplTest() {
@@ -42,7 +40,7 @@ public final class WorldImplTest extends EntityTestUnit {
 
   @Test
   void lookup() throws DatabaseException {
-    connection().selectSingle(column(Lookup.CITY_NAME).equalTo("Genova"));
+    connection().selectSingle(Lookup.CITY_NAME.equalTo("Genova"));
   }
 
   @Override

@@ -444,7 +444,7 @@ public class DefaultEntityTest {
   @Test
   void copyBuilder() {
     Entity dept = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.NAME, "Name")
             .with(Department.LOCATION, "Location")
             .with(Department.ACTIVE, true)
@@ -534,7 +534,7 @@ public class DefaultEntityTest {
   @Test
   void putValue() {
     Entity department = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, -10)
+            .with(Department.ID, -10)
             .build();
 
     Entity employee = ENTITIES.builder(Employee.TYPE)
@@ -609,7 +609,7 @@ public class DefaultEntityTest {
   @Test
   void foreignKeyValue() {
     Entity department = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, -10)
+            .with(Department.ID, -10)
             .build();
     Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.ID, -10)
@@ -644,7 +644,7 @@ public class DefaultEntityTest {
   @Test
   void removeValue() {
     Entity department = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, -10)
+            .with(Department.ID, -10)
             .build();
     Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.ID, -10)
@@ -721,7 +721,7 @@ public class DefaultEntityTest {
   @Test
   void foreignKeyModification() {
     Entity dept = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.NAME, "Name1")
             .build();
     Entity emp = ENTITIES.builder(Employee.TYPE)
@@ -735,7 +735,7 @@ public class DefaultEntityTest {
     assertEquals(Integer.valueOf(2), empDept.primaryKey().get());
 
     Entity dept2 = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 3)
+            .with(Department.ID, 3)
             .with(Department.NAME, "Name2")
             .build();
     emp.put(Employee.DEPARTMENT_FK, dept2);
@@ -896,12 +896,12 @@ public class DefaultEntityTest {
             .with(Employee.ID, 1)
             .with(Employee.NAME, "Name")
             .with(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
-                    .with(Department.NO, 42)
+                    .with(Department.ID, 42)
                     .with(Department.NAME, "Dept name")
                     .build())
             .build();
     employee.put(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 99)
+            .with(Department.ID, 99)
             .with(Department.NAME, "Another")
             .build());
 
@@ -909,23 +909,23 @@ public class DefaultEntityTest {
 
     assertSame(emp, emp.immutable());
 
-    assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.NO, 2));
+    assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.ID, 2));
     assertThrows(UnsupportedOperationException.class, emp::clearPrimaryKey);
-    assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.ID));
     assertThrows(UnsupportedOperationException.class, emp::save);
-    assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.ID));
     assertThrows(UnsupportedOperationException.class, emp::revert);
-    assertThrows(UnsupportedOperationException.class, () -> emp.remove(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> emp.remove(Department.ID));
     assertThrows(UnsupportedOperationException.class, () -> emp.set(emp));
 
     Entity dept = emp.get(Employee.DEPARTMENT_FK);
-    assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.NO, 2));
+    assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.ID, 2));
     assertThrows(UnsupportedOperationException.class, dept::clearPrimaryKey);
-    assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.ID));
     assertThrows(UnsupportedOperationException.class, dept::save);
-    assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.ID));
     assertThrows(UnsupportedOperationException.class, dept::revert);
-    assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.ID));
     assertThrows(UnsupportedOperationException.class, () -> dept.set(dept));
   }
 

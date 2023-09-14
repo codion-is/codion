@@ -31,7 +31,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,7 +85,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
-    Entity accounting = connectionProvider().connection().selectSingle(column(Department.ID).equalTo(10));
+    Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
     employeeTableModel.conditionModel().setEqualConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
     employeeTableModel.refresh();
     assertEquals(7, employeeTableModel.getRowCount());

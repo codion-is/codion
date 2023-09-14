@@ -4,9 +4,9 @@
 package is.codion.framework.json.db;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Condition.Combination;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.attribute.Condition.Combination;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

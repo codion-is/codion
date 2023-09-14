@@ -25,8 +25,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.domain.entity.attribute.Condition.all;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,7 +61,7 @@ public class RemoteEntityConnectionProviderTest {
     EntityConnection connection = provider.connection();
     connection.select(all(Department.TYPE));
 
-    assertThrows(DatabaseException.class, () -> connection.delete(column(Employee.NAME).equalTo("JONES")));
+    assertThrows(DatabaseException.class, () -> connection.delete(Employee.NAME.equalTo("JONES")));
 
     admin.shutdown();
 

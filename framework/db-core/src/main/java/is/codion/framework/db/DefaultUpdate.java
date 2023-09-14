@@ -4,8 +4,8 @@
 package is.codion.framework.db;
 
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;

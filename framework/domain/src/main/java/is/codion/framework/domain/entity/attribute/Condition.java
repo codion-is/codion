@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.ConditionProvider;
@@ -9,8 +9,6 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +29,6 @@ import static java.util.Objects.requireNonNull;
  * @see #all(EntityType)
  * @see #key(Entity.Key)
  * @see #keys(Collection)
- * @see #foreignKey(ForeignKey)
- * @see #column(Column)
  * @see #and(Condition...)
  * @see #and(Collection)
  * @see #or(Condition...)
@@ -114,7 +110,7 @@ public interface Condition {
       return DefaultForeignKeyConditionBuilder.compositeEqualCondition(columnMap, EQUAL, valueMap);
     }
 
-    return column(key.column()).equalTo(key.get());
+    return key.column().equalTo(key.get());
   }
 
   /**
@@ -147,28 +143,7 @@ public interface Condition {
       return DefaultForeignKeyConditionBuilder.compositeKeyCondition(columnMap, EQUAL, valueMaps);
     }
 
-    return column((Column<?>) firstKey.column()).in(Entity.values(keys));
-  }
-
-  /**
-   * Creates a {@link ForeignKeyCondition.Builder} instance based on the given foreign key.
-   * @param foreignKey the foreign key to base the condition on
-   * @return a {@link ForeignKeyCondition.Builder} instance
-   */
-  static ForeignKeyCondition.Builder foreignKey(ForeignKey foreignKey) {
-    return new DefaultForeignKeyConditionBuilder(foreignKey);
-  }
-
-  /**
-   * Creates a {@link ColumnCondition.Builder} instance based on the given column.
-   * @param column the column to base the condition on
-   * @param <T> the column type
-   * @return a {@link ColumnCondition.Builder} instance
-   * @throws IllegalArgumentException in case {@code column} is a {@link ForeignKey}.
-   * @see #foreignKey(ForeignKey)
-   */
-  static <T> ColumnCondition.Builder<T> column(Column<T> column) {
-    return new DefaultColumnConditionBuilder<>(column);
+    return firstKey.column().in(Entity.values(keys));
   }
 
   /**

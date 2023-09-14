@@ -5,23 +5,23 @@ package is.codion.framework.demos.chinook.manual;
 
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Condition;
 
 final class ConditionDemo {
 
   private static void condition() {
     // tag::condition[]
     Condition liveAlbums =
-            Condition.column(Album.TITLE).like("Live%");
+            Album.TITLE.like("Live%");
 
     Entity metallica = selectArtist("Metallica");
 
     Condition metallicaAlbums =
-            Condition.foreignKey(Album.ARTIST_FK).equalTo(metallica);
+            Album.ARTIST_FK.equalTo(metallica);
 
     Condition allArtistsCondition =
             Condition.all(Artist.TYPE);

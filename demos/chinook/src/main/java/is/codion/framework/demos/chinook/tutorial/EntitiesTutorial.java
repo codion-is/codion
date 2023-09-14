@@ -25,8 +25,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.column;
-import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
@@ -148,13 +146,13 @@ public final class EntitiesTutorial {
     // select the artist Metallica by name, the selectSingle() method
     // throws a RecordNotFoundException if no record is found and a
     // MultipleRecordsFoundException if more than one are found
-    Entity metallica = connection.selectSingle(column(Artist.NAME).equalTo("Metallica"));
+    Entity metallica = connection.selectSingle(Artist.NAME.equalTo("Metallica"));
 
     // select all albums by Metallica, by using select() with the
     // Metallica Entity as condition value, basically asking for the
     // records where the given foreign key references that specific Entity
     // select() returns an empty list if none are found
-    List<Entity> albums = connection.select(foreignKey(Album.ARTIST_FK).equalTo(metallica));
+    List<Entity> albums = connection.select(Album.ARTIST_FK.equalTo(metallica));
 
     albums.forEach(System.out::println);
 
@@ -162,7 +160,7 @@ public final class EntitiesTutorial {
     // a Select.Builder initialized with a condition specifying
     // the attribute we're searching by, the operator and value.
     Select selectArtists =
-            Select.where(column(Artist.NAME).like("An%"))
+            Select.where(Artist.NAME.like("An%"))
                     // and we set the order by clause
                     .orderBy(OrderBy.ascending(Artist.NAME))
                     .build();
@@ -173,7 +171,7 @@ public final class EntitiesTutorial {
 
     // create a select
     Select selectAlbums =
-            Select.where(foreignKey(Album.ARTIST_FK).in(artistsStartingWithAn))
+            Select.where(Album.ARTIST_FK.in(artistsStartingWithAn))
                     .orderBy(OrderBy.builder()
                             .ascending(Album.ARTIST_ID)
                             .descending(Album.TITLE)

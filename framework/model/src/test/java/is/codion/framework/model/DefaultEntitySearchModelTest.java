@@ -5,12 +5,12 @@ package is.codion.framework.model;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -194,7 +193,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.columnSearchSettings().get(Employee.JOB).caseSensitive().set(true);
     searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfix().set(true);
     searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfix().set(true);
-    searchModel.additionalConditionSupplier().set(() -> column(Employee.JOB).notEqualTo("MANAGER"));
+    searchModel.additionalConditionSupplier().set(() -> Employee.JOB.notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));

@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,6 +51,46 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   @Override
   public ForeignKeyDefinition.Builder foreignKey() {
     return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(this);
+  }
+
+  @Override
+  public Condition equalTo(Entity value) {
+    return new DefaultForeignKeyConditionBuilder(this).equalTo(value);
+  }
+
+  @Override
+  public Condition notEqualTo(Entity value) {
+    return new DefaultForeignKeyConditionBuilder(this).notEqualTo(value);
+  }
+
+  @Override
+  public Condition in(Entity... values) {
+    return new DefaultForeignKeyConditionBuilder(this).in(values);
+  }
+
+  @Override
+  public Condition notIn(Entity... values) {
+    return new DefaultForeignKeyConditionBuilder(this).notIn(values);
+  }
+
+  @Override
+  public Condition in(Collection<? extends Entity> values) {
+    return new DefaultForeignKeyConditionBuilder(this).in(values);
+  }
+
+  @Override
+  public Condition notIn(Collection<? extends Entity> values) {
+    return new DefaultForeignKeyConditionBuilder(this).notIn(values);
+  }
+
+  @Override
+  public Condition isNull() {
+    return new DefaultForeignKeyConditionBuilder(this).isNull();
+  }
+
+  @Override
+  public Condition isNotNull() {
+    return new DefaultForeignKeyConditionBuilder(this).isNotNull();
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {

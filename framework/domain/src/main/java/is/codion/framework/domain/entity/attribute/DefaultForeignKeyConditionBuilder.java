@@ -1,12 +1,10 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
 import java.util.Collection;
@@ -189,24 +187,24 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
   }
 
   private static ColumnCondition<Object> inCondition(Reference<?> reference, Operator operator, List<Object> values) {
-    ColumnCondition.Builder<Object> conditionBuilder = new DefaultColumnConditionBuilder<>((Column<Object>) reference.column());
+    Column<Object> column = (Column<Object>) reference.column();
     switch (operator) {
       case EQUAL:
-        return conditionBuilder.in(values);
+        return column.in(values);
       case NOT_EQUAL:
-        return conditionBuilder.notIn(values);
+        return column.notIn(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + operator);
     }
   }
 
   private static Condition equalCondition(Column<?> conditionColumn, Operator operator, Object value) {
-    ColumnCondition.Builder<Object> conditionBuilder = new DefaultColumnConditionBuilder<>((Column<Object>) conditionColumn);
+    Column<Object> column = (Column<Object>) conditionColumn;
     switch (operator) {
       case EQUAL:
-        return conditionBuilder.equalTo(value);
+        return column.equalTo(value);
       case NOT_EQUAL:
-        return conditionBuilder.notEqualTo(value);
+        return column.notEqualTo(value);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + operator);
     }

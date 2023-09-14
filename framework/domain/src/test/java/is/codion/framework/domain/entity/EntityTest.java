@@ -34,19 +34,19 @@ public final class EntityTest {
   @Test
   void equal() {
     Entity department1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
 
     Entity department2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
 
     assertFalse(Entity.valuesEqual(department1, department2,
-            Department.NO, Department.NAME, Department.LOCATION));
+            Department.ID, Department.NAME, Department.LOCATION));
     assertTrue(Entity.valuesEqual(department1, department2,
             Department.NAME, Department.LOCATION));
     department2.remove(Department.LOCATION);
@@ -69,7 +69,7 @@ public final class EntityTest {
     assertFalse(Entity.isKeyModified(emptyList()));
 
     Entity department = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
@@ -78,44 +78,44 @@ public final class EntityTest {
     department.put(Department.NAME, "new name");
     assertFalse(Entity.isKeyModified(singletonList(department)));
 
-    department.put(Department.NO, 2);
+    department.put(Department.ID, 2);
     assertTrue(Entity.isKeyModified(singletonList(department)));
 
-    department.revert(Department.NO);
+    department.revert(Department.ID);
     assertFalse(Entity.isKeyModified(singletonList(department)));
   }
 
   @Test
   void modifiedColumnAttributes() {
     Entity entity = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.LOCATION, "Location")
             .with(Department.NAME, "Name")
             .with(Department.ACTIVE, true)
             .build();
 
     Entity current = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.LOCATION, "Location")
             .with(Department.NAME, "Name")
             .build();
 
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NO));
+    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.ID));
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NAME));
 
-    current.put(Department.NO, 2);
+    current.put(Department.ID, 2);
     current.save();
-    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
-    assertEquals(Department.NO, Entity.modifiedColumnAttributes(current, entity).iterator().next());
-    Integer id = current.remove(Department.NO);
+    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.ID));
+    assertEquals(Department.ID, Entity.modifiedColumnAttributes(current, entity).iterator().next());
+    Integer id = current.remove(Department.ID);
     assertEquals(2, id);
     current.save();
-    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
-    assertEquals(Department.NO, Entity.modifiedColumnAttributes(current, entity).iterator().next());
-    current.put(Department.NO, 1);
+    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.ID));
+    assertEquals(Department.ID, Entity.modifiedColumnAttributes(current, entity).iterator().next());
+    current.put(Department.ID, 1);
     current.save();
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NO));
+    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.ID));
     assertTrue(Entity.modifiedColumnAttributes(current, entity).isEmpty());
 
     current.put(Department.LOCATION, "New location");
@@ -190,18 +190,18 @@ public final class EntityTest {
     List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       entityList.add(entities.builder(Department.TYPE)
-              .with(Department.NO, i == 5 ? null : i)
+              .with(Department.ID, i == 5 ? null : i)
               .build());
       if (i != 5) {
         values.add(i);
       }
     }
-    Collection<Integer> attributeValues = Entity.values(Department.NO, entityList);
+    Collection<Integer> attributeValues = Entity.values(Department.ID, entityList);
     assertTrue(attributeValues.containsAll(values));
-    assertTrue(Entity.values(Department.NO, emptyList()).isEmpty());
+    assertTrue(Entity.values(Department.ID, emptyList()).isEmpty());
 
     values.add(null);
-    attributeValues = Entity.valuesIncludingNull(Department.NO, entityList);
+    attributeValues = Entity.valuesIncludingNull(Department.ID, entityList);
     assertTrue(attributeValues.containsAll(values));
   }
 
@@ -211,25 +211,25 @@ public final class EntityTest {
     List<Object> values = new ArrayList<>();
 
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, null)
+            .with(Department.ID, null)
             .build());
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build());
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build());
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .build());
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, 3)
+            .with(Department.ID, 3)
             .build());
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, 3)
+            .with(Department.ID, 3)
             .build());
     entityList.add(entities.builder(Department.TYPE)
-            .with(Department.NO, 4)
+            .with(Department.ID, 4)
             .build());
 
     values.add(1);
@@ -237,27 +237,27 @@ public final class EntityTest {
     values.add(3);
     values.add(4);
 
-    Collection<Integer> attributeValues = Entity.distinct(Department.NO, entityList);
+    Collection<Integer> attributeValues = Entity.distinct(Department.ID, entityList);
     assertEquals(4, attributeValues.size());
     assertTrue(attributeValues.containsAll(values));
 
-    attributeValues = Entity.distinctIncludingNull(Department.NO, entityList);
+    attributeValues = Entity.distinctIncludingNull(Department.ID, entityList);
     assertEquals(5, attributeValues.size());
     values.add(null);
     assertTrue(attributeValues.containsAll(values));
 
-    assertEquals(0, Entity.distinctIncludingNull(Department.NO, new ArrayList<>()).size());
+    assertEquals(0, Entity.distinctIncludingNull(Department.ID, new ArrayList<>()).size());
   }
 
   @Test
   void modified() {
     Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.NAME, "name1")
             .with(Department.LOCATION, "loc1")
             .build();
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .with(Department.NAME, "name2")
             .with(Department.LOCATION, "loc2")
             .build();
@@ -269,13 +269,13 @@ public final class EntityTest {
   @Test
   void originalPrimaryKeys() {
     Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .build();
-    dept1.put(Department.NO, 3);
-    dept2.put(Department.NO, 4);
+    dept1.put(Department.ID, 3);
+    dept2.put(Department.ID, 4);
 
     Collection<Entity.Key> originalPrimaryKeys = Entity.originalPrimaryKeys(asList(dept1, dept2));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 1)));
@@ -285,10 +285,10 @@ public final class EntityTest {
   @Test
   void immutable() {
     Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .build();
     List<Entity> entityList = asList(dept1, dept2);
     Collection<Entity> immutables = Entity.immutable(entityList);
@@ -299,10 +299,10 @@ public final class EntityTest {
   @Test
   void copy() {
     Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .build();
     List<Entity> entityList = asList(dept1, dept2);
     Collection<Entity> copied = Entity.copy(entityList);
@@ -312,7 +312,7 @@ public final class EntityTest {
   @Test
   void mapToPrimaryKey() {
     Entity dept = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     Entity emp = entities.builder(Employee.TYPE)
             .with(Employee.ID, 3)
@@ -322,7 +322,7 @@ public final class EntityTest {
     assertEquals(emp, entityMap.get(emp.primaryKey()));
 
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     assertThrows(IllegalStateException.class, () -> Entity.mapToPrimaryKey(asList(dept, dept2, emp)));
   }
@@ -340,12 +340,12 @@ public final class EntityTest {
   @Test
   void valuesAsString() {
     Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .with(Department.NAME, "name1")
             .with(Department.LOCATION, "loc1")
             .build();
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .with(Department.NAME, "name2")
             .with(Department.LOCATION, "loc2")
             .build();
@@ -372,13 +372,13 @@ public final class EntityTest {
     collection.add(entities.entity(Department.TYPE));
     collection.add(entities.entity(Department.TYPE));
     collection.add(entities.entity(Department.TYPE));
-    Entity.put(Department.NO, 1, collection);
+    Entity.put(Department.ID, 1, collection);
     for (Entity entity : collection) {
-      assertEquals(Integer.valueOf(1), entity.get(Department.NO));
+      assertEquals(Integer.valueOf(1), entity.get(Department.ID));
     }
-    Entity.put(Department.NO, null, collection);
+    Entity.put(Department.ID, null, collection);
     for (Entity entity : collection) {
-      assertTrue(entity.isNull(Department.NO));
+      assertTrue(entity.isNull(Department.ID));
     }
   }
 
@@ -387,31 +387,31 @@ public final class EntityTest {
     List<Entity> entityList = new ArrayList<>();
 
     Entity entityOne = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     entityList.add(entityOne);
 
     Entity entityTwo = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     entityList.add(entityTwo);
 
     Entity entityThree = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .build();
     entityList.add(entityThree);
 
     Entity entityFour = entities.builder(Department.TYPE)
-            .with(Department.NO, 3)
+            .with(Department.ID, 3)
             .build();
     entityList.add(entityFour);
 
     Entity entityFive = entities.builder(Department.TYPE)
-            .with(Department.NO, 3)
+            .with(Department.ID, 3)
             .build();
     entityList.add(entityFive);
 
-    Map<Integer, List<Entity>> map = Entity.mapToValue(Department.NO, entityList);
+    Map<Integer, List<Entity>> map = Entity.mapToValue(Department.ID, entityList);
     Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
@@ -496,10 +496,10 @@ public final class EntityTest {
   @Test
   void referencedKeys() {
     Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NO, 1)
+            .with(Department.ID, 1)
             .build();
     Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.NO, 2)
+            .with(Department.ID, 2)
             .build();
 
     Entity emp1 = entities.builder(Employee.TYPE)

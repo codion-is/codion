@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Arrays.asList;
 
 public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookAppModel> {
@@ -35,7 +34,7 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
     PlaylistTableModel playlistTableModel = playlistModel.tableModel();
     playlistTableModel.refresh();
     List<Entity> playlistGenres = application.connectionProvider().connection()
-            .select(column(Genre.NAME).in(GENRES));
+            .select(Genre.NAME.in(GENRES));
     playlistTableModel.createRandomPlaylist(new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
             RANDOM.nextInt(20) + 25, playlistGenres));
     SwingEntityTableModel playlistTrackTableModel = playlistModel.detailModel(PlaylistTrack.TYPE).tableModel();

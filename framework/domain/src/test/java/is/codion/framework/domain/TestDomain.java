@@ -5,6 +5,7 @@ package is.codion.framework.domain;
 
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -39,6 +40,9 @@ public final class TestDomain extends DefaultDomain {
     compositeDetail();
     master();
     detail();
+    superEntity();
+    master2();
+    detail2();
     department();
     employee();
     keyTest();
@@ -86,6 +90,16 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3)));
   }
 
+  public interface Super {
+    EntityType TYPE = DOMAIN.entityType("db.super_entity");
+
+    Column<Integer> ID = TYPE.integerColumn("id");
+  }
+
+  void superEntity() {
+    add(Super.TYPE.define(Super.ID.primaryKey()));
+  }
+
   public interface Master extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
     Column<Long> ID = TYPE.longColumn("id");
@@ -109,6 +123,108 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true))
             .comparator(new MasterComparator())
             .stringFactory(Master.NAME));
+  }
+
+  public interface Master2 {
+    EntityType TYPE = DOMAIN.entityType("db.master_entity");
+
+    Column<Integer> ID_1 = TYPE.integerColumn("id");
+    Column<Integer> ID_2 = TYPE.integerColumn("id2");
+    Column<Integer> SUPER_ID = TYPE.integerColumn("super_id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<Integer> CODE = TYPE.integerColumn("code");
+
+    ForeignKey SUPER_FK = TYPE.foreignKey("super_fk", SUPER_ID, Super.ID);
+  }
+
+  void master2() {
+    add(Master2.TYPE.define(
+            Master2.ID_1.column().primaryKeyIndex(0),
+            Master2.ID_2.column().primaryKeyIndex(1),
+            Master2.SUPER_ID.column(),
+            Master2.SUPER_FK.foreignKey().caption("Super"),
+            Master2.NAME.column(),
+            Master2.CODE.column())
+            .comparator(Comparator.comparing(o -> o.get(Master2.CODE)))
+            .stringFactory(Master2.NAME));
+  }
+
+  public interface Detail2 {
+    EntityType TYPE = DOMAIN.entityType("db.detail_entity2");
+
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<Integer> INT = TYPE.integerColumn("int");
+    Column<Double> DOUBLE = TYPE.doubleColumn("double");
+    Column<String> STRING = TYPE.stringColumn("string");
+    Column<LocalDate> DATE = TYPE.localDateColumn("date");
+    Column<LocalDateTime> TIMESTAMP = TYPE.localDateTimeColumn("timestamp");
+    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+    Column<Boolean> BOOLEAN_NULLABLE = TYPE.booleanColumn("boolean_nullable");
+    Column<Integer> MASTER_ID_1 = TYPE.integerColumn("master_id");
+    Column<Integer> MASTER_ID_2 = TYPE.integerColumn("master_id_2");
+    Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
+    Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
+    Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
+    Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
+
+    ForeignKey MASTER_FK = TYPE.foreignKey("master_fk",
+            MASTER_ID_1, Master2.ID_1,
+            MASTER_ID_2, Master2.ID_2);
+    ForeignKey MASTER_VIA_CODE_FK = TYPE.foreignKey("master_via_code_fk", MASTER_CODE, Master2.CODE);
+  }
+
+  private static final EntityType DETAIL_SELECT_TABLE_NAME = DOMAIN.entityType("db.entity_test_select");
+
+  private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
+          item(2, "2"), item(3, "3"));
+
+  void detail2() {
+    add(Detail2.TYPE.define(
+            Detail2.ID.primaryKey(),
+            Detail2.INT.column()
+                    .caption(Detail2.INT.name()),
+            Detail2.DOUBLE.column()
+                    .caption(Detail2.DOUBLE.name()),
+            Detail2.STRING.column()
+                    .caption("Detail2 string"),
+            Detail2.DATE.column()
+                    .caption(Detail2.DATE.name()),
+            Detail2.TIMESTAMP.column()
+                    .caption(Detail2.TIMESTAMP.name()),
+            Detail2.BOOLEAN.column()
+                    .caption(Detail2.BOOLEAN.name())
+                    .nullable(false)
+                    .defaultValue(true)
+                    .description("A boolean column"),
+            Detail2.BOOLEAN_NULLABLE.column()
+                    .caption(Detail2.BOOLEAN_NULLABLE.name())
+                    .defaultValue(true),
+            Detail2.MASTER_ID_1.column(),
+            Detail2.MASTER_ID_2.column(),
+            Detail2.MASTER_FK.foreignKey()
+                    .caption(Detail2.MASTER_FK.name()),
+            Detail2.MASTER_VIA_CODE_FK.foreignKey()
+                    .caption(Detail2.MASTER_FK.name()),
+            Detail2.MASTER_NAME.denormalizedAttribute(Detail2.MASTER_FK, Master.NAME)
+                    .caption(Detail2.MASTER_NAME.name()),
+            Detail2.MASTER_CODE.column()
+                    .caption(Detail2.MASTER_CODE.name()),
+            Detail2.INT_VALUE_LIST.column()
+                    .items(ITEMS)
+                    .caption(Detail2.INT_VALUE_LIST.name()),
+            Detail2.INT_DERIVED.derivedAttribute(linkedValues -> {
+              Integer intValue = linkedValues.get(Detail2.INT);
+              if (intValue == null) {
+                return null;
+              }
+
+              return intValue * 10;
+            }, Detail2.INT)
+                    .caption(Detail2.INT_DERIVED.name()))
+            .selectTableName(DETAIL_SELECT_TABLE_NAME.name())
+            .orderBy(ascending(Detail2.STRING))
+            .smallDataset(true)
+            .stringFactory(Detail2.STRING));
   }
 
   private static final class MasterComparator implements Comparator<Entity>, Serializable {
@@ -162,11 +278,6 @@ public final class TestDomain extends DefaultDomain {
       setMaster(master);
     }
   }
-
-  public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
-
-  private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
-          item(2, "2"), item(3, "3"));
 
   void detail() {
     add(Detail.TYPE.define(
@@ -226,14 +337,14 @@ public final class TestDomain extends DefaultDomain {
                     .updatable(false))
             .keyGenerator(queried("select id from dual"))
             .orderBy(ascending(Detail.STRING))
-            .selectTableName(DETAIL_SELECT_TABLE_NAME)
+            .selectTableName(DETAIL_SELECT_TABLE_NAME.name())
             .smallDataset(true)
             .stringFactory(Detail.STRING));
   }
 
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.scott.dept", Department.class);
-    Column<Integer> NO = TYPE.integerColumn("deptno");
+    Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
@@ -250,12 +361,15 @@ public final class TestDomain extends DefaultDomain {
     void active(Boolean active);
 
     void setDeptNo(int deptNo);
+
+    ConditionType CONDITION = TYPE.conditionType("condition");
+    ConditionType NAME_NOT_NULL_CONDITION = TYPE.conditionType("conditionNameNotNull");
   }
 
   void department() {
     add(Department.TYPE.define(
-            Department.NO.primaryKey()
-                    .caption(Department.NO.name())
+            Department.ID.primaryKey()
+                    .caption(Department.ID.name())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
             Department.NAME.column()
@@ -276,6 +390,14 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
+            .conditionProvider(Department.CONDITION, (columns, values) -> {
+              StringBuilder builder = new StringBuilder("deptno in (");
+              values.forEach(value -> builder.append("?,"));
+              builder.deleteCharAt(builder.length() - 1);
+
+              return builder.append(")").toString();
+            })
+            .conditionProvider(Department.NAME_NOT_NULL_CONDITION, (columns, values) -> "department name is not null")
             .caption("Department"));
   }
 
@@ -289,7 +411,7 @@ public final class TestDomain extends DefaultDomain {
     Column<Double> SALARY = TYPE.doubleColumn("sal");
     Column<Double> COMMISSION = TYPE.doubleColumn("comm");
     Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("deptno");
-    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT_NO, Department.NO);
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT_NO, Department.ID);
     ForeignKey MANAGER_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
