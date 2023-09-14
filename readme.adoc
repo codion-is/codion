@@ -189,7 +189,7 @@ public class Store extends DefaultDomain {
     // This entity definition is then added to the domain model.
     add(Customer.TYPE.define(           // returns EntityDefinition.Builder
             Customer.ID
-                    .primaryKey(),// returns ColumnDefinition.Builder
+                    .primaryKey(),      // returns ColumnDefinition.Builder
             Customer.FIRST_NAME
                     .column()           // returns ColumnDefinition.Builder
                     .caption("First name")
