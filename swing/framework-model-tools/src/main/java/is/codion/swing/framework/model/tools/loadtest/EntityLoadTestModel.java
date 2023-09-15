@@ -9,7 +9,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.tools.loadtest.LoadTest;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -61,7 +61,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
 
   private static final Random RANDOM = new Random();
 
-  private final LoadTest<M> loadTestModel;
+  private final LoadTestModel<M> loadTestModel;
 
   /**
    * Instantiates a new EntityLoadTestModel.
@@ -69,7 +69,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param usageScenarios the usage scenarios
    */
   protected EntityLoadTestModel(User user, Collection<? extends UsageScenario<M>> usageScenarios) {
-    this.loadTestModel = LoadTest.builder(this::createApplication, this::closeApplication)
+    this.loadTestModel = LoadTestModel.builder(this::createApplication, this::closeApplication)
             .usageScenarios(usageScenarios)
             .user(user)
             .minimumThinkTime(LOAD_TEST_THINKTIME.get() / 2)
@@ -80,7 +80,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
             .build();
   }
 
-  public final LoadTest<M> loadTestModel() {
+  public final LoadTestModel<M> loadTestModel() {
     return loadTestModel;
   }
 

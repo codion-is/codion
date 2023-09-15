@@ -13,7 +13,7 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
-import is.codion.swing.common.model.tools.loadtest.LoadTest;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
@@ -29,10 +29,10 @@ public final class EmpDeptServletLoadTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private final LoadTest<EntityConnectionProvider> loadTestModel;
+  private final LoadTestModel<EntityConnectionProvider> loadTestModel;
 
   private EmpDeptServletLoadTest(User user) {
-    loadTestModel = LoadTest.builder(EmpDeptServletLoadTest::createApplication, EmpDeptServletLoadTest::disconnectApplication)
+    loadTestModel = LoadTestModel.builder(EmpDeptServletLoadTest::createApplication, EmpDeptServletLoadTest::disconnectApplication)
             .user(user)
             .usageScenarios(asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()))
             .minimumThinkTime(2500)

@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.tools.loadtest;
 
 import is.codion.common.user.User;
-import is.codion.swing.common.model.tools.loadtest.LoadTest;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class LoadTestPanelTest {
 
   @Test
   void test() {
-    LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .minimumThinkTime(25)
             .maximumThinkTime(50)
@@ -29,6 +29,6 @@ public class LoadTestPanelTest {
 
   @Test
   void constructorNullModel() {
-    assertThrows(NullPointerException.class, () -> new LoadTestPanel<LoadTest<?>>(null));
+    assertThrows(NullPointerException.class, () -> new LoadTestPanel<LoadTestModel<?>>(null));
   }
 }

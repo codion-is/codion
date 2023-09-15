@@ -12,7 +12,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.swing.common.model.tools.loadtest.LoadTest;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.AfterAll;
@@ -87,7 +87,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   void testLoadTesting() throws Exception {
-    LoadTest<?> loadTest = new TestLoadTestModel().loadTestModel();
+    LoadTestModel<?> loadTest = new TestLoadTestModel().loadTestModel();
 
     loadTest.collectChartData().set(true);
     loadTest.setUpdateInterval(350);

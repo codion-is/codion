@@ -34,7 +34,7 @@ public class LoadTestModelTest {
 
   @Test
   void unknownUsageScenario() {
-    LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .usageScenarios(asList(SCENARIO, SCENARIO_II))
             .minimumThinkTime(25)
@@ -47,7 +47,7 @@ public class LoadTestModelTest {
 
   @Test
   void test() throws Exception {
-    LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
             .user(UNIT_TEST_USER)
             .usageScenarios(asList(SCENARIO, SCENARIO_II))
             .minimumThinkTime(25)

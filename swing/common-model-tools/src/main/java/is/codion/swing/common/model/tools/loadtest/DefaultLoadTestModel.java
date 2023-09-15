@@ -55,7 +55,7 @@ import static java.util.stream.Collectors.toList;
  * A default LoadTest implementation.
  * @param <T> the type of the applications this load test uses
  */
-final class DefaultLoadTestModel<T> implements LoadTest<T> {
+final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 
@@ -121,7 +121,7 @@ final class DefaultLoadTestModel<T> implements LoadTest<T> {
   private final XYSeries systemLoadSeries = new XYSeries("System Load");
   private final XYSeries processLoadSeries = new XYSeries("Process Load");
   private final XYSeriesCollection systemLoadCollection = new XYSeriesCollection();
-  private final Function<LoadTest<T>, String> titleFactory;
+  private final Function<LoadTestModel<T>, String> titleFactory;
 
   DefaultLoadTestModel(DefaultBuilder<T> builder) {
     this.applicationFactory = builder.applicationFactory;
@@ -739,7 +739,7 @@ final class DefaultLoadTestModel<T> implements LoadTest<T> {
     private int maximumThinkTime = 5000;
     private int loginDelayFactor = 2;
     private int applicationBatchSize = 10;
-    private Function<LoadTest<T>, String> titleFactory = new DefaultTitleFactory<>();
+    private Function<LoadTestModel<T>, String> titleFactory = new DefaultTitleFactory<>();
 
     DefaultBuilder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
       this.applicationFactory = requireNonNull(applicationFactory);
@@ -801,19 +801,19 @@ final class DefaultLoadTestModel<T> implements LoadTest<T> {
     }
 
     @Override
-    public Builder<T> titleFactory(Function<LoadTest<T>, String> titleFactory) {
+    public Builder<T> titleFactory(Function<LoadTestModel<T>, String> titleFactory) {
       this.titleFactory = requireNonNull(titleFactory);
       return this;
     }
 
     @Override
-    public LoadTest<T> build() {
+    public LoadTestModel<T> build() {
       return new DefaultLoadTestModel<T>(this);
     }
 
-    private static final class DefaultTitleFactory<T> implements Function<LoadTest<T>, String> {
+    private static final class DefaultTitleFactory<T> implements Function<LoadTestModel<T>, String> {
       @Override
-      public String apply(LoadTest<T> loadTest) {
+      public String apply(LoadTestModel<T> loadTest) {
         return loadTest.getClass().getSimpleName();
       }
     }

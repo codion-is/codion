@@ -28,7 +28,7 @@ public final class QueryLoadTestModel {
   private static final int DEFAULT_LOGIN_DELAY_FACTOR = 2;
   private static final int DEFAULT_BATCH_SIZE = 5;
 
-  private final LoadTest<QueryLoadTestModel.QueryApplication> loadTestModel;
+  private final LoadTestModel<QueryApplication> loadTestModel;
   private final ConnectionPoolWrapper pool;
 
   /**
@@ -39,7 +39,7 @@ public final class QueryLoadTestModel {
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
-    this.loadTestModel = LoadTest.builder(this::createApplication, this::disconnectApplication)
+    this.loadTestModel = LoadTestModel.builder(this::createApplication, this::disconnectApplication)
             .user(user)
             .usageScenarios(scenarios)
             .minimumThinkTime(DEFAULT_MAXIMUM_THINK_TIME_MS / 2)
@@ -52,7 +52,7 @@ public final class QueryLoadTestModel {
     loadTestModel.addShutdownListener(pool::close);
   }
 
-  public LoadTest<QueryLoadTestModel.QueryApplication> loadTestModel() {
+  public LoadTestModel<QueryApplication> loadTestModel() {
     return loadTestModel;
   }
 

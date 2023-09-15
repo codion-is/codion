@@ -22,7 +22,7 @@ import java.util.function.Function;
  * Specifies a class for running multiple application instances for load testing purposes.
  * @param <T> the type of application used by this load test.
  */
-public interface LoadTest<T> {
+public interface LoadTestModel<T> {
 
   /**
    * Removes all applications and exits
@@ -201,7 +201,7 @@ public interface LoadTest<T> {
   }
 
   /**
-   * Builds a {@link LoadTest}.
+   * Builds a {@link LoadTestModel}.
    * @param <T> the load test application type
    */
   interface Builder<T> {
@@ -246,12 +246,12 @@ public interface LoadTest<T> {
      * @param titleFactory the title factory
      * @return this builder
      */
-    Builder<T> titleFactory(Function<LoadTest<T>, String> titleFactory);
+    Builder<T> titleFactory(Function<LoadTestModel<T>, String> titleFactory);
 
     /**
      * @return a new load test instance
      */
-    LoadTest<T> build();
+    LoadTestModel<T> build();
   }
 
   /**
