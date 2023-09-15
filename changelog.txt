@@ -9561,3 +9561,4 @@
   ColumnCondition.Builder and ForeignKeyCondition.Builder renamed Factory
   DefaultLocalEntityConnection.writeBlob() now throws UpdateException if no rows were updated
   DefaultLocalEntityConnection.readBlob() now throws RecordNotFoundException when blob record is not found
+  ResultPacker.pack() with fetchLimit removed
