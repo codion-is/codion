@@ -982,6 +982,9 @@ public class DefaultLocalEntityConnectionTest {
             .attributes(Employee.DATA_LAZY)
             .build());
     assertNotNull(scottFromDb.get(Employee.DATA_LAZY));
+
+    assertThrows(RecordNotFoundException.class, () -> connection.readBlob(ENTITIES.primaryKey(Employee.TYPE, -1), Employee.DATA));
+    assertThrows(UpdateException.class, () -> connection.writeBlob(ENTITIES.primaryKey(Employee.TYPE, -1), Employee.DATA, bytes));
   }
 
   @Test

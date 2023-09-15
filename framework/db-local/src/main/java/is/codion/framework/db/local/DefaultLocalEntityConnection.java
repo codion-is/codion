@@ -82,7 +82,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String ENTITIES = "entities";
   private static final String ENTITY = "entity";
 
-  private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
   private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
@@ -638,7 +637,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       Exception exception = null;
       try (PreparedStatement statement = setParameterValues(prepareStatement(updateQuery), statementColumns, statementValues)) {
         statement.setBinaryStream(1, new ByteArrayInputStream(blobData));//no need to close ByteArrayInputStream
-        if (statement.executeUpdate() > 1) {
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated == 0) {
+          throw new UpdateException("Blob write updated no rows, key: " + primaryKey);
+        }
+        if (rowsUpdated > 1) {
           throw new UpdateException("Blob write updated more than one row, key: " + primaryKey);
         }
         commitIfTransactionIsNotOpen();
@@ -666,7 +669,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
-    SQLException exception = null;
+    Exception exception = null;
     Condition condition = key(primaryKey);
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns(columnDefinition.columnExpression())
@@ -677,11 +680,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try (PreparedStatement statement = setParameterValues(prepareStatement(selectQuery), statementColumns, condition.values());
            ResultSet resultSet = statement.executeQuery()) {
-        List<byte[]> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
-        if (result.isEmpty()) {
-          return null;
+        if (!resultSet.next()) {
+          throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
         }
-        byte[] byteResult = result.get(0);
+        byte[] byteResult = resultSet.getBytes(1);
         commitIfTransactionIsNotOpen();
 
         return byteResult;
@@ -691,6 +693,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, condition.values(), statementColumns, exception), e);
         throw translateSQLException(e);
+      }
+      catch (RecordNotFoundException e) {
+        exception = e;
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(selectQuery, condition.values(), statementColumns, exception), e);
+        throw e;
       }
       finally {
         logExit("readBlob", exception);
