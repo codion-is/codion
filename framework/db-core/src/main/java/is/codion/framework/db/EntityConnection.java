@@ -388,7 +388,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobColumn the blob column
    * @param blobData the blob data
-   * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
+   * @throws is.codion.common.db.exception.UpdateException in case zero or multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
   void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException;
@@ -398,7 +398,8 @@ public interface EntityConnection extends AutoCloseable {
    * returns null if no blob data is found.
    * @param primaryKey the primary key of the entity
    * @param blobColumn the blob attribute
-   * @return a byte array containing the blob data or null if no blob data is found
+   * @return a byte array containing the blob data
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the row was not found
    * @throws DatabaseException in case of a database exception
    */
   byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
@@ -622,7 +623,7 @@ public interface EntityConnection extends AutoCloseable {
       Builder offset(int offset);
 
       /**
-       * Marks this condition as a select for update query, this means the resulting records
+       * Marks this condition as a select for update query, this means the resulting rows
        * will be locked by the given connection until unlocked by running another (non - select for update)
        * query on the same connection or performing an update
        * @return this builder instance

@@ -26,25 +26,9 @@ public interface ResultPacker<T> {
    * @throws NullPointerException in case resultSet is null
    */
   default List<T> pack(ResultSet resultSet) throws SQLException {
-    return pack(resultSet, -1);
-  }
-
-  /**
-   * Iterates through the given ResultSet, packing its contents into a List using {@link #get(ResultSet)} in the order they appear.
-   * Items are skipped if {@link #get(ResultSet)} returns null.
-   * This method does not close or modify the ResultSet in any way.
-   * @param resultSet the ResultSet instance containing the query result to process
-   * @param fetchLimit the maximum number of records to fetch from the result set,
-   * a negative value means all should be fetched.
-   * @return a List containing the data from the query result
-   * @throws SQLException thrown if anything goes wrong during the packing
-   * @throws NullPointerException in case resultSet is null
-   */
-  default List<T> pack(ResultSet resultSet, int fetchLimit) throws SQLException {
     requireNonNull(resultSet, "resultSet");
-    List<T> result = fetchLimit < 0 ? new ArrayList<>() : new ArrayList<>(fetchLimit);
-    int counter = 0;
-    while (resultSet.next() && (fetchLimit < 0 || counter++ < fetchLimit)) {
+    List<T> result = new ArrayList<>();
+    while (resultSet.next()) {
       T item = get(resultSet);
       if (item != null) {
         result.add(item);
@@ -57,7 +41,7 @@ public interface ResultPacker<T> {
   /**
    * Fetches a single instance from the given result set, assumes {@link ResultSet#next()} has been called
    * @param resultSet the result set
-   * @return the instance fetched from the ResultSet, null if the item should not be fetched for some reason
+   * @return the instance fetched from the ResultSet, null if the item should not be included for some reason
    * @throws SQLException in case of failure
    */
   T get(ResultSet resultSet) throws SQLException;

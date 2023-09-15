@@ -57,7 +57,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was inserted.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
    * @param column the column
    * @param <T> the Temporal type to base this column on
    * @param <B> the builder type
@@ -72,7 +72,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was updated.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
    * @param column the column
    * @param <T> the Temporal type to base this column on
    * @param <B> the builder type
@@ -87,7 +87,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a record.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
    * @param column the column
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
@@ -102,7 +102,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a record.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
    * @param column the column
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}

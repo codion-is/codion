@@ -185,15 +185,15 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   Object foregroundColor(int row, Attribute<?> attribute);
 
   /**
-   * Returns the maximum number of records to fetch via the underlying query the next time
-   * this table model is refreshed, a value of -1 means all records should be fetched
+   * Returns the maximum number of rows to fetch via the underlying query the next time
+   * this table model is refreshed, a value of -1 means all rows should be fetched
    * @return the fetch count
    */
   int getLimit();
 
   /**
-   * Sets the maximum number of records to fetch via the underlying query the next time
-   * this table model is refreshed, a value of -1 means all records should be fetched
+   * Sets the maximum number of rows to fetch via the underlying query the next time
+   * this table model is refreshed, a value of -1 means all rows should be fetched
    * @param limit the fetch count
    */
   void setLimit(int limit);
@@ -247,7 +247,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Returns a State controlling whether this table model should display all underlying entities
-   * when no query condition has been set. Setting this value to 'true' prevents all records from
+   * when no query condition has been set. Setting this value to 'true' prevents all rows from
    * being fetched by accident, when no condition has been set, which is recommended for tables
    * with a large underlying dataset.
    * @return a State specifying whether this table model requires a query condition

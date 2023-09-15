@@ -740,7 +740,7 @@ public class DefaultLocalEntityConnectionTest {
       sales.put(Department.LOC, "Syracuse");
       try {
         connection2.update(sales);
-        fail("Should not be able to update record selected for update by another connection");
+        fail("Should not be able to update row selected for update by another connection");
       }
       catch (DatabaseException ignored) {
         connection2.databaseConnection().rollback();
@@ -754,7 +754,7 @@ public class DefaultLocalEntityConnectionTest {
         connection2.update(sales);//revert changes to data
       }
       catch (DatabaseException ignored) {
-        fail("Should be able to update record after other connection released the select for update lock");
+        fail("Should be able to update row after other connection released the select for update lock");
       }
     }
     finally {
@@ -779,7 +779,7 @@ public class DefaultLocalEntityConnectionTest {
       allen.put(Employee.JOB, "CLERK");
       try {
         connection.update(allen);
-        fail("Should not be able to update record deleted by another connection");
+        fail("Should not be able to update row deleted by another connection");
       }
       catch (RecordModifiedException e) {
         assertNotNull(e.row());
@@ -790,7 +790,7 @@ public class DefaultLocalEntityConnectionTest {
         connection2.insert(allen);//revert changes to data
       }
       catch (DatabaseException ignored) {
-        fail("Should be able to update record after other connection released the select for update lock");
+        fail("Should be able to update row after other connection released the select for update lock");
       }
     }
     finally {
@@ -982,6 +982,9 @@ public class DefaultLocalEntityConnectionTest {
             .attributes(Employee.DATA_LAZY)
             .build());
     assertNotNull(scottFromDb.get(Employee.DATA_LAZY));
+
+    assertThrows(RecordNotFoundException.class, () -> connection.readBlob(ENTITIES.primaryKey(Employee.TYPE, -1), Employee.DATA));
+    assertThrows(UpdateException.class, () -> connection.writeBlob(ENTITIES.primaryKey(Employee.TYPE, -1), Employee.DATA, bytes));
   }
 
   @Test

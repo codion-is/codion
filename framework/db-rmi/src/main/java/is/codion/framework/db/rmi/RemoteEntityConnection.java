@@ -407,6 +407,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobColumn the blob column
    * @param blobData the blob data
+   * @throws is.codion.common.db.exception.UpdateException in case zero or multiple rows were affected
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
@@ -418,6 +419,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @param primaryKey the primary key of the entity
    * @param blobColumn the blob column
    * @return a byte array containing the blob data
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the row was not found
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
