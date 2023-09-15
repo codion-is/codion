@@ -52,7 +52,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppModel> 
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new EmpDeptLoadTest()).run();
+    new LoadTestPanel<>(new EmpDeptLoadTest().loadTestModel()).run();
   }
 }
 // end::loadTest[]

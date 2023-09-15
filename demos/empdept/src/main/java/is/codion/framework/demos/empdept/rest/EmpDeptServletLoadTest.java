@@ -13,7 +13,7 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
-import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
+import is.codion.swing.common.model.tools.loadtest.LoadTest;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
@@ -24,28 +24,34 @@ import java.util.Random;
 import static is.codion.framework.domain.entity.attribute.Condition.all;
 import static java.util.Arrays.asList;
 
-public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
+public final class EmpDeptServletLoadTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
+  private final LoadTest<EntityConnectionProvider> loadTestModel;
+
   private EmpDeptServletLoadTest(User user) {
-    super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
-            5000, 2, 10);
-    setWeight(UpdateLocation.NAME, 2);
-    setWeight(SelectDepartment.NAME, 4);
-    setWeight(SelectEmployees.NAME, 5);
-    setWeight(AddDepartment.NAME, 1);
-    setWeight(AddEmployee.NAME, 4);
+    loadTestModel = LoadTest.builder(EmpDeptServletLoadTest::createApplication, EmpDeptServletLoadTest::disconnectApplication)
+            .user(user)
+            .usageScenarios(asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()))
+            .minimumThinkTime(2500)
+            .maximumThinkTime(5000)
+            .loginDelayFactor(2)
+            .applicationBatchSize(10)
+            .build();
+    loadTestModel.setWeight(UpdateLocation.NAME, 2);
+    loadTestModel.setWeight(SelectDepartment.NAME, 4);
+    loadTestModel.setWeight(SelectEmployees.NAME, 5);
+    loadTestModel.setWeight(AddDepartment.NAME, 1);
+    loadTestModel.setWeight(AddEmployee.NAME, 4);
   }
 
-  @Override
-  protected void disconnectApplication(EntityConnectionProvider client) {
+  private static void disconnectApplication(EntityConnectionProvider client) {
     client.close();
   }
 
-  @Override
-  protected EntityConnectionProvider createApplication(User user) throws CancelException {
+  private static EntityConnectionProvider createApplication(User user) throws CancelException {
     return HttpEntityConnectionProvider.builder()
             .clientTypeId("EmpDeptServletLoadTest")
             .domainType(EmpDept.DOMAIN)
@@ -54,7 +60,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER)).run();
+    new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER).loadTestModel).run();
   }
 
   private static final class UpdateLocation extends AbstractUsageScenario<EntityConnectionProvider> {

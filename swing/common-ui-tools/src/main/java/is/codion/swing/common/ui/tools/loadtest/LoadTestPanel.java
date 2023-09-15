@@ -7,7 +7,6 @@ import is.codion.common.Separators;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.tools.loadtest.LoadTest;
 import is.codion.swing.common.model.tools.loadtest.LoadTest.Application;
-import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
 import is.codion.swing.common.model.tools.randomizer.ItemRandomizer.RandomItem;
 import is.codion.swing.common.ui.Utilities;
@@ -61,7 +60,7 @@ import static org.jfree.chart.ChartFactory.createXYStepChart;
 /**
  * A default UI component for the LoadTestModel class.
  * @param <T> the load test application type
- * @see LoadTestModel
+ * @see LoadTest
  */
 public final class LoadTestPanel<T> extends JPanel {
 

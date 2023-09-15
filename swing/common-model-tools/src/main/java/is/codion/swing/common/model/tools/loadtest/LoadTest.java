@@ -15,6 +15,8 @@ import org.jfree.data.xy.XYDataset;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Specifies a class for running multiple application instances for load testing purposes.
@@ -82,6 +84,11 @@ public interface LoadTest<T> {
    * @param updateInterval the chart data update interval in milliseconds
    */
   void setUpdateInterval(int updateInterval);
+
+  /**
+   * @param listener a listener notified when this load test model has been shutdown.
+   */
+  void addShutdownListener(Runnable listener);
 
   /**
    * @return the Value controlling the number of applications to initialize per batch
@@ -182,6 +189,70 @@ public interface LoadTest<T> {
    * @return the randomizer used to select scenarios
    */
   ItemRandomizer<UsageScenario<T>> scenarioChooser();
+
+  /**
+   * @param applicationFactory the application factory
+   * @param closeApplication closes an application
+   * @return a new builder
+   * @param <T> the application type
+   */
+  static <T> Builder<T> builder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
+    return new DefaultLoadTestModel.DefaultBuilder<>(applicationFactory, closeApplication);
+  }
+
+  /**
+   * Builds a {@link LoadTest}.
+   * @param <T> the load test application type
+   */
+  interface Builder<T> {
+
+    /**
+     * @param user the initial application user
+     * @return this builder
+     */
+    Builder<T> user(User user);
+
+    /**
+     * @param minimumThinkTime the initial minimum think time
+     * @return this builder
+     */
+    Builder<T> minimumThinkTime(int minimumThinkTime);
+
+    /**
+     * @param maximumThinkTime the initial maximum think time
+     * @return this builder
+     */
+    Builder<T> maximumThinkTime(int maximumThinkTime);
+
+    /**
+     * @param loginDelayFactor the login delay factor
+     * @return this builder
+     */
+    Builder<T> loginDelayFactor(int loginDelayFactor);
+
+    /**
+     * @param applicationBatchSize the initial application batch size
+     * @return this builder
+     */
+    Builder<T> applicationBatchSize(int applicationBatchSize);
+
+    /**
+     * @param usageScenarios the usage scenarios
+     * @return this builder
+     */
+    Builder<T> usageScenarios(Collection<? extends UsageScenario<T>> usageScenarios);
+
+    /**
+     * @param titleFactory the title factory
+     * @return this builder
+     */
+    Builder<T> titleFactory(Function<LoadTest<T>, String> titleFactory);
+
+    /**
+     * @return a new load test instance
+     */
+    LoadTest<T> build();
+  }
 
   /**
    * Describes a load test application.

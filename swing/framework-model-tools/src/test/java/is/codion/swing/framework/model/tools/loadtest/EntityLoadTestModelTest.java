@@ -12,6 +12,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
+import is.codion.swing.common.model.tools.loadtest.LoadTest;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.AfterAll;
@@ -76,17 +77,17 @@ public class EntityLoadTestModelTest {
 
   @Test
   void setLoginDelayFactorNegative() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().loginDelayFactor().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().loadTestModel().loginDelayFactor().set(-1));
   }
 
   @Test
   void setUpdateIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().setUpdateInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().loadTestModel().setUpdateInterval(-1));
   }
 
   @Test
   void testLoadTesting() throws Exception {
-    TestLoadTestModel loadTest = new TestLoadTestModel();
+    LoadTest<?> loadTest = new TestLoadTestModel().loadTestModel();
 
     loadTest.collectChartData().set(true);
     loadTest.setUpdateInterval(350);

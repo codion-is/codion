@@ -66,6 +66,6 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new SchemaBrowserLoadTest()).run();
+    new LoadTestPanel<>(new SchemaBrowserLoadTest().loadTestModel()).run();
   }
 }

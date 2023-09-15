@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.tools.loadtest;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -34,59 +33,28 @@ public class LoadTestModelTest {
   };
 
   @Test
-  void constructorNegativeThinkTime() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5));
-  }
-
-  @Test
-  void constructorNegativeLoginDelayFactor() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5));
-  }
-
-  @Test
-  void constructorNegativeApplicationBatchSize() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5));
-  }
-
-  @Test
-  void setApplicationBatchSizeNegative() {
-    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.applicationBatchSize().set(-5));
-  }
-
-  @Test
-  void setUpdateIntervalNegative() {
-    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
-  }
-
-  @Test
-  void setLoginDelayFactorNegative() {
-    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactor().set(-1));
-  }
-
-  @Test
-  void setMinimumThinkTimeNegative() {
-    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.minimumThinkTime().set(-1));
-  }
-
-  @Test
-  void setMaximumThinkTimeNegative() {
-    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.maximumThinkTime().set(-1));
-  }
-
-  @Test
   void unknownUsageScenario() {
-    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+            .user(User.user("test"))
+            .usageScenarios(asList(SCENARIO, SCENARIO_II))
+            .minimumThinkTime(25)
+            .maximumThinkTime(50)
+            .loginDelayFactor(2)
+            .applicationBatchSize(2)
+            .build();
     assertThrows(IllegalArgumentException.class, () -> model.usageScenario("bla"));
   }
 
   @Test
   void test() throws Exception {
-    TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
+    LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+            .user(UNIT_TEST_USER)
+            .usageScenarios(asList(SCENARIO, SCENARIO_II))
+            .minimumThinkTime(25)
+            .maximumThinkTime(50)
+            .loginDelayFactor(2)
+            .applicationBatchSize(2)
+            .build();
     assertEquals(2, model.applicationBatchSize().get());
     model.collectChartData().set(true);
 
@@ -98,7 +66,7 @@ public class LoadTestModelTest {
     assertEquals(2, model.loginDelayFactor().get());
     model.loginDelayFactor().set(3);
     assertEquals(3, model.loginDelayFactor().get());
-    assertEquals(LoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
+    assertEquals(DefaultLoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
     assertEquals(2, model.applicationBatchSize().get());
 
     assertEquals(25, model.minimumThinkTime().get());
@@ -139,21 +107,5 @@ public class LoadTestModelTest {
     model.addShutdownListener(exitCounter::incrementAndGet);
     model.shutdown();
     assertEquals(1, exitCounter.get());
-  }
-
-  public static final class TestLoadTestModel extends LoadTestModel<Object> {
-
-    public TestLoadTestModel(User user, int maximumThinkTime, int loginDelayFactor,
-                             int applicationBatchSize) {
-      super(user, asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize);
-    }
-
-    @Override
-    protected Object createApplication(User user) throws CancelException {
-      return new Object();
-    }
-
-    @Override
-    protected void disconnectApplication(Object application) {}
   }
 }

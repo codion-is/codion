@@ -33,23 +33,23 @@ public final class QueryLoadTestModelTest {
   void test() throws DatabaseException {
     QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
-    loadTest.minimumThinkTime().set(10);
-    loadTest.maximumThinkTime().set(30);
-    loadTest.loginDelayFactor().set(1);
-    loadTest.applicationBatchSize().set(6);
-    loadTest.addApplicationBatch();
+    loadTest.loadTestModel().minimumThinkTime().set(10);
+    loadTest.loadTestModel().maximumThinkTime().set(30);
+    loadTest.loadTestModel().loginDelayFactor().set(1);
+    loadTest.loadTestModel().applicationBatchSize().set(6);
+    loadTest.loadTestModel().addApplicationBatch();
     try {
       Thread.sleep(1500);
     }
     catch (InterruptedException ignored) {/*ignored*/}
-    loadTest.removeApplicationBatch();
+    loadTest.loadTestModel().removeApplicationBatch();
     try {
       Thread.sleep(500);
     }
     catch (InterruptedException ignored) {/*ignored*/}
     assertTrue(SELECT_DEPARTMENTS.successfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.successfulRunCount() > 0);
-    loadTest.shutdown();
+    loadTest.loadTestModel().shutdown();
   }
 
   private static Database createTestDatabaseInstance() {
