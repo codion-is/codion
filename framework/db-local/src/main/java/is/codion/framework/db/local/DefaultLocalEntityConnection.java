@@ -81,8 +81,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String CONDITION = "condition";
   private static final String ENTITIES = "entities";
   private static final String ENTITY = "entity";
-
-  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
   private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
   // For counting queries.
@@ -490,13 +488,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(selectQuery);
            ResultSet resultSet = executeStatement(statement, selectQuery, condition, entityDefinition)) {
-        List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet);
-        commitIfTransactionIsNotOpen();
-        if (result.isEmpty()) {
+        if (!resultSet.next()) {
           throw new SQLException("Row count query returned no value", SQL_STATE_NO_DATA);
         }
+        int result = resultSet.getInt(1);
+        commitIfTransactionIsNotOpen();
 
-        return result.get(0);
+        return result;
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
