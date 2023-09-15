@@ -119,8 +119,8 @@ public interface TableSelectionModel<R> {
   void moveSelectionUp();
 
   /**
-   * @return the index of the selected record, -1 if none is selected and
-   * the lowest index if more than one record is selected
+   * @return the index of the selected row, -1 if none is selected and
+   * the lowest index if more than one row is selected
    */
   int getSelectedIndex();
 

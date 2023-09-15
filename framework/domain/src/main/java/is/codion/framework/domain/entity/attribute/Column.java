@@ -59,28 +59,28 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
   BlobColumnDefinition.Builder blobColumn();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was inserted.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was updated.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a record.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
   <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a record.
+   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */

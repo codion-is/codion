@@ -622,7 +622,7 @@ public interface EntityConnection extends AutoCloseable {
       Builder offset(int offset);
 
       /**
-       * Marks this condition as a select for update query, this means the resulting records
+       * Marks this condition as a select for update query, this means the resulting rows
        * will be locked by the given connection until unlocked by running another (non - select for update)
        * query on the same connection or performing an update
        * @return this builder instance

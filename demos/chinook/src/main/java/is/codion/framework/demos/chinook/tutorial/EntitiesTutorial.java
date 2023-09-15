@@ -232,8 +232,7 @@ public final class EntitiesTutorial {
 
     // finally, we clean up after ourselves by deleting our imaginary band and album,
     // note that the order of the entities matters, since we can't delete
-    // the artist before the album, this method deletes records in the
-    // same order as the are received
+    // the artist before the album.
     connection.delete(primaryKeys(asList(album, myBand)));
   }
 

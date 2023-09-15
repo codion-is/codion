@@ -40,7 +40,7 @@ public final class ClientUI {
     // fetch a Value based on the artist name from the edit model
     Value<String> artistNameEditModelValue = editModel.value(Artist.NAME);
 
-    // create a Control for inserting a new Artist record
+    // create a Control for inserting a new Artist
     Control insertControl = Control.actionControl(actionEvent -> {
       try {
         // insert the entity
@@ -104,7 +104,7 @@ public final class ClientUI {
     // fetch a String Value based on the album title from the edit model
     Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
-    // create a Control for inserting a new Album record
+    // create a Control for inserting a new Album row
     Control insertControl = Control.actionControl(actionEvent -> {
       try {
         // insert the entity

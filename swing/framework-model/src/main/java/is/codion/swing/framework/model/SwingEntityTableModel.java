@@ -106,7 +106,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private Condition refreshCondition;
 
   /**
-   * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
+   * the maximum number of rows to fetch via the underlying query, -1 meaning all records should be fetched
    */
   private int limit = -1;
 
@@ -1020,7 +1020,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onTableModelEvent(TableModelEvent tableModelEvent) {
-    //if the selected record is updated via the table model, refresh the one in the edit model
+    //if the selected row is updated via the table model, refresh the one in the edit model
     if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selectionModel().getSelectedIndex()) {
       editModel.setEntity(selectionModel().getSelectedItem());
     }

@@ -11,7 +11,7 @@ import java.sql.Statement;
 /**
  * Generates primary key values for entities on insert.
  * KeyGenerators fall into two categories, one which fetches or generates the primary key value
- * before the record is inserted and one where the underlying database automatically sets the primary
+ * before the row is inserted and one where the underlying database automatically sets the primary
  * key value on insert, i.e. with a table trigger or identity columns.
  * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}.
  * If {@link #isInserted()} returns true the primary key value should be included in the
