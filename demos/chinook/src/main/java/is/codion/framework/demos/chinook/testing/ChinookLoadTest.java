@@ -77,6 +77,6 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> 
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new ChinookLoadTest()).run();
+    new LoadTestPanel<>(new ChinookLoadTest().loadTestModel()).run();
   }
 }

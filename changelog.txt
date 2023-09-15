@@ -9603,3 +9603,5 @@
   DefaultLocalEntityConnection.readBlob() now throws RecordNotFoundException when blob record is not found
   ResultPacker.pack() with fetchLimit removed
   DefaultLocalEntityConnection.count() refactored a bit
+  LoadTestModel renamed DefaultLoadTestModel, now final, Builder added
+  LoadTest renamed LoadTestModel

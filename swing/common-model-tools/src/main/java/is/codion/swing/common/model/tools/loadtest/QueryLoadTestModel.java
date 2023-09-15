@@ -22,12 +22,13 @@ import static java.util.Collections.emptyList;
 /**
  * A load test implementation for testing database queries.
  */
-public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.QueryApplication> {
+public final class QueryLoadTestModel {
 
   private static final int DEFAULT_MAXIMUM_THINK_TIME_MS = 500;
-  private static final int DEFAULT_LOGIN_DELAY_MS = 2;
+  private static final int DEFAULT_LOGIN_DELAY_FACTOR = 2;
   private static final int DEFAULT_BATCH_SIZE = 5;
 
+  private final LoadTestModel<QueryApplication> loadTestModel;
   private final ConnectionPoolWrapper pool;
 
   /**
@@ -38,10 +39,21 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
-    super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
+    this.loadTestModel = LoadTestModel.builder(this::createApplication, this::disconnectApplication)
+            .user(user)
+            .usageScenarios(scenarios)
+            .minimumThinkTime(DEFAULT_MAXIMUM_THINK_TIME_MS / 2)
+            .maximumThinkTime(DEFAULT_MAXIMUM_THINK_TIME_MS)
+            .loginDelayFactor(DEFAULT_LOGIN_DELAY_FACTOR)
+            .applicationBatchSize(DEFAULT_BATCH_SIZE)
+            .build();
     ConnectionPoolFactory poolProvider = ConnectionPoolFactory.instance();
     this.pool = poolProvider.createConnectionPoolWrapper(database, user);
-    addShutdownListener(pool::close);
+    loadTestModel.addShutdownListener(pool::close);
+  }
+
+  public LoadTestModel<QueryApplication> loadTestModel() {
+    return loadTestModel;
   }
 
   /**
@@ -51,11 +63,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     return pool;
   }
 
-  @Override
-  protected void disconnectApplication(QueryApplication application) {/*Not required*/}
+  private void disconnectApplication(QueryApplication application) {/*Not required*/}
 
-  @Override
-  protected QueryApplication createApplication(User user) {
+  private QueryApplication createApplication(User user) {
     return new QueryApplication(pool);
   }
 

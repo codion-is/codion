@@ -5,9 +5,8 @@ package is.codion.swing.common.ui.tools.loadtest;
 
 import is.codion.common.Separators;
 import is.codion.common.user.User;
-import is.codion.swing.common.model.tools.loadtest.LoadTest;
-import is.codion.swing.common.model.tools.loadtest.LoadTest.Application;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel.Application;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
 import is.codion.swing.common.model.tools.randomizer.ItemRandomizer.RandomItem;
 import is.codion.swing.common.ui.Utilities;
@@ -72,7 +71,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
 
-  private final LoadTest<T> loadTestModel;
+  private final LoadTestModel<T> loadTestModel;
   private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
 
   static {
@@ -89,7 +88,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
    */
-  public LoadTestPanel(LoadTest<T> loadTestModel) {
+  public LoadTestPanel(LoadTestModel<T> loadTestModel) {
     this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
     initializeUI();
   }
@@ -97,7 +96,7 @@ public final class LoadTestPanel<T> extends JPanel {
   /**
    * @return the load test model this panel is based on
    */
-  public LoadTest<T> model() {
+  public LoadTestModel<T> model() {
     return loadTestModel;
   }
 

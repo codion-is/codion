@@ -16,6 +16,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,7 +24,7 @@ import java.util.stream.IntStream;
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
  * @param <M> the application model type used by this load test model
  */
-public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel> extends LoadTestModel<M> {
+public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel> {
 
   private static final int DEFAULT_LOAD_TEST_THINKTIME = 2000;
   private static final int DEFAULT_LOAD_TEST_BATCH_SIZE = 10;
@@ -58,19 +59,29 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    */
   public static final PropertyValue<Integer> LOAD_TEST_LOGIN_DELAY = Configuration.integerValue("codion.loadtest.logindelay", DEFAULT_LOAD_TEST_LOGIN_DELAY);
 
+  private static final Random RANDOM = new Random();
+
+  private final LoadTestModel<M> loadTestModel;
+
   /**
    * Instantiates a new EntityLoadTestModel.
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
   protected EntityLoadTestModel(User user, Collection<? extends UsageScenario<M>> usageScenarios) {
-    super(user, usageScenarios, LOAD_TEST_THINKTIME.get(), LOAD_TEST_LOGIN_DELAY.get(),
-            LOAD_TEST_BATCH_SIZE.get());
+    this.loadTestModel = LoadTestModel.builder(this::createApplication, this::closeApplication)
+            .usageScenarios(usageScenarios)
+            .user(user)
+            .minimumThinkTime(LOAD_TEST_THINKTIME.get() / 2)
+            .maximumThinkTime(LOAD_TEST_THINKTIME.get())
+            .loginDelayFactor(LOAD_TEST_LOGIN_DELAY.get())
+            .applicationBatchSize(LOAD_TEST_BATCH_SIZE.get())
+            .titleFactory(loadTest -> getClass().getSimpleName() + " - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+            .build();
   }
 
-  @Override
-  public String title() {
-    return super.title() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+  public final LoadTestModel<M> loadTestModel() {
+    return loadTestModel;
   }
 
   /**
@@ -131,8 +142,9 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
     comboBoxModel.setSelectedItem(visibleItems.get(RANDOM.nextInt(visibleItems.size() - fromIndex) + fromIndex));
   }
 
-  @Override
-  protected final void disconnectApplication(M application) {
+  protected abstract M createApplication(User user);
+
+  private void closeApplication(M application) {
     application.connectionProvider().close();
   }
 }

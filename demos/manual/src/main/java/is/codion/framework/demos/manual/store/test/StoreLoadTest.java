@@ -46,7 +46,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new StoreLoadTest()).run();
+    new LoadTestPanel<>(new StoreLoadTest().loadTestModel()).run();
   }
 }
 // end::storeLoadTest[]

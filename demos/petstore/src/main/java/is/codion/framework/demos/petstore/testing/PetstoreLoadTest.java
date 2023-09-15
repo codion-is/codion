@@ -53,6 +53,6 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new PetstoreLoadTest()).run();
+    new LoadTestPanel<>(new PetstoreLoadTest().loadTestModel()).run();
   }
 }
