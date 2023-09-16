@@ -91,7 +91,7 @@ The underlying column name is typically used as the *Column* name, but as with t
 == Domain implementation
 The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class and populating it with *EntityDefinitions* based on the domain tables. An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
 
-The *EntityType* and *Attribute* constants provide methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition). These factory methods are usually statically imported, but the class names are included here for clarity.
+The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition)..
 
 NOTE: If a caption is not specified for an attribute, it is marked as hidden and is not visible in table views.
 
