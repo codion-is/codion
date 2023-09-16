@@ -25,33 +25,33 @@ public final class TestKeysDomain extends DefaultDomain {
 
   public void testPrimaryKeyIndexes1() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.column()
+            TestPrimaryKey.ID1.define().column()
                     .primaryKeyIndex(0),
-            TestPrimaryKey.ID2.column()
+            TestPrimaryKey.ID2.define().column()
                     .primaryKeyIndex(1),
-            TestPrimaryKey.ID3.column()
+            TestPrimaryKey.ID3.define().column()
                     .primaryKeyIndex(3)));
   }
 
   public void testPrimaryKeyIndexes2() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.column()
+            TestPrimaryKey.ID1.define().column()
                     .primaryKeyIndex(1),
-            TestPrimaryKey.ID2.column()
+            TestPrimaryKey.ID2.define().column()
                     .primaryKeyIndex(1),
-            TestPrimaryKey.ID3.column()
+            TestPrimaryKey.ID3.define().column()
                     .primaryKeyIndex(2)));
   }
 
   public void testPrimaryKeyIndexes3() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.column()
+            TestPrimaryKey.ID1.define().column()
                     .primaryKeyIndex(-1)));
   }
 
   public void testPrimaryKeyIndexes4() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.column()
+            TestPrimaryKey.ID1.define().column()
                     .primaryKeyIndex(10)));
   }
 
@@ -75,16 +75,17 @@ public final class TestKeysDomain extends DefaultDomain {
 
   public void testForeignKeys() {
     add(TestFkMaster.TYPE.define(
-            TestFkMaster.ID1.column()
+            TestFkMaster.ID1.define().column()
                     .primaryKeyIndex(0)//,
             //here's what we're testing for, a missing fk reference property
-//            TestFKMaster.ID1.column()
+//            TestFKMaster.ID1.define().column()
 //                    .primaryKeyIndex(1)
     ));
     add(TestFkMaster.TYPE.define(
-            TestFkDetail.ID.primaryKey(),
-            TestFkDetail.MASTER_ID1.column(),
-            TestFkDetail.MASTER_ID2.column(),
-            TestFkDetail.MASTER_FK.foreignKey()));
+            TestFkDetail.ID.define().primaryKey(),
+            TestFkDetail.MASTER_ID1.define().column(),
+            TestFkDetail.MASTER_ID2.define().column(),
+            TestFkDetail.MASTER_FK.define()
+                    .foreignKey()));
   }
 }

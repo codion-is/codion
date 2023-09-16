@@ -28,9 +28,11 @@ class ForeignKeyDomain extends DefaultDomain {
 
   void species() {
     add(Species.TYPE.define(
-            Species.NO.primaryKey()
+            Species.NO.define()
+                    .primaryKey()
                     .caption("Number"),
-            Species.NAME.column()
+            Species.NAME.define()
+                    .column()
                     .caption("Name")
                     .maximumLength(50)));
   }
@@ -44,11 +46,14 @@ class ForeignKeyDomain extends DefaultDomain {
 
   void maturity() {
     add(Maturity.TYPE.define(
-            Maturity.NO.column()
+            Maturity.NO.define()
+                    .column()
                     .primaryKeyIndex(0),
-            Maturity.SPECIES_NO.column()
+            Maturity.SPECIES_NO.define()
+                    .column()
                     .primaryKeyIndex(1),
-            Maturity.SPECIES_FK.foreignKey()));
+            Maturity.SPECIES_FK.define()
+                    .foreignKey()));
   }
 
   public interface OtolithCategory {
@@ -60,11 +65,14 @@ class ForeignKeyDomain extends DefaultDomain {
 
   void otolithCategory() {
     add(OtolithCategory.TYPE.define(
-            OtolithCategory.NO.column()
+            OtolithCategory.NO.define()
+                    .column()
                     .primaryKeyIndex(0),
-            OtolithCategory.SPECIES_NO.column()
+            OtolithCategory.SPECIES_NO.define()
+                    .column()
                     .primaryKeyIndex(1),
-            OtolithCategory.SPECIES_FK.foreignKey()));
+            OtolithCategory.SPECIES_FK.define()
+                    .foreignKey()));
   }
 
   public interface Otolith {
@@ -84,18 +92,25 @@ class ForeignKeyDomain extends DefaultDomain {
 
   void otolith() {
     add(Otolith.TYPE.define(
-            Otolith.STATION_ID.column()
+            Otolith.STATION_ID.define()
+                    .column()
                     .primaryKeyIndex(0),
-            Otolith.SPECIES_NO.column()
+            Otolith.SPECIES_NO.define()
+                    .column()
                     .primaryKeyIndex(1)
                     .updatable(true)
                     .nullable(false),
-            Otolith.SPECIES_FK.foreignKey(),
-            Otolith.MATURITY_NO.column(),
-            Otolith.MATURITY_FK.foreignKey()
+            Otolith.SPECIES_FK.define()
+                    .foreignKey(),
+            Otolith.MATURITY_NO.define()
+                    .column(),
+            Otolith.MATURITY_FK.define()
+                    .foreignKey()
                     .readOnly(Otolith.SPECIES_NO),
-            Otolith.OTOLITH_CATEGORY_NO.column(),
-            Otolith.OTOLITH_CATEGORY_FK.foreignKey()
+            Otolith.OTOLITH_CATEGORY_NO.define()
+                    .column(),
+            Otolith.OTOLITH_CATEGORY_FK.define()
+                    .foreignKey()
                     .readOnly(Otolith.SPECIES_NO)));
   }
 }

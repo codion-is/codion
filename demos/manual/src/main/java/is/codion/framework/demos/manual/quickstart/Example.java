@@ -63,14 +63,14 @@ public final class Example {
 
     void customer() {
       add(Customer.TYPE.define(
-              Customer.ID
+              Customer.ID.define()
                       .primaryKey(),
-              Customer.FIRST_NAME
+              Customer.FIRST_NAME.define()
                       .column()
                       .caption("First name")
                       .nullable(false)
                       .maximumLength(40),
-              Customer.LAST_NAME
+              Customer.LAST_NAME.define()
                       .column()
                       .caption("Last name")
                       .nullable(false)
@@ -102,14 +102,14 @@ public final class Example {
 
     void address() {
       add(Address.TYPE.define(
-              Address.ID
+              Address.ID.define()
                       .primaryKey(),
-              Address.STREET
+              Address.STREET.define()
                       .column()
                       .caption("Street")
                       .nullable(false)
                       .maximumLength(120),
-              Address.CITY
+              Address.CITY.define()
                       .column()
                       .caption("City")
                       .nullable(false)
@@ -136,18 +136,18 @@ public final class Example {
 
     void customerAddress() {
       add(CustomerAddress.TYPE.define(
-              CustomerAddress.ID
+              CustomerAddress.ID.define()
                       .primaryKey(),
-              CustomerAddress.CUSTOMER_ID
+              CustomerAddress.CUSTOMER_ID.define()
                       .column()
                       .nullable(false),
-              CustomerAddress.CUSTOMER_FK
+              CustomerAddress.CUSTOMER_FK.define()
                       .foreignKey()
                       .caption("Customer"),
-              CustomerAddress.ADDRESS_ID
+              CustomerAddress.ADDRESS_ID.define()
                       .column()
                       .nullable(false),
-              CustomerAddress.ADDRESS_FK
+              CustomerAddress.ADDRESS_FK.define()
                       .foreignKey()
                       .caption("Address"))
               .keyGenerator(automatic("store.customer_address"))

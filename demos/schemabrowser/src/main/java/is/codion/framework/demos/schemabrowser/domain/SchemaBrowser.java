@@ -54,7 +54,7 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void schema() {
     add(Schema.TYPE.define(
-            Schema.NAME
+            Schema.NAME.define()
                     .primaryKey()
                     .caption("Name"))
             .tableName(bundle.getString("t_schema"))
@@ -75,13 +75,13 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void table() {
     EntityDefinition.Builder tableBuilder = Table.TYPE.define(
-            Table.SCHEMA
+            Table.SCHEMA.define()
                     .column()
                     .primaryKeyIndex(0),
-            Table.SCHEMA_FK
+            Table.SCHEMA_FK.define()
                     .foreignKey()
                     .caption("Schema"),
-            Table.NAME
+            Table.NAME.define()
                     .column()
                     .caption("Name")
                     .primaryKeyIndex(1))
@@ -122,21 +122,21 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void tableColumn() {
     add(TableColumn.TYPE.define(
-            TableColumn.SCHEMA
+            TableColumn.SCHEMA.define()
                     .column()
                     .primaryKeyIndex(0),
-            TableColumn.TABLE_NAME
+            TableColumn.TABLE_NAME.define()
                     .column()
                     .primaryKeyIndex(1),
-            TableColumn.TABLE_FK
+            TableColumn.TABLE_FK.define()
                     .foreignKey()
                     .caption("Table")
                     .fetchDepth(2),
-            TableColumn.NAME
+            TableColumn.NAME.define()
                     .column()
                     .caption("Column name")
                     .primaryKeyIndex(2),
-            TableColumn.DATA_TYPE
+            TableColumn.DATA_TYPE.define()
                     .column()
                     .caption("Data type"))
             .tableName(bundle.getString("t_column"))
@@ -165,21 +165,21 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void constraint() {
     add(Constraint.TYPE.define(
-            Constraint.SCHEMA
+            Constraint.SCHEMA.define()
                     .column()
                     .primaryKeyIndex(0),
-            Constraint.TABLE_NAME
+            Constraint.TABLE_NAME.define()
                     .column()
                     .primaryKeyIndex(1),
-            Constraint.TABLE_FK
+            Constraint.TABLE_FK.define()
                     .foreignKey()
                     .caption("Table")
                     .fetchDepth(2),
-            Constraint.NAME
+            Constraint.NAME.define()
                     .column()
                     .caption("Constraint name")
                     .primaryKeyIndex(2),
-            Constraint.CONSTRAINT_TYPE
+            Constraint.CONSTRAINT_TYPE.define()
                     .column()
                     .caption("Type"))
             .tableName(bundle.getString("t_constraint"))
@@ -210,23 +210,23 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void constraintColumn() {
     add(ConstraintColumn.TYPE.define(
-            ConstraintColumn.SCHEMA
+            ConstraintColumn.SCHEMA.define()
                     .column()
                     .primaryKeyIndex(0),
-            ConstraintColumn.TABLE_NAME
+            ConstraintColumn.TABLE_NAME.define()
                     .column()
                     .primaryKeyIndex(1),
-            ConstraintColumn.CONSTRAINT_NAME
+            ConstraintColumn.CONSTRAINT_NAME.define()
                     .column()
                     .primaryKeyIndex(2),
-            ConstraintColumn.CONSTRAINT_FK
+            ConstraintColumn.CONSTRAINT_FK.define()
                     .foreignKey()
                     .caption("Constraint")
                     .fetchDepth(3),
-            ConstraintColumn.COLUMN_NAME
+            ConstraintColumn.COLUMN_NAME.define()
                     .column()
                     .caption("Column name"),
-            ConstraintColumn.POSITION
+            ConstraintColumn.POSITION.define()
                     .column()
                     .caption("Position"))
             .tableName(bundle.getString("t_column_constraint"))

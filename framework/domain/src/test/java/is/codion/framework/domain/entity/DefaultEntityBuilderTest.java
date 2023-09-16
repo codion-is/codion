@@ -61,12 +61,16 @@ public final class DefaultEntityBuilderTest {
       public TestDomain() {
         super(domainType);
         add(entityType.define(
-                id.primaryKey(),
-                name.column()
+                id.define()
+                        .primaryKey(),
+                name.define()
+                        .column()
                         .defaultValue("DefName"),
-                value.column()
+                value.define()
+                        .column()
                         .defaultValue(42),
-                derivedValue.derivedAttribute(sourceValues -> {
+                derivedValue.define()
+                        .derivedAttribute(sourceValues -> {
                   Integer sourceValue = sourceValues.get(value);
 
                   return sourceValue == null ? null : sourceValue + 1;

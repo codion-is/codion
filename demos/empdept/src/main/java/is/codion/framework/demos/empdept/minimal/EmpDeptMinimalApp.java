@@ -81,15 +81,15 @@ public final class EmpDeptMinimalApp {
        * We then define the entity based on the SCOTT.DEPT table
        */
       add(Department.TYPE.define(
-              Department.DEPTNO
+              Department.DEPTNO.define()
                       .primaryKey(),
-              Department.DEPTNO
+              Department.DEPTNO.define()
                       .column()
                       .caption("Department name")
                       .searchColumn(true)
                       .nullable(false)
                       .maximumLength(14),
-             Department.LOC
+             Department.LOC.define()
                      .column()
                      .caption("Department location")
                      .maximumLength(13))
@@ -102,41 +102,41 @@ public final class EmpDeptMinimalApp {
        * department as well as the manager
        */
       add(Employee.TYPE.define(
-              Employee.EMPNO
+              Employee.EMPNO.define()
                       .primaryKey(),
-              Employee.ENAME
+              Employee.ENAME.define()
                       .column()
                       .caption("Name")
                       .searchColumn(true)
                       .nullable(false)
                       .maximumLength(10),
-              Employee.DEPTNO
+              Employee.DEPTNO.define()
                       .column()
                       .nullable(false),
-              Employee.DEPT_FK
+              Employee.DEPT_FK.define()
                       .foreignKey()
                       .caption("Department"),
-              Employee.JOB
+              Employee.JOB.define()
                       .column()
                       .caption("Job")
                       .nullable(false)
                       .maximumLength(9),
-              Employee.SAL
+              Employee.SAL.define()
                       .column()
                       .caption("Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
                       .valueRange(1000, 10000),
-              Employee.COMM
+              Employee.COMM.define()
                       .column()
                       .caption("Commission")
                       .maximumFractionDigits(2),
-              Employee.MGR
+              Employee.MGR.define()
                       .column(),
-              Employee.MGR_FK
+              Employee.MGR_FK.define()
                       .foreignKey()
                       .caption("Manager"),
-              Employee.HIREDATE
+              Employee.HIREDATE.define()
                       .column()
                       .caption("Hiredate")
                       .nullable(false))

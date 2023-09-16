@@ -74,11 +74,11 @@ public final class EntitiesTutorial {
 
       // create columns for the table 'chinook.artist'
       ColumnDefinition.Builder<Long, ?> artistId =
-              Artist.ID
-                      .primaryKey();
+              Artist.ID.define()
+                    .primaryKey();
 
       ColumnDefinition.Builder<String, ?> artistName =
-              Artist.NAME
+              Artist.NAME.define()
                       .column()
                       .caption("Name")
                       .nullable(false)
@@ -97,23 +97,23 @@ public final class EntitiesTutorial {
 
       // create columns and foreign key for the table 'chinook.album'
       ColumnDefinition.Builder<Long, ?> albumId =
-              Album.ID
+              Album.ID.define()
                       .primaryKey();
 
       ColumnDefinition.Builder<String, ?> albumTitle =
-              Album.TITLE
+              Album.TITLE.define()
                       .column()
                       .caption("Title")
                       .nullable(false)
                       .maximumLength(160);
 
       ColumnDefinition.Builder<Long, ?> albumArtistId =
-              Album.ARTIST_ID
+              Album.ARTIST_ID.define()
                       .column()
                       .nullable(false);
 
       ForeignKeyDefinition.Builder albumArtist =
-              Album.ARTIST_FK
+              Album.ARTIST_FK.define()
                       .foreignKey()
                       .caption("Artist");
 

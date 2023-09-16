@@ -46,44 +46,44 @@ public final class Petstore extends DefaultDomain {
 
   void address() {
     add(Address.TYPE.define(
-            Address.ID
+            Address.ID.define()
                     .primaryKey()
                     .columnName("addressid"),
-            Address.STREET_1
+            Address.STREET_1.define()
                     .column()
                     .caption(Address.STREET_1.name())
                     .columnName("street1")
                     .maximumLength(55)
                     .nullable(false),
-            Address.STREET_2
+            Address.STREET_2.define()
                     .column()
                     .caption(Address.STREET_2.name())
                     .columnName("street2")
                     .maximumLength(55),
-            Address.CITY
+            Address.CITY.define()
                     .column()
                     .caption(Address.CITY.name())
                     .columnName("city")
                     .maximumLength(55)
                     .nullable(false),
-            Address.STATE
+            Address.STATE.define()
                     .column()
                     .caption(Address.STATE.name())
                     .columnName("state")
                     .maximumLength(25)
                     .nullable(false),
-            Address.ZIP
+            Address.ZIP.define()
                     .column()
                     .caption(Address.ZIP.name())
                     .columnName("zip")
                     .nullable(false),
-            Address.LATITUDE
+            Address.LATITUDE.define()
                     .column()
                     .caption(Address.LATITUDE.name())
                     .columnName("latitude")
                     .nullable(false)
                     .maximumFractionDigits(2),
-            Address.LONGITUDE
+            Address.LONGITUDE.define()
                     .column()
                     .caption(Address.LONGITUDE.name())
                     .columnName("longitude")
@@ -113,22 +113,22 @@ public final class Petstore extends DefaultDomain {
 
   void category() {
     add(Category.TYPE.define(
-            Category.ID
+            Category.ID.define()
                     .primaryKey()
                     .columnName("categoryid"),
-            Category.NAME
+            Category.NAME.define()
                     .column()
                     .caption(Category.NAME.name())
                     .columnName("name")
                     .maximumLength(25)
                     .nullable(false),
-            Category.DESCRIPTION
+            Category.DESCRIPTION.define()
                     .column()
                     .caption(Category.DESCRIPTION.name())
                     .columnName("description")
                     .maximumLength(255)
                     .nullable(false),
-            Category.IMAGE_URL
+            Category.IMAGE_URL.define()
                     .column()
                     .caption(Category.IMAGE_URL.name())
                     .columnName("imageurl")
@@ -154,28 +154,29 @@ public final class Petstore extends DefaultDomain {
 
   void product() {
     add(Product.TYPE.define(
-            Product.ID
+            Product.ID.define()
                     .primaryKey()
                     .columnName("productid"),
-            Product.CATEGORY_ID
+            Product.CATEGORY_ID.define()
                     .column()
                     .columnName("categoryid")
                     .nullable(false),
-            Product.CATEGORY_FK.foreignKey()
+            Product.CATEGORY_FK.define()
+                    .foreignKey()
                     .caption(Product.CATEGORY_FK.name()),
-            Product.NAME
+            Product.NAME.define()
                     .column()
                     .caption(Product.NAME.name())
                     .columnName("name")
                     .maximumLength(25)
                     .nullable(false),
-            Product.DESCRIPTION
+            Product.DESCRIPTION.define()
                     .column()
                     .caption(Product.DESCRIPTION.name())
                     .columnName("description")
                     .maximumLength(255)
                     .nullable(false),
-            Product.IMAGE_URL
+            Product.IMAGE_URL.define()
                     .column()
                     .caption(Product.IMAGE_URL.name())
                     .columnName("imageurl")
@@ -203,24 +204,24 @@ public final class Petstore extends DefaultDomain {
 
   void sellerContactInfo() {
     add(SellerContactInfo.TYPE.define(
-            SellerContactInfo.ID
+            SellerContactInfo.ID.define()
                     .primaryKey()
                     .columnName("contactinfoid"),
-            SellerContactInfo.FIRST_NAME
+            SellerContactInfo.FIRST_NAME.define()
                     .column()
                     .caption(SellerContactInfo.FIRST_NAME.name())
                     .searchColumn(true)
                     .columnName("firstname")
                     .maximumLength(24)
                     .nullable(false),
-            SellerContactInfo.LAST_NAME
+            SellerContactInfo.LAST_NAME.define()
                     .column()
                     .caption(SellerContactInfo.LAST_NAME.name())
                     .searchColumn(true)
                     .columnName("lastname")
                     .maximumLength(24)
                     .nullable(false),
-            SellerContactInfo.EMAIL
+            SellerContactInfo.EMAIL.define()
                     .column()
                     .caption(SellerContactInfo.EMAIL.name())
                     .columnName("email")
@@ -258,60 +259,63 @@ public final class Petstore extends DefaultDomain {
 
   void item() {
     add(Item.TYPE.define(
-            Item.ID
+            Item.ID.define()
                     .primaryKey()
                     .columnName("itemid"),
-            Item.PRODUCT_ID
+            Item.PRODUCT_ID.define()
                     .column()
                     .columnName("productid")
                     .nullable(false),
-            Item.PRODUCT_FK.foreignKey()
+            Item.PRODUCT_FK.define()
+                    .foreignKey()
                     .caption(Item.PRODUCT_FK.name())
                     .fetchDepth(2),
-            Item.NAME
+            Item.NAME.define()
                     .column()
                     .caption(Item.NAME.name())
                     .columnName("name")
                     .maximumLength(30)
                     .nullable(false),
-            Item.DESCRIPTION
+            Item.DESCRIPTION.define()
                     .column()
                     .caption(Item.DESCRIPTION.name())
                     .columnName("description")
                     .maximumLength(500)
                     .nullable(false),
-            Item.IMAGE_URL
+            Item.IMAGE_URL.define()
                     .column()
                     .caption(Item.IMAGE_URL.name())
                     .columnName("imageurl")
                     .maximumLength(55)
                     .hidden(true),
-            Item.IMAGE_THUMB_URL
+            Item.IMAGE_THUMB_URL.define()
                     .column()
                     .caption(Item.IMAGE_THUMB_URL.name())
                     .columnName("imagethumburl")
                     .maximumLength(55)
                     .hidden(true),
-            Item.PRICE
+            Item.PRICE.define()
                     .column()
                     .caption(Item.PRICE.name())
                     .columnName("price")
                     .nullable(false)
                     .maximumFractionDigits(2),
-            Item.CONTACT_INFO_ID
+            Item.CONTACT_INFO_ID.define()
                     .column()
                     .columnName("contactinfo_contactinfoid")
                     .nullable(false),
-            Item.CONTACT_INFO_FK
+            Item.CONTACT_INFO_FK.define()
                     .foreignKey()
                     .caption(Item.CONTACT_INFO_FK.name()),
-            Item.ADDRESS_ID
+            Item.ADDRESS_ID.define()
                     .column()
                     .columnName("address_addressid")
                     .nullable(false),
-            Item.ADDRESS_FK.foreignKey()
+            Item.ADDRESS_FK.define()
+                    .foreignKey()
                     .caption("Address"),
-            Item.DISABLED.booleanColumn(Integer.class, 1, 0)
+            Item.DISABLED.define()
+                    .booleanColumn(Integer.class, 1, 0)
                     .caption(Item.DISABLED.name())
                     .columnName("disabled")
                     .defaultValue(false)
@@ -337,16 +341,16 @@ public final class Petstore extends DefaultDomain {
 
   void tag() {
     add(Tag.TYPE.define(
-            Tag.ID
+            Tag.ID.define()
                     .primaryKey()
                     .columnName("tagid"),
-            Tag.TAG
+            Tag.TAG.define()
                     .column()
                     .caption(Tag.TAG.name())
                     .columnName("tag")
                     .maximumLength(30)
                     .nullable(false),
-            Tag.REFCOUNT
+            Tag.REFCOUNT.define()
                     .subquery("select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .caption(Tag.REFCOUNT.name())
                     .columnName("refcount"))
@@ -370,19 +374,19 @@ public final class Petstore extends DefaultDomain {
 
   void tagItem() {
     add(TagItem.TYPE.define(
-            TagItem.ITEM_ID
+            TagItem.ITEM_ID.define()
                     .column()
                     .primaryKeyIndex(0)
                     .columnName("itemid"),
-            TagItem.ITEM_FK
+            TagItem.ITEM_FK.define()
                     .foreignKey()
                     .caption(TagItem.ITEM_FK.name())
                     .fetchDepth(3),
-            TagItem.TAG_ID
+            TagItem.TAG_ID.define()
                     .column()
                     .primaryKeyIndex(1)
                     .columnName("tagid"),
-            TagItem.TAG_FK
+            TagItem.TAG_FK.define()
                     .foreignKey()
                     .caption(TagItem.TAG_FK.name()))
             .tableName("petstore.tag_item")

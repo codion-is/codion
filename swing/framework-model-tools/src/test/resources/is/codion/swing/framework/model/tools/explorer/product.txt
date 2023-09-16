@@ -12,26 +12,26 @@ public interface Product {
 
 void product() {
 	add(Product.TYPE.define(
-		Product.PRODUCTID
+		Product.PRODUCTID.define()
 			.primaryKey(),
-		Product.CATEGORYID
+		Product.CATEGORYID.define()
 			.column()
 			.nullable(false),
-		Product.CATEGORYID_FK
+		Product.CATEGORYID_FK.define()
 			.foreignKey()
 			.caption("Category"),
-		Product.NAME
+		Product.NAME.define()
 			.column()
 			.caption("Name")
 			.nullable(false)
 			.maximumLength(25)
 			.description("The product name"),
-		Product.DESCRIPTION
+		Product.DESCRIPTION.define()
 			.column()
 			.caption("Description")
 			.nullable(false)
 			.maximumLength(255),
-		Product.IMAGEURL
+		Product.IMAGEURL.define()
 			.column()
 			.caption("Imageurl")
 			.maximumLength(55))

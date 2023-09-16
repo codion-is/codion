@@ -14,6 +14,11 @@ import java.util.List;
 public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Factory {
 
   /**
+   * @return a {@link ForeignKeyDefiner} for this foreign key
+   */
+  ForeignKeyDefiner define();
+
+  /**
    * @return the entity type referenced by this foreign key
    */
   EntityType referencedType();
@@ -29,12 +34,6 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
    * @return the reference that is based on the given column
    */
   <T> Reference<T> reference(Column<T> column);
-
-  /**
-   * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
-   * @return a new {@link ForeignKeyDefinition.Builder}
-   */
-  ForeignKeyDefinition.Builder foreignKey();
 
   /**
    * Represents a foreign key reference between columns.
@@ -74,5 +73,17 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
    */
   static ForeignKey foreignKey(EntityType entityType, String name, List<ForeignKey.Reference<?>> references) {
     return new DefaultForeignKey(name, entityType, references);
+  }
+
+  /**
+   * Provides {@link ForeignKeyDefinition.Builder} instances.
+   */
+  interface ForeignKeyDefiner extends AttributeDefiner<Entity> {
+
+    /**
+     * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
+     * @return a new {@link ForeignKeyDefinition.Builder}
+     */
+    ForeignKeyDefinition.Builder foreignKey();
   }
 }

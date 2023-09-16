@@ -116,12 +116,12 @@ public final class ChinookLoginProxy implements LoginProxy {
     private Authentication() {
       super(DOMAIN);
       add(User.TYPE.define(
-              User.ID
-                      .primaryKey(),
-              User.USERNAME
-                      .column(),
-              User.PASSWORD_HASH
-                      .column())
+              User.ID.define()
+                    .primaryKey(),
+              User.USERNAME.define()
+                    .column(),
+              User.PASSWORD_HASH.define()
+                    .column())
               .readOnly(true));
     }
   }

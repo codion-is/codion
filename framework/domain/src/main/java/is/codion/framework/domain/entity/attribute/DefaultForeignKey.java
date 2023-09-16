@@ -26,6 +26,11 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   @Override
+  public ForeignKeyDefiner define() {
+    return new DefaultForeignKeyDefiner(this);
+  }
+
+  @Override
   public EntityType referencedType() {
     return references.get(0).referencedColumn().entityType();
   }
@@ -46,11 +51,6 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     }
 
     throw new IllegalArgumentException("Column " + column + " is not part of foreign key " + name());
-  }
-
-  @Override
-  public ForeignKeyDefinition.Builder foreignKey() {
-    return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(this);
   }
 
   @Override
@@ -141,6 +141,21 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     @Override
     public Column<T> referencedColumn() {
       return referencedColumn;
+    }
+  }
+
+  private static final class DefaultForeignKeyDefiner extends DefaultAttributeDefiner<Entity> implements ForeignKeyDefiner {
+
+    private final ForeignKey foreignKey;
+
+    private DefaultForeignKeyDefiner(ForeignKey foreignKey) {
+      super(foreignKey);
+      this.foreignKey = foreignKey;
+    }
+
+    @Override
+    public ForeignKeyDefinition.Builder foreignKey() {
+      return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey);
     }
   }
 }

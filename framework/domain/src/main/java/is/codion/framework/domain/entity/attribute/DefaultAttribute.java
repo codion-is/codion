@@ -40,6 +40,11 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
+  public AttributeDefiner<T> define() {
+    return new DefaultAttributeDefiner<>(this);
+  }
+
+  @Override
   public final String name() {
     return name;
   }
@@ -177,25 +182,34 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
     return entityType.name() + "." + name;
   }
 
-  @Override
-  public final <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute() {
-    return new DefaultTransientAttributeDefinitionBuilder<>(this);
-  }
-
-  @Override
-  public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalizedAttribute(Attribute<Entity> entityAttribute,
-                                                                                                                     Attribute<T> denormalizedAttribute) {
-    return new DefaultDerivedAttributeDefinitionBuilder<>(this,
-            new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
-  }
-
-  @Override
-  public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derivedAttribute(DerivedAttribute.Provider<T> valueProvider,
-                                                                                                                Attribute<?>... sourceAttributes) {
-    return new DefaultDerivedAttributeDefinitionBuilder<>(this, valueProvider, sourceAttributes);
-  }
-
   private boolean isType(Class<?> valueClass) {
     return this.valueClass.equals(valueClass);
+  }
+
+  protected static class DefaultAttributeDefiner<T> implements AttributeDefiner<T> {
+
+    private final Attribute<T> attribute;
+
+    protected DefaultAttributeDefiner(Attribute<T> attribute) {
+      this.attribute = attribute;
+    }
+
+    @Override
+    public final <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute() {
+      return new DefaultTransientAttributeDefinitionBuilder<>(attribute);
+    }
+
+    @Override
+    public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalizedAttribute(Attribute<Entity> entityAttribute,
+                                                                                                                       Attribute<T> denormalizedAttribute) {
+      return new DefaultDerivedAttributeDefinitionBuilder<>(attribute,
+              new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
+    }
+
+    @Override
+    public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derivedAttribute(DerivedAttribute.Provider<T> valueProvider,
+                                                                                                                  Attribute<?>... sourceAttributes) {
+      return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, valueProvider, sourceAttributes);
+    }
   }
 }

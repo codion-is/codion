@@ -9605,3 +9605,4 @@
   DefaultLocalEntityConnection.count() refactored a bit
   LoadTestModel renamed DefaultLoadTestModel, now final, Builder added
   LoadTest renamed LoadTestModel
+  AttributeDefiner added, attribute definition builders now accessible via the Attribute.define() method

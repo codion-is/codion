@@ -15,6 +15,11 @@ import is.codion.framework.domain.entity.EntityType;
 public interface Attribute<T> {
 
   /**
+   * @return a {@link AttributeDefiner} for this attribute
+   */
+  AttributeDefiner<T> define();
+
+  /**
    * @return the name of this attribute.
    */
   String name();
@@ -140,30 +145,37 @@ public interface Attribute<T> {
   }
 
   /**
-   * Creates a new {@link TransientAttributeDefinition.Builder} instance, which does not map to an underlying table column.
-   * @param <B> the builder type
-   * @return a new {@link TransientAttributeDefinition.Builder}
+   * Provides {@link AttributeDefinition.Builder} instances.
+   * @param <T> the column type
    */
-  <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute();
+  interface AttributeDefiner<T> {
 
-  /**
-   * Instantiates a {@link AttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
-   * @param <B> the builder type
-   * @param entityAttribute the entity attribute from which this attribute gets its value
-   * @param denormalizedAttribute the attribute from the referenced entity, from which this attribute gets its value
-   * @return a new {@link AttributeDefinition.Builder}
-   */
-  <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalizedAttribute(Attribute<Entity> entityAttribute,
-                                                                                                        Attribute<T> denormalizedAttribute);
+    /**
+     * Creates a new {@link TransientAttributeDefinition.Builder} instance, which does not map to an underlying table column.
+     * @param <B> the builder type
+     * @return a new {@link TransientAttributeDefinition.Builder}
+     */
+    <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute();
 
-  /**
-   * Instantiates a {@link AttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
-   * @param valueProvider a {@link DerivedAttribute.Provider} instance responsible for deriving the value
-   * @param sourceAttributes the attributes from which this attribute derives its value
-   * @param <B> the builder type
-   * @return a new {@link AttributeDefinition.Builder}
-   * @throws IllegalArgumentException in case no source attributes are specified
-   */
-  <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derivedAttribute(DerivedAttribute.Provider<T> valueProvider,
-                                                                                                   Attribute<?>... sourceAttributes);
+    /**
+     * Instantiates a {@link AttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
+     * @param <B> the builder type
+     * @param entityAttribute the entity attribute from which this attribute gets its value
+     * @param denormalizedAttribute the attribute from the referenced entity, from which this attribute gets its value
+     * @return a new {@link AttributeDefinition.Builder}
+     */
+    <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalizedAttribute(Attribute<Entity> entityAttribute,
+                                                                                                          Attribute<T> denormalizedAttribute);
+
+    /**
+     * Instantiates a {@link AttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
+     * @param valueProvider a {@link DerivedAttribute.Provider} instance responsible for deriving the value
+     * @param sourceAttributes the attributes from which this attribute derives its value
+     * @param <B> the builder type
+     * @return a new {@link AttributeDefinition.Builder}
+     * @throws IllegalArgumentException in case no source attributes are specified
+     */
+    <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derivedAttribute(DerivedAttribute.Provider<T> valueProvider,
+                                                                                                     Attribute<?>... sourceAttributes);
+  }
 }
