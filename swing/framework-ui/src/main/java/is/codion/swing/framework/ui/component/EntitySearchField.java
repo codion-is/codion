@@ -74,7 +74,6 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
@@ -131,8 +130,8 @@ public final class EntitySearchField extends HintTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     configureColors();
-    linkToEnabledObserver(searchModel.searchStringRepresentsSelected(), transferFocusAction);
-    linkToEnabledObserver(searchModel.searchStringRepresentsSelected(), transferFocusBackwardAction);
+    Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelected(), transferFocusAction);
+    Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelected(), transferFocusBackwardAction);
   }
 
   @Override

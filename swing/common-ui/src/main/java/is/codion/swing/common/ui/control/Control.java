@@ -134,7 +134,7 @@ public interface Control extends Action {
    * Unsupported, the enabled state of Controls is based on their {@code enabledObserver}
    * @param enabled the enabled status
    * @throws UnsupportedOperationException always
-   * @see Builder#enabledObserver(StateObserver)
+   * @see Builder#enabled(StateObserver)
    */
   @Override
   void setEnabled(boolean enabled);
@@ -231,10 +231,10 @@ public interface Control extends Action {
     Builder name(String name);
 
     /**
-     * @param enabledObserver the state observer which controls the enabled state of the control
+     * @param enabled the state observer which controls the enabled state of the control
      * @return this Builder instance
      */
-    Builder enabledObserver(StateObserver enabledObserver);
+    Builder enabled(StateObserver enabled);
 
     /**
      * @param mnemonic the control mnemonic

@@ -116,7 +116,7 @@ public class DefaultToggleControlTest {
   @Test
   void stateToggleControl() {
     State enabledState = State.state(false);
-    ToggleControl control = ToggleControl.builder(state).name("stateToggleControl").enabledObserver(enabledState).build();
+    ToggleControl control = ToggleControl.builder(state).name("stateToggleControl").enabled(enabledState).build();
     ButtonModel buttonModel = toggleButton()
             .toggleControl(control)
             .build()

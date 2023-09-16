@@ -76,7 +76,7 @@ public final class EventStateValue {
       }
     };
 
-    Utilities.linkToEnabledObserver(state, action);
+    Utilities.linkToEnabledState(state, action);
 
     System.out.println(action.isEnabled());// output: false
 
@@ -92,7 +92,7 @@ public final class EventStateValue {
 
     Control control = Control.builder(() ->
                     System.out.println("Hello Control"))
-            .enabledObserver(state)
+            .enabled(state)
             .build();
 
     System.out.println(control.isEnabled());// output: false

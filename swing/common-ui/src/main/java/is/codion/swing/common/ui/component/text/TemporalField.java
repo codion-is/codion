@@ -64,12 +64,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
     KeyEvents.builder(VK_UP)
             .action(Control.builder(this::increment)
-                    .enabledObserver(valueNotNullState)
+                    .enabled(valueNotNullState)
                     .build())
             .enable(this);
     KeyEvents.builder(VK_DOWN)
             .action(Control.builder(this::decrement)
-                    .enabledObserver(valueNotNullState)
+                    .enabled(valueNotNullState)
                     .build())
             .enable(this);
   }

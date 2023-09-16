@@ -129,7 +129,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  private final State activeState = State.state(!USE_FOCUS_ACTIVATION.get());
+  private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
 
   /**
    * The insert, update and delete confirmers
@@ -195,7 +195,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, ControlCode... controlCodes) {
     super(editModel, entityComponents);
     if (USE_FOCUS_ACTIVATION.get()) {
-      ACTIVE_STATE_GROUP.add(activeState);
+      ACTIVE_STATE_GROUP.add(active);
     }
     this.controlCodes = validateControlCodes(controlCodes);
     if (editModel.isEntityNew()) {
@@ -212,21 +212,21 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param listener a listener notified each time the active state changes
    */
   public final void addActiveListener(Consumer<Boolean> listener) {
-    activeState.addDataListener(listener);
+    active.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeActiveListener(Consumer<Boolean> listener) {
-    activeState.removeDataListener(listener);
+    active.removeDataListener(listener);
   }
 
   /**
    * @return true if this edit panel is active, enabled and ready to receive input
    */
   public final boolean isActive() {
-    return activeState.get();
+    return active.get();
   }
 
   /**
@@ -235,14 +235,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param active the active state
    */
   public final void setActive(boolean active) {
-    activeState.set(active);
+    this.active.set(active);
   }
 
   /**
    * @return a {@link StateObserver} indicating whether this panel is active
    */
   public final StateObserver active() {
-    return activeState.observer();
+    return active.observer();
   }
 
   /**
@@ -696,7 +696,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createRefreshControl() {
     return Control.builder(editModel()::refresh)
             .name(FrameworkMessages.refresh())
-            .enabledObserver(activeState)
+            .enabled(active)
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
@@ -706,7 +706,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createDeleteControl() {
     return Control.builder(this::deleteWithConfirmation)
             .name(FrameworkMessages.delete())
-            .enabledObserver(State.and(activeState,
+            .enabled(State.and(active,
                     editModel().deleteEnabled(),
                     editModel().entityNew().reversed()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
@@ -718,7 +718,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createClearControl() {
     return Control.builder(this::clearAndRequestFocus)
             .name(Messages.clear())
-            .enabledObserver(activeState)
+            .enabled(active)
             .description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
             .mnemonic(Messages.clearMnemonic())
             .smallIcon(FrameworkIcons.instance().clear())
@@ -728,7 +728,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createUpdateControl() {
     return Control.builder(this::updateWithConfirmation)
             .name(FrameworkMessages.update())
-            .enabledObserver(State.and(activeState,
+            .enabled(State.and(active,
                     editModel().updateEnabled(),
                     editModel().entityNew().reversed(),
                     editModel().modified()))
@@ -744,7 +744,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(this::insertWithConfirmation)
             .name(caption)
-            .enabledObserver(State.and(activeState, editModel().insertEnabled()))
+            .enabled(State.and(active, editModel().insertEnabled()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)
             .smallIcon(FrameworkIcons.instance().add())
@@ -808,7 +808,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     Control control = Control.builder(insertEntityCommand)
             .smallIcon(FrameworkIcons.instance().add())
             .description(MESSAGES.getString("insert_new"))
-            .enabledObserver(createComponentEnabledState(component))
+            .enabled(createComponentEnabledState(component))
             .build();
 
     KeyEvents.builder(VK_INSERT)
@@ -823,7 +823,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     Control control = Control.builder(editEntityCommand)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(MESSAGES.getString("edit_selected"))
-            .enabledObserver(State.and(createComponentEnabledState(component), selectionNonEmptyState))
+            .enabled(State.and(createComponentEnabledState(component), selectionNonEmptyState))
             .build();
 
     KeyEvents.builder(VK_INSERT)
@@ -1051,7 +1051,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
               .title(connectionProvider.entities().definition(editPanel.editModel().entityType()).caption())
-              .okEnabledObserver(editPanel.editModel().modified())
+              .okEnabled(editPanel.editModel().modified())
               .onShown(d -> invalidAttribute.optional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))

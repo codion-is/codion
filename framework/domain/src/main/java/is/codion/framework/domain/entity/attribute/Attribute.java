@@ -154,7 +154,6 @@ public interface Attribute<T> {
      * @return true if this attribute represents a {@link Entity} value.
      */
     boolean isEntity();
-
   }
 
   /**

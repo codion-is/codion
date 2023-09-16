@@ -14,8 +14,8 @@ final class DefaultControl extends AbstractControl {
 
   private final Command command;
 
-  DefaultControl(Command command, String name, StateObserver enabledObserver) {
-    super(name, enabledObserver);
+  DefaultControl(Command command, String name, StateObserver enabled) {
+    super(name, enabled);
     this.command = requireNonNull(command);
   }
 

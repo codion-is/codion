@@ -31,7 +31,7 @@ public final class ClientInstanceMonitor {
 
   private final RemoteClient remoteClient;
   private final EntityServerAdmin server;
-  private final State loggingEnabledState;
+  private final State loggingEnabled;
   private final StyledDocument logDocument = new DefaultStyledDocument();
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
@@ -45,7 +45,7 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
     this.remoteClient = requireNonNull(remoteClient);
     this.server = requireNonNull(server);
-    this.loggingEnabledState = State.state(server.isLoggingEnabled(remoteClient.clientId()));
+    this.loggingEnabled = State.state(server.isLoggingEnabled(remoteClient.clientId()));
     bindEvents();
   }
 
@@ -60,7 +60,7 @@ public final class ClientInstanceMonitor {
    * @return the {@link State} for controlling whether logging is enabled
    */
   public State loggingEnabled() {
-    return loggingEnabledState;
+    return loggingEnabled;
   }
 
   /**
@@ -123,7 +123,7 @@ public final class ClientInstanceMonitor {
   }
 
   private void bindEvents() {
-    loggingEnabledState.addDataListener(this::setLoggingEnabled);
+    loggingEnabled.addDataListener(this::setLoggingEnabled);
   }
 
   private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {

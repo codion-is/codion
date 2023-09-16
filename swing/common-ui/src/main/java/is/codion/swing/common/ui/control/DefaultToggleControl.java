@@ -20,10 +20,10 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
   /**
    * @param value the value to toggle
    * @param name the name
-   * @param enabledObserver an observer indicating when this control should be enabled
+   * @param enabled an observer indicating when this control should be enabled
    */
-  DefaultToggleControl(Value<Boolean> value, String name, StateObserver enabledObserver) {
-    super(name, enabledObserver);
+  DefaultToggleControl(Value<Boolean> value, String name, StateObserver enabled) {
+    super(name, enabled);
     this.value = requireNonNull(value, "value");
   }
 

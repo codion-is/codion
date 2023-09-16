@@ -22,7 +22,7 @@ final class CountryTablePanel extends EntityTablePanel {
     excludeFromEditMenu(Country.CAPITAL_FK);
     setControl(ControlCode.PRINT, Control.builder(this::viewCountryReport)
             .name("Country report")
-            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
+            .enabled(tableModel.selectionModel().selectionNotEmpty())
             .smallIcon(FrameworkIcons.instance().print())
             .build());
   }

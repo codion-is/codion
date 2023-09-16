@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
+import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemporalInputPanelTest {
@@ -62,7 +62,7 @@ public class TemporalInputPanelTest {
   void enabledState() throws InterruptedException {
     State enabledState = State.state();
     TemporalInputPanel<LocalDate> inputPanel = TemporalInputPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
-    linkToEnabledObserver(enabledState, inputPanel);
+    linkToEnabledState(enabledState, inputPanel);
     assertFalse(inputPanel.temporalField().isEnabled());
     Optional<JButton> calendarButton = inputPanel.calendarButton();
     assertTrue(calendarButton.isPresent());

@@ -16,7 +16,6 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilitiesTest {
@@ -29,7 +28,7 @@ public class UtilitiesTest {
     };
     State state = State.state();
 
-    linkToEnabledObserver(state, action);
+    Utilities.linkToEnabledState(state, action);
     assertFalse(action.isEnabled());
     state.set(true);
     assertTrue(action.isEnabled());
@@ -41,7 +40,7 @@ public class UtilitiesTest {
 
     State theState = state;
     try {
-      linkToEnabledObserver(theState, comp);
+      Utilities.linkToEnabledState(theState, comp);
       assertFalse(comp.isEnabled());
       theState.set(true);
       Thread.sleep(50);//due to EDT

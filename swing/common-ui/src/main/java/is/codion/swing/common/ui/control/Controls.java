@@ -168,10 +168,10 @@ public interface Controls extends Control {
     Builder keyStroke(KeyStroke keyStroke);
 
     /**
-     * @param enabledObserver the state observer dictating the enabled state of this controls instance
+     * @param enabled the state observer dictating the enabled state of this controls instance
      * @return this Builder instance
      */
-    Builder enabledObserver(StateObserver enabledObserver);
+    Builder enabled(StateObserver enabled);
 
     /**
      * @param smallIcon the icon

@@ -115,7 +115,7 @@ public final class ClientMonitorPanel extends JPanel {
     return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
                     .name("Disconnect")
-                    .enabledObserver(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
+                    .enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
             .build())
             .createPopupMenu();
   }

@@ -146,8 +146,8 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B toolTipText(String toolTipText);
 
   /**
-   * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabledObserver(StateObserver)}.
-   * Overridden by {@link #enabledObserver(StateObserver)}.
+   * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabled(StateObserver)}.
+   * Overridden by {@link #enabled(StateObserver)}.
    * @param enabled the enabled state
    * @return this builder instance
    * @see JComponent#setEnabled(boolean)
@@ -155,10 +155,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B enabled(boolean enabled);
 
   /**
-   * @param enabledObserver the state observer controlling the component enabled status
+   * @param enabled the state observer controlling the component enabled status
    * @return this builder instance
    */
-  B enabledObserver(StateObserver enabledObserver);
+  B enabled(StateObserver enabled);
 
   /**
    * @param popupMenuControl the control to base a popup menu on

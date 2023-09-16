@@ -16,19 +16,19 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 
   /**
    * Note that this is overridden by {@link #okAction(Action)}.
-   * @param okEnabledObserver the state observer controlling the ok enabled state
+   * @param okEnabled the state observer controlling the ok enabled state
    * @return this builder instance
    * @throws IllegalStateException in case an ok action has already been set
    */
-  OkCancelDialogBuilder okEnabledObserver(StateObserver okEnabledObserver);
+  OkCancelDialogBuilder okEnabled(StateObserver okEnabled);
 
   /**
    * Note that this is overridden by {@link #cancelAction(Action)}.
-   * @param cancelEnabledObserver the state observer controlling the cancel enabled state
+   * @param cancelEnabled the state observer controlling the cancel enabled state
    * @return this builder instance
    * @throws IllegalStateException in case a cancel action has already been set
    */
-  OkCancelDialogBuilder cancelEnabledObserver(StateObserver cancelEnabledObserver);
+  OkCancelDialogBuilder cancelEnabled(StateObserver cancelEnabled);
 
   /**
    * @param onOk called on ok pressed, before the dialog has been disposed
