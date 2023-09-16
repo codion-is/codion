@@ -321,7 +321,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     if (value == null) {
       return "";
     }
-    if (attribute.isTemporal()) {
+    if (attribute.type().isTemporal()) {
       DateTimeFormatter formatter = dateTimeFormatter();
       if (formatter != null) {
         return formatter.format((TemporalAccessor) value);
@@ -335,16 +335,16 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   private String defaultDateTimePattern() {
-    if (attribute.isLocalDate()) {
+    if (attribute.type().isLocalDate()) {
       return DATE_FORMAT.get();
     }
-    else if (attribute.isLocalTime()) {
+    else if (attribute.type().isLocalTime()) {
       return TIME_FORMAT.get();
     }
-    else if (attribute.isLocalDateTime()) {
+    else if (attribute.type().isLocalDateTime()) {
       return DATE_TIME_FORMAT.get();
     }
-    else if (attribute.isOffsetDateTime()) {
+    else if (attribute.type().isOffsetDateTime()) {
       return DATE_TIME_FORMAT.get();
     }
 
@@ -506,7 +506,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     @Override
     public B defaultValueSupplier(ValueSupplier<T> supplier) {
       if (supplier != null) {
-        attribute.validateType(supplier.get());
+        attribute.type().validateType(supplier.get());
       }
       this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
       return (B) this;
@@ -520,7 +520,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public B maximumLength(int maximumLength) {
-      if (!attribute.isString()) {
+      if (!attribute.type().isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string attributes: " + attribute);
       }
       if (maximumLength <= 0) {
@@ -542,7 +542,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public B valueRange(Number minimumValue, Number maximumValue) {
-      if (!attribute.isNumerical()) {
+      if (!attribute.type().isNumerical()) {
         throw new IllegalStateException("valueRange is only applicable to numerical attributes");
       }
       if (maximumValue != null && minimumValue != null && maximumValue.doubleValue() < minimumValue.doubleValue()) {
@@ -555,7 +555,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B numberFormatGrouping(boolean numberFormatGrouping) {
-      if (!attribute.isNumerical()) {
+      if (!attribute.type().isNumerical()) {
         throw new IllegalStateException("numberFormatGrouping is only applicable to numerical attributes: " + attribute);
       }
       ((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
@@ -577,10 +577,10 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     @Override
     public final B format(Format format) {
       requireNonNull(format, "format");
-      if (attribute.isNumerical() && !(format instanceof NumberFormat)) {
+      if (attribute.type().isNumerical() && !(format instanceof NumberFormat)) {
         throw new IllegalArgumentException("NumberFormat required for numerical attribute: " + attribute);
       }
-      if (attribute.isTemporal()) {
+      if (attribute.type().isTemporal()) {
         throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal attributes: " + attribute);
       }
       this.format = format;
@@ -590,7 +590,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     @Override
     public final B dateTimePattern(String dateTimePattern) {
       requireNonNull(dateTimePattern, "dateTimePattern");
-      if (!attribute.isTemporal()) {
+      if (!attribute.type().isTemporal()) {
         throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute);
       }
       if (this.localeDateTimePattern != null) {
@@ -604,7 +604,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     @Override
     public final B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern) {
       requireNonNull(localeDateTimePattern, "localeDateTimePattern");
-      if (!attribute.isTemporal()) {
+      if (!attribute.type().isTemporal()) {
         throw new IllegalStateException("localeDateTimePattern is only applicable to temporal attributes: " + attribute);
       }
       if (this.dateTimePattern != null) {
@@ -619,7 +619,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B maximumFractionDigits(int maximumFractionDigits) {
-      if (!attribute.isDecimal()) {
+      if (!attribute.type().isDecimal()) {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal attributes: " + attribute);
       }
       ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
@@ -628,7 +628,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B decimalRoundingMode(RoundingMode decimalRoundingMode) {
-      if (!attribute.isDecimal()) {
+      if (!attribute.type().isDecimal()) {
         throw new IllegalStateException("decimalRoundingMode is only applicable to decimal attributes: " + attribute);
       }
       this.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
@@ -642,10 +642,10 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     private static Format defaultFormat(Attribute<?> attribute) {
-      if (attribute.isNumerical()) {
+      if (attribute.type().isNumerical()) {
         NumberFormat numberFormat = defaultNumberFormat(attribute);
-        if (attribute.isDecimal()) {
-          ((DecimalFormat) numberFormat).setParseBigDecimal(attribute.isBigDecimal());
+        if (attribute.type().isDecimal()) {
+          ((DecimalFormat) numberFormat).setParseBigDecimal(attribute.type().isBigDecimal());
           numberFormat.setMaximumFractionDigits(AttributeDefinition.MAXIMUM_FRACTION_DIGITS.get());
         }
 
@@ -657,7 +657,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
       boolean grouping = NUMBER_FORMAT_GROUPING.get();
-      if (attribute.isInteger() || attribute.isLong()) {
+      if (attribute.type().isInteger() || attribute.type().isLong()) {
         return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
       }
 
@@ -694,10 +694,10 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     private static <T> Comparator<T> defaultComparator(Attribute<T> attribute) {
-      if (attribute.isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
+      if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
         return (Comparator<T>) LEXICAL_COMPARATOR;
       }
-      if (Comparable.class.isAssignableFrom(attribute.valueClass())) {
+      if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
         return (Comparator<T>) COMPARABLE_COMPARATOR;
       }
 
@@ -705,17 +705,17 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     private Number defaultMinimumValue() {
-      if (attribute.isNumerical()) {
-        if (attribute.isShort()) {
+      if (attribute.type().isNumerical()) {
+        if (attribute.type().isShort()) {
           return Short.MIN_VALUE;
         }
-        if (attribute.isInteger()) {
+        if (attribute.type().isInteger()) {
           return Integer.MIN_VALUE;
         }
-        if (attribute.isLong()) {
+        if (attribute.type().isLong()) {
           return Long.MIN_VALUE;
         }
-        if (attribute.isDouble()) {
+        if (attribute.type().isDouble()) {
           return -Double.MAX_VALUE;
         }
       }
@@ -724,17 +724,17 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     private Number defaultMaximumValue() {
-      if (attribute.isNumerical()) {
-        if (attribute.isShort()) {
+      if (attribute.type().isNumerical()) {
+        if (attribute.type().isShort()) {
           return Short.MAX_VALUE;
         }
-        if (attribute.isInteger()) {
+        if (attribute.type().isInteger()) {
           return Integer.MAX_VALUE;
         }
-        if (attribute.isLong()) {
+        if (attribute.type().isLong()) {
           return Long.MAX_VALUE;
         }
-        if (attribute.isDouble()) {
+        if (attribute.type().isDouble()) {
           return Double.MAX_VALUE;
         }
       }

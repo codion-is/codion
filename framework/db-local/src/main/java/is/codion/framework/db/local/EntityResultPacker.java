@@ -97,7 +97,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
   private static List<ColumnDefinition<byte[]>> initializeLazyLoadedBlobColumns(EntityDefinition entityDefinition) {
     return entityDefinition.columnDefinitions().stream()
-            .filter(column -> column.attribute().isByteArray())
+            .filter(column -> column.attribute().type().isByteArray())
             .map(column -> (ColumnDefinition<byte[]>) column)
             .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
             .collect(Collectors.toList());

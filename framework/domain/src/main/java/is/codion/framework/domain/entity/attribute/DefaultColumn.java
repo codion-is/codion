@@ -223,7 +223,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
     @Override
     public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
                                                                                                                   C trueValue, C falseValue) {
-      if (!isBoolean()) {
+      if (!type().isBoolean()) {
         throw new IllegalStateException(column + " is not a boolean column");
       }
 
@@ -233,7 +233,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
 
     @Override
     public BlobColumnDefinition.Builder blobColumn() {
-      if (!isByteArray()) {
+      if (!type().isByteArray()) {
         throw new IllegalStateException(column + " is not a byte array column");
       }
 
@@ -248,7 +248,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      * @return a new {@link ColumnDefinition.Builder}
      */
     public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn() {
-      if (!isTemporal()) {
+      if (!type().isTemporal()) {
         throw new IllegalArgumentException("Column " + column + " is not a temporal column");
       }
 
@@ -263,7 +263,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      * @return a new {@link ColumnDefinition.Builder}
      */
     public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn() {
-      if (!isTemporal()) {
+      if (!type().isTemporal()) {
         throw new IllegalArgumentException("Column " + column + " is not a temporal column");
       }
 
@@ -278,7 +278,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      * @throws IllegalArgumentException in case column is not a string attribute
      */
     public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn() {
-      if (!isString()) {
+      if (!type().isString()) {
         throw new IllegalArgumentException("Column " + column + " is not a string column");
       }
 
@@ -293,7 +293,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      * @throws IllegalArgumentException in case column is not a string attribute
      */
     public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn() {
-      if (!isString()) {
+      if (!type().isString()) {
         throw new IllegalArgumentException("Column " + column + " is not a string column");
       }
 

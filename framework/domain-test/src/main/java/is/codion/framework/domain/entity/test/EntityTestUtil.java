@@ -107,46 +107,46 @@ public final class EntityTestUtil {
         return randomItem((ItemColumnDefinition<T>) attributeDefinition);
       }
       Attribute<?> attribute = attributeDefinition.attribute();
-      if (attribute.isBoolean()) {
+      if (attribute.type().isBoolean()) {
         return (T) Boolean.valueOf(RANDOM.nextBoolean());
       }
-      if (attribute.isCharacter()) {
+      if (attribute.type().isCharacter()) {
         return (T) Character.valueOf((char) RANDOM.nextInt());
       }
-      if (attribute.isLocalDate()) {
+      if (attribute.type().isLocalDate()) {
         return (T) LocalDate.now();
       }
-      if (attribute.isLocalDateTime()) {
+      if (attribute.type().isLocalDateTime()) {
         return (T) LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
       }
-      if (attribute.isOffsetDateTime()) {
+      if (attribute.type().isOffsetDateTime()) {
         return (T) OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
       }
-      if (attribute.isLocalTime()) {
+      if (attribute.type().isLocalTime()) {
         return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
       }
-      if (attribute.isDouble()) {
+      if (attribute.type().isDouble()) {
         return (T) Double.valueOf(randomDouble(attributeDefinition));
       }
-      if (attribute.isBigDecimal()) {
+      if (attribute.type().isBigDecimal()) {
         return (T) BigDecimal.valueOf(randomDouble(attributeDefinition));
       }
-      if (attribute.isInteger()) {
+      if (attribute.type().isInteger()) {
         return (T) Integer.valueOf(randomInteger(attributeDefinition));
       }
-      if (attribute.isLong()) {
+      if (attribute.type().isLong()) {
         return (T) Long.valueOf(randomLong(attributeDefinition));
       }
-      if (attribute.isShort()) {
+      if (attribute.type().isShort()) {
         return (T) Short.valueOf(randomShort(attributeDefinition));
       }
-      if (attribute.isString()) {
+      if (attribute.type().isString()) {
         return (T) randomString(attributeDefinition);
       }
-      if (attribute.isByteArray()) {
+      if (attribute.type().isByteArray()) {
         return (T) randomBlob(attributeDefinition);
       }
-      if (attribute.isEnum()) {
+      if (attribute.type().isEnum()) {
         return randomEnum(attribute);
       }
 
@@ -209,7 +209,7 @@ public final class EntityTestUtil {
   }
 
   private static <T> T randomEnum(Attribute<?> attribute) {
-    Object[] enumConstants = attribute.valueClass().getEnumConstants();
+    Object[] enumConstants = attribute.type().valueClass().getEnumConstants();
 
     return (T) enumConstants[RANDOM.nextInt(enumConstants.length)];
   }

@@ -51,7 +51,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
   protected String toString(String columnExpression) {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
-    boolean caseInsensitiveString = column().isString() && !caseSensitive();
+    boolean caseInsensitiveString = column().type().isString() && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }

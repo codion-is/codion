@@ -82,10 +82,10 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     if (definition instanceof ItemColumnDefinition) {
       performItemValidation(entity, (ItemColumnDefinition<T>) definition);
     }
-    if (attribute.isNumerical()) {
+    if (attribute.type().isNumerical()) {
       performRangeValidation(entity, (Attribute<Number>) attribute);
     }
-    else if (attribute.isString()) {
+    else if (attribute.type().isString()) {
       performLengthValidation(entity, (Attribute<String>) attribute);
     }
   }

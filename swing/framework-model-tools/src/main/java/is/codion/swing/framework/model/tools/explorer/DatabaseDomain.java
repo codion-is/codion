@@ -99,7 +99,7 @@ final class DatabaseDomain extends DefaultDomain {
     String caption = caption(metadataColumn.columnName());
     Column<?> column = column(entityType, metadataColumn);
     ColumnDefinition.Builder<?, ?> builder;
-    if (column.isByteArray()) {
+    if (column.type().isByteArray()) {
       builder = column.define().blobColumn().caption(caption);
     }
     else {
@@ -111,10 +111,10 @@ final class DatabaseDomain extends DefaultDomain {
     if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
-    if (column.isString() && metadataColumn.columnSize() > 0) {
+    if (column.type().isString() && metadataColumn.columnSize() > 0) {
       builder.maximumLength(metadataColumn.columnSize());
     }
-    if (column.isDecimal() && metadataColumn.decimalDigits() >= 1) {
+    if (column.type().isDecimal() && metadataColumn.decimalDigits() >= 1) {
       builder.maximumFractionDigits(metadataColumn.decimalDigits());
     }
     if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.defaultValue() != null) {

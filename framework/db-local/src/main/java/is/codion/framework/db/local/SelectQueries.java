@@ -276,7 +276,7 @@ final class SelectQueries {
 
     private Set<ColumnDefinition<?>> initializeLazyLoadedBlobColumnDefinitions() {
       return definition.columnDefinitions().stream()
-              .filter(column -> column.attribute().isByteArray())
+              .filter(column -> column.attribute().type().isByteArray())
               .map(column -> (ColumnDefinition<byte[]>) column)
               .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
               .collect(Collectors.toSet());

@@ -1224,10 +1224,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
-      if (requireNonNull(attribute).isEntity()) {
+      if (requireNonNull(attribute).type().isEntity()) {
         return Optional.empty();
       }
-      if (!Comparable.class.isAssignableFrom(attribute.valueClass())) {
+      if (!Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
         return Optional.empty();
       }
 
@@ -1236,8 +1236,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         return Optional.empty();
       }
 
-      return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
-              .operators(operators(attribute.valueClass()))
+      return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+              .operators(operators(attribute.type().valueClass()))
               .format(attributeDefinition.format())
               .dateTimePattern(attributeDefinition.dateTimePattern())
               .build());
@@ -1265,7 +1265,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
       AttributeDefinition<?> attributeDefinition = entityDefinition.attributeDefinition(attribute);
-      if (attribute.isNumerical() && !(attributeDefinition instanceof ItemColumnDefinition)) {
+      if (attribute.type().isNumerical() && !(attributeDefinition instanceof ItemColumnDefinition)) {
         return Optional.of(summaryValueProvider(attribute, tableModel, format));
       }
 

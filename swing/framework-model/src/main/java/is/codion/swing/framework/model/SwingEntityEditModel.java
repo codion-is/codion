@@ -205,8 +205,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     FilteredComboBoxModel<T> model = createColumnComboBoxModel(column);
     if (isNullable(column)) {
       model.setIncludeNull(true);
-      if (column.valueClass().isInterface()) {
-        model.setNullItem(ProxyBuilder.builder(column.valueClass())
+      if (column.type().valueClass().isInterface()) {
+        model.setNullItem(ProxyBuilder.builder(column.type().valueClass())
                 .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
                 .build());
       }
@@ -292,7 +292,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
     FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
-    model.setItemSupplier(column.isEnum() ?
+    model.setItemSupplier(column.type().isEnum() ?
             new EnumAttributeItemSupplier<>(column) :
             new ColumnItemSupplier<>(connectionProvider(), column));
 
@@ -304,7 +304,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     private final Collection<T> items;
 
     private EnumAttributeItemSupplier(Column<T> column) {
-      items = asList(column.valueClass().getEnumConstants());
+      items = asList(column.type().valueClass().getEnumConstants());
     }
 
     @Override

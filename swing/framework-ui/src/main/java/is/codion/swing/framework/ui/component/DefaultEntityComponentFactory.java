@@ -29,12 +29,12 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     }
 
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
-    if (attribute.isTemporal()) {
+    if (attribute.type().isTemporal()) {
       return (ComponentValue<T, C>) inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
               .initialValue((Temporal) initialValue)
               .buildValue();
     }
-    if (attribute.isByteArray()) {
+    if (attribute.type().isByteArray()) {
       return (ComponentValue<T, C>) fileInputPanel()
               .buildValue();
     }

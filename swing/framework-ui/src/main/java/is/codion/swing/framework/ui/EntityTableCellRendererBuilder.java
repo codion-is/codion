@@ -26,8 +26,8 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
   }
 
   private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
-    super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().valueClass(),
-            attributeDefinition.attribute().isBoolean() && !(attributeDefinition instanceof ItemColumnDefinition));
+    super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass(),
+            attributeDefinition.attribute().type().isBoolean() && !(attributeDefinition instanceof ItemColumnDefinition));
     tableModel.entityDefinition().attributeDefinition(attributeDefinition.attribute());
     displayValueProvider(new DefaultDisplayValueProvider(attributeDefinition));
     cellColorProvider(new EntityCellColorProvider(tableModel));

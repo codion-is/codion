@@ -1883,7 +1883,7 @@ public class EntityTablePanel extends JPanel {
       requireNonNull(attribute, "attribute");
       requireNonNull(editModel, "editModel");
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
-      if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.isString()) {
+      if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.type().isString()) {
         //special handling for non-item based String attributes, text input panel instead of a text field
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)

@@ -49,7 +49,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
       return Optional.empty();
     }
 
-    return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
+    return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
             .operators(operators(attribute))
             .format(definition.format())
             .dateTimePattern(definition.dateTimePattern())
@@ -75,7 +75,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
     if (attribute instanceof ForeignKey) {
       return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
     }
-    if (attribute.isBoolean()) {
+    if (attribute.type().isBoolean()) {
       return Collections.singletonList(Operator.EQUAL);
     }
 

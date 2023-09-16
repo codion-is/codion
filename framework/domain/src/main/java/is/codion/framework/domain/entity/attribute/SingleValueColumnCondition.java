@@ -75,7 +75,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
       return identifier + (notEqual ? " is not null" : " is null");
     }
 
-    boolean isString = column().isString();
+    boolean isString = column().type().isString();
     boolean caseInsensitiveString = isString && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
