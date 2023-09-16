@@ -73,22 +73,22 @@ public final class Store extends DefaultDomain {
   private void customer() {
     // tag::customer[]
     add(Customer.TYPE.define(
-            Customer.ID
+            Customer.ID.define()
                     .primaryKey(),
-            Customer.FIRST_NAME
+            Customer.FIRST_NAME.define()
                     .column()
                     .caption("First name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.LAST_NAME
+            Customer.LAST_NAME.define()
                     .column()
                     .caption("Last name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.EMAIL
+            Customer.EMAIL.define()
                     .column()
                     .caption("Email"),
-            Customer.IS_ACTIVE
+            Customer.IS_ACTIVE.define()
                     .column()
                     .caption("Is active")
                     .columnHasDefaultValue(true)
@@ -104,19 +104,19 @@ public final class Store extends DefaultDomain {
   private void address() {
     // tag::address[]
     add(Address.TYPE.define(
-            Address.ID
+            Address.ID.define()
                     .primaryKey(),
-            Address.STREET
+            Address.STREET.define()
                     .column()
                     .caption("Street")
                     .nullable(false)
                     .maximumLength(120),
-            Address.CITY
+            Address.CITY.define()
                     .column()
                     .caption("City")
                     .nullable(false)
                     .maximumLength(50),
-            Address.VALID
+            Address.VALID.define()
                     .column()
                     .caption("Valid")
                     .columnHasDefaultValue(true)
@@ -135,18 +135,18 @@ public final class Store extends DefaultDomain {
   private void customerAddress() {
     // tag::customerAddress[]
     add(CustomerAddress.TYPE.define(
-            CustomerAddress.ID
+            CustomerAddress.ID.define()
                     .primaryKey(),
-            CustomerAddress.CUSTOMER_ID
+            CustomerAddress.CUSTOMER_ID.define()
                     .column()
                     .nullable(false),
-            CustomerAddress.CUSTOMER_FK
+            CustomerAddress.CUSTOMER_FK.define()
                     .foreignKey()
                     .caption("Customer"),
-            CustomerAddress.ADDRESS_ID
+            CustomerAddress.ADDRESS_ID.define()
                     .column()
                     .nullable(false),
-            CustomerAddress.ADDRESS_FK
+            CustomerAddress.ADDRESS_FK.define()
                     .foreignKey()
                     .caption("Address"))
             .keyGenerator(identity())

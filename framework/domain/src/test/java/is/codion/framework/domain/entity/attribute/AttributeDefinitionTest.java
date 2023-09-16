@@ -30,22 +30,23 @@ public final class AttributeDefinitionTest {
   @Test
   void derivedAttribute() {
     Attribute<Integer> derived = ENTITY_TYPE.integerAttribute("derived");
-    assertThrows(IllegalArgumentException.class, () -> derived.derivedAttribute(linkedValues -> null));
+    assertThrows(IllegalArgumentException.class, () -> derived.define()
+            .derivedAttribute(linkedValues -> null));
     Attribute<Integer> source = ENTITY_TYPE.integerColumn("source");
-    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
-            linkedValues -> null, source)
+    assertThrows(UnsupportedOperationException.class, () -> derived.define()
+            .derivedAttribute(linkedValues -> null, source)
             .nullable(false));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
-            linkedValues -> null, source)
+    assertThrows(UnsupportedOperationException.class, () -> derived.define()
+            .derivedAttribute(linkedValues -> null, source)
             .defaultValue(10));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
-            linkedValues -> null, source)
+    assertThrows(UnsupportedOperationException.class, () -> derived.define()
+            .derivedAttribute(linkedValues -> null, source)
             .maximumLength(10));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
-            linkedValues -> null, source)
+    assertThrows(UnsupportedOperationException.class, () -> derived.define()
+            .derivedAttribute(linkedValues -> null, source)
             .minimumValue(10));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
-            linkedValues -> null, source)
+    assertThrows(UnsupportedOperationException.class, () -> derived.define()
+            .derivedAttribute(linkedValues -> null, source)
             .valueRange(10, 20));
   }
 
@@ -99,114 +100,114 @@ public final class AttributeDefinitionTest {
 
   @Test
   void intColumnWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("attribute").column()
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column()
             .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().datePattern())));
   }
 
   @Test
   void doubleColumnWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.doubleColumn("attribute").column()
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.doubleColumn("attribute").define().column()
             .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().datePattern())));
   }
 
   @Test
   void nonTemporalColumnWithFormatPatter() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").column().dateTimePattern("dd-MM-yy"));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().dateTimePattern("dd-MM-yy"));
   }
 
   @Test
   void nonDecimalWithRoundingMode() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").column().decimalRoundingMode(RoundingMode.CEILING));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().decimalRoundingMode(RoundingMode.CEILING));
   }
 
   @Test
   void dateColumnWithNumberFormat() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").column().format(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
   void timestampColumnWithNumberFormat() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateTimeColumn("attribute").column().format(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateTimeColumn("attribute").define().column().format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
   void setMaximumFractionDigitsNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").column().maximumFractionDigits(5));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().maximumFractionDigits(5));
   }
 
   @Test
   void maximumFractionDigitsNotNumerical() {
-    assertEquals(-1, ENTITY_TYPE.localDateColumn("attribute").column().build().maximumFractionDigits());
+    assertEquals(-1, ENTITY_TYPE.localDateColumn("attribute").define().column().build().maximumFractionDigits());
   }
 
   @Test
   void setNumberFormatGroupingNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").column().numberFormatGrouping(false));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().numberFormatGrouping(false));
   }
 
   @Test
   void setRangeNonNumerical() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").column().valueRange(5, 6));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().valueRange(5, 6));
   }
 
   @Test
   void setMaximumLengthNonString() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.stringColumn("attribute").column().maximumFractionDigits(5));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.stringColumn("attribute").define().column().maximumFractionDigits(5));
   }
 
   @Test
   void minimumMaximumValue() {
-    ColumnDefinition.Builder<Double, ?> builder = ENTITY_TYPE.doubleColumn("attribute").column();
+    ColumnDefinition.Builder<Double, ?> builder = ENTITY_TYPE.doubleColumn("attribute").define().column();
     assertThrows(IllegalArgumentException.class, () -> builder.valueRange(5, 4));
   }
 
   @Test
   void setColumnName() {
-    assertEquals("hello", ((ColumnDefinition<?>) ENTITY_TYPE.integerColumn("attribute").column().columnName("hello").build()).columnName());
+    assertEquals("hello", ((ColumnDefinition<?>) ENTITY_TYPE.integerColumn("attribute").define().column().columnName("hello").build()).columnName());
   }
 
   @Test
   void setColumnNameNull() {
-    assertThrows(NullPointerException.class, () -> ENTITY_TYPE.integerColumn("attribute").column().columnName(null));
+    assertThrows(NullPointerException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().columnName(null));
   }
 
   @Test
   void description() {
     final String description = "Here is a description";
-    AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute").column().description(description).build();
+    AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute").define().column().description(description).build();
     assertEquals(description, attributeDefinition.description());
   }
 
   @Test
   void mnemonic() {
     final Character mnemonic = 'M';
-    AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute").column().mnemonic(mnemonic).build();
+    AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute").define().column().mnemonic(mnemonic).build();
     assertEquals(mnemonic, attributeDefinition.mnemonic());
   }
 
   @Test
   void subqueryColumns() {
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").readOnly(true));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").readOnly(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").updatable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").insertable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").columnExpression("expression"));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").readOnly(true));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").readOnly(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").updatable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").insertable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").columnExpression("expression"));
   }
 
   @Test
   void stringColumnNegativeMaxLength() {
-    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.stringColumn("attribute").column().maximumLength(-4));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.stringColumn("attribute").define().column().maximumLength(-4));
   }
 
   @Test
   void searchColumnNonVarchar() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").column().searchColumn(true));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().searchColumn(true));
   }
 
   @Test
   void i18n() throws IOException, ClassNotFoundException {
     AttributeDefinition<Integer> attributeDefinition =
-            ENTITY_TYPE.integerColumn("i18n").column()
+            ENTITY_TYPE.integerColumn("i18n").define().column()
                     .captionResourceKey("test").build();
 
     Locale.setDefault(new Locale("en", "EN"));
@@ -217,20 +218,20 @@ public final class AttributeDefinitionTest {
     Locale.setDefault(new Locale("is", "IS"));
     assertEquals("Prufa", attributeDefinition.caption());
 
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE2.integerColumn("i18n").column()
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE2.integerColumn("i18n").define().column()
             .captionResourceKey("key"));
 
-    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("i18n").column()
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("i18n").define().column()
             .captionResourceKey("invalid_key"));
   }
 
   @Test
   void itemColumn() {
     List<Item<Integer>> itemsDuplicate = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
-    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").column().items(itemsDuplicate));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").define().column().items(itemsDuplicate));
 
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
-    ItemColumnDefinition<Integer> attribute = (ItemColumnDefinition<Integer>) ENTITY_TYPE.integerColumn("item").column().items(items).build();
+    ItemColumnDefinition<Integer> attribute = (ItemColumnDefinition<Integer>) ENTITY_TYPE.integerColumn("item").define().column().items(items).build();
     assertFalse(attribute.isValid(4));
     assertThrows(IllegalArgumentException.class, () -> attribute.item(4));
     assertTrue(attribute.isValid(null));

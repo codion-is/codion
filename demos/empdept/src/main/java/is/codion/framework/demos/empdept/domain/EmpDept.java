@@ -138,19 +138,19 @@ public final class EmpDept extends DefaultDomain {
   void department() {
     /*Defining the entity Department.TYPE*/
     add(Department.TYPE.define(
-            Department.ID
+            Department.ID.define()
                     .primaryKey()
                     .caption("Department no.")
                     .updatable(true)
                     .nullable(false)
                     .beanProperty("id"),
-            Department.NAME
+            Department.NAME.define()
                     .column()
                     .caption("Department name")
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
-            Department.LOCATION
+            Department.LOCATION.define()
                     .column()
                     .caption("Location")
                     .maximumLength(13)
@@ -166,49 +166,49 @@ public final class EmpDept extends DefaultDomain {
   void employee() {
     /*Defining the entity Employee.TYPE*/
     add(Employee.TYPE.define(
-            Employee.ID
+            Employee.ID.define()
                     .primaryKey()
                     .caption("Employee no.")
                     .beanProperty("id"),
-            Employee.NAME
+            Employee.NAME.define()
                     .column()
                     .caption("Name")
                     .searchColumn(true)
                     .maximumLength(10)
                     .nullable(false)
                     .beanProperty("name"),
-            Employee.DEPARTMENT
+            Employee.DEPARTMENT.define()
                     .column()
                     .nullable(false),
-            Employee.DEPARTMENT_FK
+            Employee.DEPARTMENT_FK.define()
                     .foreignKey()
                     .caption("Department")
                     .beanProperty("department"),
-            Employee.JOB
+            Employee.JOB.define()
                     .column()
                     .caption("Job")
                     .items(Employee.JOB_VALUES)
                     .beanProperty("job"),
-            Employee.SALARY
+            Employee.SALARY.define()
                     .column()
                     .caption("Salary")
                     .nullable(false)
                     .valueRange(900, 10000)
                     .maximumFractionDigits(2)
                     .beanProperty("salary"),
-            Employee.COMMISSION
+            Employee.COMMISSION.define()
                     .column()
                     .caption("Commission")
                     .valueRange(100, 2000)
                     .maximumFractionDigits(2)
                     .beanProperty("commission"),
-            Employee.MGR
+            Employee.MGR.define()
                     .column(),
-            Employee.MGR_FK
+            Employee.MGR_FK.define()
                     .foreignKey()
                     .caption("Manager")
                     .beanProperty("manager"),
-            Employee.HIREDATE
+            Employee.HIREDATE.define()
                     .column()
                     .caption("Hiredate")
                     .nullable(false)
@@ -217,7 +217,7 @@ public final class EmpDept extends DefaultDomain {
                             .delimiterDash()
                             .yearTwoDigits()
                             .build()),
-            Employee.DEPARTMENT_LOCATION
+            Employee.DEPARTMENT_LOCATION.define()
                     .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption("Location"))
             .keyGenerator(sequence("scott.emp_seq"))

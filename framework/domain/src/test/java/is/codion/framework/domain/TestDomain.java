@@ -63,9 +63,12 @@ public final class TestDomain extends DefaultDomain {
 
   void compositeMaster() {
     add(CompositeMaster.TYPE.define(
-            CompositeMaster.COMPOSITE_MASTER_ID.column().primaryKeyIndex(0).nullable(true),
-            CompositeMaster.COMPOSITE_MASTER_ID_2.column().primaryKeyIndex(1),
-            CompositeMaster.COMPOSITE_MASTER_ID_3.column().primaryKeyIndex(2)));
+            CompositeMaster.COMPOSITE_MASTER_ID.define()
+                    .column().primaryKeyIndex(0).nullable(true),
+            CompositeMaster.COMPOSITE_MASTER_ID_2.define()
+                    .column().primaryKeyIndex(1),
+            CompositeMaster.COMPOSITE_MASTER_ID_3.define()
+                    .column().primaryKeyIndex(2)));
   }
 
   public interface CompositeDetail {
@@ -82,10 +85,14 @@ public final class TestDomain extends DefaultDomain {
 
   void compositeDetail() {
     add(CompositeDetail.TYPE.define(
-            CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.column().primaryKeyIndex(0),
-            CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.column().primaryKeyIndex(1),
-            CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.column().primaryKeyIndex(2),
-            CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.foreignKey()
+            CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.define()
+                    .column().primaryKeyIndex(0),
+            CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.define()
+                    .column().primaryKeyIndex(1),
+            CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.define()
+                    .column().primaryKeyIndex(2),
+            CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.define()
+                    .foreignKey()
                     .caption("master")
                     .readOnly(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3)));
   }
@@ -97,7 +104,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void superEntity() {
-    add(Super.TYPE.define(Super.ID.primaryKey()));
+    add(Super.TYPE.define(Super.ID.define().primaryKey()));
   }
 
   public interface Master extends Entity {
@@ -114,12 +121,16 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKey()
+            Master.ID.define()
+                    .primaryKey()
                     .beanProperty("id"),
-            Master.NAME.column()
+            Master.NAME.define()
+                    .column()
                     .beanProperty("name"),
-            Master.CODE.column(),
-            Master.READ_ONLY.column()
+            Master.CODE.define()
+                    .column(),
+            Master.READ_ONLY.define()
+                    .column()
                     .readOnly(true))
             .comparator(new MasterComparator())
             .stringFactory(Master.NAME));
@@ -139,12 +150,13 @@ public final class TestDomain extends DefaultDomain {
 
   void master2() {
     add(Master2.TYPE.define(
-            Master2.ID_1.column().primaryKeyIndex(0),
-            Master2.ID_2.column().primaryKeyIndex(1),
-            Master2.SUPER_ID.column(),
-            Master2.SUPER_FK.foreignKey().caption("Super"),
-            Master2.NAME.column(),
-            Master2.CODE.column())
+            Master2.ID_1.define().column().primaryKeyIndex(0),
+            Master2.ID_2.define().column().primaryKeyIndex(1),
+            Master2.SUPER_ID.define().column(),
+            Master2.SUPER_FK.define()
+                    .foreignKey().caption("Super"),
+            Master2.NAME.define().column(),
+            Master2.CODE.define().column())
             .comparator(Comparator.comparing(o -> o.get(Master2.CODE)))
             .stringFactory(Master2.NAME));
   }
@@ -180,39 +192,55 @@ public final class TestDomain extends DefaultDomain {
 
   void detail2() {
     add(Detail2.TYPE.define(
-            Detail2.ID.primaryKey(),
-            Detail2.INT.column()
+            Detail2.ID.define()
+                    .primaryKey(),
+            Detail2.INT.define()
+                    .column()
                     .caption(Detail2.INT.name()),
-            Detail2.DOUBLE.column()
+            Detail2.DOUBLE.define()
+                    .column()
                     .caption(Detail2.DOUBLE.name()),
-            Detail2.STRING.column()
+            Detail2.STRING.define()
+                    .column()
                     .caption("Detail2 string"),
-            Detail2.DATE.column()
+            Detail2.DATE.define()
+                    .column()
                     .caption(Detail2.DATE.name()),
-            Detail2.TIMESTAMP.column()
+            Detail2.TIMESTAMP.define()
+                    .column()
                     .caption(Detail2.TIMESTAMP.name()),
-            Detail2.BOOLEAN.column()
+            Detail2.BOOLEAN.define()
+                    .column()
                     .caption(Detail2.BOOLEAN.name())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean column"),
-            Detail2.BOOLEAN_NULLABLE.column()
+            Detail2.BOOLEAN_NULLABLE.define()
+                    .column()
                     .caption(Detail2.BOOLEAN_NULLABLE.name())
                     .defaultValue(true),
-            Detail2.MASTER_ID_1.column(),
-            Detail2.MASTER_ID_2.column(),
-            Detail2.MASTER_FK.foreignKey()
+            Detail2.MASTER_ID_1.define()
+                    .column(),
+            Detail2.MASTER_ID_2.define()
+                    .column(),
+            Detail2.MASTER_FK.define()
+                    .foreignKey()
                     .caption(Detail2.MASTER_FK.name()),
-            Detail2.MASTER_VIA_CODE_FK.foreignKey()
+            Detail2.MASTER_VIA_CODE_FK.define()
+                    .foreignKey()
                     .caption(Detail2.MASTER_FK.name()),
-            Detail2.MASTER_NAME.denormalizedAttribute(Detail2.MASTER_FK, Master.NAME)
+            Detail2.MASTER_NAME.define()
+                    .denormalizedAttribute(Detail2.MASTER_FK, Master.NAME)
                     .caption(Detail2.MASTER_NAME.name()),
-            Detail2.MASTER_CODE.column()
+            Detail2.MASTER_CODE.define()
+                    .column()
                     .caption(Detail2.MASTER_CODE.name()),
-            Detail2.INT_VALUE_LIST.column()
+            Detail2.INT_VALUE_LIST.define()
+                    .column()
                     .items(ITEMS)
                     .caption(Detail2.INT_VALUE_LIST.name()),
-            Detail2.INT_DERIVED.derivedAttribute(linkedValues -> {
+            Detail2.INT_DERIVED.define()
+                    .derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail2.INT);
               if (intValue == null) {
                 return null;
@@ -281,49 +309,66 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKey()
+            Detail.ID.define()
+                    .primaryKey()
                     .beanProperty("id"),
-            Detail.SHORT.column()
+            Detail.SHORT.define()
+                    .column()
                     .caption(Detail.SHORT.name()),
-            Detail.INT.column()
+            Detail.INT.define()
+                    .column()
                     .caption(Detail.INT.name()),
-            Detail.DOUBLE.column()
+            Detail.DOUBLE.define()
+                    .column()
                     .caption(Detail.DOUBLE.name())
                     .columnHasDefaultValue(true)
                     .beanProperty("double"),
-            Detail.STRING.column()
+            Detail.STRING.define()
+                    .column()
                     .caption("Detail string")
                     .selectable(false),
-            Detail.DATE.column()
+            Detail.DATE.define()
+                    .column()
                     .caption(Detail.DATE.name())
                     .columnHasDefaultValue(true),
-            Detail.TIMESTAMP.column()
+            Detail.TIMESTAMP.define()
+                    .column()
                     .caption(Detail.TIMESTAMP.name()),
-            Detail.BOOLEAN.column()
+            Detail.BOOLEAN.define()
+                    .column()
                     .caption(Detail.BOOLEAN.name())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
-            Detail.BOOLEAN_NULLABLE.column()
+            Detail.BOOLEAN_NULLABLE.define()
+                    .column()
                     .caption(Detail.BOOLEAN_NULLABLE.name())
                     .columnHasDefaultValue(true)
                     .defaultValue(true),
-            Detail.MASTER_ID.column(),
-            Detail.MASTER_FK.foreignKey()
+            Detail.MASTER_ID.define()
+                    .column(),
+            Detail.MASTER_FK.define()
+                    .foreignKey()
                     .caption(Detail.MASTER_FK.name())
                     .beanProperty("master"),
-            Detail.MASTER_CODE_NON_DENORM.column(),
-            Detail.MASTER_VIA_CODE_FK.foreignKey()
+            Detail.MASTER_CODE_NON_DENORM.define()
+                    .column(),
+            Detail.MASTER_VIA_CODE_FK.define()
+                    .foreignKey()
                     .caption(Detail.MASTER_FK.name())
                     .beanProperty("master"),
-            Detail.MASTER_NAME.denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
+            Detail.MASTER_NAME.define()
+                    .denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
-            Detail.MASTER_CODE.denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
+            Detail.MASTER_CODE.define()
+                    .denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.column()
+            Detail.INT_VALUE_LIST.define()
+                    .column()
                     .items(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
-            Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
+            Detail.INT_DERIVED.define()
+                    .derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
 
@@ -333,7 +378,8 @@ public final class TestDomain extends DefaultDomain {
               return intValue * 10;
             }, Detail.INT)
                     .caption(Detail.INT_DERIVED.name()),
-            Detail.BYTES.column()
+            Detail.BYTES.define()
+                    .column()
                     .updatable(false))
             .keyGenerator(queried("select id from dual"))
             .orderBy(ascending(Detail.STRING))
@@ -368,24 +414,29 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKey()
+            Department.ID.define()
+                    .primaryKey()
                     .caption(Department.ID.name())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
-            Department.NAME.column()
+            Department.NAME.define()
+                    .column()
                     .caption(Department.NAME.name())
                     .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
-            Department.LOCATION.column()
+            Department.LOCATION.define()
+                    .column()
                     .caption(Department.LOCATION.name())
                     .maximumLength(13)
                     .beanProperty("location"),
-            Department.ACTIVE.booleanColumn(Integer.class, 1, 0)
+            Department.ACTIVE.define()
+                    .booleanColumn(Integer.class, 1, 0)
                     .readOnly(true)
                     .beanProperty("active"),
-            Department.DATA.blobColumn())
+            Department.DATA.define()
+                    .blobColumn())
             .tableName("scott.dept")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
@@ -440,41 +491,51 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKey()
+            Employee.ID.define()
+                    .primaryKey()
                     .caption(Employee.ID.name())
                     .columnName("empno")
                     .beanProperty("id"),
-            Employee.NAME.column()
+            Employee.NAME.define()
+                    .column()
                     .caption(Employee.NAME.name())
                     .searchColumn(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
-            Employee.DEPARTMENT_NO.column()
+            Employee.DEPARTMENT_NO.define()
+                    .column()
                     .nullable(false)
                     .beanProperty("deptno"),
-            Employee.DEPARTMENT_FK.foreignKey()
+            Employee.DEPARTMENT_FK.define()
+                    .foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name())
                     .beanProperty("department"),
-            Employee.JOB.column()
+            Employee.JOB.define()
+                    .column()
                     .items(asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true)
                     .beanProperty("job"),
-            Employee.SALARY.column()
+            Employee.SALARY.define()
+                    .column()
                     .caption(Employee.SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2)
                     .beanProperty("salary"),
-            Employee.COMMISSION.column()
+            Employee.COMMISSION.define()
+                    .column()
                     .caption(Employee.COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
-            Employee.MGR.column()
+            Employee.MGR.define()
+                    .column()
                     .beanProperty("mgr"),
-            Employee.MANAGER_FK.foreignKey()
+            Employee.MANAGER_FK.define()
+                    .foreignKey()
                     .caption(Employee.MANAGER_FK.name())
                     .beanProperty("manager"),
-            Employee.HIREDATE.column()
+            Employee.HIREDATE.define()
+                    .column()
                     .caption(Employee.HIREDATE.name())
                     .updatable(false)
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
@@ -483,10 +544,13 @@ public final class TestDomain extends DefaultDomain {
                             .build())
                     .nullable(false)
                     .beanProperty("hiredate"),
-            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
+            Employee.DEPARTMENT_LOCATION.define()
+                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()),
-            Employee.DEPARTMENT_NAME.derivedAttribute(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
-            Employee.DATA.blobColumn()
+            Employee.DEPARTMENT_NAME.define()
+                    .derivedAttribute(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
+            Employee.DATA.define()
+                    .blobColumn()
                     .caption("Data")
                     .eagerlyLoaded(true))
             .tableName("scott.emp")
@@ -521,11 +585,14 @@ public final class TestDomain extends DefaultDomain {
 
   void keyTest() {
     add(KeyTest.TYPE.define(
-            KeyTest.ID1.primaryKey()
+            KeyTest.ID1.define()
+                    .primaryKey()
                     .primaryKeyIndex(0),
-            KeyTest.ID2.primaryKey()
+            KeyTest.ID2.define()
+                    .primaryKey()
                     .primaryKeyIndex(1),
-            KeyTest.ID3.primaryKey()
+            KeyTest.ID3.define()
+                    .primaryKey()
                     .primaryKeyIndex(2)
                     .nullable(true)));
   }
@@ -539,9 +606,12 @@ public final class TestDomain extends DefaultDomain {
 
   void noPKEntity() {
     add(NoPk.TYPE.define(
-            NoPk.COL1.column(),
-            NoPk.COL2.column(),
-            NoPk.COL3.column()));
+            NoPk.COL1.define()
+                    .column(),
+            NoPk.COL2.define()
+                    .column(),
+            NoPk.COL3.define()
+                    .column()));
   }
 
   public interface TransModifies {
@@ -553,8 +623,10 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifies() {
     add(TransModifies.TYPE.define(
-            TransModifies.ID.primaryKey(),
-            TransModifies.TRANS.attribute()));
+            TransModifies.ID.define()
+                    .primaryKey(),
+            TransModifies.TRANS.define()
+                    .attribute()));
   }
 
   public interface TransModifiesNot {
@@ -566,8 +638,10 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifiesNot() {
     add(TransModifiesNot.TYPE.define(
-            TransModifiesNot.ID.primaryKey(),
-            TransModifiesNot.TRANS.attribute()
+            TransModifiesNot.ID.define()
+                    .primaryKey(),
+            TransModifiesNot.TRANS.define()
+                    .attribute()
                     .modifiesEntity(false)));
   }
 
@@ -581,9 +655,12 @@ public final class TestDomain extends DefaultDomain {
 
   void nullString() {
     add(NullString.TYPE.define(
-            NullString.ID.primaryKey(),
-            NullString.ATTR.column(),
-            NullString.ATTR2.column())
+            NullString.ID.define()
+                    .primaryKey(),
+            NullString.ATTR.define()
+                    .column(),
+            NullString.ATTR2.define()
+                    .column())
             .stringFactory(entity -> null));
   }
 
@@ -597,9 +674,12 @@ public final class TestDomain extends DefaultDomain {
 
   void invalidDerived() {
     add(InvalidDerived.TYPE.define(
-            InvalidDerived.ID.primaryKey(),
-            InvalidDerived.INT.column(),
-            InvalidDerived.INVALID_DERIVED.derivedAttribute(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
+            InvalidDerived.ID.define()
+                    .primaryKey(),
+            InvalidDerived.INT.define()
+                    .column(),
+            InvalidDerived.INVALID_DERIVED.define()
+                    .derivedAttribute(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
             .caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
             .stringFactory(entity -> null));
   }

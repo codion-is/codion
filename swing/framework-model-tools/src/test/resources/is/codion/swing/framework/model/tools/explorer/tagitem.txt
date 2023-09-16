@@ -10,16 +10,16 @@ public interface TagItem {
 
 void tagItem() {
 	add(TagItem.TYPE.define(
-		TagItem.TAGID
+		TagItem.TAGID.define()
 			.column()
 			.primaryKeyIndex(0),
-		TagItem.TAGID_FK
+		TagItem.TAGID_FK.define()
 			.foreignKey()
 			.caption("Tag"),
-		TagItem.ITEMID
+		TagItem.ITEMID.define()
 			.column()
 			.primaryKeyIndex(1),
-		TagItem.ITEMID_FK
+		TagItem.ITEMID_FK.define()
 			.foreignKey()
 			.caption("Item")));
 }

@@ -64,15 +64,15 @@ public final class ClientTutorial {
     public Chinook() {
       super(DOMAIN);
       add(Artist.TYPE.define(
-              Artist.ID
-                      .primaryKey(),
-              Artist.NAME
+              Artist.ID.define()
+                    .primaryKey(),
+              Artist.NAME.define()
                       .column()
                       .caption("Name")
                       .searchColumn(true)
                       .nullable(false)
                       .maximumLength(120),
-              Artist.NUMBER_OF_ALBUMS
+              Artist.NUMBER_OF_ALBUMS.define()
                       .subquery("select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid")
                       .caption("Albums"))
@@ -81,15 +81,15 @@ public final class ClientTutorial {
               .caption("Artists"));
 
       add(Artist.TYPE.define(
-              Album.ID
+              Album.ID.define()
                       .primaryKey(),
-              Album.ARTIST_ID
+              Album.ARTIST_ID.define()
                       .column()
                       .nullable(false),
-              Album.ARTIST_FK
+              Album.ARTIST_FK.define()
                       .foreignKey()
                       .caption("Artist"),
-              Album.TITLE
+              Album.TITLE.define()
                       .column()
                       .caption("Title")
                       .nullable(false)

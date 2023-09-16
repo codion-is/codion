@@ -16,75 +16,9 @@ import java.sql.Statement;
 public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance.
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
+   * @return a {@link ColumnDefiner} for this column
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column();
-
-  /**
-   * A convenience method for creating a new {@link ColumnDefinition.Builder} instance,
-   * with the primary key index set to 0.
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder} with primary key index 0
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.
-   * @param subquery the sql query
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
-   * @param <C> the column type
-   * @param <B> the builder type
-   * @param columnClass the underlying column data type class
-   * @param trueValue the value representing 'true' in the underlying column
-   * @param falseValue the value representing 'false' in the underlying column
-   * @return a new {@link ColumnDefinition.Builder}
-   * @throws IllegalStateException in case this columnn is note a boolean column
-   */
-  <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
-                                                                                                         C trueValue, C falseValue);
-
-  /**
-   * Creates a new {@link BlobColumnDefinition.Builder} instance.
-   * @return a new {@link BlobColumnDefinition.Builder}
-   * @throws IllegalStateException in case this columnn is note a byte array column
-   */
-  BlobColumnDefinition.Builder blobColumn();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn();
+  ColumnDefiner<T> define();
 
   /**
    * Creates a new {@link Column}, associated with the given entityType.
@@ -96,6 +30,84 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
    */
   static <T> Column<T> column(EntityType entityType, String name, Class<T> valueClass) {
     return new DefaultColumn<>(name, valueClass, entityType);
+  }
+
+  /**
+   * Provides {@link ColumnDefinition.Builder} instances.
+   * @param <T> the column type
+   */
+  interface ColumnDefiner<T> extends AttributeDefiner<T> {
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance.
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column();
+
+    /**
+     * A convenience method for creating a new {@link ColumnDefinition.Builder} instance,
+     * with the primary key index set to 0.
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder} with primary key index 0
+     */
+    <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey();
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.
+     * @param subquery the sql query
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
+     * @param <C> the column type
+     * @param <B> the builder type
+     * @param columnClass the underlying column data type class
+     * @param trueValue the value representing 'true' in the underlying column
+     * @param falseValue the value representing 'false' in the underlying column
+     * @return a new {@link ColumnDefinition.Builder}
+     * @throws IllegalStateException in case this columnn is note a boolean column
+     */
+    <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
+                                                                                                           C trueValue, C falseValue);
+
+    /**
+     * Creates a new {@link BlobColumnDefinition.Builder} instance.
+     * @return a new {@link BlobColumnDefinition.Builder}
+     * @throws IllegalStateException in case this columnn is note a byte array column
+     */
+    BlobColumnDefinition.Builder blobColumn();
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn();
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn();
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn();
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn();
   }
 
   /**

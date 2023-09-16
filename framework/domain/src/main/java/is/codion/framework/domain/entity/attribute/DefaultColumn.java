@@ -22,98 +22,8 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column() {
-    return new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(this);
-  }
-
-  @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey() {
-    return (ColumnDefinition.Builder<T, B>) column().primaryKeyIndex(0);
-  }
-
-  @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery) {
-    return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(this, subquery);
-  }
-
-  @Override
-  public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
-                                                                                                                C trueValue, C falseValue) {
-    if (!isBoolean()) {
-      throw new IllegalStateException(this + " is not a boolean column");
-    }
-
-    return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(this)
-            .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
-  }
-
-  @Override
-  public BlobColumnDefinition.Builder blobColumn() {
-    if (!isByteArray()) {
-      throw new IllegalStateException(this + " is not a byte array column");
-    }
-
-    return new DefaultBlobColumnDefinition.DefaultBlobColumnDefinitionBuilder((Column<byte[]>) this);
-  }
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
-   * @param column the column
-   * @param <T> the Temporal type to base this column on
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn() {
-    if (!isTemporal()) {
-      throw new IllegalArgumentException("Column " + this + " is not a temporal column");
-    }
-
-    return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(this, INSERT);
-  }
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
-   * @param column the column
-   * @param <T> the Temporal type to base this column on
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn() {
-    if (!isTemporal()) {
-      throw new IllegalArgumentException("Column " + this + " is not a temporal column");
-    }
-
-    return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(this, UPDATE);
-  }
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
-   * @param column the column
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   * @throws IllegalArgumentException in case this is not a string attribute
-   */
-  public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn() {
-    if (!isString()) {
-      throw new IllegalArgumentException("Column " + this + " is not a string column");
-    }
-
-    return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) this, INSERT);
-  }
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
-   * @param column the column
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   * @throws IllegalArgumentException in case this is not a string attribute
-   */
-  public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn() {
-    if (!isString()) {
-      throw new IllegalArgumentException("Column " + this + " is not a string column");
-    }
-
-    return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) this, UPDATE);
+  public Column.ColumnDefiner<T> define() {
+    return new DefaultColumnDefiner<>(this);
   }
 
   @Override
@@ -284,5 +194,114 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
 
   private <C> ValueConverter<T, C> booleanValueConverter(C trueValue, C falseValue) {
     return (ValueConverter<T, C>) new BooleanValueConverter<>(trueValue, falseValue);
+  }
+
+  private final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements Column.ColumnDefiner<T> {
+
+    private final Column<T> column;
+
+    private DefaultColumnDefiner(Column<T> column) {
+      super(column);
+      this.column = column;
+    }
+
+    @Override
+    public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column() {
+      return new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column);
+    }
+
+    @Override
+    public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey() {
+      return (ColumnDefinition.Builder<T, B>) column().primaryKeyIndex(0);
+    }
+
+    @Override
+    public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery) {
+      return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(column, subquery);
+    }
+
+    @Override
+    public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
+                                                                                                                  C trueValue, C falseValue) {
+      if (!isBoolean()) {
+        throw new IllegalStateException(column + " is not a boolean column");
+      }
+
+      return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column)
+              .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
+    }
+
+    @Override
+    public BlobColumnDefinition.Builder blobColumn() {
+      if (!isByteArray()) {
+        throw new IllegalStateException(column + " is not a byte array column");
+      }
+
+      return new DefaultBlobColumnDefinition.DefaultBlobColumnDefinitionBuilder((Column<byte[]>) column);
+    }
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
+     * @param column the column
+     * @param <T> the Temporal type to base column column on
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn() {
+      if (!isTemporal()) {
+        throw new IllegalArgumentException("Column " + column + " is not a temporal column");
+      }
+
+      return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(column, INSERT);
+    }
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
+     * @param column the column
+     * @param <T> the Temporal type to base column column on
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     */
+    public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn() {
+      if (!isTemporal()) {
+        throw new IllegalArgumentException("Column " + column + " is not a temporal column");
+      }
+
+      return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(column, UPDATE);
+    }
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
+     * @param column the column
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     * @throws IllegalArgumentException in case column is not a string attribute
+     */
+    public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn() {
+      if (!isString()) {
+        throw new IllegalArgumentException("Column " + column + " is not a string column");
+      }
+
+      return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) column, INSERT);
+    }
+
+    /**
+     * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
+     * @param column the column
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder}
+     * @throws IllegalArgumentException in case column is not a string attribute
+     */
+    public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn() {
+      if (!isString()) {
+        throw new IllegalArgumentException("Column " + column + " is not a string column");
+      }
+
+      return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) column, UPDATE);
+    }
+
+    private <C> ValueConverter<T, C> booleanValueConverter(C trueValue, C falseValue) {
+      return (ValueConverter<T, C>) new BooleanValueConverter<>(trueValue, falseValue);
+    }
   }
 }
