@@ -23,9 +23,9 @@ public class CountryEditModelTest {
       CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
       countryEditModel.setEntity(connectionProvider.connection().selectSingle(
               Country.NAME.equalTo("Afghanistan")));
-      assertEquals(583_025, countryEditModel.averageCityPopulationObserver().get());
+      assertEquals(583_025, countryEditModel.averageCityPopulation().get());
       countryEditModel.setEntity(null);
-      assertNull(countryEditModel.averageCityPopulationObserver().get());
+      assertNull(countryEditModel.averageCityPopulation().get());
     }
   }
 

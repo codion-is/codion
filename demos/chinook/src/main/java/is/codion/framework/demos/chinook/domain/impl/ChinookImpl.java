@@ -448,7 +448,6 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       return connection.updateSelect(Entity.castTo(Invoice.class,
                       connection.select(where(Invoice.ID.in(invoiceIds))
                               .forUpdate()
-                              .fetchDepth(0)
                               .build()))
               .stream()
               .peek(Invoice::updateTotal)

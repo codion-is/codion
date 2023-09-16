@@ -27,7 +27,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
   private final Event<Collection<Entity>> displayLocationEvent = Event.event();
-  private final State citiesWithoutLocationSelectedState = State.state();
+  private final State citiesWithoutLocationSelected = State.state();
 
   CityTableModel(EntityConnectionProvider connectionProvider) {
     super(new CityEditModel(connectionProvider));
@@ -44,12 +44,12 @@ public final class CityTableModel extends SwingEntityTableModel {
     displayLocationEvent.addDataListener(listener);
   }
 
-  public StateObserver citiesWithoutLocationSelectedObserver() {
-    return citiesWithoutLocationSelectedState.observer();
+  public StateObserver citiesWithoutLocationSelected() {
+    return citiesWithoutLocationSelected.observer();
   }
 
   public void fetchLocationForSelected(ProgressReporter<String> progressReporter,
-                                       StateObserver cancelFetchLocationObserver)
+                                       StateObserver cancelFetchLocation)
           throws IOException, DatabaseException, ValidationException {
     Collection<Entity> updatedCities = new ArrayList<>();
     Collection<City> selectedCitiesWithoutLocation = selectionModel().getSelectedItems().stream()
@@ -58,7 +58,7 @@ public final class CityTableModel extends SwingEntityTableModel {
             .collect(toList());
     CityEditModel editModel = editModel();
     Iterator<City> citiesWithoutLocation = selectedCitiesWithoutLocation.iterator();
-    while (citiesWithoutLocation.hasNext() && !cancelFetchLocationObserver.get()) {
+    while (citiesWithoutLocation.hasNext() && !cancelFetchLocation.get()) {
       City city = citiesWithoutLocation.next();
       progressReporter.publish(city.country().name() + " - " + city.name());
       editModel.setLocation(city);
@@ -76,7 +76,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   }
 
   private void updateCitiesWithoutLocationSelected() {
-    citiesWithoutLocationSelectedState.set(selectionModel().getSelectedItems().stream()
+    citiesWithoutLocationSelected.set(selectionModel().getSelectedItems().stream()
             .anyMatch(city -> city.isNull(City.LOCATION)));
   }
 }

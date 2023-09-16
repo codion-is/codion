@@ -54,17 +54,17 @@ final class CoverArtPanel extends JPanel {
 
   private final JPanel basePanel;
   private final NavigableImagePanel imagePanel;
-  private final Value<byte[]> imageBytesValue;
-  private final State imageSelectedState;
-  private final State embeddedState = State.state(true);
+  private final Value<byte[]> imageBytes;
+  private final State imageSelected;
+  private final State embedded = State.state(true);
 
   /**
-   * @param imageBytesValue the image bytes value to base this panel on.
+   * @param imageBytes the image bytes value to base this panel on.
    */
-  CoverArtPanel(Value<byte[]> imageBytesValue) {
+  CoverArtPanel(Value<byte[]> imageBytes) {
     super(borderLayout());
-    this.imageBytesValue = imageBytesValue;
-    this.imageSelectedState = State.state(imageBytesValue.isNotNull());
+    this.imageBytes = imageBytes;
+    this.imageSelected = State.state(imageBytes.isNotNull());
     this.imagePanel = createImagePanel();
     this.basePanel = createPanel();
     add(basePanel, BorderLayout.CENTER);
@@ -82,15 +82,15 @@ final class CoverArtPanel extends JPanel {
                             .name(BUNDLE.getString(SELECT_COVER)))
                     .control(Control.builder(this::removeCover)
                             .name(BUNDLE.getString(REMOVE_COVER))
-                            .enabled(imageSelectedState)))
+                            .enabled(imageSelected)))
                     .build())
             .build();
   }
 
   private void bindEvents() {
-    imageBytesValue.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
-    imageBytesValue.addDataListener(imageBytes -> imageSelectedState.set(imageBytes != null));
-    embeddedState.addDataListener(this::setEmbedded);
+    imageBytes.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
+    imageBytes.addDataListener(imageBytes -> imageSelected.set(imageBytes != null));
+    embedded.addDataListener(this::setEmbedded);
     imagePanel.addMouseListener(new EmbeddingMouseListener());
   }
 
@@ -100,11 +100,11 @@ final class CoverArtPanel extends JPanel {
             .title(BUNDLE.getString(SELECT_IMAGE))
             .fileFilter(new FileNameExtensionFilter(BUNDLE.getString(IMAGES), IMAGE_FILE_EXTENSIONS))
             .selectFile();
-    imageBytesValue.set(Files.readAllBytes(coverFile.toPath()));
+    imageBytes.set(Files.readAllBytes(coverFile.toPath()));
   }
 
   private void removeCover() {
-    imageBytesValue.set(null);
+    imageBytes.set(null);
   }
 
   private void setEmbedded(boolean embedded) {
@@ -134,7 +134,7 @@ final class CoverArtPanel extends JPanel {
             .owner(this)
             .modal(false)
             .title(BUNDLE.getString(COVER))
-            .onClosed(windowEvent -> embeddedState.set(true))
+            .onClosed(windowEvent -> embedded.set(true))
             .onOpened(windowEvent -> imagePanel.resetView())
             .size(DIALOG_SIZE)
             .show();
@@ -172,7 +172,7 @@ final class CoverArtPanel extends JPanel {
     @Override
     public void mouseClicked(MouseEvent e) {
       if (e.getClickCount() == 2) {
-        embeddedState.set(!embeddedState.get());
+        embedded.set(!embedded.get());
       }
     }
   }
@@ -185,7 +185,7 @@ final class CoverArtPanel extends JPanel {
       boolean isImage = Arrays.stream(IMAGE_FILE_EXTENSIONS)
               .anyMatch(extension -> importedFile.getName().toLowerCase().endsWith(extension));
       try {
-        imageBytesValue.set(isImage ? Files.readAllBytes(importedFile.toPath()) : null);
+        imageBytes.set(isImage ? Files.readAllBytes(importedFile.toPath()) : null);
 
         return isImage;
       }

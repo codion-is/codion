@@ -5,7 +5,8 @@ import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.TabbedPanelLayout;
+
+import static is.codion.swing.framework.ui.TabbedPanelLayout.splitPaneResizeWeight;
 
 final class CountryPanel extends EntityPanel {
 
@@ -13,7 +14,7 @@ final class CountryPanel extends EntityPanel {
     super(countryModel,
             new CountryEditPanel(countryModel.editModel()),
             new CountryTablePanel(countryModel.tableModel()),
-            TabbedPanelLayout.splitPaneResizeWeight(0.7));
+            splitPaneResizeWeight(0.7));
 
     SwingEntityModel cityModel = countryModel.detailModel(City.TYPE);
     EntityPanel cityPanel = new EntityPanel(cityModel,

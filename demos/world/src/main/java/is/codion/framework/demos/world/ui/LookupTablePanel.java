@@ -43,10 +43,10 @@ final class LookupTablePanel extends EntityTablePanel {
 
   private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
 
-  private final State columnSelectionPanelVisibleState = State.state(true);
-  private final State mapDialogVisibleState = State.state();
+  private final State columnSelectionPanelVisible = State.state(true);
+  private final State mapDialogVisible = State.state();
 
-  private final Control toggleMapControl = ToggleControl.builder(mapDialogVisibleState)
+  private final Control toggleMapControl = ToggleControl.builder(mapDialogVisible)
           .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
           .name("Show map")
           .build();
@@ -59,7 +59,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
   LookupTablePanel(SwingEntityTableModel lookupModel) {
     super(lookupModel);
-    columnSelectionPanelVisibleState.addDataListener(this::setColumnSelectionPanelVisible);
+    columnSelectionPanelVisible.addDataListener(this::setColumnSelectionPanelVisible);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     conditionPanelVisible().set(true);
     showRefreshProgressBar().set(true);
@@ -104,7 +104,7 @@ final class LookupTablePanel extends EntityTablePanel {
   }
 
   private void bindEvents() {
-    mapDialogVisibleState.addDataListener(this::setMapDialogVisible);
+    mapDialogVisible.addDataListener(this::setMapDialogVisible);
     tableModel().addDataChangedListener(this::displayCityLocations);
     tableModel().selectionModel().addSelectionListener(this::displayCityLocations);
   }
@@ -129,7 +129,7 @@ final class LookupTablePanel extends EntityTablePanel {
               .title("World Map")
               .size(DEFAULT_MAP_SIZE)
               .onShown(dialog -> displayCityLocations())
-              .onClosed(e -> mapDialogVisibleState.set(false))
+              .onClosed(e -> this.mapDialogVisible.set(false))
               .build();
     }
     mapKitDialog.setVisible(mapDialogVisible);
@@ -190,7 +190,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .mnemonic('C')
             .smallIcon(FrameworkIcons.instance().clear())
             .build());
-    setControl(ControlCode.SELECT_COLUMNS, ToggleControl.builder(columnSelectionPanelVisibleState)
+    setControl(ControlCode.SELECT_COLUMNS, ToggleControl.builder(columnSelectionPanelVisible)
             .name("Select")
             .build());
   }
