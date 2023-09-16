@@ -44,35 +44,35 @@ public class StateTest {
   }
 
   @Test
-  void reversedState() {
+  void not() {
     AtomicInteger stateCounter = new AtomicInteger();
     Runnable listener = stateCounter::incrementAndGet;
-    AtomicInteger reversedStateCounter = new AtomicInteger();
-    Runnable reversedListener = reversedStateCounter::incrementAndGet;
-    AtomicInteger reversedReversedStateCounter = new AtomicInteger();
-    Runnable reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
+    AtomicInteger notStateCounter = new AtomicInteger();
+    Runnable notListener = notStateCounter::incrementAndGet;
+    AtomicInteger notNotStateCounter = new AtomicInteger();
+    Runnable notNotListener = notNotStateCounter::incrementAndGet;
     State state = State.state();
-    StateObserver reversed = state.reversed();
-    StateObserver reversedReversed = reversed.reversed();
-    assertSame(state.observer(), reversedReversed);
+    StateObserver not = state.not();
+    StateObserver notNot = not.not();
+    assertSame(state.observer(), notNot);
     state.addListener(listener);
-    reversed.addListener(reversedListener);
-    reversedReversed.addListener(reversedReversedListener);
-    assertNotEquals(reversed.get(), state.get());
-    assertEquals(state.get(), reversedReversed.get());
+    not.addListener(notListener);
+    notNot.addListener(notNotListener);
+    assertNotEquals(not.get(), state.get());
+    assertEquals(state.get(), notNot.get());
     state.set(true);
-    assertFalse(reversed.optional().orElse(null));
+    assertFalse(not.optional().orElse(null));
     assertEquals(1, stateCounter.get());
-    assertEquals(1, reversedStateCounter.get());
-    assertEquals(1, reversedReversedStateCounter.get());
-    assertNotEquals(state.get(), reversed.get());
-    assertEquals(state.get(), reversedReversed.get());
+    assertEquals(1, notStateCounter.get());
+    assertEquals(1, notNotStateCounter.get());
+    assertNotEquals(state.get(), not.get());
+    assertEquals(state.get(), notNot.get());
     state.set(false);
     assertEquals(2, stateCounter.get());
-    assertEquals(2, reversedStateCounter.get());
-    assertEquals(2, reversedReversedStateCounter.get());
-    assertNotEquals(state.get(), reversed.get());
-    assertEquals(state.get(), reversedReversed.get());
+    assertEquals(2, notStateCounter.get());
+    assertEquals(2, notNotStateCounter.get());
+    assertNotEquals(state.get(), not.get());
+    assertEquals(state.get(), notNot.get());
   }
 
   @Test
@@ -87,12 +87,12 @@ public class StateTest {
     state.accept(true);//calls set()
     assertTrue(state.get(), "State should be active after activation");
     assertEquals("true", state.toString());
-    assertFalse(state.reversed().get(), "Reversed state should be inactive after activation");
+    assertFalse(state.not().get(), "Not state should be inactive after activation");
     state.set(true);
     state.set(false);
     assertFalse(state.get(), "State should be inactive after deactivation");
     assertEquals("false", state.toString());
-    assertTrue(state.reversed().get(), "Reversed state should be active after deactivation");
+    assertTrue(state.not().get(), "Not state should be active after deactivation");
   }
 
   @Test
@@ -132,8 +132,8 @@ public class StateTest {
 
     assertFalse(orState.get(), "Or state should be inactive");
     assertFalse(andState.get(), "And state should be inactive");
-    assertTrue(orState.reversed().get(), "Reversed Or state should be active");
-    assertTrue(andState.reversed().get(), "Reversed And state should be active");
+    assertTrue(orState.not().get(), "Reversed Or state should be active");
+    assertTrue(andState.not().get(), "Reversed And state should be active");
 
     stateOne.set(true);
 

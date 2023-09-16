@@ -1168,7 +1168,7 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
-            .enabled(tableModel.refresher().observer().reversed())
+            .enabled(tableModel.refresher().observer().not())
             .build();
   }
 

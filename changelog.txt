@@ -9568,3 +9568,4 @@
   AttributeDefiner added, attribute definition builders now accessible via the Attribute.define() method
   Attribute.Type added
   ComponentBuilder.enabledObserver() renamed enabled(), along with others
+  StateObserver.reversed() renamed not()

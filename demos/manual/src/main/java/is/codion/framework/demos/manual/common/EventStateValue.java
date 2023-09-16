@@ -47,8 +47,8 @@ public final class EventStateValue {
 
     // an observer handles the listeners for a State but can not modify it
     StateObserver observer = state.observer();
-    // a reversed observer is always available
-    StateObserver reversed = state.reversed();
+    // a not observer is always available
+    StateObserver not = state.not();
 
     // add a listener notified each time the state changes
     observer.addListener(() -> System.out.println("State changed"));

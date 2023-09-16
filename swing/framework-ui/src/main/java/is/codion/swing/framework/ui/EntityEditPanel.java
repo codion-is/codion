@@ -588,7 +588,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(editPanelSupplier);
 
     return createUpdateControl(new EditEntityCommand(searchField, editPanelSupplier), searchField,
-            searchField.model().selectionEmpty().reversed());
+            searchField.model().selectionEmpty().not());
   }
 
   /**
@@ -708,7 +708,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .name(FrameworkMessages.delete())
             .enabled(State.and(active,
                     editModel().deleteEnabled(),
-                    editModel().entityNew().reversed()))
+                    editModel().entityNew().not()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
             .smallIcon(FrameworkIcons.instance().delete())
@@ -730,7 +730,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .name(FrameworkMessages.update())
             .enabled(State.and(active,
                     editModel().updateEnabled(),
-                    editModel().entityNew().reversed(),
+                    editModel().entityNew().not(),
                     editModel().modified()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
             .mnemonic(FrameworkMessages.updateMnemonic())

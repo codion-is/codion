@@ -34,7 +34,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   private final State selectionEmpty = State.state(true);
   private final State singleSelection = State.state(false);
   private final StateObserver multipleSelection = State.combination(Conjunction.AND,
-          selectionEmpty.reversed(), singleSelection.reversed());
+          selectionEmpty.not(), singleSelection.not());
 
   /**
    * Holds the topmost (minimum) selected index
@@ -390,7 +390,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   @Override
   public StateObserver selectionNotEmpty() {
-    return selectionEmpty.reversed();
+    return selectionEmpty.not();
   }
 
   private void bindEvents() {

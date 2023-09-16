@@ -49,23 +49,23 @@ final class LoginPanel extends JPanel {
 
   private final JTextField usernameField;
   private final JPasswordField passwordField;
-  private final Value<User> userValue = Value.value();
+  private final Value<User> user = Value.value();
   private final LoginValidator loginValidator;
   private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
-  private final Value<String> usernameValue = Value.value();
-  private final State usernameSpecifiedState;
-  private final State validatingState = State.state();
+  private final Value<String> username = Value.value();
+  private final State usernameSpecified;
+  private final State validating = State.state();
 
   LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
-    this.usernameValue.set(defaultUser == null ? null : defaultUser.username());
-    this.usernameSpecifiedState = State.state(usernameValue.isNotNull());
-    this.usernameValue.addDataListener(username -> usernameSpecifiedState.set(username != null));
-    this.usernameField = TextFieldBuilder.builder(String.class, usernameValue)
+    this.username.set(defaultUser == null ? null : defaultUser.username());
+    this.usernameSpecified = State.state(username.isNotNull());
+    this.username.addDataListener(username -> usernameSpecified.set(username != null));
+    this.usernameField = TextFieldBuilder.builder(String.class, username)
             .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
-            .enabled(validatingState.reversed())
+            .enabled(validating.not())
             .build();
     this.passwordField = PasswordFieldBuilder.builder()
             .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
@@ -76,19 +76,19 @@ final class LoginPanel extends JPanel {
     this.okControl = Control.builder(this::onOkPressed)
             .name(Messages.ok())
             .mnemonic(Messages.okMnemonic())
-            .enabled(State.and(usernameSpecifiedState, validatingState.reversed()))
+            .enabled(State.and(usernameSpecified, validating.not()))
             .build();
     this.cancelControl = Control.builder(this::closeDialog)
             .name(Messages.cancel())
             .mnemonic(Messages.cancelMnemonic())
-            .enabled(validatingState.reversed())
+            .enabled(validating.not())
             .build();
     this.loginValidator = requireNonNull(loginValidator);
     initializeUI(southComponent);
   }
 
   User user() {
-    return userValue.get();
+    return user.get();
   }
 
   Control okControl() {
@@ -146,8 +146,8 @@ final class LoginPanel extends JPanel {
                     .preferredSize(passwordField.getPreferredSize())
                     .build(), PROGRESS_CARD)
             .build();
-    validatingState.addDataListener(validating ->
-            passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
+    validating.addDataListener(isValidating ->
+            passwordProgressLayout.show(passwordProgressPanel, isValidating ? PROGRESS_CARD : PASSWORD_CARD));
 
     return passwordProgressPanel;
   }
@@ -161,25 +161,25 @@ final class LoginPanel extends JPanel {
   }
 
   private User validateLogin() throws Exception {
-    User user = User.user(usernameField.getText(), passwordField.getPassword());
-    loginValidator.validate(user);
+    User currentUser = User.user(usernameField.getText(), passwordField.getPassword());
+    loginValidator.validate(currentUser);
 
-    return user;
+    return currentUser;
   }
 
   private void onValidationStarted() {
-    validatingState.set(true);
+    validating.set(true);
   }
 
   private void onValidationSuccess(User user) {
-    userValue.set(user);
-    validatingState.set(false);
+    this.user.set(user);
+    validating.set(false);
     closeDialog();
   }
 
   private void onValidationFailure(Throwable exception) {
-    userValue.set(null);
-    validatingState.set(false);
+    user.set(null);
+    validating.set(false);
     DefaultDialogExceptionHandler.displayException(exception, Utilities.parentWindow(this));
     requestInitialFocus();
   }

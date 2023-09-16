@@ -14,14 +14,14 @@ final class DefaultStateObserver implements StateObserver {
 
   private final Object lock = new Object();
   private final StateObserver observedState;
-  private final boolean reversed;
+  private final boolean not;
 
   private Event<Boolean> stateChangedEvent;
-  private DefaultStateObserver reversedObserver;
+  private DefaultStateObserver notObserver;
 
-  DefaultStateObserver(StateObserver observedState, boolean reversed) {
+  DefaultStateObserver(StateObserver observedState, boolean not) {
     this.observedState = requireNonNull(observedState);
-    this.reversed = reversed;
+    this.not = not;
   }
 
   @Override
@@ -32,7 +32,7 @@ final class DefaultStateObserver implements StateObserver {
   @Override
   public Boolean get() {
     synchronized (lock) {
-      return reversed ? !observedState.get() : observedState.get();
+      return not ? !observedState.get() : observedState.get();
     }
   }
 
@@ -52,16 +52,16 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public StateObserver reversed() {
-    if (reversed) {
+  public StateObserver not() {
+    if (not) {
       return observedState;
     }
     synchronized (lock) {
-      if (reversedObserver == null) {
-        reversedObserver = new DefaultStateObserver(this, true);
+      if (notObserver == null) {
+        notObserver = new DefaultStateObserver(this, true);
       }
 
-      return reversedObserver;
+      return notObserver;
     }
   }
 
@@ -111,8 +111,8 @@ final class DefaultStateObserver implements StateObserver {
         if (stateChangedEvent != null) {
           stateChangedEvent.accept(newValue);
         }
-        if (reversedObserver != null) {
-          reversedObserver.notifyObservers(previousValue, newValue);
+        if (notObserver != null) {
+          notObserver.notifyObservers(previousValue, newValue);
         }
       }
     }

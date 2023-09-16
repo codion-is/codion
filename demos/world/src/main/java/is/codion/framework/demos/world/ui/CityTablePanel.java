@@ -47,7 +47,7 @@ final class CityTablePanel extends ChartTablePanel {
             .controls(Controls.builder()
                     .control(Control.builder(fetchLocationTask::cancel)
                             .name("Cancel")
-                            .enabled(fetchLocationTask.isWorkingObserver()))
+                            .enabled(fetchLocationTask.isWorking()))
                     .build())
             .onException(this::displayFetchException)
             .execute();
@@ -63,7 +63,7 @@ final class CityTablePanel extends ChartTablePanel {
   private static final class FetchLocationTask implements ProgressTask<Void, String> {
 
     private final CityTableModel tableModel;
-    private final State cancelledState = State.state();
+    private final State cancelled = State.state();
 
     private FetchLocationTask(CityTableModel tableModel) {
       this.tableModel = tableModel;
@@ -71,16 +71,16 @@ final class CityTablePanel extends ChartTablePanel {
 
     @Override
     public Void perform(ProgressReporter<String> progressReporter) throws Exception {
-      tableModel.fetchLocationForSelected(progressReporter, cancelledState);
+      tableModel.fetchLocationForSelected(progressReporter, cancelled);
       return null;
     }
 
     private void cancel() {
-      cancelledState.set(true);
+      cancelled.set(true);
     }
 
-    private StateObserver isWorkingObserver() {
-      return cancelledState.reversed();
+    private StateObserver isWorking() {
+      return cancelled.not();
     }
   }
 }
