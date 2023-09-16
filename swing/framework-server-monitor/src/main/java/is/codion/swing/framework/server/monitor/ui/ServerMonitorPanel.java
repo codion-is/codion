@@ -280,7 +280,7 @@ public final class ServerMonitorPanel extends JPanel {
             .columns(4)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValueObserver(model.connectionCountObserver())
+            .linkedValue(model.connectionCountObserver())
             .build();
   }
 
@@ -289,7 +289,7 @@ public final class ServerMonitorPanel extends JPanel {
             .columns(8)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValueObserver(model.memoryUsageObserver())
+            .linkedValue(model.memoryUsageObserver())
             .build();
   }
 

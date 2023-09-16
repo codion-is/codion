@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.Sizes.*;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
+import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static java.awt.ComponentOrientation.getOrientation;
 import static java.util.Objects.requireNonNull;
 
@@ -196,8 +196,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B enabledObserver(StateObserver enabledObserver) {
-    this.enabledObserver = enabledObserver;
+  public final B enabled(StateObserver enabled) {
+    this.enabledObserver = enabled;
     return (B) this;
   }
 
@@ -341,7 +341,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B linkedValueObserver(ValueObserver<T> linkedValueObserver) {
+  public final B linkedValue(ValueObserver<T> linkedValueObserver) {
     if (requireNonNull(linkedValueObserver).isNullable() && !supportsNull()) {
       throw new IllegalArgumentException("Component does not support a nullable value");
     }
@@ -394,7 +394,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       component.setEnabled(false);
     }
     if (enabledObserver != null) {
-      linkToEnabledObserver(enabledObserver, component);
+      linkToEnabledState(enabledObserver, component);
     }
     if (popupMenu != null) {
       component.setComponentPopupMenu(popupMenu);

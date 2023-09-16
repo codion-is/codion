@@ -16,7 +16,7 @@ final class ControlBuilder implements Control.Builder {
   private final Control.ActionCommand actionCommand;
 
   private String name;
-  private StateObserver enabledObserver;
+  private StateObserver enabled;
   private char mnemonic;
   private Icon smallIcon;
   private Icon largeIcon;
@@ -40,8 +40,8 @@ final class ControlBuilder implements Control.Builder {
   }
 
   @Override
-  public Control.Builder enabledObserver(StateObserver enabledObserver) {
-    this.enabledObserver = enabledObserver;
+  public Control.Builder enabled(StateObserver enabled) {
+    this.enabled = enabled;
     return this;
   }
 
@@ -79,10 +79,10 @@ final class ControlBuilder implements Control.Builder {
   public Control build() {
     Control control;
     if (command != null) {
-      control = new DefaultControl(command, name, enabledObserver);
+      control = new DefaultControl(command, name, enabled);
     }
     else {
-      control = new DefaultActionControl(actionCommand, name, enabledObserver);
+      control = new DefaultActionControl(actionCommand, name, enabled);
     }
 
     control.setMnemonic(mnemonic);

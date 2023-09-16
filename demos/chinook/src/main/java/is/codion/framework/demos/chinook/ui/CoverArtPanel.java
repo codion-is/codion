@@ -82,7 +82,7 @@ final class CoverArtPanel extends JPanel {
                             .name(BUNDLE.getString(SELECT_COVER)))
                     .control(Control.builder(this::removeCover)
                             .name(BUNDLE.getString(REMOVE_COVER))
-                            .enabledObserver(imageSelectedState)))
+                            .enabled(imageSelectedState)))
                     .build())
             .build();
   }

@@ -58,8 +58,8 @@ final class DefaultState implements State {
   }
 
   @Override
-  public StateObserver reversed() {
-    return observer().reversed();
+  public StateObserver not() {
+    return observer().not();
   }
 
   @Override

@@ -85,7 +85,7 @@ public final class CalendarPanel extends JPanel {
   private final Value<Integer> dayValue;
   private final Value<Integer> hourValue;
   private final Value<Integer> minuteValue;
-  private final State todaySelectedState;
+  private final State todaySelected;
 
   private final Map<Integer, JToggleButton> dayButtons;
   private final Map<Integer, State> dayStates;
@@ -110,7 +110,7 @@ public final class CalendarPanel extends JPanel {
     }
     localDateValue = Value.value(createLocalDateTime().toLocalDate());
     localDateTimeValue = Value.value(createLocalDateTime());
-    todaySelectedState = State.state(isTodaySelected());
+    todaySelected = State.state(isTodaySelected());
     dayStates = createDayStates();
     dayButtons = createDayButtons();
     dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
@@ -349,7 +349,7 @@ public final class CalendarPanel extends JPanel {
     return button(control(this::selectToday))
             .text(MESSAGES.getString("today"))
             .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
-            .enabledObserver(todaySelectedState.reversed())
+            .enabled(todaySelected.not())
             .build();
   }
 
@@ -416,7 +416,7 @@ public final class CalendarPanel extends JPanel {
     LocalDateTime localDateTime = createLocalDateTime();
     localDateValue.set(localDateTime.toLocalDate());
     localDateTimeValue.set(localDateTime);
-    todaySelectedState.set(isTodaySelected());
+    todaySelected.set(isTodaySelected());
     if (SwingUtilities.isEventDispatchThread()) {
       updateFormattedDate();
     }

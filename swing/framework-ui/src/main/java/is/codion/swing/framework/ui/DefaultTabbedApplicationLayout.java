@@ -70,7 +70,7 @@ final class DefaultTabbedApplicationLayout implements TabbedApplicationLayout {
   }
 
   private void addSelectActivatedPanelListener(EntityPanel entityPanel) {
-    entityPanel.editPanel().addActiveListener(new SelectActivatedPanelListener(entityPanel));
+    entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
   }
 
   private final class InitializeSelectedPanelListener implements ChangeListener {

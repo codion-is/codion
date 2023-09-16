@@ -47,8 +47,8 @@ public final class EventStateValue {
 
     // an observer handles the listeners for a State but can not modify it
     StateObserver observer = state.observer();
-    // a reversed observer is always available
-    StateObserver reversed = state.reversed();
+    // a not observer is always available
+    StateObserver not = state.not();
 
     // add a listener notified each time the state changes
     observer.addListener(() -> System.out.println("State changed"));
@@ -76,7 +76,7 @@ public final class EventStateValue {
       }
     };
 
-    Utilities.linkToEnabledObserver(state, action);
+    Utilities.linkToEnabledState(state, action);
 
     System.out.println(action.isEnabled());// output: false
 
@@ -92,7 +92,7 @@ public final class EventStateValue {
 
     Control control = Control.builder(() ->
                     System.out.println("Hello Control"))
-            .enabledObserver(state)
+            .enabled(state)
             .build();
 
     System.out.println(control.isEnabled());// output: false

@@ -120,10 +120,10 @@ public final class DialogsTest {
 
     assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
             .okAction(control(command))
-            .okEnabledObserver(state));
+            .okEnabled(state));
     assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
             .cancelAction(control(command))
-            .cancelEnabledObserver(state));
+            .cancelEnabled(state));
   }
 
   @Test

@@ -170,7 +170,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .focusable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
-                    .linkedValueObserver(loadTestModel.applicationCount())
+                    .linkedValue(loadTestModel.applicationCount())
                     .build())
             .eastComponent(button(Control.builder(loadTestModel::addApplicationBatch)
                     .name("+")
@@ -339,7 +339,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .popupMenuControl(Control.builder(model().applicationTableModel()::refresh)
                     .name("Refresh")
-                    .enabledObserver(model().autoRefreshApplications().reversed())
+                    .enabled(model().autoRefreshApplications().not())
                     .build())
             .build();
   }

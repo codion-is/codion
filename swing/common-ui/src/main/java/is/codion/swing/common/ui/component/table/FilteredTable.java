@@ -405,7 +405,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
             .name(MESSAGES.getString(SELECT) + "...")
-            .enabledObserver(tableModel.columnModel().locked().reversed())
+            .enabled(tableModel.columnModel().locked().not())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
   }
@@ -416,7 +416,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Controls createToggleColumnsControls() {
     return Controls.builder()
             .name(MESSAGES.getString(SELECT))
-            .enabledObserver(tableModel.columnModel().locked().reversed())
+            .enabled(tableModel.columnModel().locked().not())
             .controls(tableModel.columnModel().columns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
@@ -430,7 +430,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createResetColumnsControl() {
     return Control.builder(getModel().columnModel()::resetColumns)
             .name(MESSAGES.getString(RESET))
-            .enabledObserver(tableModel.columnModel().locked().reversed())
+            .enabled(tableModel.columnModel().locked().not())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
   }
@@ -441,7 +441,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createAutoResizeModeControl() {
     return Control.builder(this::selectAutoResizeMode)
             .name(MESSAGES.getString(AUTO_RESIZE) + "...")
-            .enabledObserver(tableModel.columnModel().locked().reversed())
+            .enabled(tableModel.columnModel().locked().not())
             .build();
   }
 

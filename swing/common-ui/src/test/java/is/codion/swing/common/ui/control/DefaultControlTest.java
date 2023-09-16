@@ -40,7 +40,7 @@ public final class DefaultControlTest {
   @Test
   void test() {
     State enabledState = State.state();
-    Control control = Control.builder(this::method).enabledObserver(enabledState).build();
+    Control control = Control.builder(this::method).enabled(enabledState).build();
     JButton button = button(control).build();
     assertFalse(button.isEnabled());
     enabledState.set(true);
@@ -96,7 +96,7 @@ public final class DefaultControlTest {
   @Test
   void setEnabled() {
     State enabledState = State.state();
-    Control control = Control.builder(this::doNothing).name("control").enabledObserver(enabledState.observer()).build();
+    Control control = Control.builder(this::doNothing).name("control").enabled(enabledState.observer()).build();
     assertEquals("control", control.getName());
     assertEquals(enabledState.observer(), control.enabled());
     assertFalse(control.isEnabled());

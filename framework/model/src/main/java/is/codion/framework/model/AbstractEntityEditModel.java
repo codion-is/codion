@@ -72,8 +72,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State insertEnabled = State.state(true);
   private final State updateEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
-  private final StateObserver readOnly = State.and(insertEnabled.reversed(),
-          updateEnabled.reversed(), deleteEnabled.reversed());
+  private final StateObserver readOnly = State.and(insertEnabled.not(),
+          updateEnabled.not(), deleteEnabled.not());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
 

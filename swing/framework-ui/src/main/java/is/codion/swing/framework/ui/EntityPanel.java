@@ -1288,13 +1288,13 @@ public class EntityPanel extends JPanel {
       EntityPanel entityPanelParent = parentOfType(EntityPanel.class, focusedComponent);
       if (entityPanelParent != null) {
         if (entityPanelParent.editPanel() != null) {
-          entityPanelParent.editPanel().setActive(true);
+          entityPanelParent.editPanel().active().set(true);
         }
       }
       else {
         EntityEditPanel editPanelParent = parentOfType(EntityEditPanel.class, focusedComponent);
         if (editPanelParent != null) {
-          editPanelParent.setActive(true);
+          editPanelParent.active().set(true);
         }
       }
     }

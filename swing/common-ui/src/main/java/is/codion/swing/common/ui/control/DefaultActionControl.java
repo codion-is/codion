@@ -14,8 +14,8 @@ final class DefaultActionControl extends AbstractControl {
 
   private final ActionCommand command;
 
-  DefaultActionControl(ActionCommand command, String name, StateObserver enabledObserver) {
-    super(name, enabledObserver);
+  DefaultActionControl(ActionCommand command, String name, StateObserver enabled) {
+    super(name, enabled);
     this.command = requireNonNull(command);
   }
 

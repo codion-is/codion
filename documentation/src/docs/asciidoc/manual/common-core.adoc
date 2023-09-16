@@ -101,7 +101,7 @@ interface State {
 
 interface StateObserver {
     +Boolean get()
-    +StateObserver reversed()
+    +StateObserver not()
 }
 
 interface Value<Boolean> {}

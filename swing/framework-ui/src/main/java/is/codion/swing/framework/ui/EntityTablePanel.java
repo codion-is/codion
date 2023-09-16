@@ -1106,10 +1106,10 @@ public class EntityTablePanel extends JPanel {
   /**
    * Creates a {@link Controls} containing controls for editing the value of a single attribute
    * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
+   * and {@link EntityEditModel#updateEnabled()} is enabled.
    * @return the edit controls
    * @see #excludeFromEditMenu(Attribute)
-   * @see EntityEditModel#updateEnabledObserver()
+   * @see EntityEditModel#updateEnabled()
    */
   private Controls createEditSelectedControls() {
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
@@ -1117,7 +1117,7 @@ public class EntityTablePanel extends JPanel {
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
     Controls editControls = Controls.builder()
             .name(FrameworkMessages.edit())
-            .enabledObserver(enabledState)
+            .enabled(enabledState)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
@@ -1126,7 +1126,7 @@ public class EntityTablePanel extends JPanel {
             .sorted(AttributeDefinition.definitionComparator())
             .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
                     .name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
-                    .enabledObserver(enabledState)
+                    .enabled(enabledState)
                     .build()));
 
     return editControls;
@@ -1138,7 +1138,7 @@ public class EntityTablePanel extends JPanel {
   private Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
             .name(FrameworkMessages.dependencies())
-            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
+            .enabled(tableModel.selectionModel().selectionNotEmpty())
             .description(FrameworkMessages.dependenciesTip())
             .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
@@ -1151,7 +1151,7 @@ public class EntityTablePanel extends JPanel {
   private Control createDeleteSelectedControl() {
     return Control.builder(this::deleteWithConfirmation)
             .name(FrameworkMessages.delete())
-            .enabledObserver(State.and(
+            .enabled(State.and(
                     tableModel.editModel().deleteEnabled(),
                     tableModel.selectionModel().selectionNotEmpty()))
             .description(FrameworkMessages.deleteSelectedTip())
@@ -1168,7 +1168,7 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
-            .enabledObserver(tableModel.refresher().observer().reversed())
+            .enabled(tableModel.refresher().observer().not())
             .build();
   }
 
@@ -1207,7 +1207,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createClearSelectionControl() {
     return Control.builder(tableModel.selectionModel()::clearSelection)
-            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
+            .enabled(tableModel.selectionModel().selectionNotEmpty())
             .smallIcon(FrameworkIcons.instance().clearSelection())
             .description(MESSAGES.getString("clear_selection_tip"))
             .build();
@@ -1260,7 +1260,7 @@ public class EntityTablePanel extends JPanel {
   private Control createCopyCellControl() {
     return Control.builder(table::copySelectedCell)
             .name(FrameworkMessages.copyCell())
-            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
+            .enabled(tableModel.selectionModel().selectionNotEmpty())
             .build();
   }
 
@@ -1295,7 +1295,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createConditionRefreshControl() {
     return Control.builder(tableModel::refresh)
-            .enabledObserver(tableModel.conditionChanged())
+            .enabled(tableModel.conditionChanged())
             .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
   }
