@@ -784,7 +784,7 @@ public final class ComponentsTest {
     assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
             .linkedValue(Value.value()));
     assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
-            .linkedValueObserver(Value.value()));
+            .linkedValue(Value.value()));
   }
 
   @Test
@@ -804,7 +804,7 @@ public final class ComponentsTest {
             .validator(validator)
             .build());
     assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
-            .linkedValueObserver(stringValue.observer())
+            .linkedValue(stringValue.observer())
             .validator(validator)
             .build());
   }

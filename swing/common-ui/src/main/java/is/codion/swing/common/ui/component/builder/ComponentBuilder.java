@@ -309,10 +309,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 
   /**
    * Creates a read-only link to the given {@link ValueObserver}.
-   * @param linkedValueObserver a value to link to the component value
+   * @param linkedValue a value to link to the component value
    * @return this builder instance
    */
-  B linkedValueObserver(ValueObserver<T> linkedValueObserver);
+  B linkedValue(ValueObserver<T> linkedValue);
 
   /**
    * Sets the initial value for the component, overridden by {@link #linkedValue(Value)}.

@@ -170,7 +170,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .focusable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
-                    .linkedValueObserver(loadTestModel.applicationCount())
+                    .linkedValue(loadTestModel.applicationCount())
                     .build())
             .eastComponent(button(Control.builder(loadTestModel::addApplicationBatch)
                     .name("+")

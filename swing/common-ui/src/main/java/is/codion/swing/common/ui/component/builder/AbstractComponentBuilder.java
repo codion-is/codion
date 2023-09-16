@@ -341,7 +341,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B linkedValueObserver(ValueObserver<T> linkedValueObserver) {
+  public final B linkedValue(ValueObserver<T> linkedValueObserver) {
     if (requireNonNull(linkedValueObserver).isNullable() && !supportsNull()) {
       throw new IllegalArgumentException("Component does not support a nullable value");
     }
