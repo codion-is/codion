@@ -687,7 +687,7 @@ public interface Entity extends Comparable<Entity> {
     }
 
     return Arrays.stream(attributes).allMatch(attribute -> {
-      if (attribute.isByteArray()) {
+      if (attribute.type().isByteArray()) {
         return Arrays.equals((byte[]) entityOne.get(attribute), (byte[]) entityTwo.get(attribute));
       }
 
@@ -712,7 +712,7 @@ public interface Entity extends Comparable<Entity> {
 
     T originalValue = entity.original(attribute);
     T comparisonValue = comparison.get(attribute);
-    if (attribute.isByteArray()) {
+    if (attribute.type().isByteArray()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
     }
 

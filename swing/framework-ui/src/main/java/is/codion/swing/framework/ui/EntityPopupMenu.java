@@ -72,7 +72,7 @@ final class EntityPopupMenu extends JPopupMenu {
     for (ColumnDefinition<?> primaryKeyColumn : primaryKeyColumns) {
       JMenuItem menuItem = new JMenuItem(new StringBuilder("[PK] ")
               .append(primaryKeyColumn.attribute())
-              .append(" [").append(primaryKeyColumn.attribute().valueClass().getSimpleName()).append("]: ")
+              .append(" [").append(primaryKeyColumn.attribute().type().valueClass().getSimpleName()).append("]: ")
               .append(createValueString(entity, primaryKeyColumn)).toString());
       menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(primaryKeyColumn.attribute()))));
       setInvalidModified(menuItem, true, entity.isModified(primaryKeyColumn.attribute()));
@@ -126,7 +126,7 @@ final class EntityPopupMenu extends JPopupMenu {
       boolean isPrimaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isPrimaryKeyColumn();
       if (!isPrimaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
-                .append(" [").append(attributeDefinition.attribute().valueClass().getSimpleName())
+                .append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
                 .append(attributeDefinition.isDerived() ? "*" : "").append("]: ")
                 .append(createValueString(entity, attributeDefinition)).toString());
         menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(attributeDefinition.attribute()))));

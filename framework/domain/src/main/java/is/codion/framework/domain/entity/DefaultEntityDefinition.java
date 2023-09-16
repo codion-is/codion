@@ -522,7 +522,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       throw new IllegalStateException(entityType + " has a composite primary key");
     }
     Column<T> column = (Column<T>) primaryKeyColumns().get(0);
-    column.validateType(value);
+    column.type().validateType(value);
 
     return new DefaultKey(this, column, value, true);
   }
@@ -662,7 +662,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   private static Class<?> attributeValueClass(Attribute<?> attribute) {
-    Class<?> valueClass = attribute.valueClass();
+    Class<?> valueClass = attribute.type().valueClass();
     if (attribute instanceof ForeignKey) {
       valueClass = ((ForeignKey) attribute).referencedType().entityClass();
     }
@@ -781,7 +781,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private List<Attribute<?>> selectAttributes() {
       Set<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions = columnDefinitions.stream()
-              .filter(column -> column.attribute().isByteArray())
+              .filter(column -> column.attribute().type().isByteArray())
               .map(column -> (ColumnDefinition<byte[]>) column)
               .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
               .collect(toSet());

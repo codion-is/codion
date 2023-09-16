@@ -223,7 +223,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     if (equalToValues.isEmpty()) {
       return column.isNull();
     }
-    if (column.isString() && equalToValues.size() == 1) {
+    if (column.type().isString() && equalToValues.size() == 1) {
       return singleStringEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
     }
 
@@ -236,7 +236,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     if (equalToValues.isEmpty()) {
       return column.isNotNull();
     }
-    if (column.isString() && equalToValues.size() == 1) {
+    if (column.type().isString() && equalToValues.size() == 1) {
       return singleStringNotEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
     }
 

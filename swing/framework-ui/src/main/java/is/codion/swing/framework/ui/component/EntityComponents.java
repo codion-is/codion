@@ -92,19 +92,20 @@ public class EntityComponents {
       return true;
     }
 
-    return attribute.isLocalTime() ||
-            attribute.isLocalDate() ||
-            attribute.isLocalDateTime() ||
-            attribute.isOffsetDateTime() ||
-            attribute.isString() ||
-            attribute.isCharacter() ||
-            attribute.isBoolean() ||
-            attribute.isShort() ||
-            attribute.isInteger() ||
-            attribute.isLong() ||
-            attribute.isDouble() ||
-            attribute.isBigDecimal() ||
-            attribute.isEnum();
+    Attribute.Type<?> type = attribute.type();
+    return type.isLocalTime() ||
+            type.isLocalDate() ||
+            type.isLocalDateTime() ||
+            type.isOffsetDateTime() ||
+            type.isString() ||
+            type.isCharacter() ||
+            type.isBoolean() ||
+            type.isShort() ||
+            type.isInteger() ||
+            type.isLong() ||
+            type.isDouble() ||
+            type.isBigDecimal() ||
+            type.isEnum();
   }
 
   /**
@@ -122,44 +123,45 @@ public class EntityComponents {
     if (attributeDefinition instanceof ItemColumnDefinition) {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
     }
-    if (attribute.isLocalTime()) {
+    Attribute.Type<T> type = attribute.type();
+    if (type.isLocalTime()) {
       return (ComponentBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute);
     }
-    if (attribute.isLocalDate()) {
+    if (type.isLocalDate()) {
       return (ComponentBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute);
     }
-    if (attribute.isLocalDateTime()) {
+    if (type.isLocalDateTime()) {
       return (ComponentBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute);
     }
-    if (attribute.isOffsetDateTime()) {
+    if (type.isOffsetDateTime()) {
       return (ComponentBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute);
     }
-    if (attribute.isString() || attribute.isCharacter()) {
+    if (type.isString() || type.isCharacter()) {
       return (ComponentBuilder<T, C, B>) textField(attribute);
     }
-    if (attribute.isBoolean()) {
+    if (type.isBoolean()) {
       return (ComponentBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
     }
-    if (attribute.isShort()) {
+    if (type.isShort()) {
       return (ComponentBuilder<T, C, B>) shortField((Attribute<Short>) attribute);
     }
-    if (attribute.isInteger()) {
+    if (type.isInteger()) {
       return (ComponentBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
     }
-    if (attribute.isLong()) {
+    if (type.isLong()) {
       return (ComponentBuilder<T, C, B>) longField((Attribute<Long>) attribute);
     }
-    if (attribute.isDouble()) {
+    if (type.isDouble()) {
       return (ComponentBuilder<T, C, B>) doubleField((Attribute<Double>) attribute);
     }
-    if (attribute.isBigDecimal()) {
+    if (type.isBigDecimal()) {
       return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
     }
-    if (attribute.isEnum()) {
+    if (type.isEnum()) {
       return (ComponentBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.isNullable()));
     }
 
-    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.valueClass() + ")");
+    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + type.valueClass() + ")");
   }
 
   /**
@@ -314,7 +316,7 @@ public class EntityComponents {
    * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
-    return Components.temporalInputPanel(attribute.valueClass(), dateTimePattern)
+    return Components.temporalInputPanel(attribute.type().valueClass(), dateTimePattern)
             .toolTipText(entityDefinition.attributeDefinition(attribute).description())
             .buttonIcon(FrameworkIcons.instance().calendar());
   }
@@ -341,7 +343,7 @@ public class EntityComponents {
    */
   public final TextAreaBuilder textArea(Attribute<String> attribute) {
     AttributeDefinition<String> attributeDefinition = entityDefinition.attributeDefinition(attribute);
-    if (!attribute.isString()) {
+    if (!attribute.type().isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
 
@@ -361,7 +363,7 @@ public class EntityComponents {
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
 
-    Class<T> valueClass = attribute.valueClass();
+    Class<T> valueClass = attribute.type().valueClass();
     if (valueClass.equals(LocalTime.class)) {
       return (TextFieldBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute)
               .toolTipText(attributeDefinition.description());
@@ -485,7 +487,7 @@ public class EntityComponents {
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
 
-    return Components.temporalField(attributeDefinition.attribute().valueClass(), dateTimePattern)
+    return Components.temporalField(attributeDefinition.attribute().type().valueClass(), dateTimePattern)
             .toolTipText(attributeDefinition.description());
   }
 
@@ -667,7 +669,7 @@ public class EntityComponents {
 
   private static <T> FilteredComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
     FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
-    Collection<T> enumConstants = asList(attribute.valueClass().getEnumConstants());
+    Collection<T> enumConstants = asList(attribute.type().valueClass().getEnumConstants());
     comboBoxModel.setItemSupplier(() -> enumConstants);
     comboBoxModel.setIncludeNull(nullable);
     comboBoxModel.refresh();

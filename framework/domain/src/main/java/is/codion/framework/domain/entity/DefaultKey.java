@@ -97,13 +97,13 @@ class DefaultKey implements Entity.Key, Serializable {
    * @param primaryKey true if this key represents a primary key
    */
   DefaultKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primaryKey) {
-    values.forEach((column, value) -> ((Column<Object>) column).validateType(value));
+    values.forEach((column, value) -> ((Column<Object>) column).type().validateType(value));
     this.values = unmodifiableMap(values);
     this.columns = unmodifiableList(new ArrayList<>(values.keySet()));
     this.definition = definition;
     this.primaryKey = primaryKey;
     if (!this.columns.isEmpty()) {
-      this.singleIntegerKey = columns.size() == 1 && columns.get(0).isInteger();
+      this.singleIntegerKey = columns.size() == 1 && columns.get(0).type().isInteger();
     }
   }
 

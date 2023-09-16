@@ -61,7 +61,7 @@ final class EntitySerializer {
       Attribute<Object> attribute = attributeByName(definition, (String) stream.readObject());
       Object value = stream.readObject();
       if (attribute != null) {
-        map.put(attribute, attribute.validateType(value));
+        map.put(attribute, attribute.type().validateType(value));
       }
     }
 
@@ -78,7 +78,7 @@ final class EntitySerializer {
       Object value = stream.readObject();
       if (attribute != null) {
         key.columns.add(attribute);
-        key.values.put(attribute, attribute.validateType(value));
+        key.values.put(attribute, attribute.type().validateType(value));
       }
     }
     key.columns = unmodifiableList(key.columns);
@@ -124,6 +124,6 @@ final class EntitySerializer {
   }
 
   private static boolean isSingleIntegerKey(DefaultKey key) {
-    return key.columns.size() == 1 && key.columns.get(0).isInteger();
+    return key.columns.size() == 1 && key.columns.get(0).type().isInteger();
   }
 }

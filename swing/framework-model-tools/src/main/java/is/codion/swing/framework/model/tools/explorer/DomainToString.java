@@ -60,7 +60,7 @@ final class DomainToString {
   private static void appendAttribute(StringBuilder builder, AttributeDefinition<?> attributeDefinition) {
     if (attributeDefinition instanceof ColumnDefinition) {
       ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
-      String valueClassName = columnDefinition.attribute().valueClass().getSimpleName();
+      String valueClassName = columnDefinition.attribute().type().valueClass().getSimpleName();
       builder.append(INDENT).append("Column<").append(valueClassName).append("> ")
               .append(columnDefinition.columnName().toUpperCase()).append(" = TYPE.").append(attributeTypePrefix(valueClassName))
               .append("Column(\"").append(columnDefinition.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
@@ -135,11 +135,11 @@ final class DomainToString {
     if (!column.isNullable() && !column.isPrimaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
     }
-    if (String.class.equals(column.attribute().valueClass())) {
+    if (String.class.equals(column.attribute().type().valueClass())) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
               .append(column.maximumLength()).append(")");
     }
-    if (Double.class.equals(column.attribute().valueClass()) && column.maximumFractionDigits() >= 1) {
+    if (Double.class.equals(column.attribute().type().valueClass()) && column.maximumFractionDigits() >= 1) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
               .append(column.maximumFractionDigits()).append(")");
     }
@@ -160,7 +160,7 @@ final class DomainToString {
   }
 
   private static String definitionType(Attribute<?> attribute, boolean primaryKey) {
-    if (attribute.isByteArray()) {
+    if (attribute.type().isByteArray()) {
       return "blobColumn()";
     }
 

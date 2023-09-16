@@ -37,7 +37,7 @@ final class ColumnConditionDeserializer implements Serializable {
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
     for (JsonNode valueNode : valuesNode) {
-      values.add(entityObjectMapper.readValue(valueNode.toString(), columnDefinition.attribute().valueClass()));
+      values.add(entityObjectMapper.readValue(valueNode.toString(), columnDefinition.attribute().type().valueClass()));
     }
     Column<T> column = columnDefinition.attribute();
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {

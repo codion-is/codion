@@ -530,7 +530,7 @@ class DefaultEntity implements Entity, Serializable {
       validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
     }
 
-    return attributeDefinition.prepareValue(attributeDefinition.attribute().validateType(value));
+    return attributeDefinition.prepareValue(attributeDefinition.attribute().type().validateType(value));
   }
 
   private void validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
@@ -760,7 +760,7 @@ class DefaultEntity implements Entity, Serializable {
     if (contains(attribute) != entity.contains(attribute)) {
       return false;
     }
-    if (attribute.isByteArray()) {
+    if (attribute.type().isByteArray()) {
       return Arrays.equals((byte[]) get(attributeDefinition), (byte[]) entity.get(attribute));
     }
 
@@ -806,7 +806,7 @@ class DefaultEntity implements Entity, Serializable {
   private static Map<Attribute<?>, Object> validateTypes(EntityDefinition definition, Map<Attribute<?>, Object> values) {
     if (values != null && !values.isEmpty()) {
       for (Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
-        definition.attributeDefinition((Attribute<Object>) valueEntry.getKey()).attribute().validateType(valueEntry.getValue());
+        definition.attributeDefinition((Attribute<Object>) valueEntry.getKey()).attribute().type().validateType(valueEntry.getValue());
       }
     }
 

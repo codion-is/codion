@@ -48,18 +48,18 @@ public final class EntitiesTest {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
 
     //assert types
-    assertEquals(definition.columnDefinition(TestDomain.Detail.ID).attribute().valueClass(), Long.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.SHORT).attribute().valueClass(), Short.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.INT).attribute().valueClass(), Integer.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DOUBLE).attribute().valueClass(), Double.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.STRING).attribute().valueClass(), String.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DATE).attribute().valueClass(), LocalDate.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.TIMESTAMP).attribute().valueClass(), LocalDateTime.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.BOOLEAN).attribute().valueClass(), Boolean.class);
-    assertEquals(definition.foreignKeyDefinition(TestDomain.Detail.MASTER_FK).attribute().valueClass(), Entity.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.MASTER_ID).attribute().valueClass(), Long.class);
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME).attribute().valueClass(), String.class);
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE).attribute().valueClass(), Integer.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.ID).attribute().type().valueClass(), Long.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.SHORT).attribute().type().valueClass(), Short.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.INT).attribute().type().valueClass(), Integer.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.DOUBLE).attribute().type().valueClass(), Double.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.STRING).attribute().type().valueClass(), String.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.DATE).attribute().type().valueClass(), LocalDate.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.TIMESTAMP).attribute().type().valueClass(), LocalDateTime.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.BOOLEAN).attribute().type().valueClass(), Boolean.class);
+    assertEquals(definition.foreignKeyDefinition(TestDomain.Detail.MASTER_FK).attribute().type().valueClass(), Entity.class);
+    assertEquals(definition.columnDefinition(TestDomain.Detail.MASTER_ID).attribute().type().valueClass(), Long.class);
+    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME).attribute().type().valueClass(), String.class);
+    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE).attribute().type().valueClass(), Integer.class);
 
     //assert column names
     assertEquals(definition.columnDefinition(TestDomain.Detail.ID).attribute(), TestDomain.Detail.ID);

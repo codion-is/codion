@@ -20,117 +20,19 @@ public interface Attribute<T> {
   AttributeDefiner<T> define();
 
   /**
+   * @return the attribute type
+   */
+  Type<T> type();
+
+  /**
    * @return the name of this attribute.
    */
   String name();
 
   /**
-   * @return the Class representing the attribute value
-   */
-  Class<T> valueClass();
-
-  /**
    * @return the entity type this Attribute is associated with
    */
   EntityType entityType();
-
-  /**
-   * @param value the value to validate
-   * @return the validated value
-   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
-   * @see #valueClass()
-   */
-  T validateType(T value);
-
-  /**
-   * @return true if this attribute represents a numerical value.
-   */
-  boolean isNumerical();
-
-  /**
-   * @return true if this attribute represents a {@link java.time.temporal.Temporal} value.
-   */
-  boolean isTemporal();
-
-  /**
-   * @return true if this attribute represents a {@link java.time.LocalDate} value.
-   */
-  boolean isLocalDate();
-
-  /**
-   * @return true if this attribute represents a {@link java.time.LocalDateTime} value.
-   */
-  boolean isLocalDateTime();
-
-  /**
-   * @return true if this attribute represents a {@link java.time.LocalTime} value.
-   */
-  boolean isLocalTime();
-
-  /**
-   * @return true if this attribute represents a {@link java.time.OffsetDateTime} value.
-   */
-  boolean isOffsetDateTime();
-
-  /**
-   * @return true if this attribute represents a {@link Character} value.
-   */
-  boolean isCharacter();
-
-  /**
-   * @return true if this attribute represents a {@link String} value.
-   */
-  boolean isString();
-
-  /**
-   * @return true if this attribute represents a {@link Long} value.
-   */
-  boolean isLong();
-
-  /**
-   * @return true if this attribute represents a {@link Integer} value.
-   */
-  boolean isInteger();
-
-  /**
-   * @return true if this attribute represents a {@link Short} value.
-   */
-  boolean isShort();
-
-  /**
-   * @return true if this attribute represents a {@link Double} value.
-   */
-  boolean isDouble();
-
-  /**
-   * @return true if this attribute represents a {@link java.math.BigDecimal} value.
-   */
-  boolean isBigDecimal();
-
-  /**
-   * @return true if this attribute represents a decimal number value.
-   */
-  boolean isDecimal();
-
-  /**
-   * @return true if this attribute represents a {@link Boolean} value.
-   */
-  boolean isBoolean();
-
-  /**
-   * @return true if this attribute represents a byte array value.
-   */
-  boolean isByteArray();
-
-  /**
-   * @return true if this attribute represents an enum value.
-   */
-  boolean isEnum();
-
-  /**
-   * @return true if this attribute represents a {@link Entity} value.
-   */
-  boolean isEntity();
 
   /**
    * Creates a new {@link Attribute}, associated with the given entityType.
@@ -142,6 +44,117 @@ public interface Attribute<T> {
    */
   static <T> Attribute<T> attribute(EntityType entityType, String name, Class<T> valueClass) {
     return new DefaultAttribute<>(name, valueClass, entityType);
+  }
+
+  /**
+   * Defines the data type of an Attribute
+   * @param <T> the attribute data type
+   */
+  interface Type<T> {
+
+    /**
+     * @return the Class representing the attribute value
+     */
+    Class<T> valueClass();
+
+    /**
+     * @param value the value to validate
+     * @return the validated value
+     * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
+     * @see #valueClass()
+     */
+    T validateType(T value);
+
+    /**
+     * @return true if this attribute represents a numerical value.
+     */
+    boolean isNumerical();
+
+    /**
+     * @return true if this attribute represents a {@link java.time.temporal.Temporal} value.
+     */
+    boolean isTemporal();
+
+    /**
+     * @return true if this attribute represents a {@link java.time.LocalDate} value.
+     */
+    boolean isLocalDate();
+
+    /**
+     * @return true if this attribute represents a {@link java.time.LocalDateTime} value.
+     */
+    boolean isLocalDateTime();
+
+    /**
+     * @return true if this attribute represents a {@link java.time.LocalTime} value.
+     */
+    boolean isLocalTime();
+
+    /**
+     * @return true if this attribute represents a {@link java.time.OffsetDateTime} value.
+     */
+    boolean isOffsetDateTime();
+
+    /**
+     * @return true if this attribute represents a {@link Character} value.
+     */
+    boolean isCharacter();
+
+    /**
+     * @return true if this attribute represents a {@link String} value.
+     */
+    boolean isString();
+
+    /**
+     * @return true if this attribute represents a {@link Long} value.
+     */
+    boolean isLong();
+
+    /**
+     * @return true if this attribute represents a {@link Integer} value.
+     */
+    boolean isInteger();
+
+    /**
+     * @return true if this attribute represents a {@link Short} value.
+     */
+    boolean isShort();
+
+    /**
+     * @return true if this attribute represents a {@link Double} value.
+     */
+    boolean isDouble();
+
+    /**
+     * @return true if this attribute represents a {@link java.math.BigDecimal} value.
+     */
+    boolean isBigDecimal();
+
+    /**
+     * @return true if this attribute represents a decimal number value.
+     */
+    boolean isDecimal();
+
+    /**
+     * @return true if this attribute represents a {@link Boolean} value.
+     */
+    boolean isBoolean();
+
+    /**
+     * @return true if this attribute represents a byte array value.
+     */
+    boolean isByteArray();
+
+    /**
+     * @return true if this attribute represents an enum value.
+     */
+    boolean isEnum();
+
+    /**
+     * @return true if this attribute represents a {@link Entity} value.
+     */
+    boolean isEntity();
+
   }
 
   /**

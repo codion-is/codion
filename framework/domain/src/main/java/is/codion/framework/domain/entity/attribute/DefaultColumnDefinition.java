@@ -226,7 +226,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     DefaultColumnDefinitionBuilder(Column<T> column) {
       super(column);
       this.primaryKeyIndex = -1;
-      this.columnType = sqlType(column.valueClass());
+      this.columnType = sqlType(column.type().valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
       this.updatable = true;
@@ -335,7 +335,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
     @Override
     public final B searchColumn(boolean searchColumn) {
-      if (searchColumn && !attribute.isString()) {
+      if (searchColumn && !attribute.type().isString()) {
         throw new IllegalStateException("Search columns must be String based: " + attribute);
       }
       this.searchColumn = searchColumn;
@@ -370,11 +370,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
     private static <T> ValueFetcher<T> valueFetcher(int columnType, Column<T> column) {
       if (columnType == Types.OTHER) {
-        return (ValueFetcher<T>) new ObjectFetcher(column.valueClass());
+        return (ValueFetcher<T>) new ObjectFetcher(column.type().valueClass());
       }
       if (!VALUE_FETCHERS.containsKey(columnType)) {
         throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
-                ", column: " + column + ", valueClass: " + column.valueClass());
+                ", column: " + column + ", valueClass: " + column.type().valueClass());
       }
 
       return (ValueFetcher<T>) VALUE_FETCHERS.get(columnType);

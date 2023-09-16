@@ -296,11 +296,11 @@ public class EntityTestUnit {
     String message = "Values of column " + columnDefinition + " should be equal after update ["
             + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
             + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
-    if (columnDefinition.attribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+    if (columnDefinition.attribute().type().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
       assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
               && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
     }
-    else if (columnDefinition.attribute().isByteArray() && columnDefinition instanceof BlobColumnDefinition && ((BlobColumnDefinition) columnDefinition).isEagerlyLoaded()) {
+    else if (columnDefinition.attribute().type().isByteArray() && columnDefinition instanceof BlobColumnDefinition && ((BlobColumnDefinition) columnDefinition).isEagerlyLoaded()) {
       assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
     }
     else {

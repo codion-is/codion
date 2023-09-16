@@ -25,17 +25,17 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   private static final long serialVersionUID = 1;
 
   private final String name;
-  private final Class<T> valueClass;
+  private final DefaultType<T> type;
   private final int hashCode;
-  private final EntityType entityType;
 
   DefaultAttribute(String name, Class<T> valueClass, EntityType entityType) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
+    requireNonNull(entityType, "entityType");
+    requireNonNull(valueClass, "valueClass");
     this.name = name;
-    this.entityType = requireNonNull(entityType, "entityType");
-    this.valueClass = requireNonNull(valueClass, "valueClass");
+    this.type = new DefaultType<>(entityType, valueClass);
     this.hashCode = Objects.hash(name, entityType);
   }
 
@@ -45,118 +45,18 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
+  public final Type<T> type() {
+    return type;
+  }
+
+  @Override
   public final String name() {
     return name;
   }
 
   @Override
-  public final Class<T> valueClass() {
-    return valueClass;
-  }
-
-  @Override
   public final EntityType entityType() {
-    return entityType;
-  }
-
-  @Override
-  public final T validateType(T value) {
-    if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + valueClass +
-              " expected for attribute " + this + " in entity " + entityType + ", got: " + value.getClass());
-    }
-
-    return value;
-  }
-
-  @Override
-  public final boolean isNumerical() {
-    return Number.class.isAssignableFrom(valueClass);
-  }
-
-  @Override
-  public final boolean isTemporal() {
-    return Temporal.class.isAssignableFrom(valueClass);
-  }
-
-  @Override
-  public final boolean isLocalDate() {
-    return isType(LocalDate.class);
-  }
-
-  @Override
-  public final boolean isLocalDateTime() {
-    return isType(LocalDateTime.class);
-  }
-
-  @Override
-  public final boolean isLocalTime() {
-    return isType(LocalTime.class);
-  }
-
-  @Override
-  public final boolean isOffsetDateTime() {
-    return isType(OffsetDateTime.class);
-  }
-
-  @Override
-  public final boolean isCharacter() {
-    return isType(Character.class);
-  }
-
-  @Override
-  public final boolean isString() {
-    return isType(String.class);
-  }
-
-  @Override
-  public final boolean isLong() {
-    return isType(Long.class);
-  }
-
-  @Override
-  public final boolean isInteger() {
-    return isType(Integer.class);
-  }
-
-  @Override
-  public final boolean isShort() {
-    return isType(Short.class);
-  }
-
-  @Override
-  public final boolean isDouble() {
-    return isType(Double.class);
-  }
-
-  @Override
-  public final boolean isBigDecimal() {
-    return isType(BigDecimal.class);
-  }
-
-  @Override
-  public final boolean isDecimal() {
-    return isDouble() || isBigDecimal();
-  }
-
-  @Override
-  public final boolean isBoolean() {
-    return isType(Boolean.class);
-  }
-
-  @Override
-  public final boolean isByteArray() {
-    return isType(byte[].class);
-  }
-
-  @Override
-  public final boolean isEnum() {
-    return valueClass.isEnum();
-  }
-
-  @Override
-  public final boolean isEntity() {
-    return isType(Entity.class);
+    return type.entityType;
   }
 
   @Override
@@ -169,7 +69,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
     }
     DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
-    return hashCode == that.hashCode && name.equals(that.name) && entityType.equals(that.entityType);
+    return hashCode == that.hashCode && name.equals(that.name) && type.entityType.equals(that.type.entityType);
   }
 
   @Override
@@ -179,11 +79,129 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final String toString() {
-    return entityType.name() + "." + name;
+    return type.entityType.name() + "." + name;
   }
 
-  private boolean isType(Class<?> valueClass) {
-    return this.valueClass.equals(valueClass);
+  private static final class DefaultType<T> implements Type<T>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final EntityType entityType;
+    private final Class<T> valueClass;
+
+    private DefaultType(EntityType entityType, Class<T> valueClass) {
+      this.entityType = entityType;
+      this.valueClass = valueClass;
+    }
+
+    @Override
+    public Class<T> valueClass() {
+      return valueClass;
+    }
+
+    @Override
+    public T validateType(T value) {
+      if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
+        throw new IllegalArgumentException("Value of type " + valueClass +
+                " expected for attribute " + this + " in entity " + entityType + ", got: " + value.getClass());
+      }
+
+      return value;
+    }
+
+    @Override
+    public boolean isNumerical() {
+      return Number.class.isAssignableFrom(valueClass);
+    }
+
+    @Override
+    public boolean isTemporal() {
+      return Temporal.class.isAssignableFrom(valueClass);
+    }
+
+    @Override
+    public boolean isLocalDate() {
+      return isType(LocalDate.class);
+    }
+
+    @Override
+    public boolean isLocalDateTime() {
+      return isType(LocalDateTime.class);
+    }
+
+    @Override
+    public boolean isLocalTime() {
+      return isType(LocalTime.class);
+    }
+
+    @Override
+    public boolean isOffsetDateTime() {
+      return isType(OffsetDateTime.class);
+    }
+
+    @Override
+    public boolean isCharacter() {
+      return isType(Character.class);
+    }
+
+    @Override
+    public boolean isString() {
+      return isType(String.class);
+    }
+
+    @Override
+    public boolean isLong() {
+      return isType(Long.class);
+    }
+
+    @Override
+    public boolean isInteger() {
+      return isType(Integer.class);
+    }
+
+    @Override
+    public boolean isShort() {
+      return isType(Short.class);
+    }
+
+    @Override
+    public boolean isDouble() {
+      return isType(Double.class);
+    }
+
+    @Override
+    public boolean isBigDecimal() {
+      return isType(BigDecimal.class);
+    }
+
+    @Override
+    public boolean isDecimal() {
+      return isDouble() || isBigDecimal();
+    }
+
+    @Override
+    public boolean isBoolean() {
+      return isType(Boolean.class);
+    }
+
+    @Override
+    public boolean isByteArray() {
+      return isType(byte[].class);
+    }
+
+    @Override
+    public boolean isEnum() {
+      return valueClass.isEnum();
+    }
+
+    @Override
+    public boolean isEntity() {
+      return isType(Entity.class);
+    }
+
+    private boolean isType(Class<?> valueClass) {
+      return this.valueClass.equals(valueClass);
+    }
   }
 
   protected static class DefaultAttributeDefiner<T> implements AttributeDefiner<T> {

@@ -43,7 +43,7 @@ final class CustomConditionDeserializer implements Serializable {
     int attributeIndex = 0;
     for (JsonNode valueNode : valuesNode) {
       AttributeDefinition<?> attributeDefinition = definition.columnDefinition(columns.get(attributeIndex++));
-      values.add(entityObjectMapper.readValue(valueNode.toString(), attributeDefinition.attribute().valueClass()));
+      values.add(entityObjectMapper.readValue(valueNode.toString(), attributeDefinition.attribute().type().valueClass()));
     }
 
     return Condition.customCondition(definition.entityType().conditionType(conditionTypeName), columns, values);
