@@ -209,40 +209,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * @param listener a listener notified each time the active state changes
+   * @return a {@link State} controlling whether this panel is active, enabled and ready to receive input
    */
-  public final void addActiveListener(Consumer<Boolean> listener) {
-    active.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeActiveListener(Consumer<Boolean> listener) {
-    active.removeDataListener(listener);
-  }
-
-  /**
-   * @return true if this edit panel is active, enabled and ready to receive input
-   */
-  public final boolean isActive() {
-    return active.get();
-  }
-
-  /**
-   * Sets the active state of this edit panel, an active edit panel should be
-   * enabled and ready to receive input
-   * @param active the active state
-   */
-  public final void setActive(boolean active) {
-    this.active.set(active);
-  }
-
-  /**
-   * @return a {@link StateObserver} indicating whether this panel is active
-   */
-  public final StateObserver active() {
-    return active.observer();
+  public final State active() {
+    return active;
   }
 
   /**

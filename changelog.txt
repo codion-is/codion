@@ -9570,3 +9570,4 @@
   ComponentBuilder.enabledObserver() renamed enabled(), along with others
   StateObserver.reversed() renamed not()
   ComponentBuilder.linkedValueObserver() renamed linkedValue()
+  EntityEditPanel.active() now returns the State instance, replaces setter, getter and addListener
