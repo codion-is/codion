@@ -43,19 +43,19 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
   RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
     super(borderLayout());
-    this.playlistNameField = textField(model.playlistNameValue)
+    this.playlistNameField = textField(model.playlistName)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .maximumLength(120)
             .columns(10)
             .build();
-    this.noOfTracksField = integerField(model.noOfTracksValue)
+    this.noOfTracksField = integerField(model.noOfTracks)
             .valueRange(1, 5000)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(3)
             .build();
-    this.genreList = Components.list(createGenreListModel(connectionProvider), model.genresValue)
+    this.genreList = Components.list(createGenreListModel(connectionProvider), model.genres)
             .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
             .visibleRowCount(5)
             .build();
@@ -74,11 +74,11 @@ final class RandomPlaylistParametersPanel extends JPanel {
   }
 
   StateObserver parametersValidObserver() {
-    return model.parametersValidState.observer();
+    return model.parametersValid.observer();
   }
 
   RandomPlaylistParameters get() {
-    return new RandomPlaylistParameters(model.playlistNameValue.get(), model.noOfTracksValue.get(), model.genresValue.get());
+    return new RandomPlaylistParameters(model.playlistName.get(), model.noOfTracks.get(), model.genres.get());
   }
 
   private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
@@ -98,30 +98,30 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
   private static final class RandomPlaylistParametersModel {
 
-    private final Value<String> playlistNameValue = Value.value();
-    private final Value<Integer> noOfTracksValue = Value.value();
-    private final ValueSet<Entity> genresValue = ValueSet.valueSet();
-    private final State parametersValidState = State.state();
+    private final Value<String> playlistName = Value.value();
+    private final Value<Integer> noOfTracks = Value.value();
+    private final ValueSet<Entity> genres = ValueSet.valueSet();
+    private final State parametersValid = State.state();
 
     private RandomPlaylistParametersModel() {
-      playlistNameValue.addListener(this::validate);
-      noOfTracksValue.addListener(this::validate);
-      genresValue.addListener(this::validate);
+      playlistName.addListener(this::validate);
+      noOfTracks.addListener(this::validate);
+      genres.addListener(this::validate);
       validate();
     }
 
     private void validate() {
-      parametersValidState.set(isValid());
+      parametersValid.set(isValid());
     }
 
     private boolean isValid() {
-      if (nullOrEmpty(playlistNameValue.get())) {
+      if (nullOrEmpty(playlistName.get())) {
         return false;
       }
-      if (noOfTracksValue.isNull()) {
+      if (noOfTracks.isNull()) {
         return false;
       }
-      if (genresValue.isEmpty()) {
+      if (genres.isEmpty()) {
         return false;
       }
 

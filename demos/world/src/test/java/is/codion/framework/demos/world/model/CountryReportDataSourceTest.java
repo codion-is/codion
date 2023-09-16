@@ -4,7 +4,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.world.domain.WorldImpl;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,8 +50,7 @@ public final class CountryReportDataSourceTest {
 
       EntityConnection connection = connectionProvider.connection();
       List<Entity> countries =
-              connection.select(Select.where(Country.NAME
-                              .in("Denmark", "Iceland"))
+              connection.select(where(Country.NAME.in("Denmark", "Iceland"))
                       .orderBy(ascending(Country.NAME))
                       .build());
       CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries, connection, progressReporter);
