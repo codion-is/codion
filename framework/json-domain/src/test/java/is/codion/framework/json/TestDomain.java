@@ -140,7 +140,7 @@ public final class TestDomain extends DefaultDomain {
                     .column()
                     .nullable(false),
             Employee.EMP_DEPARTMENT_LOCATION.define()
-                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION))
+                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .caption("Employee"));

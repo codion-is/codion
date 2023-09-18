@@ -176,8 +176,8 @@ public interface Attribute<T> {
      * @param denormalizedAttribute the attribute from the referenced entity, from which this attribute gets its value
      * @return a new {@link AttributeDefinition.Builder}
      */
-    <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalizedAttribute(Attribute<Entity> entityAttribute,
-                                                                                                          Attribute<T> denormalizedAttribute);
+    <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
+                                                                                                 Attribute<T> denormalizedAttribute);
 
     /**
      * Instantiates a {@link AttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
@@ -187,7 +187,7 @@ public interface Attribute<T> {
      * @return a new {@link AttributeDefinition.Builder}
      * @throws IllegalArgumentException in case no source attributes are specified
      */
-    <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derivedAttribute(DerivedAttribute.Provider<T> valueProvider,
-                                                                                                     Attribute<?>... sourceAttributes);
+    <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
+                                                                                            Attribute<?>... sourceAttributes);
   }
 }

@@ -230,7 +230,7 @@ public final class TestDomain extends DefaultDomain {
                     .foreignKey()
                     .caption(Detail2.MASTER_FK.name()),
             Detail2.MASTER_NAME.define()
-                    .denormalizedAttribute(Detail2.MASTER_FK, Master.NAME)
+                    .denormalized(Detail2.MASTER_FK, Master.NAME)
                     .caption(Detail2.MASTER_NAME.name()),
             Detail2.MASTER_CODE.define()
                     .column()
@@ -240,7 +240,7 @@ public final class TestDomain extends DefaultDomain {
                     .items(ITEMS)
                     .caption(Detail2.INT_VALUE_LIST.name()),
             Detail2.INT_DERIVED.define()
-                    .derivedAttribute(linkedValues -> {
+                    .derived(linkedValues -> {
               Integer intValue = linkedValues.get(Detail2.INT);
               if (intValue == null) {
                 return null;
@@ -358,17 +358,17 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Detail.MASTER_FK.name())
                     .beanProperty("master"),
             Detail.MASTER_NAME.define()
-                    .denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
+                    .denormalized(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
             Detail.MASTER_CODE.define()
-                    .denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
+                    .denormalized(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
             Detail.INT_VALUE_LIST.define()
                     .column()
                     .items(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
             Detail.INT_DERIVED.define()
-                    .derivedAttribute(linkedValues -> {
+                    .derived(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
 
@@ -545,10 +545,10 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false)
                     .beanProperty("hiredate"),
             Employee.DEPARTMENT_LOCATION.define()
-                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()),
             Employee.DEPARTMENT_NAME.define()
-                    .derivedAttribute(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
+                    .derived(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             Employee.DATA.define()
                     .blobColumn()
                     .caption("Data")
@@ -679,7 +679,7 @@ public final class TestDomain extends DefaultDomain {
             InvalidDerived.INT.define()
                     .column(),
             InvalidDerived.INVALID_DERIVED.define()
-                    .derivedAttribute(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
+                    .derived(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
             .caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
             .stringFactory(entity -> null));
   }

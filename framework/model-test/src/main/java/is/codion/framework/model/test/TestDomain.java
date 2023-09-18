@@ -120,17 +120,17 @@ public final class TestDomain extends DefaultDomain {
                     .foreignKey()
                     .caption(Detail.MASTER_FK.name()),
             Detail.MASTER_NAME.define()
-                    .denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
+                    .denormalized(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
             Detail.MASTER_CODE.define()
-                    .denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
+                    .denormalized(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
             Detail.INT_VALUE_LIST.define()
                     .column()
                     .items(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
             Detail.INT_DERIVED.define()
-                    .derivedAttribute(linkedValues -> {
+                    .derived(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
                 return null;
@@ -240,7 +240,7 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Employee.HIREDATE.name())
                     .nullable(false),
             Employee.DEPARTMENT_LOCATION.define()
-                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))

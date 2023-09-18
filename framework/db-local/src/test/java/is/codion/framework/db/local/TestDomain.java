@@ -198,7 +198,7 @@ public final class TestDomain extends DefaultDomain {
                     .column()
                     .caption(Employee.HIRETIME.name()),
             Employee.DEPARTMENT_LOCATION.define()
-                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOC)
+                    .denormalized(Employee.DEPARTMENT_FK, Department.LOC)
                     .caption(Department.LOC.name()),
             Employee.DATA_LAZY.define()
                     .column(),
