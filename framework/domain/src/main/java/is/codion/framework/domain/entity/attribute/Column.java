@@ -108,6 +108,17 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
      * @return a new {@link ColumnDefinition.Builder}
      */
     <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn();
+
+    /**
+     * A convenience method for a {@link ValueConverter} for boolean columns
+     * @param trueValue the true value
+     * @param falseValue the false value
+     * @return a boolean value converter
+     * @param <C> the actual column type
+     */
+    static <C> ValueConverter<Boolean, C> booleanValueConverter(C trueValue, C falseValue) {
+      return new DefaultColumn.BooleanValueConverter<>(trueValue, falseValue);
+    }
   }
 
   /**

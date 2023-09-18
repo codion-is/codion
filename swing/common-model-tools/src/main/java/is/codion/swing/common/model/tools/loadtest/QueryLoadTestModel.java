@@ -178,14 +178,14 @@ public final class QueryLoadTestModel {
         }
       }
     }
-  }
 
-  private static void closeSilently(AutoCloseable closeable) {
-    try {
-      if (closeable != null) {
-        closeable.close();
+    private static void closeSilently(AutoCloseable closeable) {
+      try {
+        if (closeable != null) {
+          closeable.close();
+        }
       }
+      catch (Exception ignored) {/*ignored*/}
     }
-    catch (Exception ignored) {/*ignored*/}
   }
 }
