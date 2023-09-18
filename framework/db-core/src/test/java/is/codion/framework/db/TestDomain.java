@@ -117,7 +117,7 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Employee.HIREDATE.name())
                     .nullable(false),
             Employee.DEPARTMENT_LOCATION.define()
-                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .tableName("scott.emp")
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

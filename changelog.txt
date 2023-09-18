@@ -9571,3 +9571,4 @@
   StateObserver.reversed() renamed not()
   ComponentBuilder.linkedValueObserver() renamed linkedValue()
   EntityEditPanel.active() now returns the State instance, replaces setter, getter and addListener
+  AttributeDefiner.derivedAttribute() and denormalizedAttribute() renamed derived() and denormalized() respectively

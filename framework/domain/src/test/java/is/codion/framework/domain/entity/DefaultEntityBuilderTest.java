@@ -70,7 +70,7 @@ public final class DefaultEntityBuilderTest {
                         .column()
                         .defaultValue(42),
                 derivedValue.define()
-                        .derivedAttribute(sourceValues -> {
+                        .derived(sourceValues -> {
                   Integer sourceValue = sourceValues.get(value);
 
                   return sourceValue == null ? null : sourceValue + 1;

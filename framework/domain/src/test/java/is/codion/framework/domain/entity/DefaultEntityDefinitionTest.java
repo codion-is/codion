@@ -169,7 +169,7 @@ public class DefaultEntityDefinitionTest {
                 entityType.integerColumn("id").define().primaryKey(),
                 name.define().column(),
                 info.define().column(),
-                derived.define().derivedAttribute(linkedValues ->
+                derived.define().derived(linkedValues ->
                         linkedValues.get(name).toString() + linkedValues.get(info), name, info)));
       }
     }
@@ -287,7 +287,7 @@ public class DefaultEntityDefinitionTest {
                 pk.define().primaryKey(),
                 column1.define().column(),
                 column2.define().column(),
-                der.define().derivedAttribute(linkedValues -> null, column1, column2)));
+                der.define().derived(linkedValues -> null, column1, column2)));
       }
     }
     Domain domain = new TestDomain();
