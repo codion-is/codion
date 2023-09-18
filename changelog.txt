@@ -9573,3 +9573,4 @@
   EntityEditPanel.active() now returns the State instance, replaces setter, getter and addListener
   AttributeDefiner.derivedAttribute() and denormalizedAttribute() renamed derived() and denormalized() respectively
   ColumnDefiner.booleanValueConverter() added
+  SwingEntityTableModel now back to clearing the selection on insert, not doing so seemed to sometimes cause an array index out of bounds error during post insert event processing, needs some scrutiny
