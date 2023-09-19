@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -345,8 +346,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void isConditionEnabled() {
     SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider()) {
       @Override
-      protected boolean isConditionEnabled() {
-        return conditionModel().isEnabled(Employee.MGR_FK);
+      protected boolean isConditionEnabled(EntityTableConditionModel<Attribute<?>> conditionModel) {
+        return conditionModel.isEnabled(Employee.MGR_FK);
       }
     };
     tableModel.refresh();
