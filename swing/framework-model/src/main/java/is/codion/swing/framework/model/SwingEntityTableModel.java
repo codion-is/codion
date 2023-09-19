@@ -828,17 +828,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequired()
-   * @see #isConditionEnabled()
+   * @see #isConditionEnabled(EntityTableConditionModel)
    * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
-    if (conditionRequired.get() && !isConditionEnabled()) {
-      updateRefreshCondition(conditionModel.condition());
-
-      return emptyList();
-    }
     try {
-      return queryItems(conditionModel.condition());
+      return queryItems();
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -850,10 +845,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * This can be done by enabling the {@link #conditionRequired()}, which prevents a refresh as long as this
    * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#isEnabled()}.
    * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
+   * @param conditionModel the table condition model
    * @return true if enough conditions are enabled for a safe refresh
    * @see #conditionRequired()
    */
-  protected boolean isConditionEnabled() {
+  protected boolean isConditionEnabled(EntityTableConditionModel<Attribute<?>> conditionModel) {
     return conditionModel.isEnabled();
   }
 
@@ -963,7 +959,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
-  private List<Entity> queryItems(Condition condition) throws DatabaseException {
+  private List<Entity> queryItems() throws DatabaseException {
+    Condition condition = conditionModel.condition();
+    if (conditionRequired.get() && !isConditionEnabled(conditionModel)) {
+      updateRefreshCondition(condition);
+
+      return emptyList();
+    }
     List<Entity> items = editModel.connectionProvider().connection().select(where(condition)
             .attributes(attributes())
             .limit(getLimit())
@@ -1029,6 +1031,22 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
+  private void onConditionChanged(Condition condition) {
+    conditionChanged.set(!Objects.equals(refreshCondition, condition));
+  }
+
+  private void onColumnHidden(Attribute<?> attribute) {
+    //disable the condition and filter model for the column to be hidden, to prevent confusion
+    ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
+    if (columnConditionModel != null && !columnConditionModel.locked().get()) {
+      columnConditionModel.enabled().set(false);
+    }
+    ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
+    if (filterModel != null && !filterModel.locked().get()) {
+      filterModel.enabled().set(false);
+    }
+  }
+
   /**
    * Replace the entities identified by the Entity.Key map keys with their respective value.
    * Note that this does not trigger {@link #filterItems()}, that must be done explicitly.
@@ -1051,22 +1069,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       if (entitiesByKey.isEmpty()) {
         break;
       }
-    }
-  }
-
-  private void onConditionChanged(Condition condition) {
-    conditionChanged.set(!Objects.equals(refreshCondition, condition));
-  }
-
-  private void onColumnHidden(Attribute<?> attribute) {
-    //disable the condition and filter model for the column to be hidden, to prevent confusion
-    ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-    if (columnConditionModel != null && !columnConditionModel.locked().get()) {
-      columnConditionModel.enabled().set(false);
-    }
-    ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
-    if (filterModel != null && !filterModel.locked().get()) {
-      filterModel.enabled().set(false);
     }
   }
 
