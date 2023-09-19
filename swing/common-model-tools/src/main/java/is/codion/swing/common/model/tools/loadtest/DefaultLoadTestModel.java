@@ -808,7 +808,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     @Override
     public LoadTestModel<T> build() {
-      return new DefaultLoadTestModel<T>(this);
+      return new DefaultLoadTestModel<>(this);
     }
 
     private static final class DefaultTitleFactory<T> implements Function<LoadTestModel<T>, String> {

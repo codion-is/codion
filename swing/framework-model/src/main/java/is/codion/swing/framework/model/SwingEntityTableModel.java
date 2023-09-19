@@ -965,10 +965,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private List<Entity> queryItems(Condition condition) throws DatabaseException {
     List<Entity> items = editModel.connectionProvider().connection().select(where(condition)
-              .attributes(attributes())
-              .limit(getLimit())
-              .orderBy(orderBy())
-              .build());
+            .attributes(attributes())
+            .limit(getLimit())
+            .orderBy(orderBy())
+            .build());
     updateRefreshCondition(condition);
 
     return items;
@@ -980,10 +980,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
-    if (!onInsert.equals(OnInsert.DO_NOTHING)) {
-      Collection<Entity> entitiesToAdd = insertedEntities.stream()
-              .filter(entity -> entity.entityType().equals(entityType()))
-              .collect(toList());
+    Collection<Entity> entitiesToAdd = insertedEntities.stream()
+            .filter(entity -> entity.entityType().equals(entityType()))
+            .collect(toList());
+    if (!onInsert.equals(OnInsert.DO_NOTHING) && !entitiesToAdd.isEmpty()) {
+      if (!selectionModel().isSelectionEmpty()) {
+        selectionModel().clearSelection();
+      }
       switch (onInsert) {
         case ADD_TOP:
           tableModel.addItemsAt(0, entitiesToAdd);
