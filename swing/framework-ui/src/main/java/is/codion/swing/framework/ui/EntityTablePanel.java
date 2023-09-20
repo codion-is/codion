@@ -617,7 +617,7 @@ public class EntityTablePanel extends JPanel {
   public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
     requireNonNull(attributeToEdit);
     if (!tableModel.selectionModel().isSelectionEmpty()) {
-      EntityEditDialog.builder(tableModel.editModel(), attributeToEdit)
+      EntityDialogs.editDialog(tableModel.editModel(), attributeToEdit)
               .owner(this)
               .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attributeToEdit))
               .multipleEntityUpdateEnabled(tableModel().isMultipleEntityUpdateEnabled())

@@ -9578,3 +9578,4 @@
   EntityTablePanel.viewSelectionDependencies() renamed viewDependencies(), setEditSelectedComponentFactory() renamed setEditComponentFactory() and setTableCellEditorComponentFactory renamed setTableCellEditorFactory()
   EntitySelectionDialog no longer extends JDialog
   EntityEditDialog refactored from EntityTablePanel
+  EntityDialogs added, handles edit and selection dialogs
