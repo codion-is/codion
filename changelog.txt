@@ -9615,3 +9615,7 @@
   ColumnDefiner.booleanValueConverter() added
   SwingEntityTableModel now back to clearing the selection on insert, not doing so seemed to sometimes cause an array index out of bounds error during post insert event processing, needs some scrutiny
   SwingEntityTableModel.refreshItems(), updateRefreshCondition() functionality moved to queryItems() for safer overriding
+  EntityTablePanel.viewSelectionDependencies() renamed viewDependencies(), setEditSelectedComponentFactory() renamed setEditComponentFactory() and setTableCellEditorComponentFactory renamed setTableCellEditorFactory()
+  EntitySelectionDialog no longer extends JDialog
+  EntityEditDialog refactored from EntityTablePanel
+  EntityDialogs added, handles edit and selection dialogs

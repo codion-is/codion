@@ -31,8 +31,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
-    setEditSelectedComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false));
-    setTableCellEditorComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true));
+    setEditComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false));
+    setTableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true));
   }
 
   @Override
