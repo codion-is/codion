@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -38,12 +37,10 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntityComponentFactory;
-import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -84,7 +81,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.*;
@@ -262,7 +258,7 @@ public class EntityTablePanel extends JPanel {
 
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editSelectedComponentFactories = new HashMap<>();
+  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> tableCellEditorComponentFactories = new HashMap<>();
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -524,10 +520,10 @@ public class EntityTablePanel extends JPanel {
    * @param <A> the attribute type
    * @param <C> the component type
    */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setEditSelectedComponentFactory(A attribute,
-                                                                                                      EntityComponentFactory<T, A, C> componentFactory) {
+  public final <T, A extends Attribute<T>, C extends JComponent> void setEditComponentFactory(A attribute,
+                                                                                              EntityComponentFactory<T, A, C> componentFactory) {
     tableModel().entityDefinition().attributeDefinition(attribute);
-    editSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
+    editComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -538,8 +534,8 @@ public class EntityTablePanel extends JPanel {
    * @param <A> the attribute type
    * @param <C> the component type
    */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorComponentFactory(A attribute,
-                                                                                                         EntityComponentFactory<T, A, C> componentFactory) {
+  public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorFactory(A attribute,
+                                                                                                EntityComponentFactory<T, A, C> componentFactory) {
     tableModel().entityDefinition().attributeDefinition(attribute);
     tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
@@ -616,37 +612,23 @@ public class EntityTablePanel extends JPanel {
    * assigning the value to the attribute
    * @param attributeToEdit the attribute which value to edit
    * @param <T> the attribute value type
-   * @see #setEditSelectedComponentFactory(Attribute, EntityComponentFactory)
+   * @see #setEditComponentFactory(Attribute, EntityComponentFactory)
    */
   public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
     requireNonNull(attributeToEdit);
-    if (tableModel.selectionModel().isSelectionEmpty()) {
-      return;
-    }
-
-    AttributeDefinition<T> attributeDefinition = tableModel.entityDefinition().attributeDefinition(attributeToEdit);
-    Collection<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
-    Collection<T> values = Entity.distinct(attributeToEdit, selectedEntities);
-    T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    ComponentValue<T, ?> componentValue = editSelectedComponentValue(attributeToEdit, initialValue);
-    InputValidator<T> inputValidator = new InputValidator<>(attributeDefinition, componentValue);
-    boolean updatePerformed = false;
-    while (!updatePerformed) {
-      T newValue = Dialogs.inputDialog(componentValue)
+    if (!tableModel.selectionModel().isSelectionEmpty()) {
+      EntityEditDialog.builder(tableModel.editModel(), attributeToEdit)
               .owner(this)
-              .title(FrameworkMessages.edit())
-              .caption(attributeDefinition.caption())
-              .inputValidator(inputValidator)
-              .show();
-      Entity.put(attributeToEdit, newValue, selectedEntities);
-      updatePerformed = update(selectedEntities);
+              .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attributeToEdit))
+              .multipleEntityUpdateEnabled(tableModel().isMultipleEntityUpdateEnabled())
+              .edit(tableModel.selectionModel().getSelectedItems());
     }
   }
 
   /**
-   * Shows a dialog containing lists of entities depending on the selected entities via foreign key
+   * Displays a dialog containing tables of entities depending on the selected entities via non-soft foreign keys
    */
-  public final void viewSelectionDependencies() {
+  public final void viewDependencies() {
     if (!tableModel.selectionModel().isSelectionEmpty()) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(), this);
       table.requestFocusInWindow();//otherwise the JRootPane keeps the focus after the popup menu has been closed
@@ -1091,13 +1073,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Called before update is performed.
-   * To cancel the update throw a {@link is.codion.common.model.CancelException}.
-   * @param entities the entities being updated, including the values being modified
-   */
-  protected void beforeUpdate(Collection<Entity> entities) {}
-
-  /**
    * Called before delete is performed on the selected entities.
    * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
    */
@@ -1136,7 +1111,7 @@ public class EntityTablePanel extends JPanel {
    * @return a control for showing the dependencies dialog
    */
   private Control createViewDependenciesControl() {
-    return Control.builder(this::viewSelectionDependencies)
+    return Control.builder(this::viewDependencies)
             .name(FrameworkMessages.dependencies())
             .enabled(tableModel.selectionModel().selectionNotEmpty())
             .description(FrameworkMessages.dependenciesTip())
@@ -1298,11 +1273,6 @@ public class EntityTablePanel extends JPanel {
             .enabled(tableModel.conditionChanged())
             .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
-  }
-
-  private <T> ComponentValue<T, ? extends JComponent> editSelectedComponentValue(Attribute<T> attribute, T initialValue) {
-    return ((EntityComponentFactory<T, Attribute<T>, ?>) editSelectedComponentFactories.computeIfAbsent(attribute, a ->
-            new EditSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
   private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
@@ -1596,31 +1566,6 @@ public class EntityTablePanel extends JPanel {
     table.repaint();
   }
 
-  private boolean update(Collection<Entity> entities) {
-    try {
-      beforeUpdate(entities);
-      WaitCursor.show(this);
-      try {
-        tableModel.update(entities);
-
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
-    }
-    catch (ValidationException e) {
-      LOG.debug(e.getMessage(), e);
-      onValidationException(e);
-    }
-    catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      onException(e);
-    }
-
-    return false;
-  }
-
   private void onRefreshingChanged(boolean refreshing) {
     if (refreshing) {
       WaitCursor.show(EntityTablePanel.this);
@@ -1873,51 +1818,6 @@ public class EntityTablePanel extends JPanel {
       control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
 
       return popupMenuControls;
-    }
-  }
-
-  private static final class EditSelectedComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
-
-    @Override
-    public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
-      requireNonNull(attribute, "attribute");
-      requireNonNull(editModel, "editModel");
-      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
-      if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.type().isString()) {
-        //special handling for non-item based String attributes, text input panel instead of a text field
-        return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
-                .textInputPanel((Attribute<String>) attribute)
-                .initialValue((String) initialValue)
-                .buildValue();
-      }
-
-      return super.createComponentValue(attribute, editModel, initialValue);
-    }
-  }
-
-  private static final class InputValidator<T> implements Predicate<T> {
-
-    private final AttributeDefinition<T> attributeDefinition;
-    private final ComponentValue<T, ?> componentValue;
-
-    private InputValidator(AttributeDefinition<T> attributeDefinition, ComponentValue<T, ?> componentValue) {
-      this.attributeDefinition = attributeDefinition;
-      this.componentValue = componentValue;
-    }
-
-    @Override
-    public boolean test(T value) {
-      if (value == null && !attributeDefinition.isNullable()) {
-        return false;
-      }
-      try {
-        componentValue.validators().forEach(validator -> validator.validate(value));
-      }
-      catch (IllegalArgumentException e) {
-        return false;
-      }
-
-      return true;
     }
   }
 

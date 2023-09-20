@@ -14,7 +14,7 @@ public final class InvoiceLineTablePanel extends EntityTablePanel {
 
   public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
-    setEditSelectedComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory());
+    setEditComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory());
     setIncludeSouthPanel(false);
     setIncludeConditionPanel(false);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

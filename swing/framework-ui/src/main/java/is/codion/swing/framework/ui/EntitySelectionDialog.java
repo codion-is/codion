@@ -44,8 +44,9 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
  * A dialog for searching for and selecting one or more entities from a table model.
  * @see #builder(SwingEntityTableModel)
  */
-public final class EntitySelectionDialog extends JDialog {
+public final class EntitySelectionDialog {
 
+  private final JDialog dialog;
   private final List<Entity> selectedEntities = new ArrayList<>();
   private final SwingEntityTableModel tableModel;
   private final EntityTablePanel entityTablePanel;
@@ -54,10 +55,7 @@ public final class EntitySelectionDialog extends JDialog {
           .name(Messages.ok())
           .mnemonic(Messages.okMnemonic())
           .build();
-  private final Control cancelControl = Control.builder(this::dispose)
-          .name(Messages.cancel())
-          .mnemonic(Messages.cancelMnemonic())
-          .build();
+  private final Control cancelControl;
   private final Control searchControl = Control.builder(this::search)
           .name(FrameworkMessages.search())
           .mnemonic(FrameworkMessages.searchMnemonic())
@@ -65,35 +63,39 @@ public final class EntitySelectionDialog extends JDialog {
 
   private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, ValueObserver<String> titleObserver,
                                 ImageIcon icon, Dimension preferredSize, boolean singleSelection) {
-    super(owner, titleObserver == null ? null : titleObserver.get());
+    this.dialog = new JDialog(owner, titleObserver == null ? null : titleObserver.get());
     if (titleObserver != null) {
-      titleObserver.addDataListener(this::setTitle);
+      titleObserver.addDataListener(dialog::setTitle);
     }
     if (icon != null) {
-      setIconImage(icon.getImage());
+      dialog.setIconImage(icon.getImage());
     }
-    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.editModel().setReadOnly(true);
     this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
+    this.cancelControl = Control.builder(dialog::dispose)
+          .name(Messages.cancel())
+          .mnemonic(Messages.cancelMnemonic())
+          .build();
     KeyEvents.builder(VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
-            .enable(getRootPane());
+            .enable(dialog.getRootPane());
     JButton okButton = button(okControl).build();
     JPanel buttonPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(okButton)
             .add(button(cancelControl).build())
             .add(button(searchControl).build())
             .build();
-    getRootPane().setDefaultButton(okButton);
-    setLayout(new BorderLayout());
-    add(entityTablePanel, BorderLayout.CENTER);
-    add(buttonPanel, BorderLayout.SOUTH);
-    pack();
-    setLocationRelativeTo(owner);
-    setModal(true);
-    setResizable(true);
+    dialog.getRootPane().setDefaultButton(okButton);
+    dialog.setLayout(new BorderLayout());
+    dialog.add(entityTablePanel, BorderLayout.CENTER);
+    dialog.add(buttonPanel, BorderLayout.SOUTH);
+    dialog.pack();
+    dialog.setLocationRelativeTo(owner);
+    dialog.setModal(true);
+    dialog.setResizable(true);
   }
 
   /**
@@ -152,7 +154,7 @@ public final class EntitySelectionDialog extends JDialog {
 
   private void ok() {
     selectedEntities.addAll(tableModel.selectionModel().getSelectedItems());
-    dispose();
+    dialog.dispose();
   }
 
   private void search() {
@@ -167,7 +169,7 @@ public final class EntitySelectionDialog extends JDialog {
   }
 
   private List<Entity> selectEntities() {
-    setVisible(true);
+    dialog.setVisible(true);
 
     return selectedEntities;
   }
