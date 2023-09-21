@@ -737,7 +737,7 @@ public class EntityTablePanel extends JPanel {
     }
 
     SwingEntityTableModel tableModel = new StaticSwingEntityTableModel(entities, connectionProvider);
-    tableModel.editModel().setReadOnly(true);
+    tableModel.editModel().readOnly().set(true);
     tableModel.refresh();
 
     return entityTablePanel(tableModel);
@@ -1254,12 +1254,12 @@ public class EntityTablePanel extends JPanel {
             .count();
 
     return updatableAttributeCount > 0 &&
-            !tableModel.editModel().isReadOnly() &&
+            !tableModel.editModel().readOnly().get() &&
             tableModel.editModel().updateEnabled().get();
   }
 
   private boolean includeDeleteSelectedControl() {
-    return !tableModel.editModel().isReadOnly() && tableModel.editModel().deleteEnabled().get();
+    return !tableModel.editModel().readOnly().get() && tableModel.editModel().deleteEnabled().get();
   }
 
   private FilteredTable<Entity, Attribute<?>> createTable() {

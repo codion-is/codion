@@ -34,7 +34,7 @@ public final class CityEditModel extends SwingEntityEditModel {
     Location location = lookupLocation(entity().castTo(City.class))
             .orElseThrow(() -> new RuntimeException("Location not found for city: " + entity()));
     put(City.LOCATION, location);
-    if (isModified()) {
+    if (modified().get()) {
       update();
     }
   }

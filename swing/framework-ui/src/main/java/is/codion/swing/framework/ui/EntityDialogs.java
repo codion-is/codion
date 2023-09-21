@@ -376,7 +376,7 @@ public final class EntityDialogs {
       }
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       this.tableModel = requireNonNull(tableModel, "tableModel");
-      this.tableModel.editModel().setReadOnly(true);
+      this.tableModel.editModel().readOnly().set(true);
       this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
       this.cancelControl = Control.builder(dialog::dispose)
               .name(Messages.cancel())

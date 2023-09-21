@@ -92,36 +92,24 @@ public interface EntityEditModel {
   Entity entity();
 
   /**
-   * Returns true if the active entity is new or false if it represents a row already persisted.
-   * By default, an entity is new if either its primary key or the original primary key are null.
-   * Basing the result of this function on a database query is not recommended since it is called very frequently,
-   * as in, every time an attribute value changes.
-   * @return true if the active entity is new, that is, does not represent a persistent row
-   * @see #primaryKeyNull
-   * @see Entity.Key#isNull()
-   */
-  boolean isEntityNew();
-
-  /**
    * Returns true if a value of an existing entity has been modified but not saved.
    * @return true if this edit model contains unsaved data
    * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
-   * @see #isEntityNew()
-   * @see #isModified()
+   * @see #entityNew()
    */
   boolean containsUnsavedData();
 
   /**
    * @param attribute the attribute
-   * @return true if the value of the given attribute is null
+   * @return a {@link StateObserver} indicating whether the value of the given attribute is null
    */
-  boolean isNull(Attribute<?> attribute);
+  StateObserver isNull(Attribute<?> attribute);
 
   /**
    * @param attribute the attribute
-   * @return true if the value of the given attribute is not null
+   * @return a {@link StateObserver} indicating whether the value of the given attribute is not null
    */
-  boolean isNotNull(Attribute<?> attribute);
+  StateObserver isNotNull(Attribute<?> attribute);
 
   /**
    * @param attribute the attribute
@@ -189,23 +177,6 @@ public interface EntityEditModel {
   EntityDefinition entityDefinition();
 
   /**
-   * @return true if this model is read only, that is if the insert, update and delete operations are not enabled
-   * @see #insertEnabled()
-   * @see #updateEnabled()
-   * @see #deleteEnabled()
-   */
-  boolean isReadOnly();
-
-  /**
-   * Makes this model read-only by disabling insert, update and delete
-   * @param readOnly the read only status
-   * @see #insertEnabled()
-   * @see #updateEnabled()
-   * @see #deleteEnabled()
-   */
-  void setReadOnly(boolean readOnly);
-
-  /**
    * @return true if this model warns about unsaved data
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
@@ -216,6 +187,11 @@ public interface EntityEditModel {
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
   void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
+
+  /**
+   * @return the State controlling whether this model is read only
+   */
+  State readOnly();
 
   /**
    * @return the state controlling whether inserting is enabled via this edit model
@@ -380,12 +356,6 @@ public interface EntityEditModel {
   void refresh();
 
   /**
-   * @return true if the underlying Entity is modified
-   * @see #modified()
-   */
-  boolean isModified();
-
-  /**
    * Adds the inserted entities to all foreign key models based on that entity type
    * @param foreignKey the foreign key
    * @param entities the values
@@ -451,24 +421,23 @@ public interface EntityEditModel {
   void validate(Entity entity) throws ValidationException;
 
   /**
-   * Returns true if the value associated with the given attribute is valid, using the {@link #validate(Attribute)} method.
-   * @param attribute the attribute the value is associated with
-   * @return true if the value is valid
+   * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
+   * @see #validator()
    * @see #validate(Attribute)
    * @see EntityValidator#validate(Entity)
    */
-  boolean isValid(Attribute<?> attribute);
+  StateObserver valid();
 
   /**
-   * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
+   * @param attribute the attribute
+   * @return a {@link StateObserver} indicating the valid status of the given attribute.
    * @see #validator()
    */
-  StateObserver entityValid();
+  StateObserver valid(Attribute<?> attribute);
 
   /**
-   * Returns a {@link StateObserver} responsible for indicating when and if any values in the underlying Entity have been modified.
-   * @return a {@link StateObserver} indicating the modified state of this edit model, not null
-   * @see #isModified()
+   * Returns a {@link StateObserver} indicating when and if any values in the underlying Entity have been modified.
+   * @return a {@link StateObserver} indicating the modified state of this edit model
    */
   StateObserver modified();
 
@@ -477,22 +446,12 @@ public interface EntityEditModel {
    * @param attribute the attribute
    * @return a {@link StateObserver} indicating the modified state of the value of the given attribute
    * @throws IllegalArgumentException in case attribute is not part of the underlying entity
-   * @see #isModified()
+   * @see #modified()
    */
-  StateObserver modifiedObserver(Attribute<?> attribute);
-
-  /**
-   * Returns a {@link StateObserver} indicating whether the value of the given attribute is null.
-   * @param attribute the attribute
-   * @return a {@link StateObserver} indicating whether the value of the given attribute is null
-   * @throws IllegalArgumentException in case attribute is not part of the underlying entity
-   * @see #isNull(Attribute)
-   */
-  StateObserver nullObserver(Attribute<?> attribute);
+  StateObserver modified(Attribute<?> attribute);
 
   /**
    * @return a {@link StateObserver} indicating whether the active entity is new
-   * @see #isEntityNew()
    */
   StateObserver entityNew();
 

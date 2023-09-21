@@ -198,7 +198,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       ACTIVE_STATE_GROUP.add(active);
     }
     this.controlCodes = validateControlCodes(controlCodes);
-    if (editModel.isEntityNew()) {
+    if (editModel.entityNew().get()) {
       editModel.setDefaultValues();
     }
   }
@@ -640,7 +640,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #control(ControlCode)
    */
   private void setupControls() {
-    if (!editModel().isReadOnly()) {
+    if (!editModel().readOnly().get()) {
       setupEditControls();
     }
     if (controlCodes.contains(ControlCode.CLEAR)) {
@@ -1057,7 +1057,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       try {
         WaitCursor.show(component);
         try {
-          if (editModel.isModified()) {
+          if (editModel.modified().get()) {
             editModel.update();
           }
 

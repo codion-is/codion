@@ -420,7 +420,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final void setComponent(Attribute<?> attribute, JComponent component) {
     components.put(requireNonNull(attribute), requireNonNull(component));
     if (useModifiedIndicator && attribute.entityType().equals(editModel.entityType())) {
-      editModel.modifiedObserver(attribute).addDataListener(new ModifiedIndicator(component));
+      editModel.modified(attribute).addDataListener(new ModifiedIndicator(component));
     }
   }
 

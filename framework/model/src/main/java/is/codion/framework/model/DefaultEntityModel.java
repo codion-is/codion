@@ -262,7 +262,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (tableModel != null && tableModel.selectionModel().isSelectionNotEmpty()) {
       return tableModel.selectionModel().getSelectedItems();
     }
-    else if (editModel.isEntityNew()) {
+    else if (editModel.entityNew().get()) {
       return emptyList();
     }
 

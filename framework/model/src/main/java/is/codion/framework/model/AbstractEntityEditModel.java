@@ -69,14 +69,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State entityNew = State.state(true);
   private final State entityModified = State.state();
   private final State primaryKeyNull = State.state(true);
+  private final State readOnly = State.state();
   private final State insertEnabled = State.state(true);
   private final State updateEnabled = State.state(true);
   private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
-  private final StateObserver readOnly = State.and(insertEnabled.not(),
-          updateEnabled.not(), deleteEnabled.not());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
+  private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
 
   /**
    * The Entity being edited by this model
@@ -129,6 +129,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Function<Entity, Boolean> modifiedFunction;
 
   /**
+   * Provides this model with a way to check if the underlying entity is new.
+   */
+  private Function<Entity, Boolean> newFunction;
+
+  /**
    * Specifies whether this edit model should warn about unsaved data
    */
   private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
@@ -160,7 +165,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
     this.modifiedFunction = Entity::isModified;
-    setReadOnly(entityDefinition().isReadOnly());
+    this.newFunction = Entity::isNew;
+    readOnly.set(entityDefinition().isReadOnly());
     configurePersistentForeignKeyValues();
     bindEventsInternal();
     doSetEntity(defaultEntity(AttributeDefinition::defaultValue));
@@ -188,18 +194,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isReadOnly() {
-    return readOnly.get();
-  }
-
-  @Override
-  public final void setReadOnly(boolean readOnly) {
-    insertEnabled.set(!readOnly);
-    updateEnabled.set(!readOnly);
-    deleteEnabled.set(!readOnly);
-  }
-
-  @Override
   public final boolean isWarnAboutUnsavedData() {
     return warnAboutUnsavedData;
   }
@@ -220,6 +214,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void setPersistValue(Attribute<?> attribute, boolean persistValue) {
     entityDefinition().attributeDefinition(attribute);
     persistentValues.put(attribute, persistValue);
+  }
+
+  @Override
+  public final State readOnly() {
+    return readOnly;
   }
 
   @Override
@@ -297,29 +296,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isModified() {
-    return modifiedFunction.apply(entity);
-  }
-
-  @Override
-  public final StateObserver modifiedObserver(Attribute<?> attribute) {
+  public final StateObserver modified(Attribute<?> attribute) {
     entityDefinition().attributeDefinition(attribute);
 
     return attributeModifiedMap.computeIfAbsent(attribute, k ->
             State.state(!entity.isNew() && entity.isModified(attribute))).observer();
-  }
-
-  @Override
-  public final StateObserver nullObserver(Attribute<?> attribute) {
-    entityDefinition().attributeDefinition(attribute);
-
-    return attributeNullMap.computeIfAbsent(attribute, k ->
-            State.state(entity.isNull(attribute))).observer();
-  }
-
-  @Override
-  public boolean isEntityNew() {
-    return entity.isNew();
   }
 
   @Override
@@ -363,18 +344,23 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNull(Attribute<?> attribute) {
-    return entity.isNull(attribute);
+  public final StateObserver isNull(Attribute<?> attribute) {
+    return nullObserver(attribute);
   }
 
   @Override
-  public final boolean isNotNull(Attribute<?> attribute) {
-    return !entity.isNull(attribute);
+  public final StateObserver isNotNull(Attribute<?> attribute) {
+    return nullObserver(attribute).not();
   }
 
   @Override
-  public final StateObserver entityValid() {
+  public final StateObserver valid() {
     return entityValid.observer();
+  }
+
+  @Override
+  public final StateObserver valid(Attribute<?> attribute) {
+    return validObserver(attribute);
   }
 
   @Override
@@ -405,24 +391,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isValid(Attribute<?> attribute) {
-    try {
-      validate(attribute);
-      return true;
-    }
-    catch (ValidationException e) {
-      return false;
-    }
-  }
-
-  @Override
   public final EntityValidator validator() {
     return validator;
   }
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    if (!insertEnabled.get()) {
+    if (readOnly.get() || !insertEnabled.get()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     Entity toInsert = entity.copy();
@@ -444,7 +419,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    if (!insertEnabled.get()) {
+    if (readOnly.get() || !insertEnabled.get()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     requireNonNull(entities, ENTITIES);
@@ -471,7 +446,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
     requireNonNull(entities, ENTITIES);
-    if (!updateEnabled.get()) {
+    if (readOnly.get() || !updateEnabled.get()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
     if (entities.size() > 1 && !updateMultipleEnabled.get()) {
@@ -514,7 +489,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
-    if (!deleteEnabled.get()) {
+    if (readOnly.get() || !deleteEnabled.get()) {
       throw new IllegalStateException("Delete is not enabled");
     }
     if (entities.isEmpty()) {
@@ -541,7 +516,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void refreshEntity() {
     try {
-      if (!isEntityNew()) {
+      if (!entityNew.get()) {
         setEntity(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
@@ -596,7 +571,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    return !isEntityNew() && modified().get();
+    return !entityNew.get() && modified().get();
   }
 
   @Override
@@ -823,6 +798,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
+   * Sets the 'new' function for this edit model, which is responsible for providing
+   * the new state of the underlying entity.
+   * By default {@link Entity#isNew()} is returned.
+   * @param newFunction specifies whether the given entity is new
+   * @see Entity#isNew()
+   */
+  protected final void setNewFunction(Function<Entity, Boolean> newFunction) {
+    this.newFunction = requireNonNull(newFunction);
+  }
+
+  /**
    * @return the State used to indicate the modified state of this edit model, handle with care
    */
   protected final State modifiedState() {
@@ -927,6 +913,28 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityEvent.accept(entity);
   }
 
+  private StateObserver nullObserver(Attribute<?> attribute) {
+    entityDefinition().attributeDefinition(attribute);
+    return attributeNullMap.computeIfAbsent(attribute, k ->
+            State.state(entity.isNull(attribute))).observer();
+  }
+
+  private StateObserver validObserver(Attribute<?> attribute) {
+    entityDefinition().attributeDefinition(attribute);
+    return attributeValidMap.computeIfAbsent(attribute, k ->
+            State.state(isValid(attribute))).observer();
+  }
+
+  private boolean isValid(Attribute<?> attribute) {
+    try {
+      validate(attribute);
+      return true;
+    }
+    catch (ValidationException e) {
+      return false;
+    }
+  }
+
   private <T> Event<T> editEvent(Attribute<T> attribute) {
     entityDefinition().attributeDefinition(attribute);
     return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
@@ -1026,6 +1034,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (nullState != null) {
       nullState.set(entity.isNull(attribute));
     }
+    State validState = attributeValidMap.get(attribute);
+    if (validState != null) {
+      validState.set(isValid(attribute));
+    }
     State modifiedState = attributeModifiedMap.get(attribute);
     if (modifiedState != null) {
       updateModifiedAttributeState(attribute, modifiedState);
@@ -1046,10 +1058,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateEntityStates() {
-    entityModified.set(isModified());
+    entityModified.set(modifiedFunction.apply(entity));
     entityValid.set(validator.isValid(entity));
     primaryKeyNull.set(entity.primaryKey().isNull());
-    entityNew.set(isEntityNew());
+    entityNew.set(newFunction.apply(entity));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
