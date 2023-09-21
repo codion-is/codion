@@ -112,12 +112,6 @@ public final class EntityDialogs {
     EditDialogBuilder<T> onException(Consumer<Exception> onException);
 
     /**
-     * @param updateMultipleEnabled false if multiple entity update should not be enabled
-     * @return this builder
-     */
-    EditDialogBuilder<T> updateMultipleEnabled(boolean updateMultipleEnabled);
-
-    /**
      * Displays a dialog for editing the given entity
      * @param entity the entity to edit
      */
@@ -165,7 +159,6 @@ public final class EntityDialogs {
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
     private Consumer<ValidationException> onValidationException = new DefaultOnValidationException();
     private Consumer<Exception> onException = new DefaultOnException();
-    private boolean updateMultipleEnabled = true;
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -191,12 +184,6 @@ public final class EntityDialogs {
     }
 
     @Override
-    public EditDialogBuilder<T> updateMultipleEnabled(boolean updateMultipleEnabled) {
-      this.updateMultipleEnabled = updateMultipleEnabled;
-      return this;
-    }
-
-    @Override
     public void edit(Entity entity) {
       edit(Collections.singleton(requireNonNull(entity)));
     }
@@ -211,9 +198,6 @@ public final class EntityDialogs {
       }
       if (entityTypes.size() > 1) {
         throw new IllegalArgumentException("All entities must be of the same type when editing");
-      }
-      if (entities.size() > 1 && !updateMultipleEnabled) {
-        throw new IllegalStateException("Updating multiple entities is not allowed");
       }
 
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
