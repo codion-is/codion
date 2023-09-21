@@ -112,10 +112,10 @@ public final class EntityDialogs {
     EditDialogBuilder<T> onException(Consumer<Exception> onException);
 
     /**
-     * @param multipleEntityUpdateEnabled false if multiple entity update should not be enabled
+     * @param updateMultipleEnabled false if multiple entity update should not be enabled
      * @return this builder
      */
-    EditDialogBuilder<T> multipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled);
+    EditDialogBuilder<T> updateMultipleEnabled(boolean updateMultipleEnabled);
 
     /**
      * Displays a dialog for editing the given entity
@@ -165,7 +165,7 @@ public final class EntityDialogs {
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
     private Consumer<ValidationException> onValidationException = new DefaultOnValidationException();
     private Consumer<Exception> onException = new DefaultOnException();
-    private boolean multipleEntityUpdateEnabled = true;
+    private boolean updateMultipleEnabled = true;
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -191,8 +191,8 @@ public final class EntityDialogs {
     }
 
     @Override
-    public EditDialogBuilder<T> multipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled) {
-      this.multipleEntityUpdateEnabled = multipleEntityUpdateEnabled;
+    public EditDialogBuilder<T> updateMultipleEnabled(boolean updateMultipleEnabled) {
+      this.updateMultipleEnabled = updateMultipleEnabled;
       return this;
     }
 
@@ -212,7 +212,7 @@ public final class EntityDialogs {
       if (entityTypes.size() > 1) {
         throw new IllegalArgumentException("All entities must be of the same type when editing");
       }
-      if (entities.size() > 1 && !multipleEntityUpdateEnabled) {
+      if (entities.size() > 1 && !updateMultipleEnabled) {
         throw new IllegalStateException("Updating multiple entities is not allowed");
       }
 

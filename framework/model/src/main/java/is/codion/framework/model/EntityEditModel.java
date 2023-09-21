@@ -228,6 +228,11 @@ public interface EntityEditModel {
   State updateEnabled();
 
   /**
+   * @return the state controlling whether updating multiple entities is enabled
+   */
+  State updateMultipleEnabled();
+
+  /**
    * @return the state controlling whether deleting is enabled via this edit model
    */
   State deleteEnabled();

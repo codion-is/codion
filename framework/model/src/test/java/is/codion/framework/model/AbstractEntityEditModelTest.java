@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -409,9 +410,16 @@ public final class AbstractEntityEditModelTest {
       employeeEditModel.update();
       assertFalse(employeeEditModel.modified().get());
       employeeEditModel.removeAfterUpdateListener(listener);
+
+      employeeEditModel.updateMultipleEnabled().set(false);
+
+      Entity emp1 = ENTITIES.entity(Employee.TYPE);
+      Entity emp2 = ENTITIES.entity(Employee.TYPE);
+      assertThrows(IllegalStateException.class, () -> employeeEditModel.update(Arrays.asList(emp1, emp2)));
     }
     finally {
       connection.rollbackTransaction();
+      employeeEditModel.updateMultipleEnabled().set(true);
     }
   }
 

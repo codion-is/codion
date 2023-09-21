@@ -126,11 +126,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
 
   /**
-   * Specifies whether multiple entities can be updated at a time
-   */
-  private boolean multipleEntityUpdateEnabled = true;
-
-  /**
    * Specifies whether this table model is editable.
    * @see #isCellEditable(int, int)
    * @see #setValueAt(Object, int, int)
@@ -347,16 +342,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.editable = editable;
   }
 
-  @Override
-  public final boolean isMultipleEntityUpdateEnabled() {
-    return multipleEntityUpdateEnabled;
-  }
-
-  @Override
-  public final void setMultipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled) {
-    this.multipleEntityUpdateEnabled = multipleEntityUpdateEnabled;
-  }
-
   /**
    * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code> is editable.
    * @param rowIndex the row to edit
@@ -479,21 +464,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final void deleteSelected() throws DatabaseException {
-    if (!editModel.deleteEnabled().get()) {
-      throw new IllegalStateException("Deleting is not enabled in this table model");
-    }
     editModel.delete(selectionModel().getSelectedItems());
   }
 
   @Override
   public final void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException {
-    requireNonNull(entities, "entities");
-    if (!editModel.updateEnabled().get()) {
-      throw new IllegalStateException("Updating is not enabled in this table model");
-    }
-    if (entities.size() > 1 && !multipleEntityUpdateEnabled) {
-      throw new IllegalStateException("Batch update of entities is not enabled");
-    }
     editModel.update(entities);
   }
 
