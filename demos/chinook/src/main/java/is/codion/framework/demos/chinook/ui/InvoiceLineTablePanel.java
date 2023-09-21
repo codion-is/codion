@@ -14,6 +14,7 @@ public final class InvoiceLineTablePanel extends EntityTablePanel {
 
   public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    excludeFromEditMenu(InvoiceLine.INVOICE_FK);
     setEditComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory());
     setIncludeSouthPanel(false);
     setIncludeConditionPanel(false);

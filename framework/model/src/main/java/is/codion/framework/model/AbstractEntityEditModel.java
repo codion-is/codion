@@ -71,6 +71,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State primaryKeyNull = State.state(true);
   private final State insertEnabled = State.state(true);
   private final State updateEnabled = State.state(true);
+  private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
   private final StateObserver readOnly = State.and(insertEnabled.not(),
           updateEnabled.not(), deleteEnabled.not());
@@ -229,6 +230,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final State updateEnabled() {
     return updateEnabled;
+  }
+
+  @Override
+  public final State updateMultipleEnabled() {
+    return updateMultipleEnabled;
   }
 
   @Override
@@ -464,10 +470,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
+    requireNonNull(entities, ENTITIES);
     if (!updateEnabled.get()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
-    requireNonNull(entities, ENTITIES);
+    if (entities.size() > 1 && !updateMultipleEnabled.get()) {
+      throw new IllegalStateException("Batch update of entities is not enabled");
+    }
     if (entities.isEmpty()) {
       return emptyList();
     }
@@ -506,7 +515,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
     if (!deleteEnabled.get()) {
-      throw new IllegalStateException("Delete is not enabled!");
+      throw new IllegalStateException("Delete is not enabled");
     }
     if (entities.isEmpty()) {
       return;

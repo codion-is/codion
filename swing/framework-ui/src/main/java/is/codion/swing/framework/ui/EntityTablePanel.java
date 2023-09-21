@@ -620,7 +620,6 @@ public class EntityTablePanel extends JPanel {
       EntityDialogs.editDialog(tableModel.editModel(), attributeToEdit)
               .owner(this)
               .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attributeToEdit))
-              .multipleEntityUpdateEnabled(tableModel().isMultipleEntityUpdateEnabled())
               .edit(tableModel.selectionModel().getSelectedItems());
     }
   }
@@ -1089,7 +1088,10 @@ public class EntityTablePanel extends JPanel {
   private Controls createEditSelectedControls() {
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
     StateObserver updateEnabled = tableModel.editModel().updateEnabled();
-    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
+    StateObserver updateMultipleEnabledOrSingleSelection =
+            State.or(tableModel.editModel().updateMultipleEnabled(),
+                    tableModel.selectionModel().singleSelection());
+    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
     Controls editControls = Controls.builder()
             .name(FrameworkMessages.edit())
             .enabled(enabledState)
@@ -1253,8 +1255,7 @@ public class EntityTablePanel extends JPanel {
 
     return updatableAttributeCount > 0 &&
             !tableModel.editModel().isReadOnly() &&
-            tableModel.editModel().updateEnabled().get() &&
-            tableModel.isMultipleEntityUpdateEnabled();
+            tableModel.editModel().updateEnabled().get();
   }
 
   private boolean includeDeleteSelectedControl() {

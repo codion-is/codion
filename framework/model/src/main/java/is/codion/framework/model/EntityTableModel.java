@@ -18,10 +18,8 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.json.JSONObject;
 
@@ -159,16 +157,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setEditable(boolean editable);
 
   /**
-   * @return true if multiple entities can be updated at a time
-   */
-  boolean isMultipleEntityUpdateEnabled();
-
-  /**
-   * @param multipleEntityUpdateEnabled true if this model should enable multiple entities to be updated at a time
-   */
-  void setMultipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled);
-
-  /**
    * @param row the row for which to retrieve the background color
    * @param attribute the attribute for which to retrieve the background color
    * @return an Object representing the background color for this row and attribute, specified by the row entity
@@ -223,19 +211,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param orderQueryBySortOrder true if the current sort order should be used as a basis for the query order by clause
    */
   void setOrderQueryBySortOrder(boolean orderQueryBySortOrder);
-
-  /**
-   * Updates the given entities. If the entities are unmodified or the collection is empty
-   * this method returns silently.
-   * @param entities the entities to update
-   * @throws DatabaseException in case of a database exception
-   * @throws is.codion.common.model.CancelException in case the user cancels the operation
-   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
-   * @throws ValidationException in case validation fails
-   * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
-   * @see EntityValidator#validate(Entity)
-   */
-  void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException;
 
   /**
    * Deletes the selected entities

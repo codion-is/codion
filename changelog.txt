@@ -9619,3 +9619,7 @@
   EntitySelectionDialog no longer extends JDialog
   EntityEditDialog refactored from EntityTablePanel
   EntityDialogs added, handles edit and selection dialogs
+  EntityTableModel.isMultipleEntityUpdateEnabled() removed, EntityEditModel.updateMultipleEnabled() added
+  EntityTableModel.update() removed
+  EntityTablePanel, edit popup menu control enabled state respects the editModel.updateMultipleEnabled state
+  EntityEditDialogBuilder.updateMultipleEnabled() removed
