@@ -132,12 +132,12 @@ public final class NotesDemo {
     }
 
     private void insertDeleteOrUpdate() {
-      if (editModel().isEntityNew() && editModel().isNotNull(Note.NOTE)) {
+      if (editModel().entityNew().get() && editModel().isNotNull(Note.NOTE).get()) {
         // A new note with a non-empty text: INSERT
         insert();
       }
-      else if (editModel().isModified()) {
-        if (editModel().isNull(Note.NOTE)) {
+      else if (editModel().modified().get()) {
+        if (editModel().isNull(Note.NOTE).get()) {
           // An existing note with empty text: DELETE
           deleteWithConfirmation();
         }

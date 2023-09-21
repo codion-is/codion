@@ -350,7 +350,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public boolean isCellEditable(int rowIndex, int modelColumnIndex) {
-    if (!editable || editModel.isReadOnly() || !editModel.updateEnabled().get()) {
+    if (!editable || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
       return false;
     }
     Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
@@ -371,7 +371,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
-    if (!editable || editModel.isReadOnly() || !editModel.updateEnabled().get()) {
+    if (!editable || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
     Entity entity = itemAt(rowIndex).copy();

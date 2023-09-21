@@ -204,7 +204,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.setLimit(10);
     assertEquals(10, testModel.getLimit());
     assertNotNull(testModel.editModel());
-    assertFalse(testModel.editModel().isReadOnly());
+    assertFalse(testModel.editModel().readOnly().get());
     testModel.refresh();
   }
 

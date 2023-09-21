@@ -108,7 +108,7 @@ public final class EntityComponentValidators {
     }
 
     protected boolean isNull() {
-      return editModel.isNull(attribute);
+      return editModel.isNull(attribute).get();
     }
 
     /**

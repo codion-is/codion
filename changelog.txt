@@ -9583,3 +9583,5 @@
   EntityTableModel.update() removed
   EntityTablePanel, edit popup menu control enabled state respects the editModel.updateMultipleEnabled state
   EntityEditDialogBuilder.updateMultipleEnabled() removed
+  AbstractEntityEditModel.isEntityNew() removed setNewFunction() added
+  EntityEditModel, boolean setter and getter replaced with State, some renaming, related refactoring
