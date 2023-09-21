@@ -76,6 +76,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State deleteEnabled = State.state(true);
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
+  private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
 
   /**
    * The Entity being edited by this model
@@ -358,6 +359,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
+  public final StateObserver valid(Attribute<?> attribute) {
+    return validObserver(attribute);
+  }
+
+  @Override
   public final void validate(Attribute<?> attribute) throws ValidationException {
     validator.validate(entity, attribute);
   }
@@ -381,17 +387,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
     else {
       entity.entityDefinition().validator().validate(entity);
-    }
-  }
-
-  @Override
-  public final boolean isValid(Attribute<?> attribute) {
-    try {
-      validate(attribute);
-      return true;
-    }
-    catch (ValidationException e) {
-      return false;
     }
   }
 
@@ -924,6 +919,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
             State.state(entity.isNull(attribute))).observer();
   }
 
+  private StateObserver validObserver(Attribute<?> attribute) {
+    entityDefinition().attributeDefinition(attribute);
+    return attributeValidMap.computeIfAbsent(attribute, k ->
+            State.state(isValid(attribute))).observer();
+  }
+
+  private boolean isValid(Attribute<?> attribute) {
+    try {
+      validate(attribute);
+      return true;
+    }
+    catch (ValidationException e) {
+      return false;
+    }
+  }
+
   private <T> Event<T> editEvent(Attribute<T> attribute) {
     entityDefinition().attributeDefinition(attribute);
     return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
@@ -1022,6 +1033,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     State nullState = attributeNullMap.get(attribute);
     if (nullState != null) {
       nullState.set(entity.isNull(attribute));
+    }
+    State validState = attributeValidMap.get(attribute);
+    if (validState != null) {
+      validState.set(isValid(attribute));
     }
     State modifiedState = attributeModifiedMap.get(attribute);
     if (modifiedState != null) {

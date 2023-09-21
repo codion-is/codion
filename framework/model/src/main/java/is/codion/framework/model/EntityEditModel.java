@@ -421,19 +421,19 @@ public interface EntityEditModel {
   void validate(Entity entity) throws ValidationException;
 
   /**
-   * Returns true if the value associated with the given attribute is valid, using the {@link #validate(Attribute)} method.
-   * @param attribute the attribute the value is associated with
-   * @return true if the value is valid
+   * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
+   * @see #validator()
    * @see #validate(Attribute)
    * @see EntityValidator#validate(Entity)
    */
-  boolean isValid(Attribute<?> attribute);
+  StateObserver valid();
 
   /**
-   * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
+   * @param attribute the attribute
+   * @return a {@link StateObserver} indicating the valid status of the given attribute.
    * @see #validator()
    */
-  StateObserver valid();
+  StateObserver valid(Attribute<?> attribute);
 
   /**
    * Returns a {@link StateObserver} indicating when and if any values in the underlying Entity have been modified.
