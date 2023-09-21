@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
@@ -376,12 +375,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
     Entity entity = itemAt(rowIndex).copy();
-
     Attribute<?> columnIdentifier = columnModel().columnIdentifier(modelColumnIndex);
-
     entity.put((Attribute<Object>) columnIdentifier, value);
     try {
-      update(singletonList(entity));
+      editModel.update(singletonList(entity));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -465,11 +462,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final void deleteSelected() throws DatabaseException {
     editModel.delete(selectionModel().getSelectedItems());
-  }
-
-  @Override
-  public final void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException {
-    editModel.update(entities);
   }
 
   @Override

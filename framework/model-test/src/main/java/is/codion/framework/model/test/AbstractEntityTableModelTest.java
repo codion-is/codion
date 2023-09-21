@@ -195,16 +195,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void updateNotEnabled() {
-    testModel.editModel().updateEnabled().set(false);
-    testModel.refresh();
-    testModel.selectionModel().setSelectedIndexes(singletonList(0));
-    Entity entity = testModel.selectionModel().getSelectedItem();
-    entity.put(Detail.STRING, "hello");
-    assertThrows(IllegalStateException.class, () -> testModel.update(singletonList(entity)));
-  }
-
-  @Test
   public void testTheRest() {
     assertNotNull(testModel.connectionProvider());
     testModel.conditionRequired().set(false);
