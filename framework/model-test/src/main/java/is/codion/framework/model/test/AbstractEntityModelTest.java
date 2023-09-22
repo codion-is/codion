@@ -64,7 +64,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     EntityEditModel deptEditModel = departmentModel.editModel();
     TableModel deptTableModel = departmentModel.tableModel();
     Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
-    deptTableModel.selectEntitiesByKey(singletonList(operationsKey));
+    deptTableModel.select(singletonList(operationsKey));
 
     assertTrue(deptTableModel.selectionModel().isSelectionNotEmpty());
     deptEditModel.put(Department.ID, 80);

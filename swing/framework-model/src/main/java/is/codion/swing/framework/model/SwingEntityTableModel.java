@@ -402,7 +402,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final Optional<Entity> entityByKey(Entity.Key primaryKey) {
+  public final Optional<Entity> find(Entity.Key primaryKey) {
     requireNonNull(primaryKey);
     return visibleItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
@@ -411,7 +411,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final int indexOf(Entity.Key primaryKey) {
-    return entityByKey(primaryKey)
+    return find(primaryKey)
             .map(this::indexOf)
             .orElse(-1);
   }
@@ -452,12 +452,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void selectEntitiesByKey(Collection<Entity.Key> keys) {
+  public final void select(Collection<Entity.Key> keys) {
     selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
   }
 
   @Override
-  public final Collection<Entity> entitiesByKey(Collection<Entity.Key> keys) {
+  public final Collection<Entity> find(Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
     return items().stream()
             .filter(entity -> keys.contains(entity.primaryKey()))

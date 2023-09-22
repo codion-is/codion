@@ -58,7 +58,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void selectEntitiesByKey() {
+  public void select() {
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
@@ -66,17 +66,17 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity.Key pk1 = keys.get(0);
     Entity.Key pk2 = keys.get(1);
 
-    tableModel.selectEntitiesByKey(singletonList(pk1));
+    tableModel.select(singletonList(pk1));
     Entity selectedPK1 = tableModel.selectionModel().getSelectedItem();
     assertEquals(pk1, selectedPK1.primaryKey());
     assertEquals(1, tableModel.selectionModel().selectionCount());
 
-    tableModel.selectEntitiesByKey(singletonList(pk2));
+    tableModel.select(singletonList(pk2));
     Entity selectedPK2 = tableModel.selectionModel().getSelectedItem();
     assertEquals(pk2, selectedPK2.primaryKey());
     assertEquals(1, tableModel.selectionModel().selectionCount());
 
-    tableModel.selectEntitiesByKey(keys);
+    tableModel.select(keys);
     List<Entity> selectedItems = tableModel.selectionModel().getSelectedItems();
     for (Entity selected : selectedItems) {
       assertTrue(keys.contains(selected.primaryKey()));
@@ -148,7 +148,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity.Key pk2 = entities.primaryKey(Employee.TYPE, 2);
     tableModel.connectionProvider().connection().beginTransaction();
     try {
-      tableModel.selectEntitiesByKey(singletonList(pk1));
+      tableModel.select(singletonList(pk1));
       tableModel.selectionModel().setSelectedIndex(0);
       Entity selected = tableModel.selectionModel().getSelectedItem();
       tableModel.setRemoveDeletedEntities(true);
@@ -156,7 +156,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       tableModel.deleteSelected();
       assertFalse(tableModel.containsItem(selected));
 
-      tableModel.selectEntitiesByKey(singletonList(pk2));
+      tableModel.select(singletonList(pk2));
       selected = tableModel.selectionModel().getSelectedItem();
       tableModel.setRemoveDeletedEntities(false);
       assertFalse(tableModel.isRemoveDeletedEntities());
@@ -169,16 +169,16 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void entityByKey() {
+  public void findSingle() {
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
     Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
-    assertTrue(tableModel.entityByKey(pk1).isPresent());
+    assertTrue(tableModel.find(pk1).isPresent());
 
     Entity.Key pk2 = entities.primaryKey(Employee.TYPE, -66);
-    assertFalse(tableModel.entityByKey(pk2).isPresent());
+    assertFalse(tableModel.find(pk2).isPresent());
   }
 
   @Test
@@ -209,13 +209,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void entitiesByKey() {
+  public void findMultiple() {
     testModel.refresh();
     Entities entities = testModel.entities();
     Entity tmpEnt = entities.builder(Detail.TYPE)
             .with(Detail.ID, 3L)
             .build();
-    assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).orElse(null).get(Detail.STRING));
+    assertEquals("c", testModel.find(tmpEnt.primaryKey()).orElse(null).get(Detail.STRING));
     List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(Detail.TYPE)
@@ -227,7 +227,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .build();
     keys.add(tmpEnt.primaryKey());
 
-    Collection<Entity> entitiesByKey = testModel.entitiesByKey(keys);
+    Collection<Entity> entitiesByKey = testModel.find(keys);
     assertEquals(3, entitiesByKey.size());
   }
 

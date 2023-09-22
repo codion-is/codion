@@ -266,23 +266,24 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setOnInsert(OnInsert onInsert);
 
   /**
-   * Finds entities according to the values in {@code keys}
+   * Finds entities in this table model according to the values in {@code keys}
    * @param keys the primary key values to use as condition
-   * @return the entities having the primary key values as in {@code keys}
+   * @return the entities from this table model having the primary key values as in {@code keys}
    */
-  Collection<Entity> entitiesByKey(Collection<Entity.Key> keys);
+  Collection<Entity> find(Collection<Entity.Key> keys);
 
   /**
-   * Sets the selected entities according to the primary keys in {@code primaryKeys}
+   * Selects entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void selectEntitiesByKey(Collection<Entity.Key> keys);
+  void select(Collection<Entity.Key> keys);
 
   /**
+   * Finds the entity in this table model having the given primary key
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, an empty Optional if not found
    */
-  Optional<Entity> entityByKey(Entity.Key primaryKey);
+  Optional<Entity> find(Entity.Key primaryKey);
 
   /**
    * @param primaryKey the primary key

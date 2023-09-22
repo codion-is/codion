@@ -9589,3 +9589,4 @@
   EntitySearchModel.get/SetToStringProvider() replaced with a Value, renamed toStringFunction(), some javadoc improvements
   EntityTableModel.replaceForeignKeyValues() and replaceEntities() renamed replace(), refreshEntities() renamed refresh()
   EntityTableModel.entityByKey() now returns Optional
+  EntityTableModel.entitiesByKey() and entityByKey() renamed find(), selectEntitiesByKey() renamed select()
