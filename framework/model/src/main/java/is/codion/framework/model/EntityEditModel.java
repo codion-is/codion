@@ -366,11 +366,11 @@ public interface EntityEditModel {
   void refresh();
 
   /**
-   * Adds the inserted entities to all foreign key models based on that entity type
+   * Adds the given entities to all foreign key models based on that entity type
    * @param foreignKey the foreign key
    * @param entities the values
    */
-  void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
+  void add(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * Removes the given entities from all foreign key models based on that entity type and clears any foreign
@@ -378,7 +378,7 @@ public interface EntityEditModel {
    * @param foreignKey the foreign key
    * @param entities the values
    */
-  void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
+  void remove(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
@@ -387,7 +387,7 @@ public interface EntityEditModel {
    * @param foreignKey the foreign key
    * @param entities the foreign key entities
    */
-  void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
+  void replace(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * @return the validator

@@ -276,7 +276,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+  public final void replace(ForeignKey foreignKey, Collection<Entity> entities) {
     replaceForeignKey(requireNonNull(foreignKey), requireNonNull(entities));
   }
 
