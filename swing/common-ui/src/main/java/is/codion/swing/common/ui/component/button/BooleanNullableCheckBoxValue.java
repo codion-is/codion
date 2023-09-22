@@ -9,7 +9,7 @@ final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean,
 
   BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
     super(checkBox);
-    checkBox.getNullableModel().addStateListener(value -> notifyValueChange());
+    checkBox.getNullableModel().addListener(value -> notifyValueChange());
   }
 
   @Override

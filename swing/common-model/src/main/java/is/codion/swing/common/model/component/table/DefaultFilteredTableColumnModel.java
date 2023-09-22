@@ -56,20 +56,6 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public boolean setColumnVisible(C columnIdentifier, boolean visible) {
-    State visibleState = visibleStates.get(columnIdentifier);
-    boolean stateChanged = visibleState.get() != visible;
-    visibleState.set(visible);
-
-    return stateChanged;
-  }
-
-  @Override
-  public boolean isColumnVisible(C columnIdentifier) {
-    return !hiddenColumns.containsKey(requireNonNull(columnIdentifier));
-  }
-
-  @Override
   public void setVisibleColumns(C... columnIdentifiers) {
     setVisibleColumns(asList(columnIdentifiers));
   }
@@ -123,7 +109,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public State visibleState(C columnIdentifier) {
+  public State visible(C columnIdentifier) {
     State visibleState = visibleStates.get(requireNonNull(columnIdentifier));
     if (visibleState != null) {
       return visibleState;

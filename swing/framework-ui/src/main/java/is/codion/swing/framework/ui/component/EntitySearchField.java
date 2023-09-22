@@ -130,8 +130,7 @@ public final class EntitySearchField extends HintTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     configureColors();
-    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusAction);
-    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusBackwardAction);
+    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
   }
 
   @Override

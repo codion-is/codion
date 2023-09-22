@@ -361,7 +361,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param exception the exception to handle
    * @see #displayException(Throwable)
    */
-  public void onException(Throwable exception) {
+  protected void onException(Throwable exception) {
     displayException(exception);
   }
 
@@ -369,7 +369,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Displays the exception in a dialog
    * @param exception the exception to display
    */
-  public final void displayException(Throwable exception) {
+  protected final void displayException(Throwable exception) {
     Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
     if (focusOwner == null) {
       focusOwner = EntityEditComponentPanel.this;

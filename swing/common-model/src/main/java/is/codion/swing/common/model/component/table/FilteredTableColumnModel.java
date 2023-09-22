@@ -42,21 +42,6 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   State locked();
 
   /**
-   * @param columnIdentifier the columnd identifier
-   * @param visible true if the column should be visible, false if it should be hidden
-   * @return true if the column visibility changed
-   * @throws IllegalStateException in case this model is locked
-   * @see #locked()
-   */
-  boolean setColumnVisible(C columnIdentifier, boolean visible);
-
-  /**
-   * @param columnIdentifier the key for which to query if its column is visible
-   * @return true if the column is visible, false if it is hidden
-   */
-  boolean isColumnVisible(C columnIdentifier);
-
-  /**
    * Arranges the columns so that only the given columns are visible and in the given order
    * @param columnIdentifiers the column identifiers
    */
@@ -80,11 +65,11 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   FilteredTableColumn<C> getColumn(int columnIndex);
 
   /**
-   * Returns a State for toggling the column visibility
+   * Returns the State for controlling the column visibility
    * @param columnIdentifier the column identifier
-   * @return a State for toggling the column visibility
+   * @return a State for controlling the column visibility
    */
-  State visibleState(C columnIdentifier);
+  State visible(C columnIdentifier);
 
   /**
    * @param columnIdentifier the column identifier

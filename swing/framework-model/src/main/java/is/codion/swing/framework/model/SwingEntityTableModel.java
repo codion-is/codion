@@ -880,7 +880,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
 
     return entityDefinition().selectAttributes().stream()
-            .filter(columnModel()::isColumnVisible)
+            .filter(attribute -> columnModel().visible(attribute).get())
             .collect(toList());
   }
 
@@ -1078,7 +1078,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     JSONObject columnPreferencesRoot = new JSONObject();
     for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
       Attribute<?> attribute = column.getIdentifier();
-      int index = columnModel().isColumnVisible(attribute) ? columnModel().getColumnIndex(attribute) : -1;
+      int index = columnModel().visible(attribute).get() ? columnModel().getColumnIndex(attribute) : -1;
       ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
       ConditionPreferences conditionPreferences = columnConditionModel != null ?
               conditionPreferences(columnConditionModel.autoEnable().get(),

@@ -72,19 +72,20 @@ public final class Utilities {
   }
 
   /**
-   * Links the given action to the given StateObserver, so that the action is enabled
+   * Links the given actions to the given StateObserver, so that the actions are enabled
    * only when the observed state is active
    * @param enabledState the StateObserver with which to link the action
-   * @param action the action
-   * @return the linked action
+   * @param actions the actions
    */
-  public static Action linkToEnabledState(StateObserver enabledState, Action action) {
+  public static void linkToEnabledState(StateObserver enabledState, Action... actions) {
     requireNonNull(enabledState, "enabledState");
-    requireNonNull(action, "action");
-    action.setEnabled(enabledState.get());
-    enabledState.addListener(() -> action.setEnabled(enabledState.get()));
-
-    return action;
+    requireNonNull(actions, "actions");
+    for (Action action : actions) {
+      if (action != null) {
+        action.setEnabled(enabledState.get());
+        enabledState.addDataListener(new EnableActionListener(action));
+      }
+    }
   }
 
   /**
@@ -329,6 +330,25 @@ public final class Utilities {
       Component newValue = (Component) changeEvent.getNewValue();
       System.out.println((oldValue == null ? "null" : oldValue.getClass().getSimpleName()) + " -> " +
               (newValue == null ? "null" : newValue.getClass().getSimpleName()));
+    }
+  }
+
+  private static final class EnableActionListener implements Consumer<Boolean> {
+
+    private final Action action;
+
+    private EnableActionListener(Action action) {
+      this.action = action;
+    }
+
+    @Override
+    public void accept(Boolean enabled) {
+      if (SwingUtilities.isEventDispatchThread()) {
+        action.setEnabled(enabled);
+      }
+      else {
+        SwingUtilities.invokeLater(() -> action.setEnabled(enabled));
+      }
     }
   }
 

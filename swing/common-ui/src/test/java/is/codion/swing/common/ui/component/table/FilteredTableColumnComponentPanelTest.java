@@ -40,17 +40,17 @@ public class FilteredTableColumnComponentPanelTest {
             FilteredTableModel.<Object, Integer>builder(() -> asList(column0, column1, column2), (row, columnIdentifier) -> null)
                     .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
-    columnModel.setColumnVisible(1, false);
+    columnModel.visible(1).set(false);
 
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     assertTrue(panel.columnComponents().containsKey(1));
 
     assertNull(panel.columnComponents().get(1).getParent());
-    columnModel.setColumnVisible(1, true);
+    columnModel.visible(1).set(true);
     assertNotNull(panel.columnComponents().get(1).getParent());
-    columnModel.setColumnVisible(2, false);
+    columnModel.visible(2).set(false);
     assertNull(panel.columnComponents().get(2).getParent());
-    columnModel.setColumnVisible(2, true);
+    columnModel.visible(2).set(true);
     assertNotNull(panel.columnComponents().get(2).getParent());
   }
 

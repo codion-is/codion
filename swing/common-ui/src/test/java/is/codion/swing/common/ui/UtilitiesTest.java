@@ -28,12 +28,17 @@ public class UtilitiesTest {
     };
     State state = State.state();
 
-    Utilities.linkToEnabledState(state, action);
-    assertFalse(action.isEnabled());
-    state.set(true);
-    assertTrue(action.isEnabled());
-    state.set(false);
-    assertFalse(action.isEnabled());
+    try {
+      Utilities.linkToEnabledState(state, action);
+      assertFalse(action.isEnabled());
+      state.set(true);
+      Thread.sleep(50);//due to EDT
+      assertTrue(action.isEnabled());
+      state.set(false);
+      Thread.sleep(50);//due to EDT
+      assertFalse(action.isEnabled());
+    }
+    catch (InterruptedException ignored) {/*ignored*/}
 
     JComponent comp = new JTextField();
     state = State.state();
