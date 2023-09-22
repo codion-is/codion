@@ -175,10 +175,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     Entities entities = tableModel.entities();
     Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
-    assertNotNull(tableModel.entityByKey(pk1));
+    assertTrue(tableModel.entityByKey(pk1).isPresent());
 
     Entity.Key pk2 = entities.primaryKey(Employee.TYPE, -66);
-    assertNull(tableModel.entityByKey(pk2));
+    assertFalse(tableModel.entityByKey(pk2).isPresent());
   }
 
   @Test
@@ -215,7 +215,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity tmpEnt = entities.builder(Detail.TYPE)
             .with(Detail.ID, 3L)
             .build();
-    assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).get(Detail.STRING));
+    assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).orElse(null).get(Detail.STRING));
     List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(Detail.TYPE)

@@ -387,6 +387,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public Color backgroundColor(int row, Attribute<?> attribute) {
+    requireNonNull(attribute);
     Object color = entityDefinition().backgroundColorProvider().color(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
@@ -394,22 +395,25 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public Color foregroundColor(int row, Attribute<?> attribute) {
+    requireNonNull(attribute);
     Object color = entityDefinition().foregroundColorProvider().color(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
-  public final Entity entityByKey(Entity.Key primaryKey) {
+  public final Optional<Entity> entityByKey(Entity.Key primaryKey) {
+    requireNonNull(primaryKey);
     return visibleItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
   }
 
   @Override
   public final int indexOf(Entity.Key primaryKey) {
-    return indexOf(entityByKey(primaryKey));
+    return entityByKey(primaryKey)
+            .map(this::indexOf)
+            .orElse(-1);
   }
 
   @Override

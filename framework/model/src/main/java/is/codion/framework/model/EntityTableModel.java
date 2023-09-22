@@ -280,9 +280,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * @param primaryKey the primary key to search by
-   * @return the entity with the given primary key from the table model, null if it's not found
+   * @return the entity with the given primary key from the table model, an empty Optional if not found
    */
-  Entity entityByKey(Entity.Key primaryKey);
+  Optional<Entity> entityByKey(Entity.Key primaryKey);
 
   /**
    * @param primaryKey the primary key
