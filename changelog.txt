@@ -9590,3 +9590,4 @@
   EntityTableModel.replaceForeignKeyValues() and replaceEntities() renamed replace(), refreshEntities() renamed refresh()
   EntityTableModel.entityByKey() now returns Optional
   EntityTableModel.entitiesByKey() and entityByKey() renamed find(), selectEntitiesByKey() renamed select()
+  EntitySearchField, some methods renamed

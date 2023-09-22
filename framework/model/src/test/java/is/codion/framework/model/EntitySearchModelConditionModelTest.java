@@ -40,13 +40,13 @@ public class EntitySearchModelConditionModelTest {
             .build();
     EntitySearchModelConditionModel conditionModel = entitySearchModelConditionModel(Employee.DEPARTMENT_FK, searchModel);
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
-    searchModel.setSelectedEntity(sales);
+    searchModel.setEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
     List<Entity> salesAccounting = asList(sales, accounting);
-    searchModel.setSelectedEntities(salesAccounting);
+    searchModel.setEntities(salesAccounting);
     assertTrue(conditionModel.getEqualValues().contains(sales));
     assertTrue(conditionModel.getEqualValues().contains(accounting));
     searchEntities = conditionModel.getEqualValues();
@@ -55,12 +55,12 @@ public class EntitySearchModelConditionModelTest {
     assertTrue(searchEntities.contains(accounting));
 
     conditionModel.setEqualValue(null);
-    assertTrue(searchModel.getSelectedEntities().isEmpty());
+    assertTrue(searchModel.getEntities().isEmpty());
     conditionModel.setEqualValue(sales);
-    assertEquals(searchModel.getSelectedEntities().iterator().next(), sales);
+    assertEquals(searchModel.getEntities().iterator().next(), sales);
     assertTrue(conditionModel.getEqualValues().contains(sales));
 
-    searchModel.setSelectedEntity(null);
+    searchModel.setEntities(null);
 
     searchEntities = conditionModel.getEqualValues();
     assertTrue(searchEntities.isEmpty());

@@ -49,7 +49,7 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
   }
 
   private void bindSearchModelEvents() {
-    entitySearchModel.addSelectedEntitiesListener(new SelectedEntitiesListener());
+    entitySearchModel.addListener(new SelectedEntitiesListener());
     equalValues().addDataListener(new EqualValuesListener());
   }
 
@@ -73,7 +73,7 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
     @Override
     public void accept(Set<Entity> equalValues) {
       if (!updatingModel) {
-        entitySearchModel.setSelectedEntities(new ArrayList<>(equalValues));
+        entitySearchModel.setEntities(new ArrayList<>(equalValues));
       }
     }
   }

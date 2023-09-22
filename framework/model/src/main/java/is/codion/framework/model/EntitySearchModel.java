@@ -41,25 +41,25 @@ public interface EntitySearchModel {
   /**
    * @return the first selected entity or an empty Optional in case no entity is selected
    */
-  Optional<Entity> getSelectedEntity();
+  Optional<Entity> getEntity();
 
   /**
    * @return an unmodifiable view of the selected entities
    */
-  List<Entity> getSelectedEntities();
+  List<Entity> getEntities();
 
   /**
    * Sets the given entity as the selected entity
    * @param entity the entity to set as the selected entity
    */
-  void setSelectedEntity(Entity entity);
+  void setEntity(Entity entity);
 
   /**
    * Sets the selected entities
    * @param entities the entities to set as selected
    * @throws IllegalArgumentException if this search model does not allow multiple selections and entities.size() is larger than 1
    */
-  void setSelectedEntities(List<Entity> entities);
+  void setEntities(List<Entity> entities);
 
   /**
    * @return a string describing this search model, by default a comma separated list of search attribute names
@@ -113,19 +113,19 @@ public interface EntitySearchModel {
   Value<Function<Entity, String>> toStringFunction();
 
   /**
-   * @param listener a listener to be notified each time the selected entities are changed
+   * @param listener a listener to be notified each time the entities are changed
    */
-  void addSelectedEntitiesListener(Consumer<List<Entity>> listener);
+  void addListener(Consumer<List<Entity>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedEntitiesListener(Consumer<List<Entity>> listener);
+  void removeListener(Consumer<List<Entity>> listener);
 
   /**
-   * @return a StateObserver indicating whether the search string represents the selected entities
+   * @return a StateObserver indicating whether the search string represents the current entities
    */
-  StateObserver searchStringRepresentsSelected();
+  StateObserver searchStringRepresentsEntities();
 
   /**
    * @return a StateObserver indicating whether the selection is empty
