@@ -127,13 +127,16 @@ public class FilteredComboBoxModelTest {
     assertEquals(BJORN, testModel.getSelectedItem());
     assertEquals(BJORN, testModel.selectedValue());
     assertFalse(testModel.isSelectionEmpty());
+    assertFalse(testModel.selectionEmpty().get());
     assertFalse(testModel.isNullSelected());
     testModel.setSelectedItem(null);
     assertTrue(testModel.isSelectionEmpty());
+    assertTrue(testModel.selectionEmpty().get());
     assertEquals(4, selectionChangedCounter.get());
     assertEquals(NULL, testModel.getSelectedItem());
     assertTrue(testModel.isNullSelected());
     assertTrue(testModel.isSelectionEmpty());
+    assertTrue(testModel.selectionEmpty().get());
     assertNull(testModel.selectedValue());
     testModel.setSelectedItem(SIGGI);
     testModel.clear();

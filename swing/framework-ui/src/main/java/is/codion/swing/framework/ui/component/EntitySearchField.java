@@ -130,8 +130,8 @@ public final class EntitySearchField extends HintTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     configureColors();
-    Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelected(), transferFocusAction);
-    Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelected(), transferFocusBackwardAction);
+    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusAction);
+    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusBackwardAction);
   }
 
   @Override
@@ -265,7 +265,7 @@ public final class EntitySearchField extends HintTextField {
   private void linkToModel() {
     new SearchStringValue(this).link(model.searchString());
     model.searchString().addDataListener(searchString -> updateColors());
-    model.addSelectedEntitiesListener(entities -> setCaretPosition(0));
+    model.addListener(entities -> setCaretPosition(0));
   }
 
   private void configureColors() {
@@ -275,7 +275,7 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void updateColors() {
-    boolean validBackground = model.searchStringRepresentsSelected().get();
+    boolean validBackground = !model.searchStringModified().get();
     setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
   }
 
@@ -283,14 +283,14 @@ public final class EntitySearchField extends HintTextField {
     try {
       performingSearch = true;
       if (nullOrEmpty(model.searchString().get())) {
-        model.setSelectedEntities(null);
+        model.setEntities(null);
       }
       else {
-        if (!model.searchStringRepresentsSelected().get()) {
+        if (model.searchStringModified().get()) {
           try {
             List<Entity> queryResult = performQuery();
             if (queryResult.size() == 1) {
-              model.setSelectedEntities(queryResult);
+              model.setEntities(queryResult);
             }
             else if (promptUser) {
               if (queryResult.isEmpty()) {
@@ -512,7 +512,7 @@ public final class EntitySearchField extends HintTextField {
 
       @Override
       public void perform() {
-        searchModel.setSelectedEntities(list.getSelectedValuesList());
+        searchModel.setEntities(list.getSelectedValuesList());
         Utilities.disposeParentWindow(list);
       }
     }
@@ -607,7 +607,7 @@ public final class EntitySearchField extends HintTextField {
 
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
       return () -> {
-        searchModel.setSelectedEntities(tableModel.selectionModel().getSelectedItems());
+        searchModel.setEntities(tableModel.selectionModel().getSelectedItems());
         Utilities.disposeParentWindow(table);
       };
     }
@@ -621,17 +621,17 @@ public final class EntitySearchField extends HintTextField {
 
     private SingleSelectionValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
+      searchField.model().addListener(entities -> notifyValueChange());
     }
 
     @Override
     protected Entity getComponentValue() {
-      return component().model().getSelectedEntity().orElse(null);
+      return component().model().getEntity().orElse(null);
     }
 
     @Override
     protected void setComponentValue(Entity value) {
-      component().model().setSelectedEntity(value);
+      component().model().setEntity(value);
     }
   }
 
@@ -639,17 +639,17 @@ public final class EntitySearchField extends HintTextField {
 
     private MultiSelectionValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
+      searchField.model().addListener(entities -> notifyValueChange());
     }
 
     @Override
     protected List<Entity> getComponentValue() {
-      return component().model().getSelectedEntities();
+      return component().model().getEntities();
     }
 
     @Override
     protected void setComponentValue(List<Entity> value) {
-      component().model().setSelectedEntities(value);
+      component().model().setEntities(value);
     }
   }
 
@@ -664,7 +664,7 @@ public final class EntitySearchField extends HintTextField {
     public void focusLost(FocusEvent e) {
       if (!e.isTemporary()) {
         if (getText().isEmpty()) {
-          model().setSelectedEntity(null);
+          model().setEntities(null);
         }
         else if (shouldPerformSearch()) {
           performSearch(false);
@@ -674,14 +674,14 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return searchOnFocusLost && !performingSearch && !model.searchStringRepresentsSelected().get();
+      return searchOnFocusLost && !performingSearch && model.searchStringModified().get();
     }
   }
 
   private final class EnterEscapeListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      if (!model.searchStringRepresentsSelected().get()) {
+      if (model.searchStringModified().get()) {
         if (e.getKeyCode() == VK_ENTER) {
           e.consume();
           performSearch(true);
@@ -778,7 +778,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected void setInitialValue(EntitySearchField component, Entity initialValue) {
-      component.model().setSelectedEntity(initialValue);
+      component.model().setEntity(initialValue);
     }
 
     @Override

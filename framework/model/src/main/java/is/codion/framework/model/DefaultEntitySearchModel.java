@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -42,8 +41,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
   private static final String DEFAULT_SEPARATOR = ",";
 
-  private final Event<List<Entity>> selectedEntitiesChangedEvent = Event.event();
-  private final State searchStringRepresentsSelectedState = State.state(true);
+  private final State searchStringModified = State.state();
 
   /**
    * The type of the entity this search model is based on
@@ -58,7 +56,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * The selected entities
    */
-  private final List<Entity> selectedEntities = new ArrayList<>();
+  private final Value<List<Entity>> entities = Value.value(emptyList(), emptyList());
 
   /**
    * The EntityConnectionProvider instance used by this EntitySearchModel
@@ -75,9 +73,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final State singleSelection = State.state(false);
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final Value<Supplier<Condition>> additionalConditionSupplier = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Function<Entity, String>> toStringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
   private final State selectionEmpty = State.state(true);
 
-  private Function<Entity, String> toStringProvider;
   private Comparator<Entity> resultSorter;
   private String description;
 
@@ -87,7 +85,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.multipleItemSeparator = Value.value(builder.multipleItemSeparator, DEFAULT_SEPARATOR);
     this.searchColumns = unmodifiableCollection(builder.searchColumns);
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
-    this.toStringProvider = builder.toStringProvider;
+    this.toStringFunction.set(builder.toStringFunction);
     this.resultSorter = builder.resultSorter;
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection.set(builder.singleSelection);
@@ -125,18 +123,18 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setSelectedEntity(Entity entity) {
-    setSelectedEntities(entity != null ? singletonList(entity) : null);
+  public void setEntity(Entity entity) {
+    setEntities(entity != null ? singletonList(entity) : null);
   }
 
   @Override
-  public Optional<Entity> getSelectedEntity() {
-    return selectedEntities.isEmpty() ? Optional.empty() : Optional.of(selectedEntities.get(0));
+  public Optional<Entity> getEntity() {
+    return entities.get().isEmpty() ? Optional.empty() : Optional.of(entities.get().get(0));
   }
 
   @Override
-  public void setSelectedEntities(List<Entity> entities) {
-    if (nullOrEmpty(entities) && selectedEntities.isEmpty()) {
+  public void setEntities(List<Entity> entities) {
+    if (nullOrEmpty(entities) && this.entities.get().isEmpty()) {
       return;//no change
     }
     if (entities != null) {
@@ -146,18 +144,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       entities.forEach(this::validateType);
     }
     //todo handle non-loaded entities, select from db?
-    selectedEntities.clear();
+    this.entities.set(null);
     if (entities != null) {
-      selectedEntities.addAll(entities);
+      this.entities.set(unmodifiableList(entities));
     }
     resetSearchString();
-    selectionEmpty.set(selectedEntities.isEmpty());
-    selectedEntitiesChangedEvent.accept(unmodifiableList(selectedEntities));
+    selectionEmpty.set(this.entities.get().isEmpty());
   }
 
   @Override
-  public List<Entity> getSelectedEntities() {
-    return unmodifiableList(selectedEntities);
+  public List<Entity> getEntities() {
+    return entities.get();
   }
 
   @Override
@@ -176,13 +173,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Function<Entity, String> getToStringProvider() {
-    return toStringProvider;
-  }
-
-  @Override
-  public void setToStringProvider(Function<Entity, String> toStringProvider) {
-    this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
+  public Value<Function<Entity, String>> toStringFunction() {
+    return toStringFunction;
   }
 
   @Override
@@ -221,18 +213,18 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void addSelectedEntitiesListener(Consumer<List<Entity>> listener) {
-    selectedEntitiesChangedEvent.addDataListener(listener);
+  public void addListener(Consumer<List<Entity>> listener) {
+    entities.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedEntitiesListener(Consumer<List<Entity>> listener) {
-    selectedEntitiesChangedEvent.removeDataListener(listener);
+  public void removeListener(Consumer<List<Entity>> listener) {
+    entities.removeDataListener(listener);
   }
 
   @Override
-  public StateObserver searchStringRepresentsSelected() {
-    return searchStringRepresentsSelectedState.observer();
+  public StateObserver searchStringModified() {
+    return searchStringModified.observer();
   }
 
   @Override
@@ -286,14 +278,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private void bindEventsInternal() {
     searchString.addListener(() ->
-            searchStringRepresentsSelectedState.set(doesSearchStringRepresentSelectedEntities()));
+            searchStringModified.set(!searchStringRepresentSelectedEntities()));
     multipleItemSeparator.addListener(this::resetSearchString);
   } 
   
-  private boolean doesSearchStringRepresentSelectedEntities() {
+  private boolean searchStringRepresentSelectedEntities() {
     String selectedAsString = selectedEntitiesToString();
-    return (selectedEntities.isEmpty() && nullOrEmpty(searchString.get()))
-            || !selectedEntities.isEmpty() && selectedAsString.equals(searchString.get());
+    return (entities.get().isEmpty() && nullOrEmpty(searchString.get()))
+            || !entities.get().isEmpty() && selectedAsString.equals(searchString.get());
   }
 
   private String createDescription() {
@@ -305,8 +297,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String selectedEntitiesToString() {
-    return selectedEntities.stream()
-            .map(toStringProvider)
+    return entities.get().stream()
+            .map(toStringFunction.get())
             .collect(joining(multipleItemSeparator.get()));
   }
 
@@ -355,7 +347,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private final EntityType entityType;
     private final EntityConnectionProvider connectionProvider;
     private Collection<Column<String>> searchColumns;
-    private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
+    private Function<Entity, String> toStringFunction = DEFAULT_TO_STRING;
     private Comparator<Entity> resultSorter = new EntityComparator();
     private String description;
     private boolean singleSelection = false;
@@ -378,8 +370,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     @Override
-    public Builder toStringProvider(Function<Entity, String> toStringProvider) {
-      this.toStringProvider = requireNonNull(toStringProvider);
+    public Builder toStringFunction(Function<Entity, String> toStringFunction) {
+      this.toStringFunction = requireNonNull(toStringFunction);
       return this;
     }
 

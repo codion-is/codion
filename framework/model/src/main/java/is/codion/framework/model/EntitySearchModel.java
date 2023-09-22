@@ -41,25 +41,25 @@ public interface EntitySearchModel {
   /**
    * @return the first selected entity or an empty Optional in case no entity is selected
    */
-  Optional<Entity> getSelectedEntity();
+  Optional<Entity> getEntity();
 
   /**
    * @return an unmodifiable view of the selected entities
    */
-  List<Entity> getSelectedEntities();
+  List<Entity> getEntities();
 
   /**
    * Sets the given entity as the selected entity
    * @param entity the entity to set as the selected entity
    */
-  void setSelectedEntity(Entity entity);
+  void setEntity(Entity entity);
 
   /**
    * Sets the selected entities
    * @param entities the entities to set as selected
    * @throws IllegalArgumentException if this search model does not allow multiple selections and entities.size() is larger than 1
    */
-  void setSelectedEntities(List<Entity> entities);
+  void setEntities(List<Entity> entities);
 
   /**
    * @return a string describing this search model, by default a comma separated list of search attribute names
@@ -102,36 +102,30 @@ public interface EntitySearchModel {
    * Sets the additional search condition provider to use when performing the next search.
    * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @return the Value controlling the addition condition supplier
+   * @return the Value controlling the additional condition supplier
    */
   Value<Supplier<Condition>> additionalConditionSupplier();
 
   /**
-   * Override the default toString() for search elements when displayed
-   * in a field based on this model
-   * @param toStringProvider provides string representations
+   * @return the Value controlling the function providing the {@code toString()} implementation
+   * for the entities displayed by this model
    */
-  void setToStringProvider(Function<Entity, String> toStringProvider);
+  Value<Function<Entity, String>> toStringFunction();
 
   /**
-   * @return the toString provider, null if none is specified
+   * @param listener a listener to be notified each time the entities are changed
    */
-  Function<Entity, String> getToStringProvider();
-
-  /**
-   * @param listener a listener to be notified each time the selected entities are changed
-   */
-  void addSelectedEntitiesListener(Consumer<List<Entity>> listener);
+  void addListener(Consumer<List<Entity>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedEntitiesListener(Consumer<List<Entity>> listener);
+  void removeListener(Consumer<List<Entity>> listener);
 
   /**
-   * @return a StateObserver indicating whether the search string represents the selected entities
+   * @return a StateObserver indicating whether the search string represents the current entities
    */
-  StateObserver searchStringRepresentsSelected();
+  StateObserver searchStringModified();
 
   /**
    * @return a StateObserver indicating whether the selection is empty
@@ -193,10 +187,10 @@ public interface EntitySearchModel {
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model
-     * @param toStringProvider the toString provider
+     * @param toStringFunction the toString function
      * @return this builder
      */
-    Builder toStringProvider(Function<Entity, String> toStringProvider);
+    Builder toStringFunction(Function<Entity, String> toStringFunction);
 
     /**
      * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted

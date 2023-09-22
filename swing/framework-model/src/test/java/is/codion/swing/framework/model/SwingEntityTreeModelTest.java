@@ -40,7 +40,7 @@ public final class SwingEntityTreeModelTest {
     SwingEntityTreeModel.EntityTreeNode root = (SwingEntityTreeModel.EntityTreeNode) treeModel.getRoot().children().nextElement();
     assertEquals("KING", root.entity().get(Employee.NAME));
 
-    tableModel.selectEntitiesByKey(Collections.singletonList(connectionProvider.entities().primaryKey(Employee.TYPE, 3)));//Jones
+    tableModel.select(Collections.singletonList(connectionProvider.entities().primaryKey(Employee.TYPE, 3)));//Jones
 
     SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.treeSelectionModel().getSelectionPath().getLastPathComponent();
     assertEquals("JONES", node.entity().get(Employee.NAME));

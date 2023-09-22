@@ -300,7 +300,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityDefinition().attributeDefinition(attribute);
 
     return attributeModifiedMap.computeIfAbsent(attribute, k ->
-            State.state(!entity.isNew() && entity.isModified(attribute))).observer();
+            State.state(!entityNew.get() && entity.isModified(attribute))).observer();
   }
 
   @Override
@@ -1030,6 +1030,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private <T> void onValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
+    updateAttributeStates(attribute);
+    Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
+    if (changeEvent != null) {
+      changeEvent.accept(value);
+    }
+    valueChangeEvent.accept(attribute);
+  }
+
+  private void updateEntityStates() {
+    entityModified.set(modifiedFunction.apply(entity));
+    entityValid.set(validator.isValid(entity));
+    primaryKeyNull.set(entity.primaryKey().isNull());
+    entityNew.set(newFunction.apply(entity));
+  }
+
+  private <T> void updateAttributeStates(Attribute<T> attribute) {
     State nullState = attributeNullMap.get(attribute);
     if (nullState != null) {
       nullState.set(entity.isNull(attribute));
@@ -1042,11 +1058,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (modifiedState != null) {
       updateModifiedAttributeState(attribute, modifiedState);
     }
-    Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
-    if (changeEvent != null) {
-      changeEvent.accept(value);
-    }
-    valueChangeEvent.accept(attribute);
   }
 
   private void updateModifiedAttributeStates() {
@@ -1055,13 +1066,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private void updateModifiedAttributeState(Attribute<?> attribute, State modifiedState) {
     modifiedState.set(!entity.isNew() && entity.isModified(attribute));
-  }
-
-  private void updateEntityStates() {
-    entityModified.set(modifiedFunction.apply(entity));
-    entityValid.set(validator.isValid(entity));
-    primaryKeyNull.set(entity.primaryKey().isNull());
-    entityNew.set(newFunction.apply(entity));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {

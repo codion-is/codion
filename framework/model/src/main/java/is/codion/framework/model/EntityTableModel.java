@@ -126,20 +126,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKey the foreign key
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
+  void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
 
   /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
-   * @throws IllegalArgumentException in case the replacement entities fail validation
    */
-  void replaceEntities(Collection<Entity> entities);
+  void replace(Collection<Entity> entities);
 
   /**
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.
    * @param keys the keys of the entities to refresh
    */
-  void refreshEntities(Collection<Entity.Key> keys);
+  void refresh(Collection<Entity.Key> keys);
 
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
@@ -267,23 +266,24 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setOnInsert(OnInsert onInsert);
 
   /**
-   * Finds entities according to the values in {@code keys}
+   * Finds entities in this table model according to the values in {@code keys}
    * @param keys the primary key values to use as condition
-   * @return the entities having the primary key values as in {@code keys}
+   * @return the entities from this table model having the primary key values as in {@code keys}
    */
-  Collection<Entity> entitiesByKey(Collection<Entity.Key> keys);
+  Collection<Entity> find(Collection<Entity.Key> keys);
 
   /**
-   * Sets the selected entities according to the primary keys in {@code primaryKeys}
+   * Selects entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void selectEntitiesByKey(Collection<Entity.Key> keys);
+  void select(Collection<Entity.Key> keys);
 
   /**
+   * Finds the entity in this table model having the given primary key
    * @param primaryKey the primary key to search by
-   * @return the entity with the given primary key from the table model, null if it's not found
+   * @return the entity with the given primary key from the table model, an empty Optional if not found
    */
-  Entity entityByKey(Entity.Key primaryKey);
+  Optional<Entity> find(Entity.Key primaryKey);
 
   /**
    * @param primaryKey the primary key

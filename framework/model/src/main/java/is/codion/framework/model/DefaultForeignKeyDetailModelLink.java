@@ -85,7 +85,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
     Collection<Entity> entities = ofReferencedType(updatedEntities.values());
     detailModel().editModel().replaceForeignKeyValues(foreignKey, entities);
     if (detailModel().containsTableModel()) {
-      detailModel().tableModel().replaceForeignKeyValues(foreignKey, entities);
+      detailModel().tableModel().replace(foreignKey, entities);
     }
   }
 

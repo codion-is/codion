@@ -387,6 +387,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public Color backgroundColor(int row, Attribute<?> attribute) {
+    requireNonNull(attribute);
     Object color = entityDefinition().backgroundColorProvider().color(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
@@ -394,33 +395,36 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public Color foregroundColor(int row, Attribute<?> attribute) {
+    requireNonNull(attribute);
     Object color = entityDefinition().foregroundColorProvider().color(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
-  public final Entity entityByKey(Entity.Key primaryKey) {
+  public final Optional<Entity> find(Entity.Key primaryKey) {
+    requireNonNull(primaryKey);
     return visibleItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
   }
 
   @Override
   public final int indexOf(Entity.Key primaryKey) {
-    return indexOf(entityByKey(primaryKey));
+    return find(primaryKey)
+            .map(this::indexOf)
+            .orElse(-1);
   }
 
   @Override
-  public final void replaceEntities(Collection<Entity> entities) {
+  public final void replace(Collection<Entity> entities) {
     replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
   @Override
-  public final void refreshEntities(Collection<Entity.Key> keys) {
+  public final void refresh(Collection<Entity.Key> keys) {
     try {
-      replaceEntities(connectionProvider().connection().select(keys));
+      replace(connectionProvider().connection().select(keys));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -428,9 +432,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
+  public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");
+    entityDefinition().foreignKeyDefinition(foreignKey);
     boolean changed = false;
     for (Entity entity : items()) {
       for (Entity foreignKeyValue : foreignKeyValues) {
@@ -447,12 +452,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void selectEntitiesByKey(Collection<Entity.Key> keys) {
+  public final void select(Collection<Entity.Key> keys) {
     selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
   }
 
   @Override
-  public final Collection<Entity> entitiesByKey(Collection<Entity.Key> keys) {
+  public final Collection<Entity> find(Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
     return items().stream()
             .filter(entity -> keys.contains(entity.primaryKey()))
@@ -1127,7 +1132,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .collect(groupingBy(Entity::entityType, HashMap::new, toList()))
               .forEach((entityType, entities) ->
                       entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
-                              replaceForeignKeyValues(foreignKey, entities)));
+                              replace(foreignKey, entities)));
     }
   }
 

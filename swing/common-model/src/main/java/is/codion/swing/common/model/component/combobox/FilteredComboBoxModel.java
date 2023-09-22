@@ -8,6 +8,8 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
@@ -46,6 +48,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
 
   private final Event<T> selectionChangedEvent = Event.event();
+  private final State selectionEmpty = State.state(true);
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
   private final Refresher<T> refresher;
@@ -406,6 +409,13 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
+   * @return a StateObserver indicating whether the selection is empty
+   */
+  public final StateObserver selectionEmpty() {
+    return selectionEmpty.observer();
+  }
+
+  /**
    * @return the selected value, null in case the value representing null is selected
    * @see #isNullSelected()
    */
@@ -438,6 +448,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
+      selectionEmpty.set(isSelectionEmpty());
       selectionChangedEvent.accept(selectedItem);
     }
   }
@@ -593,7 +604,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
     @Override
     public V get() {
-      if (isSelectionEmpty()) {
+      if (selectionEmpty.get()) {
         return null;
       }
 

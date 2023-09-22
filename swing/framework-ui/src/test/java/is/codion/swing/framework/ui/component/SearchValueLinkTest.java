@@ -18,6 +18,7 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SearchValueLinkTest {
 
@@ -39,13 +40,13 @@ public class SearchValueLinkTest {
                     model.foreignKeySearchModel(Employee.DEPARTMENT_FK)).buildValue();
     componentValue.link(model.value(Employee.DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.component().model();
-    assertEquals(0, searchModel.getSelectedEntities().size());
+    assertTrue(searchModel.getEntities().isEmpty());
     Entity department = model.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
     model.put(Employee.DEPARTMENT_FK, department);
-    assertEquals(searchModel.getSelectedEntities().size(), 1);
-    assertEquals(searchModel.getSelectedEntities().iterator().next(), department);
+    assertEquals(searchModel.getEntities().size(), 1);
+    assertEquals(searchModel.getEntities().iterator().next(), department);
     department = model.connectionProvider().connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
-    searchModel.setSelectedEntity(department);
+    searchModel.setEntity(department);
     assertEquals(model.get(Employee.DEPARTMENT_FK), department);
   }
 }
