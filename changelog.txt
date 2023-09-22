@@ -9594,3 +9594,5 @@
   EntitySearchField.searchStringRepresentsEntities() replaced with searchStringModified()
   FilteredComboBoxModel.selectionEmpty() added
   EntityComboBoxModel.selectByKey() renamed select(), entity() renamed find()
+  FilteredTableColumnModel.isColumnVisible() and setColumnVisible() removed, visibleState() renamed visible()
+  NullableToggleButtonModel.addStateListener()  and removeStateListener() renamed addListener() and removeListener()

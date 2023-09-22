@@ -101,7 +101,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Adds a listener notified each time the state changes.
    * @param listener the listener
    */
-  public void addStateListener(Consumer<Boolean> listener) {
+  public void addListener(Consumer<Boolean> listener) {
     buttonState.addDataListener(listener);
   }
 
@@ -109,7 +109,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Removes the given listener.
    * @param listener the listener to remove
    */
-  public void removeStateListener(Consumer<Boolean> listener) {
+  public void removeListener(Consumer<Boolean> listener) {
     buttonState.removeDataListener(listener);
   }
 }

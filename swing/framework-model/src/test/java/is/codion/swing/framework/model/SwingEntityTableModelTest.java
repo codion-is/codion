@@ -203,9 +203,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     testModel.clearPreferences();
 
     SwingEntityTableModel tableModel = createTestTableModel();
-    assertTrue(tableModel.columnModel().isColumnVisible(Detail.STRING));
+    assertTrue(tableModel.columnModel().visible(Detail.STRING).get());
 
-    tableModel.columnModel().setColumnVisible(Detail.STRING, false);
+    tableModel.columnModel().visible(Detail.STRING).set(false);
     tableModel.columnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.columnModel().getColumn(3);
     column.setWidth(150);//timestamp
@@ -219,7 +219,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.savePreferences();
 
     SwingEntityTableModel model = createTestTableModel();
-    assertFalse(model.columnModel().isColumnVisible(Detail.STRING));
+    assertFalse(model.columnModel().visible(Detail.STRING).get());
     assertEquals(0, model.columnModel().getColumnIndex(Detail.DOUBLE));
     assertEquals(1, model.columnModel().getColumnIndex(Detail.INT));
     column = model.columnModel().getColumn(3);

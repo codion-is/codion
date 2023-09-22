@@ -1651,7 +1651,7 @@ public class EntityTablePanel extends JPanel {
         conditionPanelVisibleState.set(true);
       }
       List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.componentPanel().columnComponents().values().stream()
-              .filter(panel -> tableModel.columnModel().isColumnVisible(panel.model().columnIdentifier()))
+              .filter(panel -> tableModel.columnModel().visible(panel.model().columnIdentifier()).get())
               .map(panel -> tableModel.entityDefinition().attributeDefinition(panel.model().columnIdentifier()))
               .sorted(AttributeDefinition.definitionComparator())
               .collect(toList());
