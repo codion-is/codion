@@ -51,17 +51,17 @@ public interface Control extends Action {
   String getName();
 
   /**
-   * @param name the name of this Control instance
+   * @param name the name of this Control
    */
   void setName(String name);
 
   /**
-   * @return the state which controls whether this Control instance is enabled
+   * @return a StateObsrver indicating whether this Control is enabled
    */
   StateObserver enabled();
 
   /**
-   * @param mnemonic the mnemonic to associate with this Control instance
+   * @param mnemonic the mnemonic to associate with this Control
    */
   void setMnemonic(int mnemonic);
 
@@ -131,7 +131,7 @@ public interface Control extends Action {
   Font getFont();
 
   /**
-   * Unsupported, the enabled state of Controls is based on their {@code enabledObserver}
+   * Unsupported, the enabled state of Controls is based on their {@code enabled} state observer
    * @param enabled the enabled status
    * @throws UnsupportedOperationException always
    * @see Builder#enabled(StateObserver)
