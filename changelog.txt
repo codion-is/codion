@@ -9587,3 +9587,4 @@
   EntityEditModel, boolean setter and getter replaced with State, some renaming, related refactoring
   EntityEditModel.isValid() removed, valid(attribute) added
   EntitySearchModel.get/SetToStringProvider() replaced with a Value, renamed toStringFunction(), some javadoc improvements
+  EntityTableModel.replaceForeignKeyValues() and replaceEntities() renamed replace(), refreshEntities() renamed refresh()

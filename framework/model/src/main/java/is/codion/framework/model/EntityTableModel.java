@@ -126,20 +126,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKey the foreign key
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
+  void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
 
   /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
-   * @throws IllegalArgumentException in case the replacement entities fail validation
    */
-  void replaceEntities(Collection<Entity> entities);
+  void replace(Collection<Entity> entities);
 
   /**
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.
    * @param keys the keys of the entities to refresh
    */
-  void refreshEntities(Collection<Entity.Key> keys);
+  void refresh(Collection<Entity.Key> keys);
 
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model

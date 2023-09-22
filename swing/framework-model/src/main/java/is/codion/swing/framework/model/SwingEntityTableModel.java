@@ -413,14 +413,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void replaceEntities(Collection<Entity> entities) {
+  public final void replace(Collection<Entity> entities) {
     replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
   @Override
-  public final void refreshEntities(Collection<Entity.Key> keys) {
+  public final void refresh(Collection<Entity.Key> keys) {
     try {
-      replaceEntities(connectionProvider().connection().select(keys));
+      replace(connectionProvider().connection().select(keys));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -428,9 +428,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
+  public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");
+    entityDefinition().foreignKeyDefinition(foreignKey);
     boolean changed = false;
     for (Entity entity : items()) {
       for (Entity foreignKeyValue : foreignKeyValues) {
@@ -1127,7 +1128,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .collect(groupingBy(Entity::entityType, HashMap::new, toList()))
               .forEach((entityType, entities) ->
                       entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
-                              replaceForeignKeyValues(foreignKey, entities)));
+                              replace(foreignKey, entities)));
     }
   }
 
