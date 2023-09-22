@@ -672,59 +672,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
-   * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-   * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
-   * @param exception the exception
-   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
-   */
-  public void onReferentialIntegrityException(ReferentialIntegrityException exception) {
-    requireNonNull(exception);
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
-              this, MESSAGES.getString("unknown_dependent_records"));
-    }
-    else {
-      onException(exception);
-    }
-  }
-
-  /**
-   * Displays the exception message.
-   * @param exception the exception
-   */
-  public void onValidationException(ValidationException exception) {
-    requireNonNull(exception);
-    String title = tableModel.entities()
-            .definition(exception.attribute().entityType())
-            .attributeDefinition(exception.attribute())
-            .caption();
-    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-  }
-
-  /**
-   * Handles the given exception, simply displays the error message to the user by default.
-   * @param exception the exception to handle
-   * @see #displayException(Throwable)
-   */
-  public void onException(Throwable exception) {
-    displayException(exception);
-  }
-
-  /**
-   * Displays the exception in a dialog, with the dialog owner as the current focus owner
-   * or this panel if none is available.
-   * @param exception the exception to display
-   */
-  public final void displayException(Throwable exception) {
-    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-    if (focusOwner == null) {
-      focusOwner = EntityTablePanel.this;
-    }
-    Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
-  }
-
-  /**
    * Creates a static read-only entity table panel showing the given entities
    * @param entities the entities to show in the panel, assumed to be of the same type
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
@@ -1076,6 +1023,59 @@ public class EntityTablePanel extends JPanel {
    * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
    */
   protected void beforeDelete() {}
+
+  /**
+   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
+   * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+   * @param exception the exception
+   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
+   */
+  protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
+    requireNonNull(exception);
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+      displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
+              this, MESSAGES.getString("unknown_dependent_records"));
+    }
+    else {
+      onException(exception);
+    }
+  }
+
+  /**
+   * Displays the exception message.
+   * @param exception the exception
+   */
+  protected void onValidationException(ValidationException exception) {
+    requireNonNull(exception);
+    String title = tableModel.entities()
+            .definition(exception.attribute().entityType())
+            .attributeDefinition(exception.attribute())
+            .caption();
+    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+  }
+
+  /**
+   * Handles the given exception, simply displays the error message to the user by default.
+   * @param exception the exception to handle
+   * @see #displayException(Throwable)
+   */
+  protected void onException(Throwable exception) {
+    displayException(exception);
+  }
+
+  /**
+   * Displays the exception in a dialog, with the dialog owner as the current focus owner
+   * or this panel if none is available.
+   * @param exception the exception to display
+   */
+  protected final void displayException(Throwable exception) {
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    if (focusOwner == null) {
+      focusOwner = EntityTablePanel.this;
+    }
+    Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
+  }
 
   /**
    * Creates a {@link Controls} containing controls for editing the value of a single attribute

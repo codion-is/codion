@@ -9597,3 +9597,4 @@
   FilteredTableColumnModel.isColumnVisible() and setColumnVisible() removed, visibleState() renamed visible()
   NullableToggleButtonModel.addStateListener()  and removeStateListener() renamed addListener() and removeListener()
   Utilities.linkToEnabledState() for actions now varargs based
+  EntityEditPanel, EntityTablePanel, onException(), onValidationException(), onReferentialIntegrityException() and displayException() now protected

@@ -296,38 +296,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
-   * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-   * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
-   * @param exception the exception
-   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
-   */
-  public void onReferentialIntegrityException(ReferentialIntegrityException exception) {
-    requireNonNull(exception);
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
-              this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
-    }
-    else {
-      onException(exception);
-    }
-  }
-
-  /**
-   * Displays the exception message after which the component involved receives the focus.
-   * @param exception the exception
-   */
-  public void onValidationException(ValidationException exception) {
-    requireNonNull(exception);
-    String title = editModel().entities()
-            .definition(exception.attribute().entityType())
-            .attributeDefinition(exception.attribute())
-            .caption();
-    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-    requestComponentFocus(exception.attribute());
-  }
-
-  /**
    * Initializes this EntityEditPanel.
    * This method marks this panel as initialized which prevents it from running again,
    * whether an exception occurs or not.
@@ -578,6 +546,38 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
    */
   protected void beforeDelete() {}
+
+  /**
+   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
+   * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+   * @param exception the exception
+   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
+   */
+  protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
+    requireNonNull(exception);
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+      displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
+              this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
+    }
+    else {
+      onException(exception);
+    }
+  }
+
+  /**
+   * Displays the exception message after which the component involved receives the focus.
+   * @param exception the exception
+   */
+  protected void onValidationException(ValidationException exception) {
+    requireNonNull(exception);
+    String title = editModel().entities()
+            .definition(exception.attribute().entityType())
+            .attributeDefinition(exception.attribute())
+            .caption();
+    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+    requestComponentFocus(exception.attribute());
+  }
 
   /**
    * Associates {@code control} with {@code controlCode}
