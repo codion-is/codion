@@ -102,21 +102,15 @@ public interface EntitySearchModel {
    * Sets the additional search condition provider to use when performing the next search.
    * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @return the Value controlling the addition condition supplier
+   * @return the Value controlling the additional condition supplier
    */
   Value<Supplier<Condition>> additionalConditionSupplier();
 
   /**
-   * Override the default toString() for search elements when displayed
-   * in a field based on this model
-   * @param toStringProvider provides string representations
+   * @return the Value controlling the function providing the {@code toString()} implementation
+   * for the entities displayed by this model
    */
-  void setToStringProvider(Function<Entity, String> toStringProvider);
-
-  /**
-   * @return the toString provider, null if none is specified
-   */
-  Function<Entity, String> getToStringProvider();
+  Value<Function<Entity, String>> toStringFunction();
 
   /**
    * @param listener a listener to be notified each time the selected entities are changed
@@ -193,10 +187,10 @@ public interface EntitySearchModel {
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model
-     * @param toStringProvider the toString provider
+     * @param toStringFunction the toString function
      * @return this builder
      */
-    Builder toStringProvider(Function<Entity, String> toStringProvider);
+    Builder toStringFunction(Function<Entity, String> toStringFunction);
 
     /**
      * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted

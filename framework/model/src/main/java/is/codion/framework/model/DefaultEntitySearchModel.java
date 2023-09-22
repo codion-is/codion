@@ -75,9 +75,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final State singleSelection = State.state(false);
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final Value<Supplier<Condition>> additionalConditionSupplier = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Function<Entity, String>> toStringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
   private final State selectionEmpty = State.state(true);
 
-  private Function<Entity, String> toStringProvider;
   private Comparator<Entity> resultSorter;
   private String description;
 
@@ -87,7 +87,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.multipleItemSeparator = Value.value(builder.multipleItemSeparator, DEFAULT_SEPARATOR);
     this.searchColumns = unmodifiableCollection(builder.searchColumns);
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
-    this.toStringProvider = builder.toStringProvider;
+    this.toStringFunction.set(builder.toStringFunction);
     this.resultSorter = builder.resultSorter;
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection.set(builder.singleSelection);
@@ -176,13 +176,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Function<Entity, String> getToStringProvider() {
-    return toStringProvider;
-  }
-
-  @Override
-  public void setToStringProvider(Function<Entity, String> toStringProvider) {
-    this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
+  public Value<Function<Entity, String>> toStringFunction() {
+    return toStringFunction;
   }
 
   @Override
@@ -306,7 +301,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private String selectedEntitiesToString() {
     return selectedEntities.stream()
-            .map(toStringProvider)
+            .map(toStringFunction.get())
             .collect(joining(multipleItemSeparator.get()));
   }
 
@@ -355,7 +350,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private final EntityType entityType;
     private final EntityConnectionProvider connectionProvider;
     private Collection<Column<String>> searchColumns;
-    private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
+    private Function<Entity, String> toStringFunction = DEFAULT_TO_STRING;
     private Comparator<Entity> resultSorter = new EntityComparator();
     private String description;
     private boolean singleSelection = false;
@@ -378,8 +373,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     @Override
-    public Builder toStringProvider(Function<Entity, String> toStringProvider) {
-      this.toStringProvider = requireNonNull(toStringProvider);
+    public Builder toStringFunction(Function<Entity, String> toStringFunction) {
+      this.toStringFunction = requireNonNull(toStringFunction);
       return this;
     }
 

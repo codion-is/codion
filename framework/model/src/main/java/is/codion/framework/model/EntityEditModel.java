@@ -189,26 +189,36 @@ public interface EntityEditModel {
   void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
+   * Making this edit model read-only prevents any changes from being
+   * persisted to the database, trying to insert, update or delete will
+   * cause an exception being thrown, it does not prevent editing.
+   * Use {@link #insertEnabled()}, {@link #updateEnabled()} and {@link #deleteEnabled()}
+   * to configure the enabled state of those specific actions.
    * @return the State controlling whether this model is read only
    */
   State readOnly();
 
   /**
+   * Disabling insert causes an exception being thrown when inserting.
    * @return the state controlling whether inserting is enabled via this edit model
    */
   State insertEnabled();
 
   /**
+   * Disabling update causes an exception being thrown when updating.
    * @return the state controlling whether updating is enabled via this edit model
    */
   State updateEnabled();
 
   /**
+   * Disabling updating multiple entities causes an exception being thrown when
+   * trying to update multiple entities at a time.
    * @return the state controlling whether updating multiple entities is enabled
    */
   State updateMultipleEnabled();
 
   /**
+   * Disabling delete causes an exception being thrown when deleting.
    * @return the state controlling whether deleting is enabled via this edit model
    */
   State deleteEnabled();
