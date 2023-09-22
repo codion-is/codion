@@ -539,10 +539,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(comboBox);
     requireNonNull(editPanelSupplier);
 
-    State selectionNonEmpty = State.state(!comboBox.getModel().isSelectionEmpty());
-    comboBox.getModel().addSelectionListener(selected -> selectionNonEmpty.set(selected != null));
-
-    return createUpdateControl(new EditEntityCommand(comboBox, editPanelSupplier), comboBox, selectionNonEmpty);
+    return createUpdateControl(new EditEntityCommand(comboBox, editPanelSupplier), comboBox,
+            comboBox.getModel().selectionEmpty().not());
   }
 
   /**

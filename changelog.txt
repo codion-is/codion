@@ -9592,3 +9592,5 @@
   EntityTableModel.entitiesByKey() and entityByKey() renamed find(), selectEntitiesByKey() renamed select()
   EntitySearchField, some methods renamed
   EntitySearchField.searchStringRepresentsEntities() replaced with searchStringModified()
+  FilteredComboBoxModel.selectionEmpty() added
+  EntityComboBoxModel.selectByKey() renamed select(), entity() renamed find()

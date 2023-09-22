@@ -201,22 +201,22 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if found in the model, an empty Optional otherwise
    */
-  public final Optional<Entity> entity(Entity.Key primaryKey) {
+  public final Optional<Entity> find(Entity.Key primaryKey) {
     requireNonNull(primaryKey);
-
     return items().stream()
-            .filter(entity -> entity != null && entity.primaryKey().equals(primaryKey))
+            .filter(Objects::nonNull)
+            .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst();
   }
 
   /**
-   * Selects the entity with the given primary key, if the entity is not available
-   * in the model this method returns silently without changing the selection
+   * Selects the entity with the given primary key, whether filtered or visible.
+   * If the entity is not available in the model this method returns silently without changing the selection.
    * @param primaryKey the primary key of the entity to select
    */
-  public final void selectByKey(Entity.Key primaryKey) {
+  public final void select(Entity.Key primaryKey) {
     requireNonNull(primaryKey);
-    Optional<Entity> entity = entity(primaryKey);
+    Optional<Entity> entity = find(primaryKey);
     if (entity.isPresent()) {
       setSelectedItem(entity.get());
     }
@@ -424,7 +424,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     //if foreign key filter keys have been set previously, initialize with one of those
     Collection<Entity.Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
     if (!nullOrEmpty(filterKeys)) {
-      foreignKeyModel.selectByKey(filterKeys.iterator().next());
+      foreignKeyModel.select(filterKeys.iterator().next());
     }
     if (filter) {
       linkFilter(foreignKey, foreignKeyModel);
@@ -434,7 +434,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
     addSelectionListener(selected -> {
       if (selected != null && !selected.isNull(foreignKey)) {
-        foreignKeyModel.selectByKey(selected.referencedKey(foreignKey));
+        foreignKeyModel.select(selected.referencedKey(foreignKey));
       }
     });
     refresher().addRefreshListener(foreignKeyModel::forceRefresh);
@@ -506,7 +506,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       }
 
       if (itemToSelect instanceof Entity) {
-        return entity(((Entity) itemToSelect).primaryKey()).orElse((Entity) itemToSelect);
+        return find(((Entity) itemToSelect).primaryKey()).orElse((Entity) itemToSelect);
       }
       String itemToString = itemToSelect.toString();
 
