@@ -41,7 +41,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
   private static final String DEFAULT_SEPARATOR = ",";
 
-  private final State searchStringRepresentsSelected = State.state(true);
+  private final State searchStringModified = State.state();
 
   /**
    * The type of the entity this search model is based on
@@ -223,8 +223,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public StateObserver searchStringRepresentsEntities() {
-    return searchStringRepresentsSelected.observer();
+  public StateObserver searchStringModified() {
+    return searchStringModified.observer();
   }
 
   @Override
@@ -278,11 +278,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private void bindEventsInternal() {
     searchString.addListener(() ->
-            searchStringRepresentsSelected.set(doesSearchStringRepresentSelectedEntities()));
+            searchStringModified.set(!searchStringRepresentSelectedEntities()));
     multipleItemSeparator.addListener(this::resetSearchString);
   } 
   
-  private boolean doesSearchStringRepresentSelectedEntities() {
+  private boolean searchStringRepresentSelectedEntities() {
     String selectedAsString = selectedEntitiesToString();
     return (entities.get().isEmpty() && nullOrEmpty(searchString.get()))
             || !entities.get().isEmpty() && selectedAsString.equals(searchString.get());

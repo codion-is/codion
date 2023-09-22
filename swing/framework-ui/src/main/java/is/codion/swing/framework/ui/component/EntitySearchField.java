@@ -130,8 +130,8 @@ public final class EntitySearchField extends HintTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     configureColors();
-    Utilities.linkToEnabledState(searchModel.searchStringRepresentsEntities(), transferFocusAction);
-    Utilities.linkToEnabledState(searchModel.searchStringRepresentsEntities(), transferFocusBackwardAction);
+    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusAction);
+    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusBackwardAction);
   }
 
   @Override
@@ -275,7 +275,7 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void updateColors() {
-    boolean validBackground = model.searchStringRepresentsEntities().get();
+    boolean validBackground = !model.searchStringModified().get();
     setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
   }
 
@@ -286,7 +286,7 @@ public final class EntitySearchField extends HintTextField {
         model.setEntities(null);
       }
       else {
-        if (!model.searchStringRepresentsEntities().get()) {
+        if (model.searchStringModified().get()) {
           try {
             List<Entity> queryResult = performQuery();
             if (queryResult.size() == 1) {
@@ -674,14 +674,14 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return searchOnFocusLost && !performingSearch && !model.searchStringRepresentsEntities().get();
+      return searchOnFocusLost && !performingSearch && model.searchStringModified().get();
     }
   }
 
   private final class EnterEscapeListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      if (!model.searchStringRepresentsEntities().get()) {
+      if (model.searchStringModified().get()) {
         if (e.getKeyCode() == VK_ENTER) {
           e.consume();
           performSearch(true);

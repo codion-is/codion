@@ -125,7 +125,7 @@ public interface EntitySearchModel {
   /**
    * @return a StateObserver indicating whether the search string represents the current entities
    */
-  StateObserver searchStringRepresentsEntities();
+  StateObserver searchStringModified();
 
   /**
    * @return a StateObserver indicating whether the selection is empty

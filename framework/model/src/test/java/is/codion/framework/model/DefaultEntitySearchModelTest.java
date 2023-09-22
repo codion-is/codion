@@ -111,7 +111,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.wildcard().set('%');
     searchModel.searchString().set("joh");
     assertTrue(searchModel.selectionEmpty().get());
-    assertFalse(searchModel.searchStringRepresentsEntities().get());
+    assertTrue(searchModel.searchStringModified().get());
     List<Entity> result = searchModel.performQuery();
     assertFalse(result.isEmpty());
     assertTrue(contains(result, "John"));
@@ -176,7 +176,7 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
     searchModel.setEntities(result);
-    assertTrue(searchModel.searchStringRepresentsEntities().get());
+    assertFalse(searchModel.searchStringModified().get());
 
     searchModel.searchString().set("and; rew");
     searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefix().set(true);

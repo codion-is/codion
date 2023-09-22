@@ -9591,3 +9591,4 @@
   EntityTableModel.entityByKey() now returns Optional
   EntityTableModel.entitiesByKey() and entityByKey() renamed find(), selectEntitiesByKey() renamed select()
   EntitySearchField, some methods renamed
+  EntitySearchField.searchStringRepresentsEntities() replaced with searchStringModified()
