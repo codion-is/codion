@@ -72,9 +72,9 @@ public final class TrackTablePanel extends EntityTablePanel {
     }
 
     @Override
-    public ComponentValue<Integer, MinutesSecondsPanel> createComponentValue(Attribute<Integer> attribute,
-                                                                             SwingEntityEditModel editModel,
-                                                                             Integer initialValue) {
+    public ComponentValue<Integer, MinutesSecondsPanel> componentValue(Attribute<Integer> attribute,
+                                                                       SwingEntityEditModel editModel,
+                                                                       Integer initialValue) {
       MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(horizontal);
       minutesSecondsPanelValue.set(initialValue);
 

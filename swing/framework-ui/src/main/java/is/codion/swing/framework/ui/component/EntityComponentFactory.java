@@ -23,7 +23,7 @@ public interface EntityComponentFactory<T, A extends Attribute<T>, C extends JCo
    * @param attribute the attribute for which to get the ComponentValue
    * @param editModel the edit model used to create foreign key input models
    * @param initialValue the initial value to display
-   * @return the ComponentValue handling input for {@code attribute}
+   * @return a new ComponentValue instance handling input for {@code attribute}
    */
-  ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue);
+  ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue);
 }

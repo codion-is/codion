@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> implements EntityComponentFactory<T, A, C> {
 
   @Override
-  public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
+  public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
     requireNonNull(attribute, "attribute");
     requireNonNull(editModel, "editModel");
     if (attribute instanceof ForeignKey) {
@@ -47,7 +47,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
   private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
                                                               Entity initialValue) {
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
-    if (editModel.connectionProvider().entities().definition(foreignKey.referencedType()).isSmallDataset()) {
+    if (editModel.entities().definition(foreignKey.referencedType()).isSmallDataset()) {
       return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
               .initialValue(initialValue)
               .onSetVisible(comboBox -> comboBox.getModel().refresh())

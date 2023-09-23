@@ -223,10 +223,10 @@ public final class EntityDialogs {
       if (componentFactory == null) {
         EditEntityComponentFactory<T, Attribute<T>, JComponent> entityComponentFactory = new EditEntityComponentFactory<>();
 
-        return entityComponentFactory.createComponentValue(attribute, editModel, initialValue);
+        return entityComponentFactory.componentValue(attribute, editModel, initialValue);
       }
 
-      return componentFactory.createComponentValue(attribute, editModel, initialValue);
+      return componentFactory.componentValue(attribute, editModel, initialValue);
     }
 
     private boolean update(Collection<Entity> entities) {
@@ -301,7 +301,7 @@ public final class EntityDialogs {
   private static final class EditEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
 
     @Override
-    public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
+    public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
       if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.type().isString()) {
         //special handling for non-item based String attributes, text input panel instead of a text field
@@ -311,7 +311,7 @@ public final class EntityDialogs {
                 .buildValue();
       }
 
-      return super.createComponentValue(attribute, editModel, initialValue);
+      return super.componentValue(attribute, editModel, initialValue);
     }
   }
 
