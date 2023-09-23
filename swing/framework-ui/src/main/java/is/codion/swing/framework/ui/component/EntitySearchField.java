@@ -74,7 +74,7 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -399,7 +399,7 @@ public final class EntitySearchField extends HintTextField {
       add(Components.comboBox(columnComboBoxModel).build(), BorderLayout.NORTH);
       add(columnBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
-      setBorder(createEmptyBorder());
+      setBorder(emptyBorder());
     }
 
     private static JPanel createColumnSettingsPanel(EntitySearchModel.SearchSettings settings) {

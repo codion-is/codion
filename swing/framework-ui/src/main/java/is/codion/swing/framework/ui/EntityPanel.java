@@ -1064,7 +1064,7 @@ public class EntityPanel extends JPanel {
 
   protected final void initializeEditPanel() {
     editPanel.initialize();
-    editControlPanel.setBorder(Borders.createEmptyBorder());
+    editControlPanel.setBorder(Borders.emptyBorder());
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {
