@@ -120,8 +120,10 @@ public final class ServerMonitor {
     this.registryPort = registryPort;
     this.serverAdminUser = requireNonNull(serverAdminUser);
     this.server = connectServer(serverInformation.serverName());
-    this.connectionLimitValue = Value.value(this::getConnectionLimit, this::setConnectionLimit, -1);
+    this.connectionLimitValue = Value.value(getConnectionLimit(), -1);
+    this.connectionLimitValue.addDataListener(this::setConnectionLimit);
     this.logLevelValue = Value.value(this.server.getLogLevel());
+    this.logLevelValue.addDataListener(this::setLogLevel);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     this.memoryUsageCollection.addSeries(maxMemorySeries);
     this.memoryUsageCollection.addSeries(allocatedMemorySeries);
@@ -140,7 +142,6 @@ public final class ServerMonitor {
     refreshDomainList();
     refreshReportList();
     refreshOperationList();
-    bindEvents();
   }
 
   /**
@@ -519,11 +520,6 @@ public final class ServerMonitor {
       }
       typeSeries.add(event.timestamp(), event.duration());
     }
-  }
-
-  private void bindEvents() {
-    connectionLimitValue.addDataListener(this::setConnectionLimit);
-    logLevelValue.addDataListener(this::setLogLevel);
   }
 
   private static final class ReadOnlyTableModel extends DefaultTableModel {

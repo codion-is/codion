@@ -9,7 +9,6 @@ import is.codion.common.value.ValueObserver;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 final class DefaultState implements State {
 
@@ -19,11 +18,6 @@ final class DefaultState implements State {
 
   DefaultState(boolean value) {
     this.value = Value.value(value, false);
-    this.value.addDataListener(new Notifier());
-  }
-
-  DefaultState(Supplier<Boolean> getter, Consumer<Boolean> setter) {
-    this.value = Value.value(getter, setter, false);
     this.value.addDataListener(new Notifier());
   }
 

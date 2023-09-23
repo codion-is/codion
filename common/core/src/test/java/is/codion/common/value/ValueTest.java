@@ -26,20 +26,6 @@ public class ValueTest {
   }
 
   @Test
-  void valueSetterGetter() {
-    Value<Boolean> changeEventFired = Value.value(false);
-    Value<Double> value = Value.value(this::getDoubleValue, this::setDoubleValue);
-    value.addListener(() -> changeEventFired.set(true));
-    assertEquals(42d, value.get());
-    assertThrows(IllegalArgumentException.class, () -> value.set(null));
-    assertFalse(changeEventFired.get());
-    value.set(1d);
-    assertTrue(changeEventFired.get());
-    assertEquals(1d, doubleValue);
-    assertEquals(1d, value.get());
-  }
-
-  @Test
   void validator() {
     Value.Validator<Integer> validator = value -> {
       if (value != null && value > 10) {
