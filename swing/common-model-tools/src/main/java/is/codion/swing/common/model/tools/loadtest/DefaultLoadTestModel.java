@@ -265,12 +265,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   @Override
   public int getUpdateInterval() {
-    return chartUpdateScheduler.getInterval();
+    return chartUpdateScheduler.interval().get();
   }
 
   @Override
   public void setUpdateInterval(int updateInterval) {
-    chartUpdateScheduler.setInterval(updateInterval);
+    chartUpdateScheduler.interval().set(updateInterval);
   }
 
   @Override

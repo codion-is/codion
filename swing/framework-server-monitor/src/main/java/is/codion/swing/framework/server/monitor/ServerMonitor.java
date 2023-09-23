@@ -63,7 +63,6 @@ public final class ServerMonitor {
   private final User serverAdminUser;
 
   private final TaskScheduler updateScheduler;
-  private final Value<Integer> updateIntervalValue;
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -138,7 +137,6 @@ public final class ServerMonitor {
     this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refreshDomainList();
     refreshReportList();
     refreshOperationList();
@@ -390,7 +388,7 @@ public final class ServerMonitor {
    * @return the value controlling the update interval
    */
   public Value<Integer> updateInterval() {
-    return updateIntervalValue;
+    return updateScheduler.interval();
   }
 
   /**

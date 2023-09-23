@@ -3,6 +3,8 @@
  */
 package is.codion.common.scheduler;
 
+import is.codion.common.value.Value;
+
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  *
  * scheduler.start();
  * ...
- * scheduler.setInterval(1);//task restarted using the new interval
+ * scheduler.interval().set(1);//task restarted using the new interval
  * ...
  * scheduler.stop();
  * </pre>
@@ -28,17 +30,11 @@ import java.util.concurrent.TimeUnit;
 public interface TaskScheduler {
 
   /**
-   * @return the interval
-   */
-  int getInterval();
-
-  /**
-   * Sets the new task interval and, in case this scheduler was running, re-schedules the task.
+   * Controls the task interval and when set, in case this scheduler was running, re-schedules the task.
    * If the scheduler was stopped it will remain so, the new interval coming into effect on next start.
-   * @param interval the interval
-   * @throws IllegalArgumentException in case {@code interval} isn't a positive integer
+   * @return the value controlling the interval
    */
-  void setInterval(int interval);
+  Value<Integer> interval();
 
   /**
    * @return the time unit

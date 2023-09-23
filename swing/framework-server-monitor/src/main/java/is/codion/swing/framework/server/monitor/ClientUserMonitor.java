@@ -60,7 +60,6 @@ public final class ClientUserMonitor {
                   .build();
 
   private final TaskScheduler updateScheduler;
-  private final Value<Integer> updateIntervalValue;
 
   /**
    * Instantiates a new {@link ClientUserMonitor}
@@ -74,7 +73,6 @@ public final class ClientUserMonitor {
     this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
   }
 
   /**
@@ -148,7 +146,7 @@ public final class ClientUserMonitor {
    * @return the value controlling the update interval
    */
   public Value<Integer> updateInterval() {
-    return updateIntervalValue;
+    return updateScheduler.interval();
   }
 
   private int getIdleConnectionTimeout() {

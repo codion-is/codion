@@ -58,7 +58,6 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
   private final TaskScheduler updateScheduler;
-  private final Value<Integer> updateIntervalValue;
 
   private long lastStatisticsUpdateTime = 0;
 
@@ -89,7 +88,6 @@ public final class ConnectionPoolMonitor {
     this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     bindEvents();
   }
 
@@ -230,7 +228,7 @@ public final class ConnectionPoolMonitor {
    * @return the value controlling the update interval
    */
   public Value<Integer> updateInterval() {
-    return updateIntervalValue;
+    return updateScheduler.interval();
   }
 
   /**

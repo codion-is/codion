@@ -9601,3 +9601,4 @@
   CredentialsProvider removed along with implementation
   EntityEditModel.addForeignKeyValues(), removeForeignKeyValues() and replaceForeignKeyValues() renamed add, remove and replace respectively
   Value.propertyValue() removed
+  TaskSchedular.get/setInterval() replaced with Value based interval()

@@ -3,6 +3,8 @@
  */
 package is.codion.common.scheduler;
 
+import is.codion.common.value.Value;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -14,39 +16,30 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
   private final Object lock = new Object();
   private final Runnable task;
+  private final Value<Integer> interval;
   private final int initialDelay;
   private final TimeUnit timeUnit;
   private final ThreadFactory threadFactory;
 
   private ScheduledExecutorService executorService;
-  private int interval;
 
   private DefaultTaskScheduler(DefaultBuilder builder) {
     this.task = builder.task;
-    this.interval = builder.interval;
+    this.interval = Value.value(builder.interval, builder.interval);
+    this.interval.addValidator(value -> {
+      if (value <= 0) {
+        throw new IllegalArgumentException("Interval must be a positive integer");
+      }
+    });
     this.initialDelay = builder.initialDelay;
     this.timeUnit = builder.timeUnit;
     this.threadFactory = builder.threadFactory;
+    this.interval.addListener(this::onIntervalChanged);
   }
 
   @Override
-  public int getInterval() {
+  public Value<Integer> interval() {
     return interval;
-  }
-
-  @Override
-  public void setInterval(int interval) {
-    if (interval <= 0) {
-      throw new IllegalArgumentException("Interval must be a positive integer");
-    }
-    synchronized (lock) {
-      if (this.interval != interval) {
-        this.interval = interval;
-        if (isRunning()) {
-          start();
-        }
-      }
-    }
   }
 
   @Override
@@ -59,7 +52,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
     synchronized (lock) {
       stop();
       executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
-      executorService.scheduleAtFixedRate(task, initialDelay, interval, timeUnit);
+      executorService.scheduleAtFixedRate(task, initialDelay, interval.get(), timeUnit);
 
       return this;
     }
@@ -79,6 +72,14 @@ final class DefaultTaskScheduler implements TaskScheduler {
   public boolean isRunning() {
     synchronized (lock) {
       return executorService != null && !executorService.isShutdown();
+    }
+  }
+
+  private void onIntervalChanged() {
+    synchronized (lock) {
+      if (isRunning()) {
+        start();
+      }
     }
   }
 
