@@ -43,8 +43,8 @@ public interface ValueSet<T> extends Value<Set<T>> {
   void clear();
 
   /**
-   * Creates a new {@link Value} instance based on this {@link ValueSet}.
-   * Setting the value to null clears the value set.
+   * Returns a {@link Value} instance based on this {@link ValueSet}.
+   * Setting this value to null clears the value set.
    * This value consistently returns the first value from the
    * underlying {@link ValueSet} in case it contains multiple items.
    * @return a single item value based on this value set

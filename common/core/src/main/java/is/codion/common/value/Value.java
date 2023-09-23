@@ -61,16 +61,16 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * Creates a unidirectional link between this value and the given original value observer,
    * so that changes in the original value are reflected in this one.
    * Note that after a call to this method the value of this value is the same as the original value.
-   * @param originalValueObserver the original value to link this value to
+   * @param originalValue the original value to link this value to
    * @throws IllegalArgumentException in case the original value is not valid according to this values validators
    */
-  void link(ValueObserver<T> originalValueObserver);
+  void link(ValueObserver<T> originalValue);
 
   /**
    * Unlinks this value from the given original value observer
-   * @param originalValueObserver the original value observer to unlink
+   * @param originalValue the original value to unlink
    */
-  void unlink(ValueObserver<T> originalValueObserver);
+  void unlink(ValueObserver<T> originalValue);
 
   /**
    * @return an unmodifiable set containing the values that have been linked to this value

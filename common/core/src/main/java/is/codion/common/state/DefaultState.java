@@ -67,13 +67,13 @@ final class DefaultState implements State {
   }
 
   @Override
-  public void link(ValueObserver<Boolean> originalValueObserver) {
-    this.value.link(originalValueObserver);
+  public void link(ValueObserver<Boolean> originalValue) {
+    this.value.link(originalValue);
   }
 
   @Override
-  public void unlink(ValueObserver<Boolean> originalValueObserver) {
-    this.value.unlink(originalValueObserver);
+  public void unlink(ValueObserver<Boolean> originalValue) {
+    this.value.unlink(originalValue);
   }
 
   @Override

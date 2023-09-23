@@ -21,7 +21,6 @@ final class DefaultIcons implements Icons {
   private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
 
   private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
-  private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
   private final OnIconColorChangedListener onIconColorChangedListener = new OnIconColorChangedListener();
 
@@ -54,17 +53,16 @@ final class DefaultIcons implements Icons {
   public void setIconColor(Color color) {
     requireNonNull(color);
     icons.values().forEach(icon -> icon.setColor(color));
-    logos.values().forEach(logo -> logo.setColor(color));
   }
 
   @Override
-  public Icons addIconColorListener() {
+  public Icons enableIconColorListener() {
     ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
     return this;
   }
 
   @Override
-  public Icons removeIconColorListener() {
+  public Icons disableIconColorListener() {
     ICON_COLOR.removeWeakDataListener(onIconColorChangedListener);
     return this;
   }

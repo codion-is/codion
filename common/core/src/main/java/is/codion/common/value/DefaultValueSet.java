@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet<T> {
 
   private final Set<T> values = new LinkedHashSet<>();
-  private final Value<T> value = new SingleValueSet();
+  private final Value<T> value = new SingleValue();
 
   DefaultValueSet(Set<T> initialValues) {
     super(emptySet(), true);
@@ -73,9 +73,9 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
     this.values.addAll(values);
   }
 
-  private class SingleValueSet extends AbstractValue<T> {
+  private class SingleValue extends AbstractValue<T> {
 
-    private SingleValueSet() {
+    private SingleValue() {
       super(null, false);
       DefaultValueSet.this.addListener(this::notifyValueChange);
     }

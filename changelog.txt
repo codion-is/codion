@@ -9646,3 +9646,5 @@
   Value, value links now handles all RuntimeExceptions the same, by reverting the linked value change
   Layouts.createEmptyBorder() renamed emptyBorder() for consistency
   EntityComponentFactory createComponentValue() renamed componentValue()
+  Icons.add/removeIconColorListener() renamed enable/disableIconColorListener() respectively
+  AbstractValue.changeObserver() removed
