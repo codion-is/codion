@@ -498,14 +498,14 @@ public final class AbstractEntityEditModelTest {
   }
 
   @Test
-  void replaceForeignKeyValues() throws DatabaseException {
+  void replace() throws DatabaseException {
     Entity james = employeeEditModel.connectionProvider().connection()
             .selectSingle(Employee.NAME.equalTo("JAMES"));
     employeeEditModel.setEntity(james);
     Entity blake = employeeEditModel.connectionProvider().connection()
             .selectSingle(Employee.NAME.equalTo("BLAKE"));
     assertNotSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
-    employeeEditModel.replaceForeignKeyValues(Employee.MGR_FK, singletonList(blake));
+    employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
     assertSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
   }
 
@@ -657,10 +657,10 @@ public final class AbstractEntityEditModelTest {
     }
 
     @Override
-    public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+    public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
 
     @Override
-    public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+    public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 
     @Override
     public StateObserver refreshing() {
@@ -675,10 +675,10 @@ public final class AbstractEntityEditModelTest {
     }
 
     @Override
-    public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+    public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
 
     @Override
-    public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+    public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 
     @Override
     public StateObserver refreshing() {

@@ -58,7 +58,6 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
   private final TaskScheduler updateScheduler;
-  private final Value<Integer> updateIntervalValue;
 
   private long lastStatisticsUpdateTime = 0;
 
@@ -70,13 +69,20 @@ public final class ConnectionPoolMonitor {
   public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
     this.username = requireNonNull(connectionPool).user().username();
     this.connectionPool = connectionPool;
-    this.pooledConnectionTimeoutValue = Value.value(connectionPool::getIdleConnectionTimeout, connectionPool::setIdleConnectionTimeout, 0);
-    this.pooledCleanupIntervalValue = Value.value(connectionPool::getCleanupInterval, connectionPool::setCleanupInterval, 0);
-    this.minimumPoolSizeValue = Value.value(connectionPool::getMinimumPoolSize, connectionPool::setMinimumPoolSize, 0);
-    this.maximumPoolSizeValue = Value.value(connectionPool::getMaximumPoolSize, connectionPool::setMaximumPoolSize, 0);
-    this.maximumCheckoutTimeValue = Value.value(connectionPool::getMaximumCheckOutTime, connectionPool::setMaximumCheckOutTime, 0);
-    this.collectSnapshotStatisticsState = State.state(connectionPool::isCollectSnapshotStatistics, connectionPool::setCollectSnapshotStatistics);
-    this.collectCheckOutTimesState = State.state(connectionPool::isCollectCheckOutTimes, connectionPool::setCollectCheckOutTimes);
+    this.pooledConnectionTimeoutValue = Value.value(connectionPool.getIdleConnectionTimeout(), 0);
+    this.pooledConnectionTimeoutValue.addDataListener(connectionPool::setIdleConnectionTimeout);
+    this.pooledCleanupIntervalValue = Value.value(connectionPool.getCleanupInterval(), 0);
+    this.pooledCleanupIntervalValue.addDataListener(connectionPool::setCleanupInterval);
+    this.minimumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize(), 0);
+    this.minimumPoolSizeValue.addDataListener(connectionPool::setMinimumPoolSize);
+    this.maximumPoolSizeValue = Value.value(connectionPool.getMaximumPoolSize(), 0);
+    this.maximumPoolSizeValue.addDataListener(connectionPool::setMaximumPoolSize);
+    this.maximumCheckoutTimeValue = Value.value(connectionPool.getMaximumCheckOutTime(), 0);
+    this.maximumCheckoutTimeValue.addDataListener(connectionPool::setMaximumCheckOutTime);
+    this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
+    this.collectSnapshotStatisticsState.addDataListener(connectionPool::setCollectSnapshotStatistics);
+    this.collectCheckOutTimesState = State.state(connectionPool.isCollectCheckOutTimes());
+    this.collectCheckOutTimesState.addDataListener(connectionPool::setCollectCheckOutTimes);
 
     this.statisticsCollection.addSeries(inPoolSeries);
     this.statisticsCollection.addSeries(inUseSeries);
@@ -89,7 +95,6 @@ public final class ConnectionPoolMonitor {
     this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     bindEvents();
   }
 
@@ -230,7 +235,7 @@ public final class ConnectionPoolMonitor {
    * @return the value controlling the update interval
    */
   public Value<Integer> updateInterval() {
-    return updateIntervalValue;
+    return updateScheduler.interval();
   }
 
   /**

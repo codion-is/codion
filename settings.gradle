@@ -121,9 +121,6 @@ project(":codion-swing-framework-ui-test").projectDir = file("swing/framework-ui
 include "codion-swing-framework-server-monitor"
 project(":codion-swing-framework-server-monitor").projectDir = file("swing/framework-server-monitor")
 
-include "codion-plugin-credentials-server"
-project(":codion-plugin-credentials-server").projectDir = file("plugins/credentials-server")
-
 include "codion-plugin-hikari-pool"
 project(":codion-plugin-hikari-pool").projectDir = file("plugins/hikari-pool")
 

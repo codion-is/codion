@@ -57,9 +57,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
       super(entityType, connectionProvider);
     }
     @Override
-    public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+    public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
     @Override
-    public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+    public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
     @Override
     public StateObserver refreshing() {
       return null;

@@ -143,14 +143,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return the maintenance check interval in ms
    */
   public final int getMaintenanceInterval() {
-    return connectionMaintenanceScheduler.getInterval();
+    return connectionMaintenanceScheduler.interval().get();
   }
 
   /**
    * @param maintenanceInterval the new maintenance interval in ms
    */
   public final void setMaintenanceInterval(int maintenanceInterval) {
-    connectionMaintenanceScheduler.setInterval(maintenanceInterval);
+    connectionMaintenanceScheduler.interval().set(maintenanceInterval);
   }
 
   @Override

@@ -41,7 +41,7 @@ public class TaskSchedulerTest {
 
   @Test
   void setIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1, TimeUnit.SECONDS).build().setInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1, TimeUnit.SECONDS).build().interval().set(-1));
   }
 
   @Test
@@ -60,7 +60,7 @@ public class TaskSchedulerTest {
     assertFalse(scheduler.isRunning());
     Thread.sleep(100);
     assertEquals(currentCount, counter.get());
-    scheduler.setInterval(2);//still stopped
+    scheduler.interval().set(2);//still stopped
     assertFalse(scheduler.isRunning());
     scheduler.start();
     assertTrue(scheduler.isRunning());

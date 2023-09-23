@@ -7,7 +7,6 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -16,7 +15,6 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -366,30 +364,5 @@ public final class InputControls {
 
     personPanelValue.link(personValue);
     // end::customTextFields[]
-  }
-
-  static void customTextFieldHorizontalAlignment() {
-    // tag::customTextFieldHorizontalAlignment[]
-    ComponentValue<Integer, NumberField<Integer>> fieldValue =
-            Components.integerField()
-                    .buildValue();
-
-    NumberField<Integer> horizontalAlignmentField = fieldValue.component();
-
-    Value<Integer> horizontalAlignmentValue =
-            Value.propertyValue(horizontalAlignmentField, "horizontalAlignment",
-                    int.class, Utilities.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
-
-    fieldValue.link(horizontalAlignmentValue);
-
-    JPanel panel = new JPanel();
-    panel.add(horizontalAlignmentField);
-
-    fieldValue.addListener(panel::revalidate);
-
-    Dialogs.componentDialog(panel)
-            .title("test")
-            .show();
-    // end::customTextFieldHorizontalAlignment[]
   }
 }

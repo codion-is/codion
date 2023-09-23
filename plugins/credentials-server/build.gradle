@@ -1,6 +1,0 @@
-dependencies {
-    api project(":codion-common-rmi")
-    api project(":codion-common-model")
-
-    implementation(libs.slf4j.api)
-}

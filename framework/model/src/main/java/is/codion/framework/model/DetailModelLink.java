@@ -23,7 +23,7 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
   M detailModel();
 
   /**
-   * Controls the active status of this link. Active detail model handlers update and filter
+   * Controls the active status of this link. Active detail model links update and filter
    * the detail model according to the entity/entities selected in the master model.
    * @return the state controlling the active status of this detail model link
    */

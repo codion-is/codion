@@ -32,7 +32,6 @@ public final class DatabaseMonitor {
   private final XYSeries otherPerSecond = new XYSeries("Other per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
   private final TaskScheduler updateScheduler;
-  private final Value<Integer> updateIntervalValue;
 
   /**
    * Instantiates a new {@link DatabaseMonitor} for the given server
@@ -52,7 +51,6 @@ public final class DatabaseMonitor {
     this.updateScheduler = TaskScheduler.builder(this::doUpdateStatistics)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
   }
 
   /**
@@ -107,7 +105,7 @@ public final class DatabaseMonitor {
    * @return the value controlling the update interval
    */
   public Value<Integer> updateInterval() {
-    return updateIntervalValue;
+    return updateScheduler.interval();
   }
 
   private void doUpdateStatistics() {

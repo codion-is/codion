@@ -3,31 +3,12 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.event.Event;
-import is.codion.common.value.Value;
-
 import org.junit.jupiter.api.Test;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {
-
-  private boolean booleanValue;
-
-  public boolean isBooleanValue() {
-    return booleanValue;
-  }
-
-  public void setBooleanValue(boolean booleanValue) {
-    this.booleanValue = booleanValue;
-  }
-
-  private final Controls controls = Controls.builder().controls(
-          Control.builder(() -> {}).name("one"),
-          Control.builder(() -> {}).name("two"),
-          ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-                  .name("three")).build();
 
   @Test
   void test() {

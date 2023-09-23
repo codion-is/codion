@@ -217,7 +217,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   @Override
-  public final void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+  public final void add(ForeignKey foreignKey, Collection<Entity> entities) {
     requireNonNull(foreignKey);
     requireNonNull(entities);
     if (containsComboBoxModel(foreignKey)) {
@@ -229,7 +229,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   @Override
-  public final void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+  public final void remove(ForeignKey foreignKey, Collection<Entity> entities) {
     requireNonNull(foreignKey);
     requireNonNull(entities);
     if (containsComboBoxModel(foreignKey)) {

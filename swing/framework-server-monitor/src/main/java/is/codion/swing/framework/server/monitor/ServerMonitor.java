@@ -63,7 +63,6 @@ public final class ServerMonitor {
   private final User serverAdminUser;
 
   private final TaskScheduler updateScheduler;
-  private final Value<Integer> updateIntervalValue;
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -121,8 +120,10 @@ public final class ServerMonitor {
     this.registryPort = registryPort;
     this.serverAdminUser = requireNonNull(serverAdminUser);
     this.server = connectServer(serverInformation.serverName());
-    this.connectionLimitValue = Value.value(this::getConnectionLimit, this::setConnectionLimit, -1);
+    this.connectionLimitValue = Value.value(getConnectionLimit(), -1);
+    this.connectionLimitValue.addDataListener(this::setConnectionLimit);
     this.logLevelValue = Value.value(this.server.getLogLevel());
+    this.logLevelValue.addDataListener(this::setLogLevel);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     this.memoryUsageCollection.addSeries(maxMemorySeries);
     this.memoryUsageCollection.addSeries(allocatedMemorySeries);
@@ -138,11 +139,9 @@ public final class ServerMonitor {
     this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refreshDomainList();
     refreshReportList();
     refreshOperationList();
-    bindEvents();
   }
 
   /**
@@ -390,7 +389,7 @@ public final class ServerMonitor {
    * @return the value controlling the update interval
    */
   public Value<Integer> updateInterval() {
-    return updateIntervalValue;
+    return updateScheduler.interval();
   }
 
   /**
@@ -521,11 +520,6 @@ public final class ServerMonitor {
       }
       typeSeries.add(event.timestamp(), event.duration());
     }
-  }
-
-  private void bindEvents() {
-    connectionLimitValue.addDataListener(this::setConnectionLimit);
-    logLevelValue.addDataListener(this::setLogLevel);
   }
 
   private static final class ReadOnlyTableModel extends DefaultTableModel {

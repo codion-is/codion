@@ -9638,3 +9638,8 @@
   NullableToggleButtonModel.addStateListener()  and removeStateListener() renamed addListener() and removeListener()
   Utilities.linkToEnabledState() for actions now varargs based
   EntityEditPanel, EntityTablePanel, onException(), onValidationException(), onReferentialIntegrityException() and displayException() now protected
+  CredentialsProvider removed along with implementation
+  EntityEditModel.addForeignKeyValues(), removeForeignKeyValues() and replaceForeignKeyValues() renamed add, remove and replace respectively
+  Value.propertyValue() removed
+  TaskSchedular.get/setInterval() replaced with Value based interval()
+  Value, getter/setter based values removed

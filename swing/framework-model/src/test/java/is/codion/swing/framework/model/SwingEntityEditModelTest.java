@@ -88,14 +88,14 @@ public class SwingEntityEditModelTest {
   }
 
   @Test
-  void replaceForeignKeyValues() throws DatabaseException {
+  void replace() throws DatabaseException {
     Entity blake = employeeEditModel.connectionProvider().connection()
             .selectSingle(Employee.NAME.equalTo("BLAKE"));
     employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
     employeeEditModel.refreshComboBoxModels();
     assertNotSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
             .find(blake.primaryKey()).orElse(null), blake);
-    employeeEditModel.replaceForeignKeyValues(Employee.MGR_FK, singletonList(blake));
+    employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
     assertSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
             .find(blake.primaryKey()).orElse(null), blake);
   }

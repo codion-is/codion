@@ -3,12 +3,9 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventObserver;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -142,46 +139,5 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    */
   static <T> Value<T> value(T initialValue, T nullValue) {
     return new DefaultValue<>(initialValue, requireNonNull(nullValue));
-  }
-
-  /**
-   * Creates a new {@link Value} instance based on the given getter and setter.
-   * The setter may throw an unchecked exception in case of an invalid value.
-   * @param <T> the value type
-   * @param getter the getter
-   * @param setter the setter
-   * @return a new {@link Value} instance based on the given setter and getter
-   * @throws NullPointerException in case either getter or setter is null
-   */
-  static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter) {
-    return value(getter, setter, null);
-  }
-
-  /**
-   * Creates a {@link Value} based on the given getter and setter.
-   * The setter may throw an unchecked exception in case of an invalid value.
-   * @param <T> the value type
-   * @param getter the getter
-   * @param setter the setter
-   * @param nullValue the value to use instead of null
-   * @return a new {@link Value} instance based on the given setter and getter
-   * @throws NullPointerException in case either getter or setter is null
-   */
-  static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter, T nullValue) {
-    return new GetterSetterValue<>(getter, setter, nullValue);
-  }
-
-  /**
-   * Creates a new {@link Value} based on a class property
-   * @param owner the property owner
-   * @param propertyName the name of the property
-   * @param valueClass the value class
-   * @param valueChangeObserver an observer notified each time the value changes
-   * @param <T> the value type
-   * @return a {@link Value} for the given property
-   */
-  static <T> Value<T> propertyValue(Object owner, String propertyName, Class<T> valueClass,
-                                    EventObserver<T> valueChangeObserver) {
-    return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 }

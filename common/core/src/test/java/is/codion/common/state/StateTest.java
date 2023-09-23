@@ -299,14 +299,6 @@ public class StateTest {
   }
 
   @Test
-  void getterSetterState() {
-    State state = State.state(() -> true, value -> {});
-    assertTrue(state.get());
-    state.set(false);
-    assertTrue(state.get());
-  }
-
-  @Test
   void weakListeners() {
     State state = State.state();
     Runnable listener = () -> {};

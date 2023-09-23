@@ -70,7 +70,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   @Override
   public void onInsert(Collection<Entity> insertedEntities) {
     Collection<Entity> entities = ofReferencedType(insertedEntities);
-    detailModel().editModel().addForeignKeyValues(foreignKey, entities);
+    detailModel().editModel().add(foreignKey, entities);
     if (!entities.isEmpty()) {
       detailModel().editModel().put(foreignKey, entities.iterator().next());
     }
@@ -83,7 +83,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   @Override
   public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
     Collection<Entity> entities = ofReferencedType(updatedEntities.values());
-    detailModel().editModel().replaceForeignKeyValues(foreignKey, entities);
+    detailModel().editModel().replace(foreignKey, entities);
     if (detailModel().containsTableModel()) {
       detailModel().tableModel().replace(foreignKey, entities);
     }
@@ -91,7 +91,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   @Override
   public void onDelete(Collection<Entity> deletedEntities) {
-    detailModel().editModel().removeForeignKeyValues(foreignKey, ofReferencedType(deletedEntities));
+    detailModel().editModel().remove(foreignKey, ofReferencedType(deletedEntities));
   }
 
   private Collection<Entity> ofReferencedType(Collection<Entity> entities) {

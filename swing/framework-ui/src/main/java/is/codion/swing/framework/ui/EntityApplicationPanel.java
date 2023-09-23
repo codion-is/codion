@@ -10,8 +10,6 @@ import is.codion.common.event.Event;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.credentials.CredentialsException;
-import is.codion.common.model.credentials.CredentialsProvider;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
@@ -78,7 +76,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -841,38 +838,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
 
     return cancelForUnsavedData || exitNotConfirmed;
-  }
-
-  /**
-   * Looks up user credentials via a {@link CredentialsProvider} service using an authentication token
-   * found in the program arguments list. Useful for single sign on application launch.
-   * <pre>javaws -open authenticationToken:123-123-123 http://codion.is/demo/demo.jnlp</pre>
-   * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>
-   * @param args the program arguments
-   * @return the User credentials associated with the authentication token, null if no authentication token is found,
-   * the user credentials have expired or if no authentication server is running
-   */
-  protected static User getUser(String[] args) {
-    Optional<UUID> token = CredentialsProvider.authenticationToken(args);
-    try {
-      if (token.isPresent()) {
-        Optional<CredentialsProvider> optionalProvider = CredentialsProvider.instance();
-        if (optionalProvider.isPresent()) {
-          return optionalProvider.get().credentials(token.get()).orElse(null);
-        }
-      }
-
-      LOG.debug("No CredentialsProvider available");
-      return null;
-    }
-    catch (CredentialsException e) {
-      LOG.debug("CredentialsService not reachable", e);
-      return null;
-    }
-    catch (IllegalArgumentException e) {
-      LOG.debug("Invalid UUID authentication token");
-      return null;
-    }
   }
 
   private static Map<Object, State> createLogLevelStateMap() {
