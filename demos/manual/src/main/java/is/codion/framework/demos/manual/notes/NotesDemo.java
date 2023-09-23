@@ -204,8 +204,10 @@ public final class NotesDemo {
 
   public static final class NotesApplicationModel extends SwingEntityApplicationModel {
 
+    private static final Version VERSION = Version.version(1, 0);
+
     public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
-      super(connectionProvider);
+      super(connectionProvider, VERSION);
       NoteModel noteModel = new NoteModel(connectionProvider);
       addEntityModel(noteModel);
       // Refresh the table model to populate it
@@ -244,15 +246,17 @@ public final class NotesDemo {
       Database database = new H2DatabaseFactory()
               .createDatabase("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
 
-      // We create the EntityConnectionProvider instance manually
-      // so we can safely ignore the method parameters.
+      // Here we create the EntityConnectionProvider instance
+      // manually so we can safely ignore some method parameters
       return LocalEntityConnectionProvider.builder()
               // Create the schema
               .database(createSchema(database))
-              // Supply the domain model implementation
+              // Supply a domain model instance, if we used the domainType we'd
+              // need to register the domain model in the ServiceLoader in order for
+              // the framework to instantiate one for us
               .domain(new Notes())
-              // Connect with the H2Database super user
-              .user(User.user("sa"))
+              .clientVersion(clientVersion)
+              .user(user)
               .build();
     }
   }
@@ -267,12 +271,13 @@ public final class NotesDemo {
     EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
             .frameTitle("Notes")
             .frameSize(new Dimension(600, 500))
+            .applicationVersion(NotesApplicationModel.VERSION)
             // No need for a startup dialog since startup is very quick
             .displayStartupDialog(false)
             // Supply our connection provider factory from above
             .connectionProviderFactory(new NotesConnectionProviderFactory())
-            // User is hardcoded in the connection provider factory
-            .loginRequired(false)
+            // Automatically login with the H2Database super user
+            .automaticLoginUser(User.user("sa"))
             .defaultLookAndFeelClassName(FlatMaterialDarkerIJTheme.class.getName())
             // Runs on the EventDispatchThread
             .start();
