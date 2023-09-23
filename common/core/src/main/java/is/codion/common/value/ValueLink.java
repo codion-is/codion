@@ -14,8 +14,8 @@ final class ValueLink<T> {
   private final Value<T> linkedValue;
   private final Value<T> originalValue;
 
-  private final Runnable updateLinkedValueListener = new UpdateLinkedValueListener();
-  private final Runnable updateOriginalValueListener = new UpdateOriginalValueListener();
+  private final Runnable updateLinkedValue = new UpdateLinkedValue();
+  private final Runnable updateOriginalValue = new UpdateOriginalValue();
 
   private final LinkedValidator<T> linkedValidator;
   private final LinkedValidator<T> originalValidator;
@@ -44,15 +44,15 @@ final class ValueLink<T> {
     this.linkedValidator.excluded = originalValidator;
     this.originalValidator.excluded = linkedValidator;
     linkedValue.set(originalValue.get());
-    originalValue.addListener(updateLinkedValueListener);
-    linkedValue.addListener(updateOriginalValueListener);
+    originalValue.addListener(updateLinkedValue);
+    linkedValue.addListener(updateOriginalValue);
     originalValue.addValidator(linkedValidator);
     linkedValue.addValidator(originalValidator);
   }
 
   void unlink() {
-    linkedValue.removeListener(updateOriginalValueListener);
-    originalValue.removeListener(updateLinkedValueListener);
+    linkedValue.removeListener(updateOriginalValue);
+    originalValue.removeListener(updateLinkedValue);
     linkedValue.removeValidator(originalValidator);
     originalValue.removeValidator(linkedValidator);
   }
@@ -68,7 +68,7 @@ final class ValueLink<T> {
     linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
   }
 
-  private final class UpdateLinkedValueListener implements Runnable {
+  private final class UpdateLinkedValue implements Runnable {
 
     @Override
     public void run() {
@@ -82,7 +82,7 @@ final class ValueLink<T> {
           try {
             linkedValue.set(originalValue.get());
           }
-          catch (IllegalArgumentException e) {
+          catch (RuntimeException e) {
             originalValue.set(linkedValue.get());
             throw e;
           }
@@ -94,7 +94,7 @@ final class ValueLink<T> {
     }
   }
 
-  private final class UpdateOriginalValueListener implements Runnable {
+  private final class UpdateOriginalValue implements Runnable {
 
     @Override
     public void run() {
@@ -108,7 +108,7 @@ final class ValueLink<T> {
           try {
             originalValue.set(linkedValue.get());
           }
-          catch (IllegalArgumentException e) {
+          catch (RuntimeException e) {
             linkedValue.set(originalValue.get());
             throw e;
           }
