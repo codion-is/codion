@@ -157,8 +157,8 @@ public final class EntityDialogs {
     private final Attribute<T> attribute;
 
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
-    private Consumer<ValidationException> onValidationException = new DefaultOnValidationException();
-    private Consumer<Exception> onException = new DefaultOnException();
+    private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
+    private Consumer<Exception> onException = new DefaultExceptionHandler();
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -221,8 +221,9 @@ public final class EntityDialogs {
 
     private ComponentValue<T, ? extends JComponent> editSelectedComponentValue(Attribute<T> attribute, T initialValue) {
       if (componentFactory == null) {
-        return ((EntityComponentFactory<T, Attribute<T>, ?>) new EditEntityComponentFactory<T, Attribute<T>, JComponent>())
-                .createComponentValue(attribute, editModel, initialValue);
+        EditEntityComponentFactory<T, Attribute<T>, JComponent> entityComponentFactory = new EditEntityComponentFactory<>();
+
+        return entityComponentFactory.createComponentValue(attribute, editModel, initialValue);
       }
 
       return componentFactory.createComponentValue(attribute, editModel, initialValue);
@@ -234,7 +235,7 @@ public final class EntityDialogs {
 
         return true;
       }
-      catch (CancelException ignored) {}
+      catch (CancelException ignored) {/*ignored*/}
       catch (ValidationException e) {
         LOG.debug(e.getMessage(), e);
         onValidationException.accept(e);
@@ -247,22 +248,18 @@ public final class EntityDialogs {
       return false;
     }
 
-    private void displayException(Throwable exception) {
-      Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-      if (focusOwner == null) {
-        focusOwner = owner;
-      }
-      Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
-    }
-
-    private final class DefaultOnException implements Consumer<Exception> {
+    private final class DefaultExceptionHandler implements Consumer<Exception> {
       @Override
-      public void accept(Exception e) {
-        displayException(e);
+      public void accept(Exception exception) {
+        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+        if (focusOwner == null) {
+          focusOwner = owner;
+        }
+        Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
       }
     }
 
-    private final class DefaultOnValidationException implements Consumer<ValidationException> {
+    private final class DefaultValidationExceptionHandler implements Consumer<ValidationException> {
 
       @Override
       public void accept(ValidationException exception) {

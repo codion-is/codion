@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.function.Function.identity;
 
@@ -61,10 +60,6 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
   }
 
   private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(Collection<ColumnConditionModel<C, ?>> conditionModels) {
-    if (conditionModels == null) {
-      return emptyMap();
-    }
-
     return unmodifiableMap(conditionModels.stream()
             .collect(Collectors.toMap(ColumnConditionModel::columnIdentifier, identity())));
   }
