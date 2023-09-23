@@ -4,7 +4,6 @@
 package is.codion.common.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -28,7 +27,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   private final Event<T> changeEvent = Event.event();
   private final T nullValue;
-  private final boolean notifyOnSet;
+  private final boolean notifyValueChange;
   private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
   private final Map<Value<T>, ValueLink<T>> linkedValues = new LinkedHashMap<>(0);
   private final Consumer<T> originalValueListener = new OriginalValueListener();
@@ -50,11 +49,11 @@ public abstract class AbstractValue<T> implements Value<T> {
   /**
    * Creates an {@link AbstractValue} instance.
    * @param nullValue the value to use instead of null
-   * @param notifyOnSet specifies whether to automatically call {@link #notifyValueChange()} when the value is changed via {@link #set(Object)}
+   * @param notifyValueChange specifies whether to automatically call {@link #notifyValueChange()} when the value is changed via {@link #set(Object)}
    */
-  protected AbstractValue(T nullValue, boolean notifyOnSet) {
+  protected AbstractValue(T nullValue, boolean notifyValueChange) {
     this.nullValue = nullValue;
-    this.notifyOnSet = notifyOnSet;
+    this.notifyValueChange = notifyValueChange;
   }
 
   @Override
@@ -65,7 +64,7 @@ public abstract class AbstractValue<T> implements Value<T> {
         validator.validate(newValue);
       }
       setValue(newValue);
-      if (notifyOnSet) {
+      if (notifyValueChange) {
         notifyValueChange();
       }
     }
@@ -94,42 +93,42 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final void addListener(Runnable listener) {
-    changeObserver().addListener(listener);
+    changeEvent.addListener(listener);
   }
 
   @Override
   public final void removeListener(Runnable listener) {
-    changeObserver().removeListener(listener);
+    changeEvent.removeListener(listener);
   }
 
   @Override
   public final void addDataListener(Consumer<T> listener) {
-    changeObserver().addDataListener(listener);
+    changeEvent.addDataListener(listener);
   }
 
   @Override
   public final void removeDataListener(Consumer<T> listener) {
-    changeObserver().removeDataListener(listener);
+    changeEvent.removeDataListener(listener);
   }
 
   @Override
   public final void addWeakListener(Runnable listener) {
-    changeObserver().addWeakListener(listener);
+    changeEvent.addWeakListener(listener);
   }
 
   @Override
   public final void removeWeakListener(Runnable listener) {
-    changeObserver().removeWeakListener(listener);
+    changeEvent.removeWeakListener(listener);
   }
 
   @Override
   public final void addWeakDataListener(Consumer<T> listener) {
-    changeObserver().addWeakDataListener(listener);
+    changeEvent.addWeakDataListener(listener);
   }
 
   @Override
   public final void removeWeakDataListener(Consumer<T> listener) {
-    changeObserver().removeWeakDataListener(listener);
+    changeEvent.removeWeakDataListener(listener);
   }
 
   @Override
@@ -149,14 +148,14 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void link(ValueObserver<T> originalValueObserver) {
-    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
-    originalValueObserver.addDataListener(originalValueListener);
+  public final void link(ValueObserver<T> originalValue) {
+    set(requireNonNull(originalValue, "originalValue").get());
+    originalValue.addDataListener(originalValueListener);
   }
 
   @Override
-  public final void unlink(ValueObserver<T> originalValueObserver) {
-    requireNonNull(originalValueObserver).removeDataListener(originalValueListener);
+  public final void unlink(ValueObserver<T> originalValue) {
+    requireNonNull(originalValue).removeDataListener(originalValueListener);
   }
 
   @Override
@@ -185,17 +184,6 @@ public abstract class AbstractValue<T> implements Value<T> {
    * @param value the value
    */
   protected abstract void setValue(T value);
-
-  /**
-   * By default this method returns the internal change event observer, which is
-   * triggered internally or by calling {@link #notifyValueChange()}. If this method is overridden
-   * and a custom change observer is provided, {@link #notifyValueChange()} is no longer applicable.
-   * May not return null.
-   * @return the change observer to use when adding listeners to this value, never null.
-   */
-  protected EventObserver<T> changeObserver() {
-    return changeEvent.observer();
-  }
 
   /**
    * Triggers the change event for this value, using the current value, indicating that
