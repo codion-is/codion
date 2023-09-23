@@ -15,8 +15,5 @@ module is.codion.common.model {
   requires transitive is.codion.common.core;
 
   exports is.codion.common.model;
-  exports is.codion.common.model.credentials;
   exports is.codion.common.model.table;
-
-  uses is.codion.common.model.credentials.CredentialsProvider;
 }
