@@ -60,16 +60,16 @@ public interface Icons {
 
   /**
    * Adds a listener to the {@link #ICON_COLOR} property value,
-   * dynamically changing color of the icons in this instance.
+   * dynamically changing the color of the icons in this instance.
    * @return this icons instance
    */
-  Icons addIconColorListener();
+  Icons enableIconColorListener();
 
   /**
-   * Removes the dynamic color change listener
+   * Disables the dynamic color change listener
    * @return this icons instance
    */
-  Icons removeIconColorListener();
+  Icons disableIconColorListener();
 
   /**
    * @return a new {@link Icons} instance
