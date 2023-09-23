@@ -42,7 +42,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -116,7 +116,7 @@ public final class CalendarPanel extends JPanel {
     dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
     dayGridPanel = new JPanel(gridLayout(6, DAYS_IN_WEEK));
     formattedDateLabel = new JLabel("", SwingConstants.CENTER);
-    formattedDateLabel.setBorder(createEmptyBorder());
+    formattedDateLabel.setBorder(emptyBorder());
     initializeUI();
     updateFormattedDate();
     bindEvents();
@@ -309,7 +309,7 @@ public final class CalendarPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(borderLayout());
-    setBorder(createEmptyBorder());
+    setBorder(emptyBorder());
     add(createNorthPanel(), BorderLayout.NORTH);
     add(createDayPanel(), BorderLayout.CENTER);
     addKeyEvents();
@@ -588,7 +588,7 @@ public final class CalendarPanel extends JPanel {
   private static JLabel createDayLabel(DayOfWeek dayOfWeek) {
     return label(dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
             .horizontalAlignment(SwingConstants.CENTER)
-            .border(createEmptyBorder())
+            .border(emptyBorder())
             .build();
   }
 

@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -58,7 +58,7 @@ public final class ApplicationPanel extends JPanel {
   public ApplicationPanel(ApplicationModel model) {
     super(borderLayout());
 
-    setBorder(createEmptyBorder());
+    setBorder(emptyBorder());
 
     JPanel settingsPanel = new JPanel(borderLayout());
 

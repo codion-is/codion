@@ -1278,7 +1278,7 @@ public class EntityTablePanel extends JPanel {
 
   private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) tableCellEditorComponentFactories.computeIfAbsent(attribute, a ->
-            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
+            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).componentValue(attribute, tableModel.editModel(), initialValue);
   }
 
   private JToolBar createRefreshButtonToolBar() {

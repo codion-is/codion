@@ -231,6 +231,32 @@ public class ValueTest {
   }
 
   @Test
+  void exceptionalValue() {
+    Value<Integer> value1 = new AbstractValue<Integer>() {
+      int intValue = 0;
+      @Override
+      protected void setValue(Integer value) {
+        if (value == -1) {
+          throw new RuntimeException();
+        }
+        intValue = value;
+      }
+      @Override
+      public Integer get() {
+        return intValue;
+      }
+    };
+
+    Value<Integer> value2 = Value.value();
+    value2.link(value1);
+    value2.set(1);
+    assertEquals(1, value1.get());
+
+    assertThrows(RuntimeException.class, () -> value2.set(-1));
+    assertEquals(1, value2.get());
+  }
+
+  @Test
   void valueAsDataListener() {
     Value<Integer> value = Value.value();
     Value<Integer> listeningValue = Value.value();

@@ -47,7 +47,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -919,7 +919,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = editPanelSupplier.get().initialize();
-      editPanel.setBorder(createEmptyBorder());
+      editPanel.setBorder(emptyBorder());
       editPanel.editModel().addAfterInsertListener(new PopulateInsertedEntities());
 
       return editPanel;
@@ -1045,7 +1045,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = editPanelSupplier.get().initialize();
-      editPanel.setBorder(createEmptyBorder());
+      editPanel.setBorder(emptyBorder());
       editPanel.editModel().addAfterUpdateListener(new PopulateUpdatedEntities());
 
       return editPanel;

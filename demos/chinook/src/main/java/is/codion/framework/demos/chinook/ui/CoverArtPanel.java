@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -74,7 +74,7 @@ final class CoverArtPanel extends JPanel {
 
   private JPanel createPanel() {
     return borderLayoutPanel()
-            .border(createEmptyBorder())
+            .border(emptyBorder())
             .preferredSize(EMBEDDED_SIZE)
             .centerComponent(imagePanel)
             .southComponent(buttonPanel(Controls.builder()

@@ -194,7 +194,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
 
   private final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements Column.ColumnDefiner<T> {
 
-    private static final String COLUMN = "Column";
+    private static final String COLUMN_CAPTION = "Column";
 
     private final Column<T> column;
 
@@ -247,7 +247,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      */
     public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn() {
       if (!type().isTemporal()) {
-        throw new IllegalArgumentException(COLUMN + " " + column + " is not a temporal column");
+        throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a temporal column");
       }
 
       return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(column, INSERT);
@@ -262,7 +262,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      */
     public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn() {
       if (!type().isTemporal()) {
-        throw new IllegalArgumentException(COLUMN + " " + column + " is not a temporal column");
+        throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a temporal column");
       }
 
       return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(column, UPDATE);
@@ -277,7 +277,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      */
     public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn() {
       if (!type().isString()) {
-        throw new IllegalArgumentException(COLUMN + " " + column + " is not a string column");
+        throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a string column");
       }
 
       return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) column, INSERT);
@@ -292,7 +292,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
      */
     public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn() {
       if (!type().isString()) {
-        throw new IllegalArgumentException(COLUMN + " " + column + " is not a string column");
+        throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a string column");
       }
 
       return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) column, UPDATE);

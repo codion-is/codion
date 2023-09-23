@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
@@ -47,7 +47,7 @@ public final class KeyBindingPanel extends JPanel {
             .preferredHeight(preferredTextFieldHeight())
             .preferredWidth(200)
             .build();
-    setBorder(createEmptyBorder());
+    setBorder(emptyBorder());
     add(flexibleGridLayoutPanel(1, 4)
             .add(label("Look & Feel")
                     .horizontalAlignment(SwingConstants.RIGHT)

@@ -331,7 +331,7 @@ public final class FilteredTable<R, C> extends JTable {
     ItemComboBoxModel<Integer> autoResizeComboBoxModel = createAutoResizeModeComboBoxModel();
     Dialogs.okCancelDialog(borderLayoutPanel()
                     .centerComponent(itemComboBox(autoResizeComboBoxModel).build())
-                    .border(Borders.createEmptyBorder())
+                    .border(Borders.emptyBorder())
                     .build())
             .owner(getParent())
             .title(MESSAGES.getString(AUTO_RESIZE))

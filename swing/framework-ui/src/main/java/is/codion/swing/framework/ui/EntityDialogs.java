@@ -157,8 +157,8 @@ public final class EntityDialogs {
     private final Attribute<T> attribute;
 
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
-    private Consumer<ValidationException> onValidationException = new DefaultOnValidationException();
-    private Consumer<Exception> onException = new DefaultOnException();
+    private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
+    private Consumer<Exception> onException = new DefaultExceptionHandler();
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -221,11 +221,12 @@ public final class EntityDialogs {
 
     private ComponentValue<T, ? extends JComponent> editSelectedComponentValue(Attribute<T> attribute, T initialValue) {
       if (componentFactory == null) {
-        return ((EntityComponentFactory<T, Attribute<T>, ?>) new EditEntityComponentFactory<T, Attribute<T>, JComponent>())
-                .createComponentValue(attribute, editModel, initialValue);
+        EditEntityComponentFactory<T, Attribute<T>, JComponent> entityComponentFactory = new EditEntityComponentFactory<>();
+
+        return entityComponentFactory.componentValue(attribute, editModel, initialValue);
       }
 
-      return componentFactory.createComponentValue(attribute, editModel, initialValue);
+      return componentFactory.componentValue(attribute, editModel, initialValue);
     }
 
     private boolean update(Collection<Entity> entities) {
@@ -234,7 +235,7 @@ public final class EntityDialogs {
 
         return true;
       }
-      catch (CancelException ignored) {}
+      catch (CancelException ignored) {/*ignored*/}
       catch (ValidationException e) {
         LOG.debug(e.getMessage(), e);
         onValidationException.accept(e);
@@ -247,22 +248,18 @@ public final class EntityDialogs {
       return false;
     }
 
-    private void displayException(Throwable exception) {
-      Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-      if (focusOwner == null) {
-        focusOwner = owner;
-      }
-      Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
-    }
-
-    private final class DefaultOnException implements Consumer<Exception> {
+    private final class DefaultExceptionHandler implements Consumer<Exception> {
       @Override
-      public void accept(Exception e) {
-        displayException(e);
+      public void accept(Exception exception) {
+        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+        if (focusOwner == null) {
+          focusOwner = owner;
+        }
+        Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
       }
     }
 
-    private final class DefaultOnValidationException implements Consumer<ValidationException> {
+    private final class DefaultValidationExceptionHandler implements Consumer<ValidationException> {
 
       @Override
       public void accept(ValidationException exception) {
@@ -304,7 +301,7 @@ public final class EntityDialogs {
   private static final class EditEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
 
     @Override
-    public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
+    public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
       if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.type().isString()) {
         //special handling for non-item based String attributes, text input panel instead of a text field
@@ -314,7 +311,7 @@ public final class EntityDialogs {
                 .buildValue();
       }
 
-      return super.createComponentValue(attribute, editModel, initialValue);
+      return super.componentValue(attribute, editModel, initialValue);
     }
   }
 

@@ -20,7 +20,7 @@ public final class Borders {
    * as the top, bottom, left and right values.
    * @return a new empty border
    */
-  public static Border createEmptyBorder() {
+  public static Border emptyBorder() {
     int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
 
     return BorderFactory.createEmptyBorder(gap, gap, gap, gap);

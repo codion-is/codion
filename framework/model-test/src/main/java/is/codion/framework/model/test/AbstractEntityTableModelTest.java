@@ -215,7 +215,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity tmpEnt = entities.builder(Detail.TYPE)
             .with(Detail.ID, 3L)
             .build();
-    assertEquals("c", testModel.find(tmpEnt.primaryKey()).orElse(null).get(Detail.STRING));
+    assertEquals("c", testModel.find(tmpEnt.primaryKey())
+            .orElseThrow(RuntimeException::new).get(Detail.STRING));
     List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(Detail.TYPE)

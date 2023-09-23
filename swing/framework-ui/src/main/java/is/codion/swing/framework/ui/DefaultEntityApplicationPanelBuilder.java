@@ -46,7 +46,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_TYPE;
 import static is.codion.swing.common.ui.Utilities.*;
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
@@ -296,7 +296,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
       Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
               .title(applicationName)
               .icon(applicationIcon)
-              .border(createEmptyBorder())
+              .border(emptyBorder())
               .westPanel(createStartupIconPanel())
               .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
               .onException(DefaultEntityApplicationPanelBuilder::displayExceptionAndExit)

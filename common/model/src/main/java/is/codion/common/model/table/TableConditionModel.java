@@ -6,6 +6,8 @@ package is.codion.common.model.table;
 import java.util.Collection;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * @param <C> the column identifier type
  * @see #tableConditionModel(Collection)
@@ -55,11 +57,11 @@ public interface TableConditionModel<C> {
 
   /**
    * Instantiates a new {@link TableConditionModel}
-   * @param conditionModel the condition model
+   * @param conditionModels the column condition models
    * @param <C> the column identifier type
    * @return a new {@link TableConditionModel}
    */
-  static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModel) {
-    return new DefaultTableConditionModel<>(conditionModel);
+  static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+    return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
   }
 }

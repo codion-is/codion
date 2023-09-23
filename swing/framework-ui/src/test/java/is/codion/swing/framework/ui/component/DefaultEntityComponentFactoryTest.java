@@ -31,11 +31,11 @@ public final class DefaultEntityComponentFactoryTest {
   @Test
   void test() {
     EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
-    foreignKeyComponentFactory.createComponentValue(Detail.MASTER_FK, editModel, null);
-    foreignKeyComponentFactory.createComponentValue(Detail.DETAIL_FK, editModel, null);
+    foreignKeyComponentFactory.componentValue(Detail.MASTER_FK, editModel, null);
+    foreignKeyComponentFactory.componentValue(Detail.DETAIL_FK, editModel, null);
 
     EntityComponentFactory<Integer, Attribute<Integer>, NumberField<Integer>> integerComponentFactory = new DefaultEntityComponentFactory<>();
-    integerComponentFactory.createComponentValue(Detail.INT, editModel, null);
-    integerComponentFactory.createComponentValue(Detail.INT_DERIVED, editModel, null);
+    integerComponentFactory.componentValue(Detail.INT, editModel, null);
+    integerComponentFactory.componentValue(Detail.INT_DERIVED, editModel, null);
   }
 }

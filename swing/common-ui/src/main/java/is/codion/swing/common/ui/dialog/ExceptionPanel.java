@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -111,7 +111,7 @@ final class ExceptionPanel extends JPanel {
 
   private JPanel createMainPanel() {
     return BorderLayoutPanelBuilder.builder()
-            .border(createEmptyBorder())
+            .border(emptyBorder())
             .northComponent(BorderLayoutPanelBuilder.builder()
                     .westComponent(LabelBuilder.builder(UIManager.getIcon("OptionPane.errorIcon")).build())
                     .centerComponent(ScrollPaneBuilder.builder(errorMessageArea)
