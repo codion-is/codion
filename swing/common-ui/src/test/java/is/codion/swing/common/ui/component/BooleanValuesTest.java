@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
@@ -22,27 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanValuesTest {
 
-  private boolean booleanValue;
-  private final Event<Boolean> booleanValueChangedEvent = Event.event();
-
-  public boolean isBooleanValue() {
-    return booleanValue;
-  }
-
-  public void setBooleanValue(boolean booleanValue) {
-    this.booleanValue = booleanValue;
-    booleanValueChangedEvent.accept(booleanValue);
-  }
-
   @Test
   void booleanToggleButtonCheckBox() {
-    JCheckBox checkBox = Components.checkBox(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent))
+    Value<Boolean> booleanValue = Value.value(false, false);
+    JCheckBox checkBox = Components.checkBox(booleanValue)
             .build();
     assertFalse(checkBox.isSelected());
-    setBooleanValue(true);
+    booleanValue.set(true);
     assertTrue(checkBox.isSelected());
     checkBox.doClick();
-    assertFalse(booleanValue);
+    assertFalse(booleanValue.get());
   }
 
   @Test

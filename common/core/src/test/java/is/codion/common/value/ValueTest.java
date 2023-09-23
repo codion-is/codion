@@ -3,11 +3,8 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.Event;
-
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -15,20 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTest {
 
-  private final Event<Integer> integerValueChange = Event.event();
-  private Integer integerValue = 42;
   private Double doubleValue = 42d;
-
-  public Integer getIntegerValue() {
-    return integerValue;
-  }
-
-  public void setIntegerValue(Integer integerValue) {
-    if (!Objects.equals(this.integerValue, integerValue)) {
-      this.integerValue = integerValue;
-      integerValueChange.accept(integerValue);
-    }
-  }
 
   private Double getDoubleValue() {
     return doubleValue;
@@ -39,10 +23,6 @@ public class ValueTest {
       throw new IllegalArgumentException("Non-null");
     }
     doubleValue = value;
-  }
-
-  public int getIntValue() {
-    return integerValue;
   }
 
   @Test
@@ -141,7 +121,7 @@ public class ValueTest {
   @Test
   void linkValues() {
     AtomicInteger modelValueEventCounter = new AtomicInteger();
-    Value<Integer> modelValue = Value.propertyValue(this, "integerValue", Integer.class, integerValueChange.observer());
+    Value<Integer> modelValue = Value.value(42);
     Value<Integer> uiValue = Value.value();
     uiValue.link(modelValue);
 
@@ -185,7 +165,7 @@ public class ValueTest {
   @Test
   void linkValuesReadOnly() {
     AtomicInteger modelValueEventCounter = new AtomicInteger();
-    Value<Integer> modelValue = Value.propertyValue(this, "intValue", int.class, integerValueChange.observer());
+    Value<Integer> modelValue = Value.value(42, 0);
     Value<Integer> uiValue = Value.value();
     assertFalse(modelValue.isNullable());
     uiValue.link(modelValue.observer());
@@ -201,7 +181,7 @@ public class ValueTest {
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(1, uiValueEventCounter.get());
 
-    setIntegerValue(22);
+    modelValue.set(22);
     assertEquals(Integer.valueOf(22), uiValue.get());
     assertEquals(1, modelValueEventCounter.get());
     assertEquals(2, uiValueEventCounter.get());
@@ -215,32 +195,6 @@ public class ValueTest {
     assertNull(uiValue.get());
     assertEquals(1, modelValueEventCounter.get());
     assertEquals(3, uiValueEventCounter.get());
-  }
-
-  @Test
-  void propertyValueNoGetter() {
-    assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, "nonexistent", Integer.class, integerValueChange.observer()));
-  }
-
-  @Test
-  void propertyValueNoOwner() {
-    assertThrows(NullPointerException.class, () -> Value.propertyValue(null, "integerValue", Integer.class, integerValueChange.observer()));
-  }
-
-  @Test
-  void propertyValueNoPropertyName() {
-    assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, null, Integer.class, integerValueChange.observer()));
-  }
-
-  @Test
-  void propertyValueNoValueClass() {
-    assertThrows(NullPointerException.class, () -> Value.propertyValue(this, "integerValue", null, integerValueChange.observer()));
-  }
-
-  @Test
-  void setReadOnlyPropertyValue() {
-    Value<Integer> modelValue = Value.propertyValue(this, "intValue", Integer.class, integerValueChange.observer());
-    assertThrows(IllegalStateException.class, () -> modelValue.set(43));
   }
 
   @Test

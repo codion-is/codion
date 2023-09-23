@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
@@ -20,9 +19,6 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectedValuesTest {
-
-  private String selectedItem;
-  private final Event<String> selectedItemChangedEvent = Event.event();
 
   @Test
   void selectedItemValueLinkValidate() {
@@ -45,16 +41,17 @@ public class SelectedValuesTest {
 
   @Test
   void selectedItemValueLink() {
+    Value<String> value = Value.value();
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
-                    Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent))
+                    value)
             .buildValue();
     JComboBox<String> box = componentValue.component();
 
-    assertNull(selectedItem);
-    setSelectedItem("s");
+    assertNull(value.get());
+    value.set("s");
     assertEquals("s", box.getSelectedItem());
     box.setSelectedItem("d");
-    assertEquals("d", selectedItem);
+    assertEquals("d", value.get());
   }
 
   @Test
@@ -93,14 +90,5 @@ public class SelectedValuesTest {
 
     value.set("two");
     assertEquals("two", box.getSelectedItem());
-  }
-
-  public String getSelectedItem() {
-    return selectedItem;
-  }
-
-  public void setSelectedItem(String selectedItem) {
-    this.selectedItem = selectedItem;
-    selectedItemChangedEvent.run();
   }
 }

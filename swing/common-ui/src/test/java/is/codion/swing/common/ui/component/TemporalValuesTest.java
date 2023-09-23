@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.event.Event;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -20,100 +19,62 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TemporalValuesTest {
 
-  private final Event<LocalTime> timeValueChangedEvent = Event.event();
-  private final Event<LocalDate> dateValueChangedEvent = Event.event();
-  private final Event<LocalDateTime> timestampValueChangedEvent = Event.event();
-
-  private LocalTime timeValue;
-  private LocalDate dateValue;
-  private LocalDateTime timestamp;
-
-  public LocalDateTime getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
-    timestampValueChangedEvent.run();
-  }
-
-  public LocalDate getDate() {
-    return dateValue;
-  }
-
-  public void setDate(LocalDate dateValue) {
-    this.dateValue = dateValue;
-    dateValueChangedEvent.run();
-  }
-
-  public LocalTime getTime() {
-    return timeValue;
-  }
-
-  public void setTime(LocalTime timeValue) {
-    this.timeValue = timeValue;
-    timeValueChangedEvent.run();
-  }
-
   @Test
   void testTime() {
     final String format = "HH:mm";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
-    Value<LocalTime> timePropertyValue = Value.propertyValue(this, "time",
-            LocalTime.class, timeValueChangedEvent);
+    Value<LocalTime> timePropertyValue = Value.value();
     TemporalField<LocalTime> textField = Components.localTimeField(format, timePropertyValue)
             .build();
     assertEquals("__:__", textField.getText());
 
     LocalTime date = LocalTime.parse("22:42", formatter);
 
-    setTime(date);
+    timePropertyValue.set(date);
     assertEquals("22:42", textField.getText());
     textField.setText("23:50");
-    assertEquals(LocalTime.parse("23:50", formatter), timeValue);
+    assertEquals(LocalTime.parse("23:50", formatter), timePropertyValue.get());
     textField.setText("");
-    assertNull(timeValue);
+    assertNull(timePropertyValue.get());
   }
 
   @Test
   void testDate() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
-            LocalDate.class, dateValueChangedEvent);
+    Value<LocalDate> datePropertyValue = Value.value();
     TemporalField<LocalDate> textField = Components.localDateField("dd.MM.yyyy", datePropertyValue)
             .build();
     assertEquals("__.__.____", textField.getText());
 
     LocalDate date = LocalDate.parse("03.10.1975", formatter);
 
-    setDate(date);
+    datePropertyValue.set(date);
     assertEquals("03.10.1975", textField.getText());
     textField.setText("03.03.1983");
-    assertEquals(LocalDate.parse("03.03.1983", formatter), dateValue);
+    assertEquals(LocalDate.parse("03.03.1983", formatter), datePropertyValue.get());
     textField.setText("");
-    assertNull(dateValue);
+    assertNull(datePropertyValue.get());
   }
 
   @Test
   void testTimestamp() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
-    Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",
-            LocalDateTime.class, timestampValueChangedEvent);
+    Value<LocalDateTime> timestampPropertyValue = Value.value();
     TemporalField<LocalDateTime> textField = Components.localDateTimeField("dd-MM-yy HH:mm", timestampPropertyValue)
             .build();
     assertEquals("__-__-__ __:__", textField.getText());
 
     LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);
 
-    setTimestamp(date);
+    timestampPropertyValue.set(date);
     assertEquals("03-10-75 10:34", textField.getText());
     textField.setText("03-03-83 11:42");
-    assertEquals(LocalDateTime.parse("03-03-83 11:42", formatter), this.timestamp);
+    assertEquals(LocalDateTime.parse("03-03-83 11:42", formatter), timestampPropertyValue.get());
     textField.setText("");
-    assertNull(this.timestamp);
+    assertNull(timestampPropertyValue.get());
   }
 
   @Test

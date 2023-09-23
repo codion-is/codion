@@ -3,8 +3,6 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventObserver;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -169,19 +167,5 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    */
   static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter, T nullValue) {
     return new GetterSetterValue<>(getter, setter, nullValue);
-  }
-
-  /**
-   * Creates a new {@link Value} based on a class property
-   * @param owner the property owner
-   * @param propertyName the name of the property
-   * @param valueClass the value class
-   * @param valueChangeObserver an observer notified each time the value changes
-   * @param <T> the value type
-   * @return a {@link Value} for the given property
-   */
-  static <T> Value<T> propertyValue(Object owner, String propertyName, Class<T> valueClass,
-                                    EventObserver<T> valueChangeObserver) {
-    return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 }

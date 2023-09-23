@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.event.Event;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -14,18 +13,6 @@ import javax.swing.JTextField;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StringValuesTest {
-
-  private String stringValue;
-  private final Event<String> stringValueChangedEvent = Event.event();
-
-  public String getStringValue() {
-    return stringValue;
-  }
-
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
-    stringValueChangedEvent.run();
-  }
 
   @Test
   void valueLink() {
@@ -54,38 +41,36 @@ public class StringValuesTest {
 
   @Test
   void nullInitialValue() {
-    stringValue = null;
-    Value<String> stringPropertyValue = Value.propertyValue(this, "stringValue",
-            String.class, stringValueChangedEvent);
+    Value<String> stringPropertyValue = Value.value();
     JTextField textField = Components.textField(stringPropertyValue)
             .build();
-    assertNull(this.stringValue);
+    assertNull(stringPropertyValue.get());
     assertEquals("", textField.getText());
-    setStringValue("hello");
+    stringPropertyValue.set("hello");
     assertEquals("hello", textField.getText());
     textField.setText("42");
-    assertEquals("42", this.stringValue);
+    assertEquals("42", stringPropertyValue.get());
     textField.setText("");
-    assertNull(this.stringValue);
+    assertNull(stringPropertyValue.get());
 
-    this.stringValue = "test";
-    JTextField textField2 = Components.textField(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent))
+    stringPropertyValue.set("test");
+    JTextField textField2 = Components.textField(stringPropertyValue)
             .build();
     assertEquals("test", textField2.getText());
   }
 
   @Test
   void nonNullInitialValue() {
-    stringValue = "name";
-    JTextField textField = Components.textField(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent))
+    Value<String> value = Value.value("name");
+    JTextField textField = Components.textField(value)
             .build();
     assertEquals("name", textField.getText());
     textField.setText("darri");
-    assertFalse(getStringValue().isEmpty());
-    assertEquals("darri", getStringValue());
+    assertFalse(value.get().isEmpty());
+    assertEquals("darri", value.get());
     textField.setText("");
-    assertNull(getStringValue());
-    setStringValue("Björn");
+    assertNull(value.get());
+    value.set("Björn");
     assertEquals("Björn", textField.getText());
   }
 
