@@ -10,7 +10,7 @@
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/domain/Petstore.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/domain/Petstore.java[lines=19..-1]
 ----
 
 [#_domain_unit_test]
@@ -18,7 +18,7 @@ include::{dir-source}/is/codion/framework/demos/petstore/domain/Petstore.java[li
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/petstore/domain/PetstoreTest.java[lines=4..-1]
+include::{dir-test-source}/is/codion/framework/demos/petstore/domain/PetstoreTest.java[lines=19..-1]
 ----
 
 == Model
@@ -27,44 +27,44 @@ include::{dir-test-source}/is/codion/framework/demos/petstore/domain/PetstoreTes
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/model/PetstoreAppModel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/model/PetstoreAppModel.java[lines=19..-1]
 ----
 
 == UI
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/AddressEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/AddressEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/CategoryEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/CategoryEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/ContactInfoEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/ContactInfoEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/ItemEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/ItemEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/ProductEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/ProductEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/TagItemEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/TagItemEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/TagEditPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/TagEditPanel.java[lines=19..-1]
 ----
 
 [#_main_application_panel]
@@ -72,7 +72,7 @@ include::{dir-source}/is/codion/framework/demos/petstore/ui/TagEditPanel.java[li
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=19..-1]
 ----
 
 [#_load_test]
@@ -80,5 +80,5 @@ include::{dir-source}/is/codion/framework/demos/petstore/ui/PetstoreAppPanel.jav
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petstore/testing/PetstoreLoadTest.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petstore/testing/PetstoreLoadTest.java[lines=19..-1]
 ----

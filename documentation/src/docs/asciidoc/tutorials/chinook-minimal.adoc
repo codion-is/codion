@@ -7,5 +7,5 @@ Below you'll find a full (albeit simple) CRUD client for two tables, chinook.art
 
 [source,java,linenums]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientTutorial.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientTutorial.java[lines=19..-1]
 ----

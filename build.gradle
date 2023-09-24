@@ -165,7 +165,11 @@ configure(subprojects) {
     apply plugin: "com.diffplug.spotless"
     spotless {
         java {
-            licenseHeader("/*\n" + " * Copyright (c) \$YEAR, Björn Darri Sigurðsson. All Rights Reserved.\n" + " */").yearSeparator(" - ")
+            licenseHeaderFile("${rootDir}/documentation/src/misc/license_header").yearSeparator(' - ')
+        }
+        format 'javaMisc', {
+            target 'src/**/package-info.java', 'src/**/module-info.java'
+            licenseHeaderFile("${rootDir}/documentation/src/misc/license_header", '\\/\\*\\*').yearSeparator(' - ')
         }
     }
 }

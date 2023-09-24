@@ -109,7 +109,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitect
 ====
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitecture.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/tutorial/ClientArchitecture.java[lines=19..-1]
 ----
 ====
 
