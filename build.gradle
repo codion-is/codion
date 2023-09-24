@@ -181,7 +181,7 @@ tasks.register("tagRelease") {
         def tagName = "v" + project.version + "-jdk8"
         exec { commandLine "git", "push" }
         exec { commandLine 'git', 'tag', '-a', tagName, '-m', "\"" + tagName + " release\"" }
-        exec { commandLine "git", "push", "origin", tagName }
+        exec { commandLine "git", "push", "dev", tagName }
     }
 }
 
