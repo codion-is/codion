@@ -9648,3 +9648,4 @@
   EntityComponentFactory createComponentValue() renamed componentValue()
   Icons.add/removeIconColorListener() renamed enable/disableIconColorListener() respectively
   AbstractValue.changeObserver() removed
+0.17.17
