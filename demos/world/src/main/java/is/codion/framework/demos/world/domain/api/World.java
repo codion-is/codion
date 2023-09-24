@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.framework.demos.world.domain.api;
 
 import is.codion.common.db.operation.FunctionType;

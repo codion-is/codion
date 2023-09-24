@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.framework.demos.manual.world.domain;
 
 import is.codion.framework.domain.DomainType;

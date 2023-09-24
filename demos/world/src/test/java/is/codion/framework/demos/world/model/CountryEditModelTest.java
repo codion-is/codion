@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
