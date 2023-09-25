@@ -25,5 +25,5 @@ The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/Fil
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/swing/common/ui/component/table/FilteredTableDemo.java[tags=filteredTable]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilteredTableDemo.java[tags=filteredTable]
 ----

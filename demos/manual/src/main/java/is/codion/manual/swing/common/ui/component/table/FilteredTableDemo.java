@@ -1,12 +1,13 @@
-package is.codion.swing.common.ui.component.table;
+package is.codion.manual.swing.common.ui.component.table;
 
+import is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModelDemo.TableRow;
+import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JTable;
 
-import static is.codion.swing.common.model.component.table.FilteredTableModelDemo.createFilteredTableModel;
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.createFilteredTableModel;
 
 final class FilteredTableDemo {
 

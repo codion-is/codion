@@ -1,14 +1,18 @@
-package is.codion.swing.common.model.component.table;
+package is.codion.manual.swing.common.model.component.table;
 
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN_INDEX;
-import static is.codion.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN_INDEX;
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.INTEGER_COLUMN_INDEX;
+import static is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow.STRING_COLUMN_INDEX;
 import static java.util.Arrays.asList;
 
 public final class FilteredTableModelDemo {
