@@ -372,10 +372,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the select condition supplier ({@link #getConditionSupplier()}) as well as the
+   * the condition supplier ({@link #condition()}) as well as the
    * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
-   * @see #getConditionSupplier()
+   * @see #condition()
    * @see #getAttributes()
    * @see #getOrderBy()
    */
