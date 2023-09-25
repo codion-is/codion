@@ -40,5 +40,5 @@ The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/tab
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/swing/common/model/component/table/FilteredTableModelDemo.java[tags=filteredTableModel]
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilteredTableModelDemo.java[tags=filteredTableModel]
 ----
