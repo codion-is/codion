@@ -149,7 +149,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     }
 
     @Override
-    public DefaultBuilder serverNameSupplier(Supplier<String> serverNameSupplier) {
+    public DefaultBuilder serverName(Supplier<String> serverNameSupplier) {
       this.serverNameSupplier = requireNonNull(serverNameSupplier);
       return this;
     }

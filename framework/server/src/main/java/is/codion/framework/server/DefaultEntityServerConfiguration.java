@@ -166,7 +166,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
     DefaultBuilder(int serverPort, int registryPort) {
       serverConfigurationBuilder = ServerConfiguration.builder(serverPort, registryPort);
-      serverConfigurationBuilder.serverNameSupplier(() -> {
+      serverConfigurationBuilder.serverName(() -> {
         if (database == null) {
           throw new IllegalStateException("Database must be set before initializing server name");
         }
@@ -177,8 +177,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder serverNameSupplier(Supplier<String> serverNameSupplier) {
-      serverConfigurationBuilder.serverNameSupplier(serverNameSupplier);
+    public Builder serverName(Supplier<String> serverNameSupplier) {
+      serverConfigurationBuilder.serverName(serverNameSupplier);
       return this;
     }
 

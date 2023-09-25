@@ -9613,3 +9613,4 @@
   EntityComboBoxModel.get/setAdditionalConditionSupplier() replace wity Value based condition()
   AttributeDefinition.Builder.defaultValueSupplier() renamed defaultValue()
   EntityEditModel.setDefaultValueSupplier() renamed setDefaultValue()
+  ServerConfiguration.Builder.serverNameSupplier() renamed serverName()
