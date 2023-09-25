@@ -305,7 +305,7 @@ public interface AttributeDefinition<T> {
      * @param supplier the default value supplier
      * @return this builder instance
      */
-    B defaultValueSupplier(ValueSupplier<T> supplier);
+    B defaultValue(ValueSupplier<T> supplier);
 
     /**
      * Specifies whether this attribute should be hidden in table views

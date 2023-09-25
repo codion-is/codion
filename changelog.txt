@@ -9611,3 +9611,4 @@
 0.17.17
   EntitySearchModel.additionalConditionSupplier() renamed additionalCondition()
   EntityComboBoxModel.get/setAdditionalConditionSupplier() replace wity Value based condition()
+  AttributeDefinition.Builder.defaultValueSupplier() renamed defaultValue()

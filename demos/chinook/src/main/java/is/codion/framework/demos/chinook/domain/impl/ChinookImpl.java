@@ -321,7 +321,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             Invoice.DATE.define()
                     .column()
                     .nullable(false)
-                    .defaultValueSupplier(Invoice.DATE_DEFAULT_VALUE)
+                    .defaultValue(Invoice.DATE_DEFAULT_VALUE)
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDot()
                             .yearFourDigits()
