@@ -36,4 +36,9 @@ FilteredTableModel --o FilteredTableSortModel
 FilteredTableModel --o FilteredTableSearchModel
 -------------------------------------------
 
-The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilteredTableModel.html[FilteredTableModel] is a table model implementation central to the framework.
+The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilteredTableModel.html[FilteredTableModel] is a table model central to the framework.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/swing/common/model/component/table/FilteredTableModelDemo.java[tags=filteredTableModel]
+----
