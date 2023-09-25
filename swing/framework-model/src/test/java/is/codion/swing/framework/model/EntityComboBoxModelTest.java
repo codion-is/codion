@@ -277,13 +277,13 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_3_TYPE));
+    comboBoxModel.condition().set(() -> Condition.customCondition(Employee.CONDITION_3_TYPE));
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
     assertEquals(2, refreshed.get());
-    comboBoxModel.setConditionSupplier(null);
+    comboBoxModel.condition().set(null);
     comboBoxModel.forceRefresh();
     assertEquals(16, comboBoxModel.getSize());
     assertEquals(3, refreshed.get());
