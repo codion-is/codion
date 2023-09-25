@@ -171,7 +171,7 @@ public interface ServerConfiguration {
 
   /**
    * @return the server name
-   * @see Builder#serverNameSupplier(Supplier)
+   * @see Builder#serverName(Supplier)
    */
   String serverName();
 
@@ -241,7 +241,7 @@ public interface ServerConfiguration {
      * @param serverNameSupplier the server name supplier
      * @return this builder instance
      */
-    B serverNameSupplier(Supplier<String> serverNameSupplier);
+    B serverName(Supplier<String> serverNameSupplier);
 
     /**
      * @param serverName the server name

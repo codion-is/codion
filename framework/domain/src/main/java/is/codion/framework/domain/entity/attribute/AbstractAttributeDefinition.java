@@ -515,11 +515,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B defaultValue(T defaultValue) {
-      return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
+      return defaultValue(new DefaultValueSupplier<>(defaultValue));
     }
 
     @Override
-    public B defaultValueSupplier(ValueSupplier<T> supplier) {
+    public B defaultValue(ValueSupplier<T> supplier) {
       if (supplier != null) {
         attribute.type().validateType(supplier.get());
       }

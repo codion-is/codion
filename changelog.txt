@@ -9650,3 +9650,10 @@
   AbstractValue.changeObserver() removed
 0.17.17
   GPL license applied
+  EntitySearchModel.additionalConditionSupplier() renamed additionalCondition()
+  EntityComboBoxModel.get/setAdditionalConditionSupplier() replace wity Value based condition()
+  AttributeDefinition.Builder.defaultValueSupplier() renamed defaultValue()
+  EntityEditModel.setDefaultValueSupplier() renamed setDefaultValue()
+  ServerConfiguration.Builder.serverNameSupplier() renamed serverName()
+  EntityApplicationPanel.Builder.loginPanelSouthComponentSupplier() renamed loginPanelSouthComponent()
+  EntitySearchModel.additionalCondition() renamed condition()

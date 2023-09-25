@@ -65,6 +65,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /** A map of keys used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
+  private final Value<Supplier<Condition>> conditionSupplier;
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -75,7 +76,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private boolean staticData = false;
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private Supplier<Condition> conditionSupplier;
   private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
   private boolean listenToEditEvents = true;
@@ -89,7 +89,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
     this.orderBy = this.entities.definition(entityType).orderBy();
-    this.conditionSupplier = new DefaultConditionSupplier();
+    DefaultConditionSupplier defaultConditionSupplier = new DefaultConditionSupplier();
+    this.conditionSupplier = Value.value(defaultConditionSupplier, defaultConditionSupplier);
     setSelectedItemTranslator(new SelectedItemTranslator());
     setItemSupplier(new ItemSupplier());
     setItemValidator(new ItemValidator());
@@ -241,18 +242,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Sets the condition provider to use when querying data, set to null to fetch all underlying entities.
-   * @param conditionSupplier the condition supplier
+   * Controls the condition supplier to use when querying data, set to null to fetch all underlying entities.
+   * @return a value controlling the condition supplier
    */
-  public final void setConditionSupplier(Supplier<Condition> conditionSupplier) {
-    this.conditionSupplier = conditionSupplier == null ? new DefaultConditionSupplier() : conditionSupplier;
-  }
-
-  /**
-   * @return the select condition supplier
-   */
-  public final Supplier<Condition> getConditionSupplier() {
-    return this.conditionSupplier;
+  public final Value<Supplier<Condition>> condition() {
+    return conditionSupplier;
   }
 
   /**
@@ -393,16 +387,16 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the select condition supplier ({@link #getConditionSupplier()}) as well as the
+   * the condition supplier ({@link #condition()}) as well as the
    * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
-   * @see #getConditionSupplier()
+   * @see #condition()
    * @see #getAttributes()
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
     try {
-      return connectionProvider.connection().select(where(conditionSupplier.get())
+      return connectionProvider.connection().select(where(conditionSupplier.get().get())
               .attributes(attributes)
               .orderBy(orderBy)
               .build());
@@ -472,7 +466,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Consumer<Entity> listener = selected -> {
-      setConditionSupplier(() -> foreignKey.equalTo(selected));
+      conditionSupplier.set(() -> foreignKey.equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);

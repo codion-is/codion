@@ -256,7 +256,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   }
 
   @Override
-  public EntityApplicationPanel.Builder<M, P> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier) {
+  public EntityApplicationPanel.Builder<M, P> loginPanelSouthComponent(Supplier<JComponent> loginPanelSouthComponentSupplier) {
     this.loginPanelSouthComponentSupplier = requireNonNull(loginPanelSouthComponentSupplier);
     return this;
   }

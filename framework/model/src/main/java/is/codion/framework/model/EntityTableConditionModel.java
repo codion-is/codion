@@ -61,11 +61,11 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   Condition condition();
 
   /**
-   * Controls the additional condition supplier.
+   * Controls the additional condition.
    * The condition supplier may return null in case of no condition.
-   * @return the state controlling the additional conndition
+   * @return the value controlling the additional conndition
    */
-  Value<Supplier<Condition>> additionalConditionSupplier();
+  Value<Supplier<Condition>> additionalCondition();
 
   /**
    * @return the value controlling the conjunction

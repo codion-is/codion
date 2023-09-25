@@ -1099,7 +1099,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
      * {@link BorderLayout#SOUTH} position of the default login panel
      * @return this Builder instance
      */
-    Builder<M, P> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier);
+    Builder<M, P> loginPanelSouthComponent(Supplier<JComponent> loginPanelSouthComponentSupplier);
 
     /**
      * Runs before the application is started, but after Look and Feel initialization.

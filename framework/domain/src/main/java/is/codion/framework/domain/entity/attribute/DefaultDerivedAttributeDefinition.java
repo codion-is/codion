@@ -75,7 +75,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
     }
 
     @Override
-    public B defaultValueSupplier(ValueSupplier<T> supplier) {
+    public B defaultValue(ValueSupplier<T> supplier) {
       throw new UnsupportedOperationException("A derived attribute can not have a default value");
     }
 

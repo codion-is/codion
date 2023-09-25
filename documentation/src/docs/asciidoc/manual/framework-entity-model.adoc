@@ -6,7 +6,7 @@
 
 The application model layer consists of the {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class and its associates; the {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel], which provides a table representation of entities and the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] which provides the CRUD operations.
 
-An *EntityEntityModel* always contains an *EntityEditModel* instance and usually contains a *EntityTableModel* as well.
+An *EntityModel* always contains an *EntityEditModel* instance and usually contains a *EntityTableModel* as well.
 
 [plantuml, entity-model-diagram, svg, align=center]
 -------------------------------------------

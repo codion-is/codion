@@ -24,7 +24,7 @@ Codion is a full-stack, Java rich client desktop CRUD application framework, bas
 ** Extensive {url-help}/client.html#_searching[searching] capabilities.
 * Clients use either a local JDBC connection or are served by a {url-technical}/technical.html#_server[featherweight RMI/HTTP server].
 * {url-manual}/manual.html#_reporting_with_jasperreports[Integrated] https://github.com/TIBCOSoftware/jasperreports[JasperReports] support.
-* Extremely rapid prototyping.
+* Rapid prototyping.
 
 == Motivation
 

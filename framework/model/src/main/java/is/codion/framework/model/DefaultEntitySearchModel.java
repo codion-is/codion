@@ -52,7 +52,7 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
-  private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
+  private static final Supplier<Condition> NULL_CONDITION = () -> null;
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
   private static final String DEFAULT_SEPARATOR = ",";
 
@@ -87,7 +87,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<String> multipleItemSeparator;
   private final State singleSelection = State.state(false);
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
-  private final Value<Supplier<Condition>> additionalConditionSupplier = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
   private final Value<Function<Entity, String>> toStringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
   private final State selectionEmpty = State.state(true);
 
@@ -183,8 +183,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Supplier<Condition>> additionalConditionSupplier() {
-    return additionalConditionSupplier;
+  public Value<Supplier<Condition>> condition() {
+    return condition;
   }
 
   @Override
@@ -250,7 +250,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * @return a select instance based on this search model including any additional search condition
    * @throws IllegalStateException in case no search columns are specified
-   * @see #setAdditionalConditionSupplier(Supplier)
    */
   private Select select() {
     if (searchColumns.isEmpty()) {
@@ -273,7 +272,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       }
     }
     Condition conditionCombination = or(conditions);
-    Condition additionalCondition = additionalConditionSupplier.get().get();
+    Condition additionalCondition = condition.get().get();
     Select.Builder selectBuilder = additionalCondition == null ?
             Select.where(conditionCombination) :
             Select.where(and(additionalCondition, conditionCombination));
