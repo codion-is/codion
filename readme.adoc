@@ -4,7 +4,7 @@
 :url-manual: https://codion.is/doc/{version}/manual
 :url-technical: https://codion.is/doc/{version}/technical
 
-image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
+image::documentation/src/docs/asciidoc/images/codion-logo-gray.png[Codion logo,350]
 
 image:https://github.com/codion-is/codion/workflows/Java%20CI/badge.svg[CI]
 image:https://img.shields.io/badge/License-GNU%20GPL-blue[link="https://www.gnu.org/licenses/gpl-3.0.en.html"]
