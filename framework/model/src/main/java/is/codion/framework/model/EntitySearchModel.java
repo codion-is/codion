@@ -99,12 +99,12 @@ public interface EntitySearchModel {
   List<Entity> performQuery();
 
   /**
-   * Sets the additional search condition provider to use when performing the next search.
+   * Sets the additional search condition supplier to use when performing the next search.
    * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
    * @return the Value controlling the additional condition supplier
    */
-  Value<Supplier<Condition>> additionalConditionSupplier();
+  Value<Supplier<Condition>> additionalCondition();
 
   /**
    * @return the Value controlling the function providing the {@code toString()} implementation

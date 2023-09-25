@@ -168,7 +168,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Supplier<Condition>> additionalConditionSupplier() {
+  public Value<Supplier<Condition>> additionalCondition() {
     return additionalConditionSupplier;
   }
 
@@ -235,7 +235,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * @return a select instance based on this search model including any additional search condition
    * @throws IllegalStateException in case no search columns are specified
-   * @see #setAdditionalConditionSupplier(Supplier)
    */
   private Select select() {
     if (searchColumns.isEmpty()) {

@@ -9609,3 +9609,4 @@
   Icons.add/removeIconColorListener() renamed enable/disableIconColorListener() respectively
   AbstractValue.changeObserver() removed
 0.17.17
+  EntitySearchModel.additionalConditionSupplier() renamed additionalCondition()

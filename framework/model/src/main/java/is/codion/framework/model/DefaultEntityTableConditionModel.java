@@ -43,7 +43,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private final EntityConnectionProvider connectionProvider;
   private final TableConditionModel<C> conditionModel;
   private final Event<Condition> conditionChangedEvent = Event.event();
-  private final Value<Supplier<Condition>> additionalConditionSupplier = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Supplier<Condition>> additionalCondition = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
   private final Value<Conjunction> conjunction = Value.value(Conjunction.AND, Conjunction.AND);
 
   DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
@@ -78,7 +78,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
             .filter(model -> model.enabled().get())
             .map(DefaultEntityTableConditionModel::condition)
             .collect(Collectors.toCollection(ArrayList::new));
-    Condition additionalCondition = additionalConditionSupplier.get().get();
+    Condition additionalCondition = this.additionalCondition.get().get();
     if (additionalCondition != null) {
       conditions.add(additionalCondition);
     }
@@ -87,8 +87,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public Value<Supplier<Condition>> additionalConditionSupplier() {
-    return additionalConditionSupplier;
+  public Value<Supplier<Condition>> additionalCondition() {
+    return additionalCondition;
   }
 
   @Override
@@ -150,7 +150,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     Runnable listener = () -> conditionChangedEvent.accept(condition());
     conditionModel.conditionModels().values().forEach(columnConditionModel ->
             columnConditionModel.addChangeListener(listener));
-    additionalConditionSupplier.addListener(listener);
+    additionalCondition.addListener(listener);
     conjunction.addListener(listener);
   }
 
