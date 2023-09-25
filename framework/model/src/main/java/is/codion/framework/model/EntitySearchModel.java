@@ -104,7 +104,7 @@ public interface EntitySearchModel {
    * NOTE, this does not affect the currently selected value(s), if any.
    * @return the Value controlling the additional condition supplier
    */
-  Value<Supplier<Condition>> additionalCondition();
+  Value<Supplier<Condition>> condition();
 
   /**
    * @return the Value controlling the function providing the {@code toString()} implementation

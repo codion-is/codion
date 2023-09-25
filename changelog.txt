@@ -9615,3 +9615,4 @@
   EntityEditModel.setDefaultValueSupplier() renamed setDefaultValue()
   ServerConfiguration.Builder.serverNameSupplier() renamed serverName()
   EntityApplicationPanel.Builder.loginPanelSouthComponentSupplier() renamed loginPanelSouthComponent()
+  EntitySearchModel.additionalCondition() renamed condition()
