@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.joining;
  *        .text(", attribute3='")
  *        .value(attribute3)
  *        .text("' foreign key value=")
- *        .foreignKeyValue(fkAttribute, refAttribute);
+ *        .value(fkAttribute, refAttribute);
  *
  * System.out.println(builder.build().apply(entity));
  * </pre>
@@ -70,7 +70,7 @@ public final class StringFactory {
      * @param format the Format to use when appending the value
      * @return this {@link Builder} instance
      */
-    Builder formattedValue(Attribute<?> attribute, Format format);
+    Builder value(Attribute<?> attribute, Format format);
 
     /**
      * Adds the value mapped to the given attribute in the {@link Entity} instance mapped to the given foreign key
@@ -79,7 +79,7 @@ public final class StringFactory {
      * @param attribute the attribute in the referenced entity to use
      * @return this {@link Builder} instance
      */
-    Builder foreignKeyValue(ForeignKey foreignKey, Attribute<?> attribute);
+    Builder value(ForeignKey foreignKey, Attribute<?> attribute);
 
     /**
      * Adds the given static text to this {@link Builder}
@@ -211,20 +211,23 @@ public final class StringFactory {
 
     private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
 
+    private EntityType entityType;
+
     @Override
     public Builder value(Attribute<?> attribute) {
       valueProviders.add(new StringValueProvider(attribute));
+      validateEntityType(attribute);
       return this;
     }
 
     @Override
-    public Builder formattedValue(Attribute<?> attribute, Format format) {
+    public Builder value(Attribute<?> attribute, Format format) {
       valueProviders.add(new FormattedValueProvider(attribute, format));
       return this;
     }
 
     @Override
-    public Builder foreignKeyValue(ForeignKey foreignKey, Attribute<?> attribute) {
+    public Builder value(ForeignKey foreignKey, Attribute<?> attribute) {
       valueProviders.add(new ForeignKeyValueProvider(foreignKey, attribute));
       return this;
     }
@@ -238,6 +241,15 @@ public final class StringFactory {
     @Override
     public Function<Entity, String> build() {
       return new DefaultStringFactory(this);
+    }
+
+    private void validateEntityType(Attribute<?> attribute) {
+      if (entityType == null) {
+        entityType = attribute.entityType();
+      }
+      else if (!attribute.entityType().equals(entityType)) {
+        throw new IllegalArgumentException("entityType " + entityType + " expected, got: " + attribute.entityType());
+      }
     }
   }
 }
