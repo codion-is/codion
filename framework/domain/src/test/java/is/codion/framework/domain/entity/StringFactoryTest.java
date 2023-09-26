@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StringFactoryTest {
 
@@ -57,9 +58,9 @@ public class StringFactoryTest {
             .text(" (department: ")
             .value(Employee.DEPARTMENT_FK)
             .text(", location: ")
-            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION)
+            .value(Employee.DEPARTMENT_FK, Department.LOCATION)
             .text(", hiredate: ")
-            .formattedValue(Employee.HIREDATE, dateFormat.toFormat())
+            .value(Employee.HIREDATE, dateFormat.toFormat())
             .text(")")
             .build();
 
@@ -77,12 +78,19 @@ public class StringFactoryTest {
             .text(" (department: ")
             .value(Employee.DEPARTMENT_FK)
             .text(", location: ")
-            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION)
+            .value(Employee.DEPARTMENT_FK, Department.LOCATION)
             .text(", hiredate: ")
-            .formattedValue(Employee.HIREDATE, dateFormat.toFormat())
+            .value(Employee.HIREDATE, dateFormat.toFormat())
             .text(")")
             .build();
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.apply(employee));
+  }
+
+  @Test
+  void entityTypeMismatch() {
+    assertThrows(IllegalArgumentException.class, () -> StringFactory.builder()
+            .value(Department.NAME)
+            .value(Employee.HIREDATE));
   }
 }

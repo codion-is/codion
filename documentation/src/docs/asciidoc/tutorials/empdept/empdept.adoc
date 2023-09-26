@@ -51,7 +51,7 @@ In this section we add a constructor, calling the two methods adding the entity 
 include::{dir-source}/is/codion/framework/demos/empdept/domain/EmpDept.java[tags=constructor]
 ----
 
-Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] class, via the *definition* method, which takes an array of *Property.Builder* instances as parameter. For an overview of the *Property* class see <<{basedir}/manual/manual.adoc#_property, Manual#Property>>. The *EntityDefinition.Builder* class provides chained setters for configuring the entity, such as the primary key value source. Here we set the default order by, the so-called *stringFactory* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity, and we also set the *caption*. In this case we simply have the department string provider return the department name.
+Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] class, via the *definition* method, which takes an array of *AttributeDefinition.Builder* instances as parameter. For an overview of the *AttributeDefinition* class see <<{basedir}/manual/manual.adoc#_attributes, Manual#Attributes>>. The *EntityDefinition.Builder* class provides chained setters for configuring the entity, such as the primary key value source. Here we set the default order by, the so-called *stringFactory* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity, and we also set the *caption*. In this case we simply have the department string provider return the department name.
 
 [source,java]
 ----
@@ -94,9 +94,9 @@ We must provide a constructor with a single *EntityConnectionProvider* parameter
 include::{dir-source}/is/codion/framework/demos/empdept/model/EmployeeEditModel.java[tags=constructor]
 ----
 
-At some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
+At some point we are going to be editing the manager attribute of an employee which means we'll need a list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager attribute.
 
-NOTE: The foreign key (EmpDept.EMPLOYEE_MGR_FK) is used when referring to the manager property, very rarely do we have to worry about the underlying reference attribute (EmpDept.EMPLOYEE_MGR).
+NOTE: The foreign key (Employee.MGR_FK) is used when referring to the manager attribute, very rarely do we have to worry about the underlying reference attribute (Employee.MGR).
 
 We start by calling the super class method which creates an unfiltered {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/component/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so that it only displays employees with the job PRESIDENT or MANAGER.
 
