@@ -9617,3 +9617,4 @@
   EntityApplicationPanel.Builder.loginPanelSouthComponentSupplier() renamed loginPanelSouthComponent()
   EntitySearchModel.additionalCondition() renamed condition()
   StringFactory.Builder.formattedValue() and foreignKeyValue() renamed value(), now prevents mismatched entityTypes
+  AbstractValue.set() now sets the underlying value even if it's equal to the current value, but does not trigger a change event

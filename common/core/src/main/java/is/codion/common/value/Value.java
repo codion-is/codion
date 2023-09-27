@@ -27,7 +27,8 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
   void accept(T value);
 
   /**
-   * Sets the value
+   * Sets the value. Note that if the value is equal to the current value according to {@link java.util.Objects#equals}
+   * the underlying value is still set, but no change event is triggered.
    * @param value the value
    * @throws IllegalArgumentException in case the given value is invalid
    * @see #addValidator(Validator)
