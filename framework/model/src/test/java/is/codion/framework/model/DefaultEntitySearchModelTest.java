@@ -71,8 +71,6 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void theRest() {
-    searchModel.setDescription("description");
-    assertEquals("description", searchModel.getDescription());
     assertNotNull(searchModel.connectionProvider());
     assertTrue(searchModel.searchColumns().containsAll(searchColumns));
     assertNotNull(searchModel.wildcard().get());

@@ -47,14 +47,9 @@ public interface EntitySearchModel {
   ValueSet<Entity> selectedEntities();
 
   /**
-   * @return a string describing this search model, by default a comma separated list of search attribute names
+   * @return a string describing this search model, by default a comma separated list of search column names
    */
-  String getDescription();
-
-  /**
-   * @param description a string describing this search model
-   */
-  void setDescription(String description);
+  String description();
 
   /**
    * @return the columns used when performing a search

@@ -125,7 +125,7 @@ public final class EntitySearchField extends HintTextField {
     this.settingsPanel = new SettingsPanel(searchModel);
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
-    setToolTipText(searchModel.getDescription());
+    setToolTipText(searchModel.description());
     setComponentPopupMenu(createPopupMenu());
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());

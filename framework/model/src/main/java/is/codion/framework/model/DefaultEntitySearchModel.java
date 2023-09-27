@@ -73,8 +73,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
   private final Value<Function<Entity, String>> toStringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
   private final State selectionEmpty = State.state(true);
-
-  private String description;
+  private final String description;
 
   private DefaultEntitySearchModel(DefaultBuilder builder) {
     this.entityType = builder.entityType;
@@ -105,13 +104,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public String getDescription() {
+  public String description() {
     return description;
-  }
-
-  @Override
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   @Override
