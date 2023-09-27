@@ -3,7 +3,7 @@ plugins {
 }
 
 apply plugin: "java"
-apply plugin: "maven-publish"
+//apply plugin: "maven-publish"
 
 def documentationVersion = project.version.replace("-SNAPSHOT", "")
 
@@ -125,15 +125,15 @@ tasks.register("documentationZip", Zip) {
     from project.layout.buildDirectory.dir("${documentationDir}")
 }
 
-artifacts {
-    archives documentationZip
-}
+//artifacts {
+//    archives documentationZip
+//}
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId "is.codion.jdk8"
-            artifact documentationZip
-        }
-    }
-}
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            groupId "is.codion.jdk8"
+//            artifact documentationZip
+//        }
+//    }
+//}
