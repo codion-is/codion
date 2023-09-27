@@ -67,7 +67,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
 
   private final Value<String> searchString = Value.value("", "");
-  private final Value<String> multipleItemSeparator;
+  private final Value<String> separator;
   private final State singleSelection = State.state(false);
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
@@ -78,7 +78,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private DefaultEntitySearchModel(DefaultBuilder builder) {
     this.entityType = builder.entityType;
     this.connectionProvider = builder.connectionProvider;
-    this.multipleItemSeparator = Value.value(builder.multipleItemSeparator, DEFAULT_SEPARATOR);
+    this.separator = Value.value(builder.separator, DEFAULT_SEPARATOR);
     this.searchColumns = unmodifiableCollection(builder.searchColumns);
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
     this.toStringFunction.set(builder.toStringFunction);
@@ -159,8 +159,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<String> multipleItemSeparator() {
-    return multipleItemSeparator;
+  public Value<String> separator() {
+    return separator;
   }
 
   @Override
@@ -188,7 +188,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
     Collection<Condition> conditions = new ArrayList<>();
     String[] searchStrings = singleSelection.get() ?
-            new String[] {searchString.get()} : searchString.get().split(multipleItemSeparator.get());
+            new String[] {searchString.get()} : searchString.get().split(separator.get());
     for (Column<String> column : searchColumns) {
       SearchSettings searchSettings = columnSearchSettings.get(column);
       for (String rawSearchString : searchStrings) {
@@ -224,7 +224,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private void bindEventsInternal() {
     searchString.addListener(() ->
             searchStringModified.set(!searchStringRepresentSelectedEntities()));
-    multipleItemSeparator.addListener(this::resetSearchString);
+    separator.addListener(this::resetSearchString);
     selectedEntities.addListener(this::resetSearchString);
     selectedEntities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
   }
@@ -246,7 +246,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private String selectedEntitiesToString() {
     return selectedEntities.get().stream()
             .map(toStringFunction.get())
-            .collect(joining(multipleItemSeparator.get()));
+            .collect(joining(separator.get()));
   }
 
   private void validateType(Entity entity) {
@@ -302,7 +302,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private Function<Entity, String> toStringFunction = DEFAULT_TO_STRING;
     private String description;
     private boolean singleSelection = false;
-    private String multipleItemSeparator = DEFAULT_SEPARATOR;
+    private String separator = DEFAULT_SEPARATOR;
 
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);
@@ -339,8 +339,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     @Override
-    public Builder multipleItemSeparator(String multipleItemSeparator) {
-      this.multipleItemSeparator = requireNonNull(multipleItemSeparator);
+    public Builder separator(String separator) {
+      this.separator = requireNonNull(separator);
       return this;
     }
 

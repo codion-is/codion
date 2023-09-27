@@ -109,9 +109,9 @@ public interface EntitySearchModel {
   Value<String> searchString();
 
   /**
-   * @return the Value representing the multiple item separator setting
+   * @return the Value representing the text used to separate multiple entities
    */
-  Value<String> multipleItemSeparator();
+  Value<String> separator();
 
   /**
    * @return the State representing the single selection enabled setting
@@ -176,7 +176,7 @@ public interface EntitySearchModel {
      * @param multipleItemSeparator the text used to separate multiple selected items
      * @return this builder
      */
-    Builder multipleItemSeparator(String multipleItemSeparator);
+    Builder separator(String multipleItemSeparator);
 
     /**
      * @return a new {@link EntitySearchModel} based on this builder

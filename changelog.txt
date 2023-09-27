@@ -9621,3 +9621,4 @@
   ValueSet.set(Collection) added for convenience
   EntitySearchModel.get/setEntities() and get/setEntity() replaced with Value and ValueSet based selectedEntity() and selectedEntities(), resultSorter removed
   EntitySearchModel.setDescription() removed, getDescription() renamed description()
+  EntitySearchModel.multipleItemSeparator() renamed separator()

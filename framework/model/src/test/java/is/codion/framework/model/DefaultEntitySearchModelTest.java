@@ -120,7 +120,7 @@ public final class DefaultEntitySearchModelTest {
     assertEquals(searchModel.searchString().get(), "joh");
     searchModel.selectedEntities().set(result);
     assertFalse(searchModel.selectionEmpty().get());
-    assertEquals("John" + searchModel.multipleItemSeparator().get() + "johnson", searchModel.searchString().get());
+    assertEquals("John" + searchModel.separator().get() + "johnson", searchModel.searchString().get());
 
     searchModel.searchString().set("jo");
     result = searchModel.performQuery();
@@ -162,7 +162,7 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    searchModel.multipleItemSeparator().set(";");
+    searchModel.separator().set(";");
     searchModel.searchString().set("andy ; Andrew ");//spaces should be trimmed away
     result = searchModel.performQuery();
     assertEquals(2, result.size());
