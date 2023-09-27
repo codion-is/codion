@@ -40,13 +40,13 @@ public class SearchValueLinkTest {
                     model.foreignKeySearchModel(Employee.DEPARTMENT_FK)).buildValue();
     componentValue.link(model.value(Employee.DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.component().model();
-    assertTrue(searchModel.getEntities().isEmpty());
+    assertTrue(searchModel.selectedEntities().get().isEmpty());
     Entity department = model.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
     model.put(Employee.DEPARTMENT_FK, department);
-    assertEquals(searchModel.getEntities().size(), 1);
-    assertEquals(searchModel.getEntities().iterator().next(), department);
+    assertEquals(searchModel.selectedEntities().get().size(), 1);
+    assertEquals(searchModel.selectedEntities().get().iterator().next(), department);
     department = model.connectionProvider().connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
-    searchModel.setEntity(department);
+    searchModel.selectedEntity().set(department);
     assertEquals(model.get(Employee.DEPARTMENT_FK), department);
   }
 }

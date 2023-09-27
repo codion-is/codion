@@ -6,8 +6,6 @@ package is.codion.framework.model;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -49,14 +47,14 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
   }
 
   private void bindSearchModelEvents() {
-    entitySearchModel.addListener(new SelectedEntitiesListener());
+    entitySearchModel.selectedEntities().addDataListener(new SelectedEntitiesListener());
     equalValues().addDataListener(new EqualValuesListener());
   }
 
-  private final class SelectedEntitiesListener implements Consumer<List<Entity>> {
+  private final class SelectedEntitiesListener implements Consumer<Set<Entity>> {
 
     @Override
-    public void accept(List<Entity> selectedEntities) {
+    public void accept(Set<Entity> selectedEntities) {
       updatingModel = true;
       try {
         setEqualValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
@@ -73,7 +71,7 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
     @Override
     public void accept(Set<Entity> equalValues) {
       if (!updatingModel) {
-        entitySearchModel.setEntities(new ArrayList<>(equalValues));
+        entitySearchModel.selectedEntities().set(equalValues);
       }
     }
   }

@@ -8,6 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -16,22 +17,19 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Condition;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.attribute.Condition.and;
 import static is.codion.framework.domain.entity.attribute.Condition.or;
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -56,7 +54,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * The selected entities
    */
-  private final Value<List<Entity>> entities = Value.value(emptyList(), emptyList());
+  private final ValueSet<Entity> selectedEntities = ValueSet.valueSet();
 
   /**
    * The EntityConnectionProvider instance used by this EntitySearchModel
@@ -76,7 +74,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<Function<Entity, String>> toStringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
   private final State selectionEmpty = State.state(true);
 
-  private Comparator<Entity> resultSorter;
   private String description;
 
   private DefaultEntitySearchModel(DefaultBuilder builder) {
@@ -86,9 +83,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.searchColumns = unmodifiableCollection(builder.searchColumns);
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
     this.toStringFunction.set(builder.toStringFunction);
-    this.resultSorter = builder.resultSorter;
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection.set(builder.singleSelection);
+    this.selectedEntities.addValidator(new EntityValidator());
     bindEventsInternal();
   }
 
@@ -108,11 +105,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setResultSorter(Comparator<Entity> resultSorter) {
-    this.resultSorter = requireNonNull(resultSorter, "resultSorter");
-  }
-
-  @Override
   public String getDescription() {
     return description;
   }
@@ -123,38 +115,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setEntity(Entity entity) {
-    setEntities(entity != null ? singletonList(entity) : null);
+  public Value<Entity> selectedEntity() {
+    return selectedEntities.value();
   }
 
   @Override
-  public Optional<Entity> getEntity() {
-    return entities.get().isEmpty() ? Optional.empty() : Optional.of(entities.get().get(0));
-  }
-
-  @Override
-  public void setEntities(List<Entity> entities) {
-    if (nullOrEmpty(entities) && this.entities.get().isEmpty()) {
-      return;//no change
-    }
-    if (entities != null) {
-      if (entities.size() > 1 && singleSelection.get()) {
-        throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
-      }
-      entities.forEach(this::validateType);
-    }
-    //todo handle non-loaded entities, select from db?
-    this.entities.set(null);
-    if (entities != null) {
-      this.entities.set(unmodifiableList(entities));
-    }
-    resetSearchString();
-    selectionEmpty.set(this.entities.get().isEmpty());
-  }
-
-  @Override
-  public List<Entity> getEntities() {
-    return entities.get();
+  public ValueSet<Entity> selectedEntities() {
+    return selectedEntities;
   }
 
   @Override
@@ -185,12 +152,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> performQuery() {
     try {
-      List<Entity> result = connectionProvider.connection().select(select());
-      if (resultSorter != null) {
-        result.sort(resultSorter);
-      }
-
-      return result;
+      return connectionProvider.connection().select(select());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -210,16 +172,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public State singleSelection() {
     return singleSelection;
-  }
-
-  @Override
-  public void addListener(Consumer<List<Entity>> listener) {
-    entities.addDataListener(listener);
-  }
-
-  @Override
-  public void removeListener(Consumer<List<Entity>> listener) {
-    entities.removeDataListener(listener);
   }
 
   @Override
@@ -279,12 +231,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     searchString.addListener(() ->
             searchStringModified.set(!searchStringRepresentSelectedEntities()));
     multipleItemSeparator.addListener(this::resetSearchString);
-  } 
-  
+    selectedEntities.addListener(this::resetSearchString);
+    selectedEntities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
+  }
+
   private boolean searchStringRepresentSelectedEntities() {
     String selectedAsString = selectedEntitiesToString();
-    return (entities.get().isEmpty() && nullOrEmpty(searchString.get()))
-            || !entities.get().isEmpty() && selectedAsString.equals(searchString.get());
+    return (selectedEntities.get().isEmpty() && nullOrEmpty(searchString.get()))
+            || !selectedEntities.get().isEmpty() && selectedAsString.equals(searchString.get());
   }
 
   private String createDescription() {
@@ -296,7 +250,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String selectedEntitiesToString() {
-    return entities.get().stream()
+    return selectedEntities.get().stream()
             .map(toStringFunction.get())
             .collect(joining(multipleItemSeparator.get()));
   }
@@ -304,6 +258,19 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private void validateType(Entity entity) {
     if (!entity.entityType().equals(entityType)) {
       throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.entityType());
+    }
+  }
+
+  private final class EntityValidator implements Value.Validator<Set<Entity>> {
+
+    @Override
+    public void validate(Set<Entity> entities) throws IllegalArgumentException {
+      if (entities != null) {
+        if (entities.size() > 1 && singleSelection.get()) {
+          throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
+        }
+        entities.forEach(DefaultEntitySearchModel.this::validateType);
+      }
     }
   }
 
@@ -333,21 +300,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
   }
 
-  private static final class EntityComparator implements Comparator<Entity>, Serializable {
-    private static final long serialVersionUID = 1;
-    @Override
-    public int compare(Entity o1, Entity o2) {
-      return o1.compareTo(o2);
-    }
-  }
-
   static final class DefaultBuilder implements Builder {
 
     private final EntityType entityType;
     private final EntityConnectionProvider connectionProvider;
     private Collection<Column<String>> searchColumns;
     private Function<Entity, String> toStringFunction = DEFAULT_TO_STRING;
-    private Comparator<Entity> resultSorter = new EntityComparator();
     private String description;
     private boolean singleSelection = false;
     private String multipleItemSeparator = DEFAULT_SEPARATOR;
@@ -371,12 +329,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     @Override
     public Builder toStringFunction(Function<Entity, String> toStringFunction) {
       this.toStringFunction = requireNonNull(toStringFunction);
-      return this;
-    }
-
-    @Override
-    public Builder resultSorter(Comparator<Entity> resultSorter) {
-      this.resultSorter = resultSorter;
       return this;
     }
 
