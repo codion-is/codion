@@ -345,4 +345,31 @@ public class ValueTest {
     observer.removeWeakListener(listener);
     observer.removeWeakDataListener(dataListener);
   }
+
+  @Test
+  void setEqual() {
+    class Test {
+
+      final int value;
+      final String text;
+
+      Test(int value, String text) {
+        this.value = value;
+        this.text = text;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+        return obj instanceof Test && ((Test) obj).text.equals(text);
+      }
+    }
+    Test test1 = new Test(1, "Hello");
+    Test test2 = new Test(2, "Hello");
+    Value<Test> value = Value.value(test1);
+    value.addListener(() -> {
+      throw new RuntimeException("Change event should not have been triggered");
+    });
+    value.set(test2);
+    assertSame(test2, value.get());
+  }
 }

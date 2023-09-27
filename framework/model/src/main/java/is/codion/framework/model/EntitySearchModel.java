@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -29,11 +30,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -54,47 +52,24 @@ public interface EntitySearchModel {
   EntityConnectionProvider connectionProvider();
 
   /**
-   * @return the first selected entity or an empty Optional in case no entity is selected
+   * @return a Value controlling the selected entity
    */
-  Optional<Entity> getEntity();
+  Value<Entity> selectedEntity();
 
   /**
-   * @return an unmodifiable view of the selected entities
+   * @return a Value controlling the selected entities
    */
-  List<Entity> getEntities();
+  ValueSet<Entity> selectedEntities();
 
   /**
-   * Sets the given entity as the selected entity
-   * @param entity the entity to set as the selected entity
+   * @return a string describing this search model, by default a comma separated list of search column names
    */
-  void setEntity(Entity entity);
-
-  /**
-   * Sets the selected entities
-   * @param entities the entities to set as selected
-   * @throws IllegalArgumentException if this search model does not allow multiple selections and entities.size() is larger than 1
-   */
-  void setEntities(List<Entity> entities);
-
-  /**
-   * @return a string describing this search model, by default a comma separated list of search attribute names
-   */
-  String getDescription();
-
-  /**
-   * @param description a string describing this search model
-   */
-  void setDescription(String description);
+  String description();
 
   /**
    * @return the columns used when performing a search
    */
   Collection<Column<String>> searchColumns();
-
-  /**
-   * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
-   */
-  void setResultSorter(Comparator<Entity> resultSorter);
 
   /**
    * Resets the search string so that is represents the selected entities
@@ -122,23 +97,14 @@ public interface EntitySearchModel {
   Value<Supplier<Condition>> condition();
 
   /**
+   * Note that changing this value does not change the actual search string according
    * @return the Value controlling the function providing the {@code toString()} implementation
    * for the entities displayed by this model
    */
   Value<Function<Entity, String>> toStringFunction();
 
   /**
-   * @param listener a listener to be notified each time the entities are changed
-   */
-  void addListener(Consumer<List<Entity>> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeListener(Consumer<List<Entity>> listener);
-
-  /**
-   * @return a StateObserver indicating whether the search string represents the current entities
+   * @return a StateObserver indicating whether the search string represents the selected entities
    */
   StateObserver searchStringModified();
 
@@ -158,11 +124,12 @@ public interface EntitySearchModel {
   Value<String> searchString();
 
   /**
-   * @return the Value representing the multiple item separator setting
+   * @return the Value representing the text used to separate multiple entities
    */
-  Value<String> multipleItemSeparator();
+  Value<String> separator();
 
   /**
+   * Note that changing this state clears the selected entities.
    * @return the State representing the single selection enabled setting
    */
   State singleSelection();
@@ -208,12 +175,6 @@ public interface EntitySearchModel {
     Builder toStringFunction(Function<Entity, String> toStringFunction);
 
     /**
-     * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
-     * @return this builder
-     */
-    Builder resultSorter(Comparator<Entity> resultSorter);
-
-    /**
      * @param description the description
      * @return this builder
      */
@@ -231,7 +192,7 @@ public interface EntitySearchModel {
      * @param multipleItemSeparator the text used to separate multiple selected items
      * @return this builder
      */
-    Builder multipleItemSeparator(String multipleItemSeparator);
+    Builder separator(String multipleItemSeparator);
 
     /**
      * @return a new {@link EntitySearchModel} based on this builder

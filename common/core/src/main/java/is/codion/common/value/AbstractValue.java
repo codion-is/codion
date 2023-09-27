@@ -74,14 +74,13 @@ public abstract class AbstractValue<T> implements Value<T> {
   @Override
   public final void set(T value) {
     T newValue = value == null ? nullValue : value;
-    if (!Objects.equals(get(), newValue)) {
-      for (Validator<T> validator : validators) {
-        validator.validate(newValue);
-      }
-      setValue(newValue);
-      if (notifyValueChange) {
-        notifyValueChange();
-      }
+    for (Validator<T> validator : validators) {
+      validator.validate(newValue);
+    }
+    T previousValue = get();
+    setValue(newValue);
+    if (notifyValueChange && !Objects.equals(previousValue, newValue)) {
+      notifyValueChange();
     }
   }
 

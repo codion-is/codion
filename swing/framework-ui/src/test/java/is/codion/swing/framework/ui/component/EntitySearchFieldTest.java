@@ -30,7 +30,7 @@ import is.codion.swing.framework.ui.TestDomain.Department;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,12 +59,12 @@ public class EntitySearchFieldTest {
 
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 
-    searchModel.setEntity(sales);
+    searchModel.selectedEntity().set(sales);
     assertEquals(sales, value.get());
-    searchModel.setEntity(null);
+    searchModel.selectedEntity().set(null);
     assertNull(value.get());
 
-    ComponentValue<List<Entity>, EntitySearchField> multiSelectionValue = value.component().multiSelectionValue();
+    ComponentValue<Collection<Entity>, EntitySearchField> multiSelectionValue = value.component().multiSelectionValue();
     assertTrue(multiSelectionValue.get().isEmpty());
 
     ComponentValue<Entity, EntitySearchField> singleSelectionValue = value.component().singleSelectionValue();
@@ -72,14 +72,14 @@ public class EntitySearchFieldTest {
 
     Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("RESEARCH"));
 
-    searchModel.setEntities(Arrays.asList(sales, research));
+    searchModel.selectedEntities().set(Arrays.asList(sales, research));
 
     assertTrue(multiSelectionValue.get().containsAll(Arrays.asList(sales, research)));
     assertEquals(singleSelectionValue.get(), sales);
 
     singleSelectionValue.set(null);
 
-    assertTrue(searchModel.getEntities().isEmpty());
+    assertTrue(searchModel.selectedEntities().get().isEmpty());
     assertNull(singleSelectionValue.get());
   }
 }

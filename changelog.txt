@@ -9658,3 +9658,9 @@
   EntityApplicationPanel.Builder.loginPanelSouthComponentSupplier() renamed loginPanelSouthComponent()
   EntitySearchModel.additionalCondition() renamed condition()
   StringFactory.Builder.formattedValue() and foreignKeyValue() renamed value(), now prevents mismatched entityTypes
+  AbstractValue.set() now sets the underlying value even if it's equal to the current value, but does not trigger a change event
+  ValueSet.set(Collection) added for convenience
+  EntitySearchModel.get/setEntities() and get/setEntity() replaced with Value and ValueSet based selectedEntity() and selectedEntities(), resultSorter removed
+  EntitySearchModel.setDescription() removed, getDescription() renamed description()
+  EntitySearchModel.multipleItemSeparator() renamed separator()
+  DefaultEntitySearchModel, changing the singleSelection() state now clears the selection

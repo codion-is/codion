@@ -246,7 +246,7 @@ public class EntityComponents {
     ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeyDefinition(foreignKey);
 
     return EntitySearchField.builder(searchModel)
-            .toolTipText(foreignKeyDefinition.description() == null ? searchModel.getDescription() : foreignKeyDefinition.description());
+            .toolTipText(foreignKeyDefinition.description() == null ? searchModel.description() : foreignKeyDefinition.description());
   }
 
   /**
