@@ -3,6 +3,7 @@
  */
 package is.codion.common.value;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -17,6 +18,11 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   DefaultValueSet(Set<T> initialValues) {
     super(emptySet(), true);
     set(requireNonNull(initialValues, "initialValues"));
+  }
+
+  @Override
+  public void set(Collection<T> values) {
+    set(values == null ? null : new LinkedHashSet<>(values));
   }
 
   @Override

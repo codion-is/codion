@@ -3,6 +3,7 @@
  */
 package is.codion.common.value;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -12,6 +13,12 @@ import java.util.Set;
  * @param <T> the value type
  */
 public interface ValueSet<T> extends Value<Set<T>> {
+
+  /**
+   * Sets the values. Note that duplicates are quietly dropped.
+   * @param values the values to set
+   */
+  void set(Collection<T> values);
 
   /**
    * Adds a value to this set, returns true if the set did not contain the value before adding.
