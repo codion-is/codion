@@ -9623,3 +9623,4 @@
   EntitySearchModel.setDescription() removed, getDescription() renamed description()
   EntitySearchModel.multipleItemSeparator() renamed separator()
   DefaultEntitySearchModel, changing the singleSelection() state now clears the selection
+  DefaultLocalEntityConnection, static imports used for methods in Entity
