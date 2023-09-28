@@ -100,7 +100,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final Statistics statistics() {
-    return queryCounter.collectStatisticsAndResetCounter();
+    return queryCounter.collectAndResetStatistics();
   }
 
   @Override
@@ -360,32 +360,22 @@ public abstract class AbstractDatabase implements Database {
       }
     }
 
-    private Database.Statistics collectStatisticsAndResetCounter() {
-      long current = System.currentTimeMillis();
-      double seconds = (current - queriesPerSecondTime.get()) / THOUSAND;
-      int queriesPerSecond = 0;
-      int selectsPerSecond = 0;
-      int insertsPerSecond = 0;
-      int updatesPerSecond = 0;
-      int deletesPerSecond = 0;
-      int otherPerSecond = 0;
+    private Database.Statistics collectAndResetStatistics() {
+      long currentTime = System.currentTimeMillis();
+      double seconds = (currentTime - queriesPerSecondTime.getAndSet(currentTime)) / THOUSAND;
       if (seconds > 0) {
-        queriesPerSecond = (int) (queriesPerSecondCounter.get() / seconds);
-        selectsPerSecond = (int) (selectsPerSecondCounter.get() / seconds);
-        insertsPerSecond = (int) (insertsPerSecondCounter.get() / seconds);
-        deletesPerSecond = (int) (deletesPerSecondCounter.get() / seconds);
-        updatesPerSecond = (int) (updatesPerSecondCounter.get() / seconds);
-        otherPerSecond = (int) (otherPerSecondCounter.get() / seconds);
-        queriesPerSecondCounter.set(0);
-        selectsPerSecondCounter.set(0);
-        insertsPerSecondCounter.set(0);
-        deletesPerSecondCounter.set(0);
-        updatesPerSecondCounter.set(0);
-        otherPerSecondCounter.set(0);
-        queriesPerSecondTime.set(current);
+        int queriesPerSecond = (int) (queriesPerSecondCounter.getAndSet(0) / seconds);
+        int selectsPerSecond = (int) (selectsPerSecondCounter.getAndSet(0) / seconds);
+        int insertsPerSecond = (int) (insertsPerSecondCounter.getAndSet(0) / seconds);
+        int deletesPerSecond = (int) (deletesPerSecondCounter.getAndSet(0) / seconds);
+        int updatesPerSecond = (int) (updatesPerSecondCounter.getAndSet(0) / seconds);
+        int otherPerSecond = (int) (otherPerSecondCounter.getAndSet(0) / seconds);
+
+        return new DefaultDatabaseStatistics(currentTime, queriesPerSecond, selectsPerSecond,
+                insertsPerSecond, deletesPerSecond, updatesPerSecond, otherPerSecond);
       }
 
-      return new DefaultDatabaseStatistics(current, queriesPerSecond, selectsPerSecond, insertsPerSecond, deletesPerSecond, updatesPerSecond, otherPerSecond);
+      return new DefaultDatabaseStatistics();
     }
   }
 
@@ -404,16 +394,10 @@ public abstract class AbstractDatabase implements Database {
     private final int updatesPerSecond;
     private final int otherPerSecond;
 
-    /**
-     * Instantiates a new DatabaseStatistics object
-     * @param timestamp the timestamp
-     * @param queriesPerSecond the number of queries being run per second
-     * @param selectsPerSecond the number of select queries being run per second
-     * @param insertsPerSecond the number of insert queries being run per second
-     * @param deletesPerSecond the number of delete queries being run per second
-     * @param updatesPerSecond the number of update queries being run per second
-     * @param otherPerSecond the number of other queries being run per second
-     */
+    private DefaultDatabaseStatistics() {
+      this(0, 0, 0, 0, 0, 0, 0);
+    }
+
     private DefaultDatabaseStatistics(long timestamp, int queriesPerSecond, int selectsPerSecond,
                                       int insertsPerSecond, int deletesPerSecond, int updatesPerSecond,
                                       int otherPerSecond) {
