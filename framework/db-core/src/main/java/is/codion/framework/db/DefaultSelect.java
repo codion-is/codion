@@ -181,6 +181,7 @@ final class DefaultSelect implements Select, Serializable {
     @Override
     public Builder forUpdate() {
       this.forUpdate = true;
+      this.fetchDepth = 0;
       return this;
     }
 

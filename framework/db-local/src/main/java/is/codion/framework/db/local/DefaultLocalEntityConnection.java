@@ -963,7 +963,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try (ResultIterator<Entity> iterator = entityIterator(select)) {
       result = packResult(iterator);
     }
-    if (!select.forUpdate() && !result.isEmpty()) {
+    if (!result.isEmpty()) {
       setForeignKeys(result, select, currentForeignKeyFetchDepth);
     }
 

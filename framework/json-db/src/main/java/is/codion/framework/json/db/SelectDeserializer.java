@@ -58,6 +58,10 @@ final class SelectDeserializer extends StdDeserializer<Select> {
     if (offset != null && !offset.isNull()) {
       selectBuilder.offset(offset.asInt());
     }
+    JsonNode forUpdate = jsonNode.get("forUpdate");
+    if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
+      selectBuilder.forUpdate();
+    }
     JsonNode fetchDepth = jsonNode.get("fetchDepth");
     if (fetchDepth != null && !fetchDepth.isNull()) {
       selectBuilder.fetchDepth(fetchDepth.asInt());
@@ -70,10 +74,6 @@ final class SelectDeserializer extends StdDeserializer<Select> {
           selectBuilder.fetchDepth(foreignKey, fetchDepthNode.asInt());
         }
       }
-    }
-    JsonNode forUpdate = jsonNode.get("forUpdate");
-    if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
-      selectBuilder.forUpdate();
     }
     JsonNode attributes = jsonNode.get("attributes");
     if (attributes != null && !attributes.isNull()) {
