@@ -80,6 +80,8 @@ Includes load-test, server, and server monitor modules and jlink/jpackage config
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
+NOTE: The "waterfall" master/detail UI layout in these demo applications is simply what the framework provides by default and can be customized at will.
+
 == Domain model
 
 [cols="2,4"]
