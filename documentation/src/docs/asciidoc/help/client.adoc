@@ -115,8 +115,8 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 
 |kbd:[Enter]|Transfer focus to the next input field
 |kbd:[Shift + Enter]|Transfer focus to the previous input field
-|kbd:[Alt + S]|Save
-|kbd:[Alt + A]|Add (when available)
+|kbd:[Alt + A]|Add
+|kbd:[Alt + S]|Save (when available)
 |kbd:[Alt + U]|Update
 |kbd:[Alt + D]|Delete
 |kbd:[Alt + C]|Clear
