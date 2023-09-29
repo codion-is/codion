@@ -74,7 +74,7 @@ public class StoreTest extends EntityTestUnit {
               .with(Customer.ID, UUID.randomUUID().toString())
               .with(Customer.FIRST_NAME, "Robert")
               .with(Customer.LAST_NAME, "Ford")
-              .with(Customer.IS_ACTIVE, true)
+              .with(Customer.ACTIVE, true)
               .build();
     }
     else if (entityType.equals(CustomerAddress.TYPE)) {
@@ -97,7 +97,7 @@ public class StoreTest extends EntityTestUnit {
       //It is sufficient to change the value of a single property, but the more, the merrier
       testEntity.put(Customer.FIRST_NAME, "Jesse");
       testEntity.put(Customer.LAST_NAME, "James");
-      testEntity.put(Customer.IS_ACTIVE, false);
+      testEntity.put(Customer.ACTIVE, false);
     }
   }
 }

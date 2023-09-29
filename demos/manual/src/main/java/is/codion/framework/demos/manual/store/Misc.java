@@ -70,7 +70,7 @@ public final class Misc {
     editModel.put(Customer.ID, UUID.randomUUID().toString());
     editModel.put(Customer.FIRST_NAME, "Björn");
     editModel.put(Customer.LAST_NAME, "Sigurðsson");
-    editModel.put(Customer.IS_ACTIVE, true);
+    editModel.put(Customer.ACTIVE, true);
 
     //inserts and returns the inserted entity
     Entity customer = editModel.insert();

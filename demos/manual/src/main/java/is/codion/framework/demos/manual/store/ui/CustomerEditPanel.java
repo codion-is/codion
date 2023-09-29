@@ -25,7 +25,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.FIRST_NAME);
     createTextField(Customer.LAST_NAME);
     createTextField(Customer.EMAIL);
-    createCheckBox(Customer.IS_ACTIVE);
+    createCheckBox(Customer.ACTIVE);
 
     setLayout(new GridLayout(4, 1));
     //the addInputPanel method creates and adds a panel containing the
@@ -34,7 +34,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     addInputPanel(Customer.FIRST_NAME);
     addInputPanel(Customer.LAST_NAME);
     addInputPanel(Customer.EMAIL);
-    addInputPanel(Customer.IS_ACTIVE);
+    addInputPanel(Customer.ACTIVE);
   }
 }
 // end::customerEditPanel[]

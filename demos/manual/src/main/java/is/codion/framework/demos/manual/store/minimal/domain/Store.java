@@ -37,7 +37,7 @@ public class Store extends DefaultDomain {
     Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
     Column<String> LAST_NAME = TYPE.stringColumn("last_name");
     Column<String> EMAIL = TYPE.stringColumn("email");
-    Column<Boolean> IS_ACTIVE = TYPE.booleanColumn("is_active");
+    Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
   }
 
   // Create a namespace interface for the Address entity.
@@ -76,9 +76,9 @@ public class Store extends DefaultDomain {
                     .column()
                     .caption("Email")
                     .maximumLength(100),
-            Customer.IS_ACTIVE.define()
+            Customer.ACTIVE.define()
                     .column()
-                    .caption("Is active")
+                    .caption("Active")
                     .nullable(false)
                     .defaultValue(true))
             .keyGenerator(identity())

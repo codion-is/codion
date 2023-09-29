@@ -37,12 +37,12 @@ public class StoreDemo {
       createTextField(Customer.FIRST_NAME);
       createTextField(Customer.LAST_NAME);
       createTextField(Customer.EMAIL);
-      createCheckBox(Customer.IS_ACTIVE);
+      createCheckBox(Customer.ACTIVE);
       setLayout(gridLayout(4, 1));
       addInputPanel(Customer.FIRST_NAME);
       addInputPanel(Customer.LAST_NAME);
       addInputPanel(Customer.EMAIL);
-      addInputPanel(Customer.IS_ACTIVE);
+      addInputPanel(Customer.ACTIVE);
     }
   }
 

@@ -46,7 +46,7 @@ public final class Store extends DefaultDomain {
     Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
     Column<String> LAST_NAME = TYPE.stringColumn("last_name");
     Column<String> EMAIL = TYPE.stringColumn("email");
-    Column<Boolean> IS_ACTIVE = TYPE.booleanColumn("is_active");
+    Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
 
     ReportType<JasperReport, JasperPrint, Map<String, Object>> REPORT =
             JasperReports.reportType("customer_report");
@@ -88,9 +88,9 @@ public final class Store extends DefaultDomain {
             Customer.EMAIL.define()
                     .column()
                     .caption("Email"),
-            Customer.IS_ACTIVE.define()
+            Customer.ACTIVE.define()
                     .column()
-                    .caption("Is active")
+                    .caption("Active")
                     .columnHasDefaultValue(true)
                     .defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
