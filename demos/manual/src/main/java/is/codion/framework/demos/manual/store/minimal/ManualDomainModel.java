@@ -120,9 +120,9 @@ class ManualDomainModel {
 
     EntityDefinition customerDefinition = entities.definition(Customer.TYPE);
 
-    EntityDefinition cityDefinition = customerDefinition.referencedEntity(Customer.CITY_FK);
+    EntityDefinition cityDefinition = customerDefinition.foreignKeys().referencedBy(Customer.CITY_FK);
 
-    List<Column<?>> cityPrimaryKeyColumns = cityDefinition.primaryKeyColumns();
+    List<Column<?>> cityPrimaryKeyColumns = cityDefinition.primaryKey().columns();
     // end::domainUsage[]
   }
 }

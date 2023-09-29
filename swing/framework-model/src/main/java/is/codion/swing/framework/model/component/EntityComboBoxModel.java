@@ -378,7 +378,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return a {@link Value} for selecting items by attribute value
    */
   public final <T> Value<T> createSelectorValue(Attribute<T> attribute) {
-    if (!entities.definition(entityType()).contains(attribute)) {
+    if (!entities.definition(entityType()).attributes().contains(attribute)) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
     }
 
@@ -413,7 +413,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
-    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeys().definition(foreignKey);
     EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyDefinition.referencedType(), connectionProvider);
     foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
@@ -425,7 +425,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel,
                                            boolean filter) {
-    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeys().definition(foreignKey);
     if (!foreignKeyDefinition.referencedType().equals(foreignKeyModel.entityType())) {
       throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
               + ", should be: " + foreignKeyDefinition.referencedType());

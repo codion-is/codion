@@ -140,7 +140,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void validateForeignKeys(EntityDefinition definition) {
     EntityType entityType = definition.entityType();
-    for (ForeignKey foreignKey : definition.foreignKeys()) {
+    for (ForeignKey foreignKey : definition.foreignKeys().get()) {
       EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.name());
@@ -159,7 +159,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void populateForeignDefinitions() {
     for (DefaultEntityDefinition definition : entityDefinitions.values()) {
-      for (ForeignKey foreignKey : definition.foreignKeys()) {
+      for (ForeignKey foreignKey : definition.foreignKeys().get()) {
         EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.referencedType().name());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
@@ -178,7 +178,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {
-    if (!referencedEntity.contains(referencedAttribute)) {
+    if (!referencedEntity.attributes().contains(referencedAttribute)) {
       throw new IllegalArgumentException("Attribute " + referencedAttribute + " referenced by foreign key "
               + foreignKey + " not found in referenced entity");
     }

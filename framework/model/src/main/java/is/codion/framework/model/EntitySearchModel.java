@@ -24,7 +24,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Condition;
@@ -205,7 +204,7 @@ public interface EntitySearchModel {
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @return a new {@link EntitySearchModel.Builder} instance
-   * @see EntityDefinition#searchColumns()
+   * @see is.codion.framework.domain.entity.EntityDefinition.Columns#searchColumns()
    */
   static EntitySearchModel.Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
     return new DefaultEntitySearchModel.DefaultBuilder(entityType, connectionProvider);

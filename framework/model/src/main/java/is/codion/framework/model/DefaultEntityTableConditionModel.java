@@ -173,9 +173,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
                                                                        ColumnConditionModel.Factory<C> conditionModelFactory) {
     Collection<ColumnConditionModel<? extends C, ?>> models = new ArrayList<>();
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
-    definition.columnDefinitions().forEach(columnDefinition ->
+    definition.columns().definitions().forEach(columnDefinition ->
             conditionModelFactory.createConditionModel((C) columnDefinition.attribute()).ifPresent(models::add));
-    definition.foreignKeyDefinitions().forEach(foreignKeyDefinition ->
+    definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
             conditionModelFactory.createConditionModel((C) foreignKeyDefinition.attribute()).ifPresent(models::add));
 
     return models.stream()

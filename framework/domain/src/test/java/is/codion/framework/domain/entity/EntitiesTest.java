@@ -63,63 +63,63 @@ public final class EntitiesTest {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
 
     //assert types
-    assertEquals(definition.columnDefinition(TestDomain.Detail.ID).attribute().type().valueClass(), Long.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.SHORT).attribute().type().valueClass(), Short.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.INT).attribute().type().valueClass(), Integer.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DOUBLE).attribute().type().valueClass(), Double.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.STRING).attribute().type().valueClass(), String.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DATE).attribute().type().valueClass(), LocalDate.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.TIMESTAMP).attribute().type().valueClass(), LocalDateTime.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.BOOLEAN).attribute().type().valueClass(), Boolean.class);
-    assertEquals(definition.foreignKeyDefinition(TestDomain.Detail.MASTER_FK).attribute().type().valueClass(), Entity.class);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.MASTER_ID).attribute().type().valueClass(), Long.class);
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME).attribute().type().valueClass(), String.class);
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE).attribute().type().valueClass(), Integer.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.ID).attribute().type().valueClass(), Long.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.SHORT).attribute().type().valueClass(), Short.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.INT).attribute().type().valueClass(), Integer.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.DOUBLE).attribute().type().valueClass(), Double.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.STRING).attribute().type().valueClass(), String.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.DATE).attribute().type().valueClass(), LocalDate.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.TIMESTAMP).attribute().type().valueClass(), LocalDateTime.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.BOOLEAN).attribute().type().valueClass(), Boolean.class);
+    assertEquals(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).attribute().type().valueClass(), Entity.class);
+    assertEquals(definition.columns().definition(TestDomain.Detail.MASTER_ID).attribute().type().valueClass(), Long.class);
+    assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).attribute().type().valueClass(), String.class);
+    assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).attribute().type().valueClass(), Integer.class);
 
     //assert column names
-    assertEquals(definition.columnDefinition(TestDomain.Detail.ID).attribute(), TestDomain.Detail.ID);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.SHORT).attribute(), TestDomain.Detail.SHORT);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.INT).attribute(), TestDomain.Detail.INT);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DOUBLE).attribute(), TestDomain.Detail.DOUBLE);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.STRING).attribute(), TestDomain.Detail.STRING);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DATE).attribute(), TestDomain.Detail.DATE);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.TIMESTAMP).attribute(), TestDomain.Detail.TIMESTAMP);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.BOOLEAN).attribute(), TestDomain.Detail.BOOLEAN);
-    assertEquals(definition.columnDefinition(TestDomain.Detail.MASTER_ID).attribute(), TestDomain.Detail.MASTER_ID);
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME).attribute(), TestDomain.Detail.MASTER_NAME);
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE).attribute(), TestDomain.Detail.MASTER_CODE);
+    assertEquals(definition.columns().definition(TestDomain.Detail.ID).attribute(), TestDomain.Detail.ID);
+    assertEquals(definition.columns().definition(TestDomain.Detail.SHORT).attribute(), TestDomain.Detail.SHORT);
+    assertEquals(definition.columns().definition(TestDomain.Detail.INT).attribute(), TestDomain.Detail.INT);
+    assertEquals(definition.columns().definition(TestDomain.Detail.DOUBLE).attribute(), TestDomain.Detail.DOUBLE);
+    assertEquals(definition.columns().definition(TestDomain.Detail.STRING).attribute(), TestDomain.Detail.STRING);
+    assertEquals(definition.columns().definition(TestDomain.Detail.DATE).attribute(), TestDomain.Detail.DATE);
+    assertEquals(definition.columns().definition(TestDomain.Detail.TIMESTAMP).attribute(), TestDomain.Detail.TIMESTAMP);
+    assertEquals(definition.columns().definition(TestDomain.Detail.BOOLEAN).attribute(), TestDomain.Detail.BOOLEAN);
+    assertEquals(definition.columns().definition(TestDomain.Detail.MASTER_ID).attribute(), TestDomain.Detail.MASTER_ID);
+    assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).attribute(), TestDomain.Detail.MASTER_NAME);
+    assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).attribute(), TestDomain.Detail.MASTER_CODE);
 
     //assert captions
-    assertNotNull(definition.columnDefinition(TestDomain.Detail.ID).caption());
-    assertEquals(definition.columnDefinition(TestDomain.Detail.SHORT).caption(), TestDomain.Detail.SHORT.name());
-    assertEquals(definition.columnDefinition(TestDomain.Detail.INT).caption(), TestDomain.Detail.INT.name());
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DOUBLE).caption(), TestDomain.Detail.DOUBLE.name());
-    assertEquals(definition.columnDefinition(TestDomain.Detail.STRING).caption(), "Detail string");
-    assertEquals(definition.columnDefinition(TestDomain.Detail.DATE).caption(), TestDomain.Detail.DATE.name());
-    assertEquals(definition.columnDefinition(TestDomain.Detail.TIMESTAMP).caption(), TestDomain.Detail.TIMESTAMP.name());
-    assertEquals(definition.columnDefinition(TestDomain.Detail.BOOLEAN).caption(), TestDomain.Detail.BOOLEAN.name());
-    assertEquals(definition.foreignKeyDefinition(TestDomain.Detail.MASTER_FK).caption(), TestDomain.Detail.MASTER_FK.name());
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME).caption(), TestDomain.Detail.MASTER_NAME.name());
-    assertEquals(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE).caption(), TestDomain.Detail.MASTER_CODE.name());
+    assertNotNull(definition.columns().definition(TestDomain.Detail.ID).caption());
+    assertEquals(definition.columns().definition(TestDomain.Detail.SHORT).caption(), TestDomain.Detail.SHORT.name());
+    assertEquals(definition.columns().definition(TestDomain.Detail.INT).caption(), TestDomain.Detail.INT.name());
+    assertEquals(definition.columns().definition(TestDomain.Detail.DOUBLE).caption(), TestDomain.Detail.DOUBLE.name());
+    assertEquals(definition.columns().definition(TestDomain.Detail.STRING).caption(), "Detail string");
+    assertEquals(definition.columns().definition(TestDomain.Detail.DATE).caption(), TestDomain.Detail.DATE.name());
+    assertEquals(definition.columns().definition(TestDomain.Detail.TIMESTAMP).caption(), TestDomain.Detail.TIMESTAMP.name());
+    assertEquals(definition.columns().definition(TestDomain.Detail.BOOLEAN).caption(), TestDomain.Detail.BOOLEAN.name());
+    assertEquals(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).caption(), TestDomain.Detail.MASTER_FK.name());
+    assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).caption(), TestDomain.Detail.MASTER_NAME.name());
+    assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).caption(), TestDomain.Detail.MASTER_CODE.name());
 
     //assert hidden status
-    assertTrue(definition.columnDefinition(TestDomain.Detail.ID).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.SHORT).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.INT).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.DOUBLE).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.STRING).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.DATE).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.TIMESTAMP).isHidden());
-    assertFalse(definition.columnDefinition(TestDomain.Detail.BOOLEAN).isHidden());
-    assertFalse(definition.foreignKeyDefinition(TestDomain.Detail.MASTER_FK).isHidden());
-    assertFalse(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME).isHidden());
-    assertFalse(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE).isHidden());
+    assertTrue(definition.columns().definition(TestDomain.Detail.ID).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.SHORT).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.INT).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.DOUBLE).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.STRING).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.DATE).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.TIMESTAMP).isHidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.BOOLEAN).isHidden());
+    assertFalse(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).isHidden());
+    assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).isHidden());
+    assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).isHidden());
   }
 
   @Test
   void attributeWrongEntityType() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    assertThrows(IllegalArgumentException.class, () -> definition.columnDefinition(TestDomain.Master.CODE));
+    assertThrows(IllegalArgumentException.class, () -> definition.columns().definition(TestDomain.Master.CODE));
   }
 
   @Test
@@ -127,7 +127,7 @@ public final class EntitiesTest {
     EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
     List<AttributeDefinition<?>> attributes = Stream.of(TestDomain.Employee.HIREDATE, TestDomain.Employee.COMMISSION,
                     TestDomain.Employee.SALARY, TestDomain.Employee.JOB)
-            .map(definition::attributeDefinition)
+            .map(definition.columns()::definition)
             .sorted(AttributeDefinition.definitionComparator())
             .collect(toList());
     assertEquals(TestDomain.Employee.COMMISSION, attributes.get(0).attribute());
@@ -139,11 +139,11 @@ public final class EntitiesTest {
   @Test
   void updatableAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    Collection<AttributeDefinition<?>> attributes = definition.updatableAttributeDefinitions();
+    Collection<AttributeDefinition<?>> attributes = definition.attributes().updatable();
     assertEquals(11, attributes.size());
-    assertFalse(attributes.contains(definition.attributeDefinition(TestDomain.Detail.MASTER_NAME)));
-    assertFalse(attributes.contains(definition.attributeDefinition(TestDomain.Detail.MASTER_CODE)));
-    assertFalse(attributes.contains(definition.attributeDefinition(TestDomain.Detail.INT_DERIVED)));
+    assertFalse(attributes.contains(definition.attributes().definition(TestDomain.Detail.MASTER_NAME)));
+    assertFalse(attributes.contains(definition.attributes().definition(TestDomain.Detail.MASTER_CODE)));
+    assertFalse(attributes.contains(definition.attributes().definition(TestDomain.Detail.INT_DERIVED)));
   }
 
   @Test
@@ -154,11 +154,11 @@ public final class EntitiesTest {
 
     EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
     Collection<AttributeDefinition<?>> definitions = attributes.stream()
-            .map(definition::attributeDefinition)
+            .map(definition.attributes()::definition)
             .collect(toList());
     assertEquals(2, definitions.size());
-    assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.ID)));
-    assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.NAME)));
+    assertTrue(definitions.contains(definition.columns().definition(TestDomain.Department.ID)));
+    assertTrue(definitions.contains(definition.columns().definition(TestDomain.Department.NAME)));
   }
 
   @Test
@@ -246,19 +246,19 @@ public final class EntitiesTest {
   @Test
   void attributes() {
     EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
-    AttributeDefinition<Integer> id = definition.columnDefinition(TestDomain.Department.ID);
-    AttributeDefinition<String> location = definition.columnDefinition(TestDomain.Department.LOCATION);
-    AttributeDefinition<String> name = definition.columnDefinition(TestDomain.Department.NAME);
-    AttributeDefinition<Boolean> active = definition.columnDefinition(TestDomain.Department.ACTIVE);
+    AttributeDefinition<Integer> id = definition.columns().definition(TestDomain.Department.ID);
+    AttributeDefinition<String> location = definition.columns().definition(TestDomain.Department.LOCATION);
+    AttributeDefinition<String> name = definition.columns().definition(TestDomain.Department.NAME);
+    AttributeDefinition<Boolean> active = definition.columns().definition(TestDomain.Department.ACTIVE);
     Collection<AttributeDefinition<?>> attributes = Stream.of(TestDomain.Department.LOCATION, TestDomain.Department.NAME)
-            .map(definition::attributeDefinition)
+            .map(definition.columns()::definition)
             .collect(toList());
     assertEquals(2, attributes.size());
     assertFalse(attributes.contains(id));
     assertTrue(attributes.contains(location));
     assertTrue(attributes.contains(name));
 
-    attributes = definition.attributeDefinitions().stream()
+    attributes = definition.attributes().definitions().stream()
             .filter(ad -> !ad.isHidden())
             .collect(toList());
     assertTrue(attributes.contains(id));
@@ -266,7 +266,7 @@ public final class EntitiesTest {
     assertTrue(attributes.contains(name));
     assertFalse(attributes.contains(active));
 
-    List<AttributeDefinition<?>> allAttributes = definition.attributeDefinitions();
+    List<AttributeDefinition<?>> allAttributes = definition.attributes().definitions();
     assertTrue(allAttributes.contains(id));
     assertTrue(allAttributes.contains(location));
     assertTrue(allAttributes.contains(name));
@@ -276,43 +276,43 @@ public final class EntitiesTest {
   @Test
   void definitionInvalid() {
     assertThrows(IllegalArgumentException.class, () -> entities.definition(TestDomain.Master.TYPE)
-            .attributeDefinition(TestDomain.Master.TYPE.attribute("unknown attribute", Integer.class)));
+            .attributes().definition(TestDomain.Master.TYPE.attribute("unknown attribute", Integer.class)));
   }
 
   @Test
   void foreignKeys() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    Collection<ForeignKey> foreignKeys = definition.foreignKeys(TestDomain.Employee.TYPE);
+    Collection<ForeignKey> foreignKeys = definition.foreignKeys().get(TestDomain.Employee.TYPE);
     assertEquals(0, foreignKeys.size());
-    foreignKeys = definition.foreignKeys(TestDomain.Master.TYPE);
+    foreignKeys = definition.foreignKeys().get(TestDomain.Master.TYPE);
     assertEquals(2, foreignKeys.size());
     assertTrue(foreignKeys.contains(TestDomain.Detail.MASTER_FK));
   }
 
   @Test
   void foreignKeyAttribute() {
-    assertNotNull(entities.definition(TestDomain.Detail.TYPE).foreignKeyDefinition(TestDomain.Detail.MASTER_FK));
+    assertNotNull(entities.definition(TestDomain.Detail.TYPE).foreignKeys().definition(TestDomain.Detail.MASTER_FK));
   }
 
   @Test
   void foreignKeyAttributeInvalid() {
     ForeignKey foreignKey = TestDomain.Detail.TYPE.foreignKey("bla bla", TestDomain.Detail.MASTER_ID, TestDomain.Master.ID);
-    assertThrows(IllegalArgumentException.class, () -> entities.definition(TestDomain.Detail.TYPE).foreignKeyDefinition(foreignKey));
+    assertThrows(IllegalArgumentException.class, () -> entities.definition(TestDomain.Detail.TYPE).foreignKeys().definition(foreignKey));
   }
 
   @Test
   void hasDerivedAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    assertTrue(definition.derivedAttributes(TestDomain.Detail.BOOLEAN).isEmpty());
-    assertFalse(definition.derivedAttributes(TestDomain.Detail.INT).isEmpty());
+    assertTrue(definition.attributes().derivedFrom(TestDomain.Detail.BOOLEAN).isEmpty());
+    assertFalse(definition.attributes().derivedFrom(TestDomain.Detail.INT).isEmpty());
   }
 
   @Test
   void derivedAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    Collection<Attribute<?>> derivedAttributes = definition.derivedAttributes(TestDomain.Detail.BOOLEAN);
+    Collection<Attribute<?>> derivedAttributes = definition.attributes().derivedFrom(TestDomain.Detail.BOOLEAN);
     assertTrue(derivedAttributes.isEmpty());
-    derivedAttributes = definition.derivedAttributes(TestDomain.Detail.INT);
+    derivedAttributes = definition.attributes().derivedFrom(TestDomain.Detail.INT);
     assertEquals(1, derivedAttributes.size());
     assertTrue(derivedAttributes.contains(TestDomain.Detail.INT_DERIVED));
   }
@@ -407,11 +407,11 @@ public final class EntitiesTest {
   @Test
   void searchColumns() {
     EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
-    Collection<Column<String>> searchColumns = definition.searchColumns();
+    Collection<Column<String>> searchColumns = definition.columns().searchColumns();
     assertTrue(searchColumns.contains(TestDomain.Employee.JOB));
     assertTrue(searchColumns.contains(TestDomain.Employee.NAME));
 
-    searchColumns = entities.definition(TestDomain.Department.TYPE).searchColumns();
+    searchColumns = entities.definition(TestDomain.Department.TYPE).columns().searchColumns();
     //should contain all string based columns
     assertTrue(searchColumns.contains(TestDomain.Department.NAME));
   }

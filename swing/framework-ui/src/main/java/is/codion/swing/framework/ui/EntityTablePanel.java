@@ -386,7 +386,7 @@ public class EntityTablePanel extends JPanel {
   public final void excludeFromEditMenu(Attribute<?>... attributes) {
     checkIfInitialized();
     for (Attribute<?> attribute : requireNonNull(attributes)) {
-      tableModel().entityDefinition().attributeDefinition(attribute);//just validating that the attribute exists
+      tableModel().entityDefinition().attributes().definition(attribute);//just validating that the attribute exists
       excludeFromEditMenu.add(attribute);
     }
   }
@@ -537,7 +537,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setEditComponentFactory(A attribute,
                                                                                               EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().attributeDefinition(attribute);
+    tableModel().entityDefinition().attributes().definition(attribute);
     editComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -551,7 +551,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorFactory(A attribute,
                                                                                                 EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().attributeDefinition(attribute);
+    tableModel().entityDefinition().attributes().definition(attribute);
     tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -985,7 +985,7 @@ public class EntityTablePanel extends JPanel {
    * @return a TableCellEditor for the given attribute, null in case none is available
    */
   protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
-    AttributeDefinition<?> attributeDefinition = tableModel.entityDefinition().attributeDefinition(attribute);
+    AttributeDefinition<?> attributeDefinition = tableModel.entityDefinition().attributes().definition(attribute);
     if (attribute instanceof ColumnDefinition && !((ColumnDefinition<?>) attributeDefinition).isUpdatable()) {
       return null;
     }
@@ -1065,7 +1065,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(exception);
     String title = tableModel.entities()
             .definition(exception.attribute().entityType())
-            .attributeDefinition(exception.attribute())
+            .attributes().definition(exception.attribute())
             .caption();
     JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
   }
@@ -1113,7 +1113,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
-    tableModel.entityDefinition().updatableAttributeDefinitions().stream()
+    tableModel.entityDefinition().attributes().updatable().stream()
             .filter(attributeDefinition -> !excludeFromEditMenu.contains(attributeDefinition.attribute()))
             .sorted(AttributeDefinition.definitionComparator())
             .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
@@ -1263,7 +1263,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeEditSelectedControls() {
-    long updatableAttributeCount = tableModel.entityDefinition().updatableAttributeDefinitions().stream()
+    long updatableAttributeCount = tableModel.entityDefinition().attributes().updatable().stream()
             .map(AttributeDefinition::attribute)
             .filter(attribute -> !excludeFromEditMenu.contains(attribute))
             .count();
@@ -1490,7 +1490,7 @@ public class EntityTablePanel extends JPanel {
 
   private boolean includeViewDependenciesControl() {
     return tableModel.entities().definitions().stream()
-            .flatMap(entityDefinition -> entityDefinition.foreignKeyDefinitions().stream())
+            .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
             .filter(foreignKeyDefinition -> !foreignKeyDefinition.isSoftReference())
             .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.referencedType().equals(tableModel.entityType()));
   }
@@ -1617,7 +1617,7 @@ public class EntityTablePanel extends JPanel {
 
       return foreignKey.references().stream()
               .map(ForeignKey.Reference::column)
-              .map(referenceAttribute -> tableModel.entityDefinition().columnDefinition(referenceAttribute))
+              .map(referenceAttribute -> tableModel.entityDefinition().columns().definition(referenceAttribute))
               .filter(ColumnDefinition.class::isInstance)
               .map(ColumnDefinition.class::cast)
               .noneMatch(ColumnDefinition::isUpdatable);
@@ -1667,7 +1667,7 @@ public class EntityTablePanel extends JPanel {
       }
       List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.componentPanel().columnComponents().values().stream()
               .filter(panel -> tableModel.columnModel().visible(panel.model().columnIdentifier()).get())
-              .map(panel -> tableModel.entityDefinition().attributeDefinition(panel.model().columnIdentifier()))
+              .map(panel -> tableModel.entityDefinition().attributes().definition(panel.model().columnIdentifier()))
               .sorted(AttributeDefinition.definitionComparator())
               .collect(toList());
       if (attributeDefinitions.size() == 1) {

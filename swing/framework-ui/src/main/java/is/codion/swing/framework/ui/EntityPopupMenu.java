@@ -77,9 +77,9 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param visitedKeys used to prevent cyclical dependencies wreaking havoc
    */
   private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity.Key> visitedKeys) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().primaryKeyColumnDefinitions()));
-    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.entityDefinition().foreignKeyDefinitions()), visitedKeys);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().attributeDefinitions()));
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKey().columnDefinitions()));
+    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.definition().foreignKeys().definitions()), visitedKeys);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.definition().attributes().definitions()));
   }
 
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnDefinition<?>> primaryKeyColumns) {
@@ -101,7 +101,7 @@ final class EntityPopupMenu extends JPopupMenu {
     if (!visitedKeys.contains(entity.primaryKey())) {
       visitedKeys.add(entity.primaryKey());
       Text.collate(fkDefinitions);
-      EntityDefinition definition = entity.entityDefinition();
+      EntityDefinition definition = entity.definition();
       EntityValidator validator = definition.validator();
       for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
         ForeignKey foreignKey = fkDefinition.attribute();
@@ -135,7 +135,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static void populateValueMenu(JComponent rootMenu, Entity entity, List<AttributeDefinition<?>> attributeDefinitions) {
     Text.collate(attributeDefinitions);
-    EntityDefinition definition = entity.entityDefinition();
+    EntityDefinition definition = entity.definition();
     EntityValidator validator = definition.validator();
     for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
       boolean isPrimaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isPrimaryKeyColumn();

@@ -54,7 +54,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(Employee.MGR_FK);
     createTextField(Employee.SALARY);
     createTextField(Employee.COMMISSION);
-    String hiredatePattern = editModel().entityDefinition().columnDefinition(Employee.HIREDATE).dateTimePattern();
+    String hiredatePattern = editModel().entityDefinition().columns().definition(Employee.HIREDATE).dateTimePattern();
     DateTimeFormatter hiredateFormatter = new DateTimeFormatterBuilder()
             .appendPattern(hiredatePattern.substring(0, hiredatePattern.length() - 2))
             .appendValueReduced(ChronoField.YEAR, 2, 2, 1940)

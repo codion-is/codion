@@ -152,7 +152,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
-    Collection<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys(editModel.entityType());
+    Collection<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys().get(editModel.entityType());
     if (foreignKeys.isEmpty()) {
       throw new IllegalArgumentException("Entity " + detailModel.editModel().entityType() +
               " does not reference " + editModel.entityType() + " via a foreign key");

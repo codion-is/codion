@@ -64,7 +64,7 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      Column<Object> column = definition.columnDefinition((Column<Object>) definition.attribute(field.getKey())).attribute();
+      Column<Object> column = definition.columns().definition((Column<Object>) definition.attributes().get(field.getKey())).attribute();
       updateBuilder.set(column, entityObjectMapper.readValue(field.getValue().toString(), column.type().valueClass()));
     }
 

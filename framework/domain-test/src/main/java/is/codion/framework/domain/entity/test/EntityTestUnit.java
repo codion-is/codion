@@ -182,7 +182,7 @@ public class EntityTestUnit {
   private Map<ForeignKey, Entity> initializeForeignKeyEntities(EntityType entityType,
                                                                Map<ForeignKey, Entity> foreignKeyEntities,
                                                                EntityConnection connection) throws DatabaseException {
-    List<ForeignKey> foreignKeys = new ArrayList<>(entities().definition(entityType).foreignKeys());
+    List<ForeignKey> foreignKeys = new ArrayList<>(entities().definition(entityType).foreignKeys().get());
     //we have to start with non-self-referential ones
     foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
     for (ForeignKey foreignKey : foreignKeys) {
@@ -258,7 +258,7 @@ public class EntityTestUnit {
 
     Entity updatedEntity = connection.updateSelect(testEntity);
     assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
-    testEntity.entityDefinition().columnDefinitions().stream()
+    testEntity.definition().columns().definitions().stream()
             .filter(ColumnDefinition::isUpdatable)
             .forEach(columnDefinition -> assertValueEqual(testEntity, updatedEntity, columnDefinition));
   }

@@ -59,7 +59,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
               EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build()));
     }
 
-    ColumnDefinition<?> definition = definition(attribute.entityType()).columnDefinition((Column<?>) attribute);
+    ColumnDefinition<?> definition = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
     if (definition.isAggregate()) {
       return Optional.empty();
     }

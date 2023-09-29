@@ -37,13 +37,13 @@ import static java.util.Objects.requireNonNull;
 final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<Entity, Attribute<?>> {
 
   EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
-    this(requireNonNull(tableModel), tableModel.entityDefinition().attributeDefinition(attribute));
+    this(requireNonNull(tableModel), tableModel.entityDefinition().attributes().definition(attribute));
   }
 
   private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
     super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass(),
             attributeDefinition.attribute().type().isBoolean() && !(attributeDefinition instanceof ItemColumnDefinition));
-    tableModel.entityDefinition().attributeDefinition(attributeDefinition.attribute());
+    tableModel.entityDefinition().attributes().definition(attributeDefinition.attribute());
     displayValueProvider(new DefaultDisplayValueProvider(attributeDefinition));
     cellColorProvider(new EntityCellColorProvider(tableModel));
   }

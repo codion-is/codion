@@ -103,7 +103,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private static List<TransientAttributeDefinition<?>> initializeNonDerivedTransientAttributes(EntityDefinition entityDefinition) {
-    return entityDefinition.attributeDefinitions().stream()
+    return entityDefinition.attributes().definitions().stream()
             .filter(TransientAttributeDefinition.class::isInstance)
             .map(attributeDefinition -> (TransientAttributeDefinition<?>) attributeDefinition)
             .filter(transientAttributeDefinition -> !transientAttributeDefinition.isDerived())
@@ -111,7 +111,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private static List<ColumnDefinition<byte[]>> initializeLazyLoadedBlobColumns(EntityDefinition entityDefinition) {
-    return entityDefinition.columnDefinitions().stream()
+    return entityDefinition.columns().definitions().stream()
             .filter(column -> column.attribute().type().isByteArray())
             .map(column -> (ColumnDefinition<byte[]>) column)
             .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())

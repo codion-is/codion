@@ -36,7 +36,7 @@ final class DefaultStringFactory implements Function<Entity, String>, Serializab
   @Override
   public String apply(Entity entity) {
     return new StringBuilder(entity.entityType().name())
-            .append(entity.entityDefinition().attributeDefinitions().stream()
+            .append(entity.definition().attributes().definitions().stream()
                     .map(AttributeDefinition::attribute)
                     .filter(entity::contains)
                     .map(attribute -> toString(entity, attribute))

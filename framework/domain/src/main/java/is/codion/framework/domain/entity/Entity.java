@@ -61,7 +61,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * @return the entity definition
    */
-  EntityDefinition entityDefinition();
+  EntityDefinition definition();
 
   /**
    * Sets the value of the given attribute, returning the old value if any
@@ -411,7 +411,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
-            .map(entry -> entity.entityDefinition().attributeDefinition(entry.getKey()))
+            .map(entry -> entity.definition().attributes().definition(entry.getKey()))
             .filter(attributeDefinition -> {
               boolean updatableColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isUpdatable();
               boolean lazilyLoadedBlob = attributeDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) attributeDefinition).isEagerlyLoaded();
@@ -751,7 +751,7 @@ public interface Entity extends Comparable<Entity> {
 
     /**
      * Note that the column order is undefined here, for the primary key columns
-     * in the correct (indexed) order use {@link EntityDefinition#primaryKeyColumns()}.
+     * in the correct (indexed) order {@link EntityDefinition.PrimaryKey#columns()} via {@link EntityDefinition#primaryKey()}.
      * @return the columns comprising this key
      */
     Collection<Column<?>> columns();

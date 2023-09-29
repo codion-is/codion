@@ -167,7 +167,7 @@ class DefaultKey implements Entity.Key, Serializable {
       throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.entityType());
     }
 
-    return (T) values.get(definition.columnDefinition(column).attribute());
+    return (T) values.get(definition.columns().definition(column).attribute());
   }
 
   @Override
@@ -272,7 +272,7 @@ class DefaultKey implements Entity.Key, Serializable {
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
     for (int i = 0; i < columns.size(); i++) {
-      ColumnDefinition<?> columnDefinition = definition.columnDefinition(columns.get(i));
+      ColumnDefinition<?> columnDefinition = definition.columns().definition(columns.get(i));
       Object value = values.get(columnDefinition.attribute());
       if (!columnDefinition.isNullable() && value == null) {
         return null;

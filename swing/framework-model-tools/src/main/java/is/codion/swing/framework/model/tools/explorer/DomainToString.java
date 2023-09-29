@@ -47,11 +47,11 @@ final class DomainToString {
     builder.append("public interface ").append(interfaceName).append(" {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.tableName().toLowerCase()).append("\");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-    List<AttributeDefinition<?>> columnDefinitions = definition.attributeDefinitions().stream()
+    List<AttributeDefinition<?>> columnDefinitions = definition.attributes().definitions().stream()
             .filter(ColumnDefinition.class::isInstance)
             .collect(toList());
     columnDefinitions.forEach(columnDefinition -> appendAttribute(builder, columnDefinition));
-    List<AttributeDefinition<?>> foreignKeyDefinitions = definition.attributeDefinitions().stream()
+    List<AttributeDefinition<?>> foreignKeyDefinitions = definition.attributes().definitions().stream()
             .filter(ForeignKeyDefinition.class::isInstance)
             .collect(toList());
     if (!foreignKeyDefinitions.isEmpty()) {
@@ -61,7 +61,7 @@ final class DomainToString {
     builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("add(").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
-    builder.append(String.join("," + LINE_SEPARATOR, attributeStrings(definition.attributeDefinitions(), interfaceName, definition))).append(")");
+    builder.append(String.join("," + LINE_SEPARATOR, attributeStrings(definition.attributes().definitions(), interfaceName, definition))).append(")");
     if (definition.description() != null) {
       builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".description(\"").append(definition.description()).append("\")");
     }
@@ -105,7 +105,7 @@ final class DomainToString {
       if (attributeDefinition instanceof ColumnDefinition) {
         ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
         strings.add(columnDefinition(interfaceName, columnDefinition,
-                definition.isForeignKeyColumn(columnDefinition.attribute()), definition.primaryKeyColumns().size() > 1));
+                definition.foreignKeys().isForeignKeyColumn(columnDefinition.attribute()), definition.primaryKey().columns().size() > 1));
       }
       else if (attributeDefinition instanceof ForeignKeyDefinition) {
         strings.add(foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition));
