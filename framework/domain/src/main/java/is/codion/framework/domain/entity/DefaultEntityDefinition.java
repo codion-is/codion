@@ -167,7 +167,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * True if optimistic locking should be used during updates
    */
-  private final transient boolean optimisticLockingEnabled;
+  private final transient boolean optimisticLocking;
 
   /**
    * Provides a custom sql query used when selecting entities of this type
@@ -205,7 +205,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.staticData = builder.staticData;
     this.keyGenerator = builder.keyGenerator;
     this.keyGenerated = builder.keyGenerated;
-    this.optimisticLockingEnabled = builder.optimisticLockingEnabled;
+    this.optimisticLocking = builder.optimisticLocking;
     this.stringFactory = builder.stringFactory;
     this.backgroundColorProvider = builder.backgroundColorProvider;
     this.foregroundColorProvider = builder.foregroundColorProvider;
@@ -295,8 +295,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean isOptimisticLockingEnabled() {
-    return optimisticLockingEnabled;
+  public boolean optimisticLocking() {
+    return optimisticLocking;
   }
 
   @Override
@@ -968,7 +968,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private boolean readOnly;
     private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
     private boolean keyGenerated;
-    private boolean optimisticLockingEnabled = true;
+    private boolean optimisticLocking = true;
     private OrderBy orderBy;
     private String selectTableName;
     private SelectQuery selectQuery;
@@ -1047,8 +1047,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder optimisticLockingEnabled(boolean optimisticLockingEnabled) {
-      this.optimisticLockingEnabled = optimisticLockingEnabled;
+    public Builder optimisticLocking(boolean optimisticLocking) {
+      this.optimisticLocking = optimisticLocking;
       return this;
     }
 

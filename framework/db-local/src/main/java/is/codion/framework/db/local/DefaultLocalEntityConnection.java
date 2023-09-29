@@ -901,7 +901,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       EntityDefinition definition = domainEntities.definition(entitiesByEntityTypeEntry.getKey());
-      if (definition.isOptimisticLockingEnabled()) {
+      if (definition.optimisticLocking()) {
         checkIfMissingOrModified(entitiesByEntityTypeEntry.getKey(), entitiesByEntityTypeEntry.getValue());
       }
     }

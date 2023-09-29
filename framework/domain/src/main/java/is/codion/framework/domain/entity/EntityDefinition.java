@@ -85,7 +85,7 @@ public interface EntityDefinition {
   /**
    * @return true if optimistic locking should be used during updates
    */
-  boolean isOptimisticLockingEnabled();
+  boolean optimisticLocking();
 
   /**
    * @return the default order by clause to use when querying entities of this type, null if none is available
@@ -289,10 +289,10 @@ public interface EntityDefinition {
 
     /**
      * Use this to disable optimistic locking for this entity type
-     * @param optimisticLockingEnabled true if optimistic locking should be used during updates, false to disable
+     * @param optimisticLocking true if optimistic locking should be used during updates, false to disable
      * @return this {@link Builder} instance
      */
-    Builder optimisticLockingEnabled(boolean optimisticLockingEnabled);
+    Builder optimisticLocking(boolean optimisticLocking);
 
     /**
      * Sets the primary key generator
