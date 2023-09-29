@@ -63,11 +63,11 @@ public class StoreDatabase {
 
     List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
-                    Customer.IS_ACTIVE.equalTo(true));
+                    Customer.ACTIVE.equalTo(true));
 
     List<Entity> activeCustomersWithEmailAddresses =
             connection.select(and(
-                    Customer.IS_ACTIVE.equalTo(true),
+                    Customer.ACTIVE.equalTo(true),
                     Customer.EMAIL.isNotNull()));
 
     // The domain model entities, a factory for Entity instances.

@@ -8,7 +8,7 @@ create table store.customer (
   first_name varchar(40) not null,
   last_name varchar(40) not null,
   email varchar(100),
-  is_active boolean default true not null,
+  active boolean default true not null,
   constraint customer_pk primary key (id),
   constraint customer_email_uk unique (email)
 );

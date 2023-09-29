@@ -19,7 +19,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerTablePan
 
 == JRDataSource Reports
 
-The JRDataSource implementation provided by the JasperReportsDataSource simply iterates through the iterator received via the constructor and retrieves the field values from the underlying entities. The easiest way to make this work is to design the report using field names that correspond to the attribute names, so using the Store domain example from above the fields in a report showing the available items would have to be named 'name', 'is_active', 'category_code' etc.
+The JRDataSource implementation provided by the JasperReportsDataSource simply iterates through the iterator received via the constructor and retrieves the field values from the underlying entities. The easiest way to make this work is to design the report using field names that correspond to the attribute names, so using the Store domain example from above the fields in a report showing the available items would have to be named 'name', 'active', 'category_code' etc.
 
 [source,java,indent=0]
 ----

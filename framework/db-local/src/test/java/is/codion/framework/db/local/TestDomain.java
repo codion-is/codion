@@ -91,6 +91,7 @@ public final class TestDomain extends DefaultDomain {
     detail();
     masterFk();
     detailFk();
+    employeeNonOpt();
   }
 
   public interface Department extends Entity {
@@ -614,5 +615,22 @@ public final class TestDomain extends DefaultDomain {
                     .column(),
             DetailFk.MASTER_FK.define()
                     .foreignKey()));
+  }
+
+  public interface EmployeeNonOpt {
+    EntityType TYPE = DOMAIN.entityType("empnonopt");
+
+    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+  }
+
+  void employeeNonOpt() {
+    add(EmployeeNonOpt.TYPE.define(
+            EmployeeNonOpt.ID.define()
+                    .primaryKey(),
+            EmployeeNonOpt.NAME.define()
+                    .column())
+            .tableName("scott.emp")
+            .optimisticLocking(false));
   }
 }

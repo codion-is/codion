@@ -336,8 +336,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void delete(Entity.Key entityKey) throws DatabaseException {
-    delete(singletonList(entityKey));
+  public void delete(Entity.Key key) throws DatabaseException {
+    delete(singletonList(key));
   }
 
   @Override

@@ -257,22 +257,26 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   /**
    * Deletes an entity according to the given primary key.
    * Performs a commit unless a transaction is open.
-   * @param entityKey the primary key of the entity to delete
+   * @param key the primary key of the entity to delete
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.DeleteException in case no row or multiple rows were deleted
    * @throws RemoteException in case of a remote exception
    */
-  void delete(Entity.Key entityKey) throws RemoteException, DatabaseException;
+  void delete(Entity.Key key) throws RemoteException, DatabaseException;
 
   /**
-   * Deletes the entities according to the given primary keys.
+   * Deletes the entities with the given primary keys.
+   * This method respects the iteration order of the given collection by first deleting all
+   * entities of the first entityType encountered, then all entities of the next entityType encountered and so on.
+   * This allows the deletion of multiple entities forming a master detail hierarchy, by having the detail
+   * entities appear before their master entities in the collection.
    * Performs a commit unless a transaction is open.
-   * @param entityKeys the primary keys of the entities to delete
+   * @param keys the primary keys of the entities to delete
    * @throws DatabaseException in case of a db exception
    * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
    * @throws RemoteException in case of a remote exception
    */
-  void delete(Collection<Entity.Key> entityKeys) throws RemoteException, DatabaseException;
+  void delete(Collection<Entity.Key> keys) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition

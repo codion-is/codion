@@ -631,12 +631,10 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateNonExisting() throws DatabaseException {
-    //otherwise the optimistic locking triggers an error
-    connection.setOptimisticLockingEnabled(false);
-    Entity employee = connection.selectSingle(Employee.ID.equalTo(4));
-    employee.put(Employee.ID, -888);//non existing
+    Entity employee = connection.selectSingle(EmployeeNonOpt.ID.equalTo(4));
+    employee.put(EmployeeNonOpt.ID, -888);//non existing
     employee.save();
-    employee.put(Employee.NAME, "New name");
+    employee.put(EmployeeNonOpt.NAME, "New name");
     assertThrows(UpdateException.class, () -> connection.update(employee));
   }
 
