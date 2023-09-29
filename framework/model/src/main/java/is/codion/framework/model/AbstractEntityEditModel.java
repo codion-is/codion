@@ -1003,7 +1003,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Map<Attribute<?>, Object> dependendingValues(Attribute<?> attribute) {
     Map<Attribute<?>, Object> dependentValues = new HashMap<>();
     EntityDefinition entityDefinition = entityDefinition();
-    entityDefinition.attributes().derived(attribute).forEach(derivedAttribute ->
+    entityDefinition.attributes().derivedFrom(attribute).forEach(derivedAttribute ->
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
     if (attribute instanceof Column) {
       entityDefinition.foreignKeys().definitions((Column<?>) attribute).forEach(foreignKeyDefinition ->

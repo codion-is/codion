@@ -88,7 +88,7 @@ final class EntitySerializer {
   }
 
   private Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException {
-    Attribute<Object> attribute = definition.attributes().attribute(attributeName);
+    Attribute<Object> attribute = definition.attributes().get(attributeName);
     if (attribute == null && strictDeserialization) {
       throw new IOException("Attribute '" + attributeName + "' not found in entity '" + definition.entityType().name() + "'");
     }

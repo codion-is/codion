@@ -48,7 +48,7 @@ public final class Misc {
     JasperReportsDataSource<Entity> dataSource =
             new JasperReportsDataSource<>(customerIterator,
                     (entity, reportField) ->
-                            entity.get(customerDefinition.attributes().attribute(reportField.getName())));
+                            entity.get(customerDefinition.attributes().get(reportField.getName())));
 
     JRReport customerReport = fileReport("reports/customer.jasper");
 

@@ -382,7 +382,7 @@ public interface EntityDefinition {
      * @param <T> the attribute type
      * @return a collection containing the attributes which are derived from the given attribute
      */
-    <T> Collection<Attribute<?>> derived(Attribute<T> attribute);
+    <T> Collection<Attribute<?>> derivedFrom(Attribute<T> attribute);
 
     /**
      * @param attribute the attribute
@@ -396,7 +396,7 @@ public interface EntityDefinition {
      * @param <T> the attribute type
      * @return the attribute with the given name, null if none is found
      */
-    <T> Attribute<T> attribute(String attributeName);
+    <T> Attribute<T> get(String attributeName);
 
     /**
      * Returns the attributes selected by default for this entity type.
@@ -519,7 +519,7 @@ public interface EntityDefinition {
      * If the entity has no primary key columns defined, an empty list is returned.
      * @return the primary key column definitions of this entity type, sorted by primary key column index
      */
-    List<ColumnDefinition<?>> definitions();
+    List<ColumnDefinition<?>> columnDefinitions();
 
     /**
      * @return the object responsible for generating primary key values for entities of this type

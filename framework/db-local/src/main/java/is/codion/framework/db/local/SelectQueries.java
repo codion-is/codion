@@ -248,7 +248,7 @@ final class SelectQueries {
     }
 
     private List<ColumnDefinition<?>> columnsToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().definitions());
+      Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().columnDefinitions());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->

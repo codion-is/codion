@@ -35,7 +35,7 @@ final class CustomConditionDeserializer implements Serializable {
     String conditionTypeName = conditionNode.get("conditionType").asText();
     JsonNode columnsNode = conditionNode.get("columns");
     List<Column<?>> columns = Arrays.stream(entityObjectMapper.readValue(columnsNode.toString(), String[].class))
-            .map(definition.attributes()::attribute)
+            .map(definition.attributes()::get)
             .map(attribute -> (Column<?>) attribute)
             .collect(toList());
     JsonNode valuesNode = conditionNode.get("values");

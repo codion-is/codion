@@ -346,7 +346,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public boolean hasPrimaryKey() {
-    return !primaryKey.definitions().isEmpty();
+    return !primaryKey.columns().isEmpty();
   }
 
   @Override
@@ -551,7 +551,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public <T> Collection<Attribute<?>> derived(Attribute<T> attribute) {
+    public <T> Collection<Attribute<?>> derivedFrom(Attribute<T> attribute) {
       return entityAttributes.derivedAttributes.getOrDefault(requireNonNull(attribute, ATTRIBUTE), emptySet());
     }
 
@@ -561,7 +561,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public <T> Attribute<T> attribute(String attributeName) {
+    public <T> Attribute<T> get(String attributeName) {
       return (Attribute<T>) entityAttributes.attributeNameMap.get(requireNonNull(attributeName));
     }
 
@@ -701,7 +701,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public List<ColumnDefinition<?>> definitions() {
+    public List<ColumnDefinition<?>> columnDefinitions() {
       return entityAttributes.primaryKeyColumnDefinitions;
     }
 

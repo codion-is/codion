@@ -1217,7 +1217,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     EntityDefinition entityDefinition = domainEntities.definition(entityType);
     List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
             new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
-    entityDefinition.primaryKey().definitions().forEach(primaryKeyColumn -> {
+    entityDefinition.primaryKey().columnDefinitions().forEach(primaryKeyColumn -> {
       if (!writableAndPrimaryKeyColumns.contains(primaryKeyColumn)) {
         writableAndPrimaryKeyColumns.add(primaryKeyColumn);
       }

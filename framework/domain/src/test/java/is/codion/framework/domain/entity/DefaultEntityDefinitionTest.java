@@ -176,10 +176,10 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    Collection<Attribute<?>> linked = definition.attributes().derived(name);
+    Collection<Attribute<?>> linked = definition.attributes().derivedFrom(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
-    linked = definition.attributes().derived(info);
+    linked = definition.attributes().derivedFrom(info);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
   }
@@ -200,14 +200,14 @@ public class DefaultEntityDefinitionTest {
 
     EntityDefinition definition = domain.entities().definition(entityType);
 
-    assertTrue(definition.columns().definition((Column<?>) definition.attributes().attribute("p0")).isAggregate());
-    assertFalse(definition.columns().definition((Column<?>) definition.attributes().attribute("p0")).isGroupBy());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p0")).isAggregate());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p0")).isGroupBy());
 
-    assertFalse(definition.columns().definition((Column<?>) definition.attributes().attribute("p1")).isAggregate());
-    assertTrue(definition.columns().definition((Column<?>) definition.attributes().attribute("p1")).isGroupBy());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p1")).isAggregate());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p1")).isGroupBy());
 
-    assertFalse(definition.columns().definition((Column<?>) definition.attributes().attribute("p2")).isAggregate());
-    assertTrue(definition.columns().definition((Column<?>) definition.attributes().attribute("p2")).isGroupBy());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p2")).isAggregate());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p2")).isGroupBy());
   }
 
   @Test
@@ -293,8 +293,8 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertFalse(definition.attributes().derived(column1).isEmpty());
-    assertFalse(definition.attributes().derived(column2).isEmpty());
+    assertFalse(definition.attributes().derivedFrom(column1).isEmpty());
+    assertFalse(definition.attributes().derivedFrom(column2).isEmpty());
   }
 
   @Test

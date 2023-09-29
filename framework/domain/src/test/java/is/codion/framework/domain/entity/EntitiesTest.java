@@ -288,16 +288,16 @@ public final class EntitiesTest {
   @Test
   void hasDerivedAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    assertTrue(definition.attributes().derived(TestDomain.Detail.BOOLEAN).isEmpty());
-    assertFalse(definition.attributes().derived(TestDomain.Detail.INT).isEmpty());
+    assertTrue(definition.attributes().derivedFrom(TestDomain.Detail.BOOLEAN).isEmpty());
+    assertFalse(definition.attributes().derivedFrom(TestDomain.Detail.INT).isEmpty());
   }
 
   @Test
   void derivedAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    Collection<Attribute<?>> derivedAttributes = definition.attributes().derived(TestDomain.Detail.BOOLEAN);
+    Collection<Attribute<?>> derivedAttributes = definition.attributes().derivedFrom(TestDomain.Detail.BOOLEAN);
     assertTrue(derivedAttributes.isEmpty());
-    derivedAttributes = definition.attributes().derived(TestDomain.Detail.INT);
+    derivedAttributes = definition.attributes().derivedFrom(TestDomain.Detail.INT);
     assertEquals(1, derivedAttributes.size());
     assertTrue(derivedAttributes.contains(TestDomain.Detail.INT_DERIVED));
   }
