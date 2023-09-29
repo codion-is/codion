@@ -189,7 +189,7 @@ public interface EntitySearchModel {
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @return a new {@link EntitySearchModel.Builder} instance
-   * @see is.codion.framework.domain.entity.EntityDefinition.Columns#search()
+   * @see is.codion.framework.domain.entity.EntityDefinition.Columns#searchColumns()
    */
   static EntitySearchModel.Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
     return new DefaultEntitySearchModel.DefaultBuilder(entityType, connectionProvider);

@@ -537,7 +537,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
     Collection<Column<String>> searchColumns = entities()
-            .definition(foreignKeyDefinition.referencedType()).columns().search();
+            .definition(foreignKeyDefinition.referencedType()).columns().searchColumns();
     if (searchColumns.isEmpty()) {
       throw new IllegalStateException("No search columns defined for entity: " + foreignKeyDefinition.referencedType());
     }

@@ -430,7 +430,7 @@ public interface EntityDefinition {
      * @return the columns to use when searching by string
      * @see ColumnDefinition.Builder#searchColumn(boolean)
      */
-    Collection<Column<String>> search();
+    Collection<Column<String>> searchColumns();
 
     /**
      * @param column the column

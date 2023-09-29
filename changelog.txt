@@ -9630,3 +9630,4 @@
   Entity.entityDefinition() renamed definition()
   EntityDefinition.PrimaryKey.definitions() renamed columnDefinitions(), Attributes.attribute(name) renamed get(), derived() renamed derivedFrom()
   EntityDefinition.hasPrimaryKey() removed
+  EntityDefinition.Columns.search() renamed searchColumns()

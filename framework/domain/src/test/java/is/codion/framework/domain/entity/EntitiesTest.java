@@ -392,11 +392,11 @@ public final class EntitiesTest {
   @Test
   void searchColumns() {
     EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
-    Collection<Column<String>> searchColumns = definition.columns().search();
+    Collection<Column<String>> searchColumns = definition.columns().searchColumns();
     assertTrue(searchColumns.contains(TestDomain.Employee.JOB));
     assertTrue(searchColumns.contains(TestDomain.Employee.NAME));
 
-    searchColumns = entities.definition(TestDomain.Department.TYPE).columns().search();
+    searchColumns = entities.definition(TestDomain.Department.TYPE).columns().searchColumns();
     //should contain all string based columns
     assertTrue(searchColumns.contains(TestDomain.Department.NAME));
   }
