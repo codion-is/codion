@@ -640,7 +640,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public EntityDefinition referencedBy(ForeignKey foreignKey) {
-      EntityDefinition definition = referencedEntities.get(requireNonNull(foreignKey, FOREIGN_KEY));
+      definition(foreignKey);
+      EntityDefinition definition = referencedEntities.get(foreignKey);
       if (definition == null) {
         throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);
       }
@@ -651,14 +652,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public boolean isUpdatable(ForeignKey foreignKey) {
-      return requireNonNull(foreignKey, FOREIGN_KEY).references().stream()
+      definition(foreignKey);
+      return foreignKey.references().stream()
               .map(reference -> columns.definition(reference.column()))
               .allMatch(ColumnDefinition::isUpdatable);
     }
 
     @Override
     public boolean isForeignKeyColumn(Column<?> column) {
-      return entityAttributes.foreignKeyColumns.contains(requireNonNull(column, COLUMN));
+      attributes.definition(column);
+      return entityAttributes.foreignKeyColumns.contains(column);
     }
 
     @Override

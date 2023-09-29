@@ -9631,3 +9631,4 @@
   EntityDefinition.PrimaryKey.definitions() renamed columnDefinitions(), Attributes.attribute(name) renamed get(), derived() renamed derivedFrom()
   EntityDefinition.hasPrimaryKey() removed
   EntityDefinition.Columns.search() renamed searchColumns()
+  DefaultEntityDefinition.DefaultForeignKeys now validates method parameters
