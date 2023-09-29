@@ -9633,3 +9633,4 @@
   EntityDefinition.Columns.search() renamed searchColumns()
   DefaultEntityDefinition.DefaultForeignKeys now validates method parameters
   EntityDefinition.isOptimisticLockingEnabled() renamed optimisticLocking()
+  EntityDefinition.OPTIMISTIC_LOCKING configuration value added

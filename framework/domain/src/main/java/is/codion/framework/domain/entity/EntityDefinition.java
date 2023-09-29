@@ -35,6 +35,13 @@ public interface EntityDefinition {
   PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
 
   /**
+   * Specifies whether optimistic locking should be enabled by default for entities<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.domain.optimisticLocking", true);
+
+  /**
    * @return the entity type
    */
   EntityType entityType();

@@ -968,7 +968,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private boolean readOnly;
     private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
     private boolean keyGenerated;
-    private boolean optimisticLocking = true;
+    private boolean optimisticLocking = OPTIMISTIC_LOCKING.get();
     private OrderBy orderBy;
     private String selectTableName;
     private SelectQuery selectQuery;
