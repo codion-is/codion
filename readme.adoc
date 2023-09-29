@@ -108,12 +108,12 @@ Entities entities = store.entities();
 Entity customer = entities.builder(Customer.TYPE)
         .with(Customer.FIRST_NAME, "John")
         .with(Customer.LAST_NAME, "Doe")
-        .with(Customer.IS_ACTIVE, true)
+        .with(Customer.ACTIVE, true)
         .build();
 
 // retrieve values
 String lastName = customer.get(Customer.LAST_NAME);
-Boolean active = customer.get(Customer.IS_ACTIVE);
+Boolean active = customer.get(Customer.ACTIVE);
 
 // modify values
 customer.put(Customer.LAST_NAME, "Carter");
@@ -204,7 +204,7 @@ public class Store extends DefaultDomain {
                     .column()
                     .caption("Email")
                     .maximumLength(100),
-            Customer.IS_ACTIVE.define()
+            Customer.ACTIVE.define()
                     .column()
                     .caption("Is active")
                     .nullable(false)
@@ -363,12 +363,12 @@ public class StoreDemo {
       createTextField(Customer.FIRST_NAME);
       createTextField(Customer.LAST_NAME);
       createTextField(Customer.EMAIL);
-      createCheckBox(Customer.IS_ACTIVE);
+      createCheckBox(Customer.ACTIVE);
       setLayout(gridLayout(4, 1));
       addInputPanel(Customer.FIRST_NAME);
       addInputPanel(Customer.LAST_NAME);
       addInputPanel(Customer.EMAIL);
-      addInputPanel(Customer.IS_ACTIVE);
+      addInputPanel(Customer.ACTIVE);
     }
   }
 
@@ -477,11 +477,11 @@ List<Entity> customersWithoutEmail =
 
 List<String> activeCustomerEmailAddresses =
         connection.select(Customer.EMAIL,
-                Customer.IS_ACTIVE.equalTo(true));
+                Customer.ACTIVE.equalTo(true));
 
 List<Entity> activeCustomersWithEmailAddresses =
         connection.select(and(
-                Customer.IS_ACTIVE.equalTo(true),
+                Customer.ACTIVE.equalTo(true),
                 Customer.EMAIL.isNotNull()));
 
 // The domain model entities, a factory for Entity instances.
