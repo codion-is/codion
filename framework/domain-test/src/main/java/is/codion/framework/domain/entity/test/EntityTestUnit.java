@@ -243,7 +243,7 @@ public class EntityTestUnit {
 
     Entity updatedEntity = connection.updateSelect(testEntity);
     assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
-    testEntity.entityDefinition().columns().definitions().stream()
+    testEntity.definition().columns().definitions().stream()
             .filter(ColumnDefinition::isUpdatable)
             .forEach(columnDefinition -> assertValueEqual(testEntity, updatedEntity, columnDefinition));
   }

@@ -108,7 +108,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final EntityDefinition entityDefinition() {
+  public final EntityDefinition definition() {
     return definition;
   }
 

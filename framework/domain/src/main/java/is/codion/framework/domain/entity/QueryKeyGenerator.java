@@ -21,7 +21,7 @@ final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
 
   @Override
   public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-    ColumnDefinition<?> columnDefinition = entity.entityDefinition().primaryKey().definitions().get(0);
+    ColumnDefinition<?> columnDefinition = entity.definition().primaryKey().definitions().get(0);
     if (entity.isNull(columnDefinition.attribute())) {
       selectAndPopulate(entity, columnDefinition, connection);
     }

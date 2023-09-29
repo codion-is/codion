@@ -56,13 +56,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).entityDefinition().attributes().definition(attribute).isNullable();
+    return requireNonNull(entity).definition().attributes().definition(attribute).isNullable();
   }
 
   @Override
   public void validate(Entity entity) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    List<Attribute<?>> attributes = entity.entityDefinition().attributes().definitions().stream()
+    List<Attribute<?>> attributes = entity.definition().attributes().definitions().stream()
             .filter(DefaultEntityValidator::validationRequired)
             .map(AttributeDefinition::attribute)
             .collect(Collectors.toList());
@@ -75,8 +75,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
-    AttributeDefinition<T> definition = entity.entityDefinition().attributes().definition(attribute);
-    if (!(attribute instanceof Column) || !entity.entityDefinition().foreignKeys().isForeignKeyColumn((Column<?>) attribute)) {
+    AttributeDefinition<T> definition = entity.definition().attributes().definition(attribute);
+    if (!(attribute instanceof Column) || !entity.definition().foreignKeys().isForeignKeyColumn((Column<?>) attribute)) {
       performNullValidation(entity, definition);
     }
     if (definition instanceof ItemColumnDefinition) {
@@ -98,7 +98,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue(attributeDefinition);
-        boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.entityDefinition(), attributeDefinition);
+        boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.definition(), attributeDefinition);
         if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
           throw new NullValidationException(attribute,
                   MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), attributeDefinition.caption()));
@@ -128,7 +128,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    AttributeDefinition<T> definition = entity.entityDefinition().attributes().definition(attribute);
+    AttributeDefinition<T> definition = entity.definition().attributes().definition(attribute);
     Number value = entity.get(definition.attribute());
     Number minimumValue = definition.minimumValue();
     if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
@@ -149,7 +149,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    AttributeDefinition<?> definition = entity.entityDefinition().attributes().definition(attribute);
+    AttributeDefinition<?> definition = entity.definition().attributes().definition(attribute);
     int maximumLength = definition.maximumLength();
     String value = entity.get(attribute);
     if (maximumLength != -1 && value.length() > maximumLength) {
