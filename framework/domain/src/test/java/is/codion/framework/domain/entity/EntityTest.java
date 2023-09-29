@@ -351,7 +351,7 @@ public final class EntityTest {
             .build();
 
     List<Attribute<?>> attributes = entities.definition(Department.TYPE)
-            .columnDefinitions().stream().map(AttributeDefinition::attribute).collect(Collectors.toList());
+            .columns().definitions().stream().map(AttributeDefinition::attribute).collect(Collectors.toList());
 
     List<List<String>> strings =
             Entity.valuesAsString(attributes, asList(dept1, dept2));
@@ -448,17 +448,17 @@ public final class EntityTest {
   @Test
   void putNull() {
     Entity dept = entities.entity(Department.TYPE);
-    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributeDefinitions()) {
+    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
       assertFalse(dept.contains(definition.attribute()));
       assertTrue(dept.isNull(definition.attribute()));
       assertFalse(dept.isNotNull(definition.attribute()));
     }
-    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributeDefinitions()) {
+    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
       dept.put(definition.attribute(), null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
-    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributeDefinitions()) {
+    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
       assertTrue(dept.contains(definition.attribute()));
       assertTrue(dept.isNull(definition.attribute()));
       assertFalse(dept.isNotNull(definition.attribute()));

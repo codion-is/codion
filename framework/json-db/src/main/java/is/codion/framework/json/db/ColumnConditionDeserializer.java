@@ -32,7 +32,7 @@ final class ColumnConditionDeserializer implements Serializable {
 
   <T> ColumnCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String columnName = conditionNode.get("column").asText();
-    ColumnDefinition<T> columnDefinition = definition.columnDefinition((Column<T>) definition.attribute(columnName));
+    ColumnDefinition<T> columnDefinition = definition.columns().definition((Column<T>) definition.attributes().attribute(columnName));
     boolean caseSensitive = conditionNode.get("caseSensitive").asBoolean();
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();

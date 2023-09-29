@@ -88,19 +88,6 @@ public interface EntityDefinition {
   boolean isOptimisticLockingEnabled();
 
   /**
-   * @return the object responsible for generating primary key values for entities of this type
-   * @see Builder#keyGenerator(KeyGenerator)
-   */
-  KeyGenerator keyGenerator();
-
-  /**
-   * Returns true if the value for the primary key of this entity is generated with a {@link KeyGenerator}.
-   * @return true if the value for the primary key is generated
-   * @see Builder#keyGenerator(KeyGenerator)
-   */
-  boolean isKeyGenerated();
-
-  /**
    * @return the default order by clause to use when querying entities of this type, null if none is available
    */
   OrderBy orderBy();
@@ -126,143 +113,29 @@ public interface EntityDefinition {
   Comparator<Entity> comparator();
 
   /**
-   * @return an unmodifiable list view of the attribute definitions
+   * @return the {@link Attributes} instance
    */
-  List<AttributeDefinition<?>> attributeDefinitions();
+  Attributes attributes();
+
+  /**
+   * @return the {@link Columns} instance
+   */
+  Columns columns();
+
+  /**
+   * @return the {@link ForeignKeys} instance
+   */
+  ForeignKeys foreignKeys();
+
+  /**
+   * @return the {@link PrimaryKey} instance
+   */
+  PrimaryKey primaryKey();
 
   /**
    * @return true if this entity has a defined primary key
    */
   boolean hasPrimaryKey();
-
-  /**
-   * Returns the attributes which values are derived from the value of the given attribute,
-   * an empty collection if no such derived attributes exist
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return a collection containing the attributes which are derived from the given attribute
-   */
-  <T> Collection<Attribute<?>> derivedAttributes(Attribute<T> attribute);
-
-  /**
-   * Returns a list containing all primary key columns associated with this entity type.
-   * If the entity has no primary key columns defined, an empty list is returned.
-   * @return the primary key columns of this entity type, sorted by primary key column index
-   */
-  List<Column<?>> primaryKeyColumns();
-
-  /**
-   * Returns a list containing the definitions of all primary key columns associated with this entity type.
-   * If the entity has no primary key columns defined, an empty list is returned.
-   * @return the primary key column definitions of this entity type, sorted by primary key column index
-   */
-  List<ColumnDefinition<?>> primaryKeyColumnDefinitions();
-
-  /**
-   * @return a list containing the definitions of the colums for this entity type
-   */
-  List<ColumnDefinition<?>> columnDefinitions();
-
-  /**
-   * @return a list containing the foreign key definitions for this entity type
-   */
-  Collection<ForeignKeyDefinition> foreignKeyDefinitions();
-
-  /**
-   * @return all foreign keys for this entity type
-   */
-  Collection<ForeignKey> foreignKeys();
-
-  /**
-   * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key.
-   * @param foreignKey the foreign key
-   * @return the definition of the referenced entity
-   */
-  EntityDefinition referencedEntity(ForeignKey foreignKey);
-
-  /**
-   * @param attribute the attribute
-   * @return true if this entity definition contains the given attribute
-   */
-  boolean contains(Attribute<?> attribute);
-
-  /**
-   * Returns the attribute with the given name, null if none is found.
-   * @param attributeName the name of the attribute to fetch
-   * @param <T> the attribute type
-   * @return the attribute with the given name, null if none is found
-   */
-  <T> Attribute<T> attribute(String attributeName);
-
-  /**
-   * Returns the solumns to search by when searching for entities of this type by a string value
-   * @return the solumn to use when searching by string
-   * @see ColumnDefinition.Builder#searchColumn(boolean)
-   */
-  Collection<Column<String>> searchColumns();
-
-  /**
-   * Returns the attributes selected by default for this entity type.
-   * Contains the selectable columns and foreign keys, excluding lazy loaded blob columns.
-   * @return the default select attributes
-   */
-  Collection<Attribute<?>> selectAttributes();
-
-  /**
-   * @param column the column
-   * @param <T> the column type
-   * @return the column definition associated with the column
-   * @throws IllegalArgumentException in case the column does not represent a {@link ColumnDefinition}
-   * @throws NullPointerException in case {@code column} is null
-   */
-  <T> ColumnDefinition<T> columnDefinition(Column<T> column);
-
-  /**
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return the attribute definition associated with {@code attribute}.
-   * @throws IllegalArgumentException in case no such attribute exists
-   * @throws NullPointerException in case {@code attribute} is null
-   */
-  <T> AttributeDefinition<T> attributeDefinition(Attribute<T> attribute);
-
-  /**
-   * @return a Collection containing all updatable attributes associated with the given entityType
-   */
-  Collection<AttributeDefinition<?>> updatableAttributeDefinitions();
-
-  /**
-   * @param foreignKey the foreign key
-   * @return true if all the underlying columns are updatable
-   */
-  boolean isUpdatable(ForeignKey foreignKey);
-
-  /**
-   * @param column the column
-   * @return true if the given column is part of a foreign key
-   */
-  boolean isForeignKeyColumn(Column<?> column);
-
-  /**
-   * Returns the foreign keys referencing entities of the given type
-   * @param referencedEntityType the referenced entity type
-   * @return the foreign keys referencing the given entity type, an empty collection is returned in case no foreign keys are found
-   */
-  Collection<ForeignKey> foreignKeys(EntityType referencedEntityType);
-
-  /**
-   * @param foreignKey the foreign key
-   * @return the ForeignKeyDefinition for the given foreign key
-   * @throws IllegalArgumentException in case no such foreign key exists
-   */
-  ForeignKeyDefinition foreignKeyDefinition(ForeignKey foreignKey);
-
-  /**
-   * @param column the column
-   * @param <T> the attribute type
-   * @return the ForeignKeyDefinitions associated with the given column, an empty collection in case none are found
-   */
-  <T> Collection<ForeignKeyDefinition> foreignKeyDefinitions(Column<T> column);
 
   /**
    * Returns the background color provider, never null
@@ -430,7 +303,7 @@ public interface EntityDefinition {
      * Sets the primary key generator
      * @param keyGenerator the primary key generator
      * @return this {@link Builder} instance
-     * @see #isKeyGenerated()
+     * @see PrimaryKey#isGenerated()
      */
     Builder keyGenerator(KeyGenerator keyGenerator);
 
@@ -490,5 +363,175 @@ public interface EntityDefinition {
      * @return a new {@link EntityDefinition} instance based on this builder
      */
     EntityDefinition build();
+  }
+
+  /**
+   * Holds the attribute definitions for an entity type
+   */
+  interface Attributes {
+
+    /**
+     * @return an unmodifiable list view of the attribute definitions
+     */
+    List<AttributeDefinition<?>> definitions();
+
+    /**
+     * Returns the attributes which values are derived from the value of the given attribute,
+     * an empty collection if no such derived attributes exist
+     * @param attribute the attribute
+     * @param <T> the attribute type
+     * @return a collection containing the attributes which are derived from the given attribute
+     */
+    <T> Collection<Attribute<?>> derived(Attribute<T> attribute);
+
+    /**
+     * @param attribute the attribute
+     * @return true if this entity definition contains the given attribute
+     */
+    boolean contains(Attribute<?> attribute);
+
+    /**
+     * Returns the attribute with the given name, null if none is found.
+     * @param attributeName the name of the attribute to fetch
+     * @param <T> the attribute type
+     * @return the attribute with the given name, null if none is found
+     */
+    <T> Attribute<T> attribute(String attributeName);
+
+    /**
+     * Returns the attributes selected by default for this entity type.
+     * Contains the selectable columns and foreign keys, excluding lazy loaded blob columns.
+     * @return the default select attributes
+     */
+    Collection<Attribute<?>> selected();
+
+    /**
+     * @param attribute the attribute
+     * @param <T> the attribute type
+     * @return the attribute definition associated with {@code attribute}.
+     * @throws IllegalArgumentException in case no such attribute exists
+     * @throws NullPointerException in case {@code attribute} is null
+     */
+    <T> AttributeDefinition<T> definition(Attribute<T> attribute);
+
+    /**
+     * @return a Collection containing all updatable attributes associated with the given entityType
+     */
+    Collection<AttributeDefinition<?>> updatable();
+  }
+
+  /**
+   * Holds the column definitions for an entity type
+   */
+  interface Columns {
+
+    /**
+     * @return a list containing the column definitions for this entity type
+     */
+    List<ColumnDefinition<?>> definitions();
+
+    /**
+     * Returns the columns to search by when searching for entities of this type by a string value
+     * @return the columns to use when searching by string
+     * @see ColumnDefinition.Builder#searchColumn(boolean)
+     */
+    Collection<Column<String>> search();
+
+    /**
+     * @param column the column
+     * @param <T> the column type
+     * @return the column definition associated with the column
+     * @throws NullPointerException in case {@code column} is null
+     */
+    <T> ColumnDefinition<T> definition(Column<T> column);
+  }
+
+  /**
+   * Holds the foreign key definitions for an entity type
+   */
+  interface ForeignKeys {
+
+    /**
+     * @return a list containing the foreign key definitions for this entity type
+     */
+    Collection<ForeignKeyDefinition> definitions();
+
+    /**
+     * @return all foreign keys for this entity type
+     */
+    Collection<ForeignKey> get();
+
+    /**
+     * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key.
+     * @param foreignKey the foreign key
+     * @return the definition of the referenced entity
+     */
+    EntityDefinition referencedBy(ForeignKey foreignKey);
+
+    /**
+     * @param foreignKey the foreign key
+     * @return true if all the underlying columns are updatable
+     */
+    boolean isUpdatable(ForeignKey foreignKey);
+
+    /**
+     * @param column the column
+     * @return true if the given column is part of a foreign key
+     */
+    boolean isForeignKeyColumn(Column<?> column);
+
+    /**
+     * Returns the foreign keys referencing entities of the given type
+     * @param referencedEntityType the referenced entity type
+     * @return the foreign keys referencing the given entity type, an empty collection is returned in case no foreign keys are found
+     */
+    Collection<ForeignKey> get(EntityType referencedEntityType);
+
+    /**
+     * @param foreignKey the foreign key
+     * @return the ForeignKeyDefinition for the given foreign key
+     * @throws IllegalArgumentException in case no such foreign key exists
+     */
+    ForeignKeyDefinition definition(ForeignKey foreignKey);
+
+    /**
+     * @param column the column
+     * @param <T> the attribute type
+     * @return the ForeignKeyDefinitions associated with the given column, an empty collection in case none are found
+     */
+    <T> Collection<ForeignKeyDefinition> definitions(Column<T> column);
+  }
+
+  /**
+   * Holds the primary key definition for an entity type
+   */
+  interface PrimaryKey {
+
+    /**
+     * Returns a list containing all primary key columns associated with this entity type.
+     * If the entity has no primary key columns defined, an empty list is returned.
+     * @return the primary key columns of this entity type, sorted by primary key column index
+     */
+    List<Column<?>> columns();
+
+    /**
+     * Returns a list containing the definitions of all primary key columns associated with this entity type.
+     * If the entity has no primary key columns defined, an empty list is returned.
+     * @return the primary key column definitions of this entity type, sorted by primary key column index
+     */
+    List<ColumnDefinition<?>> definitions();
+
+    /**
+     * @return the object responsible for generating primary key values for entities of this type
+     * @see Builder#keyGenerator(KeyGenerator)
+     */
+    KeyGenerator generator();
+
+    /**
+     * Returns true if the value for the primary key of this entity is generated with a {@link KeyGenerator}.
+     * @return true if the value for the primary key is generated
+     * @see Builder#keyGenerator(KeyGenerator)
+     */
+    boolean isGenerated();
   }
 }

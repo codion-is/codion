@@ -248,14 +248,14 @@ final class SelectQueries {
     }
 
     private List<ColumnDefinition<?>> columnsToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKeyColumnDefinitions());
+      Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().definitions());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->
-                  columnsToSelect.add(definition.columnDefinition(reference.column())));
+                  columnsToSelect.add(definition.columns().definition(reference.column())));
         }
         else if (attribute instanceof Column) {
-          columnsToSelect.add(definition.columnDefinition((Column<?>) attribute));
+          columnsToSelect.add(definition.columns().definition((Column<?>) attribute));
         }
       });
 
@@ -268,14 +268,14 @@ final class SelectQueries {
                       initializeLazyLoadedBlobColumnDefinitions());
 
       return selectableColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
-              definition.columnDefinitions().stream()
+              definition.columns().definitions().stream()
                       .filter(columnDefinition -> !lazyLoadedBlobColumns.contains(columnDefinition))
                       .filter(ColumnDefinition::isSelectable)
                       .collect(toList()));
     }
 
     private Set<ColumnDefinition<?>> initializeLazyLoadedBlobColumnDefinitions() {
-      return definition.columnDefinitions().stream()
+      return definition.columns().definitions().stream()
               .filter(column -> column.attribute().type().isByteArray())
               .map(column -> (ColumnDefinition<byte[]>) column)
               .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
@@ -287,7 +287,8 @@ final class SelectQueries {
     }
 
     private String groupByClause() {
-      return groupByClauseCache.computeIfAbsent(definition.entityType(), type -> definition.columnDefinitions().stream()
+      return groupByClauseCache.computeIfAbsent(definition.entityType(), type ->
+              definition.columns().definitions().stream()
               .filter(ColumnDefinition::isGroupBy)
               .map(ColumnDefinition::columnExpression)
               .collect(Collectors.joining(", ")));
@@ -331,7 +332,7 @@ final class SelectQueries {
     }
 
     private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
-      return entityDefinition.columnDefinition(orderByColumn.column()).columnExpression() +
+      return entityDefinition.columns().definition(orderByColumn.column()).columnExpression() +
               (orderByColumn.isAscending() ? "" : " desc") +
               nullOrderString(orderByColumn.nullOrder());
     }

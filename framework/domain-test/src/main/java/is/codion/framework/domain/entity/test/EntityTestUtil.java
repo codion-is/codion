@@ -163,11 +163,11 @@ public final class EntityTestUtil {
     requireNonNull(valueProvider, "valueProvider");
     EntityDefinition definition = entity.entityDefinition();
     for (ColumnDefinition<?> columnDefinition : columnDefinitions) {
-      if (!definition.isForeignKeyColumn(columnDefinition.attribute())) {
+      if (!definition.foreignKeys().isForeignKeyColumn(columnDefinition.attribute())) {
         entity.put((Attribute<Object>) columnDefinition.attribute(), valueProvider.apply(columnDefinition));
       }
     }
-    for (ForeignKeyDefinition foreignKeyDefinition : entity.entityDefinition().foreignKeyDefinitions()) {
+    for (ForeignKeyDefinition foreignKeyDefinition : entity.entityDefinition().foreignKeys().definitions()) {
       Entity value = (Entity) valueProvider.apply(foreignKeyDefinition);
       if (value != null) {
         entity.put(foreignKeyDefinition.attribute(), value);
@@ -176,13 +176,13 @@ public final class EntityTestUtil {
   }
 
   private static List<ColumnDefinition<?>> insertableColumnDefinitions(EntityDefinition entityDefinition) {
-    return entityDefinition.columnDefinitions().stream()
-            .filter(column -> column.isInsertable() && (!entityDefinition.isKeyGenerated() || !column.isPrimaryKeyColumn()))
+    return entityDefinition.columns().definitions().stream()
+            .filter(column -> column.isInsertable() && (!entityDefinition.primaryKey().isGenerated() || !column.isPrimaryKeyColumn()))
             .collect(toList());
   }
 
   private static List<ColumnDefinition<?>> updatableColumnDefinitions(EntityDefinition entityDefinition) {
-    return entityDefinition.columnDefinitions().stream()
+    return entityDefinition.columns().definitions().stream()
             .filter(column -> column.isUpdatable() && !column.isPrimaryKeyColumn())
             .collect(toList());
   }

@@ -36,7 +36,7 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
   @Override
   public final List<FilteredTableColumn<Attribute<?>>> createColumns() {
     AtomicInteger index = new AtomicInteger();
-    return entityDefinition.attributeDefinitions().stream()
+    return entityDefinition.attributes().definitions().stream()
             .filter(attributeDefinition -> !attributeDefinition.isHidden())
             .map(attributeDefinition -> createColumn(attributeDefinition, index.getAndIncrement()))
             .filter(Optional::isPresent)
@@ -67,9 +67,9 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
    */
   protected final Comparator<?> attributeComparator(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
-      return entityDefinition.referencedEntity((ForeignKey) attribute).comparator();
+      return entityDefinition.foreignKeys().referencedBy((ForeignKey) attribute).comparator();
     }
 
-    return entityDefinition.attributeDefinition(attribute).comparator();
+    return entityDefinition.attributes().definition(attribute).comparator();
   }
 }

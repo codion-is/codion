@@ -275,7 +275,7 @@ public final class AbstractEntityEditModelTest {
     catch (ValidationException e) {
       assertEquals(Employee.COMMISSION, e.attribute());
       assertEquals(50d, e.value());
-      AttributeDefinition<?> attributeDefinition = ENTITIES.definition(Employee.TYPE).attributeDefinition(e.attribute());
+      AttributeDefinition<?> attributeDefinition = ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
       assertTrue(e.getMessage().contains(attributeDefinition.toString()));
       assertTrue(e.getMessage().contains(attributeDefinition.minimumValue().toString()));
     }

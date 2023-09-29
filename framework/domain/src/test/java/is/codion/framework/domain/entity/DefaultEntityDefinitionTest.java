@@ -68,8 +68,8 @@ public class DefaultEntityDefinitionTest {
     assertEquals(entityType.name(), definition.toString());
     assertEquals(entityType, definition.entityType());
     assertEquals("tableName", definition.tableName());
-    assertNotNull(definition.keyGenerator());
-    assertFalse(definition.isKeyGenerated());
+    assertNotNull(definition.primaryKey().generator());
+    assertFalse(definition.primaryKey().isGenerated());
     assertEquals("*", definition.selectQuery().columns());
     assertEquals("dual", definition.selectQuery().from());
     assertEquals("name", definition.selectQuery().groupBy());
@@ -85,7 +85,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     Collection<Attribute<?>> defaultSelectAttributes = domain.entities()
-            .definition(Employee.TYPE).selectAttributes();
+            .definition(Employee.TYPE).attributes().selected();
     assertTrue(defaultSelectAttributes.contains(Employee.ID));
     assertTrue(defaultSelectAttributes.contains(Employee.NAME));
     assertTrue(defaultSelectAttributes.contains(Employee.JOB));
@@ -101,7 +101,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_NAME));
 
     defaultSelectAttributes = domain.entities()
-            .definition(Department.TYPE).selectAttributes();
+            .definition(Department.TYPE).attributes().selected();
     assertTrue(defaultSelectAttributes.contains(Department.ID));
     assertTrue(defaultSelectAttributes.contains(Department.NAME));
     assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
@@ -109,7 +109,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Department.DATA));
 
     defaultSelectAttributes = domain.entities()
-            .definition(Detail.TYPE).selectAttributes();
+            .definition(Detail.TYPE).attributes().selected();
     assertTrue(defaultSelectAttributes.contains(Detail.ID));
     assertTrue(defaultSelectAttributes.contains(Detail.INT));
     assertTrue(defaultSelectAttributes.contains(Detail.DOUBLE));
@@ -176,10 +176,10 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    Collection<Attribute<?>> linked = definition.derivedAttributes(name);
+    Collection<Attribute<?>> linked = definition.attributes().derived(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
-    linked = definition.derivedAttributes(info);
+    linked = definition.attributes().derived(info);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
   }
@@ -200,14 +200,14 @@ public class DefaultEntityDefinitionTest {
 
     EntityDefinition definition = domain.entities().definition(entityType);
 
-    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p0")).isAggregate());
-    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p0")).isGroupBy());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().attribute("p0")).isAggregate());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().attribute("p0")).isGroupBy());
 
-    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p1")).isAggregate());
-    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p1")).isGroupBy());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().attribute("p1")).isAggregate());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().attribute("p1")).isGroupBy());
 
-    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p2")).isAggregate());
-    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p2")).isGroupBy());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().attribute("p2")).isAggregate());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().attribute("p2")).isGroupBy());
   }
 
   @Test
@@ -232,8 +232,8 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeyDefinition(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).isNullable());
-    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyDefinition(Detail.MASTER_FK).isNullable());
+    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeys().definition(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).isNullable());
+    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeys().definition(Detail.MASTER_FK).isNullable());
   }
 
   @Test
@@ -293,8 +293,8 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertFalse(definition.derivedAttributes(column1).isEmpty());
-    assertFalse(definition.derivedAttributes(column2).isEmpty());
+    assertFalse(definition.attributes().derived(column1).isEmpty());
+    assertFalse(definition.attributes().derived(column2).isEmpty());
   }
 
   @Test
@@ -376,9 +376,9 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertNotNull(definition.keyGenerator());
-    assertFalse(definition.isKeyGenerated());
-    assertTrue(definition.keyGenerator().isInserted());
+    assertNotNull(definition.primaryKey().generator());
+    assertFalse(definition.primaryKey().isGenerated());
+    assertTrue(definition.primaryKey().generator().isInserted());
   }
 
   @Test
@@ -407,9 +407,9 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertNotNull(definition.keyGenerator());
-    assertTrue(definition.isKeyGenerated());
-    assertFalse(definition.keyGenerator().isInserted());
+    assertNotNull(definition.primaryKey().generator());
+    assertTrue(definition.primaryKey().isGenerated());
+    assertFalse(definition.primaryKey().generator().isInserted());
   }
 
   @Test

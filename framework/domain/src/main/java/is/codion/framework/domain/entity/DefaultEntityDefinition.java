@@ -189,6 +189,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    */
   private final EntityAttributes entityAttributes;
 
+  private final PrimaryKey primaryKey = new DefaultPrimaryKey();
+  private final Attributes attributes = new DefaultAttributes();
+  private final Columns columns = new DefaultColumns();
+  private final ForeignKeys foreignKeys = new DefaultForeignKeys();
+
   private DefaultEntityDefinition(DefaultBuilder builder) {
     this.entityType = builder.attributes.entityType;
     this.caption = builder.caption;
@@ -295,16 +300,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public KeyGenerator keyGenerator() {
-    return keyGenerator;
-  }
-
-  @Override
-  public boolean isKeyGenerated() {
-    return keyGenerated;
-  }
-
-  @Override
   public OrderBy orderBy() {
     return orderBy;
   }
@@ -330,152 +325,28 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean contains(Attribute<?> attribute) {
-    return entityAttributes.attributeMap.containsKey(requireNonNull(attribute));
+  public PrimaryKey primaryKey() {
+    return primaryKey;
   }
 
   @Override
-  public <T> Attribute<T> attribute(String attributeName) {
-    return (Attribute<T>) entityAttributes.attributeNameMap.get(requireNonNull(attributeName));
+  public Attributes attributes() {
+    return attributes;
   }
 
   @Override
-  public Collection<Column<String>> searchColumns() {
-    return entityAttributes.columnDefinitions.stream()
-            .filter(ColumnDefinition::isSearchColumn)
-            .map(column -> ((ColumnDefinition<String>) column).attribute())
-            .collect(toList());
+  public Columns columns() {
+    return columns;
   }
 
   @Override
-  public Collection<Attribute<?>> selectAttributes() {
-    return entityAttributes.selectAttributes;
-  }
-
-  @Override
-  public <T> ColumnDefinition<T> columnDefinition(Column<T> column) {
-    AttributeDefinition<T> definition = (AttributeDefinition<T>) entityAttributes.attributeMap.get(requireNonNull(column, COLUMN));
-    if (definition == null) {
-      throw new IllegalArgumentException("Column " + column + " not found in entity: " + entityType);
-    }
-    if (!(definition instanceof ColumnDefinition)) {
-      throw new IllegalArgumentException("Attribute based on " + column + " is not a Column");
-    }
-
-    return (ColumnDefinition<T>) definition;
-  }
-
-  @Override
-  public <T> AttributeDefinition<T> attributeDefinition(Attribute<T> attribute) {
-    AttributeDefinition<T> definition = (AttributeDefinition<T>) entityAttributes.attributeMap.get(requireNonNull(attribute, ATTRIBUTE));
-    if (definition == null) {
-      throw new IllegalArgumentException("Attribute " + attribute + " not found in entity: " + entityType);
-    }
-
-    return definition;
-  }
-
-  @Override
-  public Collection<AttributeDefinition<?>> updatableAttributeDefinitions() {
-    List<ColumnDefinition<?>> updatableColumns = entityAttributes.columnDefinitions.stream()
-            .filter(ColumnDefinition::isUpdatable)
-            .filter(column -> (!column.isPrimaryKeyColumn() || !isKeyGenerated()))
-            .collect(toList());
-    updatableColumns.removeIf(column -> isForeignKeyColumn(column.attribute()));
-    List<AttributeDefinition<?>> updatable = new ArrayList<>(updatableColumns);
-    for (ForeignKeyDefinition definition : entityAttributes.foreignKeyDefinitions) {
-      if (isUpdatable(definition.attribute())) {
-        updatable.add(definition);
-      }
-    }
-
-    return updatable;
-  }
-
-  @Override
-  public boolean isUpdatable(ForeignKey foreignKey) {
-    return requireNonNull(foreignKey, FOREIGN_KEY).references().stream()
-            .map(reference -> columnDefinition(reference.column()))
-            .allMatch(ColumnDefinition::isUpdatable);
-  }
-
-  @Override
-  public boolean isForeignKeyColumn(Column<?> column) {
-    return entityAttributes.foreignKeyColumns.contains(requireNonNull(column, COLUMN));
-  }
-
-  @Override
-  public Collection<ForeignKey> foreignKeys(EntityType referencedEntityType) {
-    requireNonNull(referencedEntityType, "referencedEntityType");
-    return foreignKeys().stream()
-            .filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
-            .collect(toList());
-  }
-
-  @Override
-  public ForeignKeyDefinition foreignKeyDefinition(ForeignKey foreignKey) {
-    ForeignKeyDefinition definition = entityAttributes.foreignKeyDefinitionMap.get(requireNonNull(foreignKey, FOREIGN_KEY));
-    if (definition == null) {
-      throw new IllegalArgumentException("Foreign key: " + foreignKey + " not found in entity of type: " + entityType);
-    }
-
-    return definition;
-  }
-
-  @Override
-  public <T> Collection<ForeignKeyDefinition> foreignKeyDefinitions(Column<T> column) {
-    return entityAttributes.columnForeignKeyDefinitions
-            .getOrDefault(requireNonNull(column, COLUMN), emptyList());
-  }
-
-  @Override
-  public List<AttributeDefinition<?>> attributeDefinitions() {
-    return entityAttributes.attributeDefinitions;
+  public ForeignKeys foreignKeys() {
+    return foreignKeys;
   }
 
   @Override
   public boolean hasPrimaryKey() {
-    return !entityAttributes.primaryKeyColumnDefinitions.isEmpty();
-  }
-
-  @Override
-  public <T> Collection<Attribute<?>> derivedAttributes(Attribute<T> attribute) {
-    return entityAttributes.derivedAttributes.getOrDefault(requireNonNull(attribute, ATTRIBUTE), emptySet());
-  }
-
-  @Override
-  public List<Column<?>> primaryKeyColumns() {
-    return entityAttributes.primaryKeyColumns;
-  }
-
-  @Override
-  public List<ColumnDefinition<?>> primaryKeyColumnDefinitions() {
-    return entityAttributes.primaryKeyColumnDefinitions;
-  }
-
-  @Override
-  public List<ColumnDefinition<?>> columnDefinitions() {
-    return entityAttributes.columnDefinitions;
-  }
-
-  @Override
-  public List<ForeignKeyDefinition> foreignKeyDefinitions() {
-    return entityAttributes.foreignKeyDefinitions;
-  }
-
-  @Override
-  public Collection<ForeignKey> foreignKeys() {
-    return entityAttributes.foreignKeyDefinitionMap.keySet();
-  }
-
-  @Override
-  public EntityDefinition referencedEntity(ForeignKey foreignKey) {
-    EntityDefinition definition = referencedEntities.get(requireNonNull(foreignKey, FOREIGN_KEY));
-    if (definition == null) {
-      throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);
-    }
-
-    return definition;
+    return !primaryKey.definitions().isEmpty();
   }
 
   @Override
@@ -518,10 +389,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     if (!hasPrimaryKey()) {
       throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");
     }
-    if (primaryKeyColumns().size() > 1) {
+    if (primaryKey.columns().size() > 1) {
       throw new IllegalStateException(entityType + " has a composite primary key");
     }
-    Column<T> column = (Column<T>) primaryKeyColumns().get(0);
+    Column<T> column = (Column<T>) primaryKey.columns().get(0);
     column.type().validateType(value);
 
     return new DefaultKey(this, column, value, true);
@@ -546,7 +417,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   void setReferencedEntityDefinition(ForeignKey foreignKey, EntityDefinition definition) {
     requireNonNull(foreignKey, FOREIGN_KEY);
     requireNonNull(definition, "definition");
-    ForeignKeyDefinition foreignKeyDefinition = foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = foreignKeys.definition(foreignKey);
     if (referencedEntities.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
@@ -569,11 +440,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
           defaultMethodHandles.put(method.getName(), createDefaultMethodHandle(method));
         }
         else {
-          attributeDefinitions().stream()
+          attributes.definitions().stream()
                   .filter(definition -> isGetter(method, definition))
                   .findFirst()
                   .ifPresent(definition -> getters.put(method.getName(), definition.attribute()));
-          attributeDefinitions().stream()
+          attributes.definitions().stream()
                   .filter(definition -> isSetter(method, definition))
                   .findFirst()
                   .ifPresent(definition -> setters.put(method.getName(), definition.attribute()));
@@ -668,6 +539,181 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     return valueClass;
+  }
+
+  private final class DefaultAttributes implements Attributes, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public List<AttributeDefinition<?>> definitions() {
+      return entityAttributes.attributeDefinitions;
+    }
+
+    @Override
+    public <T> Collection<Attribute<?>> derived(Attribute<T> attribute) {
+      return entityAttributes.derivedAttributes.getOrDefault(requireNonNull(attribute, ATTRIBUTE), emptySet());
+    }
+
+    @Override
+    public boolean contains(Attribute<?> attribute) {
+      return entityAttributes.attributeMap.containsKey(requireNonNull(attribute));
+    }
+
+    @Override
+    public <T> Attribute<T> attribute(String attributeName) {
+      return (Attribute<T>) entityAttributes.attributeNameMap.get(requireNonNull(attributeName));
+    }
+
+    @Override
+    public Collection<Attribute<?>> selected() {
+      return entityAttributes.selectAttributes;
+    }
+
+    @Override
+    public <T> AttributeDefinition<T> definition(Attribute<T> attribute) {
+      AttributeDefinition<T> definition = (AttributeDefinition<T>) entityAttributes.attributeMap.get(requireNonNull(attribute, ATTRIBUTE));
+      if (definition == null) {
+        throw new IllegalArgumentException("Attribute " + attribute + " not found in entity: " + entityType);
+      }
+
+      return definition;
+    }
+
+    @Override
+    public Collection<AttributeDefinition<?>> updatable() {
+      List<ColumnDefinition<?>> updatableColumns = entityAttributes.columnDefinitions.stream()
+              .filter(ColumnDefinition::isUpdatable)
+              .filter(column -> (!column.isPrimaryKeyColumn() || !primaryKey.isGenerated()))
+              .collect(toList());
+      updatableColumns.removeIf(column -> foreignKeys.isForeignKeyColumn(column.attribute()));
+      List<AttributeDefinition<?>> updatable = new ArrayList<>(updatableColumns);
+      for (ForeignKeyDefinition definition : entityAttributes.foreignKeyDefinitions) {
+        if (foreignKeys.isUpdatable(definition.attribute())) {
+          updatable.add(definition);
+        }
+      }
+
+      return updatable;
+    }
+  }
+
+  private final class DefaultColumns implements Columns, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public List<ColumnDefinition<?>> definitions() {
+      return entityAttributes.columnDefinitions;
+    }
+
+    @Override
+    public Collection<Column<String>> search() {
+      return entityAttributes.columnDefinitions.stream()
+              .filter(ColumnDefinition::isSearchColumn)
+              .map(column -> ((ColumnDefinition<String>) column).attribute())
+              .collect(toList());
+    }
+
+    @Override
+    public <T> ColumnDefinition<T> definition(Column<T> column) {
+      AttributeDefinition<T> definition = (AttributeDefinition<T>) entityAttributes.attributeMap.get(requireNonNull(column, COLUMN));
+      if (definition == null) {
+        throw new IllegalArgumentException("Column " + column + " not found in entity: " + entityType);
+      }
+      if (!(definition instanceof ColumnDefinition)) {
+        throw new IllegalArgumentException("Column " + column + " has not been defined as a column");
+      }
+
+      return (ColumnDefinition<T>) definition;
+    }
+  }
+
+  private final class DefaultForeignKeys implements ForeignKeys, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public Collection<ForeignKeyDefinition> definitions() {
+      return entityAttributes.foreignKeyDefinitions;
+    }
+
+    @Override
+    public Collection<ForeignKey> get() {
+      return entityAttributes.foreignKeyDefinitionMap.keySet();
+    }
+
+    @Override
+    public EntityDefinition referencedBy(ForeignKey foreignKey) {
+      EntityDefinition definition = referencedEntities.get(requireNonNull(foreignKey, FOREIGN_KEY));
+      if (definition == null) {
+        throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);
+      }
+
+      return definition;
+
+    }
+
+    @Override
+    public boolean isUpdatable(ForeignKey foreignKey) {
+      return requireNonNull(foreignKey, FOREIGN_KEY).references().stream()
+              .map(reference -> columns.definition(reference.column()))
+              .allMatch(ColumnDefinition::isUpdatable);
+    }
+
+    @Override
+    public boolean isForeignKeyColumn(Column<?> column) {
+      return entityAttributes.foreignKeyColumns.contains(requireNonNull(column, COLUMN));
+    }
+
+    @Override
+    public Collection<ForeignKey> get(EntityType referencedEntityType) {
+      requireNonNull(referencedEntityType, "referencedEntityType");
+      return get().stream()
+              .filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
+              .collect(toList());
+    }
+
+    @Override
+    public ForeignKeyDefinition definition(ForeignKey foreignKey) {
+      ForeignKeyDefinition definition = entityAttributes.foreignKeyDefinitionMap.get(requireNonNull(foreignKey, FOREIGN_KEY));
+      if (definition == null) {
+        throw new IllegalArgumentException("Foreign key: " + foreignKey + " not found in entity of type: " + entityType);
+      }
+
+      return definition;
+    }
+
+    @Override
+    public <T> Collection<ForeignKeyDefinition> definitions(Column<T> column) {
+      return entityAttributes.columnForeignKeyDefinitions
+              .getOrDefault(requireNonNull(column, COLUMN), emptyList());
+    }
+  }
+
+  private final class DefaultPrimaryKey implements PrimaryKey, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public List<Column<?>> columns() {
+      return entityAttributes.primaryKeyColumns;
+    }
+
+    @Override
+    public List<ColumnDefinition<?>> definitions() {
+      return entityAttributes.primaryKeyColumnDefinitions;
+    }
+
+    @Override
+    public KeyGenerator generator() {
+      return keyGenerator;
+    }
+
+    @Override
+    public boolean isGenerated() {
+      return keyGenerated;
+    }
   }
 
   private static final class EntityAttributes implements Serializable {

@@ -62,7 +62,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     generator.writeStartObject();
     EntityDefinition definition = entity.entityDefinition();
     for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
-      AttributeDefinition<?> attributeDefinition = definition.attributeDefinition(entry.getKey());
+      AttributeDefinition<?> attributeDefinition = definition.attributes().definition(entry.getKey());
       if (include(attributeDefinition, entity)) {
         generator.writeFieldName(attributeDefinition.attribute().name());
         mapper.writeValue(generator, entry.getValue());

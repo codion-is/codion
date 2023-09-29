@@ -312,7 +312,7 @@ public final class ConditionTest {
   @Test
   void whereClause() {
     EntityDefinition departmentDefinition = ENTITIES.definition(Department.TYPE);
-    ColumnDefinition<?> columnDefinition = departmentDefinition.columnDefinition(Department.NAME);
+    ColumnDefinition<?> columnDefinition = departmentDefinition.columns().definition(Department.NAME);
     Condition condition = Department.NAME.equalTo("upper");
     Assertions.assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
     condition = Department.NAME.like("upper%");

@@ -62,9 +62,9 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param visitedKeys used to prevent cyclical dependencies wreaking havoc
    */
   private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity.Key> visitedKeys) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().primaryKeyColumnDefinitions()));
-    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.entityDefinition().foreignKeyDefinitions()), visitedKeys);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().attributeDefinitions()));
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().primaryKey().definitions()));
+    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.entityDefinition().foreignKeys().definitions()), visitedKeys);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().attributes().definitions()));
   }
 
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnDefinition<?>> primaryKeyColumns) {

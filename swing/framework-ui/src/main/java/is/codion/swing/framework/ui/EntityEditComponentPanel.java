@@ -320,7 +320,7 @@ public class EntityEditComponentPanel extends JPanel {
   public final void selectInputComponent() {
     Entities entities = editModel().entities();
     List<AttributeDefinition<?>> attributeDefinitions = selectComponentAttributes().stream()
-            .map(attribute -> entities.definition(attribute.entityType()).attributeDefinition(attribute))
+            .map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
             .collect(Collectors.toList());
     Optional<AttributeDefinition<?>> optionalAttribute = attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
@@ -934,7 +934,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = editModel().entities()
-            .definition(requireNonNull(attribute).entityType()).attributeDefinition(attribute);
+            .definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
     return (LabelBuilder<T>) Components.label(attributeDefinition.caption())
             .displayedMnemonic(attributeDefinition.mnemonic() == null ? 0 : attributeDefinition.mnemonic())
             .labelFor(getComponentInternal(attribute));

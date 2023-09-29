@@ -9626,3 +9626,4 @@
   DefaultLocalEntityConnection, static imports used for methods in Entity
   Select.Builder.forUpdate() now sets the fetchDepth to zero, which can be subsequently reverted
   DefaultLocalEntityConnection now respects the fetch depth of a select for update query, instead of skipping setting the referenced entities altogether
+  EntityDefinition.Attributes, Columns, ForeignKeys and PrimaryKey classes added

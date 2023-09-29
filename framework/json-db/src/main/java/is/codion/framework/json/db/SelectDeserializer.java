@@ -68,7 +68,7 @@ final class SelectDeserializer extends StdDeserializer<Select> {
     }
     JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
-      for (ForeignKey foreignKey : definition.foreignKeys()) {
+      for (ForeignKey foreignKey : definition.foreignKeys().get()) {
         JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.name());
         if (fetchDepthNode != null) {
           selectBuilder.fetchDepth(foreignKey, fetchDepthNode.asInt());
@@ -95,7 +95,7 @@ final class SelectDeserializer extends StdDeserializer<Select> {
     OrderBy.Builder builder = OrderBy.builder();
     for (JsonNode node : jsonNode) {
       String[] split = node.asText().split(":");
-      Column<Object> column = (Column<Object>) definition.attribute(split[0]);
+      Column<Object> column = (Column<Object>) definition.attributes().attribute(split[0]);
       String order = split[1];
       NullOrder nullOrder = NullOrder.valueOf(split[2]);
       if ("asc".equals(order)) {
@@ -132,7 +132,7 @@ final class SelectDeserializer extends StdDeserializer<Select> {
   private static List<Attribute<?>> deserializeAttributes(EntityDefinition definition, JsonNode jsonNode) {
     List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
     for (JsonNode node : jsonNode) {
-      attributes.add(definition.attribute(node.asText()));
+      attributes.add(definition.attributes().attribute(node.asText()));
     }
 
     return attributes;

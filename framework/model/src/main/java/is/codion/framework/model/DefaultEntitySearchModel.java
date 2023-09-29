@@ -240,7 +240,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
 
     return searchColumns.stream()
-            .map(column -> definition.columnDefinition(column).caption())
+            .map(column -> definition.columns().definition(column).caption())
             .collect(joining(", "));
   }
 
@@ -308,7 +308,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);
       this.connectionProvider = requireNonNull(connectionProvider);
-      this.searchColumns = connectionProvider.entities().definition(entityType).searchColumns();
+      this.searchColumns = connectionProvider.entities().definition(entityType).columns().search();
     }
 
     @Override

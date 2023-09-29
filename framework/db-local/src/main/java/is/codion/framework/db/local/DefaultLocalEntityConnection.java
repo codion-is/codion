@@ -450,7 +450,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (!requireNonNull(select, "select").where().entityType().equals(column.entityType())) {
       throw new IllegalArgumentException("Condition entity type " + column.entityType() + " required, got " + select.where().entityType());
     }
-    ColumnDefinition<T> columnDefinition = entityDefinition.columnDefinition(column);
+    ColumnDefinition<T> columnDefinition = entityDefinition.columns().definition(column);
     verifyColumnIsSelectable(columnDefinition, entityDefinition);
     Condition combinedCondition = and(select.where(), column.isNotNull());
     String selectQuery = selectQueries.builder(entityDefinition)
@@ -483,7 +483,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
                     .select(where(condition)
-                            .attributes(entityDefinition.primaryKeyColumns())
+                            .attributes(entityDefinition.primaryKey().columns())
                             .build())
                     .build())
             .build();
@@ -623,7 +623,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(blobData, "blobData");
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
     checkIfReadOnly(entityDefinition.entityType());
-    ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
+    ColumnDefinition<byte[]> columnDefinition = entityDefinition.columns().definition(blobColumn);
     Condition condition = key(primaryKey);
     String updateQuery = updateQuery(entityDefinition.tableName(), singletonList(columnDefinition), condition.toString(entityDefinition));
     logEntry("writeBlob", updateQuery);
@@ -668,7 +668,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
-    ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
+    ColumnDefinition<byte[]> columnDefinition = entityDefinition.columns().definition(blobColumn);
     Exception exception = null;
     Condition condition = key(primaryKey);
     String selectQuery = selectQueries.builder(entityDefinition)
@@ -776,7 +776,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         for (Entity entity : entities) {
           EntityDefinition entityDefinition = domainEntities.definition(entity.entityType());
-          KeyGenerator keyGenerator = entityDefinition.keyGenerator();
+          KeyGenerator keyGenerator = entityDefinition.primaryKey().generator();
           keyGenerator.beforeInsert(entity, connection);
 
           populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.isInserted()),
@@ -934,7 +934,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                    List<Object> statementValues) throws UpdateException {
     EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
     for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
-      ColumnDefinition<Object> columnDefinition = entityDefinition.columnDefinition((Column<Object>) columnValue.getKey());
+      ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
       if (!columnDefinition.isUpdatable()) {
         throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
       }
@@ -1018,7 +1018,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private Collection<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
                                                             Collection<Attribute<?>> conditionSelectAttributes) {
-    Collection<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeyDefinitions();
+    Collection<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeys().definitions();
     if (conditionSelectAttributes.isEmpty()) {
       return foreignKeyDefinitions;
     }
@@ -1171,7 +1171,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<ForeignKeyDefinition> initializeNonSoftForeignKeyReferences(EntityType entityType) {
     return domainEntities.definitions().stream()
-            .flatMap(entityDefinition -> entityDefinition.foreignKeyDefinitions().stream())
+            .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
             .filter(foreignKeyDefinition -> !foreignKeyDefinition.isSoftReference())
             .filter(foreignKeyDefinition -> foreignKeyDefinition.referencedType().equals(entityType))
             .collect(toList());
@@ -1217,7 +1217,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     EntityDefinition entityDefinition = domainEntities.definition(entityType);
     List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
             new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
-    entityDefinition.primaryKeyColumnDefinitions().forEach(primaryKeyColumn -> {
+    entityDefinition.primaryKey().definitions().forEach(primaryKeyColumn -> {
       if (!writableAndPrimaryKeyColumns.contains(primaryKeyColumn)) {
         writableAndPrimaryKeyColumns.add(primaryKeyColumn);
       }
@@ -1374,7 +1374,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static List<ColumnDefinition<?>> writableColumnDefinitions(
           EntityDefinition entityDefinition, boolean includePrimaryKeyColumns, boolean includeNonUpdatable) {
-    return entityDefinition.columnDefinitions().stream()
+    return entityDefinition.columns().definitions().stream()
             .filter(column -> isWritable(column, includePrimaryKeyColumns, includeNonUpdatable))
             .collect(toList());
   }
@@ -1388,7 +1388,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,
                                                              List<Column<?>> columns) {
     return columns.stream()
-            .map(entityDefinition::columnDefinition)
+            .map(entityDefinition.columns()::definition)
             .collect(toList());
   }
 

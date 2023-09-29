@@ -355,10 +355,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
     Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
     if (attribute instanceof ForeignKey) {
-      return entityDefinition().isUpdatable((ForeignKey) attribute);
+      return entityDefinition().foreignKeys().isUpdatable((ForeignKey) attribute);
     }
 
-    AttributeDefinition<?> attributeDefinition = entityDefinition().attributeDefinition(attribute);
+    AttributeDefinition<?> attributeDefinition = entityDefinition().attributes().definition(attribute);
 
     return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isUpdatable();
   }
@@ -435,7 +435,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");
-    entityDefinition().foreignKeyDefinition(foreignKey);
+    entityDefinition().foreignKeys().definition(foreignKey);
     boolean changed = false;
     for (Entity entity : items()) {
       for (Entity foreignKeyValue : foreignKeyValues) {
@@ -879,7 +879,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       return emptyList();
     }
 
-    return entityDefinition().selectAttributes().stream()
+    return entityDefinition().attributes().selected().stream()
             .filter(attribute -> columnModel().visible(attribute).get())
             .collect(toList());
   }
@@ -922,12 +922,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void addEditListeners() {
-    entityDefinition().foreignKeys().forEach(foreignKey ->
+    entityDefinition().foreignKeys().get().forEach(foreignKey ->
             EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
   private void removeEditListeners() {
-    entityDefinition().foreignKeys().forEach(foreignKey ->
+    entityDefinition().foreignKeys().get().forEach(foreignKey ->
             EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
@@ -1064,7 +1064,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private boolean isColumn(Attribute<?> attribute) {
-    return entityDefinition().attributeDefinition(attribute) instanceof ColumnDefinition;
+    return entityDefinition().attributes().definition(attribute) instanceof ColumnDefinition;
   }
 
   private JSONObject createPreferences() throws Exception {
@@ -1131,7 +1131,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       updated.values().stream()
               .collect(groupingBy(Entity::entityType, HashMap::new, toList()))
               .forEach((entityType, entities) ->
-                      entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
+                      entityDefinition().foreignKeys().get(entityType).forEach(foreignKey ->
                               replace(foreignKey, entities)));
     }
   }
@@ -1208,7 +1208,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         return Optional.empty();
       }
 
-      AttributeDefinition<?> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+      AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
       if (attributeDefinition.isHidden()) {
         return Optional.empty();
       }
@@ -1241,7 +1241,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
-      AttributeDefinition<?> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+      AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
       if (attribute.type().isNumerical() && !(attributeDefinition instanceof ItemColumnDefinition)) {
         return Optional.of(summaryValueProvider(attribute, tableModel, format));
       }

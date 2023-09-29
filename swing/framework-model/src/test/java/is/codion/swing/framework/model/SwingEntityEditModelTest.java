@@ -77,7 +77,8 @@ public class SwingEntityEditModelTest {
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.items().isEmpty());
-    ForeignKeyDefinition deptForeignKey = employeeEditModel.entities().definition(Employee.TYPE).foreignKeyDefinition(Employee.DEPARTMENT_FK);
+    ForeignKeyDefinition deptForeignKey = employeeEditModel.entities()
+            .definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK);
     assertEquals(deptForeignKey.referencedType(), model.entityType());
     model.refresh();
     for (Entity department : model.items()) {

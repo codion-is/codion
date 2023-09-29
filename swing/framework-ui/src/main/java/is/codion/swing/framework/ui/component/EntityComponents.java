@@ -87,7 +87,7 @@ public class EntityComponents {
     if (attribute instanceof ForeignKey) {
       return false;
     }
-    AttributeDefinition<?> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
     if (attributeDefinition instanceof ItemColumnDefinition) {
       return true;
     }
@@ -119,7 +119,7 @@ public class EntityComponents {
    * @see #supports(Attribute)
    */
   public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
     if (attributeDefinition instanceof ItemColumnDefinition) {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
     }
@@ -170,7 +170,7 @@ public class EntityComponents {
    * @return a JCheckBox builder
    */
   public final CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
-    AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.checkBox()
             .toolTipText(attributeDefinition.description())
@@ -186,7 +186,7 @@ public class EntityComponents {
    * @return a JToggleButton builder
    */
   public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
-    AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
             .toolTipText(attributeDefinition.description())
@@ -200,7 +200,7 @@ public class EntityComponents {
    * @return a boolean JComboBox builder
    */
   public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
-    AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.booleanComboBox(booleanItemComboBoxModel())
             .toolTipText(attributeDefinition.description());
@@ -215,7 +215,7 @@ public class EntityComponents {
    */
   public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
                                                                                                                                     EntityComboBoxModel comboBoxModel) {
-    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)
             .toolTipText(foreignKeyDefinition.description());
@@ -228,7 +228,7 @@ public class EntityComponents {
    * @return a foreign key {@link EntitySearchField} builder
    */
   public final EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
-    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
     return EntitySearchField.builder(searchModel)
             .toolTipText(foreignKeyDefinition.description() == null ? searchModel.description() : foreignKeyDefinition.description());
@@ -241,7 +241,7 @@ public class EntityComponents {
    * @return a foreign key JTextField builder
    */
   public final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
-    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
     return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
             .toolTipText(foreignKeyDefinition.description())
@@ -256,7 +256,7 @@ public class EntityComponents {
    * @return a foreign key JLabel builder
    */
   public final LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
-    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeyDefinition(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
     return Components.<Entity>label()
             .toolTipText(foreignKeyDefinition.description());
@@ -271,7 +271,7 @@ public class EntityComponents {
    * @throws IllegalArgumentException in case the given attribute is not associated with a {@link ItemColumnDefinition}
    */
   public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
     if (!(attributeDefinition instanceof ItemColumnDefinition)) {
       throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not an item column");
     }
@@ -292,7 +292,7 @@ public class EntityComponents {
    */
   public final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
                                                                                                                  ComboBoxModel<T> comboBoxModel) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
             .toolTipText(attributeDefinition.description());
@@ -305,7 +305,7 @@ public class EntityComponents {
    * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
-    return temporalInputPanel(attribute, entityDefinition.attributeDefinition(attribute).dateTimePattern());
+    return temporalInputPanel(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
@@ -317,7 +317,7 @@ public class EntityComponents {
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
     return Components.temporalInputPanel(attribute.type().valueClass(), dateTimePattern)
-            .toolTipText(entityDefinition.attributeDefinition(attribute).description())
+            .toolTipText(entityDefinition.attributes().definition(attribute).description())
             .buttonIcon(FrameworkIcons.instance().calendar());
   }
 
@@ -327,7 +327,7 @@ public class EntityComponents {
    * @return a {@link TextInputPanel} builder
    */
   public final TextInputPanel.Builder textInputPanel(Attribute<String> attribute) {
-    AttributeDefinition<String> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.textInputPanel()
             .toolTipText(attributeDefinition.description())
@@ -342,7 +342,7 @@ public class EntityComponents {
    * @return a JTextArea builder
    */
   public final TextAreaBuilder textArea(Attribute<String> attribute) {
-    AttributeDefinition<String> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
     if (!attribute.type().isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
@@ -361,7 +361,7 @@ public class EntityComponents {
    * @return a JTextField builder
    */
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     Class<T> valueClass = attribute.type().valueClass();
     if (valueClass.equals(LocalTime.class)) {
@@ -393,7 +393,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
-    return localTimeField(attribute, entityDefinition.attributeDefinition(attribute).dateTimePattern());
+    return localTimeField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
@@ -404,7 +404,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
     return Components.localTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.attributeDefinition(attribute).description());
+            .toolTipText(entityDefinition.attributes().definition(attribute).description());
   }
 
   /**
@@ -413,7 +413,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
-    return localDateField(attribute, entityDefinition.attributeDefinition(attribute).dateTimePattern());
+    return localDateField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
@@ -424,7 +424,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
     return Components.localDateField(dateTimePattern)
-            .toolTipText(entityDefinition.attributeDefinition(attribute).description());
+            .toolTipText(entityDefinition.attributes().definition(attribute).description());
   }
 
   /**
@@ -433,7 +433,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
-    return localDateTimeField(attribute, entityDefinition.attributeDefinition(attribute).dateTimePattern());
+    return localDateTimeField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
@@ -444,7 +444,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
     return Components.localDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.attributeDefinition(attribute).description());
+            .toolTipText(entityDefinition.attributes().definition(attribute).description());
   }
 
   /**
@@ -453,7 +453,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
-    return offsetDateTimeField(attribute, entityDefinition.attributeDefinition(attribute).dateTimePattern());
+    return offsetDateTimeField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
@@ -464,7 +464,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
     return Components.offsetDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.attributeDefinition(attribute).description());
+            .toolTipText(entityDefinition.attributes().definition(attribute).description());
   }
 
   /**
@@ -474,7 +474,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
-    return temporalField(attribute, entityDefinition.attributeDefinition(attribute).dateTimePattern());
+    return temporalField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
@@ -485,7 +485,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.temporalField(attributeDefinition.attribute().type().valueClass(), dateTimePattern)
             .toolTipText(attributeDefinition.description());
@@ -497,7 +497,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Short> shortField(Attribute<Short> attribute) {
-    AttributeDefinition<Short> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Short> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.shortField()
             .format(attributeDefinition.format())
@@ -512,7 +512,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
-    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.integerField()
             .format(attributeDefinition.format())
@@ -527,7 +527,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Long> longField(Attribute<Long> attribute) {
-    AttributeDefinition<Long> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Long> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.longField()
             .format(attributeDefinition.format())
@@ -542,7 +542,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
-    AttributeDefinition<Double> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.doubleField()
             .format(attributeDefinition.format())
@@ -558,7 +558,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
-    AttributeDefinition<BigDecimal> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<BigDecimal> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.bigDecimalField()
             .format(attributeDefinition.format())
@@ -575,7 +575,7 @@ public class EntityComponents {
    * @return a {@link javax.swing.JSlider} builder
    */
   public final SliderBuilder slider(Attribute<Integer> attribute) {
-    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
     boundedRangeModel.setMinimum(attributeDefinition.minimumValue().intValue());
@@ -591,7 +591,7 @@ public class EntityComponents {
    * @return a {@link javax.swing.JSlider} builder
    */
   public final SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
-    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.slider(boundedRangeModel)
             .toolTipText(attributeDefinition.description());
@@ -603,7 +603,7 @@ public class EntityComponents {
    * @return a {@link javax.swing.JSpinner} builder
    */
   public final NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
-    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.integerSpinner()
             .minimum(attributeDefinition.minimumValue().intValue())
@@ -617,7 +617,7 @@ public class EntityComponents {
    * @return a {@link javax.swing.JSpinner} builder
    */
   public final NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
-    AttributeDefinition<Double> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.doubleSpinner()
             .minimum(attributeDefinition.minimumValue().doubleValue())
@@ -633,7 +633,7 @@ public class EntityComponents {
    * @return a {@link javax.swing.JSpinner} builder
    */
   public final <T> ListSpinnerBuilder<T> listSpinner(Attribute<T> attribute, SpinnerListModel listModel) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.<T>listSpinner(listModel)
             .toolTipText(attributeDefinition.description());
@@ -646,7 +646,7 @@ public class EntityComponents {
    * @return a {@link javax.swing.JSpinner} builder
    */
   public final <T> ItemSpinnerBuilder<T> itemSpinner(Attribute<T> attribute) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
     if (!(attributeDefinition instanceof ItemColumnDefinition)) {
       throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item column");
     }
@@ -661,7 +661,7 @@ public class EntityComponents {
    * @return a JFormattedTextField builder
    */
   public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
-    AttributeDefinition<String> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+    AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.maskedTextField()
             .toolTipText(attributeDefinition.description());

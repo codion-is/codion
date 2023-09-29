@@ -200,7 +200,7 @@ public final class EntityDialogs {
         throw new IllegalArgumentException("All entities must be of the same type when editing");
       }
 
-      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
+      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
       Collection<Entity> selectedEntities = Entity.copy(entities);
       Collection<T> values = Entity.distinct(attribute, selectedEntities);
       T initialValue = values.size() == 1 ? values.iterator().next() : null;
@@ -264,8 +264,8 @@ public final class EntityDialogs {
       @Override
       public void accept(ValidationException exception) {
         requireNonNull(exception);
-        String title = editModel.entityDefinition()
-                .attributeDefinition(exception.attribute())
+        String title = editModel.entityDefinition().attributes()
+                .definition(exception.attribute())
                 .caption();
         JOptionPane.showMessageDialog(owner, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
       }
@@ -302,7 +302,8 @@ public final class EntityDialogs {
 
     @Override
     public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
-      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
+      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
+              .attributes().definition(attribute);
       if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.type().isString()) {
         //special handling for non-item based String attributes, text input panel instead of a text field
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())

@@ -572,8 +572,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   protected void onValidationException(ValidationException exception) {
     requireNonNull(exception);
     String title = editModel().entities()
-            .definition(exception.attribute().entityType())
-            .attributeDefinition(exception.attribute())
+            .definition(exception.attribute().entityType()).attributes()
+            .definition(exception.attribute())
             .caption();
     JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
     requestComponentFocus(exception.attribute());

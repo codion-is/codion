@@ -21,7 +21,7 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
   @Override
   public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-    ColumnDefinition<?> primaryKeyColumn = entity.entityDefinition().primaryKeyColumnDefinitions().get(0);
+    ColumnDefinition<?> primaryKeyColumn = entity.entityDefinition().primaryKey().definitions().get(0);
     if (entity.isNull(primaryKeyColumn.attribute())) {
       selectAndPopulate(entity, primaryKeyColumn, connection);
     }
