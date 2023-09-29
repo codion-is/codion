@@ -345,11 +345,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean hasPrimaryKey() {
-    return !primaryKey.columns().isEmpty();
-  }
-
-  @Override
   public String toString() {
     return entityType.name();
   }
@@ -386,7 +381,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public <T> Entity.Key primaryKey(T value) {
-    if (!hasPrimaryKey()) {
+    if (primaryKey.columns().isEmpty()) {
       throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");
     }
     if (primaryKey.columns().size() > 1) {

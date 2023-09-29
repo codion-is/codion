@@ -133,11 +133,6 @@ public interface EntityDefinition {
   PrimaryKey primaryKey();
 
   /**
-   * @return true if this entity has a defined primary key
-   */
-  boolean hasPrimaryKey();
-
-  /**
    * Returns the background color provider, never null
    * @return the background color provider
    */

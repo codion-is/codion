@@ -9629,3 +9629,4 @@
   EntityDefinition.Attributes, Columns, ForeignKeys and PrimaryKey classes added
   Entity.entityDefinition() renamed definition()
   EntityDefinition.PrimaryKey.definitions() renamed columnDefinitions(), Attributes.attribute(name) renamed get(), derived() renamed derivedFrom()
+  EntityDefinition.hasPrimaryKey() removed

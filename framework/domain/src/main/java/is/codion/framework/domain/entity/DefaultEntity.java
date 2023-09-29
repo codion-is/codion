@@ -677,7 +677,7 @@ class DefaultEntity implements Entity, Serializable {
    * @return a Key based on the values in this Entity instance
    */
   private Key createPrimaryKey(boolean originalValues) {
-    if (!definition.hasPrimaryKey()) {
+    if (definition.primaryKey().columns().isEmpty()) {
       return new DefaultKey(definition, emptyList(), true);
     }
     List<Column<?>> primaryKeyColumns = definition.primaryKey().columns();
