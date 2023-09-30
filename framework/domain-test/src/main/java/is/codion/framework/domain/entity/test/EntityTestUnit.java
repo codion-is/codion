@@ -237,7 +237,7 @@ public class EntityTestUnit {
   private static void testUpdate(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities,
                                  EntityConnection connection, EntityTestUnit entityTestUnit) throws DatabaseException {
     entityTestUnit.modifyEntity(testEntity, foreignKeyEntities);
-    if (!testEntity.isModified()) {
+    if (!testEntity.modified()) {
       return;
     }
 

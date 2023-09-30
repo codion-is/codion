@@ -458,7 +458,7 @@ public final class EntityTest {
       dept.put(definition.attribute(), null);
     }
     //putting nulls should not have an effect
-    assertFalse(dept.isModified());
+    assertFalse(dept.modified());
     for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
       assertTrue(dept.contains(definition.attribute()));
       assertTrue(dept.isNull(definition.attribute()));

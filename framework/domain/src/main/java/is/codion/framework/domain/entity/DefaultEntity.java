@@ -127,7 +127,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean isModified() {
+  public final boolean modified() {
     if (originalValues != null) {
       for (Attribute<?> attribute : originalValues.keySet()) {
         AttributeDefinition<?> attributeDefinition = definition.attributes().definition(attribute);
@@ -172,7 +172,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean isModified(Attribute<?> attribute) {
+  public final boolean modified(Attribute<?> attribute) {
     definition.attributes().definition(attribute);
     return isModifiedInternal(attribute);
   }

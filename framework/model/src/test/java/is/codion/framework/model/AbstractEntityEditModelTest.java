@@ -428,8 +428,8 @@ public final class AbstractEntityEditModelTest {
     assertNull(employeeEditModel.get(Employee.MGR_FK));
     employeeEditModel.setDefaultValues();
     assertEquals(LocalDate.now(), employeeEditModel.get(Employee.HIREDATE));
-    assertFalse(employeeEditModel.entity().isModified(Employee.HIREDATE));
-    assertFalse(employeeEditModel.entity().isModified());
+    assertFalse(employeeEditModel.entity().modified(Employee.HIREDATE));
+    assertFalse(employeeEditModel.entity().modified());
   }
 
   @Test

@@ -452,7 +452,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
       return connection.updateSelect(invoices.stream()
               .peek(Invoice::updateTotal)
-              .filter(Invoice::isModified)
+              .filter(Invoice::modified)
               .collect(toList()));
     }
   }

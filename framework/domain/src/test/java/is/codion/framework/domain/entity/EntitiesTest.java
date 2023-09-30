@@ -450,12 +450,12 @@ public final class EntitiesTest {
     Entity copy = emp1.copy();
     assertTrue(emp1.columnValuesEqual(copy));
     assertSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
-    assertFalse(emp1.isModified());
+    assertFalse(emp1.modified());
 
     copy = emp1.deepCopy();
     assertTrue(emp1.columnValuesEqual(copy));
     assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
-    assertFalse(emp1.isModified());
+    assertFalse(emp1.modified());
   }
 
   @Test

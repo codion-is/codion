@@ -9640,3 +9640,4 @@
   Entity.isNew() replaced with exists()
   EntityEditModel.entityNew() replaced with exists()
   DefaultEntity.remove() bug fixed, did not clear the primary key in case a primary key column value was being removed
+  Entity.isModified() renamed modified()

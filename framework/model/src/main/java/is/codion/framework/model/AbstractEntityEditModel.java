@@ -164,7 +164,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
-    this.modifiedFunction = Entity::isModified;
+    this.modifiedFunction = Entity::modified;
     this.existsFunction = Entity::exists;
     readOnly.set(entityDefinition().readOnly());
     configurePersistentForeignKeyValues();
@@ -300,7 +300,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityDefinition().attributes().definition(attribute);
 
     return attributeModifiedMap.computeIfAbsent(attribute, k ->
-            State.state(entityExists.get() && entity.isModified(attribute))).observer();
+            State.state(entityExists.get() && entity.modified(attribute))).observer();
   }
 
   @Override
@@ -788,9 +788,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Sets the 'modified' function for this edit model, which is responsible for providing
    * the modified state of the underlying entity.
-   * By default {@link Entity#isModified()} is returned.
+   * By default {@link Entity#modified()} is returned.
    * @param modifiedFunction specifies whether the given entity is modified
-   * @see Entity#isModified()
+   * @see Entity#modified()
    * @see #modified()
    */
   protected final void setModifiedFunction(Function<Entity, Boolean> modifiedFunction) {
@@ -1065,7 +1065,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateModifiedAttributeState(Attribute<?> attribute, State modifiedState) {
-    modifiedState.set(entity.exists() && entity.isModified(attribute));
+    modifiedState.set(entity.exists() && entity.modified(attribute));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {

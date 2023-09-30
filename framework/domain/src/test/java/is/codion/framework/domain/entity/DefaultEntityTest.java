@@ -99,8 +99,8 @@ public class DefaultEntityTest {
     Entity entityFromFile = (Entity) fromFile.get(0);
     assertEquals(Detail.TYPE, entity.entityType());
     assertTrue(entity.columnValuesEqual(entityFromFile));
-    assertTrue(entityFromFile.isModified());
-    assertTrue(entityFromFile.isModified(Detail.STRING));
+    assertTrue(entityFromFile.modified());
+    assertTrue(entityFromFile.modified(Detail.STRING));
     assertEquals(originalStringValue, entityFromFile.original(Detail.STRING));
 
     Entity.Key key = entity.primaryKey();
@@ -162,7 +162,7 @@ public class DefaultEntityTest {
     Entity setAsEntity = ENTITIES.entity(Master.TYPE);
     setAsEntity.set(entity);
 
-    assertTrue(setAsEntity.isModified(Master.READ_ONLY));
+    assertTrue(setAsEntity.modified(Master.READ_ONLY));
   }
 
   @Test
@@ -190,8 +190,8 @@ public class DefaultEntityTest {
 
     assertEquals(2, original.set(entity).size());//int + int_derived
     assertTrue(Entity.valuesEqual(original, entity));
-    assertTrue(original.isModified());
-    assertTrue(entity.isModified());
+    assertTrue(original.modified());
+    assertTrue(entity.modified());
 
     original.put(Detail.DOUBLE, 1.2);
     original.put(Detail.STRING, "str");
@@ -243,39 +243,39 @@ public class DefaultEntityTest {
 
     entity.put(Master.ID, -55L);
     //the id is not updatable as it is part of the primary key, which is not updatable by default
-    assertFalse(entity.isModified());
+    assertFalse(entity.modified());
     entity.save(Master.ID);
-    assertFalse(entity.isModified());
+    assertFalse(entity.modified());
 
     final String newName = "aname";
 
     entity.put(Master.NAME, newName);
-    assertTrue(entity.isModified());
+    assertTrue(entity.modified());
     entity.revert(Master.NAME);
     assertEquals(masterName, entity.get(Master.NAME));
-    assertFalse(entity.isModified());
+    assertFalse(entity.modified());
 
     entity.put(Master.NAME, newName);
-    assertTrue(entity.isModified());
-    assertTrue(entity.isModified(Master.NAME));
+    assertTrue(entity.modified());
+    assertTrue(entity.modified(Master.NAME));
     entity.save(Master.NAME);
     assertEquals(newName, entity.get(Master.NAME));
-    assertFalse(entity.isModified());
-    assertFalse(entity.isModified(Master.NAME));
+    assertFalse(entity.modified());
+    assertFalse(entity.modified(Master.NAME));
 
     Entity entity2 = ENTITIES.builder(Master.TYPE)
             .with(Master.NAME, "name")
             .build();
     entity2.put(Master.NAME, "newname");
-    assertTrue(entity2.isModified());
+    assertTrue(entity2.modified());
     assertEquals("name", entity2.original(Master.NAME));
     entity2.save(Master.NAME);
     entity2.put(Master.NAME, "name");
     assertEquals("newname", entity2.original(Master.NAME));
 
-    assertTrue(entity2.isModified());
+    assertTrue(entity2.modified());
     entity2.revert();
-    assertFalse(entity2.isModified());
+    assertFalse(entity2.modified());
   }
 
   @Test
@@ -368,7 +368,7 @@ public class DefaultEntityTest {
             .with(Master.CODE, 7)
             .build();
     //assert not modified
-    assertFalse(referencedEntityValue.isModified());
+    assertFalse(referencedEntityValue.modified());
 
 
     Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
@@ -399,9 +399,9 @@ public class DefaultEntityTest {
     assertNotSame(testEntity.referencedEntity(Detail.MASTER_FK), test2.referencedEntity(Detail.MASTER_FK), "This should be a deep copy");
 
     test2.put(Detail.DOUBLE, 2.1);
-    assertTrue(test2.isModified());
+    assertTrue(test2.modified());
     Entity test2Copy = test2.copy();
-    assertTrue(test2Copy.isModified());
+    assertTrue(test2Copy.modified());
 
     //cyclical deep copy
     Entity manager1 = ENTITIES.builder(Employee.TYPE)
@@ -453,8 +453,8 @@ public class DefaultEntityTest {
     assertFalse(dept.columnValuesEqual(dept.copyBuilder().with(Department.NAME, "new name").build()));
 
     dept.put(Department.NAME, "New name");
-    assertTrue(dept.copyBuilder().build().isModified());
-    assertFalse(dept.copyBuilder().with(Department.NAME, "Name").build().isModified());
+    assertTrue(dept.copyBuilder().build().modified());
+    assertFalse(dept.copyBuilder().with(Department.NAME, "Name").build().modified());
   }
 
   @Test
@@ -498,14 +498,14 @@ public class DefaultEntityTest {
     Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     testEntity.put(Detail.STRING, "TestString");
-    assertTrue(testEntity.isModified());
+    assertTrue(testEntity.modified());
 
     testEntity.set(null);
     assertTrue(testEntity.primaryKey().isNull());
     assertFalse(testEntity.contains(Detail.DATE));
     assertFalse(testEntity.contains(Detail.STRING));
     assertFalse(testEntity.contains(Detail.BOOLEAN));
-    assertFalse(testEntity.isModified());
+    assertFalse(testEntity.modified());
 
     testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
@@ -699,11 +699,11 @@ public class DefaultEntityTest {
             .build();
 
     entity.put(TransModifies.TRANS, 1);
-    assertTrue(entity.isModified());
+    assertTrue(entity.modified());
 
     Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
-    assertTrue(deserialized.isModified(TransModifies.TRANS));
-    assertTrue(entity.isModified());
+    assertTrue(deserialized.modified(TransModifies.TRANS));
+    assertTrue(entity.modified());
 
     entity = ENTITIES.builder(TransModifiesNot.TYPE)
             .with(TransModifiesNot.ID, 42)
@@ -711,11 +711,11 @@ public class DefaultEntityTest {
             .build();
 
     entity.put(TransModifiesNot.TRANS, 1);
-    assertFalse(entity.isModified());
+    assertFalse(entity.modified());
 
     deserialized = Serializer.deserialize(Serializer.serialize(entity));
-    assertTrue(deserialized.isModified(TransModifiesNot.TRANS));
-    assertFalse(deserialized.isModified());
+    assertTrue(deserialized.modified(TransModifiesNot.TRANS));
+    assertFalse(deserialized.modified());
   }
 
   @Test
@@ -768,7 +768,7 @@ public class DefaultEntityTest {
     emp.save();
     emp.definition().foreignKeys().get().forEach(foreignKey -> assertTrue(emp.isLoaded(foreignKey)));
     emp.definition().foreignKeys().get().forEach(emp::remove);
-    assertFalse(emp.isModified());
+    assertFalse(emp.modified());
     emp.definition().foreignKeys().get().forEach(foreignKey -> assertFalse(emp.isLoaded(foreignKey)));
   }
 

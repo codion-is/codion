@@ -120,7 +120,7 @@ public interface Entity extends Comparable<Entity> {
    * Saves all the value modifications that have been made.
    * This entity will be unmodified after a call to this method.
    * @throws UnsupportedOperationException in case this entity is immutable
-   * @see #isModified()
+   * @see #modified()
    */
   void save();
 
@@ -183,7 +183,7 @@ public interface Entity extends Comparable<Entity> {
    * @param attribute the attribute
    * @return true if the value associated with the given attribute has been modified
    */
-  boolean isModified(Attribute<?> attribute);
+  boolean modified(Attribute<?> attribute);
 
   /**
    * Returns true if one or more writable attributes have been modified from their initial value,
@@ -191,7 +191,7 @@ public interface Entity extends Comparable<Entity> {
    * @return true if one or more writable attributes have been modified since they were first set
    * @see TransientAttributeDefinition#modifiesEntity()
    */
-  boolean isModified();
+  boolean modified();
 
   /**
    * Returns true if this entity has a non-null primary key or a non-null original primary key,
@@ -367,7 +367,7 @@ public interface Entity extends Comparable<Entity> {
   static <T extends Entity> boolean keyModified(Collection<T> entities) {
     return requireNonNull(entities).stream()
             .anyMatch(entity -> entity.primaryKey().columns().stream()
-                    .anyMatch(entity::isModified));
+                    .anyMatch(entity::modified));
   }
 
   /**
@@ -375,11 +375,11 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @param <T> the entity type
    * @return the modified entities
-   * @see Entity#isModified()
+   * @see Entity#modified()
    */
   static <T extends Entity> Collection<T> modified(Collection<? extends T> entities) {
     return requireNonNull(entities).stream()
-            .filter(Entity::isModified)
+            .filter(Entity::modified)
             .collect(toList());
   }
 
