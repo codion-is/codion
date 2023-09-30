@@ -66,24 +66,24 @@ public final class EntityTest {
   }
 
   @Test
-  void isKeyModified() {
-    assertFalse(Entity.isKeyModified(emptyList()));
+  void keyModified() {
+    assertFalse(Entity.keyModified(emptyList()));
 
     Entity department = entities.builder(Department.TYPE)
             .with(Department.ID, 1)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
-    assertFalse(Entity.isKeyModified(singletonList(department)));
+    assertFalse(Entity.keyModified(singletonList(department)));
 
     department.put(Department.NAME, "new name");
-    assertFalse(Entity.isKeyModified(singletonList(department)));
+    assertFalse(Entity.keyModified(singletonList(department)));
 
     department.put(Department.ID, 2);
-    assertTrue(Entity.isKeyModified(singletonList(department)));
+    assertTrue(Entity.keyModified(singletonList(department)));
 
     department.revert(Department.ID);
-    assertFalse(Entity.isKeyModified(singletonList(department)));
+    assertFalse(Entity.keyModified(singletonList(department)));
   }
 
   @Test
@@ -101,35 +101,35 @@ public final class EntityTest {
             .with(Department.NAME, "Name")
             .build();
 
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.ID));
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NAME));
+    assertFalse(Entity.valueMissingOrModified(current, entity, Department.ID));
+    assertFalse(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
+    assertFalse(Entity.valueMissingOrModified(current, entity, Department.NAME));
 
     current.put(Department.ID, 2);
     current.save();
-    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.ID));
+    assertTrue(Entity.valueMissingOrModified(current, entity, Department.ID));
     assertEquals(Department.ID, Entity.modifiedColumns(current, entity).iterator().next());
     Integer id = current.remove(Department.ID);
     assertEquals(2, id);
     current.save();
-    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.ID));
+    assertTrue(Entity.valueMissingOrModified(current, entity, Department.ID));
     assertEquals(Department.ID, Entity.modifiedColumns(current, entity).iterator().next());
     current.put(Department.ID, 1);
     current.save();
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.ID));
+    assertFalse(Entity.valueMissingOrModified(current, entity, Department.ID));
     assertTrue(Entity.modifiedColumns(current, entity).isEmpty());
 
     current.put(Department.LOCATION, "New location");
     current.save();
-    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
+    assertTrue(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
     assertEquals(Department.LOCATION, Entity.modifiedColumns(current, entity).iterator().next());
     current.remove(Department.LOCATION);
     current.save();
-    assertTrue(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
+    assertTrue(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
     assertEquals(Department.LOCATION, Entity.modifiedColumns(current, entity).iterator().next());
     current.put(Department.LOCATION, "Location");
     current.save();
-    assertFalse(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
+    assertFalse(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
     assertTrue(Entity.modifiedColumns(current, entity).isEmpty());
 
     entity.put(Department.LOCATION, "new loc");

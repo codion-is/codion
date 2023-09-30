@@ -82,7 +82,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
     controls.actions().stream()
             .filter(Controls.class::isInstance)
             .map(Controls.class::cast)
-            .filter(Controls::isNotEmpty)
+            .filter(Controls::notEmpty)
             .forEach(subControls -> menuBar.add(new DefaultMenuBuilder(subControls).createComponent()));
 
     return menuBar;

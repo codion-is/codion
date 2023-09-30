@@ -341,7 +341,7 @@ public class EntityEditComponentPanel extends JPanel {
   public final Collection<Attribute<?>> selectComponentAttributes() {
     return components.keySet().stream()
             .filter(attribute -> !excludeFromSelection.contains(attribute))
-            .filter(attribute -> isComponentSelectable(getComponentInternal(attribute)))
+            .filter(attribute -> componentSelectable(getComponentInternal(attribute)))
             .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
   }
 
@@ -1021,15 +1021,15 @@ public class EntityEditComponentPanel extends JPanel {
    * @param component the component
    * @return true if this component can be selected
    */
-  private static boolean isComponentSelectable(JComponent component) {
+  private static boolean componentSelectable(JComponent component) {
     return component != null &&
             component.isDisplayable() &&
             component.isVisible() &&
-            isFocusable(component) &&
+            focusable(component) &&
             component.isEnabled();
   }
 
-  private static boolean isFocusable(JComponent component) {
+  private static boolean focusable(JComponent component) {
     if (component instanceof JSpinner) {
       return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField().isFocusable();
     }
@@ -1057,7 +1057,7 @@ public class EntityEditComponentPanel extends JPanel {
     ComboBoxModel<?> model = comboBox.getModel();
     if (model instanceof FilteredComboBoxModel) {
       FilteredComboBoxModel<?> comboBoxModel = (FilteredComboBoxModel<?>) model;
-      if (comboBoxModel.isCleared()) {
+      if (comboBoxModel.cleared()) {
         comboBoxModel.refresh();
       }
     }
@@ -1093,12 +1093,12 @@ public class EntityEditComponentPanel extends JPanel {
     @Override
     public void propertyChange(PropertyChangeEvent event) {
       Component component = (Component) event.getNewValue();
-      if (component instanceof JComponent && isInputComponent((JComponent) component)) {
+      if (component instanceof JComponent && inputComponent((JComponent) component)) {
         focusedInputComponent.set((JComponent) component);
       }
     }
 
-    private boolean isInputComponent(JComponent component) {
+    private boolean inputComponent(JComponent component) {
       for (JComponent inputComponent : components.values()) {
         if (sameOrParentOf(inputComponent, component)) {
           return true;

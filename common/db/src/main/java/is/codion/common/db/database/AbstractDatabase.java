@@ -79,7 +79,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final boolean isConnectionValid(Connection connection) {
+  public final boolean connectionValid(Connection connection) {
     requireNonNull(connection, "connection");
     try {
       if (supportsIsValid()) {

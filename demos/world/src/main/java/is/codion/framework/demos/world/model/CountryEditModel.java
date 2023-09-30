@@ -32,7 +32,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
       addEntityListener(country ->
               comboBoxModel.includeCondition().set(cityEntity ->
                       cityEntity.castTo(City.class)
-                              .isInCountry(country)));
+                              .inCountry(country)));
     }
 
     return comboBoxModel;

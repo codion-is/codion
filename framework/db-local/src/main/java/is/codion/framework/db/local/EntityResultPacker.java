@@ -91,7 +91,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     return entityDefinition.attributes().definitions().stream()
             .filter(TransientAttributeDefinition.class::isInstance)
             .map(attributeDefinition -> (TransientAttributeDefinition<?>) attributeDefinition)
-            .filter(transientAttributeDefinition -> !transientAttributeDefinition.isDerived())
+            .filter(transientAttributeDefinition -> !transientAttributeDefinition.derived())
             .collect(Collectors.toList());
   }
 
@@ -99,7 +99,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     return entityDefinition.columns().definitions().stream()
             .filter(column -> column.attribute().type().isByteArray())
             .map(column -> (ColumnDefinition<byte[]>) column)
-            .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
+            .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).eagerlyLoaded())
             .collect(Collectors.toList());
   }
 }

@@ -69,12 +69,12 @@ public class DefaultEntityDefinitionTest {
     assertEquals(entityType, definition.entityType());
     assertEquals("tableName", definition.tableName());
     assertNotNull(definition.primaryKey().generator());
-    assertFalse(definition.primaryKey().isGenerated());
+    assertFalse(definition.primaryKey().generated());
     assertEquals("*", definition.selectQuery().columns());
     assertEquals("dual", definition.selectQuery().from());
     assertEquals("name", definition.selectQuery().groupBy());
-    assertFalse(definition.isSmallDataset());
-    assertTrue(definition.isReadOnly());
+    assertFalse(definition.smallDataset());
+    assertTrue(definition.readOnly());
     assertEquals("selectTableName", definition.selectTableName());
     assertEquals(stringFactory, definition.stringFactory());
     assertEquals(comparator, definition.comparator());
@@ -200,14 +200,14 @@ public class DefaultEntityDefinitionTest {
 
     EntityDefinition definition = domain.entities().definition(entityType);
 
-    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p0")).isAggregate());
-    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p0")).isGroupBy());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p0")).aggregate());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p0")).groupBy());
 
-    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p1")).isAggregate());
-    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p1")).isGroupBy());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p1")).aggregate());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p1")).groupBy());
 
-    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p2")).isAggregate());
-    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p2")).isGroupBy());
+    assertFalse(definition.columns().definition((Column<?>) definition.attributes().get("p2")).aggregate());
+    assertTrue(definition.columns().definition((Column<?>) definition.attributes().get("p2")).groupBy());
   }
 
   @Test
@@ -232,8 +232,8 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeys().definition(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).isNullable());
-    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeys().definition(Detail.MASTER_FK).isNullable());
+    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeys().definition(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).nullable());
+    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeys().definition(Detail.MASTER_FK).nullable());
   }
 
   @Test
@@ -377,8 +377,8 @@ public class DefaultEntityDefinitionTest {
 
     EntityDefinition definition = domain.entities().definition(entityType);
     assertNotNull(definition.primaryKey().generator());
-    assertFalse(definition.primaryKey().isGenerated());
-    assertTrue(definition.primaryKey().generator().isInserted());
+    assertFalse(definition.primaryKey().generated());
+    assertTrue(definition.primaryKey().generator().inserted());
   }
 
   @Test
@@ -408,8 +408,8 @@ public class DefaultEntityDefinitionTest {
 
     EntityDefinition definition = domain.entities().definition(entityType);
     assertNotNull(definition.primaryKey().generator());
-    assertTrue(definition.primaryKey().isGenerated());
-    assertFalse(definition.primaryKey().generator().isInserted());
+    assertTrue(definition.primaryKey().generated());
+    assertFalse(definition.primaryKey().generator().inserted());
   }
 
   @Test

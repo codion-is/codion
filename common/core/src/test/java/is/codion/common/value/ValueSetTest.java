@@ -18,10 +18,10 @@ public class ValueSetTest {
   @Test
   void valueSet() {
     ValueSet<Integer> valueSet = ValueSet.valueSet();
-    assertTrue(valueSet.isEmpty());
-    assertFalse(valueSet.isNotEmpty());
+    assertTrue(valueSet.empty());
+    assertFalse(valueSet.notEmpty());
 
-    assertFalse(valueSet.isNullable());
+    assertFalse(valueSet.nullable());
     assertFalse(valueSet.isNull());
     assertTrue(valueSet.optional().isPresent());
 
@@ -35,8 +35,8 @@ public class ValueSetTest {
     initialValues.add(2);
 
     valueSet = ValueSet.valueSet(initialValues);
-    assertFalse(valueSet.isEmpty());
-    assertTrue(valueSet.isNotEmpty());
+    assertFalse(valueSet.empty());
+    assertTrue(valueSet.notEmpty());
     assertEquals(initialValues, valueSet.get());
     assertTrue(valueSet.equalTo(initialValues));
 
@@ -52,8 +52,8 @@ public class ValueSetTest {
     assertTrue(valueSet.add(3));
 
     valueSet.clear();
-    assertTrue(valueSet.isEmpty());
-    assertFalse(valueSet.isNotEmpty());
+    assertTrue(valueSet.empty());
+    assertFalse(valueSet.notEmpty());
     assertTrue(valueSet.add(3));
     assertFalse(valueSet.remove(1));
     assertFalse(valueSet.remove(2));

@@ -54,7 +54,7 @@ public final class Schema {
     }
   }
 
-  public boolean isPopulated() {
+  public boolean populated() {
     return populated;
   }
 

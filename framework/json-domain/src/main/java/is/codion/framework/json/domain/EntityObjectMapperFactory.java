@@ -30,7 +30,7 @@ public interface EntityObjectMapperFactory {
    * @param domainType the domain type
    * @return true if this mapper factory is compatible with the given domain type
    */
-  boolean isCompatibleWith(DomainType domainType);
+  boolean compatibleWith(DomainType domainType);
 
   /**
    * Returns the first available {@link EntityObjectMapperFactory} instance compatible with the given domain type,
@@ -42,7 +42,7 @@ public interface EntityObjectMapperFactory {
     requireNonNull(domainType);
     ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
     for (EntityObjectMapperFactory factory : loader) {
-      if (factory.isCompatibleWith(domainType)) {
+      if (factory.compatibleWith(domainType)) {
         return factory;
       }
     }

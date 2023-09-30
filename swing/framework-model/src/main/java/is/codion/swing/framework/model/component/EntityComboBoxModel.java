@@ -79,7 +79,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     setSelectedItemTranslator(new SelectedItemTranslator());
     setItemSupplier(new ItemSupplier());
     setItemValidator(new ItemValidator());
-    setStaticData(this.entities.definition(entityType).isStaticData());
+    setStaticData(this.entities.definition(entityType).staticData());
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
@@ -475,7 +475,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public Collection<Entity> get() {
-      if (staticData && !isCleared() && !forceRefresh) {
+      if (staticData && !cleared() && !forceRefresh) {
         return items();
       }
 

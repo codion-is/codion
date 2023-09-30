@@ -11,7 +11,7 @@ public interface BlobColumnDefinition extends ColumnDefinition<byte[]> {
   /**
    * @return true if this value should be loaded eagerly when selected
    */
-  boolean isEagerlyLoaded();
+  boolean eagerlyLoaded();
 
   /**
    * Builds a {@link ColumnDefinition} for a boolean column.

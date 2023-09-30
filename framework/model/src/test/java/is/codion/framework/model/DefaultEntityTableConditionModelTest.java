@@ -43,11 +43,11 @@ public class DefaultEntityTableConditionModelTest {
     assertEquals(Conjunction.OR, conditionModel.conjunction().get());
     assertEquals(10, conditionModel.conditionModels().size());
 
-    assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
 
-    assertFalse(conditionModel.isEnabled());
+    assertFalse(conditionModel.enabled());
     conditionModel.conditionModel(Employee.DEPARTMENT_FK).enabled().set(true);
-    assertTrue(conditionModel.isEnabled());
+    assertTrue(conditionModel.enabled());
   }
 
   @Test
@@ -75,35 +75,35 @@ public class DefaultEntityTableConditionModelTest {
   void setEqualConditionValues() throws DatabaseException {
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-    assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
     boolean searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
-    assertTrue(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertTrue(conditionModel.enabled(Employee.DEPARTMENT_FK));
     ColumnConditionModel<ForeignKey, Entity> deptModel =
             conditionModel.attributeModel(Employee.DEPARTMENT_FK);
     assertTrue(deptModel.getEqualValues().contains(sales));
     assertTrue(deptModel.getEqualValues().contains(accounting));
     searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, null);
     assertTrue(searchStateChanged);
-    assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
   }
 
   @Test
   void clearColumnConditionModels() throws DatabaseException {
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-    assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
-    assertTrue(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertTrue(conditionModel.enabled(Employee.DEPARTMENT_FK));
     conditionModel.clear();
-    assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
   }
 
   @Test
   void condition() throws DatabaseException {
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-    assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
+    assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");

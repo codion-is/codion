@@ -129,6 +129,6 @@ public interface ColumnSummaryModel {
     /**
      * @return true if the values provided by {@link #values()} is a subset of the total available values
      */
-    boolean isSubset();
+    boolean subset();
   }
 }

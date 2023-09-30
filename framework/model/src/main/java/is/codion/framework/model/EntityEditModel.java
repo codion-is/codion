@@ -115,7 +115,7 @@ public interface EntityEditModel {
    * @param attribute the attribute
    * @return true if this value is allowed to be null in the underlying entity
    */
-  boolean isNullable(Attribute<?> attribute);
+  boolean nullable(Attribute<?> attribute);
 
   /**
    * Sets the given value in the underlying Entity

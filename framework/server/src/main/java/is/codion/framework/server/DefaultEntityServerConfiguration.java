@@ -66,8 +66,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public boolean isSslEnabled() {
-    return serverConfiguration.isSslEnabled();
+  public boolean sslEnabled() {
+    return serverConfiguration.sslEnabled();
   }
 
   @Override
@@ -86,8 +86,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public boolean isSerializationFilterDryRun() {
-    return serverConfiguration.isSerializationFilterDryRun();
+  public boolean serializationFilterDryRun() {
+    return serverConfiguration.serializationFilterDryRun();
   }
 
   @Override
@@ -121,7 +121,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public boolean isClientLoggingEnabled() {
+  public boolean clientLoggingEnabled() {
     return clientLoggingEnabled;
   }
 

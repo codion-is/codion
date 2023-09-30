@@ -45,7 +45,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
   }
 
   @Override
-  public final synchronized boolean isCached() {
+  public final synchronized boolean cached() {
     return cachedReport != null;
   }
 

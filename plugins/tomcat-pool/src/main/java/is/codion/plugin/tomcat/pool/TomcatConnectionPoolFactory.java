@@ -144,7 +144,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
     @Override
     public boolean validate(Connection connection, int i) {
-      return connectionFactory.isConnectionValid(connection);
+      return connectionFactory.connectionValid(connection);
     }
   }
 }

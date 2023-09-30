@@ -132,7 +132,7 @@ public final class HostMonitor {
   private void removeUnreachableServers() {
     Collection<ServerMonitor> monitors = new ArrayList<>(serverMonitors);
     for (ServerMonitor monitor : monitors) {
-      if (!monitor.isServerReachable()) {
+      if (!monitor.serverReachable()) {
         removeServer(monitor);
       }
     }

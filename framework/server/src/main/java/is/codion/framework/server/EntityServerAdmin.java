@@ -290,7 +290,7 @@ public interface EntityServerAdmin extends ServerAdmin {
     /**
      * @return true if the report has been cached
      */
-    boolean isCached();
+    boolean cached();
   }
 
   /**

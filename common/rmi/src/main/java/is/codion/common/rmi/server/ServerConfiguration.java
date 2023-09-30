@@ -183,7 +183,7 @@ public interface ServerConfiguration {
   /**
    * @return true if ssl is enabled
    */
-  boolean isSslEnabled();
+  boolean sslEnabled();
 
   /**
    * @return the rmi client socket factory to use, null for default
@@ -203,7 +203,7 @@ public interface ServerConfiguration {
   /**
    * @return true if a serialization filter dry run should be active
    */
-  boolean isSerializationFilterDryRun();
+  boolean serializationFilterDryRun();
 
   /**
    * @return the interval between server connection maintenance runs, in milliseconds.

@@ -48,7 +48,7 @@ public class DefaultDatabaseConnectionTest {
   void createConnection() throws Exception {
     try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
       DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
-      assertTrue(databaseConnection.isConnected());
+      assertTrue(databaseConnection.connected());
       assertNotNull(databaseConnection.user());
       assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
     }
@@ -137,7 +137,7 @@ public class DefaultDatabaseConnectionTest {
   @Test
   void close() {
     dbConnection.close();
-    assertFalse(dbConnection.isConnected());
+    assertFalse(dbConnection.connected());
     assertNull(dbConnection.getConnection());
     assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
     assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
@@ -186,16 +186,16 @@ public class DefaultDatabaseConnectionTest {
   @Test
   void commitTransaction() {
     dbConnection.beginTransaction();
-    assertTrue(dbConnection.isTransactionOpen());
+    assertTrue(dbConnection.transactionOpen());
     dbConnection.commitTransaction();
-    assertFalse(dbConnection.isTransactionOpen());
+    assertFalse(dbConnection.transactionOpen());
   }
 
   @Test
   void rollbackTransaction() {
     dbConnection.beginTransaction();
-    assertTrue(dbConnection.isTransactionOpen());
+    assertTrue(dbConnection.transactionOpen());
     dbConnection.rollbackTransaction();
-    assertFalse(dbConnection.isTransactionOpen());
+    assertFalse(dbConnection.transactionOpen());
   }
 }

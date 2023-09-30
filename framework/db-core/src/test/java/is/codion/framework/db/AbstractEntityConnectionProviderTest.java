@@ -32,21 +32,21 @@ public final class AbstractEntityConnectionProviderTest {
     assertEquals(UNIT_TEST_USER, provider.user());
 
     EntityConnection connection1 = provider.connection();
-    assertTrue(provider.isConnectionValid());
+    assertTrue(provider.connectionValid());
     provider.close();
-    assertFalse(provider.isConnectionValid());
+    assertFalse(provider.connectionValid());
 
     EntityConnection connection2 = provider.connection();
-    assertTrue(provider.isConnectionValid());
+    assertTrue(provider.connectionValid());
     assertNotEquals(connection1, connection2);
 
     connection2.close();
-    assertFalse(provider.isConnectionValid());
+    assertFalse(provider.connectionValid());
     EntityConnection connection3 = provider.connection();
     assertNotEquals(connection2, connection3);
 
     EntityConnection connection4 = provider.connection();
-    assertTrue(provider.isConnectionValid());
+    assertTrue(provider.connectionValid());
     assertNotEquals(connection3, connection4);
   }
 
@@ -63,7 +63,7 @@ public final class AbstractEntityConnectionProviderTest {
       return ProxyBuilder.builder(EntityConnection.class)
               .method("equals", Object.class, parameters -> TestProvider.this == parameters.arguments().get(0))
               .method("entities", parameters -> ENTITIES)
-              .method("isConnected", parameters -> connected.get())
+              .method("connected", parameters -> connected.get())
               .method("close", parameters -> {
                 connected.set(false);
                 return null;

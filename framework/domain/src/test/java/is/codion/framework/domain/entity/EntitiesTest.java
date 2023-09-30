@@ -88,17 +88,17 @@ public final class EntitiesTest {
     assertEquals(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).caption(), TestDomain.Detail.MASTER_CODE.name());
 
     //assert hidden status
-    assertTrue(definition.columns().definition(TestDomain.Detail.ID).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.SHORT).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.INT).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.DOUBLE).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.STRING).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.DATE).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.TIMESTAMP).isHidden());
-    assertFalse(definition.columns().definition(TestDomain.Detail.BOOLEAN).isHidden());
-    assertFalse(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).isHidden());
-    assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).isHidden());
-    assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).isHidden());
+    assertTrue(definition.columns().definition(TestDomain.Detail.ID).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.SHORT).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.INT).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.DOUBLE).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.STRING).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.DATE).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.TIMESTAMP).hidden());
+    assertFalse(definition.columns().definition(TestDomain.Detail.BOOLEAN).hidden());
+    assertFalse(definition.foreignKeys().definition(TestDomain.Detail.MASTER_FK).hidden());
+    assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_NAME).hidden());
+    assertFalse(definition.attributes().definition(TestDomain.Detail.MASTER_CODE).hidden());
   }
 
   @Test
@@ -201,7 +201,7 @@ public final class EntitiesTest {
     assertFalse(entities.keyBuilder(TestDomain.NoPk.TYPE)
             .with(TestDomain.NoPk.COL1, 1)
             .build()
-            .isPrimaryKey());
+            .primaryKey());
     Entity.Key noPk = entities.keyBuilder(TestDomain.NoPk.TYPE).build();
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NoPk.COL1));
   }
@@ -244,7 +244,7 @@ public final class EntitiesTest {
     assertTrue(attributes.contains(name));
 
     attributes = definition.attributes().definitions().stream()
-            .filter(ad -> !ad.isHidden())
+            .filter(ad -> !ad.hidden())
             .collect(toList());
     assertTrue(attributes.contains(id));
     assertTrue(attributes.contains(location));
@@ -304,7 +304,7 @@ public final class EntitiesTest {
 
   @Test
   void isSmallDataset() {
-    assertTrue(entities.definition(TestDomain.Detail.TYPE).isSmallDataset());
+    assertTrue(entities.definition(TestDomain.Detail.TYPE).smallDataset());
   }
 
   @Test

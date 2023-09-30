@@ -923,7 +923,7 @@ public class DefaultLocalEntityConnectionTest {
       Database db = Database.instance();
       connection = db.createConnection(UNIT_TEST_USER);
       EntityConnection conn = new DefaultLocalEntityConnection(db, DOMAIN, connection);
-      assertTrue(conn.isConnected());
+      assertTrue(conn.connected());
     }
     finally {
       if (connection != null) {
@@ -1202,18 +1202,18 @@ public class DefaultLocalEntityConnectionTest {
               .build();
       connection1.beginTransaction();
       assertThrows(IllegalStateException.class, connection1::beginTransaction);
-      assertTrue(connection1.isTransactionOpen());
-      assertFalse(connection2.isTransactionOpen());
+      assertTrue(connection1.transactionOpen());
+      assertFalse(connection2.transactionOpen());
       connection1.insert(department);
       assertTrue(connection2.select(Department.DEPTNO.equalTo(-42)).isEmpty());
       connection1.commitTransaction();
       assertThrows(IllegalStateException.class, connection1::rollbackTransaction);
       assertThrows(IllegalStateException.class, connection1::commitTransaction);
-      assertFalse(connection1.isTransactionOpen());
+      assertFalse(connection1.transactionOpen());
       assertFalse(connection2.select(Department.DEPTNO.equalTo(-42)).isEmpty());
       connection2.beginTransaction();
-      assertTrue(connection2.isTransactionOpen());
-      assertFalse(connection1.isTransactionOpen());
+      assertTrue(connection2.transactionOpen());
+      assertFalse(connection1.transactionOpen());
       connection2.delete(department.primaryKey());
       assertFalse(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
       connection2.commitTransaction();

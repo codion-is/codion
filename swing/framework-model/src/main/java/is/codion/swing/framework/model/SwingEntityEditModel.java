@@ -177,7 +177,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
    * @return a {@link EntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
-   * @see AttributeDefinition#isNullable()
+   * @see AttributeDefinition#nullable()
    * @see EntityComboBoxModel#setAttributes(Collection)
    * @see ForeignKeyDefinition#attributes()
    */
@@ -185,7 +185,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
     EntityComboBoxModel model = new EntityComboBoxModel(foreignKeyDefinition.referencedType(), connectionProvider());
     model.setAttributes(foreignKeyDefinition.attributes());
-    if (isNullable(foreignKey)) {
+    if (nullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }
 
@@ -203,7 +203,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   public <T> FilteredComboBoxModel<T> createComboBoxModel(Column<T> column) {
     requireNonNull(column, "column");
     FilteredComboBoxModel<T> model = createColumnComboBoxModel(column);
-    if (isNullable(column)) {
+    if (nullable(column)) {
       model.setIncludeNull(true);
       if (column.type().valueClass().isInterface()) {
         model.setNullItem(ProxyBuilder.builder(column.type().valueClass())
@@ -236,10 +236,10 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       Entity selectedEntity = comboBoxModel.selectedValue();
       entities.forEach(comboBoxModel::removeItem);
-      if (comboBoxModel.isVisible(selectedEntity)) {
+      if (comboBoxModel.visible(selectedEntity)) {
         comboBoxModel.setSelectedItem(selectedEntity);
       }//if the null value is selected we're fine, otherwise select topmost item
-      else if (!comboBoxModel.isNullSelected() && comboBoxModel.getSize() > 0) {
+      else if (!comboBoxModel.nullSelected() && comboBoxModel.getSize() > 0) {
         comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
       }
       else {

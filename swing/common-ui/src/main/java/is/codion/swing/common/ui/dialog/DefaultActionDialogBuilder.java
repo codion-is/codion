@@ -122,7 +122,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
   @Override
   public JDialog build() {
-    if (controls.isEmpty()) {
+    if (controls.empty()) {
       throw new IllegalStateException("No controls have been specified");
     }
 

@@ -105,7 +105,7 @@ public interface MethodLogger {
     /**
      * @return true if the exit time has been set for this entry
      */
-    boolean isComplete();
+    boolean complete();
 
     /**
      * @return the method entry time

@@ -61,7 +61,7 @@ public interface FilteredTableSortModel<R, C> {
   /**
    * @return true if sorting is enabled for one or more columns
    */
-  boolean isSorted();
+  boolean sorted();
 
   /**
    * Returns the current column sort order, in order of priority

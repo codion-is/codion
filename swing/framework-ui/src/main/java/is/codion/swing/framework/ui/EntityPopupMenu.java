@@ -94,7 +94,7 @@ final class EntityPopupMenu extends JPopupMenu {
         Entity.Key referencedKey = entity.referencedKey(foreignKey);
         if (referencedKey == null) {
           JMenuItem menuItem = new JMenuItem(captionBuilder.append(createValueString(entity, fkDefinition)).toString());
-          setInvalidModified(menuItem, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
+          setInvalidModified(menuItem, valid(validator, entity, foreignKey), entity.isModified(foreignKey));
           menuItem.setToolTipText(foreignKeyAttributeNames(foreignKey));
           rootMenu.add(menuItem);
         }
@@ -103,7 +103,7 @@ final class EntityPopupMenu extends JPopupMenu {
           entity = entity.isImmutable() ? entity.deepCopy() : entity;
           entity.put(foreignKey, referencedEntity);
           JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, fkDefinition)).toString());
-          setInvalidModified(foreignKeyMenu, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
+          setInvalidModified(foreignKeyMenu, valid(validator, entity, foreignKey), entity.isModified(foreignKey));
           foreignKeyMenu.setToolTipText(foreignKeyAttributeNames(foreignKey));
           populateEntityMenu(foreignKeyMenu, referencedEntity, connection, visitedKeys);
           rootMenu.add(foreignKeyMenu);
@@ -123,14 +123,14 @@ final class EntityPopupMenu extends JPopupMenu {
     EntityDefinition definition = entity.definition();
     EntityValidator validator = definition.validator();
     for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
-      boolean isPrimaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isPrimaryKeyColumn();
-      if (!isPrimaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
+      boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn();
+      if (!primaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
                 .append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
-                .append(attributeDefinition.isDerived() ? "*" : "").append("]: ")
+                .append(attributeDefinition.derived() ? "*" : "").append("]: ")
                 .append(createValueString(entity, attributeDefinition)).toString());
         menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(attributeDefinition.attribute()))));
-        setInvalidModified(menuItem, isValid(validator, entity, attributeDefinition.attribute()), entity.isModified(attributeDefinition.attribute()));
+        setInvalidModified(menuItem, valid(validator, entity, attributeDefinition.attribute()), entity.isModified(attributeDefinition.attribute()));
         menuItem.setToolTipText(attributeDefinition.attribute().toString());
         rootMenu.add(menuItem);
       }
@@ -168,7 +168,7 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static boolean isValid(EntityValidator validator, Entity entity, Attribute<?> attribute) {
+  private static boolean valid(EntityValidator validator, Entity entity, Attribute<?> attribute) {
     try {
       validator.validate(entity, attribute);
       return true;

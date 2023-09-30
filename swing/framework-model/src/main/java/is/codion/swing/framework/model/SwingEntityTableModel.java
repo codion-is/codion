@@ -355,12 +355,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
     Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
     if (attribute instanceof ForeignKey) {
-      return entityDefinition().foreignKeys().isUpdatable((ForeignKey) attribute);
+      return entityDefinition().foreignKeys().updatable((ForeignKey) attribute);
     }
 
     AttributeDefinition<?> attributeDefinition = entityDefinition().attributes().definition(attribute);
 
-    return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isUpdatable();
+    return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).updatable();
   }
 
   /**
@@ -549,13 +549,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isVisible(Entity item) {
-    return tableModel.isVisible(item);
+  public final boolean visible(Entity item) {
+    return tableModel.visible(item);
   }
 
   @Override
-  public final boolean isFiltered(Entity item) {
-    return tableModel.isFiltered(item);
+  public final boolean filtered(Entity item) {
+    return tableModel.filtered(item);
   }
 
   @Override
@@ -800,7 +800,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequired()
-   * @see #isConditionEnabled(EntityTableConditionModel)
+   * @see #conditionEnabled(EntityTableConditionModel)
    * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
@@ -815,14 +815,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
    * This can be done by enabling the {@link #conditionRequired()}, which prevents a refresh as long as this
-   * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#isEnabled()}.
+   * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#enabled()}.
    * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
    * @param conditionModel the table condition model
    * @return true if enough conditions are enabled for a safe refresh
    * @see #conditionRequired()
    */
-  protected boolean isConditionEnabled(EntityTableConditionModel<Attribute<?>> conditionModel) {
-    return conditionModel.isEnabled();
+  protected boolean conditionEnabled(EntityTableConditionModel<Attribute<?>> conditionModel) {
+    return conditionModel.enabled();
   }
 
   /**
@@ -858,7 +858,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @see EntityDefinition#orderBy()
    */
   protected OrderBy orderBy() {
-    if (orderQueryBySortOrder && sortModel().isSorted()) {
+    if (orderQueryBySortOrder && sortModel().sorted()) {
       OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByColumns().isEmpty()) {
         return orderBy;
@@ -933,7 +933,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private List<Entity> queryItems() throws DatabaseException {
     Condition condition = conditionModel.condition();
-    if (conditionRequired.get() && !isConditionEnabled(conditionModel)) {
+    if (conditionRequired.get() && !conditionEnabled(conditionModel)) {
       updateRefreshCondition(condition);
 
       return emptyList();
@@ -1209,7 +1209,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       }
 
       AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-      if (attributeDefinition.isHidden()) {
+      if (attributeDefinition.hidden()) {
         return Optional.empty();
       }
 

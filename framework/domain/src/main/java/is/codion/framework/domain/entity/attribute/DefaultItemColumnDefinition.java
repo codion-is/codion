@@ -29,7 +29,7 @@ final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> im
   }
 
   @Override
-  public boolean isValid(T value) {
+  public boolean valid(T value) {
     return itemMap.containsKey(value);
   }
 
@@ -52,7 +52,7 @@ final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> im
   public String toString(T value) {
     Item<T> item = itemMap.get(value);
     if (item == null) {//invalid
-      if (value == null && isNullable()) {
+      if (value == null && nullable()) {
         //technically valid
         return "";
       }

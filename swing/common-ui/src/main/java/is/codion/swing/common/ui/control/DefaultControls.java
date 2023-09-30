@@ -68,13 +68,13 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public boolean isEmpty() {
+  public boolean empty() {
     return actions.isEmpty();
   }
 
   @Override
-  public boolean isNotEmpty() {
-    return !isEmpty();
+  public boolean notEmpty() {
+    return !empty();
   }
 
   @Override

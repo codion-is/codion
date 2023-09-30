@@ -26,7 +26,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
   private static final String SYSADMIN_USERNAME = "sa";
 
   @Override
-  public boolean isDriverCompatible(String driverClassName) {
+  public boolean driverCompatible(String driverClassName) {
     return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 

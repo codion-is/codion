@@ -65,11 +65,11 @@ public class RemoteEntityConnectionProviderTest {
 
     admin.shutdown();
 
-    assertFalse(connection.isConnected());
+    assertFalse(connection.connected());
 
     provider.close();
 
-    assertFalse(provider.isConnectionValid());
+    assertFalse(provider.connectionValid());
 
     assertThrows(RuntimeException.class, provider::connection);
   }

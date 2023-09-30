@@ -166,7 +166,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.validator = requireNonNull(validator);
     this.modifiedFunction = Entity::isModified;
     this.newFunction = Entity::isNew;
-    readOnly.set(entityDefinition().isReadOnly());
+    readOnly.set(entityDefinition().readOnly());
     configurePersistentForeignKeyValues();
     bindEventsInternal();
     doSetEntity(defaultEntity(AttributeDefinition::defaultValue));
@@ -253,14 +253,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setEntity(Entity entity) {
-    if (isSetEntityAllowed()) {
+    if (setEntityAllowed()) {
       doSetEntity(entity);
     }
   }
 
   @Override
   public final void setDefaultValues() {
-    if (isSetEntityAllowed()) {
+    if (setEntityAllowed()) {
       doSetEntity(null);
     }
   }
@@ -339,8 +339,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNullable(Attribute<?> attribute) {
-    return validator.isNullable(entity, attribute);
+  public final boolean nullable(Attribute<?> attribute) {
+    return validator.nullable(entity, attribute);
   }
 
   @Override
@@ -401,7 +401,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     Entity toInsert = entity.copy();
-    if (entityDefinition().primaryKey().isGenerated()) {
+    if (entityDefinition().primaryKey().generated()) {
       toInsert.clearPrimaryKey();
     }
     toInsert.save();
@@ -888,7 +888,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return doInsert(entities);
   }
 
-  private boolean isSetEntityAllowed() {
+  private boolean setEntityAllowed() {
     if (warnAboutUnsavedData && containsUnsavedData()) {
       State confirmation = State.state(true);
       confirmSetEntityEvent.accept(confirmation);
@@ -947,17 +947,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private void configurePersistentForeignKeyValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      entityDefinition().foreignKeys().get().forEach(foreignKey -> setPersistValue(foreignKey, isForeignKeyWritable(foreignKey)));
+      entityDefinition().foreignKeys().get().forEach(foreignKey -> setPersistValue(foreignKey, foreignKeyWritable(foreignKey)));
     }
   }
 
-  private boolean isForeignKeyWritable(ForeignKey foreignKey) {
+  private boolean foreignKeyWritable(ForeignKey foreignKey) {
     return foreignKey.references().stream()
             .map(ForeignKey.Reference::column)
             .map(entityDefinition().columns()::definition)
             .filter(ColumnDefinition.class::isInstance)
             .map(ColumnDefinition.class::cast)
-            .anyMatch(columnDefinition -> !columnDefinition.isReadOnly());
+            .anyMatch(columnDefinition -> !columnDefinition.readOnly());
   }
 
   /**
@@ -1040,7 +1040,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private void updateEntityStates() {
     entityModified.set(modifiedFunction.apply(entity));
-    entityValid.set(validator.isValid(entity));
+    entityValid.set(validator.valid(entity));
     primaryKeyNull.set(entity.primaryKey().isNull());
     entityNew.set(newFunction.apply(entity));
   }
@@ -1070,7 +1070,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
     definition.columns().definitions().stream()
-            .filter(columnDefinition -> !definition.foreignKeys().isForeignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
+            .filter(columnDefinition -> !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
             .filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
             .map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
             .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
@@ -1079,7 +1079,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private static void addTransientValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
     definition.attributes().definitions().stream()
             .filter(TransientAttributeDefinition.class::isInstance)
-            .filter(attributeDefinition -> !attributeDefinition.isDerived())
+            .filter(attributeDefinition -> !attributeDefinition.derived())
             .map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
             .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
   }

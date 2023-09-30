@@ -171,7 +171,7 @@ public interface AttributeDefinition<T> {
   /**
    * @return true if this attribute should be hidden in table views
    */
-  boolean isHidden();
+  boolean hidden();
 
   /**
    * @return the maximum allowed value for this attribute, null if none is defined,
@@ -202,13 +202,13 @@ public interface AttributeDefinition<T> {
   /**
    * @return true if null is a valid value for this attribute
    */
-  boolean isNullable();
+  boolean nullable();
 
   /**
    * The value of a derived attribute can not be set, as it's value is derived from other values
    * @return true if the value of this attribute is derived from one or more values
    */
-  boolean isDerived();
+  boolean derived();
 
   /**
    * @return the maximum length of this attribute value, -1 is returned if the maximum length is undefined,

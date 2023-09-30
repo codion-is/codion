@@ -85,7 +85,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
   /**
    * @return true if a connection has been establised and the connection is in a valid state
    */
-  boolean isConnectionValid();
+  boolean connectionValid();
 
   /**
    * Adds a listener notified each time this connection provider establishes a connection to the database

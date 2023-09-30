@@ -270,7 +270,7 @@ final class SelectQueries {
       return selectableColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columns().definitions().stream()
                       .filter(columnDefinition -> !lazyLoadedBlobColumns.contains(columnDefinition))
-                      .filter(ColumnDefinition::isSelectable)
+                      .filter(ColumnDefinition::selectable)
                       .collect(toList()));
     }
 
@@ -278,7 +278,7 @@ final class SelectQueries {
       return definition.columns().definitions().stream()
               .filter(column -> column.attribute().type().isByteArray())
               .map(column -> (ColumnDefinition<byte[]>) column)
-              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
+              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).eagerlyLoaded())
               .collect(Collectors.toSet());
     }
 
@@ -289,7 +289,7 @@ final class SelectQueries {
     private String groupByClause() {
       return groupByClauseCache.computeIfAbsent(definition.entityType(), type ->
               definition.columns().definitions().stream()
-              .filter(ColumnDefinition::isGroupBy)
+              .filter(ColumnDefinition::groupBy)
               .map(ColumnDefinition::columnExpression)
               .collect(Collectors.joining(", ")));
     }
@@ -333,7 +333,7 @@ final class SelectQueries {
 
     private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
       return entityDefinition.columns().definition(orderByColumn.column()).columnExpression() +
-              (orderByColumn.isAscending() ? "" : " desc") +
+              (orderByColumn.ascending() ? "" : " desc") +
               nullOrderString(orderByColumn.nullOrder());
     }
 

@@ -168,7 +168,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public boolean isDerived() {
+  public boolean derived() {
     return false;
   }
 
@@ -183,7 +183,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public final boolean isHidden() {
+  public final boolean hidden() {
     return hidden;
   }
 
@@ -198,7 +198,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public final boolean isNullable() {
+  public final boolean nullable() {
     return nullable;
   }
 

@@ -36,7 +36,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
 
-  private static final String IS_CONNECTED = "isConnected";
+  private static final String CONNECTED = "connected";
   private static final String ENTITIES = "entities";
 
   private Server<RemoteEntityConnection, ServerAdmin> server;
@@ -160,8 +160,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
     @Override
     public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
       String methodName = method.getName();
-      if (methodName.equals(IS_CONNECTED)) {
-        return isConnected();
+      if (methodName.equals(CONNECTED)) {
+        return connected();
       }
       if (methodName.equals(ENTITIES)) {
         return entities();
@@ -181,9 +181,9 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
     }
 
-    private Object isConnected() throws RemoteException {
+    private Object connected() throws RemoteException {
       try {
-        return remoteConnection.isConnected();
+        return remoteConnection.connected();
       }
       catch (NoSuchObjectException | ConnectException e) {
         return false;

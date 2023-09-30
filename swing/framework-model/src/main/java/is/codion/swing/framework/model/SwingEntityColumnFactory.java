@@ -37,7 +37,7 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
   public final List<FilteredTableColumn<Attribute<?>>> createColumns() {
     AtomicInteger index = new AtomicInteger();
     return entityDefinition.attributes().definitions().stream()
-            .filter(attributeDefinition -> !attributeDefinition.isHidden())
+            .filter(attributeDefinition -> !attributeDefinition.hidden())
             .map(attributeDefinition -> createColumn(attributeDefinition, index.getAndIncrement()))
             .filter(Optional::isPresent)
             .map(Optional::get)

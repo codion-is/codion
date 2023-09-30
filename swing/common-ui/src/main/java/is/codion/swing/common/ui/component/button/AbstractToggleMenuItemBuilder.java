@@ -24,7 +24,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 
   @Override
   public final B toggleControl(ToggleControl toggleControl) {
-    if (requireNonNull(toggleControl).value().isNullable()) {
+    if (requireNonNull(toggleControl).value().nullable()) {
       throw new IllegalArgumentException("A toggle menu item does not support a nullable value");
     }
     this.toggleControl = toggleControl;

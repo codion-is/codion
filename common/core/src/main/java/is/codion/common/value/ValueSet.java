@@ -37,12 +37,12 @@ public interface ValueSet<T> extends Value<Set<T>> {
   /**
    * @return true if this value set is empty
    */
-  boolean isEmpty();
+  boolean empty();
 
   /**
    * @return true if this value set is not empty
    */
-  boolean isNotEmpty();
+  boolean notEmpty();
 
   /**
    * Clears all values from this ValueSet.

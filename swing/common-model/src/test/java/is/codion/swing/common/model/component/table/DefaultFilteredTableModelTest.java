@@ -87,15 +87,15 @@ public final class DefaultFilteredTableModelTest {
   void filterItems() {
     tableModel.refresh();
     tableModel.includeCondition().set(item -> !item.equals(B) && !item.equals(F));
-    assertFalse(tableModel.isVisible(B));
+    assertFalse(tableModel.visible(B));
     assertTrue(tableModel.containsItem(B));
     tableModel.addItemsAt(0, Collections.singletonList(F));
     tableModel.sortModel().setSortOrder(0, SortOrder.DESCENDING);
-    assertFalse(tableModel.isVisible(F));
+    assertFalse(tableModel.visible(F));
     assertTrue(tableModel.containsItem(F));
     tableModel.includeCondition().set(null);
-    assertTrue(tableModel.isVisible(B));
-    assertTrue(tableModel.isVisible(F));
+    assertTrue(tableModel.visible(B));
+    assertTrue(tableModel.visible(F));
   }
 
   @Test
@@ -217,15 +217,15 @@ public final class DefaultFilteredTableModelTest {
     tableModel.filterModel().conditionModel(0).setEqualValue("a");
     tableModel.removeItem(B);
     assertEquals(3, events.get());
-    assertFalse(tableModel.isVisible(B));
+    assertFalse(tableModel.visible(B));
     assertTrue(tableModel.containsItem(A));
     tableModel.removeItem(A);
     assertEquals(4, events.get());
     assertFalse(tableModel.containsItem(A));
     tableModel.removeItems(asList(D, E));
     assertEquals(4, events.get());//no change when removing filtered items
-    assertFalse(tableModel.isVisible(D));
-    assertFalse(tableModel.isVisible(E));
+    assertFalse(tableModel.visible(D));
+    assertFalse(tableModel.visible(E));
     tableModel.removeDataChangedListener(listener);
   }
 
@@ -746,19 +746,19 @@ public final class DefaultFilteredTableModelTest {
 
     //test filters
     assertNotNull(tableModel.filterModel().conditionModel(0));
-    assertTrue(tableModel.isVisible(B));
+    assertTrue(tableModel.visible(B));
     tableModel.filterModel().conditionModel(0).setEqualValue("a");
-    assertTrue(tableModel.isVisible(A));
-    assertFalse(tableModel.isVisible(B));
-    assertTrue(tableModel.isFiltered(D));
+    assertTrue(tableModel.visible(A));
+    assertFalse(tableModel.visible(B));
+    assertTrue(tableModel.filtered(D));
 
     tableModel.includeCondition().set(strings -> !strings.equals(A));
     assertTrue(tableModel.includeCondition().isNotNull());
-    assertFalse(tableModel.isVisible(A));
+    assertFalse(tableModel.visible(A));
     tableModel.includeCondition().set(null);
-    assertTrue(tableModel.isVisible(A));
+    assertTrue(tableModel.visible(A));
 
-    assertFalse(tableModel.isVisible(B));
+    assertFalse(tableModel.visible(B));
     assertTrue(tableModel.containsItem(B));
     assertTrue(tableModel.filterModel().conditionModel(0).enabled().get());
     assertEquals(4, tableModel.filteredItemCount());
@@ -793,11 +793,11 @@ public final class DefaultFilteredTableModelTest {
 
   @Test
   void clearFilterModels() {
-    assertFalse(tableModel.filterModel().isEnabled(0));
+    assertFalse(tableModel.filterModel().enabled(0));
     tableModel.filterModel().conditionModel(0).setEqualValue("SCOTT");
-    assertTrue(tableModel.filterModel().isEnabled(0));
+    assertTrue(tableModel.filterModel().enabled(0));
     tableModel.filterModel().clear();
-    assertFalse(tableModel.filterModel().isEnabled(0));
+    assertFalse(tableModel.filterModel().enabled(0));
   }
 
   @Test
@@ -851,7 +851,7 @@ public final class DefaultFilteredTableModelTest {
           return false;
         }
       }
-      else if (!model.isVisible(row)) {
+      else if (!model.visible(row)) {
         return false;
       }
     }

@@ -62,7 +62,7 @@ public final class EntityComboBoxModelTest {
             .build();
 
     EntityEditEvents.notifyInserted(singletonList(temp));
-    assertTrue(comboBoxModel.isVisible(temp));
+    assertTrue(comboBoxModel.visible(temp));
 
     temp.put(Employee.NAME, "Newname");
     temp.save(Employee.NAME);
@@ -74,12 +74,12 @@ public final class EntityComboBoxModelTest {
     assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElse(null).get(Employee.NAME));
 
     EntityEditEvents.notifyDeleted(singletonList(temp));
-    assertFalse(comboBoxModel.isVisible(temp));
+    assertFalse(comboBoxModel.visible(temp));
 
     comboBoxModel.setListenToEditEvents(false);
 
     EntityEditEvents.notifyInserted(singletonList(temp));
-    assertFalse(comboBoxModel.isVisible(temp));
+    assertFalse(comboBoxModel.visible(temp));
   }
 
   @Test
@@ -268,7 +268,7 @@ public final class EntityComboBoxModelTest {
     assertNull(comboBoxModel.getSelectedItem());
     comboBoxModel.refresh();
     assertTrue(comboBoxModel.getSize() > 0);
-    assertFalse(comboBoxModel.isCleared());
+    assertFalse(comboBoxModel.cleared());
 
     Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
     comboBoxModel.setSelectedItem(clark);

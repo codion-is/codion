@@ -174,7 +174,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public boolean isSelectedItem(R item) {
+  public boolean isSelected(R item) {
     requireNonNull(item);
 
     return isSelectedIndex(tableModel.indexOf(item));
@@ -283,11 +283,6 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
                 .collect(toList()));
       }
     }
-  }
-
-  @Override
-  public boolean isSelectionNotEmpty() {
-    return !isSelectionEmpty();
   }
 
   @Override

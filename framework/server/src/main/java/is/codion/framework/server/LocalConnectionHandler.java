@@ -179,12 +179,12 @@ final class LocalConnectionHandler implements InvocationHandler {
     MDC.remove(LOG_IDENTIFIER_PROPERTY);
   }
 
-  boolean isConnected() {
+  boolean connected() {
     if (connectionPool != null) {
       return !closed;
     }
 
-    return !closed && localEntityConnection != null && localEntityConnection.isConnected();
+    return !closed && localEntityConnection != null && localEntityConnection.connected();
   }
 
   void close() {
@@ -213,11 +213,11 @@ final class LocalConnectionHandler implements InvocationHandler {
     return methodLogger;
   }
 
-  boolean isActive() {
+  boolean active() {
     return active.get();
   }
 
-  boolean isClosed() {
+  boolean closed() {
     return closed;
   }
 
@@ -245,7 +245,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   }
 
   private EntityConnection pooledEntityConnection() throws DatabaseException {
-    if (poolEntityConnection.isTransactionOpen()) {
+    if (poolEntityConnection.transactionOpen()) {
       return poolEntityConnection;
     }
     poolEntityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
@@ -255,7 +255,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   }
 
   private EntityConnection localEntityConnection() throws DatabaseException {
-    if (!localEntityConnection.isConnected()) {
+    if (!localEntityConnection.connected()) {
       localEntityConnection.close();//just in case
       localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
       localEntityConnection.databaseConnection().setMethodLogger(methodLogger);
@@ -268,7 +268,7 @@ final class LocalConnectionHandler implements InvocationHandler {
    * Returns the pooled connection to a connection pool if the connection is not within an open transaction
    */
   private void returnConnection() {
-    if (poolEntityConnection == null || poolEntityConnection.isTransactionOpen()) {
+    if (poolEntityConnection == null || poolEntityConnection.transactionOpen()) {
       return;
     }
     try {
@@ -310,7 +310,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   }
 
   private void rollbackIfRequired(LocalEntityConnection entityConnection) {
-    if (entityConnection.isTransactionOpen()) {
+    if (entityConnection.transactionOpen()) {
       LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
       entityConnection.rollbackTransaction();
     }
@@ -418,7 +418,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       for (int i = 0; i < columnDefinitions.size(); i++) {
         ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
         boolean modified = entity.isModified(columnDefinition.attribute());
-        if (columnDefinition.isPrimaryKeyColumn() || modified) {
+        if (columnDefinition.primaryKeyColumn() || modified) {
           StringBuilder valueString = new StringBuilder();
           if (modified) {
             valueString.append(entity.original(columnDefinition.attribute())).append("->");

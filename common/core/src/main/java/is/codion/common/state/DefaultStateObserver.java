@@ -47,7 +47,7 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public boolean isNullable() {
+  public boolean nullable() {
     return false;
   }
 

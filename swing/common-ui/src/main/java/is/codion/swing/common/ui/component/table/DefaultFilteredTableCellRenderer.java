@@ -57,12 +57,12 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
   }
 
   @Override
-  public boolean isColumnShadingEnabled() {
+  public boolean columnShadingEnabled() {
     return columnShadingEnabled;
   }
 
   @Override
-  public boolean isAlternateRowColoring() {
+  public boolean alternateRowColoring() {
     return alternateRowColoring;
   }
 
@@ -141,12 +141,12 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
     }
 
     @Override
-    public boolean isColumnShadingEnabled() {
+    public boolean columnShadingEnabled() {
       return columnShadingEnabled;
     }
 
     @Override
-    public boolean isAlternateRowColoring() {
+    public boolean alternateRowColoring() {
       return alternateRowColoring;
     }
 

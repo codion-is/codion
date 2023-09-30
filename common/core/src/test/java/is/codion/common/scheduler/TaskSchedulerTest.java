@@ -48,26 +48,26 @@ public class TaskSchedulerTest {
   void startStop() throws InterruptedException {
     AtomicInteger counter = new AtomicInteger();
     TaskScheduler scheduler = TaskScheduler.builder(counter::incrementAndGet).interval(1, TimeUnit.MILLISECONDS).build();
-    assertFalse(scheduler.isRunning());
+    assertFalse(scheduler.running());
     assertEquals(TimeUnit.MILLISECONDS, scheduler.timeUnit());
     scheduler.start();
-    assertTrue(scheduler.isRunning());
+    assertTrue(scheduler.running());
     Thread.sleep(100);
-    assertTrue(scheduler.isRunning());
+    assertTrue(scheduler.running());
     assertNotEquals(0, counter.get());
     scheduler.stop();
     int currentCount = counter.get();
-    assertFalse(scheduler.isRunning());
+    assertFalse(scheduler.running());
     Thread.sleep(100);
     assertEquals(currentCount, counter.get());
     scheduler.interval().set(2);//still stopped
-    assertFalse(scheduler.isRunning());
+    assertFalse(scheduler.running());
     scheduler.start();
-    assertTrue(scheduler.isRunning());
+    assertTrue(scheduler.running());
     Thread.sleep(100);
-    assertTrue(scheduler.isRunning());
+    assertTrue(scheduler.running());
     assertTrue(counter.get() > currentCount);
     scheduler.stop();
-    assertFalse(scheduler.isRunning());
+    assertFalse(scheduler.running());
   }
 }

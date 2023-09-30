@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
-import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
+import static is.codion.common.rmi.server.SerializationWhitelist.serializationDryRun;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -230,7 +230,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
     loginProxies.values().forEach(AbstractServer::closeLoginProxy);
     auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && isSerializationDryRunActive()) {
+    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && serializationDryRun()) {
       writeDryRunWhitelist();
     }
     shutdownEvent.run();
@@ -450,7 +450,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
     if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      if (configuration.isSerializationFilterDryRun()) {
+      if (configuration.serializationFilterDryRun()) {
         SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
       }
       else {

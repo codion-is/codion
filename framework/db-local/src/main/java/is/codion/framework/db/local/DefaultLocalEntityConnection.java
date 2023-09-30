@@ -146,9 +146,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public boolean isConnected() {
+  public boolean connected() {
     synchronized (connection) {
-      return connection.isConnected();
+      return connection.connected();
     }
   }
 
@@ -167,9 +167,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public boolean isTransactionOpen() {
+  public boolean transactionOpen() {
     synchronized (connection) {
-      return connection.isTransactionOpen();
+      return connection.transactionOpen();
     }
   }
 
@@ -779,9 +779,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           KeyGenerator keyGenerator = entityDefinition.primaryKey().generator();
           keyGenerator.beforeInsert(entity, connection);
 
-          populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.isInserted()),
+          populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.inserted()),
                   statementColumns, statementValues, columnDefinition -> entity.contains(columnDefinition.attribute()));
-          if (keyGenerator.isInserted() && statementColumns.isEmpty()) {
+          if (keyGenerator.inserted() && statementColumns.isEmpty()) {
             throw new SQLException("Unable to insert entity " + entity.entityType() + ", no values to insert");
           }
 
@@ -935,7 +935,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
     for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
       ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
-      if (!columnDefinition.isUpdatable()) {
+      if (!columnDefinition.updatable()) {
         throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
       }
       statementColumns.add(columnDefinition);
@@ -989,7 +989,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       ForeignKey foreignKey = foreignKeyDefinition.attribute();
       int conditionOrForeignKeyFetchDepthLimit = select.fetchDepth(foreignKey)
               .orElse(foreignKeyDefinition.fetchDepth());
-      if (isWithinFetchDepthLimit(currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit)
+      if (withinFetchDepthLimit(currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit)
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
           logEntry("setForeignKeys", foreignKeyDefinition);
@@ -1030,7 +1030,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .collect(toList());
   }
 
-  private boolean isWithinFetchDepthLimit(int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) {
+  private boolean withinFetchDepthLimit(int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) {
     return !limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit;
   }
 
@@ -1051,7 +1051,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               .collect(toList()));
     }
 
-    if (referencedKey.isPrimaryKey()) {
+    if (referencedKey.primaryKey()) {
       return mapToPrimaryKey(referencedEntities);
     }
 
@@ -1172,7 +1172,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ForeignKeyDefinition> initializeNonSoftForeignKeyReferences(EntityType entityType) {
     return domainEntities.definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
-            .filter(foreignKeyDefinition -> !foreignKeyDefinition.isSoftReference())
+            .filter(foreignKeyDefinition -> !foreignKeyDefinition.softReference())
             .filter(foreignKeyDefinition -> foreignKeyDefinition.referencedType().equals(entityType))
             .collect(toList());
   }
@@ -1253,13 +1253,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private void commitIfTransactionIsNotOpen() throws SQLException {
-    if (!isTransactionOpen()) {
+    if (!transactionOpen()) {
       connection.commit();
     }
   }
 
   private void rollbackQuietlyIfTransactionIsNotOpen() {
-    if (!isTransactionOpen()) {
+    if (!transactionOpen()) {
       rollbackQuietly();
     }
   }
@@ -1336,7 +1336,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private void checkIfReadOnly(EntityType entityType) throws DatabaseException {
-    if (domainEntities.definition(entityType).isReadOnly()) {
+    if (domainEntities.definition(entityType).readOnly()) {
       throw new DatabaseException("Entities of type: " + entityType + " are read only");
     }
   }
@@ -1379,10 +1379,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .collect(toList());
   }
 
-  private static boolean isWritable(ColumnDefinition<?> definition, boolean includePrimaryKeyColumns,
+  private static boolean isWritable(ColumnDefinition<?> column, boolean includePrimaryKeyColumns,
                                     boolean includeNonUpdatable) {
-    return definition.isInsertable() && (includeNonUpdatable || definition.isUpdatable())
-            && (includePrimaryKeyColumns || !definition.isPrimaryKeyColumn());
+    return column.insertable() && (includeNonUpdatable || column.updatable())
+            && (includePrimaryKeyColumns || !column.primaryKeyColumn());
   }
 
   private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,
@@ -1521,7 +1521,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static void verifyColumnIsSelectable(ColumnDefinition<?> columnDefinition, EntityDefinition entityDefinition) {
-    if (columnDefinition.isAggregate()) {
+    if (columnDefinition.aggregate()) {
       throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate function values");
     }
     SelectQuery selectQuery = entityDefinition.selectQuery();

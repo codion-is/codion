@@ -33,7 +33,7 @@ public interface OrderBy {
     /**
      * @return true if the order is ascending, false for descending
      */
-    boolean isAscending();
+    boolean ascending();
 
     /**
      * @return the {@link NullOrder} when ordering by this column

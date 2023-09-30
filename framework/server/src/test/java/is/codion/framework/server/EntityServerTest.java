@@ -134,7 +134,7 @@ public class EntityServerTest {
             .clientTypeId("ClientTypeID").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
     RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
-    assertTrue(remoteConnectionOne.isConnected());
+    assertTrue(remoteConnectionOne.connected());
     assertEquals(1, admin.connectionCount());
     admin.setPooledConnectionIdleTimeout(UNIT_TEST_USER.username(), 60005);
     assertEquals(60005, admin.getPooledConnectionIdleTimeout(UNIT_TEST_USER.username()));
@@ -166,7 +166,7 @@ public class EntityServerTest {
     assertTrue(admin.isLoggingEnabled(connectionRequestOne.clientId()));
     assertThrows(IllegalArgumentException.class, () -> admin.isLoggingEnabled(UUID.randomUUID()));
     assertThrows(IllegalArgumentException.class, () -> admin.setLoggingEnabled(UUID.randomUUID(), true));
-    assertTrue(remoteConnectionTwo.isConnected());
+    assertTrue(remoteConnectionTwo.connected());
     assertEquals(2, admin.connectionCount());
     assertEquals(2, admin.clients().size());
 
@@ -274,7 +274,7 @@ public class EntityServerTest {
 
     EntityConnection db = provider.connection();
     assertNotNull(db);
-    assertTrue(db.isConnected());
+    assertTrue(db.connected());
     provider.close();
 
     //not available until a connection has been requested
@@ -283,22 +283,22 @@ public class EntityServerTest {
     EntityConnection db2 = provider.connection();
     assertNotNull(db2);
     assertNotSame(db, db2);
-    assertTrue(db2.isConnected());
+    assertTrue(db2.connected());
     provider.close();
 
     EntityConnection db3 = provider.connection();
-    assertTrue(db3.isConnected());
+    assertTrue(db3.connected());
     admin.disconnect(provider.clientId());
-    assertFalse(db3.isConnected());
+    assertFalse(db3.connected());
 
     db3 = provider.connection();
-    assertTrue(db3.isConnected());
+    assertTrue(db3.connected());
     db3.close();
 
     provider.close();
-    assertFalse(provider.isConnectionValid());
+    assertFalse(provider.connectionValid());
     db3 = provider.connection();
-    assertTrue(provider.isConnectionValid());
+    assertTrue(provider.connectionValid());
     db3.close();
   }
 

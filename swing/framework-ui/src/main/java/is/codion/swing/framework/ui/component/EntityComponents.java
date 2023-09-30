@@ -158,7 +158,7 @@ public class EntityComponents {
       return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
     }
     if (type.isEnum()) {
-      return (ComponentBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.isNullable()));
+      return (ComponentBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.nullable()));
     }
 
     throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + type.valueClass() + ")");
@@ -174,7 +174,7 @@ public class EntityComponents {
 
     return Components.checkBox()
             .toolTipText(attributeDefinition.description())
-            .nullable(attributeDefinition.isNullable())
+            .nullable(attributeDefinition.nullable())
             .text(attributeDefinition.caption())
             .includeText(false);
   }
@@ -278,7 +278,7 @@ public class EntityComponents {
 
     return Components.itemComboBox(((ItemColumnDefinition<T>) attributeDefinition).items())
             .toolTipText(attributeDefinition.description())
-            .nullable(attributeDefinition.isNullable());
+            .nullable(attributeDefinition.nullable());
   }
 
   /**

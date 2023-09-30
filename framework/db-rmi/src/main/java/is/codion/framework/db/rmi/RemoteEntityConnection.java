@@ -46,7 +46,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @return true if this connection has been established and is valid
    * @throws RemoteException in case of an exception
    */
-  boolean isConnected() throws RemoteException;
+  boolean connected() throws RemoteException;
 
   /**
    * Closes this connection.
@@ -59,7 +59,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @return true if a transaction is open, false otherwise
    * @throws RemoteException in case of exception
    */
-  boolean isTransactionOpen() throws RemoteException;
+  boolean transactionOpen() throws RemoteException;
 
   /**
    * Begins a transaction on this connection

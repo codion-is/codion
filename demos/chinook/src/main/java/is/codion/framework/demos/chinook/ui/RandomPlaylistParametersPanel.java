@@ -111,17 +111,17 @@ final class RandomPlaylistParametersPanel extends JPanel {
     }
 
     private void validate() {
-      parametersValid.set(isValid());
+      parametersValid.set(valid());
     }
 
-    private boolean isValid() {
+    private boolean valid() {
       if (nullOrEmpty(playlistName.get())) {
         return false;
       }
       if (noOfTracks.isNull()) {
         return false;
       }
-      if (genres.isEmpty()) {
+      if (genres.empty()) {
         return false;
       }
 

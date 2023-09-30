@@ -95,7 +95,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return true if client logging should be enabled on startup
    */
-  boolean isClientLoggingEnabled();
+  boolean clientLoggingEnabled();
 
   /**
    * @return the idle connection timeout

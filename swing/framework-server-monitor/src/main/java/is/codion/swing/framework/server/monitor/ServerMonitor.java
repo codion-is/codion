@@ -320,7 +320,7 @@ public final class ServerMonitor {
     Map<String, Collection<DomainReport>> reports = server.domainReports();
     for (Map.Entry<String, Collection<DomainReport>> domainReports : reports.entrySet()) {
       for (DomainReport domainReport : domainReports.getValue()) {
-        reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.type(), domainReport.path(), domainReport.isCached()});
+        reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.type(), domainReport.path(), domainReport.cached()});
       }
     }
   }
@@ -375,7 +375,7 @@ public final class ServerMonitor {
   /**
    * @return true if the server is reachable
    */
-  public boolean isServerReachable() {
+  public boolean serverReachable() {
     try {
       server.usedMemory();
       return true;

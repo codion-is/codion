@@ -38,7 +38,7 @@ final class DefaultColumnPreferences implements ColumnPreferences {
   }
 
   @Override
-  public boolean isVisible() {
+  public boolean visible() {
     return index != -1;
   }
 

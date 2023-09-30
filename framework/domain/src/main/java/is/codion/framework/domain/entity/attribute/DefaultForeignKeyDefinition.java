@@ -52,12 +52,12 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
   }
 
   @Override
-  public boolean isSoftReference() {
+  public boolean softReference() {
     return softReference;
   }
 
   @Override
-  public boolean isReadOnly(Column<?> referenceColumn) {
+  public boolean readOnly(Column<?> referenceColumn) {
     return readOnlyColumns.contains(referenceColumn);
   }
 

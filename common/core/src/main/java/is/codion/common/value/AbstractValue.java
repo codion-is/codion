@@ -81,7 +81,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final boolean isNullable() {
+  public final boolean nullable() {
     return nullValue == null;
   }
 

@@ -117,12 +117,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public boolean isVisible(R item) {
+  public boolean visible(R item) {
     return visibleItems.contains(item);
   }
 
   @Override
-  public boolean isFiltered(R item) {
+  public boolean filtered(R item) {
     return filteredItems.contains(item);
   }
 
@@ -216,7 +216,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void sortItems() {
-    if (sortModel.isSorted()) {
+    if (sortModel.sorted()) {
       List<R> selectedItems = selectionModel.getSelectedItems();
       sortModel.sort(visibleItems);
       fireTableRowsUpdated(0, visibleItems.size());
@@ -263,7 +263,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemsAtSorted(int index, Collection<R> items) {
-    if (addItemsAtInternal(index, items) && sortModel.isSorted()) {
+    if (addItemsAtInternal(index, items) && sortModel.sorted()) {
       sortModel.sort(visibleItems);
       fireTableDataChanged();
     }
@@ -281,7 +281,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemSorted(R item) {
-    if (addItemInternal(item) && sortModel.isSorted()) {
+    if (addItemInternal(item) && sortModel.sorted()) {
       sortModel.sort(visibleItems);
       fireTableDataChanged();
     }
@@ -635,7 +635,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     @Override
     public ColumnSummaryModel.SummaryValues<T> values() {
       FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
-      boolean subset = tableSelectionModel.isSelectionNotEmpty() &&
+      boolean subset = tableSelectionModel.selectionEmpty().get() &&
               tableSelectionModel.selectionCount() != tableModel.visibleItemCount();
 
       return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);

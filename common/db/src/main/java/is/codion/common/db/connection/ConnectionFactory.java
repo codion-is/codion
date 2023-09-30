@@ -33,5 +33,5 @@ public interface ConnectionFactory {
    * @param connection the connection to validate
    * @return true if the connection is valid
    */
-  boolean isConnectionValid(Connection connection);
+  boolean connectionValid(Connection connection);
 }

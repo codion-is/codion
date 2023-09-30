@@ -208,7 +208,7 @@ public interface TableSelectionModel<R> {
    * @param item the item
    * @return true if the item is selected
    */
-  boolean isSelectedItem(R item);
+  boolean isSelected(R item);
 
   /**
    * Sets the selected item
@@ -249,14 +249,4 @@ public interface TableSelectionModel<R> {
    * Clears the selection
    */
   void clearSelection();
-
-  /**
-   * @return true if the selection is empty
-   */
-  boolean isSelectionEmpty();
-
-  /**
-   * @return true if the selection is not empty
-   */
-  boolean isSelectionNotEmpty();
 }

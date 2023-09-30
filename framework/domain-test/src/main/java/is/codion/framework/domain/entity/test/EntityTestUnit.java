@@ -95,13 +95,13 @@ public class EntityTestUnit {
       Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
       Entity testEntity = null;
       EntityDefinition entityDefinition = entities().definition(entityType);
-      if (!entityDefinition.isReadOnly()) {
+      if (!entityDefinition.readOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"), connection);
         assertTrue(testEntity.primaryKey().isNotNull());
         testUpdate(testEntity, initializeForeignKeyEntities(entityType, foreignKeyEntities, connection), connection, this);
       }
       testSelect(entityType, testEntity, connection);
-      if (!entityDefinition.isReadOnly()) {
+      if (!entityDefinition.readOnly()) {
         testDelete(testEntity, connection);
       }
     }
@@ -139,7 +139,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
-    if (entities().definition(requireNonNull(foreignKey).referencedType()).isReadOnly()) {
+    if (entities().definition(requireNonNull(foreignKey).referencedType()).readOnly()) {
       return null;
     }
 
@@ -244,7 +244,7 @@ public class EntityTestUnit {
     Entity updatedEntity = connection.updateSelect(testEntity);
     assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
     testEntity.definition().columns().definitions().stream()
-            .filter(ColumnDefinition::isUpdatable)
+            .filter(ColumnDefinition::updatable)
             .forEach(columnDefinition -> assertValueEqual(testEntity, updatedEntity, columnDefinition));
   }
 
@@ -300,7 +300,7 @@ public class EntityTestUnit {
       assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
               && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
     }
-    else if (columnDefinition.attribute().type().isByteArray() && columnDefinition instanceof BlobColumnDefinition && ((BlobColumnDefinition) columnDefinition).isEagerlyLoaded()) {
+    else if (columnDefinition.attribute().type().isByteArray() && columnDefinition instanceof BlobColumnDefinition && ((BlobColumnDefinition) columnDefinition).eagerlyLoaded()) {
       assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
     }
     else {

@@ -83,7 +83,7 @@ final class EntitySerializer {
     }
     key.columns = unmodifiableList(key.columns);
     key.values = unmodifiableMap(key.values);
-    key.singleIntegerKey = valueCount == 1 && isSingleIntegerKey(key);
+    key.singleIntegerKey = valueCount == 1 && singleIntegerKey(key);
     key.hashCodeDirty = true;
   }
 
@@ -98,9 +98,9 @@ final class EntitySerializer {
 
   private static void serializeValues(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
     serializeValues(entity.values, stream);
-    boolean isModified = entity.originalValues != null;
-    stream.writeBoolean(isModified);
-    if (isModified) {
+    boolean modified = entity.originalValues != null;
+    stream.writeBoolean(modified);
+    if (modified) {
       serializeValues(entity.originalValues, stream);
     }
   }
@@ -123,7 +123,7 @@ final class EntitySerializer {
     }
   }
 
-  private static boolean isSingleIntegerKey(DefaultKey key) {
+  private static boolean singleIntegerKey(DefaultKey key) {
     return key.columns.size() == 1 && key.columns.get(0).type().isInteger();
   }
 }

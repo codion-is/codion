@@ -44,7 +44,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 
   @Override
-  public boolean isValid(Entity entity) {
+  public boolean valid(Entity entity) {
     try {
       validate(entity);
       return true;
@@ -55,8 +55,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).definition().attributes().definition(attribute).isNullable();
+  public <T> boolean nullable(Entity entity, Attribute<T> attribute) {
+    return requireNonNull(entity).definition().attributes().definition(attribute).nullable();
   }
 
   @Override
@@ -76,7 +76,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
     AttributeDefinition<T> definition = entity.definition().attributes().definition(attribute);
-    if (!(attribute instanceof Column) || !entity.definition().foreignKeys().isForeignKeyColumn((Column<?>) attribute)) {
+    if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
       performNullValidation(entity, definition);
     }
     if (definition instanceof ItemColumnDefinition) {
@@ -94,7 +94,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attributeDefinition, "attributeDefinition");
     Attribute<T> attribute = attributeDefinition.attribute();
-    if (!isNullable(entity, attribute) && entity.isNull(attribute)) {
+    if (!nullable(entity, attribute) && entity.isNull(attribute)) {
       if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue(attributeDefinition);
@@ -112,11 +112,11 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   private <T> void performItemValidation(Entity entity, ItemColumnDefinition<T> columnDefinition) throws ItemValidationException {
-    if (entity.isNull(columnDefinition.attribute()) && isNullable(entity, columnDefinition.attribute())) {
+    if (entity.isNull(columnDefinition.attribute()) && nullable(entity, columnDefinition.attribute())) {
       return;
     }
     T value = entity.get(columnDefinition.attribute());
-    if (!columnDefinition.isValid(value)) {
+    if (!columnDefinition.valid(value)) {
       throw new ItemValidationException(columnDefinition.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
     }
   }
@@ -160,21 +160,21 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private static boolean isNonGeneratedPrimaryKeyColumn(EntityDefinition definition, AttributeDefinition<?> attributeDefinition) {
     return (attributeDefinition instanceof ColumnDefinition
-            && ((ColumnDefinition<?>) attributeDefinition).isPrimaryKeyColumn())
-            && !definition.primaryKey().isGenerated();
+            && ((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn())
+            && !definition.primaryKey().generated();
   }
 
   private static boolean isNonKeyColumnWithoutDefaultValue(AttributeDefinition<?> definition) {
     return definition instanceof ColumnDefinition
-            && !((ColumnDefinition<?>) definition).isPrimaryKeyColumn()
+            && !((ColumnDefinition<?>) definition).primaryKeyColumn()
             && !((ColumnDefinition<?>) definition).columnHasDefaultValue();
   }
 
   private static boolean validationRequired(AttributeDefinition<?> definition) {
-    if (definition.isDerived()) {
+    if (definition.derived()) {
       return false;
     }
-    if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).isReadOnly()) {
+    if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {
       return false;
     }
 

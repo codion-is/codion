@@ -111,7 +111,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * @return true if the model data has been cleared and needs to be refreshed
    */
-  public final boolean isCleared() {
+  public final boolean cleared() {
     return cleared;
   }
 
@@ -120,7 +120,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * if {@code items} is null then the model is cleared.
    * @param items the items to display in this combo box model
    * @throws IllegalArgumentException in case an item fails validation
-   * @see #isCleared()
+   * @see #cleared()
    * @see #setItemValidator(Predicate)
    */
   public final void setItems(Collection<T> items) {
@@ -204,7 +204,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   @Override
-  public final boolean isVisible(T item) {
+  public final boolean visible(T item) {
     if (item == null) {
       return includeNull;
     }
@@ -213,7 +213,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   @Override
-  public final boolean isFiltered(T item) {
+  public final boolean filtered(T item) {
     return filteredItems.contains(item);
   }
 
@@ -397,19 +397,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @return true if this model contains null and it is selected, false otherwise
    * @see #isIncludeNull()
    */
-  public final boolean isNullSelected() {
+  public final boolean nullSelected() {
     return includeNull && selectedItem == null;
   }
 
   /**
-   * @return true if no value is selected or if the value representing null is selected
-   */
-  public final boolean isSelectionEmpty() {
-    return selectedValue() == null;
-  }
-
-  /**
-   * @return a StateObserver indicating whether the selection is empty
+   * @return a StateObserver indicating whether the selection is empty or the value representing null is selected
    */
   public final StateObserver selectionEmpty() {
     return selectionEmpty.observer();
@@ -417,10 +410,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * @return the selected value, null in case the value representing null is selected
-   * @see #isNullSelected()
+   * @see #nullSelected()
    */
   public final T selectedValue() {
-    if (isNullSelected()) {
+    if (nullSelected()) {
       return null;
     }
 
@@ -448,7 +441,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
-      selectionEmpty.set(isSelectionEmpty());
+      selectionEmpty.set(selectedValue() == null);
       selectionChangedEvent.accept(selectedItem);
     }
   }

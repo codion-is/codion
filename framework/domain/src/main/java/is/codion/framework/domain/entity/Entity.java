@@ -364,7 +364,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */
-  static <T extends Entity> boolean isKeyModified(Collection<T> entities) {
+  static <T extends Entity> boolean keyModified(Collection<T> entities) {
     return requireNonNull(entities).stream()
             .anyMatch(entity -> entity.primaryKey().columns().stream()
                     .anyMatch(entity::isModified));
@@ -390,7 +390,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable columns which values differ from the ones in the comparison entity
-   * @see BlobColumnDefinition#isEagerlyLoaded()
+   * @see BlobColumnDefinition#eagerlyLoaded()
    */
   static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
     requireNonNull(entity);
@@ -400,9 +400,9 @@ public interface Entity extends Comparable<Entity> {
             .filter(ColumnDefinition.class::isInstance)
             .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
             .filter(columnDefinition -> {
-              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).isEagerlyLoaded();
+              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).eagerlyLoaded();
 
-              return columnDefinition.isUpdatable() && !lazilyLoadedBlobColumn && isValueMissingOrModified(entity, comparison, columnDefinition.attribute());
+              return columnDefinition.updatable() && !lazilyLoadedBlobColumn && valueMissingOrModified(entity, comparison, columnDefinition.attribute());
             })
             .map(ColumnDefinition::attribute)
             .collect(toList());
@@ -703,7 +703,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the attribute type
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
-  static <T> boolean isValueMissingOrModified(Entity entity, Entity comparison, Attribute<T> attribute) {
+  static <T> boolean valueMissingOrModified(Entity entity, Entity comparison, Attribute<T> attribute) {
     requireNonNull(entity);
     requireNonNull(comparison);
     requireNonNull(attribute);
@@ -746,7 +746,7 @@ public interface Entity extends Comparable<Entity> {
      * @return true if this key represents a primary key for an entity, note that this is true
      * for empty keys representing entities without a defined primary key
      */
-    boolean isPrimaryKey();
+    boolean primaryKey();
 
     /**
      * @return true if this key contains no values or if it contains a null value for a non-nullable key attribute

@@ -280,17 +280,17 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean isSmallDataset() {
+  public boolean smallDataset() {
     return smallDataset;
   }
 
   @Override
-  public boolean isStaticData() {
+  public boolean staticData() {
     return staticData;
   }
 
   @Override
-  public boolean isReadOnly() {
+  public boolean readOnly() {
     return readOnly;
   }
 
@@ -578,13 +578,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     @Override
     public Collection<AttributeDefinition<?>> updatable() {
       List<ColumnDefinition<?>> updatableColumns = entityAttributes.columnDefinitions.stream()
-              .filter(ColumnDefinition::isUpdatable)
-              .filter(column -> (!column.isPrimaryKeyColumn() || !primaryKey.isGenerated()))
+              .filter(ColumnDefinition::updatable)
+              .filter(column -> (!column.primaryKeyColumn() || !primaryKey.generated()))
               .collect(toList());
-      updatableColumns.removeIf(column -> foreignKeys.isForeignKeyColumn(column.attribute()));
+      updatableColumns.removeIf(column -> foreignKeys.foreignKeyColumn(column.attribute()));
       List<AttributeDefinition<?>> updatable = new ArrayList<>(updatableColumns);
       for (ForeignKeyDefinition definition : entityAttributes.foreignKeyDefinitions) {
-        if (foreignKeys.isUpdatable(definition.attribute())) {
+        if (foreignKeys.updatable(definition.attribute())) {
           updatable.add(definition);
         }
       }
@@ -605,7 +605,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     @Override
     public Collection<Column<String>> searchColumns() {
       return entityAttributes.columnDefinitions.stream()
-              .filter(ColumnDefinition::isSearchColumn)
+              .filter(ColumnDefinition::searchColumn)
               .map(column -> ((ColumnDefinition<String>) column).attribute())
               .collect(toList());
     }
@@ -651,15 +651,15 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public boolean isUpdatable(ForeignKey foreignKey) {
+    public boolean updatable(ForeignKey foreignKey) {
       definition(foreignKey);
       return foreignKey.references().stream()
               .map(reference -> columns.definition(reference.column()))
-              .allMatch(ColumnDefinition::isUpdatable);
+              .allMatch(ColumnDefinition::updatable);
     }
 
     @Override
-    public boolean isForeignKeyColumn(Column<?> column) {
+    public boolean foreignKeyColumn(Column<?> column) {
       attributes.definition(column);
       return entityAttributes.foreignKeyColumns.contains(column);
     }
@@ -709,7 +709,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public boolean isGenerated() {
+    public boolean generated() {
       return keyGenerated;
     }
   }
@@ -827,10 +827,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       Set<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions = columnDefinitions.stream()
               .filter(column -> column.attribute().type().isByteArray())
               .map(column -> (ColumnDefinition<byte[]>) column)
-              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
+              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).eagerlyLoaded())
               .collect(toSet());
       List<Attribute<?>> selectableAttributes = columnDefinitions.stream()
-              .filter(ColumnDefinition::isSelectable)
+              .filter(ColumnDefinition::selectable)
               .filter(column -> !lazyLoadedBlobColumnDefinitions.contains(column))
               .map(AttributeDefinition::attribute)
               .collect(toList());
@@ -860,7 +860,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return attributeDefinitions.stream()
               .filter(ColumnDefinition.class::isInstance)
               .map(column -> (ColumnDefinition<?>) column)
-              .filter(ColumnDefinition::isPrimaryKeyColumn)
+              .filter(ColumnDefinition::primaryKeyColumn)
               .sorted(comparingInt(ColumnDefinition::primaryKeyIndex))
               .collect(toList());
     }
@@ -885,7 +885,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void validatePrimaryKeyAttributes(Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions, EntityType entityType) {
       Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
       for (AttributeDefinition<?> definition : attributeDefinitions.values()) {
-        if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).isPrimaryKeyColumn()) {
+        if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).primaryKeyColumn()) {
           Integer index = ((ColumnDefinition<?>) definition).primaryKeyIndex();
           if (usedPrimaryKeyIndexes.contains(index)) {
             throw new IllegalArgumentException("Primary key index " + index + " in column " + definition + " has already been used");
@@ -950,7 +950,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
                                               Map<ForeignKey, List<ColumnDefinition<?>>> foreignKeyColumnDefinitions) {
       //make foreign keys nullable if and only if any of their constituent columns are nullable
       foreignKeyBuilder.nullable(foreignKeyColumnDefinitions.get(foreignKeyBuilder.attribute()).stream()
-              .anyMatch(AttributeDefinition::isNullable));
+              .anyMatch(AttributeDefinition::nullable));
     }
   }
 

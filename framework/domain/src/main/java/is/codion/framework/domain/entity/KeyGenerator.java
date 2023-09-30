@@ -14,10 +14,10 @@ import java.sql.Statement;
  * before the row is inserted and one where the underlying database automatically sets the primary
  * key value on insert, i.e. with a table trigger or identity columns.
  * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}.
- * If {@link #isInserted()} returns true the primary key value should be included in the
+ * If {@link #inserted()} returns true the primary key value should be included in the
  * insert statement, meaning that {@link #beforeInsert(Entity, DatabaseConnection)} should be used
  * to populate the entity's primary key values.
- * If {@link #isInserted()} returns false then it is assumed that the database generates the primary key
+ * If {@link #inserted()} returns false then it is assumed that the database generates the primary key
  * values automatically, meaning that {@code afterInsert()} should be used to fetch the generated primary
  * key value and populate the entity instance accordingly.
  */
@@ -28,7 +28,7 @@ public interface KeyGenerator {
    * @return true if the primary key value should be included in the
    * insert query when entities of this type are inserted
    */
-  default boolean isInserted() {
+  default boolean inserted() {
     return true;
   }
 

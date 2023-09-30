@@ -94,8 +94,8 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public boolean isNullable() {
-    return observer.isNullable();
+  public boolean nullable() {
+    return observer.nullable();
   }
 
   @Override

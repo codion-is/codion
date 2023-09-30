@@ -20,7 +20,7 @@ final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
   }
 
   @Override
-  public boolean isInserted() {
+  public boolean inserted() {
     return false;
   }
 

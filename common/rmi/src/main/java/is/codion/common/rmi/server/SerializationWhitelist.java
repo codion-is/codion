@@ -66,7 +66,7 @@ public final class SerializationWhitelist {
    * Returns true if a serialization dry-run is active.
    * @return true if a dry-run is active.
    */
-  public static boolean isSerializationDryRunActive() {
+  public static boolean serializationDryRun() {
     return sun.misc.ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
   }
 

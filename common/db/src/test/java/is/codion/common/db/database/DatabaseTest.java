@@ -20,9 +20,9 @@ public class DatabaseTest {
   void validateWithQuery() throws DatabaseException, SQLException {
     Database testDatabase = new TestDatabase();
     Connection connection = testDatabase.createConnection(User.parse("scott:tiger"));
-    assertTrue(testDatabase.isConnectionValid(connection));
+    assertTrue(testDatabase.connectionValid(connection));
     connection.close();
-    assertFalse(testDatabase.isConnectionValid(connection));
+    assertFalse(testDatabase.connectionValid(connection));
   }
 
   private static final class TestDatabase extends AbstractDatabase {

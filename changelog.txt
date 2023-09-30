@@ -9635,3 +9635,4 @@
   EntityDefinition.isOptimisticLockingEnabled() renamed optimisticLocking()
   EntityDefinition.OPTIMISTIC_LOCKING configuration value added
   Entity.modifiedColumnAttributes() renamed modifiedColumns()
+  is prefix removed from boolean getters without setters
