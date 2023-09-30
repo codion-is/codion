@@ -384,26 +384,27 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns all updatable {@link Attribute}s which value is missing or the original value differs from the one in the comparison
+   * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
    * Note that only eagerly loaded blob values are included in this comparison.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @return the updatable column attributes which values differ from the ones in the comparison entity
+   * @return the updatable columns which values differ from the ones in the comparison entity
    * @see BlobColumnDefinition#isEagerlyLoaded()
    */
-  static Collection<Attribute<?>> modifiedColumnAttributes(Entity entity, Entity comparison) {
+  static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
             .map(entry -> entity.definition().attributes().definition(entry.getKey()))
-            .filter(attributeDefinition -> {
-              boolean updatableColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isUpdatable();
-              boolean lazilyLoadedBlob = attributeDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) attributeDefinition).isEagerlyLoaded();
+            .filter(ColumnDefinition.class::isInstance)
+            .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
+            .filter(columnDefinition -> {
+              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).isEagerlyLoaded();
 
-              return updatableColumn && !lazilyLoadedBlob && isValueMissingOrModified(entity, comparison, attributeDefinition.attribute());
+              return columnDefinition.isUpdatable() && !lazilyLoadedBlobColumn && isValueMissingOrModified(entity, comparison, columnDefinition.attribute());
             })
-            .map(AttributeDefinition::attribute)
+            .map(ColumnDefinition::attribute)
             .collect(toList());
   }
 

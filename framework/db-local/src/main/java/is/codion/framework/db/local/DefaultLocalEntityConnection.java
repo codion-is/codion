@@ -923,9 +923,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                 + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
       }
-      Collection<Attribute<?>> modified = modifiedColumnAttributes(entity, current);
-      if (!modified.isEmpty()) {
-        throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
+      Collection<Column<?>> modifiedColumns = modifiedColumns(entity, current);
+      if (!modifiedColumns.isEmpty()) {
+        throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modifiedColumns));
       }
     }
   }
@@ -1453,9 +1453,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static String createModifiedExceptionMessage(Entity entity, Entity modified,
-                                                       Collection<Attribute<?>> modifiedAttributes) {
-    return modifiedAttributes.stream()
-            .map(attribute -> " \n" + attribute + ": " + entity.original(attribute) + " -> " + modified.get(attribute))
+                                                       Collection<Column<?>> modifiedColumns) {
+    return modifiedColumns.stream()
+            .map(column -> " \n" + column + ": " + entity.original(column) + " -> " + modified.get(column))
             .collect(joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.entityType(), ""));
   }
 
