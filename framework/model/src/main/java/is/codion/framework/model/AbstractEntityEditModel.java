@@ -66,7 +66,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<?> refreshEvent = Event.event();
 
   private final State entityValid = State.state();
-  private final State entityNew = State.state(true);
+  private final State entityExists = State.state(false);
   private final State entityModified = State.state();
   private final State primaryKeyNull = State.state(true);
   private final State readOnly = State.state();
@@ -129,9 +129,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Function<Entity, Boolean> modifiedFunction;
 
   /**
-   * Provides this model with a way to check if the underlying entity is new.
+   * Provides this model with a way to check if the underlying entity exists.
    */
-  private Function<Entity, Boolean> newFunction;
+  private Function<Entity, Boolean> existsFunction;
 
   /**
    * Specifies whether this edit model should warn about unsaved data
@@ -165,7 +165,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
     this.modifiedFunction = Entity::isModified;
-    this.newFunction = Entity::isNew;
+    this.existsFunction = Entity::exists;
     readOnly.set(entityDefinition().readOnly());
     configurePersistentForeignKeyValues();
     bindEventsInternal();
@@ -242,8 +242,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver entityNew() {
-    return entityNew.observer();
+  public final StateObserver exists() {
+    return entityExists.observer();
   }
 
   @Override
@@ -300,7 +300,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityDefinition().attributes().definition(attribute);
 
     return attributeModifiedMap.computeIfAbsent(attribute, k ->
-            State.state(!entityNew.get() && entity.isModified(attribute))).observer();
+            State.state(entityExists.get() && entity.isModified(attribute))).observer();
   }
 
   @Override
@@ -516,7 +516,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void refreshEntity() {
     try {
-      if (!entityNew.get()) {
+      if (entityExists.get()) {
         setEntity(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
@@ -571,7 +571,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    return !entityNew.get() && modified().get();
+    return entityExists.get() && modified().get();
   }
 
   @Override
@@ -798,14 +798,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Sets the 'new' function for this edit model, which is responsible for providing
-   * the new state of the underlying entity.
-   * By default {@link Entity#isNew()} is returned.
-   * @param newFunction specifies whether the given entity is new
-   * @see Entity#isNew()
+   * Sets the 'exists' function for this edit model, which is responsible for providing
+   * the exists state of the underlying entity.
+   * By default {@link Entity#exists()} is returned.
+   * @param existsFunction specifies whether the given entity has been persisted
+   * @see Entity#exists()
    */
-  protected final void setNewFunction(Function<Entity, Boolean> newFunction) {
-    this.newFunction = requireNonNull(newFunction);
+  protected final void setExistsFunction(Function<Entity, Boolean> existsFunction) {
+    this.existsFunction = requireNonNull(existsFunction);
   }
 
   /**
@@ -1042,7 +1042,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityModified.set(modifiedFunction.apply(entity));
     entityValid.set(validator.valid(entity));
     primaryKeyNull.set(entity.primaryKey().isNull());
-    entityNew.set(newFunction.apply(entity));
+    entityExists.set(existsFunction.apply(entity));
   }
 
   private <T> void updateAttributeStates(Attribute<T> attribute) {
@@ -1065,7 +1065,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateModifiedAttributeState(Attribute<?> attribute, State modifiedState) {
-    modifiedState.set(!entity.isNew() && entity.isModified(attribute));
+    modifiedState.set(entity.exists() && entity.isModified(attribute));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {

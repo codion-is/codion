@@ -102,7 +102,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   private void setEditModelForeignKeyValue(Collection<Entity> selectedEntities) {
     Entity foreignKeyValue = selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
-    if (detailModel().editModel().entityNew().get() && (foreignKeyValue != null || clearForeignKeyOnEmptySelection.get())) {
+    if (detailModel().editModel().exists().not().get() && (foreignKeyValue != null || clearForeignKeyOnEmptySelection.get())) {
       detailModel().editModel().put(foreignKey, foreignKeyValue);
     }
   }

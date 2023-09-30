@@ -178,8 +178,8 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean isNew() {
-    return primaryKey().isNull() || originalPrimaryKey().isNull();
+  public final boolean exists() {
+    return primaryKey().isNotNull() || originalPrimaryKey().isNotNull();
   }
 
   @Override
@@ -256,11 +256,14 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public <T> T remove(Attribute<T> attribute) {
-    definition.attributes().definition(attribute);
+    AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
     T value = null;
     if (values.containsKey(attribute)) {
       value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
+      if (attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn()) {
+        primaryKey = null;
+      }
       if (attribute instanceof Column) {
         definition.foreignKeys().definitions((Column<?>) attribute).forEach(foreignKey -> remove(foreignKey.attribute()));
       }

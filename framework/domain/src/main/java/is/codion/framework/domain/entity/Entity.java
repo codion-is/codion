@@ -194,11 +194,11 @@ public interface Entity extends Comparable<Entity> {
   boolean isModified();
 
   /**
-   * Returns true if this entity has a null primary key or a null original primary key,
-   * which is the best guess about an entity being new, as in, not existing in a database.
-   * @return true if this entity has not been persisted
+   * Returns true if this entity has a non-null primary key or a non-null original primary key,
+   * which is a best guess about an entity existing in a database.
+   * @return true if this entity has been persisted
    */
-  boolean isNew();
+  boolean exists();
 
   /**
    * Clears the primary key values from this entity,

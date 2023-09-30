@@ -198,7 +198,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       ACTIVE_STATE_GROUP.add(active);
     }
     this.controlCodes = validateControlCodes(controlCodes);
-    if (editModel.entityNew().get()) {
+    if (editModel.exists().not().get()) {
       editModel.setDefaultValues();
     }
   }
@@ -676,7 +676,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .name(FrameworkMessages.delete())
             .enabled(State.and(active,
                     editModel().deleteEnabled(),
-                    editModel().entityNew().not()))
+                    editModel().exists()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
             .smallIcon(FrameworkIcons.instance().delete())
@@ -698,7 +698,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .name(FrameworkMessages.update())
             .enabled(State.and(active,
                     editModel().updateEnabled(),
-                    editModel().entityNew().not(),
+                    editModel().exists(),
                     editModel().modified()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
             .mnemonic(FrameworkMessages.updateMnemonic())

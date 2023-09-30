@@ -930,20 +930,20 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void isNew() {
+  void exists() {
     Entity emp = ENTITIES.builder(Employee.TYPE)
             .with(Employee.NAME, "Name")
             .with(Employee.ID, null)
             .build();
     assertTrue(emp.originalPrimaryKey().isNull());
-    assertTrue(emp.isNew());
+    assertFalse(emp.exists());
     emp.put(Employee.ID, 1);
-    assertTrue(emp.isNew());
+    assertTrue(emp.exists());
     emp.save();
     emp.put(Employee.ID, 2);
-    assertFalse(emp.isNew());
+    assertTrue(emp.exists());
     emp.remove(Employee.ID);
-    assertTrue(emp.isNew());
+    assertFalse(emp.exists());
   }
 
   @Test

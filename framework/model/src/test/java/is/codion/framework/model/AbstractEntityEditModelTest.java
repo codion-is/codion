@@ -192,10 +192,10 @@ public final class AbstractEntityEditModelTest {
   @Test
   void test() throws Exception {
     StateObserver primaryKeyNullState = employeeEditModel.primaryKeyNull();
-    StateObserver entityNewState = employeeEditModel.entityNew();
+    StateObserver entityExistsState = employeeEditModel.exists();
 
     assertTrue(primaryKeyNullState.get());
-    assertTrue(entityNewState.get());
+    assertFalse(entityExistsState.get());
 
     Consumer dataListener = data -> {};
     employeeEditModel.addAfterDeleteListener(dataListener);
@@ -210,19 +210,19 @@ public final class AbstractEntityEditModelTest {
     assertEquals(Employee.TYPE, employeeEditModel.entityType());
 
     employeeEditModel.refresh();
-    assertTrue(employeeEditModel.entityNew().get());
+    assertFalse(employeeEditModel.exists().get());
     assertFalse(employeeEditModel.modified().get());
 
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
     employeeEditModel.setEntity(employee);
     assertFalse(primaryKeyNullState.get());
-    assertFalse(entityNewState.get());
+    assertTrue(entityExistsState.get());
 
     assertTrue(employeeEditModel.entity().columnValuesEqual(employee), "Active entity is not equal to the entity just set");
-    assertFalse(employeeEditModel.entityNew().get(), "Active entity is new after an entity is set");
+    assertTrue(employeeEditModel.exists().get(), "Active entity exists after an entity is set");
     assertFalse(employeeEditModel.modified().get());
     employeeEditModel.setDefaultValues();
-    assertTrue(employeeEditModel.entityNew().get(), "Active entity is new after entity is set to null");
+    assertFalse(employeeEditModel.exists().get(), "Active entity exists after entity is set to null");
     assertFalse(employeeEditModel.modified().get());
     assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
 
@@ -236,7 +236,7 @@ public final class AbstractEntityEditModelTest {
     assertFalse(primaryKeyNullState.get());
 
     employeeEditModel.setDefaultValues();
-    assertTrue(entityNewState.get());
+    assertFalse(entityExistsState.get());
 
     Double originalCommission = employeeEditModel.get(Employee.COMMISSION);
     final double commission = 1500.5;
@@ -341,7 +341,7 @@ public final class AbstractEntityEditModelTest {
       assertTrue(employeeEditModel.insertEnabled().get());
 
       employeeEditModel.insert();
-      assertFalse(employeeEditModel.entityNew().get());
+      assertTrue(employeeEditModel.exists().get());
       Entity entityCopy = employeeEditModel.entity();
       assertTrue(entityCopy.primaryKey().isNotNull());
       assertEquals(entityCopy.primaryKey(), entityCopy.originalPrimaryKey());
