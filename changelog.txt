@@ -9636,3 +9636,4 @@
   EntityDefinition.OPTIMISTIC_LOCKING configuration value added
   Entity.modifiedColumnAttributes() renamed modifiedColumns()
   is prefix removed from boolean getters without setters
+  LocalEntityConnection.is/setOptimisticLockingEnbled() renamed is/setOptimisticLocking()

@@ -100,7 +100,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
   private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
-  private boolean optimisticLockingEnabled = LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED.get();
+  private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED.get();
   private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
   private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
   private boolean queryCacheEnabled = false;
@@ -730,13 +730,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public boolean isOptimisticLockingEnabled() {
-    return optimisticLockingEnabled;
+  public boolean isOptimisticLocking() {
+    return optimisticLocking;
   }
 
   @Override
-  public void setOptimisticLockingEnabled(boolean optimisticLockingEnabled) {
-    this.optimisticLockingEnabled = optimisticLockingEnabled;
+  public void setOptimisticLocking(boolean optimisticLocking) {
+    this.optimisticLocking = optimisticLocking;
   }
 
   @Override
@@ -826,7 +826,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateQuery = null;
     synchronized (connection) {
       try {
-        if (optimisticLockingEnabled) {
+        if (optimisticLocking) {
           performOptimisticLocking(entitiesByEntityType);
         }
 

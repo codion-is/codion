@@ -765,7 +765,7 @@ public class DefaultLocalEntityConnectionTest {
   void optimisticLockingDeleted() throws Exception {
     LocalEntityConnection connection = createConnection();
     EntityConnection connection2 = createConnection();
-    connection.setOptimisticLockingEnabled(true);
+    connection.setOptimisticLocking(true);
     Entity allen;
     try {
       Condition condition = Employee.NAME.equalTo("ALLEN");
@@ -801,8 +801,8 @@ public class DefaultLocalEntityConnectionTest {
   void optimisticLockingModified() throws Exception {
     LocalEntityConnection baseConnection = createConnection();
     LocalEntityConnection optimisticConnection = createConnection(true);
-    optimisticConnection.setOptimisticLockingEnabled(true);
-    assertTrue(optimisticConnection.isOptimisticLockingEnabled());
+    optimisticConnection.setOptimisticLocking(true);
+    assertTrue(optimisticConnection.isOptimisticLocking());
     String oldLocation = null;
     Entity updatedDepartment = null;
     try {
@@ -837,7 +837,7 @@ public class DefaultLocalEntityConnectionTest {
   void optimisticLockingBlob() throws Exception {
     LocalEntityConnection baseConnection = createConnection();
     LocalEntityConnection optimisticConnection = createConnection();
-    optimisticConnection.setOptimisticLockingEnabled(true);
+    optimisticConnection.setOptimisticLocking(true);
     Entity updatedEmployee = null;
     try {
       Random random = new Random();
