@@ -131,7 +131,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public boolean isConnected() {
+  public boolean connected() {
     synchronized (this.entities) {
       return !closed;
     }
@@ -152,7 +152,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public boolean isTransactionOpen() {
+  public boolean transactionOpen() {
     try {
       synchronized (this.entities) {
         return handleResponse(execute(createRequest("isTransactionOpen")));
