@@ -138,7 +138,7 @@ class DefaultKey implements Entity.Key, Serializable {
   }
 
   @Override
-  public boolean isPrimaryKey() {
+  public boolean primaryKey() {
     return primaryKey;
   }
 
@@ -274,7 +274,7 @@ class DefaultKey implements Entity.Key, Serializable {
     for (int i = 0; i < columns.size(); i++) {
       ColumnDefinition<?> columnDefinition = definition.columns().definition(columns.get(i));
       Object value = values.get(columnDefinition.attribute());
-      if (!columnDefinition.isNullable() && value == null) {
+      if (!columnDefinition.nullable() && value == null) {
         return null;
       }
       if (value != null) {

@@ -39,13 +39,13 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
   }
 
   @Override
-  public boolean isEnabled() {
+  public boolean enabled() {
     return conditionModels.values().stream()
             .anyMatch(model -> model.enabled().get());
   }
 
   @Override
-  public boolean isEnabled(C columnIdentifier) {
+  public boolean enabled(C columnIdentifier) {
     return conditionModels.containsKey(columnIdentifier) && conditionModels.get(columnIdentifier).enabled().get();
   }
 

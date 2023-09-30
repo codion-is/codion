@@ -376,14 +376,14 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
     @Override
     public String formatValue(String property, String value) {
-      if (isClassOrModulePath(property) && !value.isEmpty()) {
+      if (classOrModulePath(property) && !value.isEmpty()) {
         return "\n" + String.join("\n", value.split(Separators.PATH_SEPARATOR));
       }
 
       return value;
     }
 
-    private static boolean isClassOrModulePath(String property) {
+    private static boolean classOrModulePath(String property) {
       return property.endsWith("class.path") || property.endsWith("module.path");
     }
   }

@@ -463,8 +463,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setSimpleView() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-    boolean isParentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
-    if (isParentOfFocusOwner) {
+    boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
+    if (parentOfFocusOwner) {
       requestFocusInWindow(true);
     }
     remove(controlPanel);
@@ -472,15 +472,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
     revalidate();
-    if (isParentOfFocusOwner) {
+    if (parentOfFocusOwner) {
       focusOwner.requestFocusInWindow();
     }
   }
 
   private void setAdvancedView() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-    boolean isParentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
-    if (isParentOfFocusOwner) {
+    boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
+    if (parentOfFocusOwner) {
       requestFocusInWindow(true);
     }
     controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
@@ -488,7 +488,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
-    if (isParentOfFocusOwner) {
+    if (parentOfFocusOwner) {
       focusOwner.requestFocusInWindow();
     }
   }

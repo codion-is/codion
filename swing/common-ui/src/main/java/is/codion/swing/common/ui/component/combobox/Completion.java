@@ -209,7 +209,7 @@ public final class Completion {
     @Override
     public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
       int offs = offset;
-      if (isSelecting() || comboBoxModel().getSize() == 0) {
+      if (selecting() || comboBoxModel().getSize() == 0) {
         return;
       }
       super.insertString(offs, str, a);
@@ -242,7 +242,7 @@ public final class Completion {
       for (int i = 0; i < comboBoxModel().getSize(); i++) {
         Object currentItem = comboBoxModel().getElementAt(i);
         String itemAsString = currentItem == null ? "" : currentItem.toString();
-        if (startsWithIgnoreCase(itemAsString, pattern, isNormalize())) {
+        if (startsWithIgnoreCase(itemAsString, pattern, normalize())) {
           // current item matches the pattern
           // how many leading characters have the selected and the current item in common?
           int tmpMatch = equalStartLength(itemAsString, selectedAsString);
@@ -257,8 +257,8 @@ public final class Completion {
 
     // returns how many leading characters two strings have in common?
     private int equalStartLength(String str1, String str2) {
-      String one = isNormalize() ? normalize(str1) : str1;
-      String two = isNormalize() ? normalize(str2) : str2;
+      String one = normalize() ? normalize(str1) : str1;
+      String two = normalize() ? normalize(str2) : str2;
       char[] ch1 = one.toUpperCase().toCharArray();
       char[] ch2 = two.toUpperCase().toCharArray();
       int n = Math.min(ch1.length, ch2.length);
@@ -281,7 +281,7 @@ public final class Completion {
     @Override
     public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
       int offs = offset;
-      if (isSelecting()) {
+      if (selecting()) {
         return;
       }
       super.insertString(offs, str, a);

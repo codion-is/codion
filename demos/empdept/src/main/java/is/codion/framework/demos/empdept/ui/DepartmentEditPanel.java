@@ -48,13 +48,13 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
     //we don't allow editing of the department number since it's a primary key
     editModel().primaryKeyNull().addListener(() -> {
-      if (editModel().entityNew().get()) {
-        departmentIdField.setEnabled(true);
-        setInitialFocusAttribute(Department.ID);
-      }
-      else {
+      if (editModel().exists().get()) {
         departmentIdField.setEnabled(false);
         setInitialFocusAttribute(Department.NAME);
+      }
+      else {
+        departmentIdField.setEnabled(true);
+        setInitialFocusAttribute(Department.ID);
       }
     });
 

@@ -125,7 +125,7 @@ public final class CalendarPanel extends JPanel {
     }
     localDateValue = Value.value(createLocalDateTime().toLocalDate());
     localDateTimeValue = Value.value(createLocalDateTime());
-    todaySelected = State.state(isTodaySelected());
+    todaySelected = State.state(todaySelected());
     dayStates = createDayStates();
     dayButtons = createDayButtons();
     dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
@@ -431,7 +431,7 @@ public final class CalendarPanel extends JPanel {
     LocalDateTime localDateTime = createLocalDateTime();
     localDateValue.set(localDateTime.toLocalDate());
     localDateTimeValue.set(localDateTime);
-    todaySelected.set(isTodaySelected());
+    todaySelected.set(todaySelected());
     if (SwingUtilities.isEventDispatchThread()) {
       updateFormattedDate();
     }
@@ -440,7 +440,7 @@ public final class CalendarPanel extends JPanel {
     }
   }
 
-  private boolean isTodaySelected() {
+  private boolean todaySelected() {
     return getLocalDate().equals(LocalDate.now());
   }
 

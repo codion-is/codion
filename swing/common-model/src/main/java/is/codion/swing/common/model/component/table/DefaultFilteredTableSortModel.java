@@ -87,7 +87,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public boolean isSorted() {
+  public boolean sorted() {
     return !columnSortOrders.isEmpty();
   }
 

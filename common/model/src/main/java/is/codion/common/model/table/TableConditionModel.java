@@ -52,13 +52,13 @@ public interface TableConditionModel<C> {
   /**
    * @return true if any of the underlying condition models are enabled
    */
-  boolean isEnabled();
+  boolean enabled();
 
   /**
    * @param columnIdentifier the column identifier
    * @return true if the condition model behind column with {@code columnIdentifier} is enabled
    */
-  boolean isEnabled(C columnIdentifier);
+  boolean enabled(C columnIdentifier);
 
   /**
    * @param listener a listener notified each time the condition changes

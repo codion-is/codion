@@ -188,7 +188,7 @@ public final class DatabaseExplorerModel {
         case SCHEMA:
           return row.name();
         case POPULATED:
-          return row.isPopulated();
+          return row.populated();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }

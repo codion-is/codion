@@ -47,7 +47,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
   }
 
   @Override
-  public boolean isDerived() {
+  public boolean derived() {
     return true;
   }
 

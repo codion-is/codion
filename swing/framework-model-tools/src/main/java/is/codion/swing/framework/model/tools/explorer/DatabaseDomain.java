@@ -83,10 +83,10 @@ final class DatabaseDomain extends DefaultDomain {
     List<AttributeDefinition.Builder<?, ?>> builders = new ArrayList<>();
     table.columns().forEach(column -> {
       builders.add(columnDefinitionBuilder(column, entityType));
-      if (column.isForeignKeyColumn()) {
+      if (column.foreignKeyColumn()) {
         foreignKeyConstraints.stream()
                 //if this is the last column in the foreign key
-                .filter(foreignKeyConstraint -> isLastKeyColumn(foreignKeyConstraint, column))
+                .filter(foreignKeyConstraint -> lastKeyColumn(foreignKeyConstraint, column))
                 .findFirst()
                 .ifPresent(foreignKeyConstraint -> {
                   //we add the foreign key just below it
@@ -120,10 +120,10 @@ final class DatabaseDomain extends DefaultDomain {
     else {
       builder = column.define().column().caption(caption);
     }
-    if (metadataColumn.isPrimaryKeyColumn()) {
+    if (metadataColumn.primaryKeyColumn()) {
       builder.primaryKeyIndex(metadataColumn.primaryKeyIndex() - 1);
     }
-    if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
+    if (!metadataColumn.primaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
     if (column.type().isString() && metadataColumn.columnSize() > 0) {
@@ -132,7 +132,7 @@ final class DatabaseDomain extends DefaultDomain {
     if (column.type().isDecimal() && metadataColumn.decimalDigits() >= 1) {
       builder.maximumFractionDigits(metadataColumn.decimalDigits());
     }
-    if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.defaultValue() != null) {
+    if (!metadataColumn.primaryKeyColumn() && metadataColumn.defaultValue() != null) {
       builder.columnHasDefaultValue(true);
     }
     if (!nullOrEmpty(metadataColumn.comment())) {
@@ -152,7 +152,7 @@ final class DatabaseDomain extends DefaultDomain {
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
-  private static boolean isLastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, MetadataColumn column) {
+  private static boolean lastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, MetadataColumn column) {
     return foreignKeyConstraint.references().keySet().stream()
             .mapToInt(MetadataColumn::position)
             .max()
@@ -168,7 +168,7 @@ final class DatabaseDomain extends DefaultDomain {
 
   private static boolean tableHasAutoIncrementPrimaryKeyColumn(Table table) {
     return table.columns().stream()
-            .filter(MetadataColumn::isPrimaryKeyColumn)
+            .filter(MetadataColumn::primaryKeyColumn)
             .anyMatch(MetadataColumn::autoIncrement);
   }
 }

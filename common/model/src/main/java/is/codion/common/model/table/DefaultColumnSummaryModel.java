@@ -91,7 +91,7 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
     }
 
     @Override
-    public boolean isSubset() {
+    public boolean subset() {
       return subset;
     }
   }

@@ -122,13 +122,13 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public boolean isEnabled() {
-    return conditionModel.isEnabled();
+  public boolean enabled() {
+    return conditionModel.enabled();
   }
 
   @Override
-  public boolean isEnabled(C columnIdentifier) {
-    return conditionModel.isEnabled(columnIdentifier);
+  public boolean enabled(C columnIdentifier) {
+    return conditionModel.enabled(columnIdentifier);
   }
 
   @Override

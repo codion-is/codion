@@ -64,13 +64,13 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
-  public boolean isEmpty() {
+  public boolean empty() {
     return values.isEmpty();
   }
 
   @Override
-  public boolean isNotEmpty() {
-    return !isEmpty();
+  public boolean notEmpty() {
+    return !empty();
   }
 
   @Override

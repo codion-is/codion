@@ -101,7 +101,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public boolean isTransactionOpen() {
+  public boolean transactionOpen() {
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("isTransactionOpen")), entityObjectMapper, Boolean.class);

@@ -49,10 +49,10 @@ public class DefaultFilteredTableSelectionModelTest {
   @Test
   void test() {
     testModel.setSelectedIndex(0);
-    assertTrue(testModel.isSelectedItem("A"));
+    assertTrue(testModel.isSelected("A"));
     assertTrue(testModel.selectedItem().isPresent());
     testModel.clearSelection();
-    assertFalse(testModel.isSelectedItem("A"));
+    assertFalse(testModel.isSelected("A"));
     assertFalse(testModel.selectedItem().isPresent());
   }
 

@@ -92,17 +92,17 @@ public interface EntityDefinition {
   /**
    * @return true if the underlying table is small enough for displaying the contents in a combo box
    */
-  boolean isSmallDataset();
+  boolean smallDataset();
 
   /**
    * @return true if the data in the underlying table can be regarded as static
    */
-  boolean isStaticData();
+  boolean staticData();
 
   /**
    * @return true if this entity type is read only
    */
-  boolean isReadOnly();
+  boolean readOnly();
 
   /**
    * @return true if optimistic locking should be used during updates
@@ -320,7 +320,7 @@ public interface EntityDefinition {
      * Sets the primary key generator
      * @param keyGenerator the primary key generator
      * @return this {@link Builder} instance
-     * @see PrimaryKey#isGenerated()
+     * @see PrimaryKey#generated()
      */
     Builder keyGenerator(KeyGenerator keyGenerator);
 
@@ -489,13 +489,13 @@ public interface EntityDefinition {
      * @param foreignKey the foreign key
      * @return true if all the underlying columns are updatable
      */
-    boolean isUpdatable(ForeignKey foreignKey);
+    boolean updatable(ForeignKey foreignKey);
 
     /**
      * @param column the column
      * @return true if the given column is part of a foreign key
      */
-    boolean isForeignKeyColumn(Column<?> column);
+    boolean foreignKeyColumn(Column<?> column);
 
     /**
      * Returns the foreign keys referencing entities of the given type
@@ -549,6 +549,6 @@ public interface EntityDefinition {
      * @return true if the value for the primary key is generated
      * @see Builder#keyGenerator(KeyGenerator)
      */
-    boolean isGenerated();
+    boolean generated();
   }
 }

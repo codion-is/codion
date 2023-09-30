@@ -32,7 +32,7 @@ public final class SQLServerDatabaseFactory implements DatabaseFactory {
   private static final String JTDS_DRIVER_PACKAGE = "net.sourceforge.jtds.jdbc";
 
   @Override
-  public boolean isDriverCompatible(String driverClassName) {
+  public boolean driverCompatible(String driverClassName) {
     requireNonNull(driverClassName, "driverClassName");
     return driverClassName.startsWith(DRIVER_PACKAGE) || driverClassName.startsWith(JTDS_DRIVER_PACKAGE);
   }

@@ -51,7 +51,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
       if (!summaryValues.values().isEmpty()) {
         return addSubsetIndicator(valueProvider.format(summaryValues.values().stream()
                 .filter(Objects::nonNull)
-                .mapToDouble(Number::doubleValue).sum()), summaryValues.isSubset());
+                .mapToDouble(Number::doubleValue).sum()), summaryValues.subset());
       }
 
       return "";
@@ -70,7 +70,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
                 .mapToDouble(value -> value == null ? 0d : value.doubleValue())
                 .average();
         if (average.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(average.getAsDouble()), summaryValues.isSubset());
+          return addSubsetIndicator(valueProvider.format(average.getAsDouble()), summaryValues.subset());
         }
       }
 
@@ -91,7 +91,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
                 .mapToDouble(Number::doubleValue)
                 .min();
         if (min.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(min.getAsDouble()), summaryValues.isSubset());
+          return addSubsetIndicator(valueProvider.format(min.getAsDouble()), summaryValues.subset());
         }
       }
 
@@ -112,7 +112,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
                 .mapToDouble(Number::doubleValue)
                 .max();
         if (max.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(max.getAsDouble()), summaryValues.isSubset());
+          return addSubsetIndicator(valueProvider.format(max.getAsDouble()), summaryValues.subset());
         }
       }
 
@@ -137,7 +137,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
                 .mapToDouble(Number::doubleValue)
                 .max();
         if (min.isPresent() && max.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(min.getAsDouble()) + "/" + valueProvider.format(max.getAsDouble()), summaryValues.isSubset());
+          return addSubsetIndicator(valueProvider.format(min.getAsDouble()) + "/" + valueProvider.format(max.getAsDouble()), summaryValues.subset());
         }
       }
 

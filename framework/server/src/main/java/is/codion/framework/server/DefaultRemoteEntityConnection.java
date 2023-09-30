@@ -165,9 +165,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public boolean isTransactionOpen() {
+  public boolean transactionOpen() {
     synchronized (connectionProxy) {
-      return connectionProxy.isTransactionOpen();
+      return connectionProxy.transactionOpen();
     }
   }
 

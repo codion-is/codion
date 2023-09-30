@@ -178,7 +178,7 @@ public final class EntityTestUtil {
     requireNonNull(valueProvider, "valueProvider");
     EntityDefinition definition = entity.definition();
     for (ColumnDefinition<?> columnDefinition : columnDefinitions) {
-      if (!definition.foreignKeys().isForeignKeyColumn(columnDefinition.attribute())) {
+      if (!definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute())) {
         entity.put((Attribute<Object>) columnDefinition.attribute(), valueProvider.apply(columnDefinition));
       }
     }
@@ -192,13 +192,13 @@ public final class EntityTestUtil {
 
   private static List<ColumnDefinition<?>> insertableColumnDefinitions(EntityDefinition entityDefinition) {
     return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.isInsertable() && (!entityDefinition.primaryKey().isGenerated() || !column.isPrimaryKeyColumn()))
+            .filter(column -> column.insertable() && (!entityDefinition.primaryKey().generated() || !column.primaryKeyColumn()))
             .collect(toList());
   }
 
   private static List<ColumnDefinition<?>> updatableColumnDefinitions(EntityDefinition entityDefinition) {
     return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.isUpdatable() && !column.isPrimaryKeyColumn())
+            .filter(column -> column.updatable() && !column.primaryKeyColumn())
             .collect(toList());
   }
 
@@ -209,7 +209,7 @@ public final class EntityTestUtil {
   }
 
   private static byte[] randomBlob(AttributeDefinition<?> attributeDefinition) {
-    if ((attributeDefinition instanceof BlobColumnDefinition) && ((BlobColumnDefinition) attributeDefinition).isEagerlyLoaded()) {
+    if ((attributeDefinition instanceof BlobColumnDefinition) && ((BlobColumnDefinition) attributeDefinition).eagerlyLoaded()) {
       return randomBlob(1024);
     }
 

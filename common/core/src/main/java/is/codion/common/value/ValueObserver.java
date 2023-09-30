@@ -34,7 +34,7 @@ public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
    * @return an {@link Optional} wrapping this value.
    */
   default Optional<T> optional() {
-    if (isNullable()) {
+    if (nullable()) {
       return Optional.ofNullable(get());
     }
 
@@ -59,7 +59,7 @@ public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
    * If false then get() is guaranteed to never return null.
    * @return true if this value can be null
    */
-  boolean isNullable();
+  boolean nullable();
 
   /**
    * Returns true if the underlying value is equal to the given one. Note that null == null.

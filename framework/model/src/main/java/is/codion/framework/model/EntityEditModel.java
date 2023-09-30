@@ -110,7 +110,7 @@ public interface EntityEditModel {
    * Returns true if a value of an existing entity has been modified but not saved.
    * @return true if this edit model contains unsaved data
    * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
-   * @see #entityNew()
+   * @see #exists()
    */
   boolean containsUnsavedData();
 
@@ -130,7 +130,7 @@ public interface EntityEditModel {
    * @param attribute the attribute
    * @return true if this value is allowed to be null in the underlying entity
    */
-  boolean isNullable(Attribute<?> attribute);
+  boolean nullable(Attribute<?> attribute);
 
   /**
    * Sets the given value in the underlying Entity
@@ -476,9 +476,9 @@ public interface EntityEditModel {
   StateObserver modified(Attribute<?> attribute);
 
   /**
-   * @return a {@link StateObserver} indicating whether the active entity is new
+   * @return a {@link StateObserver} indicating whether the active entity exists in the database
    */
-  StateObserver entityNew();
+  StateObserver exists();
 
   /**
    * @return a {@link StateObserver} indicating whether the primary key of the active entity is null

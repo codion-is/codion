@@ -99,7 +99,7 @@ public final class EntitySerializerTest {
     DefaultEntity entity = createTestEntity();
     DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE);
     serializeDeserialize(serializer, serializer, entity, deserializedEntity);
-    assertTrue(deserializedEntity.isModified(Employee.NAME));
+    assertTrue(deserializedEntity.modified(Employee.NAME));
     assertTrue(Entity.valuesEqual(entity, deserializedEntity));
     assertTrue(Entity.valuesEqual(entity.referencedEntity(Employee.DEPARTMENT_FK), deserializedEntity.referencedEntity(Employee.DEPARTMENT_FK)));
     assertTrue(deserializedEntity.get(Employee.DEPARTMENT_FK).isImmutable());

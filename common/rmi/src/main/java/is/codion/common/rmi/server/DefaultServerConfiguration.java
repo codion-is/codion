@@ -104,7 +104,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public boolean isSslEnabled() {
+  public boolean sslEnabled() {
     return sslEnabled;
   }
 
@@ -124,7 +124,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public boolean isSerializationFilterDryRun() {
+  public boolean serializationFilterDryRun() {
     return serializationFilterDryRun;
   }
 

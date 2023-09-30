@@ -494,7 +494,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
         switch (operator.get()) {
           case EQUAL:
           case NOT_EQUAL:
-            enabled.set(equalValues.isNotEmpty());
+            enabled.set(equalValues.notEmpty());
             break;
           case LESS_THAN:
           case LESS_THAN_OR_EQUAL:

@@ -118,8 +118,8 @@ public final class EntityComponentValidators {
       }
     }
 
-    protected boolean isNullable() {
-      return editModel.isNullable(attribute);
+    protected boolean nullable() {
+      return editModel.nullable(attribute);
     }
 
     protected boolean isNull() {
@@ -178,7 +178,7 @@ public final class EntityComponentValidators {
     protected void validate() {
       JComponent component = component();
       boolean enabled = component.isEnabled();
-      boolean stringValid = isStringValid();
+      boolean stringValid = valid();
       String validationMessage = validationMessage();
       if (stringValid && validationMessage == null) {
         component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
@@ -189,8 +189,8 @@ public final class EntityComponentValidators {
       setToolTipText(validationMessage);
     }
 
-    protected boolean isStringValid() {
-      return !isNull() || isNullable();
+    protected boolean valid() {
+      return !isNull() || nullable();
     }
 
     private void configureColors() {
@@ -212,10 +212,10 @@ public final class EntityComponentValidators {
     }
 
     @Override
-    protected boolean isStringValid() {
+    protected boolean valid() {
       boolean stringEqualsMask = ((JTextComponent) component()).getText().equals(maskString);
 
-      return !isNull() || (stringEqualsMask && isNullable());
+      return !isNull() || (stringEqualsMask && nullable());
     }
   }
 }

@@ -63,7 +63,7 @@ public interface Report<T, R, P> {
   /**
    * @return true if this report has been cached
    */
-  boolean isCached();
+  boolean cached();
 
   /**
    * Clears the report cache, if caching is not enabled calling this method has no effect

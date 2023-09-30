@@ -388,7 +388,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     /**
      * @return true if this column is visible, false if hidden
      */
-    boolean isVisible();
+    boolean visible();
 
     /**
      * @return the column width in pixels
@@ -466,7 +466,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
         }
       }
       List<Attribute<?>> visibleColumnAttributes = columnPreferences.values().stream()
-              .filter(ColumnPreferences::isVisible)
+              .filter(ColumnPreferences::visible)
               .sorted(Comparator.comparingInt(ColumnPreferences::index))
               .map(ColumnPreferences::attribute)
               .collect(toList());

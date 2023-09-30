@@ -882,7 +882,7 @@ public class EntityTablePanel extends JPanel {
     Controls popupControls = Controls.controls();
     control(ControlCode.REFRESH).ifPresent(popupControls::add);
     control(ControlCode.CLEAR).ifPresent(popupControls::add);
-    if (popupControls.isNotEmpty()) {
+    if (popupControls.notEmpty()) {
       popupControls.addSeparator();
     }
     addAdditionalControls(popupControls, additionalPopupMenuControls);
@@ -908,12 +908,12 @@ public class EntityTablePanel extends JPanel {
       separatorRequired.set(false);
     }
     Controls printControls = createPrintMenuControls();
-    if (printControls != null && printControls.isNotEmpty()) {
+    if (printControls != null && printControls.notEmpty()) {
       popupControls.add(printControls);
       separatorRequired.set(true);
     }
     Controls columnControls = createColumnControls();
-    if (columnControls.isNotEmpty()) {
+    if (columnControls.notEmpty()) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -986,10 +986,10 @@ public class EntityTablePanel extends JPanel {
    */
   protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
     AttributeDefinition<?> attributeDefinition = tableModel.entityDefinition().attributes().definition(attribute);
-    if (attribute instanceof ColumnDefinition && !((ColumnDefinition<?>) attributeDefinition).isUpdatable()) {
+    if (attribute instanceof ColumnDefinition && !((ColumnDefinition<?>) attributeDefinition).updatable()) {
       return null;
     }
-    if (isNonUpdatableForeignKey(attribute)) {
+    if (nonUpdatableForeignKey(attribute)) {
       return null;
     }
 
@@ -1019,7 +1019,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected JToolBar createSouthToolBar() {
     Controls toolbarControls = createToolBarControls(additionalToolBarControls);
-    if (toolbarControls == null || toolbarControls.isEmpty()) {
+    if (toolbarControls == null || toolbarControls.empty()) {
       return null;
     }
 
@@ -1491,7 +1491,7 @@ public class EntityTablePanel extends JPanel {
   private boolean includeViewDependenciesControl() {
     return tableModel.entities().definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
-            .filter(foreignKeyDefinition -> !foreignKeyDefinition.isSoftReference())
+            .filter(foreignKeyDefinition -> !foreignKeyDefinition.softReference())
             .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.referencedType().equals(tableModel.entityType()));
   }
 
@@ -1512,7 +1512,7 @@ public class EntityTablePanel extends JPanel {
 
   private void addTablePopupMenu() {
     Controls popupControls = createPopupMenuControls(additionalPopupControls);
-    if (popupControls == null || popupControls.isEmpty()) {
+    if (popupControls == null || popupControls.empty()) {
       return;
     }
 
@@ -1543,7 +1543,7 @@ public class EntityTablePanel extends JPanel {
             .build();
     control(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
     Controls conditionPanelControls = conditionPanel.controls();
-    if (conditionPanelControls.isNotEmpty()) {
+    if (conditionPanelControls.notEmpty()) {
       conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
@@ -1551,7 +1551,7 @@ public class EntityTablePanel extends JPanel {
             .name(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description"))
             .build());
-    if (conditionControls.isNotEmpty()) {
+    if (conditionControls.notEmpty()) {
       popupControls.add(conditionControls);
     }
   }
@@ -1563,10 +1563,10 @@ public class EntityTablePanel extends JPanel {
             .build();
     control(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
     Controls filterPanelControls = filterPanel.controls();
-    if (filterPanelControls.isNotEmpty()) {
+    if (filterPanelControls.notEmpty()) {
       filterControls.addAll(filterPanelControls);
     }
-    if (filterControls.isNotEmpty()) {
+    if (filterControls.notEmpty()) {
       popupControls.add(filterControls);
     }
   }
@@ -1594,10 +1594,10 @@ public class EntityTablePanel extends JPanel {
   private void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
     if (scrollPane != null && scrollPane.isVisible()) {
       if (advancedState.get()) {
-        boolean isParentOfFocusOwner = parentOfType(JScrollPane.class,
+        boolean parentOfFocusOwner = parentOfType(JScrollPane.class,
                 getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
         visibleState.set(false);
-        if (isParentOfFocusOwner) {
+        if (parentOfFocusOwner) {
           table.requestFocusInWindow();
         }
       }
@@ -1611,7 +1611,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private boolean isNonUpdatableForeignKey(Attribute<?> attribute) {
+  private boolean nonUpdatableForeignKey(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
 
@@ -1620,7 +1620,7 @@ public class EntityTablePanel extends JPanel {
               .map(referenceAttribute -> tableModel.entityDefinition().columns().definition(referenceAttribute))
               .filter(ColumnDefinition.class::isInstance)
               .map(ColumnDefinition.class::cast)
-              .noneMatch(ColumnDefinition::isUpdatable);
+              .noneMatch(ColumnDefinition::updatable);
     }
 
     return false;
@@ -1783,8 +1783,8 @@ public class EntityTablePanel extends JPanel {
       FilteredTableColumn<Attribute<?>> tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       boolean useBoldFont = renderer instanceof FilteredTableCellRenderer
-              && ((FilteredTableCellRenderer) renderer).isColumnShadingEnabled()
-              && tableModel.conditionModel().isEnabled(tableColumn.getIdentifier());
+              && ((FilteredTableCellRenderer) renderer).columnShadingEnabled()
+              && tableModel.conditionModel().enabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
       component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
@@ -1828,7 +1828,7 @@ public class EntityTablePanel extends JPanel {
       Controls popupMenuControls = Controls.controls();
       control(ControlCode.EDIT_SELECTED).ifPresent(popupMenuControls::add);
       control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
-      if (popupMenuControls.isNotEmpty()) {
+      if (popupMenuControls.notEmpty()) {
         popupMenuControls.addSeparator();
       }
       control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);

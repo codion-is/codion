@@ -276,7 +276,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     public void setupTablePanelControls(EntityTablePanel tablePanel) {
       Controls controls = Controls.controls();
       toggleDetailPanelControl().ifPresent(controls::add);
-      if (controls.isNotEmpty()) {
+      if (controls.notEmpty()) {
         tablePanel.addToolBarControls(controls);
       }
       detailPanelControls().ifPresent(tablePanel::addPopupMenuControls);

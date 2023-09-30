@@ -40,11 +40,11 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * @return true if the connection has been established and is valid
    */
-  boolean isConnected();
+  boolean connected();
 
   /**
    * Returns the underlying connection object, null in case this connection has been closed.
-   * Use {@link #isConnected()} to verify that the connection is not null and valid.
+   * Use {@link #connected()} to verify that the connection is not null and valid.
    * @return the underlying connection object, null in case this connection has been closed
    */
   Connection getConnection();
@@ -67,7 +67,7 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * @return true if a transaction is open
    */
-  boolean isTransactionOpen();
+  boolean transactionOpen();
 
   /**
    * Performs a commit and ends the current transaction

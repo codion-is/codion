@@ -76,7 +76,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
   @Override
   public void stop() {
     synchronized (lock) {
-      if (isRunning()) {
+      if (running()) {
         executorService.shutdownNow();
         executorService = null;
       }
@@ -84,7 +84,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
   }
 
   @Override
-  public boolean isRunning() {
+  public boolean running() {
     synchronized (lock) {
       return executorService != null && !executorService.isShutdown();
     }
@@ -92,7 +92,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
   private void onIntervalChanged() {
     synchronized (lock) {
-      if (isRunning()) {
+      if (running()) {
         start();
       }
     }

@@ -39,7 +39,7 @@ public class DefaultEntityObjectMapperFactory implements EntityObjectMapperFacto
   }
 
   @Override
-  public final boolean isCompatibleWith(DomainType domainType) {
+  public final boolean compatibleWith(DomainType domainType) {
     return this.domainType.equals(requireNonNull(domainType));
   }
 }

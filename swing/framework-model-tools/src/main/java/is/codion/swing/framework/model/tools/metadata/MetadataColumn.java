@@ -63,7 +63,7 @@ public final class MetadataColumn {
     return position;
   }
 
-  public boolean isPrimaryKeyColumn() {
+  public boolean primaryKeyColumn() {
     return primaryKeyIndex != -1;
   }
 
@@ -71,7 +71,7 @@ public final class MetadataColumn {
     return primaryKeyIndex;
   }
 
-  public boolean isForeignKeyColumn() {
+  public boolean foreignKeyColumn() {
     return foreignKeyColumn;
   }
 

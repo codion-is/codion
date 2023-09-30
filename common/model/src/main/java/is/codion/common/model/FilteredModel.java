@@ -99,14 +99,14 @@ public interface FilteredModel<T> {
    * @param item the item
    * @return true if the given item is visible
    */
-  boolean isVisible(T item);
+  boolean visible(T item);
 
   /**
    * Returns true if this model contains the given item, and it is filtered, that is, is not visible
    * @param item the item
    * @return true if the given item is filtered
    */
-  boolean isFiltered(T item);
+  boolean filtered(T item);
 
   /**
    * @return this models Refresher instance
@@ -263,7 +263,7 @@ public interface FilteredModel<T> {
 
     @Override
     public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
-      if (asyncRefresh && isAsyncRefreshSupported()) {
+      if (asyncRefresh && supportsAsyncRefresh()) {
         refreshAsync(afterRefresh);
       }
       else {
@@ -324,7 +324,7 @@ public interface FilteredModel<T> {
     /**
      * @return true if we're running on a thread which supports async refresh, such as a UI or application thread
      */
-    protected abstract boolean isAsyncRefreshSupported();
+    protected abstract boolean supportsAsyncRefresh();
 
     /**
      * Performes an async refresh

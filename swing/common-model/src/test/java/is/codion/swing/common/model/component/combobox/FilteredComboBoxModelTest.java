@@ -63,7 +63,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(5, testModel.visibleItems().size());
     testModel.clear();
     assertEquals(0, testModel.getSize());
-    assertTrue(testModel.isCleared());
+    assertTrue(testModel.cleared());
   }
 
   @Test
@@ -141,16 +141,13 @@ public class FilteredComboBoxModelTest {
     assertEquals(3, selectionChangedCounter.get());
     assertEquals(BJORN, testModel.getSelectedItem());
     assertEquals(BJORN, testModel.selectedValue());
-    assertFalse(testModel.isSelectionEmpty());
     assertFalse(testModel.selectionEmpty().get());
-    assertFalse(testModel.isNullSelected());
+    assertFalse(testModel.nullSelected());
     testModel.setSelectedItem(null);
-    assertTrue(testModel.isSelectionEmpty());
     assertTrue(testModel.selectionEmpty().get());
     assertEquals(4, selectionChangedCounter.get());
     assertEquals(NULL, testModel.getSelectedItem());
-    assertTrue(testModel.isNullSelected());
-    assertTrue(testModel.isSelectionEmpty());
+    assertTrue(testModel.nullSelected());
     assertTrue(testModel.selectionEmpty().get());
     assertNull(testModel.selectedValue());
     testModel.setSelectedItem(SIGGI);
@@ -185,11 +182,11 @@ public class FilteredComboBoxModelTest {
     assertEquals(6, testModel.getSize());
     testModel.includeCondition().set(item -> !item.equals(ANNA));
     assertEquals(5, testModel.getSize());
-    assertFalse(testModel.isVisible(ANNA));
-    assertTrue(testModel.isFiltered(ANNA));
+    assertFalse(testModel.visible(ANNA));
+    assertTrue(testModel.filtered(ANNA));
     testModel.includeCondition().set(item -> item.equals(ANNA));
     assertEquals(2, testModel.getSize());
-    assertTrue(testModel.isVisible(ANNA));
+    assertTrue(testModel.visible(ANNA));
 
     assertEquals(4, testModel.filteredItems().size());
     assertEquals(1, testModel.visibleItems().size());
@@ -200,7 +197,7 @@ public class FilteredComboBoxModelTest {
     testModel.addItem(BJORN);//already contained
     assertEquals(4, testModel.filteredItemCount());
 
-    assertFalse(testModel.isVisible(BJORN));
+    assertFalse(testModel.visible(BJORN));
     assertTrue(testModel.containsItem(BJORN));
 
     testModel.removeListDataListener(listDataListener);
@@ -212,11 +209,11 @@ public class FilteredComboBoxModelTest {
     testModel.includeCondition().set(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
     testModel.includeCondition().set(null);
-    assertFalse(testModel.isVisible(BJORN));
+    assertFalse(testModel.visible(BJORN));
 
     //remove visible item
     testModel.removeItem(KALLI);
-    assertFalse(testModel.isVisible(KALLI));
+    assertFalse(testModel.visible(KALLI));
   }
 
   @Test
@@ -225,25 +222,25 @@ public class FilteredComboBoxModelTest {
     //add filtered item
     testModel.includeCondition().set(item -> !item.equals(BJORN));
     testModel.addItem(BJORN);
-    assertFalse(testModel.isVisible(BJORN));
+    assertFalse(testModel.visible(BJORN));
 
     //add visible item
     testModel.addItem(KALLI);
-    assertTrue(testModel.isVisible(KALLI));
+    assertTrue(testModel.visible(KALLI));
 
     testModel.includeCondition().set(null);
-    assertTrue(testModel.isVisible(BJORN));
+    assertTrue(testModel.visible(BJORN));
   }
 
   @Test
   void setNullValueString() {
-    assertTrue(testModel.isVisible(null));
+    assertTrue(testModel.visible(null));
     testModel.refresh();
     assertEquals(5, testModel.visibleItems().size());
     assertEquals(testModel.getElementAt(0), NULL);
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), NULL);
-    assertTrue(testModel.isNullSelected());
+    assertTrue(testModel.nullSelected());
     assertNull(testModel.selectedValue());
     testModel.setSelectedItem(NULL);
     assertEquals(NULL, testModel.getElementAt(0));
@@ -263,7 +260,7 @@ public class FilteredComboBoxModelTest {
     assertTrue(model.containsItem(null));
     assertEquals("-", model.getSelectedItem());
     model.setSelectedItem("-");
-    assertTrue(model.isNullSelected());
+    assertTrue(model.nullSelected());
   }
 
   @Test
@@ -285,7 +282,7 @@ public class FilteredComboBoxModelTest {
     selectorValue.set('k');
     assertEquals(KALLI, testModel.getSelectedItem());
     selectorValue.set(null);
-    assertTrue(testModel.isNullSelected());
+    assertTrue(testModel.nullSelected());
     testModel.setSelectedItem(BJORN);
     assertEquals('b', selectorValue.get());
     testModel.setSelectedItem(null);

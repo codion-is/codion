@@ -111,11 +111,11 @@ class CompletionDocument extends PlainDocument {
     return comboBoxModel;
   }
 
-  protected final boolean isNormalize() {
+  protected final boolean normalize() {
     return normalize;
   }
 
-  protected final boolean isSelecting() {
+  protected final boolean selecting() {
     return selecting;
   }
 

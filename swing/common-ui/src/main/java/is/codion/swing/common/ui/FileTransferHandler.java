@@ -39,7 +39,7 @@ public abstract class FileTransferHandler extends TransferHandler {
 
   @Override
   public boolean canImport(TransferSupport transferSupport) {
-    return isFileDataFlavor(transferSupport);
+    return fileDataFlavor(transferSupport);
   }
 
   @Override
@@ -76,7 +76,7 @@ public abstract class FileTransferHandler extends TransferHandler {
    * @param transferSupport a drag'n drop transfer support instance
    * @return true if the given transfer support instance represents a file or a list of files
    */
-  public static boolean isFileDataFlavor(TransferSupport transferSupport) {
+  public static boolean fileDataFlavor(TransferSupport transferSupport) {
     requireNonNull(transferSupport, "transferSupport");
     try {
       DataFlavor nixFileDataFlavor = nixFileDataFlavor();

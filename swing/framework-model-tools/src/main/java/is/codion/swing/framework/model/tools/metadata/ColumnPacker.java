@@ -61,7 +61,7 @@ final class ColumnPacker implements ResultPacker<MetadataColumn> {
                 resultSet.getString("COLUMN_DEF"),
                 resultSet.getString("REMARKS"),
                 primaryKeyColumnIndex(columnName),
-                isForeignKeyColumn(columnName),
+                foreignKeyColumn(columnName),
                 YES.equals(resultSet.getString("IS_AUTOINCREMENT")),
                 YES.equals(resultSet.getString("IS_GENERATEDCOLUMN")));
       }
@@ -82,7 +82,7 @@ final class ColumnPacker implements ResultPacker<MetadataColumn> {
             .orElse(-1);
   }
 
-  private boolean isForeignKeyColumn(String columnName) {
+  private boolean foreignKeyColumn(String columnName) {
     return foreignKeyColumns.stream()
             .anyMatch(foreignKeyColumn -> foreignKeyColumn.fkColumnName().equals(columnName));
   }

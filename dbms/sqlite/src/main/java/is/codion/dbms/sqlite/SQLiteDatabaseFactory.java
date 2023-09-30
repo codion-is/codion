@@ -31,7 +31,7 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
   private static final String DRIVER_PACKAGE = "org.sqlite";
 
   @Override
-  public boolean isDriverCompatible(String driverClassName) {
+  public boolean driverCompatible(String driverClassName) {
     return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 

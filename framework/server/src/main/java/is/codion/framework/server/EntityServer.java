@@ -97,7 +97,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     this.configuration = configuration;
     try {
       this.database = requireNonNull(configuration.database(), "database");
-      this.clientLoggingEnabled = configuration.isClientLoggingEnabled();
+      this.clientLoggingEnabled = configuration.clientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.domainClassNames());
       configureDatabase(domainModels.values(), database);
       setAdmin(createServerAdmin(configuration));
@@ -226,8 +226,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   protected final void maintainConnections(Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
     for (ClientConnection<AbstractRemoteEntityConnection> client : connections) {
       AbstractRemoteEntityConnection connection = client.connection();
-      if (!connection.isActive()) {
-        boolean connected = connection.isConnected();
+      if (!connection.active()) {
+        boolean connected = connection.connected();
         boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
           LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
@@ -253,7 +253,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     for (Domain domain : domainModels.values()) {
       domainReports.put(domain.type(), domain.reports().entrySet().stream()
               .map(entry -> new DefaultDomainReport(entry.getKey().name(), entry.getValue().getClass().getSimpleName(),
-                      entry.getValue().toString(), entry.getValue().isCached()))
+                      entry.getValue().toString(), entry.getValue().cached()))
               .collect(toList()));
     }
 
@@ -320,7 +320,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     for (RemoteClient client : clients) {
       AbstractRemoteEntityConnection connection = connection(client.clientId());
       if (timedOutOnly) {
-        boolean active = connection.isActive();
+        boolean active = connection.active();
         if (!active && hasConnectionTimedOut(connection)) {
           disconnect(client.clientId());
         }
@@ -584,7 +584,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
 
     @Override
-    public boolean isCached() {
+    public boolean cached() {
       return cached;
     }
   }

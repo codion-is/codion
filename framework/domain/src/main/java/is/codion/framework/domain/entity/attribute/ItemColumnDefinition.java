@@ -32,7 +32,7 @@ public interface ItemColumnDefinition<T> extends ColumnDefinition<T> {
    * @param value the value to validate
    * @return true if the given value is valid for this attribute
    */
-  boolean isValid(T value);
+  boolean valid(T value);
 
   /**
    * @return an unmodifiable view of the available items

@@ -247,10 +247,10 @@ public final class AttributeDefinitionTest {
 
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
     ItemColumnDefinition<Integer> attribute = (ItemColumnDefinition<Integer>) ENTITY_TYPE.integerColumn("item").define().column().items(items).build();
-    assertFalse(attribute.isValid(4));
+    assertFalse(attribute.valid(4));
     assertThrows(IllegalArgumentException.class, () -> attribute.item(4));
-    assertTrue(attribute.isValid(null));
-    assertTrue(attribute.isValid(2));
+    assertTrue(attribute.valid(null));
+    assertTrue(attribute.valid(2));
     assertNotNull(attribute.item(null));
     assertNotNull(attribute.item(1));
   }

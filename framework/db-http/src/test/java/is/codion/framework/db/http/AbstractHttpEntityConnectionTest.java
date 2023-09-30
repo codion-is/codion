@@ -221,15 +221,15 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void transactions() {
-    assertFalse(connection.isTransactionOpen());
+    assertFalse(connection.transactionOpen());
     connection.beginTransaction();
-    assertTrue(connection.isTransactionOpen());
+    assertTrue(connection.transactionOpen());
     connection.rollbackTransaction();
-    assertFalse(connection.isTransactionOpen());
+    assertFalse(connection.transactionOpen());
     connection.beginTransaction();
-    assertTrue(connection.isTransactionOpen());
+    assertTrue(connection.transactionOpen());
     connection.commitTransaction();
-    assertFalse(connection.isTransactionOpen());
+    assertFalse(connection.transactionOpen());
   }
 
   @Test
@@ -245,7 +245,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void close() {
     connection.close();
-    assertFalse(connection.isConnected());
+    assertFalse(connection.connected());
   }
 
   @Test

@@ -98,12 +98,12 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
   /**
    * @return true if column shading is enabled
    */
-  boolean isColumnShadingEnabled();
+  boolean columnShadingEnabled();
 
   /**
    * @return true if alternate row coloring is enabled
    */
-  boolean isAlternateRowColoring();
+  boolean alternateRowColoring();
 
   /**
    * Instantiates a new {@link FilteredTableCellRenderer.Builder}.

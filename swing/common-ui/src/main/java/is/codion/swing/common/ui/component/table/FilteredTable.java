@@ -360,10 +360,10 @@ public final class FilteredTable<R, C> extends JTable {
    * @param column the column
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
-  public boolean isCellVisible(int row, int column) {
+  public boolean cellVisible(int row, int column) {
     JViewport viewport = Utilities.parentOfType(JViewport.class, this);
 
-    return viewport != null && isCellVisible(viewport, row, column);
+    return viewport != null && cellVisible(viewport, row, column);
   }
 
   /**
@@ -592,7 +592,7 @@ public final class FilteredTable<R, C> extends JTable {
             .build();
   }
 
-  private boolean isCellVisible(JViewport viewport, int row, int column) {
+  private boolean cellVisible(JViewport viewport, int row, int column) {
     Rectangle cellRect = getCellRect(row, column, true);
     Point viewPosition = viewport.getViewPosition();
     cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
@@ -713,13 +713,13 @@ public final class FilteredTable<R, C> extends JTable {
     private boolean noRowVisible(List<Integer> rows) {
       JViewport viewport = Utilities.parentOfType(JViewport.class, FilteredTable.this);
       if (viewport != null) {
-        return rows.stream().noneMatch(row -> isRowVisible(viewport, row));
+        return rows.stream().noneMatch(row -> rowVisible(viewport, row));
       }
 
       return false;
     }
 
-    private boolean isRowVisible(JViewport viewport, int row) {
+    private boolean rowVisible(JViewport viewport, int row) {
       int topRow = rowAtPoint(viewport.getViewPosition());
       int visibleRows = viewport.getExtentSize().height / getRowHeight();
 

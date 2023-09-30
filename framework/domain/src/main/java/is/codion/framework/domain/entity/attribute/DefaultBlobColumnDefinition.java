@@ -31,7 +31,7 @@ final class DefaultBlobColumnDefinition extends DefaultColumnDefinition<byte[]> 
   }
 
   @Override
-  public boolean isEagerlyLoaded() {
+  public boolean eagerlyLoaded() {
     return eagerlyLoaded;
   }
 

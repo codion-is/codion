@@ -68,11 +68,11 @@ public interface World {
 
     void location(Location location);
 
-    default boolean isInCountry(Entity country) {
+    default boolean inCountry(Entity country) {
       return country != null && Objects.equals(country(), country);
     }
 
-    default boolean isCapital() {
+    default boolean capital() {
       return Objects.equals(get(City.ID), country().get(Country.CAPITAL));
     }
   }
@@ -246,7 +246,7 @@ public interface World {
         return YELLOW;
       }
       City city = cityEntity.castTo(City.class);
-      if (attribute.equals(City.NAME) && city.isCapital()) {
+      if (attribute.equals(City.NAME) && city.capital()) {
         return GREEN;
       }
 

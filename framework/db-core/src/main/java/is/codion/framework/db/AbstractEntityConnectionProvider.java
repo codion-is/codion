@@ -97,13 +97,13 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final boolean isConnectionValid() {
+  public final boolean connectionValid() {
     synchronized (lock) {
       if (entityConnection == null) {
         return false;
       }
       try {
-        return entityConnection.isConnected();
+        return entityConnection.connected();
       }
       catch (RuntimeException e) {
         LOG.debug("Connection deemed invalid", e);
@@ -134,7 +134,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final void close() {
     synchronized (lock) {
-      if (isConnectionValid()) {
+      if (connectionValid()) {
         close(entityConnection);
       }
       entityConnection = null;
@@ -156,7 +156,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     if (entityConnection == null) {
       doConnect();
     }
-    else if (!isConnectionValid()) {
+    else if (!connectionValid()) {
       LOG.info("Previous connection invalid, reconnecting");
       try {//try to disconnect just in case
         entityConnection.close();

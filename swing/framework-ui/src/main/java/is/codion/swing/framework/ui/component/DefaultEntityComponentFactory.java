@@ -62,7 +62,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
   private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
                                                               Entity initialValue) {
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
-    if (editModel.entities().definition(foreignKey.referencedType()).isSmallDataset()) {
+    if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
       return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
               .initialValue(initialValue)
               .onSetVisible(comboBox -> comboBox.getModel().refresh())

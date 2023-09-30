@@ -298,7 +298,7 @@ public final class EntityDialogs {
 
       @Override
       public boolean test(T value) {
-        if (value == null && !attributeDefinition.isNullable()) {
+        if (value == null && !attributeDefinition.nullable()) {
           return false;
         }
         try {

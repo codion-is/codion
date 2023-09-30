@@ -47,7 +47,7 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
   public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
-      if (definition(foreignKey.referencedType()).isSmallDataset()) {
+      if (definition(foreignKey.referencedType()).smallDataset()) {
         return Optional.of(entityComboBoxModelConditionModel(foreignKey, createComboBoxModel(foreignKey)));
       }
     }

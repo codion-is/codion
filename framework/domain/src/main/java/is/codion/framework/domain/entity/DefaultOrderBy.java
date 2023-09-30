@@ -92,7 +92,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     }
 
     @Override
-    public boolean isAscending() {
+    public boolean ascending() {
       return ascending;
     }
 

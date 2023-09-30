@@ -97,7 +97,7 @@ public final class CityEditPanel extends EntityEditPanel {
             .addAt(4, Control.builder(this::setLocation)
                     .enabled(State.and(active(),
                             editModel().isNull(City.LOCATION),
-                            editModel().entityNew().not()))
+                            editModel().exists()))
                     .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
                     .build());
   }

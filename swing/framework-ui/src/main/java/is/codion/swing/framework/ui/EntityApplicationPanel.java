@@ -415,23 +415,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected Controls createMainMenuControls() {
     Controls menuControls = Controls.controls();
     Controls fileMenuControls = createFileMenuControls();
-    if (fileMenuControls != null && fileMenuControls.isNotEmpty()) {
+    if (fileMenuControls != null && fileMenuControls.notEmpty()) {
       menuControls.add(fileMenuControls);
     }
     Controls viewMenuControls = createViewMenuControls();
-    if (viewMenuControls != null && viewMenuControls.isNotEmpty()) {
+    if (viewMenuControls != null && viewMenuControls.notEmpty()) {
       menuControls.add(viewMenuControls);
     }
     Controls toolsMenuControls = createToolsMenuControls();
-    if (toolsMenuControls != null && toolsMenuControls.isNotEmpty()) {
+    if (toolsMenuControls != null && toolsMenuControls.notEmpty()) {
       menuControls.add(toolsMenuControls);
     }
     Controls supportTableMenuControls = createSupportTableMenuControls();
-    if (supportTableMenuControls != null && supportTableMenuControls.isNotEmpty()) {
+    if (supportTableMenuControls != null && supportTableMenuControls.notEmpty()) {
       menuControls.add(supportTableMenuControls);
     }
     Controls helpMenuControls = createHelpMenuControls();
-    if (helpMenuControls != null && helpMenuControls.isNotEmpty()) {
+    if (helpMenuControls != null && helpMenuControls.notEmpty()) {
       menuControls.add(helpMenuControls);
     }
 
@@ -779,7 +779,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JMenuBar createMenuBar() {
     Controls mainMenuControls = createMainMenuControls();
-    if (mainMenuControls == null || mainMenuControls.isEmpty()) {
+    if (mainMenuControls == null || mainMenuControls.empty()) {
       return null;
     }
 
@@ -956,7 +956,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.definitions()) {
         for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeys().definitions()) {
-          if (foreignKeyDefinition.referencedType().equals(entityType()) && !foreignKeyDefinition.isSoftReference()
+          if (foreignKeyDefinition.referencedType().equals(entityType()) && !foreignKeyDefinition.softReference()
                   && !foreignKeyCycle(foreignKeyDefinition.referencedType())) {
             childrenList.add(new EntityDependencyTreeNode(definition.entityType(), entities));
           }

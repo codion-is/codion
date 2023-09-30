@@ -40,7 +40,7 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
   private EntityComboBoxModelConditionModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
     super(foreignKey);
     this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
-    if (entityComboBoxModel.isCleared()) {
+    if (entityComboBoxModel.cleared()) {
       entityComboBoxModel.setSelectedItem(getEqualValue());
     }
     bindComboBoxEvents();

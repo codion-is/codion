@@ -431,12 +431,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
       @Override
       public void validate(T value) {
-        if (!isWithinRange(value)) {
+        if (!withinRange(value)) {
           throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
         }
       }
 
-      boolean isWithinRange(T value) {
+      boolean withinRange(T value) {
         return value == null || (greaterThanMinimum(value) && lessThanMaximum(value));
       }
 

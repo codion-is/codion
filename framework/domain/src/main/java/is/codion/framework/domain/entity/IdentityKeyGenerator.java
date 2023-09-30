@@ -29,7 +29,7 @@ import java.sql.Statement;
 final class IdentityKeyGenerator implements KeyGenerator {
 
   @Override
-  public boolean isInserted() {
+  public boolean inserted() {
     return false;
   }
 

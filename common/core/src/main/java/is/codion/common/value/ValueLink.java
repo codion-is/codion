@@ -38,12 +38,12 @@ final class ValueLink<T> {
   /**
    * True while the linked value is being updated
    */
-  private boolean isUpdatingLinked = false;
+  private boolean updatingLinked = false;
 
   /**
    * True while the original value is being updated
    */
-  private boolean isUpdatingOriginal = false;
+  private boolean updatingOriginal = false;
 
   /**
    * Creates a new ValueLink
@@ -91,9 +91,9 @@ final class ValueLink<T> {
     }
 
     private void updateLinkedValue() {
-      if (!isUpdatingOriginal) {
+      if (!updatingOriginal) {
         try {
-          isUpdatingLinked = true;
+          updatingLinked = true;
           try {
             linkedValue.set(originalValue.get());
           }
@@ -103,7 +103,7 @@ final class ValueLink<T> {
           }
         }
         finally {
-          isUpdatingLinked = false;
+          updatingLinked = false;
         }
       }
     }
@@ -117,9 +117,9 @@ final class ValueLink<T> {
     }
 
     private void updateOriginalValue() {
-      if (!isUpdatingLinked) {
+      if (!updatingLinked) {
         try {
-          isUpdatingOriginal = true;
+          updatingOriginal = true;
           try {
             originalValue.set(linkedValue.get());
           }
@@ -129,7 +129,7 @@ final class ValueLink<T> {
           }
         }
         finally {
-          isUpdatingOriginal = false;
+          updatingOriginal = false;
         }
       }
     }

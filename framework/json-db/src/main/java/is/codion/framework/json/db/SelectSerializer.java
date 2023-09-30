@@ -56,7 +56,7 @@ final class SelectSerializer extends StdSerializer<Select> {
       generator.writeStartArray();
       for (OrderBy.OrderByColumn orderByColumn : orderBy.orderByColumns()) {
         generator.writeString(orderByColumn.column().name() +
-                ":" + (orderByColumn.isAscending() ? "asc" : "desc") +
+                ":" + (orderByColumn.ascending() ? "asc" : "desc") +
                 ":" + orderByColumn.nullOrder().name());
       }
       generator.writeEndArray();

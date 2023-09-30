@@ -185,7 +185,7 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public boolean isComplete() {
+    public boolean complete() {
       return exitTime != 0;
     }
 
@@ -229,14 +229,14 @@ final class DefaultMethodLogger implements MethodLogger {
       stringBuilder.append(method);
       String padString = Text.padString("", timestampLength, ' ', Text.Alignment.RIGHT);
       if (!nullOrEmpty(enterMessage)) {
-        if (isMultiLine(enterMessage)) {
+        if (multiLine(enterMessage)) {
           stringBuilder.append(NEWLINE).append(padString).append(enterMessage.replace(NEWLINE, NEWLINE + padString));
         }
         else {
           stringBuilder.append(" : ").append(enterMessage);
         }
       }
-      if (isComplete()) {
+      if (complete()) {
         LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
         stringBuilder.append(NEWLINE).append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(duration()))).append(" μs")
@@ -301,7 +301,7 @@ final class DefaultMethodLogger implements MethodLogger {
       return writer.toString();
     }
 
-    private static boolean isMultiLine(String enterMessage) {
+    private static boolean multiLine(String enterMessage) {
       return enterMessage.contains(NEWLINE);
     }
   }

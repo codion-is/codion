@@ -146,7 +146,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param comboBoxModel the combobox model
    */
   public static void selectRandomItem(EntityComboBoxModel comboBoxModel) {
-    if (comboBoxModel.isCleared()) {
+    if (comboBoxModel.cleared()) {
       comboBoxModel.refresh();
     }
     List<Entity> visibleItems = comboBoxModel.visibleItems();

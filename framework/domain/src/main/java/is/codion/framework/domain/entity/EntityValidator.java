@@ -34,14 +34,14 @@ public interface EntityValidator {
    * @param <T> the value type
    * @return true if the attribute accepts a null value
    */
-  <T> boolean isNullable(Entity entity, Attribute<T> attribute);
+  <T> boolean nullable(Entity entity, Attribute<T> attribute);
 
   /**
    * Returns true if the given entity contains only valid values.
    * @param entity the entity
    * @return true if the given entity contains only valid values
    */
-  boolean isValid(Entity entity);
+  boolean valid(Entity entity);
 
   /**
    * Checks if the values in the given entity are valid

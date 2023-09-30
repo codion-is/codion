@@ -9675,3 +9675,10 @@
   DefaultEntityDefinition.DefaultForeignKeys now validates method parameters
   EntityDefinition.isOptimisticLockingEnabled() renamed optimisticLocking()
   EntityDefinition.OPTIMISTIC_LOCKING configuration value added
+  Entity.modifiedColumnAttributes() renamed modifiedColumns()
+  is prefix removed from boolean getters without setters
+  LocalEntityConnection.is/setOptimisticLockingEnbled() renamed is/setOptimisticLocking()
+  Entity.isNew() replaced with exists()
+  EntityEditModel.entityNew() replaced with exists()
+  DefaultEntity.remove() bug fixed, did not clear the primary key in case a primary key column value was being removed
+  Entity.isModified() renamed modified()

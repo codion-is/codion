@@ -322,7 +322,7 @@ public final class Utilities {
    * @return true if the system or cross-platform look and feel is enabled
    * @see #systemLookAndFeelClassName()
    */
-  public static boolean isSystemOrCrossPlatformLookAndFeelEnabled() {
+  public static boolean systemOrCrossPlatformLookAndFeelEnabled() {
     String lookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
     return lookAndFeelClassName.equals(systemLookAndFeelClassName()) ||

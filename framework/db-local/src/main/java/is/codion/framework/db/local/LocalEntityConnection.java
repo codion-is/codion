@@ -105,12 +105,12 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @return true if optimistic locking is enabled
    */
-  boolean isOptimisticLockingEnabled();
+  boolean isOptimisticLocking();
 
   /**
    * @param optimisticLocking true if optimistic locking should be enabled
    */
-  void setOptimisticLockingEnabled(boolean optimisticLocking);
+  void setOptimisticLocking(boolean optimisticLocking);
 
   /**
    * @return true if foreign key fetch depths are being limited

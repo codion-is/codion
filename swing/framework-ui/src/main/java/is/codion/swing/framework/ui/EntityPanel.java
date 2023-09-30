@@ -883,7 +883,7 @@ public class EntityPanel extends JPanel {
    */
   protected JComponent createEditControlPanel() {
     Controls controls = editPanel.createControls();
-    if (controls == null || controls.isEmpty()) {
+    if (controls == null || controls.empty()) {
       return null;
     }
     boolean horizontalLayout = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH);

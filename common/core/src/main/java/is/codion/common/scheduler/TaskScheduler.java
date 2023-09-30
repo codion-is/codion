@@ -70,7 +70,7 @@ public interface TaskScheduler {
   /**
    * @return true if this TaskScheduler is running
    */
-  boolean isRunning();
+  boolean running();
 
   /**
    * @param task the task to run

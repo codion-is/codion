@@ -36,7 +36,7 @@ public interface DatabaseFactory {
    * @param driverClassName the driver class name
    * @return true if this database factory is compatible with the given driver
    */
-  boolean isDriverCompatible(String driverClassName);
+  boolean driverCompatible(String driverClassName);
 
   /**
    * @param url the jdbc url
@@ -66,7 +66,7 @@ public interface DatabaseFactory {
     String driver = driverClassName(url);
     ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
     for (DatabaseFactory factory : loader) {
-      if (factory.isDriverCompatible(driver)) {
+      if (factory.driverCompatible(driver)) {
         return factory;
       }
     }

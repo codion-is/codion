@@ -114,17 +114,17 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final boolean isInsertable() {
+  public final boolean insertable() {
     return insertable;
   }
 
   @Override
-  public final boolean isUpdatable() {
+  public final boolean updatable() {
     return updatable;
   }
 
   @Override
-  public final boolean isReadOnly() {
+  public final boolean readOnly() {
     return !insertable && !updatable;
   }
 
@@ -134,27 +134,27 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final boolean isGroupBy() {
+  public final boolean groupBy() {
     return groupBy;
   }
 
   @Override
-  public final boolean isAggregate() {
+  public final boolean aggregate() {
     return aggregate;
   }
 
   @Override
-  public final boolean isSelectable() {
+  public final boolean selectable() {
     return selectable;
   }
 
   @Override
-  public final boolean isPrimaryKeyColumn() {
+  public final boolean primaryKeyColumn() {
     return primaryKeyIndex >= 0;
   }
 
   @Override
-  public final boolean isSearchColumn() {
+  public final boolean searchColumn() {
     return searchColumn;
   }
 

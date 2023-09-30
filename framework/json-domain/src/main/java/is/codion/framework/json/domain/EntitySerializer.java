@@ -55,7 +55,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     generator.writeStringField("entityType", entity.entityType().name());
     generator.writeFieldName("values");
     writeValues(entity, generator, entity.entrySet());
-    if (entity.isModified()) {
+    if (entity.modified()) {
       generator.writeFieldName("originalValues");
       writeValues(entity, generator, entity.originalEntrySet());
     }

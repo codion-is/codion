@@ -59,7 +59,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 
   void setLocation(City city) throws IOException, DatabaseException, ValidationException {
     lookupLocation(city).ifPresent(city::location);
-    if (city.isModified()) {
+    if (city.modified()) {
       update(singletonList(city));
     }
   }

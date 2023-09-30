@@ -127,7 +127,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
   }
 
   @Override
-  public final boolean isConnected() {
+  public final boolean connected() {
     return !closed;
   }
 

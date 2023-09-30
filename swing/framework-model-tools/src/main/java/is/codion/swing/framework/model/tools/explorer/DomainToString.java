@@ -105,7 +105,7 @@ final class DomainToString {
       if (attributeDefinition instanceof ColumnDefinition) {
         ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
         strings.add(columnDefinition(interfaceName, columnDefinition,
-                definition.foreignKeys().isForeignKeyColumn(columnDefinition.attribute()), definition.primaryKey().columns().size() > 1));
+                definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()), definition.primaryKey().columns().size() > 1));
       }
       else if (attributeDefinition instanceof ForeignKeyDefinition) {
         strings.add(foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition));
@@ -133,21 +133,21 @@ final class DomainToString {
             .append(interfaceName).append(".").append(column.columnName().toUpperCase()).append(".define()")
             .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
             .append(".").append(definitionType(column.attribute(),
-                    column.isPrimaryKeyColumn() && !compositePrimaryKey));
-    if (!isForeignKey && !column.isPrimaryKeyColumn()) {
+                    column.primaryKeyColumn() && !compositePrimaryKey));
+    if (!isForeignKey && !column.primaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
     }
-    if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).isEagerlyLoaded()) {
+    if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).eagerlyLoaded()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".eagerlyLoaded()");
     }
-    if (column.isPrimaryKeyColumn() && compositePrimaryKey) {
+    if (column.primaryKeyColumn() && compositePrimaryKey) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".primaryKeyIndex(")
               .append(column.primaryKeyIndex()).append(")");
     }
     if (column.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
     }
-    if (!column.isNullable() && !column.isPrimaryKeyColumn()) {
+    if (!column.nullable() && !column.primaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
     }
     if (String.class.equals(column.attribute().type().valueClass())) {

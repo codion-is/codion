@@ -96,9 +96,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * @return true if this connection is connected
    */
-  public final boolean isConnected() {
+  public final boolean connected() {
     synchronized (connectionProxy) {
-      return connectionHandler.isConnected();
+      return connectionHandler.connected();
     }
   }
 
@@ -107,7 +107,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    */
   public final void close() {
     synchronized (connectionProxy) {
-      if (connectionHandler.isClosed()) {
+      if (connectionHandler.closed()) {
         return;
       }
       try {
@@ -154,8 +154,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * @return true during a remote method call
    */
-  final boolean isActive() {
-    return connectionHandler.isActive();
+  final boolean active() {
+    return connectionHandler.active();
   }
 
   final void addDisconnectListener(Consumer<AbstractRemoteEntityConnection> listener) {

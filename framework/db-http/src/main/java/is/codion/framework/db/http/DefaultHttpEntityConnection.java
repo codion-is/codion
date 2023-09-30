@@ -85,7 +85,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public boolean isTransactionOpen() {
+  public boolean transactionOpen() {
     try {
       synchronized (this.entities) {
         return onResponse(execute(createHttpPost("isTransactionOpen")));

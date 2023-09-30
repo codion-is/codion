@@ -33,7 +33,7 @@ abstract class ControlHandler implements Consumer<Action> {
       onSeparator();
     }
     else if (action instanceof Controls) {
-      if (((Controls) action).isNotEmpty()) {
+      if (((Controls) action).notEmpty()) {
         onControls((Controls) action);
       }
     }

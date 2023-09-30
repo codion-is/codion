@@ -63,39 +63,39 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return true if this column is part of a primary key
    */
-  boolean isPrimaryKeyColumn();
+  boolean primaryKeyColumn();
 
   /**
    * @return true if this column should be grouped by
    */
-  boolean isGroupBy();
+  boolean groupBy();
 
   /**
    * @return true if this column is based on an aggregate function
    */
-  boolean isAggregate();
+  boolean aggregate();
 
   /**
    * @return true if this column should be included in select queries
    */
-  boolean isSelectable();
+  boolean selectable();
 
   /**
    * Specifies whether this column is insertable
    * @return true if this column is insertable
    */
-  boolean isInsertable();
+  boolean insertable();
 
   /**
    * Indicates whether this column is updatable
    * @return true if this column is updatable
    */
-  boolean isUpdatable();
+  boolean updatable();
 
   /**
    * @return true if this column is neither insertable nor updatable.
    */
-  boolean isReadOnly();
+  boolean readOnly();
 
   /**
    * @return true if the underlying column has a default value
@@ -105,7 +105,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return true if this column should be included when searching by string
    */
-  boolean isSearchColumn();
+  boolean searchColumn();
 
   /**
    * Fetches a value for this column from a ResultSet

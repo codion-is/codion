@@ -54,7 +54,7 @@ public class NumericalValuesTest {
   @Test
   void testLongPrimitive() {
     Value<Long> longPrimitivePropertyValue = Value.value(null, 0L);
-    assertFalse(longPrimitivePropertyValue.isNullable());
+    assertFalse(longPrimitivePropertyValue.nullable());
     ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
             .buildValue();
     NumberField<Long> longField = componentValue.component();

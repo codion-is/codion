@@ -31,7 +31,7 @@ public final class PostgreSQLDatabaseFactory implements DatabaseFactory {
   private static final String DRIVER_PACKAGE = "org.postgresql";
 
   @Override
-  public boolean isDriverCompatible(String driverClassName) {
+  public boolean driverCompatible(String driverClassName) {
     return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 

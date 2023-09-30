@@ -113,8 +113,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public boolean isConnected() {
-    return connection != null && database.isConnectionValid(connection);
+  public boolean connected() {
+    return connection != null && database.connectionValid(connection);
   }
 
   @Override
@@ -187,7 +187,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public boolean isTransactionOpen() {
+  public boolean transactionOpen() {
     return transactionOpen;
   }
 

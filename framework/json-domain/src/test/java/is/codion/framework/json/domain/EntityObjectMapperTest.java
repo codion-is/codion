@@ -86,8 +86,8 @@ public final class EntityObjectMapperTest {
     entity.put(TestEntity.BOOLEAN, false);
     jsonString = mapper.writeValueAsString(entity);
     Entity entityModified = mapper.readValue(jsonString, Entity.class);
-    assertTrue(entityModified.isModified());
-    assertTrue(entityModified.isModified(TestEntity.BOOLEAN));
+    assertTrue(entityModified.modified());
+    assertTrue(entityModified.modified(TestEntity.BOOLEAN));
     assertTrue(entityModified.get(TestEntity.ENTITY).isImmutable());
   }
 
@@ -277,14 +277,14 @@ public final class EntityObjectMapperTest {
     assertEquals(1, readEntities.size());
     Entity parsedEntity = readEntities.iterator().next();
     assertTrue(emp1.columnValuesEqual(parsedEntity));
-    assertTrue(parsedEntity.isModified());
-    assertTrue(parsedEntity.isModified(Employee.COMMISSION));
-    assertTrue(parsedEntity.isModified(Employee.DEPARTMENT));
-    assertTrue(parsedEntity.isModified(Employee.JOB));
-    assertTrue(parsedEntity.isModified(Employee.MGR));
-    assertTrue(parsedEntity.isModified(Employee.NAME));
-    assertTrue(parsedEntity.isModified(Employee.SALARY));
-    assertTrue(parsedEntity.isModified(Employee.HIREDATE));
+    assertTrue(parsedEntity.modified());
+    assertTrue(parsedEntity.modified(Employee.COMMISSION));
+    assertTrue(parsedEntity.modified(Employee.DEPARTMENT));
+    assertTrue(parsedEntity.modified(Employee.JOB));
+    assertTrue(parsedEntity.modified(Employee.MGR));
+    assertTrue(parsedEntity.modified(Employee.NAME));
+    assertTrue(parsedEntity.modified(Employee.SALARY));
+    assertTrue(parsedEntity.modified(Employee.HIREDATE));
 
     Entity emp3 = entities.builder(Employee.TYPE)
             .with(Employee.COMMISSION, 300.5)

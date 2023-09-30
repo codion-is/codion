@@ -81,12 +81,12 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
     deptTableModel.select(singletonList(operationsKey));
 
-    assertTrue(deptTableModel.selectionModel().isSelectionNotEmpty());
+    assertTrue(deptTableModel.selectionModel().selectionNotEmpty().get());
     deptEditModel.put(Department.ID, 80);
-    assertFalse(deptTableModel.selectionModel().isSelectionEmpty());
+    assertFalse(deptTableModel.selectionModel().selectionEmpty().get());
     deptEditModel.update();
 
-    assertFalse(deptTableModel.selectionModel().isSelectionEmpty());
+    assertFalse(deptTableModel.selectionModel().selectionEmpty().get());
     Entity operations = deptTableModel.selectionModel().getSelectedItem();
     assertEquals(80, operations.get(Department.ID));
 
@@ -143,10 +143,10 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     }
     departmentModel.tableModel().refresh();
     departmentModel.tableModel().selectionModel().setSelectedIndexes(asList(1, 2, 3));
-    assertTrue(departmentModel.tableModel().selectionModel().isSelectionNotEmpty());
-    assertFalse(departmentModel.editModel().entityNew().get());
+    assertTrue(departmentModel.tableModel().selectionModel().selectionNotEmpty().get());
+    assertTrue(departmentModel.editModel().exists().get());
     departmentModel.editModel().setDefaultValues();
-    assertTrue(departmentModel.tableModel().selectionModel().isSelectionEmpty());
+    assertTrue(departmentModel.tableModel().selectionModel().selectionEmpty().get());
   }
 
   @Test

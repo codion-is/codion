@@ -48,14 +48,14 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
    * @return true if this foreign key is not based on a physical (table) foreign key
    * and should not prevent deletion
    */
-  boolean isSoftReference();
+  boolean softReference();
 
   /**
    * Returns true if the given foreign key reference column is read-only, as in, not updated when the foreign key value is set.
    * @param referenceColumn the reference column
    * @return true if the given foreign key reference column is read-only
    */
-  boolean isReadOnly(Column<?> referenceColumn);
+  boolean readOnly(Column<?> referenceColumn);
 
   /**
    * @return the {@link ForeignKey.Reference}s that comprise this foreign key

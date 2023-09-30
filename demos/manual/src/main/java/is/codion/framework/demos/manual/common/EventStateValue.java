@@ -145,7 +145,7 @@ public final class EventStateValue {
 
     Value<Integer> value = Value.value(initialValue, nullValue);
 
-    System.out.println(value.isNullable());//output: false
+    System.out.println(value.nullable());//output: false
 
     System.out.println(value.get());// output: 42
 

@@ -293,19 +293,19 @@ For databases lacking native boolean support we can define a boolean column, spe
 
 [source,java]
 ----
-Customer.IS_ACTIVE
+Customer.ACTIVE.define()
         .booleanColumn("Is active", Integer.class, 1, 0)
 ----
 
 [source,java]
 ----
-Customer.IS_ACTIVE
+Customer.ACTIVE.define()
         .booleanColumn("Is active", String.class, "true", "false")
 ----
 
 [source,java]
 ----
-Customer.IS_ACTIVE
+Customer.ACTIVE.define()
         .booleanColumn("Is active", Character.class, 'T', 'F')
 ----
 
@@ -313,9 +313,9 @@ Note that boolean attributes always use the boolean Java type, the framework han
 
 [source,java]
 ----
-entity.put(Customer.IS_ACTIVE, true);
+entity.put(Customer.ACTIVE, true);
 
-Boolean isActive = entity.get(Customer.IS_ACTIVE);
+Boolean isActive = entity.get(Customer.ACTIVE);
 ----
 
 === Item
