@@ -268,9 +268,10 @@ public interface Entity extends Comparable<Entity> {
   Entity immutable();
 
   /**
-   * @return true if this is an immutable instance
+   * @return true if this is a mutable instance
+   * @see #immutable()
    */
-  boolean isImmutable();
+  boolean mutable();
 
   /**
    * Casts this entity to the given type. If the entity is already of the given type it is returned as is.
@@ -383,19 +384,6 @@ public interface Entity extends Comparable<Entity> {
     return requireNonNull(entities).stream()
             .anyMatch(entity -> entity.primaryKey().columns().stream()
                     .anyMatch(entity::modified));
-  }
-
-  /**
-   * Returns the entities which have been modified
-   * @param entities the entities
-   * @param <T> the entity type
-   * @return the modified entities
-   * @see Entity#modified()
-   */
-  static <T extends Entity> Collection<T> modified(Collection<? extends T> entities) {
-    return requireNonNull(entities).stream()
-            .filter(Entity::modified)
-            .collect(toList());
   }
 
   /**

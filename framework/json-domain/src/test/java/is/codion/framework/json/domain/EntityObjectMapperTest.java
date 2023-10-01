@@ -88,7 +88,7 @@ public final class EntityObjectMapperTest {
     Entity entityModified = mapper.readValue(jsonString, Entity.class);
     assertTrue(entityModified.modified());
     assertTrue(entityModified.modified(TestEntity.BOOLEAN));
-    assertTrue(entityModified.get(TestEntity.ENTITY).isImmutable());
+    assertFalse(entityModified.get(TestEntity.ENTITY).mutable());
   }
 
   @Test

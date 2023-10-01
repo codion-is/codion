@@ -115,7 +115,7 @@ final class EntityPopupMenu extends JPopupMenu {
         }
         else if (!visitedKeys.contains(referencedKey)) {
           Entity referencedEntity = selectEntity(referencedKey, connection);
-          entity = entity.isImmutable() ? entity.deepCopy() : entity;
+          entity = entity.mutable() ? entity : entity.deepCopy();
           entity.put(foreignKey, referencedEntity);
           JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, fkDefinition)).toString());
           setInvalidModified(foreignKeyMenu, valid(validator, entity, foreignKey), entity.modified(foreignKey));

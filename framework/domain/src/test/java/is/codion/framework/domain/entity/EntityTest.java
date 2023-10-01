@@ -266,23 +266,6 @@ public final class EntityTest {
   }
 
   @Test
-  void modified() {
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.NAME, "name1")
-            .with(Department.LOCATION, "loc1")
-            .build();
-    Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.ID, 2)
-            .with(Department.NAME, "name2")
-            .with(Department.LOCATION, "loc2")
-            .build();
-    dept2.put(Department.NAME, "newname");
-
-    assertTrue(Entity.modified(asList(dept1, dept2)).contains(dept2));
-  }
-
-  @Test
   void originalPrimaryKeys() {
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.ID, 1)
@@ -309,7 +292,7 @@ public final class EntityTest {
     List<Entity> entityList = asList(dept1, dept2);
     Collection<Entity> immutables = Entity.immutable(entityList);
     entityList.forEach(entity -> assertTrue(immutables.contains(entity)));
-    immutables.forEach(entity -> assertTrue(entity.isImmutable()));
+    immutables.forEach(entity -> assertFalse(entity.mutable()));
   }
 
   @Test

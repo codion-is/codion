@@ -58,6 +58,7 @@ import java.util.function.Supplier;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -773,7 +774,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #update(Collection)
    */
   protected Collection<Entity> modified(Collection<? extends Entity> entities) {
-    return Entity.modified(entities);
+    return requireNonNull(entities).stream()
+            .filter(Entity::modified)
+            .collect(toList());
   }
 
   /**
