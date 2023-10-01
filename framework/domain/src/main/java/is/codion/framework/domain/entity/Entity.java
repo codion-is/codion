@@ -371,19 +371,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the entities which have been modified
-   * @param entities the entities
-   * @param <T> the entity type
-   * @return the modified entities
-   * @see Entity#modified()
-   */
-  static <T extends Entity> Collection<T> modified(Collection<? extends T> entities) {
-    return requireNonNull(entities).stream()
-            .filter(Entity::modified)
-            .collect(toList());
-  }
-
-  /**
    * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
    * Note that only eagerly loaded blob values are included in this comparison.
