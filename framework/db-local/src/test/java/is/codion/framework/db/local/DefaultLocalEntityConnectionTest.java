@@ -213,7 +213,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(Employee.TYPE));
     assertEquals(7, emps.get(Employee.TYPE).size());
-    emps.get(Employee.TYPE).forEach(entity -> assertTrue(entity.isImmutable()));
+    emps.get(Employee.TYPE).forEach(entity -> assertFalse(entity.mutable()));
 
     Entity emp = connection.selectSingle(Employee.NAME.equalTo("KING"));
     Map<EntityType, Collection<Entity>> deps = connection.dependencies(singletonList(emp));
@@ -393,13 +393,13 @@ public class DefaultLocalEntityConnectionTest {
             .build());
     for (Entity emp : emps) {
       Entity mgr = emp.referencedEntity(EmployeeFk.MGR_FK);
-      assertTrue(mgr.isImmutable());
+      assertFalse(mgr.mutable());
       assertTrue(mgr.contains(EmployeeFk.ID));//pk automatically included
       assertTrue(mgr.contains(EmployeeFk.NAME));
       assertTrue(mgr.contains(EmployeeFk.JOB));
       assertTrue(mgr.contains(EmployeeFk.DEPARTMENT));
       assertTrue(mgr.contains(EmployeeFk.DEPARTMENT_FK));
-      assertTrue(mgr.get(EmployeeFk.DEPARTMENT_FK).isImmutable());
+      assertFalse(mgr.get(EmployeeFk.DEPARTMENT_FK).mutable());
       assertFalse(mgr.contains(EmployeeFk.MGR));
       assertFalse(mgr.contains(EmployeeFk.MGR_FK));
       assertFalse(mgr.contains(EmployeeFk.COMMISSION));

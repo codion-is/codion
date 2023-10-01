@@ -277,7 +277,7 @@ public final class EntityTest {
     List<Entity> entityList = asList(dept1, dept2);
     Collection<Entity> immutables = Entity.immutable(entityList);
     entityList.forEach(entity -> assertTrue(immutables.contains(entity)));
-    immutables.forEach(entity -> assertTrue(entity.isImmutable()));
+    immutables.forEach(entity -> assertFalse(entity.mutable()));
   }
 
   @Test

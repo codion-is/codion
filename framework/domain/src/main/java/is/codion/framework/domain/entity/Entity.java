@@ -253,9 +253,10 @@ public interface Entity extends Comparable<Entity> {
   Entity immutable();
 
   /**
-   * @return true if this is an immutable instance
+   * @return true if this is a mutable instance
+   * @see #immutable()
    */
-  boolean isImmutable();
+  boolean mutable();
 
   /**
    * Casts this entity to the given type. If the entity is already of the given type it is returned as is.

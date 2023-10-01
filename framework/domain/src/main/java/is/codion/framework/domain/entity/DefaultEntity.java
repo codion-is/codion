@@ -321,7 +321,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final Entity immutable() {
-    if (isImmutable()) {
+    if (!mutable()) {
       return this;
     }
 
@@ -329,8 +329,8 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean isImmutable() {
-    return this instanceof ImmutableEntity;
+  public final boolean mutable() {
+    return !(this instanceof ImmutableEntity);
   }
 
   @Override

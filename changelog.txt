@@ -9642,3 +9642,4 @@
   DefaultEntity.remove() bug fixed, did not clear the primary key in case a primary key column value was being removed
   Entity.isModified() renamed modified()
   Entity.modified() static helper method removed, was causing javac compiler crash
+  Entity.isImmutable() replaced with mutable()

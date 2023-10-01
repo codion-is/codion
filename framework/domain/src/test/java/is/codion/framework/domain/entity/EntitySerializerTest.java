@@ -87,7 +87,7 @@ public final class EntitySerializerTest {
     assertTrue(deserializedEntity.modified(Employee.NAME));
     assertTrue(Entity.valuesEqual(entity, deserializedEntity));
     assertTrue(Entity.valuesEqual(entity.referencedEntity(Employee.DEPARTMENT_FK), deserializedEntity.referencedEntity(Employee.DEPARTMENT_FK)));
-    assertTrue(deserializedEntity.get(Employee.DEPARTMENT_FK).isImmutable());
+    assertFalse(deserializedEntity.get(Employee.DEPARTMENT_FK).mutable());
     Entity manager = entity.referencedEntity(Employee.MANAGER_FK);
     Entity deserializedManager = deserializedEntity.referencedEntity(Employee.MANAGER_FK);
     assertTrue(Entity.valuesEqual(manager, deserializedManager));
