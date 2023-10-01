@@ -134,19 +134,6 @@ public final class EntityTest {
   }
 
   @Test
-  void copy() {
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .build();
-    Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.ID, 2)
-            .build();
-    List<Entity> entityList = asList(dept1, dept2);
-    Collection<Entity> copied = Entity.copy(entityList);
-    entityList.forEach(entity -> assertTrue(copied.contains(entity)));
-  }
-
-  @Test
   void mapToPrimaryKey() {
     Entity dept = entities.builder(Department.TYPE)
             .with(Department.ID, 1)

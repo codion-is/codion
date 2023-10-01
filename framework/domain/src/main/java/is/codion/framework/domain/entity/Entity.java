@@ -435,28 +435,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Deep copies the given entities, with new copied instances of all foreign key value entities.
-   * @param entities the entities to copy
-   * @return a deep copy of the given entities
-   */
-  static Collection<Entity> deepCopy(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(Entity::deepCopy)
-            .collect(toList());
-  }
-
-  /**
-   * Copies the given entities.
-   * @param entities the entities to copy
-   * @return copies of the given entities, in the same order as they are received
-   */
-  static Collection<Entity> copy(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(Entity::copy)
-            .collect(toList());
-  }
-
-  /**
    * Casts the given entities to the given type. If an entity is already of the given type it is returned as is.
    * @param entityClass the entity class to cast to
    * @param entities the entities

@@ -58,6 +58,7 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
@@ -201,7 +202,9 @@ public final class EntityDialogs {
       }
 
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
-      Collection<Entity> selectedEntities = Entity.copy(entities);
+      Collection<Entity> selectedEntities = entities.stream()
+            .map(Entity::copy)
+            .collect(toList());
       Collection<T> values = Entity.distinct(attribute, selectedEntities);
       T initialValue = values.size() == 1 ? values.iterator().next() : null;
       ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
