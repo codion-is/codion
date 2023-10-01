@@ -214,7 +214,7 @@ public final class EntityDialogs {
                 .caption(attributeDefinition.caption())
                 .inputValidator(inputValidator)
                 .show();
-        Entity.put(attribute, newValue, selectedEntities);
+        selectedEntities.forEach(entity -> entity.put(attribute, newValue));
         updatePerformed = update(selectedEntities);
       }
     }

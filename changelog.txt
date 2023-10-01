@@ -9645,3 +9645,4 @@
   Entity.isImmutable() replaced with mutable()
   Entity.modifiedColumns() and valueMissingOrModified() moved to DefaultLocalEntityConnection
   Entity.valuesIncludingNull(), distinctIncludingNull() and keyModified() removed
+  Entity.put() and immutable(Collection) removed

@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,6 +396,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @param keys the keys
    * @return the attribute values of the given keys
+   * @throws IllegalStateException in case of a composite key
    */
   static <T> Collection<T> values(Collection<Key> keys) {
     return requireNonNull(keys).stream()
@@ -435,24 +435,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Sets the value of the given attribute to the given value in the given entities
-   * @param attribute the attribute for which to set the value
-   * @param value the value
-   * @param entities the entities for which to set the value
-   * @param <T> the value type
-   * @return the previous attribute values mapped to the primary key of the entity
-   */
-  static <T> Map<Key, T> put(Attribute<T> attribute, T value, Collection<? extends Entity> entities) {
-    requireNonNull(attribute, "attribute");
-    Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
-    for (Entity entity : entities) {
-      previousValues.put(entity.primaryKey(), entity.put(attribute, value));
-    }
-
-    return previousValues;
-  }
-
-  /**
    * Deep copies the given entities, with new copied instances of all foreign key value entities.
    * @param entities the entities to copy
    * @return a deep copy of the given entities
@@ -471,17 +453,6 @@ public interface Entity extends Comparable<Entity> {
   static Collection<Entity> copy(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::copy)
-            .collect(toList());
-  }
-
-  /**
-   * Returns immutable versions of the given entities.
-   * @param entities the entities
-   * @return immutable versions of the given entities
-   */
-  static Collection<Entity> immutable(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(Entity::immutable)
             .collect(toList());
   }
 

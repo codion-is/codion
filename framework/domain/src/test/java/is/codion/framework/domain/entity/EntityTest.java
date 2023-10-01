@@ -134,20 +134,6 @@ public final class EntityTest {
   }
 
   @Test
-  void immutable() {
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .build();
-    Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.ID, 2)
-            .build();
-    List<Entity> entityList = asList(dept1, dept2);
-    Collection<Entity> immutables = Entity.immutable(entityList);
-    entityList.forEach(entity -> assertTrue(immutables.contains(entity)));
-    immutables.forEach(entity -> assertFalse(entity.mutable()));
-  }
-
-  @Test
   void copy() {
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.ID, 1)
@@ -212,25 +198,6 @@ public final class EntityTest {
     assertEquals("2", strings.get(1).get(0));
     assertEquals("name2", strings.get(1).get(1));
     assertEquals("loc2", strings.get(1).get(2));
-  }
-
-  @Test
-  void testSetAttributeValue() {
-    Collection<Entity> collection = new ArrayList<>();
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    Entity.put(Department.ID, 1, collection);
-    for (Entity entity : collection) {
-      assertEquals(Integer.valueOf(1), entity.get(Department.ID));
-    }
-    Entity.put(Department.ID, null, collection);
-    for (Entity entity : collection) {
-      assertTrue(entity.isNull(Department.ID));
-    }
   }
 
   @Test
