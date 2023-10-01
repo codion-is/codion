@@ -25,7 +25,6 @@ import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.NoPk;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -81,126 +79,6 @@ public final class EntityTest {
   }
 
   @Test
-  void keyModified() {
-    assertFalse(Entity.keyModified(emptyList()));
-
-    Entity department = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.NAME, "name")
-            .with(Department.LOCATION, "loc")
-            .build();
-    assertFalse(Entity.keyModified(singletonList(department)));
-
-    department.put(Department.NAME, "new name");
-    assertFalse(Entity.keyModified(singletonList(department)));
-
-    department.put(Department.ID, 2);
-    assertTrue(Entity.keyModified(singletonList(department)));
-
-    department.revert(Department.ID);
-    assertFalse(Entity.keyModified(singletonList(department)));
-  }
-
-  @Test
-  void modifiedColumns() {
-    Entity entity = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.LOCATION, "Location")
-            .with(Department.NAME, "Name")
-            .with(Department.ACTIVE, true)
-            .build();
-
-    Entity current = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.LOCATION, "Location")
-            .with(Department.NAME, "Name")
-            .build();
-
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.NAME));
-
-    current.put(Department.ID, 2);
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertEquals(Department.ID, Entity.modifiedColumns(current, entity).iterator().next());
-    Integer id = current.remove(Department.ID);
-    assertEquals(2, id);
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertEquals(Department.ID, Entity.modifiedColumns(current, entity).iterator().next());
-    current.put(Department.ID, 1);
-    current.save();
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertTrue(Entity.modifiedColumns(current, entity).isEmpty());
-
-    current.put(Department.LOCATION, "New location");
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertEquals(Department.LOCATION, Entity.modifiedColumns(current, entity).iterator().next());
-    current.remove(Department.LOCATION);
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertEquals(Department.LOCATION, Entity.modifiedColumns(current, entity).iterator().next());
-    current.put(Department.LOCATION, "Location");
-    current.save();
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertTrue(Entity.modifiedColumns(current, entity).isEmpty());
-
-    entity.put(Department.LOCATION, "new loc");
-    entity.put(Department.NAME, "new name");
-
-    assertEquals(2, Entity.modifiedColumns(current, entity).size());
-  }
-
-  @Test
-  void modifiedColumnWithBlob() {
-    Random random = new Random();
-    byte[] bytes = new byte[1024];
-    random.nextBytes(bytes);
-    byte[] modifiedBytes = new byte[1024];
-    random.nextBytes(modifiedBytes);
-
-    //eagerly loaded blob
-    Entity emp1 = entities.builder(Employee.TYPE)
-            .with(Employee.ID, 1)
-            .with(Employee.NAME, "name")
-            .with(Employee.SALARY, 1300d)
-            .with(Employee.DATA, bytes)
-            .build();
-
-    Entity emp2 = emp1.copyBuilder()
-            .with(Employee.DATA, modifiedBytes)
-            .build();
-
-    Collection<Column<?>> modifiedColumns = Entity.modifiedColumns(emp1, emp2);
-    assertTrue(modifiedColumns.contains(Employee.DATA));
-
-    //lazy loaded blob
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NAME, "name")
-            .with(Department.LOCATION, "loc")
-            .with(Department.ACTIVE, true)
-            .with(Department.DATA, bytes)
-            .build();
-
-    Entity dept2 = dept1.copyBuilder()
-            .with(Department.DATA, modifiedBytes)
-            .build();
-
-    modifiedColumns = Entity.modifiedColumns(dept1, dept2);
-    assertFalse(modifiedColumns.contains(Department.DATA));
-
-    dept2.put(Department.LOCATION, "new loc");
-    modifiedColumns = Entity.modifiedColumns(dept1, dept2);
-    assertTrue(modifiedColumns.contains(Department.LOCATION));
-
-    dept2.remove(Department.DATA);
-    modifiedColumns = Entity.modifiedColumns(dept1, dept2);
-    assertFalse(modifiedColumns.contains(Department.DATA));
-  }
-
-  @Test
   void values() {
     List<Entity> entityList = new ArrayList<>();
     List<Object> values = new ArrayList<>();
@@ -215,10 +93,6 @@ public final class EntityTest {
     Collection<Integer> attributeValues = Entity.values(Department.ID, entityList);
     assertTrue(attributeValues.containsAll(values));
     assertTrue(Entity.values(Department.ID, emptyList()).isEmpty());
-
-    values.add(null);
-    attributeValues = Entity.valuesIncludingNull(Department.ID, entityList);
-    assertTrue(attributeValues.containsAll(values));
   }
 
   @Test
@@ -256,13 +130,6 @@ public final class EntityTest {
     Collection<Integer> attributeValues = Entity.distinct(Department.ID, entityList);
     assertEquals(4, attributeValues.size());
     assertTrue(attributeValues.containsAll(values));
-
-    attributeValues = Entity.distinctIncludingNull(Department.ID, entityList);
-    assertEquals(5, attributeValues.size());
-    values.add(null);
-    assertTrue(attributeValues.containsAll(values));
-
-    assertEquals(0, Entity.distinctIncludingNull(Department.ID, new ArrayList<>()).size());
   }
 
   @Test
@@ -279,33 +146,6 @@ public final class EntityTest {
     Collection<Entity.Key> originalPrimaryKeys = Entity.originalPrimaryKeys(asList(dept1, dept2));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 1)));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 2)));
-  }
-
-  @Test
-  void immutable() {
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .build();
-    Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.ID, 2)
-            .build();
-    List<Entity> entityList = asList(dept1, dept2);
-    Collection<Entity> immutables = Entity.immutable(entityList);
-    entityList.forEach(entity -> assertTrue(immutables.contains(entity)));
-    immutables.forEach(entity -> assertFalse(entity.mutable()));
-  }
-
-  @Test
-  void copy() {
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .build();
-    Entity dept2 = entities.builder(Department.TYPE)
-            .with(Department.ID, 2)
-            .build();
-    List<Entity> entityList = asList(dept1, dept2);
-    Collection<Entity> copied = Entity.copy(entityList);
-    entityList.forEach(entity -> assertTrue(copied.contains(entity)));
   }
 
   @Test
@@ -360,25 +200,6 @@ public final class EntityTest {
     assertEquals("2", strings.get(1).get(0));
     assertEquals("name2", strings.get(1).get(1));
     assertEquals("loc2", strings.get(1).get(2));
-  }
-
-  @Test
-  void testSetAttributeValue() {
-    Collection<Entity> collection = new ArrayList<>();
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    collection.add(entities.entity(Department.TYPE));
-    Entity.put(Department.ID, 1, collection);
-    for (Entity entity : collection) {
-      assertEquals(Integer.valueOf(1), entity.get(Department.ID));
-    }
-    Entity.put(Department.ID, null, collection);
-    for (Entity entity : collection) {
-      assertTrue(entity.isNull(Department.ID));
-    }
   }
 
   @Test

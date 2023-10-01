@@ -45,6 +45,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Condition;
@@ -63,6 +64,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1443,6 +1445,50 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       LOG.error("Unable to set parameter: " + columnDefinition + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
+  }
+
+  /**
+   * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
+   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
+   * Note that only eagerly loaded blob values are included in this comparison.
+   * @param entity the entity instance to check
+   * @param comparison the entity instance to compare with
+   * @return the updatable columns which values differ from the ones in the comparison entity
+   * @see BlobColumnDefinition#eagerlyLoaded()
+   */
+  static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
+    return comparison.entrySet().stream()
+            .map(entry -> entity.definition().attributes().definition(entry.getKey()))
+            .filter(ColumnDefinition.class::isInstance)
+            .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
+            .filter(columnDefinition -> {
+              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).eagerlyLoaded();
+
+              return columnDefinition.updatable() && !lazilyLoadedBlobColumn && valueMissingOrModified(entity, comparison, columnDefinition.attribute());
+            })
+            .map(ColumnDefinition::attribute)
+            .collect(toList());
+  }
+
+  /**
+   * @param entity the entity instance to check
+   * @param comparison the entity instance to compare with
+   * @param attribute the attribute to check
+   * @param <T> the attribute type
+   * @return true if the value is missing or the original value differs from the one in the comparison entity
+   */
+  static <T> boolean valueMissingOrModified(Entity entity, Entity comparison, Attribute<T> attribute) {
+    if (!entity.contains(attribute)) {
+      return true;
+    }
+
+    T originalValue = entity.original(attribute);
+    T comparisonValue = comparison.get(attribute);
+    if (attribute.type().isByteArray()) {
+      return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
+    }
+
+    return !Objects.equals(originalValue, comparisonValue);
   }
 
   /**

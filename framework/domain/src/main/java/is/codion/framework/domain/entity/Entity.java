@@ -20,15 +20,12 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,43 +372,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Checks if any of the primary keys of the given entities have been modified
-   * @param <T> the entity type
-   * @param entities the entities to check
-   * @return true if any of the given entities has a modified primary key
-   */
-  static <T extends Entity> boolean keyModified(Collection<T> entities) {
-    return requireNonNull(entities).stream()
-            .anyMatch(entity -> entity.primaryKey().columns().stream()
-                    .anyMatch(entity::modified));
-  }
-
-  /**
-   * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-   * Note that only eagerly loaded blob values are included in this comparison.
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @return the updatable columns which values differ from the ones in the comparison entity
-   * @see BlobColumnDefinition#eagerlyLoaded()
-   */
-  static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
-    requireNonNull(entity);
-    requireNonNull(comparison);
-    return comparison.entrySet().stream()
-            .map(entry -> entity.definition().attributes().definition(entry.getKey()))
-            .filter(ColumnDefinition.class::isInstance)
-            .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
-            .filter(columnDefinition -> {
-              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).eagerlyLoaded();
-
-              return columnDefinition.updatable() && !lazilyLoadedBlobColumn && valueMissingOrModified(entity, comparison, columnDefinition.attribute());
-            })
-            .map(ColumnDefinition::attribute)
-            .collect(toList());
-  }
-
-  /**
    * Returns the primary keys of the given entities.
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
@@ -451,6 +411,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @param keys the keys
    * @return the attribute values of the given keys
+   * @throws IllegalStateException in case of a composite key
    */
   static <T> Collection<T> values(Collection<Key> keys) {
     return requireNonNull(keys).stream()
@@ -474,20 +435,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the values associated with the given attribute from the given entities.
-   * @param <T> the value type
-   * @param attribute the attribute which values to retrieve
-   * @param entities the entities from which to retrieve the attribute value
-   * @return the values of the given attributes from the given entities, including null values.
-   */
-  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
-    requireNonNull(attribute, "attribute");
-    return requireNonNull(entities).stream()
-            .map(entity -> entity.get(attribute))
-            .collect(toList());
-  }
-
-  /**
    * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
    * @param attribute the attribute which values to retrieve
@@ -500,71 +447,6 @@ public interface Entity extends Comparable<Entity> {
             .map(entity -> entity.get(attribute))
             .filter(Objects::nonNull)
             .collect(toSet());
-  }
-
-  /**
-   * Returns the distinct values of {@code attribute} from the given entities, including null.
-   * @param <T> the value type
-   * @param attribute the attribute which values to retrieve
-   * @param entities the entities from which to retrieve the values
-   * @return the distinct values of the given attribute from the given entities, may contain null.
-   */
-  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
-    requireNonNull(attribute, "attribute");
-    return requireNonNull(entities).stream()
-            .map(entity -> entity.get(attribute))
-            .collect(toSet());
-  }
-
-  /**
-   * Sets the value of the given attribute to the given value in the given entities
-   * @param attribute the attribute for which to set the value
-   * @param value the value
-   * @param entities the entities for which to set the value
-   * @param <T> the value type
-   * @return the previous attribute values mapped to the primary key of the entity
-   */
-  static <T> Map<Key, T> put(Attribute<T> attribute, T value, Collection<? extends Entity> entities) {
-    requireNonNull(attribute, "attribute");
-    Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
-    for (Entity entity : entities) {
-      previousValues.put(entity.primaryKey(), entity.put(attribute, value));
-    }
-
-    return previousValues;
-  }
-
-  /**
-   * Deep copies the given entities, with new copied instances of all foreign key value entities.
-   * @param entities the entities to copy
-   * @return a deep copy of the given entities
-   */
-  static Collection<Entity> deepCopy(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(Entity::deepCopy)
-            .collect(toList());
-  }
-
-  /**
-   * Copies the given entities.
-   * @param entities the entities to copy
-   * @return copies of the given entities, in the same order as they are received
-   */
-  static Collection<Entity> copy(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(Entity::copy)
-            .collect(toList());
-  }
-
-  /**
-   * Returns immutable versions of the given entities.
-   * @param entities the entities
-   * @return immutable versions of the given entities
-   */
-  static Collection<Entity> immutable(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(Entity::immutable)
-            .collect(toList());
   }
 
   /**
@@ -697,30 +579,6 @@ public interface Entity extends Comparable<Entity> {
 
       return Objects.equals(entityOne.get(attribute), entityTwo.get(attribute));
     });
-  }
-
-  /**
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @param attribute the attribute to check
-   * @param <T> the attribute type
-   * @return true if the value is missing or the original value differs from the one in the comparison entity
-   */
-  static <T> boolean valueMissingOrModified(Entity entity, Entity comparison, Attribute<T> attribute) {
-    requireNonNull(entity);
-    requireNonNull(comparison);
-    requireNonNull(attribute);
-    if (!entity.contains(attribute)) {
-      return true;
-    }
-
-    T originalValue = entity.original(attribute);
-    T comparisonValue = comparison.get(attribute);
-    if (attribute.type().isByteArray()) {
-      return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
-    }
-
-    return !Objects.equals(originalValue, comparisonValue);
   }
 
   /**

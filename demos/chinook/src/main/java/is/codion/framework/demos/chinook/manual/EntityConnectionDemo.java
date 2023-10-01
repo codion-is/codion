@@ -256,7 +256,8 @@ public final class EntityConnectionDemo {
     List<Entity> customersWithoutPhoneNo =
             connection.select(Customer.PHONE.isNull());
 
-    Entity.put(Customer.PHONE, "<none>", customersWithoutPhoneNo);
+    customersWithoutPhoneNo.forEach(customer ->
+            customer.put(Customer.PHONE, "<none>"));
 
     connection.update(customersWithoutPhoneNo);
     // end::updateEntity[]

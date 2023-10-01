@@ -448,7 +448,10 @@ public final class EntitiesTest {
             .with(TestDomain.Department.NAME, "name2")
             .build();
 
-    Iterator<Entity> copies = Entity.deepCopy(asList(dept1, dept2)).iterator();
+    Iterator<Entity> copies = Stream.of(dept1, dept2)
+            .map(Entity::deepCopy)
+            .collect(toList())
+            .iterator();
     Entity dept1Copy = copies.next();
     Entity dept2Copy = copies.next();
     assertNotSame(dept1Copy, dept1);

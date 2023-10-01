@@ -46,7 +46,8 @@ public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookAppMo
     SwingEntityTableModel invoiceLineTableModel =
             invoiceModel.detailModel(InvoiceLine.TYPE).tableModel();
     Collection<Entity> invoiceLines = invoiceLineTableModel.items();
-    Entity.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1, invoiceLines);
+    invoiceLines.forEach(invoiceLine ->
+            invoiceLine.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1));
 
     invoiceLineTableModel.editModel().update(invoiceLines);
   }
