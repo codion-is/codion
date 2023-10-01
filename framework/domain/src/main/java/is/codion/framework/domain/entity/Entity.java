@@ -358,18 +358,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Checks if any of the primary keys of the given entities have been modified
-   * @param <T> the entity type
-   * @param entities the entities to check
-   * @return true if any of the given entities has a modified primary key
-   */
-  static <T extends Entity> boolean keyModified(Collection<T> entities) {
-    return requireNonNull(entities).stream()
-            .anyMatch(entity -> entity.primaryKey().columns().stream()
-                    .anyMatch(entity::modified));
-  }
-
-  /**
    * Returns the primary keys of the given entities.
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
@@ -432,20 +420,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the values associated with the given attribute from the given entities.
-   * @param <T> the value type
-   * @param attribute the attribute which values to retrieve
-   * @param entities the entities from which to retrieve the attribute value
-   * @return the values of the given attributes from the given entities, including null values.
-   */
-  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
-    requireNonNull(attribute, "attribute");
-    return requireNonNull(entities).stream()
-            .map(entity -> entity.get(attribute))
-            .collect(toList());
-  }
-
-  /**
    * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
    * @param attribute the attribute which values to retrieve
@@ -457,20 +431,6 @@ public interface Entity extends Comparable<Entity> {
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
             .filter(Objects::nonNull)
-            .collect(toSet());
-  }
-
-  /**
-   * Returns the distinct values of {@code attribute} from the given entities, including null.
-   * @param <T> the value type
-   * @param attribute the attribute which values to retrieve
-   * @param entities the entities from which to retrieve the values
-   * @return the distinct values of the given attribute from the given entities, may contain null.
-   */
-  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
-    requireNonNull(attribute, "attribute");
-    return requireNonNull(entities).stream()
-            .map(entity -> entity.get(attribute))
             .collect(toSet());
   }
 

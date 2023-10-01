@@ -64,27 +64,6 @@ public final class EntityTest {
   }
 
   @Test
-  void keyModified() {
-    assertFalse(Entity.keyModified(emptyList()));
-
-    Entity department = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.NAME, "name")
-            .with(Department.LOCATION, "loc")
-            .build();
-    assertFalse(Entity.keyModified(singletonList(department)));
-
-    department.put(Department.NAME, "new name");
-    assertFalse(Entity.keyModified(singletonList(department)));
-
-    department.put(Department.ID, 2);
-    assertTrue(Entity.keyModified(singletonList(department)));
-
-    department.revert(Department.ID);
-    assertFalse(Entity.keyModified(singletonList(department)));
-  }
-
-  @Test
   void values() {
     List<Entity> entityList = new ArrayList<>();
     List<Object> values = new ArrayList<>();
@@ -99,10 +78,6 @@ public final class EntityTest {
     Collection<Integer> attributeValues = Entity.values(Department.ID, entityList);
     assertTrue(attributeValues.containsAll(values));
     assertTrue(Entity.values(Department.ID, emptyList()).isEmpty());
-
-    values.add(null);
-    attributeValues = Entity.valuesIncludingNull(Department.ID, entityList);
-    assertTrue(attributeValues.containsAll(values));
   }
 
   @Test
@@ -140,13 +115,6 @@ public final class EntityTest {
     Collection<Integer> attributeValues = Entity.distinct(Department.ID, entityList);
     assertEquals(4, attributeValues.size());
     assertTrue(attributeValues.containsAll(values));
-
-    attributeValues = Entity.distinctIncludingNull(Department.ID, entityList);
-    assertEquals(5, attributeValues.size());
-    values.add(null);
-    assertTrue(attributeValues.containsAll(values));
-
-    assertEquals(0, Entity.distinctIncludingNull(Department.ID, new ArrayList<>()).size());
   }
 
   @Test
