@@ -10,7 +10,6 @@ import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.NoPk;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -84,105 +82,6 @@ public final class EntityTest {
 
     department.revert(Department.ID);
     assertFalse(Entity.keyModified(singletonList(department)));
-  }
-
-  @Test
-  void modifiedColumns() {
-    Entity entity = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.LOCATION, "Location")
-            .with(Department.NAME, "Name")
-            .with(Department.ACTIVE, true)
-            .build();
-
-    Entity current = entities.builder(Department.TYPE)
-            .with(Department.ID, 1)
-            .with(Department.LOCATION, "Location")
-            .with(Department.NAME, "Name")
-            .build();
-
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.NAME));
-
-    current.put(Department.ID, 2);
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertEquals(Department.ID, Entity.modifiedColumns(current, entity).iterator().next());
-    Integer id = current.remove(Department.ID);
-    assertEquals(2, id);
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertEquals(Department.ID, Entity.modifiedColumns(current, entity).iterator().next());
-    current.put(Department.ID, 1);
-    current.save();
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.ID));
-    assertTrue(Entity.modifiedColumns(current, entity).isEmpty());
-
-    current.put(Department.LOCATION, "New location");
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertEquals(Department.LOCATION, Entity.modifiedColumns(current, entity).iterator().next());
-    current.remove(Department.LOCATION);
-    current.save();
-    assertTrue(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertEquals(Department.LOCATION, Entity.modifiedColumns(current, entity).iterator().next());
-    current.put(Department.LOCATION, "Location");
-    current.save();
-    assertFalse(Entity.valueMissingOrModified(current, entity, Department.LOCATION));
-    assertTrue(Entity.modifiedColumns(current, entity).isEmpty());
-
-    entity.put(Department.LOCATION, "new loc");
-    entity.put(Department.NAME, "new name");
-
-    assertEquals(2, Entity.modifiedColumns(current, entity).size());
-  }
-
-  @Test
-  void modifiedColumnWithBlob() {
-    Random random = new Random();
-    byte[] bytes = new byte[1024];
-    random.nextBytes(bytes);
-    byte[] modifiedBytes = new byte[1024];
-    random.nextBytes(modifiedBytes);
-
-    //eagerly loaded blob
-    Entity emp1 = entities.builder(Employee.TYPE)
-            .with(Employee.ID, 1)
-            .with(Employee.NAME, "name")
-            .with(Employee.SALARY, 1300d)
-            .with(Employee.DATA, bytes)
-            .build();
-
-    Entity emp2 = emp1.copyBuilder()
-            .with(Employee.DATA, modifiedBytes)
-            .build();
-
-    Collection<Column<?>> modifiedColumns = Entity.modifiedColumns(emp1, emp2);
-    assertTrue(modifiedColumns.contains(Employee.DATA));
-
-    //lazy loaded blob
-    Entity dept1 = entities.builder(Department.TYPE)
-            .with(Department.NAME, "name")
-            .with(Department.LOCATION, "loc")
-            .with(Department.ACTIVE, true)
-            .with(Department.DATA, bytes)
-            .build();
-
-    Entity dept2 = dept1.copyBuilder()
-            .with(Department.DATA, modifiedBytes)
-            .build();
-
-    modifiedColumns = Entity.modifiedColumns(dept1, dept2);
-    assertFalse(modifiedColumns.contains(Department.DATA));
-
-    dept2.put(Department.LOCATION, "new loc");
-    modifiedColumns = Entity.modifiedColumns(dept1, dept2);
-    assertTrue(modifiedColumns.contains(Department.LOCATION));
-
-    dept2.remove(Department.DATA);
-    modifiedColumns = Entity.modifiedColumns(dept1, dept2);
-    assertFalse(modifiedColumns.contains(Department.DATA));
   }
 
   @Test

@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.query.SelectQuery;
@@ -85,6 +86,8 @@ public final class TestDomain extends DefaultDomain {
     Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
     Column<String> DNAME = TYPE.stringColumn("dname");
     Column<String> LOC = TYPE.stringColumn("loc");
+    Attribute<Boolean> ACTIVE = TYPE.booleanAttribute("active");
+    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
 
     ConditionType DEPARTMENT_CONDITION_TYPE = TYPE.conditionType("condition");
     ConditionType DEPARTMENT_CONDITION_SALES_TYPE = TYPE.conditionType("conditionSalesId");
@@ -118,7 +121,11 @@ public final class TestDomain extends DefaultDomain {
                     .column()
                     .caption(Department.LOC.name())
                     .maximumLength(13)
-                    .beanProperty("location"))
+                    .beanProperty("location"),
+            Department.ACTIVE.define()
+                    .attribute(),
+            Department.DATA.define()
+                    .attribute())
             .smallDataset(true)
             .stringFactory(Department.DNAME)
             .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {

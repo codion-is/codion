@@ -9643,3 +9643,4 @@
   Entity.isModified() renamed modified()
   Entity.modified() static helper method removed, was causing javac compiler crash
   Entity.isImmutable() replaced with mutable()
+  Entity.modifiedColumns() and valueMissingOrModified() moved to DefaultLocalEntityConnection

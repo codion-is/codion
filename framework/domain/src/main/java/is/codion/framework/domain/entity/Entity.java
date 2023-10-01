@@ -5,9 +5,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
@@ -372,31 +370,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-   * Note that only eagerly loaded blob values are included in this comparison.
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @return the updatable columns which values differ from the ones in the comparison entity
-   * @see BlobColumnDefinition#eagerlyLoaded()
-   */
-  static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
-    requireNonNull(entity);
-    requireNonNull(comparison);
-    return comparison.entrySet().stream()
-            .map(entry -> entity.definition().attributes().definition(entry.getKey()))
-            .filter(ColumnDefinition.class::isInstance)
-            .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
-            .filter(columnDefinition -> {
-              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).eagerlyLoaded();
-
-              return columnDefinition.updatable() && !lazilyLoadedBlobColumn && valueMissingOrModified(entity, comparison, columnDefinition.attribute());
-            })
-            .map(ColumnDefinition::attribute)
-            .collect(toList());
-  }
-
-  /**
    * Returns the primary keys of the given entities.
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
@@ -682,30 +655,6 @@ public interface Entity extends Comparable<Entity> {
 
       return Objects.equals(entityOne.get(attribute), entityTwo.get(attribute));
     });
-  }
-
-  /**
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @param attribute the attribute to check
-   * @param <T> the attribute type
-   * @return true if the value is missing or the original value differs from the one in the comparison entity
-   */
-  static <T> boolean valueMissingOrModified(Entity entity, Entity comparison, Attribute<T> attribute) {
-    requireNonNull(entity);
-    requireNonNull(comparison);
-    requireNonNull(attribute);
-    if (!entity.contains(attribute)) {
-      return true;
-    }
-
-    T originalValue = entity.original(attribute);
-    T comparisonValue = comparison.get(attribute);
-    if (attribute.type().isByteArray()) {
-      return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
-    }
-
-    return !Objects.equals(originalValue, comparisonValue);
   }
 
   /**

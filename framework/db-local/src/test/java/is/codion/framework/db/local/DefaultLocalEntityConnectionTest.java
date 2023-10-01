@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Condition;
 
 import org.junit.jupiter.api.AfterEach;
@@ -1256,6 +1257,105 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void domain() {
     assertInstanceOf(TestDomain.class, connection.domain());
+  }
+
+  @Test
+  void modifiedColumns() {
+    Entity entity = ENTITIES.builder(Department.TYPE)
+            .with(Department.DEPTNO, 1)
+            .with(Department.LOC, "Location")
+            .with(Department.DNAME, "Name")
+            .with(Department.ACTIVE, true)
+            .build();
+
+    Entity current = ENTITIES.builder(Department.TYPE)
+            .with(Department.DEPTNO, 1)
+            .with(Department.LOC, "Location")
+            .with(Department.DNAME, "Name")
+            .build();
+
+    assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
+    assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
+    assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DNAME));
+
+    current.put(Department.DEPTNO, 2);
+    current.save();
+    assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
+    assertEquals(Department.DEPTNO, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+    Integer id = current.remove(Department.DEPTNO);
+    assertEquals(2, id);
+    current.save();
+    assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
+    assertEquals(Department.DEPTNO, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+    current.put(Department.DEPTNO, 1);
+    current.save();
+    assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
+    assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
+
+    current.put(Department.LOC, "New location");
+    current.save();
+    assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
+    assertEquals(Department.LOC, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+    current.remove(Department.LOC);
+    current.save();
+    assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
+    assertEquals(Department.LOC, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+    current.put(Department.LOC, "Location");
+    current.save();
+    assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
+    assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
+
+    entity.put(Department.LOC, "new loc");
+    entity.put(Department.DNAME, "new name");
+
+    assertEquals(2, DefaultLocalEntityConnection.modifiedColumns(current, entity).size());
+  }
+
+  @Test
+  void modifiedColumnWithBlob() {
+    Random random = new Random();
+    byte[] bytes = new byte[1024];
+    random.nextBytes(bytes);
+    byte[] modifiedBytes = new byte[1024];
+    random.nextBytes(modifiedBytes);
+
+    //eagerly loaded blob
+    Entity emp1 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 1)
+            .with(Employee.NAME, "name")
+            .with(Employee.SALARY, 1300d)
+            .with(Employee.DATA, bytes)
+            .build();
+
+    Entity emp2 = emp1.copyBuilder()
+            .with(Employee.DATA, modifiedBytes)
+            .build();
+
+    Collection<Column<?>> modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(emp1, emp2);
+    assertTrue(modifiedColumns.contains(Employee.DATA));
+
+    //lazy loaded blob
+    Entity dept1 = ENTITIES.builder(Department.TYPE)
+            .with(Department.DNAME, "name")
+            .with(Department.LOC, "loc")
+            .with(Department.ACTIVE, true)
+            .with(Department.DATA, bytes)
+            .build();
+
+    Entity dept2 = dept1.copyBuilder()
+            .with(Department.DATA, modifiedBytes)
+            .build();
+
+    modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(dept1, dept2);
+    assertFalse(modifiedColumns.contains(Department.DATA));
+
+    dept2.put(Department.LOC, "new loc");
+    modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(dept1, dept2);
+    assertTrue(modifiedColumns.contains(Department.LOC));
+
+    dept2.remove(Department.DATA);
+    modifiedColumns = DefaultLocalEntityConnection.modifiedColumns(dept1, dept2);
+    assertFalse(modifiedColumns.contains(Department.DATA));
   }
 
   private static LocalEntityConnection createConnection() throws DatabaseException {
