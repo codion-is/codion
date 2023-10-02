@@ -512,15 +512,6 @@ image::modules/plugins/jasperreports/build/reports/dependency-graph/dependency-g
 === Other
 
 [discrete]
-==== codion-plugin-credentials-server
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/credentials-server/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
 ==== codion-plugin-imagepanel
 
 .Dependency graph
