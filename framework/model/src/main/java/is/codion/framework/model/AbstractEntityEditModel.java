@@ -63,7 +63,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<?> insertUpdateOrDeleteEvent = Event.event();
   private final Event<State> confirmOverwriteEvent = Event.event();
   private final Event<Entity> entityEvent = Event.event();
-  private final Event<Attribute<?>> valueChangeEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
 
   private final State entityValid = State.state();
@@ -580,16 +579,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeValueListener(Consumer<Attribute<?>> listener) {
-    valueChangeEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addValueListener(Consumer<Attribute<?>> listener) {
-    valueChangeEvent.addDataListener(listener);
-  }
-
-  @Override
   public final void removeEntityListener(Consumer<Entity> listener) {
     entityEvent.removeDataListener(listener);
   }
@@ -1009,7 +998,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (changeEvent != null) {
       changeEvent.accept(value);
     }
-    valueChangeEvent.accept(attribute);
   }
 
   private void updateEntityStates() {

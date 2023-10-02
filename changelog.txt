@@ -9659,3 +9659,4 @@
   EntityEditModel.persistValue() renamed persist()
   EntityEditModel.setDefaultValues() renamed setDefaults()
   EntityEditModel.setDefaultValue() renamed setDefault()
+  EntityEditModel.addValueListener(Attribute) removed

@@ -478,16 +478,6 @@ public interface EntityEditModel {
   <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener);
 
   /**
-   * @param listener a listener notified each time a value changes
-   */
-  void addValueListener(Consumer<Attribute<?>> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeValueListener(Consumer<Attribute<?>> listener);
-
-  /**
    * Notified each time the entity is set via {@link #set(Entity)}.
    * @param listener a listener notified each time the entity is set, possibly to null
    * @see #set(Entity)
