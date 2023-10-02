@@ -302,7 +302,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     Entity researchDept = connectionProvider.connection().select(connectionProvider.entities().primaryKey(Department.TYPE, 20));
 
     SwingEntityTableModel tableModel = createEmployeeTableModel();
-    assertTrue(tableModel.isListenToEditEvents());
+    assertTrue(tableModel.respondToEditEvents().get());
     tableModel.conditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
     tableModel.refresh();
 
@@ -310,7 +310,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
             assertEquals("RESEARCH", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
 
     SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, connectionProvider);
-    editModel.setEntity(researchDept);
+    editModel.set(researchDept);
     editModel.put(Department.NAME, "R&D");
     editModel.update();
 
@@ -319,7 +319,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.items().forEach(emp ->
             assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
 
-    tableModel.setListenToEditEvents(false);
+    tableModel.respondToEditEvents().set(false);
 
     editModel.put(Department.NAME, "RESEARCH");
     editModel.update();

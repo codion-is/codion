@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.*;
  * You must keep a live reference to any listeners added in order to prevent
  * them from being garbage collected, since listeners are added via a {@link java.lang.ref.WeakReference}.
  * {@link EntityEditModel} uses this to post its events.
- * @see EntityEditModel#POST_EDIT_EVENTS
+ * @see EntityEditModel#EDIT_EVENTS
  */
 public final class EntityEditEvents {
 

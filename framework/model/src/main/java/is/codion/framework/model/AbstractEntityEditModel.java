@@ -75,8 +75,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<Map<Entity.Key, Entity>> afterUpdateEvent = Event.event();
   private final Event<Collection<Entity>> beforeDeleteEvent = Event.event();
   private final Event<Collection<Entity>> afterDeleteEvent = Event.event();
-  private final Event<?> entitiesEditedEvent = Event.event();
-  private final Event<State> confirmSetEntityEvent = Event.event();
+  private final Event<?> insertUpdateOrDeleteEvent = Event.event();
+  private final Event<State> confirmOverwriteEvent = Event.event();
   private final Event<Entity> entityEvent = Event.event();
   private final Event<Attribute<?>> valueChangeEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
@@ -90,6 +90,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State updateEnabled = State.state(true);
   private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
+  private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
+  private final State editEvents = State.state(EDIT_EVENTS.get());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
@@ -115,9 +117,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
 
   /**
-   * Contains true if values should persist for the given attribute when the model is cleared
+   * Contains the states controlling whether values should persist for the given attribute when the model is cleared
    */
-  private final Map<Attribute<?>, Boolean> persistentValues = new HashMap<>();
+  private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
 
   /**
    * The validator used by this edit model
@@ -148,17 +150,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * Provides this model with a way to check if the underlying entity exists.
    */
   private Function<Entity, Boolean> existsFunction;
-
-  /**
-   * Specifies whether this edit model should warn about unsaved data
-   */
-  private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
-
-  /**
-   * Specifies whether this edit model posts insert, update and delete events
-   * on the {@link EntityEditEvents} event bus.
-   */
-  private boolean postEditEvents = POST_EDIT_EVENTS.get();
 
   /**
    * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
@@ -210,26 +201,20 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isWarnAboutUnsavedData() {
-    return warnAboutUnsavedData;
+  public final State overwriteWarning() {
+    return overwriteWarning;
   }
 
   @Override
-  public final void setWarnAboutUnsavedData(boolean warnAboutUnsavedData) {
-    this.warnAboutUnsavedData = warnAboutUnsavedData;
+  public final State editEvents() {
+    return editEvents;
   }
 
   @Override
-  public final boolean isPersistValue(Attribute<?> attribute) {
+  public final State persistValue(Attribute<?> attribute) {
     entityDefinition().attributes().definition(attribute);
 
-    return Boolean.TRUE.equals(persistentValues.get(attribute));
-  }
-
-  @Override
-  public final void setPersistValue(Attribute<?> attribute, boolean persistValue) {
-    entityDefinition().attributes().definition(attribute);
-    persistentValues.put(attribute, persistValue);
+    return persistValues.computeIfAbsent(attribute, k -> State.state());
   }
 
   @Override
@@ -268,7 +253,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setEntity(Entity entity) {
+  public final void set(Entity entity) {
     if (setEntityAllowed()) {
       doSetEntity(entity);
     }
@@ -533,7 +518,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (entityExists.get()) {
-        setEntity(connectionProvider().connection().select(entity.primaryKey()));
+        set(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
     catch (DatabaseException e) {
@@ -583,21 +568,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final <T> Value<T> value(Attribute<T> attribute) {
     entityDefinition().attributes().definition(attribute);
     return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
-  }
-
-  @Override
-  public final boolean containsUnsavedData() {
-    return entityExists.get() && modified().get();
-  }
-
-  @Override
-  public final boolean isPostEditEvents() {
-    return postEditEvents;
-  }
-
-  @Override
-  public final void setPostEditEvents(boolean postEditEvents) {
-    this.postEditEvents = postEditEvents;
   }
 
   @Override
@@ -705,23 +675,23 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeEntitiesEditedListener(Runnable listener) {
-    entitiesEditedEvent.removeListener(listener);
+  public final void removeInsertUpdateOrDeleteListener(Runnable listener) {
+    insertUpdateOrDeleteEvent.removeListener(listener);
   }
 
   @Override
-  public final void addEntitiesEditedListener(Runnable listener) {
-    entitiesEditedEvent.addListener(listener);
+  public final void addInsertUpdateOrDeleteListener(Runnable listener) {
+    insertUpdateOrDeleteEvent.addListener(listener);
   }
 
   @Override
-  public final void addConfirmSetEntityObserver(Consumer<State> listener) {
-    confirmSetEntityEvent.addDataListener(listener);
+  public final void addConfirmOverwriteListener(Consumer<State> listener) {
+    confirmOverwriteEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeConfirmSetEntityObserver(Consumer<State> listener) {
-    confirmSetEntityEvent.removeDataListener(listener);
+  public final void removeConfirmOverwriteListener(Consumer<State> listener) {
+    confirmOverwriteEvent.removeDataListener(listener);
   }
 
   @Override
@@ -849,7 +819,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
     afterInsertEvent.accept(insertedEntities);
-    if (postEditEvents) {
+    if (editEvents.get()) {
       EntityEditEvents.notifyInserted(insertedEntities);
     }
   }
@@ -870,7 +840,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
     afterUpdateEvent.accept(updatedEntities);
-    if (postEditEvents) {
+    if (editEvents.get()) {
       EntityEditEvents.notifyUpdated(updatedEntities);
     }
   }
@@ -891,7 +861,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
     afterDeleteEvent.accept(deletedEntities);
-    if (postEditEvents) {
+    if (editEvents.get()) {
       EntityEditEvents.notifyDeleted(deletedEntities);
     }
   }
@@ -907,9 +877,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private boolean setEntityAllowed() {
-    if (warnAboutUnsavedData && containsUnsavedData()) {
+    if (overwriteWarning.get() && exists().get() && modified().get()) {
       State confirmation = State.state(true);
-      confirmSetEntityEvent.accept(confirmation);
+      confirmOverwriteEvent.accept(confirmation);
 
       return confirmation.get();
     }
@@ -965,7 +935,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private void configurePersistentForeignKeyValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      entityDefinition().foreignKeys().get().forEach(foreignKey -> setPersistValue(foreignKey, foreignKeyWritable(foreignKey)));
+      entityDefinition().foreignKeys().get().forEach(foreignKey ->
+              persistValue(foreignKey).set(foreignKeyWritable(foreignKey)));
     }
   }
 
@@ -1001,7 +972,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
-    if (isPersistValue(attributeDefinition.attribute())) {
+    if (persistValue(attributeDefinition.attribute()).get()) {
       if (attributeDefinition instanceof ForeignKeyDefinition) {
         return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
       }
@@ -1013,9 +984,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void bindEventsInternal() {
-    afterDeleteEvent.addListener(entitiesEditedEvent);
-    afterInsertEvent.addListener(entitiesEditedEvent);
-    afterUpdateEvent.addListener(entitiesEditedEvent);
+    afterDeleteEvent.addListener(insertUpdateOrDeleteEvent);
+    afterInsertEvent.addListener(insertUpdateOrDeleteEvent);
+    afterUpdateEvent.addListener(insertUpdateOrDeleteEvent);
   }
 
   private Map<Attribute<?>, Object> dependendingValues(Attribute<?> attribute) {

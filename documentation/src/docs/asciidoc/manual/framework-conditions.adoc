@@ -7,7 +7,7 @@ The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>>
 
 == Condition
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/domain/entity/attribute/Condition.html[Condition]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Condition.html[Condition]*::
 Represents an element of a where clause and contains factory methods for creating *Condition* instances.
 
 [source,java,indent=0]
@@ -15,7 +15,7 @@ Represents an element of a where clause and contains factory methods for creatin
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/ConditionDemo.java[tags=condition]
 ----
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/domain/entity/attribute/Condition.Combination.html[Condition.Combination]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Condition.Combination.html[Condition.Combination]*::
 Extends *Condition* and represents a combination of *Condition* instances, which are combined using either *AND* or *OR*. These can be nested and combined with other condition combinations.
 
 [source,java,indent=0]

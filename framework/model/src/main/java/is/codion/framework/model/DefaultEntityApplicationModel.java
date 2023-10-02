@@ -169,7 +169,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final boolean containsUnsavedData() {
-    return containsUnsavedData(entityModels);
+    return existingEntityModified(entityModels);
   }
 
   @Override
@@ -177,10 +177,10 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
     entityModels().forEach(EntityModel::savePreferences);
   }
 
-  private static boolean containsUnsavedData(Collection<? extends EntityModel<?, ?, ?>> models) {
+  private static boolean existingEntityModified(Collection<? extends EntityModel<?, ?, ?>> models) {
     for (EntityModel<?, ?, ?> model : models) {
       EntityEditModel editModel = model.editModel();
-      if (editModel.containsUnsavedData() || containsUnsavedData(model.detailModels())) {
+      if ((editModel.exists().get() && editModel.modified().get()) || existingEntityModified(model.detailModels())) {
         return true;
       }
     }

@@ -9687,3 +9687,13 @@
   Entity.modifiedColumns() and valueMissingOrModified() moved to DefaultLocalEntityConnection
   Entity.valuesIncludingNull(), distinctIncludingNull() and keyModified() removed
   Entity.put(), immutable(), copy() and deepCopy() static helpers removed
+  EntityEditModel.setEntity() renamed set()
+  EntityEditModel.addEntitiesEditedListener() renamed addInsertUpdateOrDeleteListener()
+  EntityEditModel.containsUnsavedData() removed
+  EntityEditModel.setWarnAboutUnsavedData() replaced with State warnAboutOverwrite()
+  EntityEditModel.addConfirmSetEntityObserver() renamed addConfirmOverwriteListener()
+  EntityEditModel.setPostEditEvents() replaced with State postEditEvents()
+  EntityEditModel.postEditEvents() renamed editEvents()
+  EntityEditModel.warnAboutOverwrite() renamed overwriteWarning()
+  EntityEditModel.setPersistValue() replaced with persistValue() returning a State
+  EntityTableModel, EntityComboBoxModel.setListenToEditEvents() replaced with respondToEditEvents() returning a State

@@ -32,8 +32,8 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
   public VetSpecialtyEditModel(EntityConnectionProvider connectionProvider) {
     super(VetSpecialty.TYPE, connectionProvider);
     initializeComboBoxModels(VetSpecialty.VET_FK, VetSpecialty.SPECIALTY_FK);
-    setPersistValue(VetSpecialty.VET_FK, false);
-    setPersistValue(VetSpecialty.SPECIALTY_FK, false);
+    persistValue(VetSpecialty.VET_FK).set(false);
+    persistValue(VetSpecialty.SPECIALTY_FK).set(false);
     setExistsFunction(entity -> entity.originalPrimaryKey().isNotNull());
   }
 

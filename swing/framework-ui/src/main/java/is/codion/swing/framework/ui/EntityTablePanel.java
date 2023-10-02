@@ -1379,7 +1379,7 @@ public class EntityTablePanel extends JPanel {
     tableModel.conditionModel().addChangeListener(condition -> onConditionChanged());
     tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
     tableModel.refresher().addRefreshFailedListener(this::onException);
-    tableModel.editModel().addEntitiesEditedListener(table::repaint);
+    tableModel.editModel().addInsertUpdateOrDeleteListener(table::repaint);
     if (conditionPanel != null) {
       KeyEvents.builder(VK_ENTER)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

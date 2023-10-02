@@ -226,7 +226,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
                 .build());
       }
     }
-    addEntitiesEditedListener(model::refresh);
+    addInsertUpdateOrDeleteListener(model::refresh);
 
     return model;
   }

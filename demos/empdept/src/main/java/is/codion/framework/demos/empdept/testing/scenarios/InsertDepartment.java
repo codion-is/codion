@@ -31,7 +31,7 @@ public final class InsertDepartment extends AbstractEntityUsageScenario<EmpDeptA
   @Override
   protected void perform(EmpDeptAppModel application) throws Exception {
     SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
-    departmentModel.editModel().setEntity(createRandomEntity(application.entities(),
+    departmentModel.editModel().set(createRandomEntity(application.entities(),
             Department.TYPE, null));
     departmentModel.editModel().insert();
   }

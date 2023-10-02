@@ -66,7 +66,7 @@ public interface EntityEditModel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.postEditEvents", true);
+  PropertyValue<Boolean> EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.editEvents", true);
 
   /**
    * @return the type of the entity this edit model is based on
@@ -92,7 +92,7 @@ public interface EntityEditModel {
    * @param entity the entity
    * @see #setDefaultValues()
    */
-  void setEntity(Entity entity);
+  void set(Entity entity);
 
   /**
    * Refreshes the active Entity from the database, discarding all changes.
@@ -105,14 +105,6 @@ public interface EntityEditModel {
    * @see Entity#immutable()
    */
   Entity entity();
-
-  /**
-   * Returns true if a value of an existing entity has been modified but not saved.
-   * @return true if this edit model contains unsaved data
-   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
-   * @see #exists()
-   */
-  boolean containsUnsavedData();
 
   /**
    * @param attribute the attribute
@@ -192,16 +184,10 @@ public interface EntityEditModel {
   EntityDefinition entityDefinition();
 
   /**
-   * @return true if this model warns about unsaved data
+   * @return a state controlling whether this edit model triggers a warning before overwriting unsaved data
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
-  boolean isWarnAboutUnsavedData();
-
-  /**
-   * @param warnAboutUnsavedData if true then this model warns about unsaved data
-   * @see #WARN_ABOUT_UNSAVED_DATA
-   */
-  void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
+  State overwriteWarning();
 
   /**
    * Making this edit model read-only prevents any changes from being
@@ -239,20 +225,6 @@ public interface EntityEditModel {
   State deleteEnabled();
 
   /**
-   * Returns true if this edit model posts its insert, update and delete events on the
-   * {@link EntityEditEvents} event bus
-   * @return true if insert, update and delete events are posted on the edit event bus
-   */
-  boolean isPostEditEvents();
-
-  /**
-   * Set to true if this edit model should post its insert, update and delete
-   * events on the {@link EntityEditEvents} event bus
-   * @param postEditEvents true if edit events should be posted
-   */
-  void setPostEditEvents(boolean postEditEvents);
-
-  /**
    * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key,
    * using the search attributes defined for that entity type.
    * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
@@ -277,34 +249,28 @@ public interface EntityEditModel {
 
   /**
    * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
-   * Use {@link #setEntity(Entity)} with a null parameter to populate the model with the default values.
+   * Use {@link #setDefaultValues()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
    * @param valueSupplier the default value supplier
    * @param <T> the value type
-   * @see #isPersistValue(Attribute)
-   * @see #setPersistValue(Attribute, boolean)
+   * @see #persistValue(Attribute)
    */
   <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier);
 
   /**
-   * Returns true if the last available value for this attribute should be used when initializing
-   * a default entity.
-   * Override for selective reset of field values when the model is cleared.
-   * For foreign key attribute values this method by default returns the value of the
-   * attribute {@link EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}.
-   * @param attribute the attribute
-   * @return true if the given field value should be reset when the model is cleared
-   * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
+   * @return a state controlling whether this edit model posts insert, update and delete events
+   * on the {@link EntityEditEvents} event bus.
+   * @see #EDIT_EVENTS
    */
-  boolean isPersistValue(Attribute<?> attribute);
+  State editEvents();
 
   /**
-   * Specifies whether the value for the given attribute should be persisted when the model is cleared.
+   * Returns a State controlling whether the last used value for this attribute should be used when clearing the model.
    * @param attribute the attribute
-   * @param persistValue true if this model should persist the value of the given attribute on clear
+   * @return a State controlling whether the given attribute value should persist when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  void setPersistValue(Attribute<?> attribute, boolean persistValue);
+  State persistValue(Attribute<?> attribute);
 
   /**
    * Performs an insert on the active entity, sets the primary key values of the active entity
@@ -514,7 +480,7 @@ public interface EntityEditModel {
    * @param attribute the attribute for which to monitor value changes
    * @param listener a listener notified each time the value of the {@code attribute} changes
    * @param <T> the value type
-   * @see #setEntity(Entity)
+   * @see #set(Entity)
    */
   <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener);
 
@@ -537,9 +503,9 @@ public interface EntityEditModel {
   void removeValueListener(Consumer<Attribute<?>> listener);
 
   /**
-   * Notified each time the entity is set via {@link #setEntity(Entity)}.
+   * Notified each time the entity is set via {@link #set(Entity)}.
    * @param listener a listener notified each time the entity is set, possibly to null
-   * @see #setEntity(Entity)
+   * @see #set(Entity)
    */
   void addEntityListener(Consumer<Entity> listener);
 
@@ -630,25 +596,24 @@ public interface EntityEditModel {
   void removeRefreshListener(Runnable listener);
 
   /**
-   * @param listener a listener to be notified each time an entity is edited via this model,
-   * updated, inserted or deleted
+   * @param listener a listener notified each time one or more entities are updated, inserted or deleted via this model
    */
-  void addEntitiesEditedListener(Runnable listener);
+  void addInsertUpdateOrDeleteListener(Runnable listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeEntitiesEditedListener(Runnable listener);
+  void removeInsertUpdateOrDeleteListener(Runnable listener);
 
   /**
    * @param listener a listener notified each time the active entity is about to be set
    */
-  void addConfirmSetEntityObserver(Consumer<State> listener);
+  void addConfirmOverwriteListener(Consumer<State> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeConfirmSetEntityObserver(Consumer<State> listener);
+  void removeConfirmOverwriteListener(Consumer<State> listener);
 }

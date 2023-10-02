@@ -20,6 +20,7 @@ package is.codion.swing.framework.model.component;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -66,6 +67,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
+  private final State respondToEditEvents = State.state(true);
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -78,7 +80,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private boolean forceRefresh = false;
   private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
-  private boolean listenToEditEvents = true;
 
   /**
    * @param entityType the type of the entity this combo box model should represent
@@ -98,6 +99,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
+    respondToEditEvents.addDataListener(new EditEventListener());
     addEditListeners();
   }
 
@@ -188,29 +190,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * True if this combo box model responds to entity edit events, by adding inserted items,
-   * updating any updated items and removing deleted ones.
-   * @return true if this combo box model listens edit events
+   * @return the state controlling whether this combo box model should respond to entity edit events, by adding inserted items,
+   * updating any updated items and removing deleted ones
    * @see EntityEditEvents
    */
-  public final boolean isListenToEditEvents() {
-    return listenToEditEvents;
-  }
-
-  /**
-   * Set to true if this combo box model should respond to entity edit events, by adding inserted items,
-   * updating any updated items and removing deleted ones.
-   * @param listenToEditEvents if true then this model listens to entity edit events
-   * @see EntityEditEvents
-   */
-  public final void setListenToEditEvents(boolean listenToEditEvents) {
-    this.listenToEditEvents = listenToEditEvents;
-    if (listenToEditEvents) {
-      addEditListeners();
-    }
-    else {
-      removeEditListeners();
-    }
+  public final State respondToEditEvents() {
+    return respondToEditEvents;
   }
 
   /**
@@ -548,6 +533,19 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     @Override
     public void accept(Collection<Entity> deleted) {
       deleted.forEach(EntityComboBoxModel.this::removeItem);
+    }
+  }
+
+  private final class EditEventListener implements Consumer<Boolean> {
+
+    @Override
+    public void accept(Boolean listen) {
+      if (listen) {
+        addEditListeners();
+      }
+      else {
+        removeEditListeners();
+      }
     }
   }
 
