@@ -450,7 +450,7 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void containsUnsavedData() throws DatabaseException {
-    employeeEditModel.warnAboutOverwrite().set(true);
+    employeeEditModel.overwriteWarning().set(true);
     employeeEditModel.setPersistValue(Employee.DEPARTMENT_FK, false);
 
     Consumer<State> alwaysConfirmListener = data -> data.set(true);
@@ -482,7 +482,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.set(adams);
     assertEquals(king.get(Employee.DEPARTMENT_FK), employeeEditModel.get(Employee.DEPARTMENT_FK));
 
-    employeeEditModel.warnAboutOverwrite().set(false);
+    employeeEditModel.overwriteWarning().set(false);
 
     employeeEditModel.set(adams);
     employeeEditModel.put(Employee.HIREDATE, LocalDate.now());

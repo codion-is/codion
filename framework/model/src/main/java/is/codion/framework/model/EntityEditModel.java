@@ -172,7 +172,7 @@ public interface EntityEditModel {
    * @return a state controlling whether this edit model triggers a warning before overwriting unsaved data
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
-  State warnAboutOverwrite();
+  State overwriteWarning();
 
   /**
    * Making this edit model read-only prevents any changes from being

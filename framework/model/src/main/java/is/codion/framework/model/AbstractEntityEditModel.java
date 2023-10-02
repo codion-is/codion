@@ -75,7 +75,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State updateEnabled = State.state(true);
   private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
-  private final State warnAboutOverwrite = State.state(WARN_ABOUT_UNSAVED_DATA.get());
+  private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
   private final State editEvents = State.state(EDIT_EVENTS.get());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
@@ -186,8 +186,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final State warnAboutOverwrite() {
-    return warnAboutOverwrite;
+  public final State overwriteWarning() {
+    return overwriteWarning;
   }
 
   @Override
@@ -868,7 +868,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private boolean setEntityAllowed() {
-    if (warnAboutOverwrite.get() && exists().get() && modified().get()) {
+    if (overwriteWarning.get() && exists().get() && modified().get()) {
       State confirmation = State.state(true);
       confirmOverwriteEvent.accept(confirmation);
 
