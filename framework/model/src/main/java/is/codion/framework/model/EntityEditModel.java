@@ -210,20 +210,6 @@ public interface EntityEditModel {
   State deleteEnabled();
 
   /**
-   * Returns true if this edit model posts its insert, update and delete events on the
-   * {@link EntityEditEvents} event bus
-   * @return true if insert, update and delete events are posted on the edit event bus
-   */
-  boolean isPostEditEvents();
-
-  /**
-   * Set to true if this edit model should post its insert, update and delete
-   * events on the {@link EntityEditEvents} event bus
-   * @param postEditEvents true if edit events should be posted
-   */
-  void setPostEditEvents(boolean postEditEvents);
-
-  /**
    * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key,
    * using the search attributes defined for that entity type.
    * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
@@ -256,6 +242,13 @@ public interface EntityEditModel {
    * @see #setPersistValue(Attribute, boolean)
    */
   <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier);
+
+  /**
+   * @return a state controlling whether this edit model posts insert, update and delete events
+   * on the {@link EntityEditEvents} event bus.
+   * @see #POST_EDIT_EVENTS
+   */
+  State postEditEvents();
 
   /**
    * Returns true if the last available value for this attribute should be used when initializing

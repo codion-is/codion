@@ -73,7 +73,7 @@ public final class AbstractEntityEditModelTest {
     EntityEditEvents.addUpdateListener(Employee.TYPE, updateListener);
     EntityEditEvents.addDeleteListener(Employee.TYPE, deleteListener);
 
-    employeeEditModel.setPostEditEvents(true);
+    employeeEditModel.postEditEvents().set(true);
 
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();

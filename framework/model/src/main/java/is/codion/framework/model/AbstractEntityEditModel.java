@@ -76,6 +76,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
   private final State warnAboutOverwrite = State.state(WARN_ABOUT_UNSAVED_DATA.get());
+  private final State postEditEvents = State.state(POST_EDIT_EVENTS.get());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
@@ -136,12 +137,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Function<Entity, Boolean> existsFunction;
 
   /**
-   * Specifies whether this edit model posts insert, update and delete events
-   * on the {@link EntityEditEvents} event bus.
-   */
-  private boolean postEditEvents = POST_EDIT_EVENTS.get();
-
-  /**
    * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
    * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
@@ -193,6 +188,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final State warnAboutOverwrite() {
     return warnAboutOverwrite;
+  }
+
+  @Override
+  public final State postEditEvents() {
+    return postEditEvents;
   }
 
   @Override
@@ -562,16 +562,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isPostEditEvents() {
-    return postEditEvents;
-  }
-
-  @Override
-  public final void setPostEditEvents(boolean postEditEvents) {
-    this.postEditEvents = postEditEvents;
-  }
-
-  @Override
   public final <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
     if (valueEditEvents.containsKey(attribute)) {
       ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
@@ -820,7 +810,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
     afterInsertEvent.accept(insertedEntities);
-    if (postEditEvents) {
+    if (postEditEvents.get()) {
       EntityEditEvents.notifyInserted(insertedEntities);
     }
   }
@@ -841,7 +831,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
     afterUpdateEvent.accept(updatedEntities);
-    if (postEditEvents) {
+    if (postEditEvents.get()) {
       EntityEditEvents.notifyUpdated(updatedEntities);
     }
   }
@@ -862,7 +852,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
     afterDeleteEvent.accept(deletedEntities);
-    if (postEditEvents) {
+    if (postEditEvents.get()) {
       EntityEditEvents.notifyDeleted(deletedEntities);
     }
   }
