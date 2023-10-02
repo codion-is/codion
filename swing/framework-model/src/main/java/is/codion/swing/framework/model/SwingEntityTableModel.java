@@ -90,6 +90,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
   private final State conditionRequired = State.state();
+  private final State respondToEditEvents = State.state(true);
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -135,7 +136,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Specifies whether to use the current sort order as the query order by clause
    */
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
-  private boolean listenToEditEvents = true;
 
   /**
    * Instantiates a new SwingEntityTableModel.
@@ -296,19 +296,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isListenToEditEvents() {
-    return listenToEditEvents;
-  }
-
-  @Override
-  public final void setListenToEditEvents(boolean listenToEditEvents) {
-    this.listenToEditEvents = listenToEditEvents;
-    if (listenToEditEvents) {
-      addEditListeners();
-    }
-    else {
-      removeEditListeners();
-    }
+  public final State respondToEditEvents() {
+    return respondToEditEvents;
   }
 
   @Override
@@ -908,6 +897,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
+    respondToEditEvents.addDataListener(new EditEventListener());
     conditionModel.addChangeListener(this::onConditionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
@@ -1133,6 +1123,19 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .forEach((entityType, entities) ->
                       entityDefinition().foreignKeys().get(entityType).forEach(foreignKey ->
                               replace(foreignKey, entities)));
+    }
+  }
+
+  private final class EditEventListener implements Consumer<Boolean> {
+
+    @Override
+    public void accept(Boolean listen) {
+      if (listen) {
+        addEditListeners();
+      }
+      else {
+        removeEditListeners();
+      }
     }
   }
 

@@ -9655,3 +9655,4 @@
   EntityEditModel.postEditEvents() renamed editEvents()
   EntityEditModel.warnAboutOverwrite() renamed overwriteWarning()
   EntityEditModel.setPersistValue() replaced with persistValue() returning a State
+  EntityTableModel, EntityComboBoxModel.setListenToEditEvents() replaced with respondToEditEvents() returning a State
