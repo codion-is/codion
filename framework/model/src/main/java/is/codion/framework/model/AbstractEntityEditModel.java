@@ -76,7 +76,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
   private final State warnAboutOverwrite = State.state(WARN_ABOUT_UNSAVED_DATA.get());
-  private final State postEditEvents = State.state(POST_EDIT_EVENTS.get());
+  private final State editEvents = State.state(EDIT_EVENTS.get());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
@@ -191,8 +191,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final State postEditEvents() {
-    return postEditEvents;
+  public final State editEvents() {
+    return editEvents;
   }
 
   @Override
@@ -810,7 +810,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
     afterInsertEvent.accept(insertedEntities);
-    if (postEditEvents.get()) {
+    if (editEvents.get()) {
       EntityEditEvents.notifyInserted(insertedEntities);
     }
   }
@@ -831,7 +831,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
     afterUpdateEvent.accept(updatedEntities);
-    if (postEditEvents.get()) {
+    if (editEvents.get()) {
       EntityEditEvents.notifyUpdated(updatedEntities);
     }
   }
@@ -852,7 +852,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
     afterDeleteEvent.accept(deletedEntities);
-    if (postEditEvents.get()) {
+    if (editEvents.get()) {
       EntityEditEvents.notifyDeleted(deletedEntities);
     }
   }

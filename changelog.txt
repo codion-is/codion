@@ -9652,3 +9652,4 @@
   EntityEditModel.setWarnAboutUnsavedData() replaced with State warnAboutOverwrite()
   EntityEditModel.addConfirmSetEntityObserver() renamed addConfirmOverwriteListener()
   EntityEditModel.setPostEditEvents() replaced with State postEditEvents()
+  EntityEditModel.postEditEvents() renamed editEvents()
