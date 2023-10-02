@@ -102,9 +102,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
 
   /**
-   * Contains true if values should persist for the given attribute when the model is cleared
+   * Contains the states controlling whether values should persist for the given attribute when the model is cleared
    */
-  private final Map<Attribute<?>, Boolean> persistentValues = new HashMap<>();
+  private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
 
   /**
    * The validator used by this edit model
@@ -196,16 +196,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isPersistValue(Attribute<?> attribute) {
+  public final State persistValue(Attribute<?> attribute) {
     entityDefinition().attributes().definition(attribute);
 
-    return Boolean.TRUE.equals(persistentValues.get(attribute));
-  }
-
-  @Override
-  public final void setPersistValue(Attribute<?> attribute, boolean persistValue) {
-    entityDefinition().attributes().definition(attribute);
-    persistentValues.put(attribute, persistValue);
+    return persistValues.computeIfAbsent(attribute, k -> State.state());
   }
 
   @Override
@@ -926,7 +920,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private void configurePersistentForeignKeyValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      entityDefinition().foreignKeys().get().forEach(foreignKey -> setPersistValue(foreignKey, foreignKeyWritable(foreignKey)));
+      entityDefinition().foreignKeys().get().forEach(foreignKey ->
+              persistValue(foreignKey).set(foreignKeyWritable(foreignKey)));
     }
   }
 
@@ -962,7 +957,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
-    if (isPersistValue(attributeDefinition.attribute())) {
+    if (persistValue(attributeDefinition.attribute()).get()) {
       if (attributeDefinition instanceof ForeignKeyDefinition) {
         return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
       }

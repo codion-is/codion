@@ -238,8 +238,7 @@ public interface EntityEditModel {
    * @param attribute the attribute
    * @param valueSupplier the default value supplier
    * @param <T> the value type
-   * @see #isPersistValue(Attribute)
-   * @see #setPersistValue(Attribute, boolean)
+   * @see #persistValue(Attribute)
    */
   <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier);
 
@@ -251,24 +250,12 @@ public interface EntityEditModel {
   State editEvents();
 
   /**
-   * Returns true if the last available value for this attribute should be used when initializing
-   * a default entity.
-   * Override for selective reset of field values when the model is cleared.
-   * For foreign key attribute values this method by default returns the value of the
-   * attribute {@link EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}.
+   * Returns a State controlling whether the last used value for this attribute should be used when clearing the model.
    * @param attribute the attribute
-   * @return true if the given field value should be reset when the model is cleared
+   * @return a State controlling whether the given attribute value should persist when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean isPersistValue(Attribute<?> attribute);
-
-  /**
-   * Specifies whether the value for the given attribute should be persisted when the model is cleared.
-   * @param attribute the attribute
-   * @param persistValue true if this model should persist the value of the given attribute on clear
-   * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
-   */
-  void setPersistValue(Attribute<?> attribute, boolean persistValue);
+  State persistValue(Attribute<?> attribute);
 
   /**
    * Performs an insert on the active entity, sets the primary key values of the active entity
