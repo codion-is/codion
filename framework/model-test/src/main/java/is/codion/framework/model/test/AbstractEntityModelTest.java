@@ -145,7 +145,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().setSelectedIndexes(asList(1, 2, 3));
     assertTrue(departmentModel.tableModel().selectionModel().selectionNotEmpty().get());
     assertTrue(departmentModel.editModel().exists().get());
-    departmentModel.editModel().setDefaultValues();
+    departmentModel.editModel().setDefaults();
     assertTrue(departmentModel.tableModel().selectionModel().selectionEmpty().get());
   }
 

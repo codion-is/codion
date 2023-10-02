@@ -80,17 +80,17 @@ public interface EntityEditModel {
 
   /**
    * Populates this edit model with default values.
-   * @see #setDefaultValue(Attribute, Supplier)
+   * @see #setDefault(Attribute, Supplier)
    * @see AttributeDefinition#defaultValue()
    */
-  void setDefaultValues();
+  void setDefaults();
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
    * {@link Entity} being edited by this edit model. If {@code entity} is null
-   * the effect is the same as calling {@link #setDefaultValues()}.
+   * the effect is the same as calling {@link #setDefaults()}.
    * @param entity the entity
-   * @see #setDefaultValues()
+   * @see #setDefaults()
    */
   void set(Entity entity);
 
@@ -249,13 +249,13 @@ public interface EntityEditModel {
 
   /**
    * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
-   * Use {@link #setDefaultValues()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
+   * Use {@link #setDefaults()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
    * @param valueSupplier the default value supplier
    * @param <T> the value type
-   * @see #persistValue(Attribute)
+   * @see #persist(Attribute)
    */
-  <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier);
+  <T> void setDefault(Attribute<T> attribute, Supplier<T> valueSupplier);
 
   /**
    * @return a state controlling whether this edit model posts insert, update and delete events
@@ -265,12 +265,12 @@ public interface EntityEditModel {
   State editEvents();
 
   /**
-   * Returns a State controlling whether the last used value for this attribute should be used when clearing the model.
+   * Returns a State controlling whether the last used value for this attribute should persist when the model is cleared.
    * @param attribute the attribute
    * @return a State controlling whether the given attribute value should persist when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  State persistValue(Attribute<?> attribute);
+  State persist(Attribute<?> attribute);
 
   /**
    * Performs an insert on the active entity, sets the primary key values of the active entity
@@ -491,16 +491,6 @@ public interface EntityEditModel {
    * @param <T> the value type
    */
   <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener);
-
-  /**
-   * @param listener a listener notified each time a value changes
-   */
-  void addValueListener(Consumer<Attribute<?>> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeValueListener(Consumer<Attribute<?>> listener);
 
   /**
    * Notified each time the entity is set via {@link #set(Entity)}.

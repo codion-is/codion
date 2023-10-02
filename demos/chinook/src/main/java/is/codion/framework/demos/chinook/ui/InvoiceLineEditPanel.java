@@ -40,7 +40,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
   public InvoiceLineEditPanel(SwingEntityEditModel editModel, JTextField tableSearchField) {
     super(editModel);
     this.tableSearchField = tableSearchField;
-    editModel.persistValue(InvoiceLine.TRACK_FK).set(false);
+    editModel.persist(InvoiceLine.TRACK_FK).set(false);
   }
 
   @Override

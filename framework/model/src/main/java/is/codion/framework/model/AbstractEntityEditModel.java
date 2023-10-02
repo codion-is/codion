@@ -78,7 +78,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<?> insertUpdateOrDeleteEvent = Event.event();
   private final Event<State> confirmOverwriteEvent = Event.event();
   private final Event<Entity> entityEvent = Event.event();
-  private final Event<Attribute<?>> valueChangeEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
 
   private final State entityValid = State.state();
@@ -174,7 +173,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.modifiedFunction = Entity::modified;
     this.existsFunction = Entity::exists;
     readOnly.set(entityDefinition().readOnly());
-    configurePersistentForeignKeyValues();
+    configurePersistentForeignKeys();
     bindEventsInternal();
     doSetEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
@@ -195,7 +194,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier) {
+  public final <T> void setDefault(Attribute<T> attribute, Supplier<T> valueSupplier) {
     entityDefinition().attributes().definition(attribute);
     defaultValueSuppliers.put(attribute, requireNonNull(valueSupplier, "valueSupplier"));
   }
@@ -211,7 +210,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final State persistValue(Attribute<?> attribute) {
+  public final State persist(Attribute<?> attribute) {
     entityDefinition().attributes().definition(attribute);
 
     return persistValues.computeIfAbsent(attribute, k -> State.state());
@@ -260,7 +259,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setDefaultValues() {
+  public final void setDefaults() {
     if (setEntityAllowed()) {
       doSetEntity(null);
     }
@@ -595,16 +594,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeValueListener(Consumer<Attribute<?>> listener) {
-    valueChangeEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addValueListener(Consumer<Attribute<?>> listener) {
-    valueChangeEvent.addDataListener(listener);
-  }
-
-  @Override
   public final void removeEntityListener(Consumer<Entity> listener) {
     entityEvent.removeDataListener(listener);
   }
@@ -933,10 +922,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private void configurePersistentForeignKeyValues() {
+  private void configurePersistentForeignKeys() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
       entityDefinition().foreignKeys().get().forEach(foreignKey ->
-              persistValue(foreignKey).set(foreignKeyWritable(foreignKey)));
+              persist(foreignKey).set(foreignKeyWritable(foreignKey)));
     }
   }
 
@@ -972,7 +961,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
-    if (persistValue(attributeDefinition.attribute()).get()) {
+    if (persist(attributeDefinition.attribute()).get()) {
       if (attributeDefinition instanceof ForeignKeyDefinition) {
         return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
       }
@@ -1024,7 +1013,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (changeEvent != null) {
       changeEvent.accept(value);
     }
-    valueChangeEvent.accept(attribute);
   }
 
   private void updateEntityStates() {

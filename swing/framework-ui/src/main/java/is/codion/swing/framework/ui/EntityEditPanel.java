@@ -214,7 +214,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     this.controlCodes = validateControlCodes(controlCodes);
     if (editModel.exists().not().get()) {
-      editModel.setDefaultValues();
+      editModel.setDefaults();
     }
   }
 
@@ -236,7 +236,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #requestInitialFocus()
    */
   public final void clearAndRequestFocus() {
-    editModel().setDefaultValues();
+    editModel().setDefaults();
     requestInitialFocus();
   }
 
@@ -362,7 +362,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       try {
         editModel().insert();
         if (clearAfterInsert) {
-          editModel().setDefaultValues();
+          editModel().setDefaults();
         }
         if (requestFocusAfterInsert) {
           requestFocusAfterInsert();
