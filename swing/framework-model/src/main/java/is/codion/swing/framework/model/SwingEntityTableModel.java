@@ -914,7 +914,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addAfterDeleteListener(this::onDelete);
     editModel.addRefreshListener(this::refresh);
     editModel.addEntityListener(this::onEntitySet);
-    selectionModel().addSelectedItemListener(editModel::setEntity);
+    selectionModel().addSelectedItemListener(editModel::set);
     addTableModelListener(this::onTableModelEvent);
     Runnable statusListener = () -> statusMessage.set(statusMessage());
     selectionModel().addSelectionListener(statusListener);
@@ -999,7 +999,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private void onTableModelEvent(TableModelEvent tableModelEvent) {
     //if the selected row is updated via the table model, refresh the one in the edit model
     if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selectionModel().getSelectedIndex()) {
-      editModel.setEntity(selectionModel().getSelectedItem());
+      editModel.set(selectionModel().getSelectedItem());
     }
   }
 

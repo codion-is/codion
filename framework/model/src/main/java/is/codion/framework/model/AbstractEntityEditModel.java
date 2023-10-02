@@ -253,7 +253,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setEntity(Entity entity) {
+  public final void set(Entity entity) {
     if (setEntityAllowed()) {
       doSetEntity(entity);
     }
@@ -518,7 +518,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (entityExists.get()) {
-        setEntity(connectionProvider().connection().select(entity.primaryKey()));
+        set(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
     catch (DatabaseException e) {

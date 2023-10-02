@@ -77,7 +77,7 @@ public interface EntityEditModel {
    * @param entity the entity
    * @see #setDefaultValues()
    */
-  void setEntity(Entity entity);
+  void set(Entity entity);
 
   /**
    * Refreshes the active Entity from the database, discarding all changes.
@@ -262,7 +262,7 @@ public interface EntityEditModel {
 
   /**
    * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
-   * Use {@link #setEntity(Entity)} with a null parameter to populate the model with the default values.
+   * Use {@link #setDefaultValues()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
    * @param valueSupplier the default value supplier
    * @param <T> the value type
@@ -499,7 +499,7 @@ public interface EntityEditModel {
    * @param attribute the attribute for which to monitor value changes
    * @param listener a listener notified each time the value of the {@code attribute} changes
    * @param <T> the value type
-   * @see #setEntity(Entity)
+   * @see #set(Entity)
    */
   <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener);
 
@@ -522,9 +522,9 @@ public interface EntityEditModel {
   void removeValueListener(Consumer<Attribute<?>> listener);
 
   /**
-   * Notified each time the entity is set via {@link #setEntity(Entity)}.
+   * Notified each time the entity is set via {@link #set(Entity)}.
    * @param listener a listener notified each time the entity is set, possibly to null
-   * @see #setEntity(Entity)
+   * @see #set(Entity)
    */
   void addEntityListener(Consumer<Entity> listener);
 

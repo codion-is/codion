@@ -217,7 +217,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * Clears the underlying edit model and requests the initial focus.
-   * @see EntityEditModel#setEntity(Entity)
+   * @see EntityEditModel#set(Entity)
    * @see #requestInitialFocus()
    */
   public final void clearAndRequestFocus() {
@@ -1013,7 +1013,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
         entityToUpdate = ((EntitySearchField) component).model().selectedEntity().get();
       }
       EntityEditPanel editPanel = createEditPanel();
-      editPanel.editModel().setEntity(connectionProvider.connection().select(entityToUpdate.primaryKey()));
+      editPanel.editModel().set(connectionProvider.connection().select(entityToUpdate.primaryKey()));
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)

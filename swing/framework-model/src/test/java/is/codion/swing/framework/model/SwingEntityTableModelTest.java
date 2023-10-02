@@ -295,7 +295,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
             assertEquals("RESEARCH", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
 
     SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, connectionProvider);
-    editModel.setEntity(researchDept);
+    editModel.set(researchDept);
     editModel.put(Department.NAME, "R&D");
     editModel.update();
 

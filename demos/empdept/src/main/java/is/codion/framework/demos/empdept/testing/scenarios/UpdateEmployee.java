@@ -33,12 +33,12 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
         selectRandomRow(employeeModel.tableModel());
         Entity selected = employeeModel.tableModel().selectionModel().getSelectedItem();
         randomize(application.entities(), selected, null);
-        employeeModel.editModel().setEntity(selected);
+        employeeModel.editModel().set(selected);
         employeeModel.editModel().update();
         selectRandomRow(employeeModel.tableModel());
         selected = employeeModel.tableModel().selectionModel().getSelectedItem();
         randomize(application.entities(), selected, null);
-        employeeModel.editModel().setEntity(selected);
+        employeeModel.editModel().set(selected);
         employeeModel.editModel().update();
       }
       finally {

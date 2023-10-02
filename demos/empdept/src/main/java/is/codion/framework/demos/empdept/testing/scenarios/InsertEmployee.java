@@ -27,7 +27,7 @@ public final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptApp
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
     foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
-    employeeModel.editModel().setEntity(createRandomEntity(application.entities(), Employee.TYPE, foreignKeyEntities));
+    employeeModel.editModel().set(createRandomEntity(application.entities(), Employee.TYPE, foreignKeyEntities));
     employeeModel.editModel().insert();
   }
 
