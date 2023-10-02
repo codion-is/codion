@@ -169,16 +169,10 @@ public interface EntityEditModel {
   EntityDefinition entityDefinition();
 
   /**
-   * @return true if this model warns about unsaved data
+   * @return a state controlling whether this edit model triggers a warning before overwriting unsaved data
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
-  boolean isWarnAboutUnsavedData();
-
-  /**
-   * @param warnAboutUnsavedData if true then this model warns about unsaved data
-   * @see #WARN_ABOUT_UNSAVED_DATA
-   */
-  void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
+  State warnAboutOverwrite();
 
   /**
    * Making this edit model read-only prevents any changes from being
@@ -620,11 +614,11 @@ public interface EntityEditModel {
   /**
    * @param listener a listener notified each time the active entity is about to be set
    */
-  void addConfirmSetEntityObserver(Consumer<State> listener);
+  void addConfirmOverwriteListener(Consumer<State> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeConfirmSetEntityObserver(Consumer<State> listener);
+  void removeConfirmOverwriteListener(Consumer<State> listener);
 }

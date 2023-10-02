@@ -9649,3 +9649,5 @@
   EntityEditModel.setEntity() renamed set()
   EntityEditModel.addEntitiesEditedListener() renamed addInsertUpdateOrDeleteListener()
   EntityEditModel.containsUnsavedData() removed
+  EntityEditModel.setWarnAboutUnsavedData() replaced with State warnAboutOverwrite()
+  EntityEditModel.addConfirmSetEntityObserver() renamed addConfirmOverwriteListener()

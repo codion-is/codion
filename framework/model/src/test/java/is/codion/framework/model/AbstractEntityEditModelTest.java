@@ -450,13 +450,13 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void containsUnsavedData() throws DatabaseException {
-    employeeEditModel.setWarnAboutUnsavedData(true);
+    employeeEditModel.warnAboutOverwrite().set(true);
     employeeEditModel.setPersistValue(Employee.DEPARTMENT_FK, false);
 
     Consumer<State> alwaysConfirmListener = data -> data.set(true);
     Consumer<State> alwaysDenyListener = data -> data.set(false);
 
-    employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
+    employeeEditModel.addConfirmOverwriteListener(alwaysConfirmListener);
     Entity king = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("KING"));
     Entity adams = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("ADAMS"));
     employeeEditModel.set(king);
@@ -464,25 +464,25 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.set(adams);
     assertEquals(adams, employeeEditModel.entity());
 
-    employeeEditModel.removeConfirmSetEntityObserver(alwaysConfirmListener);
+    employeeEditModel.removeConfirmOverwriteListener(alwaysConfirmListener);
     employeeEditModel.setDefaultValues();
-    employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
+    employeeEditModel.addConfirmOverwriteListener(alwaysDenyListener);
 
     employeeEditModel.set(adams);
     employeeEditModel.put(Employee.NAME, "A name");
     employeeEditModel.set(king);
     assertEquals("A name", employeeEditModel.get(Employee.NAME));
 
-    employeeEditModel.removeConfirmSetEntityObserver(alwaysDenyListener);
+    employeeEditModel.removeConfirmOverwriteListener(alwaysDenyListener);
     employeeEditModel.setDefaultValues();
-    employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
+    employeeEditModel.addConfirmOverwriteListener(alwaysDenyListener);
 
     employeeEditModel.set(adams);
     employeeEditModel.put(Employee.DEPARTMENT_FK, king.get(Employee.DEPARTMENT_FK));
     employeeEditModel.set(adams);
     assertEquals(king.get(Employee.DEPARTMENT_FK), employeeEditModel.get(Employee.DEPARTMENT_FK));
 
-    employeeEditModel.setWarnAboutUnsavedData(false);
+    employeeEditModel.warnAboutOverwrite().set(false);
 
     employeeEditModel.set(adams);
     employeeEditModel.put(Employee.HIREDATE, LocalDate.now());

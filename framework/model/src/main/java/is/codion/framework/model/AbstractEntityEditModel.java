@@ -61,7 +61,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<Collection<Entity>> beforeDeleteEvent = Event.event();
   private final Event<Collection<Entity>> afterDeleteEvent = Event.event();
   private final Event<?> insertUpdateOrDeleteEvent = Event.event();
-  private final Event<State> confirmSetEntityEvent = Event.event();
+  private final Event<State> confirmOverwriteEvent = Event.event();
   private final Event<Entity> entityEvent = Event.event();
   private final Event<Attribute<?>> valueChangeEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
@@ -75,6 +75,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final State updateEnabled = State.state(true);
   private final State updateMultipleEnabled = State.state(true);
   private final State deleteEnabled = State.state(true);
+  private final State warnAboutOverwrite = State.state(WARN_ABOUT_UNSAVED_DATA.get());
   private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
@@ -135,11 +136,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Function<Entity, Boolean> existsFunction;
 
   /**
-   * Specifies whether this edit model should warn about unsaved data
-   */
-  private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
-
-  /**
    * Specifies whether this edit model posts insert, update and delete events
    * on the {@link EntityEditEvents} event bus.
    */
@@ -195,13 +191,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isWarnAboutUnsavedData() {
-    return warnAboutUnsavedData;
-  }
-
-  @Override
-  public final void setWarnAboutUnsavedData(boolean warnAboutUnsavedData) {
-    this.warnAboutUnsavedData = warnAboutUnsavedData;
+  public final State warnAboutOverwrite() {
+    return warnAboutOverwrite;
   }
 
   @Override
@@ -695,13 +686,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void addConfirmSetEntityObserver(Consumer<State> listener) {
-    confirmSetEntityEvent.addDataListener(listener);
+  public final void addConfirmOverwriteListener(Consumer<State> listener) {
+    confirmOverwriteEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeConfirmSetEntityObserver(Consumer<State> listener) {
-    confirmSetEntityEvent.removeDataListener(listener);
+  public final void removeConfirmOverwriteListener(Consumer<State> listener) {
+    confirmOverwriteEvent.removeDataListener(listener);
   }
 
   @Override
@@ -887,9 +878,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private boolean setEntityAllowed() {
-    if (warnAboutUnsavedData && exists().get() && modified().get()) {
+    if (warnAboutOverwrite.get() && exists().get() && modified().get()) {
       State confirmation = State.state(true);
-      confirmSetEntityEvent.accept(confirmation);
+      confirmOverwriteEvent.accept(confirmation);
 
       return confirmation.get();
     }
