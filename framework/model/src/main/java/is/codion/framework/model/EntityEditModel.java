@@ -615,16 +615,15 @@ public interface EntityEditModel {
   void removeRefreshListener(Runnable listener);
 
   /**
-   * @param listener a listener to be notified each time an entity is edited via this model,
-   * updated, inserted or deleted
+   * @param listener a listener notified each time one or more entities are updated, inserted or deleted via this model
    */
-  void addEntitiesEditedListener(Runnable listener);
+  void addInsertUpdateOrDeleteListener(Runnable listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeEntitiesEditedListener(Runnable listener);
+  void removeInsertUpdateOrDeleteListener(Runnable listener);
 
   /**
    * @param listener a listener notified each time the active entity is about to be set

@@ -205,7 +205,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.addBeforeInsertListener(dataListener);
     employeeEditModel.addBeforeUpdateListener(dataListener);
     Runnable listener = () -> {};
-    employeeEditModel.addEntitiesEditedListener(listener);
+    employeeEditModel.addInsertUpdateOrDeleteListener(listener);
 
     assertEquals(Employee.TYPE, employeeEditModel.entityType());
 
@@ -289,7 +289,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.removeBeforeDeleteListener(dataListener);
     employeeEditModel.removeBeforeInsertListener(dataListener);
     employeeEditModel.removeBeforeUpdateListener(dataListener);
-    employeeEditModel.removeEntitiesEditedListener(listener);
+    employeeEditModel.removeInsertUpdateOrDeleteListener(listener);
   }
 
   @Test

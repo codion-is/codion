@@ -9647,3 +9647,4 @@
   Entity.valuesIncludingNull(), distinctIncludingNull() and keyModified() removed
   Entity.put(), immutable(), copy() and deepCopy() static helpers removed
   EntityEditModel.setEntity() renamed set()
+  EntityEditModel.addEntitiesEditedListener() renamed addInsertUpdateOrDeleteListener()
