@@ -180,7 +180,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier) {
+  public final <T> void setDefault(Attribute<T> attribute, Supplier<T> valueSupplier) {
     entityDefinition().attributes().definition(attribute);
     defaultValueSuppliers.put(attribute, requireNonNull(valueSupplier, "valueSupplier"));
   }

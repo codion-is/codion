@@ -179,12 +179,12 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void defaults() {
-    employeeEditModel.setDefaultValue(Employee.NAME, () -> "Scott");
+    employeeEditModel.setDefault(Employee.NAME, () -> "Scott");
     assertTrue(employeeEditModel.isNull(Employee.NAME).get());
     employeeEditModel.setDefaults();
     assertEquals("Scott", employeeEditModel.get(Employee.NAME));
 
-    employeeEditModel.setDefaultValue(Employee.NAME, () -> null);
+    employeeEditModel.setDefault(Employee.NAME, () -> null);
     employeeEditModel.setDefaults();
     assertTrue(employeeEditModel.isNull(Employee.NAME).get());
   }
@@ -646,10 +646,10 @@ public final class AbstractEntityEditModelTest {
 
     private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
-      setDefaultValue(Employee.HIREDATE, LocalDate::now);
+      setDefault(Employee.HIREDATE, LocalDate::now);
       try {
         Entity jones = connectionProvider.connection().selectSingle(Employee.ID.equalTo(3));//JONES, used in containsUnsavedData()
-        setDefaultValue(Employee.MGR_FK, () -> jones);
+        setDefault(Employee.MGR_FK, () -> jones);
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

@@ -9658,3 +9658,4 @@
   EntityTableModel, EntityComboBoxModel.setListenToEditEvents() replaced with respondToEditEvents() returning a State
   EntityEditModel.persistValue() renamed persist()
   EntityEditModel.setDefaultValues() renamed setDefaults()
+  EntityEditModel.setDefaultValue() renamed setDefault()

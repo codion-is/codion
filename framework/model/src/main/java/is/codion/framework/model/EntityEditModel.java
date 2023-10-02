@@ -65,7 +65,7 @@ public interface EntityEditModel {
 
   /**
    * Populates this edit model with default values.
-   * @see #setDefaultValue(Attribute, Supplier)
+   * @see #setDefault(Attribute, Supplier)
    * @see AttributeDefinition#defaultValue()
    */
   void setDefaults();
@@ -240,7 +240,7 @@ public interface EntityEditModel {
    * @param <T> the value type
    * @see #persist(Attribute)
    */
-  <T> void setDefaultValue(Attribute<T> attribute, Supplier<T> valueSupplier);
+  <T> void setDefault(Attribute<T> attribute, Supplier<T> valueSupplier);
 
   /**
    * @return a state controlling whether this edit model posts insert, update and delete events
