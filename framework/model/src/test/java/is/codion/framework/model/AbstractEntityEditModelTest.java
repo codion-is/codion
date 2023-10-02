@@ -433,25 +433,25 @@ public final class AbstractEntityEditModelTest {
   }
 
   @Test
-  void persistValue() throws Exception {
+  void persist() throws Exception {
     Entity king = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("KING"));
     employeeEditModel.set(king);
     assertNotNull(employeeEditModel.get(Employee.JOB));
-    employeeEditModel.persistValue(Employee.JOB).set(true);
+    employeeEditModel.persist(Employee.JOB).set(true);
     employeeEditModel.setDefaultValues();
     assertNotNull(employeeEditModel.get(Employee.JOB));
     employeeEditModel.set(king);
-    employeeEditModel.persistValue(Employee.JOB).set(false);
+    employeeEditModel.persist(Employee.JOB).set(false);
     employeeEditModel.setDefaultValues();
     assertNull(employeeEditModel.get(Employee.JOB));
-    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.persistValue(Department.ID).set(true));
-    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.persistValue(Department.ID).get());
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.persist(Department.ID).set(true));
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.persist(Department.ID).get());
   }
 
   @Test
   void containsUnsavedData() throws DatabaseException {
     employeeEditModel.overwriteWarning().set(true);
-    employeeEditModel.persistValue(Employee.DEPARTMENT_FK).set(false);
+    employeeEditModel.persist(Employee.DEPARTMENT_FK).set(false);
 
     Consumer<State> alwaysConfirmListener = data -> data.set(true);
     Consumer<State> alwaysDenyListener = data -> data.set(false);
@@ -491,7 +491,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.put(Employee.HIREDATE, adams.get(Employee.HIREDATE));
     assertFalse(employeeEditModel.exists().get() && employeeEditModel.modified().get());
 
-    employeeEditModel.persistValue(Employee.MGR_FK).set(false);
+    employeeEditModel.persist(Employee.MGR_FK).set(false);
 
     employeeEditModel.put(Employee.MGR_FK, null);//default value JONES
     assertTrue(employeeEditModel.exists().get() && employeeEditModel.modified().get());
@@ -553,7 +553,7 @@ public final class AbstractEntityEditModelTest {
   @Test
   void persistWritableForeignKey() {
     EntityEditModel editModel = new DetailEditModel(employeeEditModel.connectionProvider());
-    assertFalse(editModel.persistValue(Detail.MASTER_FK).get());//not writable
+    assertFalse(editModel.persist(Detail.MASTER_FK).get());//not writable
   }
 
   @Test

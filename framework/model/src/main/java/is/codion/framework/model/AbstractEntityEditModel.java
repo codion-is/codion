@@ -159,7 +159,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.modifiedFunction = Entity::modified;
     this.existsFunction = Entity::exists;
     readOnly.set(entityDefinition().readOnly());
-    configurePersistentForeignKeyValues();
+    configurePersistentForeignKeys();
     bindEventsInternal();
     doSetEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
@@ -196,7 +196,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final State persistValue(Attribute<?> attribute) {
+  public final State persist(Attribute<?> attribute) {
     entityDefinition().attributes().definition(attribute);
 
     return persistValues.computeIfAbsent(attribute, k -> State.state());
@@ -918,10 +918,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private void configurePersistentForeignKeyValues() {
+  private void configurePersistentForeignKeys() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
       entityDefinition().foreignKeys().get().forEach(foreignKey ->
-              persistValue(foreignKey).set(foreignKeyWritable(foreignKey)));
+              persist(foreignKey).set(foreignKeyWritable(foreignKey)));
     }
   }
 
@@ -957,7 +957,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
-    if (persistValue(attributeDefinition.attribute()).get()) {
+    if (persist(attributeDefinition.attribute()).get()) {
       if (attributeDefinition instanceof ForeignKeyDefinition) {
         return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
       }
