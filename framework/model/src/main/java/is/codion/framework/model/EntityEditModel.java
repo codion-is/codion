@@ -68,14 +68,14 @@ public interface EntityEditModel {
    * @see #setDefaultValue(Attribute, Supplier)
    * @see AttributeDefinition#defaultValue()
    */
-  void setDefaultValues();
+  void setDefaults();
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
    * {@link Entity} being edited by this edit model. If {@code entity} is null
-   * the effect is the same as calling {@link #setDefaultValues()}.
+   * the effect is the same as calling {@link #setDefaults()}.
    * @param entity the entity
-   * @see #setDefaultValues()
+   * @see #setDefaults()
    */
   void set(Entity entity);
 
@@ -234,7 +234,7 @@ public interface EntityEditModel {
 
   /**
    * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
-   * Use {@link #setDefaultValues()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
+   * Use {@link #setDefaults()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
    * @param valueSupplier the default value supplier
    * @param <T> the value type

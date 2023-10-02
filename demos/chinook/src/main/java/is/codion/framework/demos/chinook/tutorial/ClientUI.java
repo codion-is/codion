@@ -46,7 +46,7 @@ public final class ClientUI {
         // insert the entity
         editModel.insert();
         // clear the edit model after a successful insert
-        editModel.setDefaultValues();
+        editModel.setDefaults();
       }
       catch (DatabaseException | ValidationException e) {
         JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
@@ -110,7 +110,7 @@ public final class ClientUI {
         // insert the entity
         editModel.insert();
         // clear the edit model after a successful insert
-        editModel.setDefaultValues();
+        editModel.setDefaults();
         // and transfer the focus to the combo box
         artistComboBox.requestFocusInWindow();
       }

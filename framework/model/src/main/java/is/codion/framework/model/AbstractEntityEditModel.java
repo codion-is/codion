@@ -245,7 +245,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setDefaultValues() {
+  public final void setDefaults() {
     if (setEntityAllowed()) {
       doSetEntity(null);
     }
