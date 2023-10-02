@@ -571,11 +571,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsUnsavedData() {
-    return entityExists.get() && modified().get();
-  }
-
-  @Override
   public final boolean isPostEditEvents() {
     return postEditEvents;
   }
@@ -892,7 +887,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private boolean setEntityAllowed() {
-    if (warnAboutUnsavedData && containsUnsavedData()) {
+    if (warnAboutUnsavedData && exists().get() && modified().get()) {
       State confirmation = State.state(true);
       confirmSetEntityEvent.accept(confirmation);
 

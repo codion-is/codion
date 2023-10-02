@@ -92,14 +92,6 @@ public interface EntityEditModel {
   Entity entity();
 
   /**
-   * Returns true if a value of an existing entity has been modified but not saved.
-   * @return true if this edit model contains unsaved data
-   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
-   * @see #exists()
-   */
-  boolean containsUnsavedData();
-
-  /**
    * @param attribute the attribute
    * @return a {@link StateObserver} indicating whether the value of the given attribute is null
    */

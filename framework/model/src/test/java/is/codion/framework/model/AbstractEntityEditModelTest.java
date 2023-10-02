@@ -486,15 +486,15 @@ public final class AbstractEntityEditModelTest {
 
     employeeEditModel.set(adams);
     employeeEditModel.put(Employee.HIREDATE, LocalDate.now());
-    assertTrue(employeeEditModel.containsUnsavedData());
+    assertTrue(employeeEditModel.exists().get() && employeeEditModel.modified().get());
 
     employeeEditModel.put(Employee.HIREDATE, adams.get(Employee.HIREDATE));
-    assertFalse(employeeEditModel.containsUnsavedData());
+    assertFalse(employeeEditModel.exists().get() && employeeEditModel.modified().get());
 
     employeeEditModel.setPersistValue(Employee.MGR_FK, false);
 
     employeeEditModel.put(Employee.MGR_FK, null);//default value JONES
-    assertTrue(employeeEditModel.containsUnsavedData());
+    assertTrue(employeeEditModel.exists().get() && employeeEditModel.modified().get());
   }
 
   @Test
