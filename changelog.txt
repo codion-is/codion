@@ -9701,3 +9701,5 @@
   EntityEditModel.setDefaultValues() renamed setDefaults()
   EntityEditModel.setDefaultValue() renamed setDefault()
   EntityEditModel.addValueListener(Attribute) removed
+  EntityDefinition.Attributes.get() added
+  EntityEditModel.addValueListener(Attribute) reintroduced as addValueChangeListener(), quite useful actually
