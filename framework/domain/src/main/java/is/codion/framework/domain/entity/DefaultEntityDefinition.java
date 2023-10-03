@@ -541,6 +541,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static final long serialVersionUID = 1;
 
     @Override
+    public Collection<Attribute<?>> get() {
+      return entityAttributes.attributeDefinitions.stream()
+              .map(AttributeDefinition::attribute)
+              .collect(toList());
+    }
+
+    @Override
     public List<AttributeDefinition<?>> definitions() {
       return entityAttributes.attributeDefinitions;
     }

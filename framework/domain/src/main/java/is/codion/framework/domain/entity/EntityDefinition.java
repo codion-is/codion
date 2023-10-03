@@ -373,6 +373,11 @@ public interface EntityDefinition {
   interface Attributes {
 
     /**
+     * @return all attributes for this entity type
+     */
+    Collection<Attribute<?>> get();
+
+    /**
      * @return an unmodifiable list view of the attribute definitions
      */
     List<AttributeDefinition<?>> definitions();
