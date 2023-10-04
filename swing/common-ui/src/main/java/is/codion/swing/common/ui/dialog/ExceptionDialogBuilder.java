@@ -9,6 +9,7 @@ import is.codion.common.property.PropertyValue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -28,7 +29,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 
   /**
    * Specifies a list of exception types, which are considered wrapping exceptions, that is, exceptions that wrap a root cause.<br>
-   * By default root cause exceptions are unwrapped, in order to simplify the error message and stack trace.<br>
+   * By default root cause exceptions are unwrapped before being displayed, in order to simplify the error message and stack trace.<br>
    * Replace with an empty list in order to disable unwrapping altogether.<br>
    * Value type: String list<br>
    * Default value: RemoteException, RuntimeException, InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
@@ -41,7 +42,8 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
             catch (ClassNotFoundException e) {
               throw new RuntimeException(e);
             }
-          }, asList(RemoteException.class, RuntimeException.class, InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
+          }, asList(RemoteException.class, RuntimeException.class, InvocationTargetException.class,
+                  ExceptionInInitializerError.class, UndeclaredThrowableException.class));
 
   /**
    * @param message the message to display
@@ -54,6 +56,13 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
    * @return this builder instance
    */
   ExceptionDialogBuilder unwrap(boolean unwrap);
+
+  /**
+   * @param exceptions the exceptions to unwrap before displaying
+   * @return this builder instance
+   * @see #WRAPPER_EXCEPTIONS
+   */
+  ExceptionDialogBuilder unwrap(Collection<Class<? extends Throwable>> exceptions);
 
   /**
    * Displays the exception dialog

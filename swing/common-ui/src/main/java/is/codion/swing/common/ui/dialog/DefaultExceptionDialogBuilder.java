@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialogBuilder>
         implements ExceptionDialogBuilder {
@@ -23,6 +24,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
   private static final int MAXIMUM_MESSAGE_LENGTH = 50;
 
+  private Collection<Class<? extends Throwable>> unwrapExceptions = WRAPPER_EXCEPTIONS.get();
   private String message;
   private boolean unwrap = true;
 
@@ -39,8 +41,14 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   }
 
   @Override
+  public ExceptionDialogBuilder unwrap(Collection<Class<? extends Throwable>> exceptions) {
+    this.unwrapExceptions = requireNonNull(exceptions);
+    return this;
+  }
+
+  @Override
   public void show(Throwable exception) {
-    Throwable rootCause = unwrap ? unwrapExceptions(exception, ExceptionDialogBuilder.WRAPPER_EXCEPTIONS.get()) : exception;
+    Throwable rootCause = unwrap ? unwrapExceptions(exception, unwrapExceptions) : exception;
     setTitle(rootCause);
     setMessage(rootCause);
     try {
