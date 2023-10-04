@@ -9665,3 +9665,4 @@
   DefaultDialogExceptionHandler removed
   ExceptionDialogBuilder.WRAPPER_EXCEPTIONS configuration value added
   ExceptionDialogBuilder.unwrap() added
+  DefaultForeignKeyDefinition.referencedEntityType field removed, unnecessary, ForeignKeyDefinition.referencedType() removed

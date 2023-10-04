@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
 
@@ -18,11 +17,6 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
    */
   @Override
   ForeignKey attribute();
-
-  /**
-   * @return the type of the entity referenced by this foreign key
-   */
-  EntityType referencedType();
 
   /**
    * @return the default query fetch depth for this foreign key

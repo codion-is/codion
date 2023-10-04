@@ -57,6 +57,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 
   /**
    * Displays the exception dialog
+   * @param exception the exception to display
    */
   void show(Throwable exception);
 }
