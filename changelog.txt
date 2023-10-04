@@ -9662,3 +9662,6 @@
   EntityEditModel.addValueListener(Attribute) removed
   EntityDefinition.Attributes.get() added
   EntityEditModel.addValueListener(Attribute) reintroduced as addValueChangeListener(), quite useful actually
+  DefaultDialogExceptionHandler removed
+  ExceptionDialogBuilder.WRAPPER_EXCEPTIONS configuration value added
+  ExceptionDialogBuilder.unwrap() added
