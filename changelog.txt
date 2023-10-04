@@ -9667,3 +9667,4 @@
   ExceptionDialogBuilder.unwrap() added
   DefaultForeignKeyDefinition.referencedEntityType field removed, unnecessary, ForeignKeyDefinition.referencedType() removed
   ExceptionDialogBuilder.unwrap(Collection<Class<? extends Throwable>> exceptions) added
+  EntityTablePanel now uses validators to prevent panelVisible states from being toggled if no panel is available
