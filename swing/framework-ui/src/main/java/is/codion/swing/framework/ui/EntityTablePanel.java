@@ -24,6 +24,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -1444,6 +1445,9 @@ public class EntityTablePanel extends JPanel {
     if (refreshButtonToolBar == null) {
       refreshButtonToolBar = createRefreshButtonToolBar();
     }
+    conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
+    filterPanelVisibleState.addValidator(new PanelAvailableValidator(filterPanel, "filter"));
+    summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
   }
 
   private void setupControls() {
@@ -1492,7 +1496,7 @@ public class EntityTablePanel extends JPanel {
     return tableModel.entities().definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
             .filter(foreignKeyDefinition -> !foreignKeyDefinition.softReference())
-            .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.referencedType().equals(tableModel.entityType()));
+            .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
   }
 
   private void setupTable() {
@@ -1834,6 +1838,24 @@ public class EntityTablePanel extends JPanel {
       control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
 
       return popupMenuControls;
+    }
+  }
+
+  private static final class PanelAvailableValidator implements Value.Validator<Boolean> {
+
+    private final JPanel panel;
+    private final String panelType;
+
+    private PanelAvailableValidator(JPanel panel, String panelType) {
+      this.panel = panel;
+      this.panelType = panelType;
+    }
+
+    @Override
+    public void validate(Boolean visible) throws IllegalArgumentException {
+      if (visible && panel == null) {
+        throw new IllegalArgumentException("No " + panelType + " panel available");
+      }
     }
   }
 

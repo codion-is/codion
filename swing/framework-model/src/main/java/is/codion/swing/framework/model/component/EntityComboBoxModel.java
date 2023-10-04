@@ -30,7 +30,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
@@ -67,7 +66,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
-  private final State respondToEditEvents = State.state(true);
+  private final State respondToEditEvents = State.state();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -100,7 +99,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
     respondToEditEvents.addDataListener(new EditEventListener());
-    addEditListeners();
+    respondToEditEvents.set(true);
   }
 
   @Override
@@ -398,8 +397,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
-    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeys().definition(foreignKey);
-    EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyDefinition.referencedType(), connectionProvider);
+    entities.definition(entityType).foreignKeys().definition(foreignKey);
+    EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider);
     foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
@@ -408,12 +407,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   }
 
-  private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel,
-                                           boolean filter) {
-    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeys().definition(foreignKey);
-    if (!foreignKeyDefinition.referencedType().equals(foreignKeyModel.entityType())) {
+  private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel, boolean filter) {
+    entities.definition(entityType).foreignKeys().definition(foreignKey);
+    if (!foreignKey.referencedType().equals(foreignKeyModel.entityType())) {
       throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
-              + ", should be: " + foreignKeyDefinition.referencedType());
+              + ", should be: " + foreignKey.referencedType());
     }
     //if foreign key filter keys have been set previously, initialize with one of those
     Collection<Entity.Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
@@ -457,18 +455,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     foreignKeyModel.addSelectionListener(listener);
     //initialize
     listener.accept(selectedValue());
-  }
-
-  private void addEditListeners() {
-    EntityEditEvents.addInsertListener(entityType, insertListener);
-    EntityEditEvents.addUpdateListener(entityType, updateListener);
-    EntityEditEvents.addDeleteListener(entityType, deleteListener);
-  }
-
-  private void removeEditListeners() {
-    EntityEditEvents.removeInsertListener(entityType, insertListener);
-    EntityEditEvents.removeUpdateListener(entityType, updateListener);
-    EntityEditEvents.removeDeleteListener(entityType, deleteListener);
   }
 
   private final class ItemSupplier implements Supplier<Collection<Entity>> {
@@ -546,6 +532,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       else {
         removeEditListeners();
       }
+    }
+
+    private void addEditListeners() {
+      EntityEditEvents.addInsertListener(entityType, insertListener);
+      EntityEditEvents.addUpdateListener(entityType, updateListener);
+      EntityEditEvents.addDeleteListener(entityType, deleteListener);
+    }
+
+    private void removeEditListeners() {
+      EntityEditEvents.removeInsertListener(entityType, insertListener);
+      EntityEditEvents.removeUpdateListener(entityType, updateListener);
+      EntityEditEvents.removeDeleteListener(entityType, deleteListener);
     }
   }
 

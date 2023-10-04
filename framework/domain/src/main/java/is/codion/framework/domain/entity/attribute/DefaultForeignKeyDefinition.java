@@ -37,7 +37,6 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
   private static final long serialVersionUID = 1;
 
   private final Set<Column<?>> readOnlyColumns;
-  private final EntityType referencedEntityType;
   private final List<Attribute<?>> attributes;
   private final int fetchDepth;
   private final boolean softReference;
@@ -45,7 +44,6 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
   private DefaultForeignKeyDefinition(DefaultForeignKeyDefinitionBuilder builder) {
     super(builder);
     this.readOnlyColumns = builder.readOnlyColumns;
-    this.referencedEntityType = builder.referencedEntityType;
     this.attributes = builder.attributes;
     this.fetchDepth = builder.fetchDepth;
     this.softReference = builder.softReference;
@@ -54,11 +52,6 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
   @Override
   public ForeignKey attribute() {
     return (ForeignKey) super.attribute();
-  }
-
-  @Override
-  public EntityType referencedType() {
-    return referencedEntityType;
   }
 
   @Override

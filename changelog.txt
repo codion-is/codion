@@ -9703,3 +9703,10 @@
   EntityEditModel.addValueListener(Attribute) removed
   EntityDefinition.Attributes.get() added
   EntityEditModel.addValueListener(Attribute) reintroduced as addValueChangeListener(), quite useful actually
+  DefaultDialogExceptionHandler removed
+  ExceptionDialogBuilder.WRAPPER_EXCEPTIONS configuration value added
+  ExceptionDialogBuilder.unwrap() added
+  DefaultForeignKeyDefinition.referencedEntityType field removed, unnecessary, ForeignKeyDefinition.referencedType() removed
+  ExceptionDialogBuilder.unwrap(Collection<Class<? extends Throwable>> exceptions) added
+  EntityTablePanel now uses validators to prevent panelVisible states from being toggled if no panel is available
+  DefaultFilteredTableModel.DefaultSummaryValueProvider.values() refactoring bug fixed, subset now correct

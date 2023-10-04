@@ -195,7 +195,9 @@ final class LoginPanel extends JPanel {
   private void onValidationFailure(Throwable exception) {
     user.set(null);
     validating.set(false);
-    DefaultDialogExceptionHandler.displayException(exception, Utilities.parentWindow(this));
+    new DefaultExceptionDialogBuilder()
+            .owner(Utilities.parentWindow(this))
+            .show(exception);
     requestInitialFocus();
   }
 

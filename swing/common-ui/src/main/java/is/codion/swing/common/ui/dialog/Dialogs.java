@@ -195,7 +195,9 @@ public final class Dialogs {
    * @param dialogParent the dialog parent window
    */
   public static void displayExceptionDialog(Throwable exception, Window dialogParent) {
-    DefaultDialogExceptionHandler.displayException(exception, dialogParent);
+    new DefaultExceptionDialogBuilder()
+            .owner(dialogParent)
+            .show(exception);
   }
 
   /**

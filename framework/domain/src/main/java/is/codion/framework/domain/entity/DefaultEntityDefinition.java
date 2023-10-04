@@ -431,8 +431,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     if (referencedEntities.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
-    if (!foreignKeyDefinition.referencedType().equals(definition.entityType())) {
-      throw new IllegalArgumentException("Definition for entity " + foreignKeyDefinition.referencedType() +
+    if (!foreignKey.referencedType().equals(definition.entityType())) {
+      throw new IllegalArgumentException("Definition for entity " + foreignKey.referencedType() +
               " expected for " + foreignKey);
     }
     referencedEntities.put(foreignKey, definition);

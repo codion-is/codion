@@ -552,7 +552,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private void validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
-    EntityType referencedType = foreignKeyDefinition.referencedType();
+    EntityType referencedType = foreignKeyDefinition.attribute().referencedType();
     if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedType +
               " expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.entityType());
