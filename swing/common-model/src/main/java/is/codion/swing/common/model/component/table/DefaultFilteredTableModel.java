@@ -635,7 +635,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     @Override
     public ColumnSummaryModel.SummaryValues<T> values() {
       FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
-      boolean subset = tableSelectionModel.selectionEmpty().get() &&
+      boolean subset = tableSelectionModel.selectionNotEmpty().get() &&
               tableSelectionModel.selectionCount() != tableModel.visibleItemCount();
 
       return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);
