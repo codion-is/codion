@@ -90,7 +90,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
   private final State conditionRequired = State.state();
-  private final State respondToEditEvents = State.state(true);
+  private final State respondToEditEvents = State.state();
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -220,9 +220,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
-    addEditListeners();
     bindEvents();
     applyPreferences();
+    respondToEditEvents.set(true);
   }
 
   @Override
@@ -911,16 +911,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     addDataChangedListener(statusListener);
   }
 
-  private void addEditListeners() {
-    entityDefinition().foreignKeys().get().forEach(foreignKey ->
-            EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
-  }
-
-  private void removeEditListeners() {
-    entityDefinition().foreignKeys().get().forEach(foreignKey ->
-            EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
-  }
-
   private List<Entity> queryItems() throws DatabaseException {
     Condition condition = conditionModel.condition();
     if (conditionRequired.get() && !conditionEnabled(conditionModel)) {
@@ -1136,6 +1126,16 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       else {
         removeEditListeners();
       }
+    }
+
+    private void addEditListeners() {
+      entityDefinition().foreignKeys().get().forEach(foreignKey ->
+              EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
+    }
+
+    private void removeEditListeners() {
+      entityDefinition().foreignKeys().get().forEach(foreignKey ->
+              EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
     }
   }
 

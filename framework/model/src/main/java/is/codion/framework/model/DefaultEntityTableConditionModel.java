@@ -78,9 +78,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
             .filter(model -> model.enabled().get())
             .map(DefaultEntityTableConditionModel::condition)
             .collect(Collectors.toCollection(ArrayList::new));
-    Condition additionalCondition = this.additionalCondition.get().get();
-    if (additionalCondition != null) {
-      conditions.add(additionalCondition);
+    Condition condition = additionalCondition.get().get();
+    if (condition != null) {
+      conditions.add(condition);
     }
 
     return conditions.isEmpty() ? all(entityType) : combination(conjunction.get(), conditions);

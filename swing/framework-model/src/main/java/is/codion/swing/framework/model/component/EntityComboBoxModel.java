@@ -51,7 +51,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
-  private final State respondToEditEvents = State.state(true);
+  private final State respondToEditEvents = State.state();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -84,7 +84,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
     respondToEditEvents.addDataListener(new EditEventListener());
-    addEditListeners();
+    respondToEditEvents.set(true);
   }
 
   @Override
@@ -442,18 +442,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     listener.accept(selectedValue());
   }
 
-  private void addEditListeners() {
-    EntityEditEvents.addInsertListener(entityType, insertListener);
-    EntityEditEvents.addUpdateListener(entityType, updateListener);
-    EntityEditEvents.addDeleteListener(entityType, deleteListener);
-  }
-
-  private void removeEditListeners() {
-    EntityEditEvents.removeInsertListener(entityType, insertListener);
-    EntityEditEvents.removeUpdateListener(entityType, updateListener);
-    EntityEditEvents.removeDeleteListener(entityType, deleteListener);
-  }
-
   private final class ItemSupplier implements Supplier<Collection<Entity>> {
 
     @Override
@@ -529,6 +517,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       else {
         removeEditListeners();
       }
+    }
+
+    private void addEditListeners() {
+      EntityEditEvents.addInsertListener(entityType, insertListener);
+      EntityEditEvents.addUpdateListener(entityType, updateListener);
+      EntityEditEvents.addDeleteListener(entityType, deleteListener);
+    }
+
+    private void removeEditListeners() {
+      EntityEditEvents.removeInsertListener(entityType, insertListener);
+      EntityEditEvents.removeUpdateListener(entityType, updateListener);
+      EntityEditEvents.removeDeleteListener(entityType, deleteListener);
     }
   }
 
