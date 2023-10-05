@@ -9670,3 +9670,5 @@
   EntityTablePanel now uses validators to prevent panelVisible states from being toggled if no panel is available
   DefaultFilteredTableModel.DefaultSummaryValueProvider.values() refactoring bug fixed, subset now correct
   LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED renamed OPTIMISTIC_LOCKING
+  EntityPanel no longer adds empty borders around table and edit panels
+  DefaultTabbedApplicationPanelLayout adds an empty border around the tabbed pane

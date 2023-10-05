@@ -13,19 +13,16 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -1064,7 +1061,6 @@ public class EntityPanel extends JPanel {
 
   protected final void initializeEditPanel() {
     editPanel.initialize();
-    editControlPanel.setBorder(Borders.emptyBorder());
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {
@@ -1120,8 +1116,6 @@ public class EntityPanel extends JPanel {
     }
     tablePanel.initialize();
     tablePanel.setMinimumSize(new Dimension(0, 0));
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    tablePanel.setBorder(BorderFactory.createEmptyBorder(0, gap, 0, gap));
   }
 
   /**
