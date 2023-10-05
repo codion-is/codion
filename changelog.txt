@@ -9679,3 +9679,4 @@
   DefaultLocalEntityConnection.dependencies() no longer returns immutable entities, these need to be editable
   DefaultLocalEntityConnection.dependencies() implemented properly
   EntityDependenciesPanel.displayDependenciesDialog() bug fixed, now shows a 'no dependencies' message in case of no dependencies
+  DefaultLocalEntityConnection.dependencies() bug fixed, no longer restricts fetch depth to 0
