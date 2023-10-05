@@ -13,10 +13,12 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -55,6 +57,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingConstants.VERTICAL;
 
@@ -1180,8 +1183,13 @@ public class EntityPanel extends JPanel {
   }
 
   private Window createEditWindow() {
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    JPanel basePanel = Components.borderLayoutPanel()
+            .border(createEmptyBorder(0, gap, 0, gap))
+            .centerComponent(editControlPanel)
+            .build();
     if (USE_FRAME_PANEL_DISPLAY.get()) {
-      return Windows.frame(editControlPanel)
+      return Windows.frame(basePanel)
               .locationRelativeTo(this)
               .title(caption.get())
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -1189,7 +1197,7 @@ public class EntityPanel extends JPanel {
               .build();
     }
 
-    return Dialogs.componentDialog(editControlPanel)
+    return Dialogs.componentDialog(basePanel)
             .owner(this)
             .title(caption.get())
             .modal(false)
