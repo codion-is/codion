@@ -848,7 +848,7 @@ public class EntityPanel extends JPanel {
     int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
 
-    return flowLayoutPanel(alignment)
+    return panel(new FlowLayout(alignment, 0, 0))
             .add(editPanel)
             .build();
   }
