@@ -9,6 +9,7 @@ import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -58,7 +59,7 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
 
   private void bindComboBoxEvents() {
     entityComboBoxModel.addSelectionListener(new SelectedEntityListener());
-    equalValues().value().addDataListener(new EqualValueListener());
+    equalValues().addDataListener(new EqualValuesListener());
     entityComboBoxModel.refresher().addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
   }
 
@@ -66,22 +67,22 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
 
     @Override
     public void accept(Entity selectedEntity) {
-      updatingModel = true;
-      try {
+      if (!updatingModel) {
         setEqualValue(selectedEntity);
-      }
-      finally {
-        updatingModel = false;
       }
     }
   }
 
-  private final class EqualValueListener implements Consumer<Entity> {
+  private final class EqualValuesListener implements Consumer<Set<Entity>> {
 
     @Override
-    public void accept(Entity equalValue) {
-      if (!updatingModel) {
-        entityComboBoxModel.setSelectedItem(equalValue);
+    public void accept(Set<Entity> equalValues) {
+      updatingModel = true;
+      try {
+        entityComboBoxModel.setSelectedItem(equalValues.isEmpty() ? null : equalValues.iterator().next());
+      }
+      finally {
+        updatingModel = false;
       }
     }
   }
