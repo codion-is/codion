@@ -20,7 +20,26 @@ By default, when you select a row using {url-entity-connection}[EntityConnection
 
 This means that selecting tracks performs four queries (track + album, mediatype and genre), but that number of queries is the same whether you select one or a thousand tracks.
 
-The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that no foreign key references are fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit with the whole dependency graph fetched. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *codion.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyFetchDepth{opar}boolean{cpar}[connection.setLimitForeignKeyFetchDepth(false)].
+The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that no foreign key references are fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit with the whole dependency graph fetched. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via a system property:
+
+[source]
+----
+codion.db.limitForeignKeyFetchDepth=false
+----
+
+or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH] configuration value:
+
+[source,java,]
+----
+LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false);
+----
+
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyFetchDepth{opar}boolean{cpar}[setLimitForeignKeyFetchDepth()]
+
+[source,java,]
+----
+connection.setLimitForeignKeyFetchDepth(false);
+----
 
 [source,java,indent=0]
 ----
@@ -166,7 +185,28 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 ==== Optimistic locking
 
-The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system-wide using the *codion.db.useOptimisticLocking=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled{opar}boolean{cpar}[connection.setOptimisticLockingEnabled(false)] or on a per entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLockingEnabled{opar}boolean{cpar}[EntityDefinition.Builder.optimisticLockingEnabled(false)].
+The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system-wide using a system property:
+
+[source]
+----
+codion.db.optimisticLocking=false
+----
+
+or by using the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#OPTIMISTIC_LOCKING[LocalEntityConnection.OPTIMISTIC_LOCKING] configuration value:
+
+[source,java,]
+----
+LocalEntityConnection.OPTIMISTIC_LOCKING.set(false);
+----
+
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLocking{opar}boolean{cpar}[setOptimisticLocking()]:
+
+[source,java,]
+----
+connection.setOptimisticLocking(false);
+----
+
+or on a per entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLocking{opar}boolean{cpar}[EntityDefinition.Builder.optimisticLocking(false)].
 
 For updating by condition.
 

@@ -69,7 +69,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static final String METHOD = "method";
   private static final String ATTRIBUTE = "attribute";
   private static final String COLUMN = "column";
-  private static final String FOREIGN_KEY = "foreignKey";
 
   /**
    * The entity type
@@ -425,9 +424,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
   void setReferencedEntityDefinition(ForeignKey foreignKey, EntityDefinition definition) {
-    requireNonNull(foreignKey, FOREIGN_KEY);
-    requireNonNull(definition, "definition");
-    ForeignKeyDefinition foreignKeyDefinition = foreignKeys.definition(foreignKey);
     if (referencedEntities.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
@@ -697,7 +693,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public ForeignKeyDefinition definition(ForeignKey foreignKey) {
-      ForeignKeyDefinition definition = entityAttributes.foreignKeyDefinitionMap.get(requireNonNull(foreignKey, FOREIGN_KEY));
+      ForeignKeyDefinition definition = entityAttributes.foreignKeyDefinitionMap.get(requireNonNull(foreignKey, "foreignKey"));
       if (definition == null) {
         throw new IllegalArgumentException("Foreign key: " + foreignKey + " not found in entity of type: " + entityType);
       }

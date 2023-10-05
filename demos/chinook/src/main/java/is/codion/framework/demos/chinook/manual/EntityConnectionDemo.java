@@ -170,9 +170,9 @@ public final class EntityConnectionDemo {
 
     Entities entities = connection.entities();
 
-    Entity.Key key42 = entities.primaryKey(Artist.TYPE, 42L);
+    Entity.Key key = entities.primaryKey(Artist.TYPE, 42L);
 
-    Entity artists = connection.select(key42);
+    Entity artist = connection.select(key);
     // end::selectKey[]
   }
 

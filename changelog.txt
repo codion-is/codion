@@ -9710,3 +9710,4 @@
   ExceptionDialogBuilder.unwrap(Collection<Class<? extends Throwable>> exceptions) added
   EntityTablePanel now uses validators to prevent panelVisible states from being toggled if no panel is available
   DefaultFilteredTableModel.DefaultSummaryValueProvider.values() refactoring bug fixed, subset now correct
+  LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED renamed OPTIMISTIC_LOCKING
