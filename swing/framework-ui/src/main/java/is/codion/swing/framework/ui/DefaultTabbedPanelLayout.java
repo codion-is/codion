@@ -424,7 +424,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     private Window createDetailPanelWindow() {
       int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
       JPanel basePanel = Components.borderLayoutPanel()
-              .border(createEmptyBorder(0, gap, 0, gap))
+              .border(createEmptyBorder(gap, gap, 0, gap))
               .centerComponent(detailPanelTabbedPane)
               .build();
       if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {

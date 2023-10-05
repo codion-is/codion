@@ -673,7 +673,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
         JPanel basePanel = Components.borderLayoutPanel()
-                .border(createEmptyBorder(0, gap, 0, gap))
+                .border(createEmptyBorder(gap, gap, 0, gap))
                 .centerComponent(entityPanel)
                 .build();
         Windows.frame(basePanel)
@@ -718,7 +718,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
         JPanel basePanel = Components.borderLayoutPanel()
-                .border(createEmptyBorder(0, gap, 0, gap))
+                .border(createEmptyBorder(gap, gap, 0, gap))
                 .centerComponent(entityPanel)
                 .build();
         Dialogs.componentDialog(basePanel)
