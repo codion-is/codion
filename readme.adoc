@@ -62,7 +62,7 @@ Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and F
 
 Minimalistic bare-bones project, with a local JDBC connection option. A good place to start.
 
-image::documentation/src/docs/asciidoc/images/tutorials/petclinic/owners.png[Petclinic client]
+image::documentation/src/docs/asciidoc/images/petclinic-client.png[Petclinic client]
 
 === https://github.com/codion-is/world[World]
 
@@ -70,7 +70,7 @@ Fully configured multi-module project, with separate client modules configured f
 
 Includes server and server monitor modules and jlink/jpackage configurations.
 
-image::documentation/src/docs/asciidoc/images/tutorials/world/country_cities_table.png[World client]
+image::documentation/src/docs/asciidoc/images/world-client.png[World client]
 
 === https://github.com/codion-is/chinook[Chinook]
 
@@ -206,7 +206,7 @@ public class Store extends DefaultDomain {
                     .maximumLength(100),
             Customer.ACTIVE.define()
                     .column()
-                    .caption("Is active")
+                    .caption("Active")
                     .nullable(false)
                     .defaultValue(true))
             .keyGenerator(identity())
@@ -298,7 +298,7 @@ Function<Entity, String> stringFactory = StringFactory.builder()
         .build();
 
 EntityDefinition.Builder address =
-        Customer.TYPE.define(id, customerId, customerFk, street, city)
+        Address.TYPE.define(id, customerId, customerFk, street, city)
                 .keyGenerator(keyGenerator)
                 .stringFactory(stringFactory)
                 .caption("Address");
@@ -392,9 +392,9 @@ public class StoreDemo {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(new FlatMaterialDarkerContrastIJTheme());
+    UIManager.setLookAndFeel(new FlatMaterialDarkerIJTheme());
 
-    Database database = new H2DatabaseFactory()
+    Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:h2db",
                     "src/main/sql/create_schema_minimal.sql");
 
@@ -405,17 +405,17 @@ public class StoreDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    SwingEntityModel addressModel =
-            new SwingEntityModel(Address.TYPE, connectionProvider);
-    EntityPanel addressPanel =
-            new EntityPanel(addressModel,
-                    new AddressEditPanel(addressModel.editModel()));
-
     SwingEntityModel customerModel =
             new SwingEntityModel(Customer.TYPE, connectionProvider);
     EntityPanel customerPanel =
             new EntityPanel(customerModel,
                     new CustomerEditPanel(customerModel.editModel()));
+
+    SwingEntityModel addressModel =
+            new SwingEntityModel(Address.TYPE, connectionProvider);
+    EntityPanel addressPanel =
+            new EntityPanel(addressModel,
+                    new AddressEditPanel(addressModel.editModel()));
 
     customerModel.addDetailModel(addressModel);
     customerPanel.addDetailPanel(addressPanel);
@@ -424,6 +424,7 @@ public class StoreDemo {
             .conditionPanelVisible().set(true);
 
     customerModel.tableModel().refresh();
+    customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
     customerPanel.initialize();
 
     Dialogs.componentDialog(customerPanel)

@@ -158,7 +158,7 @@ public class Store extends DefaultDomain {
             .build();
 
     EntityDefinition.Builder address =
-            Customer.TYPE.define(id, customerId, customerFk, street, city)
+            Address.TYPE.define(id, customerId, customerFk, street, city)
                     .keyGenerator(keyGenerator)
                     .stringFactory(stringFactory)
                     .caption("Address");
