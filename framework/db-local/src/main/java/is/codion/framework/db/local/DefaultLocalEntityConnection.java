@@ -102,7 +102,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
   private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
-  private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED.get();
+  private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING.get();
   private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
   private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
   private boolean queryCacheEnabled = false;
