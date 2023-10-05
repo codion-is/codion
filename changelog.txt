@@ -9678,3 +9678,4 @@
   EntityPanel adds empty border around the editControlPanel when displayed in a window, for consistency
   DefaultLocalEntityConnection.dependencies() no longer returns immutable entities, these need to be editable
   DefaultLocalEntityConnection.dependencies() implemented properly
+  EntityDependenciesPanel.displayDependenciesDialog() bug fixed, now shows a 'no dependencies' message in case of no dependencies
