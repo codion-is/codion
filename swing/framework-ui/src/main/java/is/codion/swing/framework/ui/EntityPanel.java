@@ -1080,6 +1080,8 @@ public class EntityPanel extends JPanel {
   protected final void initializeEditPanel() {
     editPanel.initialize();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {
       JComponent controlPanel = createEditControlPanel();
