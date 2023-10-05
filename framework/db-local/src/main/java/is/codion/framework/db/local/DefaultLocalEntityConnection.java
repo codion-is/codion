@@ -538,17 +538,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     synchronized (connection) {
-      for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entityTypes.iterator().next())) {
-        List<Entity> dependencies = select(where(foreignKeyReference.attribute().in(entities))
-                .fetchDepth(1)
-                .build())
-                .stream()
-                .map(IMMUTABLE)
-                .collect(toList());
-        if (!dependencies.isEmpty()) {
-          dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
-          dependencyMap.get(foreignKeyReference.entityType()).addAll(dependencies);
+      try {
+        for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entityTypes.iterator().next())) {
+          List<Entity> dependencies = doSelect(where(foreignKeyReference.attribute().in(entities))
+                  .fetchDepth(1)
+                  .build(), 0);//bypass caching
+          if (!dependencies.isEmpty()) {
+            dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
+            dependencyMap.get(foreignKeyReference.entityType()).addAll(dependencies);
+          }
         }
+        commitIfTransactionIsNotOpen();
+      }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        throw translateSQLException(e);
       }
     }
 

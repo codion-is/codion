@@ -229,7 +229,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(Employee.TYPE));
     assertEquals(7, emps.get(Employee.TYPE).size());
-    emps.get(Employee.TYPE).forEach(entity -> assertFalse(entity.mutable()));
+    emps.get(Employee.TYPE).forEach(entity -> assertTrue(entity.mutable()));
 
     Entity emp = connection.selectSingle(Employee.NAME.equalTo("KING"));
     Map<EntityType, Collection<Entity>> deps = connection.dependencies(singletonList(emp));

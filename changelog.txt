@@ -9717,3 +9717,5 @@
   DefaultTabbedPanelLayout adds empty border around the detail tabbed pane when displayed in a window, for consistency
   EntityPanel.createEditBasePanel() now uses a FlowLayout with 0 component gaps, components now aligned with table panel
   EntityPanel adds empty border around the editControlPanel when displayed in a window, for consistency
+  DefaultLocalEntityConnection.dependencies() no longer returns immutable entities, these need to be editable
+  DefaultLocalEntityConnection.dependencies() implemented properly
