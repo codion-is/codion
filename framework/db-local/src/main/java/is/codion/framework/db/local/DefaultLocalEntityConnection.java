@@ -526,10 +526,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entityTypes.iterator().next())) {
         List<Entity> dependencies = select(where(foreignKeyReference.attribute().in(entities))
                 .fetchDepth(1)
-                .build())
-                .stream()
-                .map(IMMUTABLE)
-                .collect(toList());
+                .build());
         if (!dependencies.isEmpty()) {
           dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
           dependencyMap.get(foreignKeyReference.entityType()).addAll(dependencies);
