@@ -9723,3 +9723,4 @@
   DefaultLocalEntityConnection.dependencies() bug fixed, no longer restricts fetch depth to 0
   EntityApplicationPanel.displayEntityPanelDialog() and displayEntityPanelFrame() now add an empty border, for consistency
   Empty borders no longer use 0 top width
+  EntityComboBoxModelConditionModel bug fixed, linked combo box model no longer restricts the equal values to a single entity
