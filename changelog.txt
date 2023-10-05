@@ -9672,3 +9672,4 @@
   LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED renamed OPTIMISTIC_LOCKING
   EntityPanel no longer adds empty borders around table and edit panels
   DefaultTabbedApplicationPanelLayout adds an empty border around the tabbed pane
+  DefaultTabbedPanelLayout, divider size now Layouts.HORIZONTAL_VERTICAL_GAP * 2

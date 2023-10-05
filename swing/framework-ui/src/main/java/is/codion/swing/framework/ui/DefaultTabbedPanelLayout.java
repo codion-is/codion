@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailPanelController;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
@@ -151,6 +152,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
             .continuousLayout(true)
             .oneTouchExpandable(true)
             .border(BorderFactory.createEmptyBorder())//minor facelift when using metal laf
+            .dividerSize(Layouts.HORIZONTAL_VERTICAL_GAP.get() * 2)
             .resizeWeight(splitPaneResizeWeight)
             .leftComponent(entityPanel.editControlTablePanel())
             .rightComponent(detailPanelTabbedPane)
