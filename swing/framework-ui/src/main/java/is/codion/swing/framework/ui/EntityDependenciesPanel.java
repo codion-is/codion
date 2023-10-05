@@ -99,9 +99,7 @@ public final class EntityDependenciesPanel extends JPanel {
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
     Map<EntityType, Collection<Entity>> dependencies = dependencies(entities, connectionProvider, dialogParent);
-    if (!dependencies.isEmpty()) {
-      displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
-    }
+    displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
   }
 
   private static Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities,

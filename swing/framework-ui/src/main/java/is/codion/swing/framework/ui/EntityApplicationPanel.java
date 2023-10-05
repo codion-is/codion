@@ -42,6 +42,7 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -49,6 +50,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityPanel.EntityPanelSelector;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -99,6 +101,7 @@ import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A central application panel class.
@@ -683,7 +686,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       else {
-        Windows.frame(entityPanel)
+        int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+        JPanel basePanel = Components.borderLayoutPanel()
+                .border(createEmptyBorder(gap, gap, 0, gap))
+                .centerComponent(entityPanel)
+                .build();
+        Windows.frame(basePanel)
                 .locationRelativeTo(this)
                 .title(entityPanel.caption().get())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -723,7 +731,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       else {
-        Dialogs.componentDialog(entityPanel)
+        int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+        JPanel basePanel = Components.borderLayoutPanel()
+                .border(createEmptyBorder(gap, gap, 0, gap))
+                .centerComponent(entityPanel)
+                .build();
+        Dialogs.componentDialog(basePanel)
                 .owner(parentWindow().orElse(null))
                 .title(entityPanel.caption().get())
                 .onClosed(e -> {
