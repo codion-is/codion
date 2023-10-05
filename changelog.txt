@@ -9673,3 +9673,4 @@
   EntityPanel no longer adds empty borders around table and edit panels
   DefaultTabbedApplicationPanelLayout adds an empty border around the tabbed pane
   DefaultTabbedPanelLayout, divider size now Layouts.HORIZONTAL_VERTICAL_GAP * 2
+  DefaultTabbedPanelLayout adds empty border around the detail tabbed pane when displayed in a window, for consistency

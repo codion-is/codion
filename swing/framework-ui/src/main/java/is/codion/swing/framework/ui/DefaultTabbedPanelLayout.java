@@ -19,7 +19,7 @@ import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
@@ -45,6 +45,7 @@ import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
@@ -151,7 +152,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)
-            .border(BorderFactory.createEmptyBorder())//minor facelift when using metal laf
+            .border(createEmptyBorder())//minor facelift when using metal laf
             .dividerSize(Layouts.HORIZONTAL_VERTICAL_GAP.get() * 2)
             .resizeWeight(splitPaneResizeWeight)
             .leftComponent(entityPanel.editControlTablePanel())
@@ -421,8 +422,13 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     }
 
     private Window createDetailPanelWindow() {
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      JPanel basePanel = Components.borderLayoutPanel()
+              .border(createEmptyBorder(0, gap, 0, gap))
+              .centerComponent(detailPanelTabbedPane)
+              .build();
       if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
-        return Windows.frame(detailPanelTabbedPane)
+        return Windows.frame(basePanel)
                 .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
@@ -434,7 +440,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
                 .build();
       }
 
-      return Dialogs.componentDialog(detailPanelTabbedPane)
+      return Dialogs.componentDialog(basePanel)
               .owner(entityPanel)
               .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
               .modal(false)
