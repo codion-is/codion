@@ -34,7 +34,6 @@ import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
@@ -100,6 +99,8 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
   @Override
   public void layoutPanel(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    this.entityPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
     tableDetailSplitPane = createTableDetailSplitPane();
     detailPanelTabbedPane = createDetailTabbedPane();
     entityPanel.setLayout(borderLayout());
@@ -437,13 +438,8 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     }
 
     private Window createDetailPanelWindow() {
-      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-      JPanel basePanel = Components.borderLayoutPanel()
-              .border(createEmptyBorder(gap, gap, 0, gap))
-              .centerComponent(detailPanelTabbedPane)
-              .build();
       if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
-        return Windows.frame(basePanel)
+        return Windows.frame(detailPanelTabbedPane)
                 .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
@@ -455,7 +451,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
                 .build();
       }
 
-      return Dialogs.componentDialog(basePanel)
+      return Dialogs.componentDialog(detailPanelTabbedPane)
               .owner(entityPanel)
               .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
               .modal(false)
