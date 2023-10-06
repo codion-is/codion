@@ -14,7 +14,7 @@ final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValu
   TemporalFieldValue(TemporalField<T> component, UpdateOn updateOn) {
     super(component);
     if (updateOn == UpdateOn.KEYSTROKE) {
-      component.addTemporalListener(value -> notifyValueChange());
+      component.addTemporalListener(value -> notifyListeners());
     }
     else {
       component.addFocusListener(new NotifyOnFocusLost());
@@ -35,7 +35,7 @@ final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValu
     @Override
     public void focusLost(FocusEvent e) {
       if (!e.isTemporary()) {
-        notifyValueChange();
+        notifyListeners();
       }
     }
   }

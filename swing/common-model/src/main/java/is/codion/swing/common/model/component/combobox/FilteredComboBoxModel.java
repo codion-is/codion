@@ -592,7 +592,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
     private SelectorValue(ItemFinder<T, V> itemFinder) {
       this.itemFinder = requireNonNull(itemFinder);
-      addSelectionListener(selected -> notifyValueChange());
+      addSelectionListener(selected -> notifyListeners());
     }
 
     @Override

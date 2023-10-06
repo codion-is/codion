@@ -29,7 +29,7 @@ final class BooleanToggleButtonValue<C extends AbstractButton> extends AbstractC
   private final class NotifyOnItemEvent implements ItemListener {
     @Override
     public void itemStateChanged(ItemEvent itemEvent) {
-      notifyValueChange();
+      notifyListeners();
     }
   }
 }

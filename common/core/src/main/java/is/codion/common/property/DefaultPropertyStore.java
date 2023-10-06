@@ -295,7 +295,7 @@ final class DefaultPropertyStore implements PropertyStore {
       boolean wasNotNull = value != null;
       setValue(null);
       if (wasNotNull) {
-        notifyValueChange();
+        notifyListeners();
       }
     }
 

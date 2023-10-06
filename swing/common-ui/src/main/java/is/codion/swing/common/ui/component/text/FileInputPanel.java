@@ -112,7 +112,7 @@ public final class FileInputPanel extends JPanel {
 
     private FileInputPanelValue(FileInputPanel fileInputPanel) {
       super(fileInputPanel);
-      fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+      fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
     }
 
     @Override

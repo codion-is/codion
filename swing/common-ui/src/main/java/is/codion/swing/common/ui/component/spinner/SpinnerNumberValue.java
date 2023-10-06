@@ -11,7 +11,7 @@ final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<
 
   SpinnerNumberValue(JSpinner spinner) {
     super(spinner);
-    spinner.getModel().addChangeListener(e -> notifyValueChange());
+    spinner.getModel().addChangeListener(e -> notifyListeners());
   }
 
   @Override

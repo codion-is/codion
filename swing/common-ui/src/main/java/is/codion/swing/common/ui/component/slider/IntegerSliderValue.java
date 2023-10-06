@@ -11,7 +11,7 @@ final class IntegerSliderValue extends AbstractComponentValue<Integer, JSlider> 
 
   IntegerSliderValue(JSlider slider) {
     super(slider, 0);
-    slider.getModel().addChangeListener(e -> notifyValueChange());
+    slider.getModel().addChangeListener(e -> notifyListeners());
   }
 
   @Override
