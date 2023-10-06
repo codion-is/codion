@@ -5,9 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
-import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.BorderFactory;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,8 +27,6 @@ final class DefaultTabbedApplicationLayout implements TabbedApplicationLayout {
     applicationTabPane = createApplicationTabPane();
     //initialize first panel
     selectedPanel().ifPresent(EntityPanel::initialize);
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    applicationPanel.setBorder(BorderFactory.createEmptyBorder(0, gap, 0, gap));
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     applicationPanel.add(borderLayoutPanel()
