@@ -18,19 +18,17 @@ import static java.util.Objects.requireNonNull;
 public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
   /**
-   * Specifies when a Value instance should notify its listeners.
+   * Specifies when a Value instance notifies its listeners.
    */
   enum Notify {
     /**
-     * Never notify.
-     */
-    NEVER,
-    /**
-     * When the underlying value is set, regardless of whether it changed or not.
+     * Notify listeners when the underlying value is set via {@link Value#set(Object)},
+     * regardless of whether or not the new value is equal to the previous value.
      */
     WHEN_SET,
     /**
-     * When the underlying value changes.
+     * Notify listeners when the underlying value is changed via {@link Value#set(Object)},
+     * that is, only when the new value is not equal to the previous value.
      */
     WHEN_CHANGED
   }
@@ -131,26 +129,47 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
   }
 
   /**
-   * Creates a new {@link Value} instance, wrapping a null initial value
+   * Creates a new {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
    * @param <T> the value type
    * @return a Value for the given type
    */
   static <T> Value<T> value() {
-    return value(null);
+    return value(Notify.WHEN_CHANGED);
   }
 
   /**
-   * Creates a new {@link Value} instance
+   * Creates a new {@link Value} instance, wrapping a null initial value
+   * @param <T> the value type
+   * @param notify specifies when this value notifies its listeners
+   * @return a Value for the given type
+   */
+  static <T> Value<T> value(Notify notify) {
+    return value(null, notify);
+  }
+
+  /**
+   * Creates a new {@link Value} instance, using {@link Notify#WHEN_CHANGED}.
    * @param initialValue the initial value
    * @param <T> the value type
    * @return a {@link Value} with given initial value
    */
   static <T> Value<T> value(T initialValue) {
-    return new DefaultValue<>(initialValue, null);
+    return new DefaultValue<>(initialValue, null, Notify.WHEN_CHANGED);
   }
 
   /**
    * Creates a new {@link Value} instance
+   * @param initialValue the initial value
+   * @param notify specifies when this value notifies its listeners
+   * @param <T> the value type
+   * @return a {@link Value} with given initial value
+   */
+  static <T> Value<T> value(T initialValue, Notify notify) {
+    return new DefaultValue<>(initialValue, null, notify);
+  }
+
+  /**
+   * Creates a new {@link Value} instance, using {@link Notify#WHEN_CHANGED}.
    * @param initialValue the initial value
    * @param nullValue the actual value to use when the value is set to null
    * @param <T> the value type
@@ -158,6 +177,19 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * @throws NullPointerException in case {@code nullValue} is null
    */
   static <T> Value<T> value(T initialValue, T nullValue) {
-    return new DefaultValue<>(initialValue, requireNonNull(nullValue));
+    return value(initialValue, requireNonNull(nullValue), Notify.WHEN_CHANGED);
+  }
+
+  /**
+   * Creates a new {@link Value} instance
+   * @param initialValue the initial value
+   * @param nullValue the actual value to use when the value is set to null
+   * @param notify specifies when this value notifies its listeners
+   * @param <T> the value type
+   * @return a {@link Value} with given initial value
+   * @throws NullPointerException in case {@code nullValue} is null
+   */
+  static <T> Value<T> value(T initialValue, T nullValue, Notify notify) {
+    return new DefaultValue<>(initialValue, requireNonNull(nullValue), notify);
   }
 }

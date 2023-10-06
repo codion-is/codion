@@ -15,8 +15,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   private final Set<T> values = new LinkedHashSet<>();
   private final Value<T> value = new SingleValue();
 
-  DefaultValueSet(Set<T> initialValues) {
-    super(emptySet(), Notify.WHEN_CHANGED);
+  DefaultValueSet(Set<T> initialValues, Notify notify) {
+    super(emptySet(), notify);
     set(requireNonNull(initialValues, "initialValues"));
   }
 

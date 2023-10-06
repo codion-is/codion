@@ -39,17 +39,18 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   /**
-   * Creates an {@link AbstractValue} instance, which does not notify listeners when set.
+   * Creates an {@link AbstractValue} instance, which does not notify listeners.
    * @param nullValue the value to use instead of null
    */
   protected AbstractValue(T nullValue) {
-    this(nullValue, Notify.NEVER);
+    this.nullValue = nullValue;
+    this.notify = null;
   }
 
   /**
    * Creates an {@link AbstractValue} instance.
    * @param nullValue the value to use instead of null
-   * @param notify specifies whether to notify listeners via {@link #notifyListeners()} when the value is set via {@link #set(Object)}
+   * @param notify specifies when to notify listeners
    */
   protected AbstractValue(T nullValue, Notify notify) {
     this.nullValue = nullValue;
