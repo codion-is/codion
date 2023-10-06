@@ -9685,3 +9685,4 @@
   EntityComboBoxModelConditionModel bug fixed, linked combo box model no longer restricts the equal values to a single entity
   EntityPanel, editControlPanel now with an empty border with default top and bottom widths
   DefaultTabbedPanelLayout now handles adding an empty border around the EntityPanel
+  EntitySearchModel.performQuery() renamed search()

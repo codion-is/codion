@@ -287,7 +287,7 @@ public final class EntitySearchField extends HintTextField {
       else {
         if (model.searchStringModified().get()) {
           try {
-            List<Entity> queryResult = performQuery();
+            List<Entity> queryResult = performSearch();
             if (queryResult.size() == 1) {
               model.selectedEntities().set(queryResult);
             }
@@ -314,10 +314,10 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private List<Entity> performQuery() {
+  private List<Entity> performSearch() {
     WaitCursor.show(this);
     try {
-      return model.performQuery();
+      return model.search();
     }
     finally {
       WaitCursor.hide(this);

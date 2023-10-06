@@ -70,7 +70,7 @@ public interface EntitySearchModel {
    * @return a list containing the entities fulfilling the current condition
    * @throws IllegalStateException in case no search attributes are specified
    */
-  List<Entity> performQuery();
+  List<Entity> search();
 
   /**
    * Sets the additional search condition supplier to use when performing the next search.
