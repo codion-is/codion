@@ -34,9 +34,9 @@ final class DefaultState implements State {
   }
 
   @Override
-  public void set(Boolean value) {
+  public boolean set(Boolean value) {
     synchronized (this.value) {
-      this.value.set(value);
+      return this.value.set(value);
     }
   }
 

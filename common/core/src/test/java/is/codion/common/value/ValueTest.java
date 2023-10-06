@@ -65,7 +65,7 @@ public class ValueTest {
         assertNotNull(data);
       }
     });
-    intValue.set(42);
+    assertFalse(intValue.set(42));
     assertEquals(0, eventCounter.get());
     intValue.set(20);
     assertEquals(1, eventCounter.get());
