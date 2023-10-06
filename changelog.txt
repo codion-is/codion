@@ -9687,3 +9687,4 @@
   DefaultTabbedPanelLayout now handles adding an empty border around the EntityPanel
   EntitySearchModel.performQuery() renamed search()
   Value.set() now returns boolean, indicating whether the underlying value changed
+  Value.Notify enum added, used in AbstractValue

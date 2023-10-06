@@ -16,7 +16,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   private final Value<T> value = new SingleValue();
 
   DefaultValueSet(Set<T> initialValues) {
-    super(emptySet(), true);
+    super(emptySet(), Notify.WHEN_CHANGED);
     set(requireNonNull(initialValues, "initialValues"));
   }
 
@@ -82,7 +82,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   private class SingleValue extends AbstractValue<T> {
 
     private SingleValue() {
-      super(null, false);
+      super(null, Notify.NEVER);
       DefaultValueSet.this.addListener(this::notifyValueChange);
     }
 

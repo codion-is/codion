@@ -8,7 +8,7 @@ final class DefaultValue<T> extends AbstractValue<T> {
   private T value;
 
   DefaultValue(T initialValue, T nullValue) {
-    super(nullValue, true);
+    super(nullValue, Notify.WHEN_CHANGED);
     set(initialValue);
   }
 

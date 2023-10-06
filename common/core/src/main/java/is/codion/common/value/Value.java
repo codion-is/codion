@@ -18,6 +18,24 @@ import static java.util.Objects.requireNonNull;
 public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
   /**
+   * Specifies when a Value instance should notify its listeners.
+   */
+  enum Notify {
+    /**
+     * Never notify.
+     */
+    NEVER,
+    /**
+     * When the underlying value is set, regardless of whether it changed or not.
+     */
+    WHEN_SET,
+    /**
+     * When the underlying value changes.
+     */
+    WHEN_CHANGED
+  }
+
+  /**
    * Sets the value
    * @param value the value
    * @throws IllegalArgumentException in case the given value is invalid

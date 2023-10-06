@@ -18,8 +18,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract {@link Value} implementation handling everything except the value itself.<br><br>
- * The constructor parameter {@code notifyOnSet} specifies whether this {@link Value} instance should automatically call
- * {@link #notifyValueChange()} when the value is changed via {@link AbstractValue#set(Object)}.
+ * The constructor parameter {@code notify} specifies under what circumstances this {@link Value} instance should call
+ * {@link #notifyValueChange()} when the value is set via {@link AbstractValue#set(Object)}.
  * Some implementations may want to do this manually.
  * @param <T> the value type
  */
@@ -27,7 +27,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   private final Event<T> changeEvent = Event.event();
   private final T nullValue;
-  private final boolean notifyValueChange;
+  private final Notify notify;
   private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
   private final Map<Value<T>, ValueLink<T>> linkedValues = new LinkedHashMap<>(0);
   private final Consumer<T> originalValueListener = new OriginalValueListener();
@@ -43,17 +43,17 @@ public abstract class AbstractValue<T> implements Value<T> {
    * @param nullValue the value to use instead of null
    */
   protected AbstractValue(T nullValue) {
-    this(nullValue, false);
+    this(nullValue, Notify.NEVER);
   }
 
   /**
    * Creates an {@link AbstractValue} instance.
    * @param nullValue the value to use instead of null
-   * @param notifyValueChange specifies whether to automatically call {@link #notifyValueChange()} when the value is changed via {@link #set(Object)}
+   * @param notify specifies whether to notify listeners via {@link #notifyValueChange()} when the value is set via {@link #set(Object)}
    */
-  protected AbstractValue(T nullValue, boolean notifyValueChange) {
+  protected AbstractValue(T nullValue, Notify notify) {
     this.nullValue = nullValue;
-    this.notifyValueChange = notifyValueChange;
+    this.notify = requireNonNull(notify);
   }
 
   @Override
@@ -65,7 +65,10 @@ public abstract class AbstractValue<T> implements Value<T> {
     T previousValue = get();
     setValue(newValue);
     boolean valueChanged = !Objects.equals(previousValue, newValue);
-    if (valueChanged && notifyValueChange) {
+    if (notify == Notify.WHEN_SET) {
+      notifyValueChange();
+    }
+    else if (valueChanged && notify == Notify.WHEN_CHANGED) {
       notifyValueChange();
     }
 
