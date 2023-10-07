@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -69,7 +70,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * The selected entities
    */
-  private final ValueSet<Entity> selectedEntities = ValueSet.valueSet();
+  private final ValueSet<Entity> selectedEntities = ValueSet.valueSet(Notify.WHEN_SET);
 
   /**
    * The EntityConnectionProvider instance used by this EntitySearchModel
@@ -159,7 +160,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public List<Entity> performQuery() {
+  public List<Entity> search() {
     try {
       return connectionProvider.connection().select(select());
     }

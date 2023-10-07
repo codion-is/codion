@@ -22,8 +22,8 @@ final class DefaultValue<T> extends AbstractValue<T> {
 
   private T value;
 
-  DefaultValue(T initialValue, T nullValue) {
-    super(nullValue, true);
+  DefaultValue(T initialValue, T nullValue, Notify notify) {
+    super(nullValue, notify);
     set(initialValue);
   }
 

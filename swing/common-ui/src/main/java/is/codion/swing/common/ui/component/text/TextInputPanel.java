@@ -378,7 +378,7 @@ public final class TextInputPanel extends JPanel {
 
     private TextInputPanelValue(TextInputPanel textInputPanel) {
       super(textInputPanel);
-      textInputPanel.textField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+      textInputPanel.textField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
     }
 
     @Override

@@ -338,7 +338,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
     private BooleanButtonModelValue(ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(itemEvent -> notifyValueChange());
+      buttonModel.addItemListener(itemEvent -> notifyListeners());
     }
 
     @Override

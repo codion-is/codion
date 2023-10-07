@@ -28,37 +28,37 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link is.codion.common.model.table.ColumnConditionModel} implementation based on a {@link EntitySearchModel}.
- * For instances use the {@link #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)} factory method.
- * @see #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)
+ * For instances use the {@link #entitySearchConditionModel(ForeignKey, EntitySearchModel)} factory method.
+ * @see #entitySearchConditionModel(ForeignKey, EntitySearchModel)
  */
-public final class EntitySearchModelConditionModel extends AbstractForeignKeyConditionModel {
+public final class EntitySearchConditionModel extends AbstractForeignKeyConditionModel {
 
   private final EntitySearchModel entitySearchModel;
 
   private boolean updatingModel = false;
 
-  private EntitySearchModelConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
+  private EntitySearchConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
     super(foreignKey);
     this.entitySearchModel = requireNonNull(entitySearchModel, "entitySearchModel");
     bindSearchModelEvents();
   }
 
   /**
-   * @return the {@link EntitySearchModel} used by this {@link EntitySearchModelConditionModel}
+   * @return the {@link EntitySearchModel} used by this {@link EntitySearchConditionModel}
    */
-  public EntitySearchModel entitySearchModel() {
+  public EntitySearchModel searchModel() {
     return entitySearchModel;
   }
 
   /**
-   * Instantiates a new {@link EntitySearchModelConditionModel} instance.
+   * Instantiates a new {@link EntitySearchConditionModel} instance.
    * @param foreignKey the foreign key
    * @param entitySearchModel a EntitySearchModel
-   * @return a new {@link EntitySearchModelConditionModel} instance.
+   * @return a new {@link EntitySearchConditionModel} instance.
    */
-  public static EntitySearchModelConditionModel entitySearchModelConditionModel(ForeignKey foreignKey,
-                                                                                EntitySearchModel entitySearchModel) {
-    return new EntitySearchModelConditionModel(foreignKey, entitySearchModel);
+  public static EntitySearchConditionModel entitySearchConditionModel(ForeignKey foreignKey,
+                                                                      EntitySearchModel entitySearchModel) {
+    return new EntitySearchConditionModel(foreignKey, entitySearchModel);
   }
 
   private void bindSearchModelEvents() {
@@ -70,13 +70,8 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
 
     @Override
     public void accept(Set<Entity> selectedEntities) {
-      updatingModel = true;
-      try {
-        setEqualValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
+      if (!updatingModel) {
         setEqualValues(selectedEntities);
-      }
-      finally {
-        updatingModel = false;
       }
     }
   }
@@ -85,8 +80,12 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
 
     @Override
     public void accept(Set<Entity> equalValues) {
-      if (!updatingModel) {
+      updatingModel = true;
+      try {
         entitySearchModel.selectedEntities().set(equalValues);
+      }
+      finally {
+        updatingModel = false;
       }
     }
   }

@@ -30,8 +30,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   private final Set<T> values = new LinkedHashSet<>();
   private final Value<T> value = new SingleValue();
 
-  DefaultValueSet(Set<T> initialValues) {
-    super(emptySet(), true);
+  DefaultValueSet(Set<T> initialValues, Notify notify) {
+    super(emptySet(), notify);
     set(requireNonNull(initialValues, "initialValues"));
   }
 
@@ -97,8 +97,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   private class SingleValue extends AbstractValue<T> {
 
     private SingleValue() {
-      super(null, false);
-      DefaultValueSet.this.addListener(this::notifyValueChange);
+      super(null);
+      DefaultValueSet.this.addListener(this::notifyListeners);
     }
 
     @Override

@@ -48,7 +48,7 @@ final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractC
     @Override
     public void itemStateChanged(ItemEvent e) {
       if (e.getStateChange() == ItemEvent.SELECTED) {
-        notifyValueChange();
+        notifyListeners();
       }
     }
   }

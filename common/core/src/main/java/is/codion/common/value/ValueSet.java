@@ -74,21 +74,42 @@ public interface ValueSet<T> extends Value<Set<T>> {
   Value<T> value();
 
   /**
-   * Creates a new empty {@link ValueSet}
+   * Creates a new empty {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
    * @param <T> the value type
    * @return a new {@link ValueSet}
    */
   static <T> ValueSet<T> valueSet() {
-    return valueSet(Collections.emptySet());
+    return valueSet(Collections.emptySet(), Notify.WHEN_CHANGED);
   }
 
   /**
-   * Creates a new {@link ValueSet}
+   * Creates a new empty {@link ValueSet}
+   * @param <T> the value type
+   * @param notify specifies when this value set notifies its listeners
+   * @return a new {@link ValueSet}
+   */
+  static <T> ValueSet<T> valueSet(Notify notify) {
+    return valueSet(Collections.emptySet(), notify);
+  }
+
+  /**
+   * Creates a new {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
    * @param initialValues the initial values, may not be null
    * @param <T> the value type
    * @return a new {@link ValueSet}
    */
   static <T> ValueSet<T> valueSet(Set<T> initialValues) {
-    return new DefaultValueSet<>(initialValues);
+    return valueSet(initialValues, Notify.WHEN_CHANGED);
+  }
+
+  /**
+   * Creates a new {@link ValueSet}
+   * @param initialValues the initial values, may not be null
+   * @param notify specifies when this value set notifies its listeners
+   * @param <T> the value type
+   * @return a new {@link ValueSet}
+   */
+  static <T> ValueSet<T> valueSet(Set<T> initialValues, Notify notify) {
+    return new DefaultValueSet<>(initialValues, notify);
   }
 }

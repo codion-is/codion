@@ -356,8 +356,9 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     private void activateDetailModelLink(SwingEntityModel detailModel) {
       SwingEntityModel model = entityPanel.model();
       if (model.containsDetailModel(detailModel)) {
-        model.activeDetailModels().forEach(linkedDetailModel ->
-                model.detailModelLink(linkedDetailModel).active().set(false));
+        model.activeDetailModels().stream()
+                .filter(activeDetailModel -> activeDetailModel != detailModel)
+                .forEach(activeDetailModel -> model.detailModelLink(activeDetailModel).active().set(false));
         model.detailModelLink(detailModel).active().set(true);
       }
     }

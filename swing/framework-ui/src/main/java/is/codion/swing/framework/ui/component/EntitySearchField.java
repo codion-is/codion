@@ -302,7 +302,7 @@ public final class EntitySearchField extends HintTextField {
       else {
         if (model.searchStringModified().get()) {
           try {
-            List<Entity> queryResult = performQuery();
+            List<Entity> queryResult = performSearch();
             if (queryResult.size() == 1) {
               model.selectedEntities().set(queryResult);
             }
@@ -329,10 +329,10 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private List<Entity> performQuery() {
+  private List<Entity> performSearch() {
     WaitCursor.show(this);
     try {
-      return model.performQuery();
+      return model.search();
     }
     finally {
       WaitCursor.hide(this);
@@ -357,7 +357,7 @@ public final class EntitySearchField extends HintTextField {
 
     private SearchStringValue(JTextField searchField) {
       this.searchField = searchField;
-      this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+      this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
     }
 
     @Override
@@ -635,7 +635,7 @@ public final class EntitySearchField extends HintTextField {
 
     private SingleSelectionValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.model().selectedEntity().addListener(this::notifyValueChange);
+      searchField.model().selectedEntity().addListener(this::notifyListeners);
     }
 
     @Override
@@ -653,7 +653,7 @@ public final class EntitySearchField extends HintTextField {
 
     private MultiSelectionValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.model().selectedEntities().addListener(this::notifyValueChange);
+      searchField.model().selectedEntities().addListener(this::notifyListeners);
     }
 
     @Override

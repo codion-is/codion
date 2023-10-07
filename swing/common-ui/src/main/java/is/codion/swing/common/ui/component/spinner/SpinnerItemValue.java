@@ -32,7 +32,7 @@ final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
     if (!(spinner.getModel() instanceof SpinnerListModel)) {
       throw new IllegalArgumentException("Spinner model must be a SpinnerListModel");
     }
-    spinner.getModel().addChangeListener(e -> notifyValueChange());
+    spinner.getModel().addChangeListener(e -> notifyListeners());
   }
 
   @Override

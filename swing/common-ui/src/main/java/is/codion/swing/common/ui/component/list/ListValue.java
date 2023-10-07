@@ -31,7 +31,7 @@ final class ListValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
 
   ListValue(JList<T> list) {
     super(list);
-    list.addListSelectionListener(e -> notifyValueChange());
+    list.addListSelectionListener(e -> notifyListeners());
   }
 
   @Override

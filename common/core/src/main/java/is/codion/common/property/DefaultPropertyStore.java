@@ -274,7 +274,7 @@ final class DefaultPropertyStore implements PropertyStore {
     private T value;
 
     private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
-      super(defaultValue, true);
+      super(defaultValue, Notify.WHEN_CHANGED);
       this.propertyName = requireNonNull(propertyName);
       this.encoder = requireNonNull(encoder);
       set(getInitialValue(propertyName, requireNonNull(decoder)));
@@ -310,7 +310,7 @@ final class DefaultPropertyStore implements PropertyStore {
       boolean wasNotNull = value != null;
       setValue(null);
       if (wasNotNull) {
-        notifyValueChange();
+        notifyListeners();
       }
     }
 

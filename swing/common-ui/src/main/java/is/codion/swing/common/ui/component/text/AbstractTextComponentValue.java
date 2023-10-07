@@ -80,7 +80,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
   private final class NotifyOnContentsChanged implements DocumentAdapter {
     @Override
     public void contentsChanged(DocumentEvent e) {
-      notifyValueChange();
+      notifyListeners();
     }
   }
 
@@ -88,7 +88,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
     @Override
     public void focusLost(FocusEvent e) {
       if (!e.isTemporary()) {
-        notifyValueChange();
+        notifyListeners();
       }
     }
   }

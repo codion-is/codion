@@ -1120,7 +1120,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = editModel;
       this.attribute = attribute;
-      this.editModel.addValueListener(attribute, valueChange -> notifyValueChange());
+      this.editModel.addValueListener(attribute, valueChange -> notifyListeners());
     }
 
     @Override

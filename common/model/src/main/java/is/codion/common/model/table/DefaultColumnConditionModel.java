@@ -24,6 +24,7 @@ import is.codion.common.event.Event;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 
 import java.text.Format;
@@ -40,10 +41,10 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
-  private final ValueSet<T> equalValues = ValueSet.valueSet();
+  private final ValueSet<T> equalValues = ValueSet.valueSet(Notify.WHEN_SET);
   private final Value<T> equalValue = equalValues.value();
-  private final Value<T> upperBoundValue = Value.value();
-  private final Value<T> lowerBoundValue = Value.value();
+  private final Value<T> upperBoundValue = Value.value(Notify.WHEN_SET);
+  private final Value<T> lowerBoundValue = Value.value(Notify.WHEN_SET);
   private final Value<Operator> operator = Value.value(Operator.EQUAL, Operator.EQUAL);
   private final Event<?> conditionChangedEvent = Event.event();
 
