@@ -64,5 +64,13 @@ public class EntitySearchModelConditionModelTest {
 
     searchEntities = conditionModel.getEqualValues();
     assertTrue(searchEntities.isEmpty());
+
+    conditionModel.setEqualValue(sales);
+    assertEquals("SALES", conditionModel.entitySearchModel().searchString().get());
+    sales.put(Department.NAME, "sales");
+    conditionModel.entitySearchModel().selectedEntity().set(sales);
+    sales.put(Department.NAME, "SAles");
+    conditionModel.setEqualValue(sales);
+    assertEquals("SAles", conditionModel.entitySearchModel().searchString().get());
   }
 }

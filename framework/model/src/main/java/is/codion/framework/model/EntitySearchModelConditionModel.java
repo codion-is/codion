@@ -57,7 +57,6 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
     public void accept(Set<Entity> selectedEntities) {
       updatingModel = true;
       try {
-        setEqualValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
         setEqualValues(selectedEntities);
       }
       finally {
