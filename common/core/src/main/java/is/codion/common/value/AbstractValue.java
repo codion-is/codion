@@ -69,7 +69,7 @@ public abstract class AbstractValue<T> implements Value<T> {
     if (notify == Notify.WHEN_SET) {
       notifyListeners();
     }
-    else if (valueChanged && notify == Notify.WHEN_CHANGED) {
+    else if (notify == Notify.WHEN_CHANGED && valueChanged) {
       notifyListeners();
     }
 

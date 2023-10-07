@@ -55,12 +55,8 @@ public final class EntitySearchConditionModel extends AbstractForeignKeyConditio
 
     @Override
     public void accept(Set<Entity> selectedEntities) {
-      updatingModel = true;
-      try {
+      if (!updatingModel) {
         setEqualValues(selectedEntities);
-      }
-      finally {
-        updatingModel = false;
       }
     }
   }
@@ -69,8 +65,12 @@ public final class EntitySearchConditionModel extends AbstractForeignKeyConditio
 
     @Override
     public void accept(Set<Entity> equalValues) {
-      if (!updatingModel) {
+      updatingModel = true;
+      try {
         entitySearchModel.selectedEntities().set(equalValues);
+      }
+      finally {
+        updatingModel = false;
       }
     }
   }
