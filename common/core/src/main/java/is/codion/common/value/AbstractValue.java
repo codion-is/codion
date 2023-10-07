@@ -65,11 +65,11 @@ public abstract class AbstractValue<T> implements Value<T> {
     }
     T previousValue = get();
     setValue(newValue);
-    boolean valueChanged = !Objects.equals(previousValue, newValue);
     if (notify == Notify.WHEN_SET) {
       notifyListeners();
     }
-    else if (notify == Notify.WHEN_CHANGED && valueChanged) {
+    boolean valueChanged = !Objects.equals(previousValue, newValue);
+    if (notify == Notify.WHEN_CHANGED && valueChanged) {
       notifyListeners();
     }
 
