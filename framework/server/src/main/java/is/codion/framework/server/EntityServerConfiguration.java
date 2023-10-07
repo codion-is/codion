@@ -32,7 +32,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 
   Logger LOG = LoggerFactory.getLogger(EntityServerConfiguration.class);
 
-  int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
+  int DEFAULT_CONNECTION_LIMIT = -1;
 
   /**
    * Specifies maximum number of concurrent connections the server accepts<br>
@@ -40,15 +40,15 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * Value type: Integer<br>
    * Default value: -1
    */
-  PropertyValue<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", DEFAULT_SERVER_CONNECTION_LIMIT);
+  PropertyValue<Integer> CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", DEFAULT_CONNECTION_LIMIT);
 
   /**
-   * Specifies the class name of the connection pool factory to user.<br>
+   * Specifies the class name of the connection pool factory to use.<br>
    * Value type: String<br>
    * Default value: none
    * @see ConnectionPoolFactory
    */
-  PropertyValue<String> SERVER_CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass");
+  PropertyValue<String> CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass");
 
   /**
    * Specifies the default client connection timeout (ms) in a comma separated list.
@@ -56,26 +56,26 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * Value type: String<br>
    * Default value: none
    */
-  PropertyValue<String> SERVER_CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("codion.server.clientConnectionTimeout");
+  PropertyValue<String> CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("codion.server.clientConnectionTimeout");
 
   /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> SERVER_CLIENT_LOGGING_ENABLED = Configuration.booleanValue("codion.server.clientLoggingEnabled", false);
+  PropertyValue<Boolean> CLIENT_LOGGING = Configuration.booleanValue("codion.server.clientLogging", false);
 
   /**
    * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
    * Example: scott:tiger,john:foo,paul:bar
    */
-  PropertyValue<String> SERVER_CONNECTION_POOL_USERS = Configuration.stringValue("codion.server.connectionPoolUsers");
+  PropertyValue<String> CONNECTION_POOL_USERS = Configuration.stringValue("codion.server.connectionPoolUsers");
 
   /**
    * Specifies a comma separated list of domain model class names, these classes must be
    * available on the server classpath
    */
-  PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("codion.server.domain.classes");
+  PropertyValue<String> DOMAIN_MODEL_CLASSES = Configuration.stringValue("codion.server.domain.classes");
 
   /**
    * @return the Database implementation
@@ -95,7 +95,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return true if client logging should be enabled on startup
    */
-  boolean clientLoggingEnabled();
+  boolean clientLogging();
 
   /**
    * @return the idle connection timeout
@@ -146,10 +146,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     Builder connectionLimit(int connectionLimit);
 
     /**
-     * @param clientLoggingEnabled if true then client logging is enabled on startup
+     * @param clientLogging if true then client logging is enabled on startup
      * @return this builder instance
      */
-    Builder clientLoggingEnabled(boolean clientLoggingEnabled);
+    Builder clientLogging(boolean clientLogging);
 
     /**
      * @param idleConnectionTimeout the idle client connection timeout
@@ -203,20 +203,20 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   static EntityServerConfiguration.Builder builderFromSystemProperties() {
     Builder builder = builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
             .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
-            .sslEnabled(SERVER_CONNECTION_SSL_ENABLED.get())
+            .sslEnabled(SSL_ENABLED.get())
             .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
             .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get())
-            .adminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()))
-            .connectionLimit(SERVER_CONNECTION_LIMIT.get())
+            .adminPort(requireNonNull(ADMIN_PORT.get(), ADMIN_PORT.toString()))
+            .connectionLimit(CONNECTION_LIMIT.get())
             .database(Database.instance())
-            .domainClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
-            .connectionPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOL_USERS.get()).stream()
+            .domainClassNames(Text.parseCommaSeparatedValues(DOMAIN_MODEL_CLASSES.get()))
+            .connectionPoolUsers(Text.parseCommaSeparatedValues(CONNECTION_POOL_USERS.get()).stream()
                     .map(User::parse)
                     .collect(toList()))
-            .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
+            .clientLogging(CLIENT_LOGGING.get())
             .idleConnectionTimeout(IDLE_CONNECTION_TIMEOUT.get());
     Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
-    for (String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
+    for (String clientTimeout : Text.parseCommaSeparatedValues(CLIENT_CONNECTION_TIMEOUT.get())) {
       String[] split = clientTimeout.split(":");
       if (split.length < 2) {
         throw new IllegalArgumentException("Expecting a ':' delimiter");
@@ -224,7 +224,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
       clientTypeIdleConnectionTimeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
     builder.clientTypeIdleConnectionTimeouts(clientTypeIdleConnectionTimeoutMap);
-    String adminUserString = SERVER_ADMIN_USER.get();
+    String adminUserString = ADMIN_USER.get();
     User adminUser = nullOrEmpty(adminUserString) ? null : User.parse(adminUserString);
     if (adminUser == null) {
       EntityServerConfiguration.LOG.info("No admin user specified");

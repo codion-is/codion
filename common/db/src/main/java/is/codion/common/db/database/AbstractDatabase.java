@@ -318,7 +318,7 @@ public abstract class AbstractDatabase implements Database {
     private final AtomicInteger deletesPerSecondCounter = new AtomicInteger();
     private final AtomicInteger otherPerSecondCounter = new AtomicInteger();
 
-    private final boolean enabled = QUERY_COUNTER_ENABLED.get();
+    private final boolean enabled = COUNT_QUERIES.get();
 
     @Override
     public void select() {

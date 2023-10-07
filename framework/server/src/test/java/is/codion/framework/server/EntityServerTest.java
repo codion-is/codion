@@ -323,7 +323,7 @@ public class EntityServerTest {
             .connectionPoolUsers(singletonList(UNIT_TEST_USER))
             .clientTypeIdleConnectionTimeouts(singletonMap("ClientTypeID", 10000))
             .domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
-            .clientLoggingEnabled(true)
+            .clientLogging(true)
             .sslEnabled(true)
             .serializationFilterWhitelist("classpath:serialization-whitelist-test.txt")
             .build();

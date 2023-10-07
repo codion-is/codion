@@ -103,22 +103,23 @@ public interface ServerConfiguration {
   /**
    * The port on which the server should export the remote admin interface<br>
    * Value type: Integer<br>
-   * Default value: null
+   * Default value: 0 (admin not exported)
    */
-  PropertyValue<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("codion.server.admin.port");
+  PropertyValue<Integer> ADMIN_PORT = Configuration.integerValue("codion.server.admin.port", 0);
 
   /**
    * Specifies a username:password combination representing the server admin user<br>
-   * Example: scott:tiger
+   * Example: scott:tiger<br>
+   * Default value: none
    */
-  PropertyValue<String> SERVER_ADMIN_USER = Configuration.stringValue("codion.server.admin.user");
+  PropertyValue<String> ADMIN_USER = Configuration.stringValue("codion.server.admin.user");
 
   /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled", true);
+  PropertyValue<Boolean> SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled", true);
 
   /**
    * Specifies the default idle client connection timeout in milliseconds.
@@ -313,8 +314,8 @@ public interface ServerConfiguration {
   static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
     return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
             .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
-            .adminPort(SERVER_ADMIN_PORT.getOrThrow())
-            .sslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get())
+            .adminPort(ADMIN_PORT.get())
+            .sslEnabled(ServerConfiguration.SSL_ENABLED.get())
             .connectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get())
             .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
             .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
