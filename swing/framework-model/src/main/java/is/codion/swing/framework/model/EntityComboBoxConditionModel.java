@@ -14,16 +14,16 @@ import java.util.function.Consumer;
 
 /**
  * A {@link is.codion.common.model.table.ColumnConditionModel} based on a {@link EntityComboBoxModel}.
- * For instances use the {@link #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)} factory method.
- * @see #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)
+ * For instances use the {@link #entityComboBoxConditionModel(ForeignKey, EntityComboBoxModel)} factory method.
+ * @see #entityComboBoxConditionModel(ForeignKey, EntityComboBoxModel)
  */
-public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyConditionModel {
+public final class EntityComboBoxConditionModel extends AbstractForeignKeyConditionModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
 
   private boolean updatingModel = false;
 
-  private EntityComboBoxModelConditionModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
+  private EntityComboBoxConditionModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
     super(foreignKey);
     this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
     if (entityComboBoxModel.cleared()) {
@@ -40,21 +40,21 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
   }
 
   /**
-   * @return the {@link EntityComboBoxModel} used by this {@link EntityComboBoxModelConditionModel}
+   * @return the {@link EntityComboBoxModel} used by this {@link EntityComboBoxConditionModel}
    */
-  public EntityComboBoxModel entityComboBoxModel() {
+  public EntityComboBoxModel comboBoxModel() {
     return entityComboBoxModel;
   }
 
   /**
-   * Instantiates a {@link EntityComboBoxModelConditionModel} instance
+   * Instantiates a {@link EntityComboBoxConditionModel} instance
    * @param foreignKey the foreign key
    * @param comboBoxModel a {@link EntityComboBoxModel}
-   * @return a new {@link EntityComboBoxModelConditionModel} instance
+   * @return a new {@link EntityComboBoxConditionModel} instance
    */
-  public static EntityComboBoxModelConditionModel entityComboBoxModelConditionModel(ForeignKey foreignKey,
-                                                                                    EntityComboBoxModel comboBoxModel) {
-    return new EntityComboBoxModelConditionModel(foreignKey, comboBoxModel);
+  public static EntityComboBoxConditionModel entityComboBoxConditionModel(ForeignKey foreignKey,
+                                                                          EntityComboBoxModel comboBoxModel) {
+    return new EntityComboBoxConditionModel(foreignKey, comboBoxModel);
   }
 
   private void bindComboBoxEvents() {

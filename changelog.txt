@@ -9693,3 +9693,4 @@
   DefaultEntitySearchModel bug fixed, selectedEntities ValueSet uses Notify.WHEN_SET, search string now reset correctly
   DefaultColumnConditionModel, equal, upper and lower bound values now use Notify.WHEN_SET
   EntitySearchModelConditionModel.SelectedEntitiesListener hack removed, Notify.WHEN_SET to the rescue
+  EntitySearchModelConditionModel renamed EntitySearchConditionModel, EntityComboBoxModelConditionModel renamed EntityComboBoxConditionModel

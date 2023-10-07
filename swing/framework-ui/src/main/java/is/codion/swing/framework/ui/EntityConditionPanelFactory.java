@@ -8,14 +8,14 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.model.EntitySearchConditionModel;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.framework.model.EntitySearchModelConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.BoundFieldFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
-import is.codion.swing.framework.model.EntityComboBoxModelConditionModel;
+import is.codion.swing.framework.model.EntityComboBoxConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
@@ -112,13 +112,13 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
     }
 
     private JComponent createForeignKeyField() {
-      if (model instanceof EntitySearchModelConditionModel) {
-        EntitySearchModel searchModel = ((EntitySearchModelConditionModel) model).entitySearchModel();
+      if (model instanceof EntitySearchConditionModel) {
+        EntitySearchModel searchModel = ((EntitySearchConditionModel) model).searchModel();
 
         return entityComponents.foreignKeySearchField(model.columnIdentifier(), searchModel).build();
       }
-      if (model instanceof EntityComboBoxModelConditionModel) {
-        EntityComboBoxModel comboBoxModel = ((EntityComboBoxModelConditionModel) model).entityComboBoxModel();
+      if (model instanceof EntityComboBoxConditionModel) {
+        EntityComboBoxModel comboBoxModel = ((EntityComboBoxConditionModel) model).comboBoxModel();
 
         return entityComponents.foreignKeyComboBox(model.columnIdentifier(), comboBoxModel)
                 .completionMode(Completion.Mode.MAXIMUM_MATCH)

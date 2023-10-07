@@ -17,13 +17,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.model.EntitySearchModelConditionModel.entitySearchModelConditionModel;
+import static is.codion.framework.model.EntitySearchConditionModel.entitySearchConditionModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EntitySearchModelConditionModelTest {
+public class EntitySearchConditionModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -38,7 +38,7 @@ public class EntitySearchModelConditionModelTest {
     EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER)
             .searchColumns(singletonList(Department.NAME))
             .build();
-    EntitySearchModelConditionModel conditionModel = entitySearchModelConditionModel(Employee.DEPARTMENT_FK, searchModel);
+    EntitySearchConditionModel conditionModel = entitySearchConditionModel(Employee.DEPARTMENT_FK, searchModel);
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
     searchModel.selectedEntity().set(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
@@ -66,11 +66,11 @@ public class EntitySearchModelConditionModelTest {
     assertTrue(searchEntities.isEmpty());
 
     conditionModel.setEqualValue(sales);
-    assertEquals("SALES", conditionModel.entitySearchModel().searchString().get());
+    assertEquals("SALES", conditionModel.searchModel().searchString().get());
     sales.put(Department.NAME, "sales");
-    conditionModel.entitySearchModel().selectedEntity().set(sales);
+    conditionModel.searchModel().selectedEntity().set(sales);
     sales.put(Department.NAME, "SAles");
     conditionModel.setEqualValue(sales);
-    assertEquals("SAles", conditionModel.entitySearchModel().searchString().get());
+    assertEquals("SAles", conditionModel.searchModel().searchString().get());
   }
 }
