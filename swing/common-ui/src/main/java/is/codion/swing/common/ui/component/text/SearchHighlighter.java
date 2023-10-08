@@ -110,7 +110,7 @@ public final class SearchHighlighter {
                     .action(control(this::previousSearchPosition)))
             .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(control(() -> searchStringValue.set(null))))
-            .popupMenu(createPopupMenu(ToggleControl.builder(caseSensitiveState)
+            .popupMenu(textField -> createPopupMenu(ToggleControl.builder(caseSensitiveState)
                     .name(MESSAGES.getString("case_sensitive"))
                     .build()))
             .hintText(Messages.find() + "...")

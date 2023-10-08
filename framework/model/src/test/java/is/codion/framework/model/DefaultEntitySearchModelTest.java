@@ -97,7 +97,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  void setSingleSelectionEnabled() {
+  void singleSelection() {
     searchModel.singleSelection().set(true);
     List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
     assertThrows(IllegalArgumentException.class, () -> searchModel.selectedEntities().set(entities));

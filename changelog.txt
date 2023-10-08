@@ -9736,3 +9736,7 @@
   EntitySearchModelConditionModel.SelectedEntitiesListener hack removed, Notify.WHEN_SET to the rescue
   EntitySearchModelConditionModel renamed EntitySearchConditionModel, EntityComboBoxModelConditionModel renamed EntityComboBoxConditionModel
   DefaultTabbedPanelLayout.activateDetailModelLink() bug fixed, no longer deactivates the detail model being activated
+  DefaultRemoteClient.copy() bug fixed, creationTime was not copied
+  DefaultEntityServerConfiguration bug fixed, did not use CLIENT_LOGGING configuration property for default clientLogging value
+  DefaultLoadTestModel refactored, better handling of closing applications and shutting down
+  ComponentBuilder.popupMenuControl(), popupMenuControls() and popupMenu() now take a Function, which receives the component being built when called, in order for components to provide their own controls, such as FilteredTable

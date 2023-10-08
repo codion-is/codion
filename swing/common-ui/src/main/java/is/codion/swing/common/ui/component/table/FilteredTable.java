@@ -533,7 +533,7 @@ public final class FilteredTable<R, C> extends JTable {
                     .action(selectPreviousResult))
             .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(requestTableFocus))
-            .popupMenuControls(searchFieldPopupMenuControls())
+            .popupMenuControls(textField -> searchFieldPopupMenuControls())
             .hintText(Messages.find() + "...")
             .onTextChanged(this::onSearchTextChanged)
             .onBuild(field -> KeyEvents.builder(VK_F)

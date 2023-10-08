@@ -79,7 +79,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private final EntityServerConfiguration configuration;
   private final Map<DomainType, Domain> domainModels;
   private final Database database;
-  private final boolean clientLoggingEnabled;
+  private final boolean clientLogging;
   private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
   private int idleConnectionTimeout;
@@ -97,7 +97,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     this.configuration = configuration;
     try {
       this.database = requireNonNull(configuration.database(), "database");
-      this.clientLoggingEnabled = configuration.clientLoggingEnabled();
+      this.clientLogging = configuration.clientLogging();
       this.domainModels = loadDomainModels(configuration.domainClassNames());
       configureDatabase(domainModels.values(), database);
       setAdmin(createServerAdmin(configuration));
@@ -136,7 +136,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     try {
       AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
               configuration.port(), configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
-      connection.setLoggingEnabled(clientLoggingEnabled);
+      connection.setLoggingEnabled(clientLogging);
 
       connection.addDisconnectListener(this::disconnectQuietly);
       LOG.debug("{} connected", remoteClient);

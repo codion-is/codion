@@ -79,7 +79,7 @@ public interface Database extends ConnectionFactory {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> QUERY_COUNTER_ENABLED = Configuration.booleanValue("codion.db.queryCounterEnabled", true);
+  PropertyValue<Boolean> COUNT_QUERIES = Configuration.booleanValue("codion.db.countQueries", true);
 
   /**
    * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>

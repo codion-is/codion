@@ -54,18 +54,18 @@ public final class ColumnSummaryPanel extends JPanel {
   }
 
   private static JTextField createSummaryField(ColumnSummaryModel model) {
-    JPopupMenu menu = createPopupMenu(model);
+    JPopupMenu popupMenu = createPopupMenu(model);
     return Components.textField()
             .linkedValue(model.summaryText())
             .horizontalAlignment(SwingConstants.RIGHT)
             .editable(false)
             .focusable(false)
-            .popupMenu(menu)
+            .popupMenu(summaryField -> popupMenu)
             .mouseListener(new MouseAdapter() {
               @Override
               public void mouseReleased(MouseEvent e) {
                 if (!model.locked().get()) {
-                  menu.show(e.getComponent(), e.getX(), e.getY() - menu.getPreferredSize().height);
+                  popupMenu.show(e.getComponent(), e.getX(), e.getY() - popupMenu.getPreferredSize().height);
                 }
               }
             })

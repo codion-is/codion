@@ -45,7 +45,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private final Database database;
   private final User adminUser;
   private final int connectionLimit;
-  private final boolean clientLoggingEnabled;
+  private final boolean clientLogging;
   private final int idleConnectionTimeout;
   private final String connectionPoolProvider;
   private final Collection<String> domainClassNames;
@@ -57,7 +57,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     this.database = builder.database;
     this.adminUser = builder.adminUser;
     this.connectionLimit = builder.connectionLimit;
-    this.clientLoggingEnabled = builder.clientLoggingEnabled;
+    this.clientLogging = builder.clientLogging;
     this.idleConnectionTimeout = builder.idleConnectionTimeout;
     this.connectionPoolProvider = builder.connectionPoolProvider;
     this.domainClassNames = unmodifiableCollection(builder.domainClassNames);
@@ -136,8 +136,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public boolean clientLoggingEnabled() {
-    return clientLoggingEnabled;
+  public boolean clientLogging() {
+    return clientLogging;
   }
 
   @Override
@@ -171,8 +171,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
     private Database database;
     private User adminUser;
-    private int connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
-    private boolean clientLoggingEnabled = false;
+    private int connectionLimit = DEFAULT_CONNECTION_LIMIT;
+    private boolean clientLogging = CLIENT_LOGGING.get();
     private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
     private String connectionPoolProvider;
     private final Collection<String> domainClassNames = new HashSet<>();
@@ -270,8 +270,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder clientLoggingEnabled(boolean clientLoggingEnabled) {
-      this.clientLoggingEnabled = clientLoggingEnabled;
+    public Builder clientLogging(boolean clientLogging) {
+      this.clientLogging = clientLogging;
       return this;
     }
 
