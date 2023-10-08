@@ -337,9 +337,17 @@ public final class LoadTestPanel<T> extends JPanel {
   private FilteredTable<Application, Integer> createApplicationsTable() {
     return FilteredTable.builder(model().applicationTableModel())
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-            .popupMenuControl(table -> Control.builder(table.getModel()::refresh)
-                    .name("Refresh")
-                    .enabled(model().autoRefreshApplications().not())
+            .popupMenuControls(table -> Controls.builder()
+                    .control(Control.builder(table.getModel()::refresh)
+                            .name("Refresh")
+                            .enabled(model().autoRefreshApplications().not()))
+                    .separator()
+                    .controls(Controls.builder()
+                            .name("Columns")
+                            .control(table.createToggleColumnsControls())
+                            .control(table.createResetColumnsControl())
+                            .control(table.createAutoResizeModeControl())
+                            .build())
                     .build())
             .build();
   }
