@@ -9695,3 +9695,4 @@
   EntitySearchModelConditionModel.SelectedEntitiesListener hack removed, Notify.WHEN_SET to the rescue
   EntitySearchModelConditionModel renamed EntitySearchConditionModel, EntityComboBoxModelConditionModel renamed EntityComboBoxConditionModel
   DefaultTabbedPanelLayout.activateDetailModelLink() bug fixed, no longer deactivates the detail model being activated
+  DefaultRemoteClient.copy() bug fixed, creationTime was not copied

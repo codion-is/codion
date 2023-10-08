@@ -103,7 +103,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
   @Override
   public RemoteClient copy() {
-    return new DefaultRemoteClient(connectionRequest.copy(), databaseUser.copy(), clientHost);
+    return new DefaultRemoteClient(connectionRequest.copy(), databaseUser.copy(), clientHost, creationTime);
   }
 
   @Override
