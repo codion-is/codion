@@ -229,7 +229,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     C button = createButton();
     if (action != null) {
       button.setAction(action);
-      action.addPropertyChangeListener(new ButtonPropertyChangeListener(button));
+      action.addPropertyChangeListener(new ActionPropertyChangeListener(button));
     }
     actionListeners.forEach(button::addActionListener);
     if (!includeText) {
@@ -375,11 +375,11 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
   }
 
-  private static final class ButtonPropertyChangeListener implements PropertyChangeListener {
+  private static final class ActionPropertyChangeListener implements PropertyChangeListener {
 
     private final AbstractButton button;
 
-    private ButtonPropertyChangeListener(AbstractButton button) {
+    private ActionPropertyChangeListener(AbstractButton button) {
       this.button = requireNonNull(button);
     }
 

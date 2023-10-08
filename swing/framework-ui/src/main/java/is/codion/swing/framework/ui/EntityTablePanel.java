@@ -1507,9 +1507,7 @@ public class EntityTablePanel extends JPanel {
 
     JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
-    if (table.getParent() != null) {
-      ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
-    }
+    tableScrollPane.setComponentPopupMenu(popupMenu);
     KeyEvents.builder(VK_G)
             .modifiers(CTRL_DOWN_MASK)
             .action(Control.control(() -> {
