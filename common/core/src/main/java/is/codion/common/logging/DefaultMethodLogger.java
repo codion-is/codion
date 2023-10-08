@@ -170,21 +170,6 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public boolean complete() {
-      return exitTime != 0;
-    }
-
-    @Override
-    public long enterTime() {
-      return enterTime;
-    }
-
-    @Override
-    public long exitTime() {
-      return exitTime;
-    }
-
-    @Override
     public String enterMessage() {
       return enterMessage;
     }
@@ -221,7 +206,7 @@ final class DefaultMethodLogger implements MethodLogger {
           stringBuilder.append(" : ").append(enterMessage);
         }
       }
-      if (complete()) {
+      if (exitTime != 0) {
         LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
         stringBuilder.append(NEWLINE).append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(duration()))).append(" μs")
