@@ -157,7 +157,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private Database database;
     private User adminUser;
     private int connectionLimit = DEFAULT_CONNECTION_LIMIT;
-    private boolean clientLogging = false;
+    private boolean clientLogging = CLIENT_LOGGING.get();
     private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
     private String connectionPoolProvider;
     private final Collection<String> domainClassNames = new HashSet<>();
