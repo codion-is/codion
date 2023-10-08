@@ -9697,3 +9697,4 @@
   DefaultTabbedPanelLayout.activateDetailModelLink() bug fixed, no longer deactivates the detail model being activated
   DefaultRemoteClient.copy() bug fixed, creationTime was not copied
   DefaultEntityServerConfiguration bug fixed, did not use CLIENT_LOGGING configuration property for default clientLogging value
+  DefaultLoadTestModel refactored, better handling of closing applications and shutting down

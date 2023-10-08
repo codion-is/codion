@@ -302,9 +302,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     synchronized (applications) {
       if (!applications.isEmpty()) {
         int batchSize = applicationBatchSize.get();
-        applicationCount.set(Math.max(0, applicationCount.get() - batchSize));
         List<ApplicationRunner> toStop = applications.stream()
-                .filter(applicationRunner -> !applicationRunner.stopped())
+                .filter(applicationRunner -> !applicationRunner.stopped.get())
                 .limit(batchSize)
                 .collect(toList());
         toStop.forEach(this::stop);
@@ -331,12 +330,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   public void shutdown() {
     shuttingDown = true;
     chartUpdateScheduler.stop();
-    scheduledExecutor.shutdown();
     synchronized (applications) {
       new ArrayList<>(applications).forEach(this::stop);
     }
+    scheduledExecutor.shutdown();
     try {
-      scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
+      scheduledExecutor.awaitTermination(1, TimeUnit.MINUTES);
     }
     catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -414,15 +413,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   private void stop(ApplicationRunner applicationRunner) {
-    applicationRunner.stop();
-    synchronized (applications) {
-      applications.remove(applicationRunner);
-      applicationCount.set(applications.size());
-    }
-    if (applicationRunner.application != null) {
-      closeApplication.accept(applicationRunner.application);
-      LOG.debug("LoadTestModel disconnected application: {}", applicationRunner.application);
-    }
+    applicationRunner.stopped.set(true);
+    applications.remove(applicationRunner);
+    applicationCount.set(applications.size());
   }
 
   private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
@@ -485,24 +478,35 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     @Override
     public void run() {
+      if (stopped.get()) {
+        cleanupOnStop();
+        return;
+      }
       try {
-        if (application == null && !stopped.get() && !paused.get()) {
-          application = initializeApplication();
-          if (application != null) {
-            LOG.debug("LoadTestModel initialized application: {}", application);
+        if (!paused.get()) {
+          if (application == null && !stopped.get()) {
+            application = initializeApplication();
           }
-        }
-        else {
-          if (!stopped.get() && !paused.get()) {
+          else if (!stopped.get()) {
             runScenario(application, scenarioChooser.randomItem());
           }
         }
-        if (!stopped.get()) {
-          scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
+        if (stopped.get()) {
+          cleanupOnStop();
+          return;
         }
+        scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
       }
       catch (Exception e) {
         LOG.debug("Exception during run " + application, e);
+      }
+    }
+
+    private void cleanupOnStop() {
+      if (application != null) {
+        closeApplication.accept(application);
+        LOG.debug("LoadTestModel disconnected application: {}", application);
+        application = null;
       }
     }
 
@@ -512,6 +516,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
         T application = applicationFactory.apply(user);
         int duration = (int) (System.currentTimeMillis() - startTime);
         addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", duration, null));
+        LOG.debug("LoadTestModel initialized application: {}", application);
 
         return application;
       }
@@ -534,14 +539,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
           runResults.remove(0);
         }
       }
-    }
-
-    private void stop() {
-      stopped.set(true);
-    }
-
-    private boolean stopped() {
-      return stopped.get();
     }
 
     private LocalDateTime created() {
