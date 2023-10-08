@@ -106,7 +106,9 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel()).build();
+    FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel())
+            .popupMenuControl(FilteredTable::createAutoResizeModeControl)
+            .build();
 
     return borderLayoutPanel()
             .centerComponent(new JScrollPane(userHistoryTable))

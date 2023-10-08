@@ -195,7 +195,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
     private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
       super(comboBoxModel, linkedValue);
-      popupMenuControl(Control.builder(new ForceRefreshCommand(comboBoxModel))
+      popupMenuControl(comboBox -> Control.builder(new ForceRefreshCommand(comboBoxModel))
               .name(FrameworkMessages.refresh())
               .build());
     }

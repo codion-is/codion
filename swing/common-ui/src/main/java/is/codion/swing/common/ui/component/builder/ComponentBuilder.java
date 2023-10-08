@@ -32,6 +32,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Builds a JComponent.<br>
@@ -161,23 +162,23 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B enabled(StateObserver enabled);
 
   /**
-   * @param popupMenuControl the control to base a popup menu on
+   * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on
    * @return this builder instance
    */
-  B popupMenuControl(Control popupMenuControl);
+  B popupMenuControl(Function<C, Control> popupMenuControl);
 
   /**
-   * @param popupMenuControls the controls to base a popup menu on
+   * @param popupMenuControls a function, receiving the component being built, providing the controls to base a popup menu on
    * @return this builder instance
    */
-  B popupMenuControls(Controls popupMenuControls);
+  B popupMenuControls(Function<C, Controls> popupMenuControls);
 
   /**
-   * @param popupMenu the popup menu
+   * @param popupMenu a function, receiving the component being built, providing the popup menu
    * @return this builder instance
    * @see JComponent#setComponentPopupMenu(JPopupMenu)
    */
-  B popupMenu(JPopupMenu popupMenu);
+  B popupMenu(Function<C, JPopupMenu> popupMenu);
 
   /**
    * @param font the component font

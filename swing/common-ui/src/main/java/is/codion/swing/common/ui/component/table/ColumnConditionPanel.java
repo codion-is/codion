@@ -91,7 +91,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.operatorCombo = createOperatorComboBox(conditionModel.operators());
     this.toggleEnabledButton = radioButton(conditionModel.enabled())
             .horizontalAlignment(CENTER)
-            .popupMenu(menu(Controls.builder()
+            .popupMenu(radioButton -> menu(Controls.builder()
                     .control(ToggleControl.builder(conditionModel.autoEnable())
                             .name(MESSAGES.getString("auto_enable"))).build())
                     .createPopupMenu())

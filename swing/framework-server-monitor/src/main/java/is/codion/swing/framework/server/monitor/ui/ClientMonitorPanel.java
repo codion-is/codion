@@ -46,7 +46,7 @@ public final class ClientMonitorPanel extends JPanel {
   public ClientMonitorPanel(ClientMonitor model) {
     this.model = model;
     clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel())
-            .popupMenu(createPopupMenu())
+            .popupMenu(this::createPopupMenu)
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .build();
     clientInstanceScroller = scrollPane(clientInstanceTable)
@@ -111,11 +111,13 @@ public final class ClientMonitorPanel extends JPanel {
     add(splitPane, BorderLayout.CENTER);
   }
 
-  private JPopupMenu createPopupMenu() {
+  private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Integer> filteredTable) {
     return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
                     .name("Disconnect")
                     .enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
+            .separator()
+            .control(filteredTable.createAutoResizeModeControl())
             .build())
             .createPopupMenu();
   }

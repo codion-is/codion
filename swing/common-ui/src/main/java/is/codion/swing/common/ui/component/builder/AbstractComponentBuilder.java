@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Sizes.*;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -80,7 +81,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private ComponentOrientation componentOrientation = getOrientation(Locale.getDefault());
   private StateObserver enabledObserver;
   private boolean enabled = true;
-  private JPopupMenu popupMenu;
+  private Function<C, JPopupMenu> popupMenu;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
   private T initialValue;
@@ -202,17 +203,21 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B popupMenuControl(Control popupMenuControl) {
-    return popupMenuControls(Controls.controls(popupMenuControl));
+  public final B popupMenuControl(Function<C, Control> popupMenuControl) {
+    requireNonNull(popupMenuControl);
+
+    return popupMenuControls(component -> Controls.controls(popupMenuControl.apply(component)));
   }
 
   @Override
-  public final B popupMenuControls(Controls popupMenuControls) {
-    return popupMenu(MenuBuilder.builder(requireNonNull(popupMenuControls)).createPopupMenu());
+  public final B popupMenuControls(Function<C, Controls> popupMenuControls) {
+    requireNonNull(popupMenuControls);
+
+    return popupMenu(component -> MenuBuilder.builder(popupMenuControls.apply(component)).createPopupMenu());
   }
 
   @Override
-  public final B popupMenu(JPopupMenu popupMenu) {
+  public final B popupMenu(Function<C, JPopupMenu> popupMenu) {
     this.popupMenu = popupMenu;
     return (B) this;
   }
@@ -397,7 +402,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       linkToEnabledState(enabledObserver, component);
     }
     if (popupMenu != null) {
-      component.setComponentPopupMenu(popupMenu);
+      component.setComponentPopupMenu(popupMenu.apply(component));
     }
     if (toolTipText != null) {
       component.setToolTipText(toolTipText);
