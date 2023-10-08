@@ -126,13 +126,18 @@ public final class ClientMonitorPanel extends JPanel {
     add(splitPane, BorderLayout.CENTER);
   }
 
-  private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Integer> filteredTable) {
+  private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Integer> table) {
     return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
                     .name("Disconnect")
                     .enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
             .separator()
-            .control(filteredTable.createAutoResizeModeControl())
+            .controls(Controls.builder()
+                    .name("Columns")
+                    .control(table.createToggleColumnsControls())
+                    .control(table.createResetColumnsControl())
+                    .control(table.createAutoResizeModeControl())
+                    .build())
             .build())
             .createPopupMenu();
   }

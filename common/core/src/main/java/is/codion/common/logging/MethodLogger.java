@@ -118,21 +118,6 @@ public interface MethodLogger {
     String method();
 
     /**
-     * @return true if the exit time has been set for this entry
-     */
-    boolean complete();
-
-    /**
-     * @return the method entry time
-     */
-    long enterTime();
-
-    /**
-     * @return the exit time
-     */
-    long exitTime();
-
-    /**
      * @return the entry message
      */
     String enterMessage();
@@ -140,7 +125,6 @@ public interface MethodLogger {
     /**
      * Returns the duration of the method call this entry represents in nanoseconds,
      * this value is 0 or undefined until the exit time has been set.
-     * This can be checked via {@code isComplete()}.
      * @return the duration of the method call this entry represents
      */
     long duration();
