@@ -9702,3 +9702,4 @@
   MethodLogger, three unused public methods removed
   ClientMonitorPanel and ClientUserMonitorPanel, columns popup menu added
   LoadTestPanel, columns popup menu added
+  DefaultAttribute, DefaultColumn and DefaultForeignKey, inheritance replaced with composition
