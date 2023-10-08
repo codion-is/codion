@@ -55,6 +55,7 @@ tasks.register("runServer", JavaExec) {
             "codion.server.auxiliaryServerFactoryClassNames": "is.codion.framework.servlet.EntityServiceFactory",
             "codion.server.serializationFilterWhitelist"    : "src/main/config/serialization-whitelist.txt",
             "codion.server.serializationFilterDryRun"       : "false",
+            "codion.server.clientLogging"                   : "false",
             "javax.net.ssl.keyStore"                        : "src/main/config/keystore.jks",
             "javax.net.ssl.keyStorePassword"                : "crappypass",
             "java.rmi.server.hostname"                      : "${serverHostName}",
