@@ -4,6 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
 import javax.swing.DefaultComboBoxModel;
@@ -13,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -107,7 +109,15 @@ public final class ClientUserMonitorPanel extends JPanel {
             .build();
 
     FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel())
-            .popupMenuControl(FilteredTable::createAutoResizeModeControl)
+            .popupMenuControls(table -> Controls.builder()
+                    .controls(Controls.builder()
+                            .name("Columns")
+                            .control(table.createToggleColumnsControls())
+                            .control(table.createResetColumnsControl())
+                            .control(table.createAutoResizeModeControl())
+                            .build())
+                    .build())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .build();
 
     return borderLayoutPanel()
