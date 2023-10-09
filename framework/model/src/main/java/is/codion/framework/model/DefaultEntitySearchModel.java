@@ -67,7 +67,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
    */
   private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
 
-  private final Value<String> searchString = Value.value("", "");
+  private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
   private final Value<String> separator;
   private final State singleSelection = State.state(false);
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());

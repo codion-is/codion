@@ -9704,3 +9704,4 @@
   LoadTestPanel, columns popup menu added
   DefaultAttribute, DefaultColumn and DefaultForeignKey, inheritance replaced with composition
   ToggleMenuItemBuilder.PersistMenu enum added along with PERSIST_MENU configuration value, ControlDownRadioButtonMenuItem and ControlDownCheckBoxMenuItem renamed PersistMenuRadioButtonMenuItem and PersistMenuCheckBoxMenuItem respectively
+  DefaultEntitySearchModel bug fixed, searchString now uses Notify.WHEN_SET for keeping searchStringModified correct
