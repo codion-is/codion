@@ -8,11 +8,11 @@ import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder.PersistM
 import javax.swing.JCheckBoxMenuItem;
 import java.awt.event.MouseEvent;
 
-final class PersistsMenuCheckBoxMenuItem extends JCheckBoxMenuItem {
+final class PersistMenuCheckBoxMenuItem extends JCheckBoxMenuItem {
 
   private final PersistMenu persistMenu;
 
-  PersistsMenuCheckBoxMenuItem(PersistMenu persistMenu) {
+  PersistMenuCheckBoxMenuItem(PersistMenu persistMenu) {
     this.persistMenu = persistMenu;
   }
 

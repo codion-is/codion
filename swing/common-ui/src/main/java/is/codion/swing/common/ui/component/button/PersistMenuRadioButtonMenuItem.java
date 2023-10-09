@@ -17,7 +17,7 @@ final class PersistMenuRadioButtonMenuItem extends JRadioButtonMenuItem {
   @Override
   protected void processMouseEvent(MouseEvent e) {
     JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) e.getSource();
-    if (PersistsMenuCheckBoxMenuItem.persistMenu(e, persistMenu)) {
+    if (PersistMenuCheckBoxMenuItem.persistMenu(e, persistMenu)) {
       menuItem.setSelected(!menuItem.isSelected());
     }
     else {
