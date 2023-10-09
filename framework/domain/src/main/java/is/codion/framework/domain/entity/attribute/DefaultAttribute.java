@@ -35,7 +35,7 @@ import java.util.Objects;
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultAttribute<T> implements Attribute<T>, Serializable {
+final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -60,22 +60,22 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final Type<T> type() {
+  public Type<T> type() {
     return type;
   }
 
   @Override
-  public final String name() {
+  public String name() {
     return name;
   }
 
   @Override
-  public final EntityType entityType() {
+  public EntityType entityType() {
     return type.entityType;
   }
 
   @Override
-  public final boolean equals(Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }
@@ -88,12 +88,12 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return hashCode;
   }
 
   @Override
-  public final String toString() {
+  public String toString() {
     return type.entityType.name() + "." + name;
   }
 
@@ -219,11 +219,11 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
     }
   }
 
-  protected static class DefaultAttributeDefiner<T> implements AttributeDefiner<T> {
+  static class DefaultAttributeDefiner<T> implements AttributeDefiner<T> {
 
     private final Attribute<T> attribute;
 
-    protected DefaultAttributeDefiner(Attribute<T> attribute) {
+    DefaultAttributeDefiner(Attribute<T> attribute) {
       this.attribute = attribute;
     }
 

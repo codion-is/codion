@@ -31,6 +31,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
         implements ToggleMenuItemBuilder<C, B> {
 
   private ToggleControl toggleControl;
+  private PersistMenu persistMenu = PERSIST_MENU.get();
 
   AbstractToggleMenuItemBuilder(Value<Boolean> linkedValue) {
     super(linkedValue);
@@ -52,11 +53,17 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
     return toggleControl(requireNonNull(toggleControlBuilder).build());
   }
 
-  protected abstract JMenuItem createMenuItem();
+  @Override
+  public final B persistMenu(PersistMenu persistMenu) {
+    this.persistMenu = requireNonNull(persistMenu);
+    return (B) this;
+  }
+
+  protected abstract JMenuItem createMenuItem(PersistMenu persistMenu);
 
   @Override
   protected final C createButton() {
-    JMenuItem menuItem = createMenuItem();
+    JMenuItem menuItem = createMenuItem(persistMenu);
     if (toggleControl != null) {
       menuItem.setModel(createButtonModel(toggleControl));
     }

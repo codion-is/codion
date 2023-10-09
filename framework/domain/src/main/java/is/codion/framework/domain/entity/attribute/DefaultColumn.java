@@ -19,7 +19,9 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 
+import java.io.Serializable;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Objects;
@@ -28,12 +30,47 @@ import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditActio
 import static is.codion.framework.domain.entity.attribute.AuditColumn.AuditAction.UPDATE;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
+final class DefaultColumn<T> implements Column<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
+  private final Attribute<T> attribute;
+
   DefaultColumn(String name, Class<T> valueClass, EntityType entityType) {
-    super(name, valueClass, entityType);
+    this.attribute = new DefaultAttribute<>(name, valueClass, entityType);
+  }
+
+  @Override
+  public Type<T> type() {
+    return attribute.type();
+  }
+
+  @Override
+  public String name() {
+    return attribute.name();
+  }
+
+  @Override
+  public EntityType entityType() {
+    return attribute.entityType();
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultColumn)) {
+      return false;
+    }
+    DefaultColumn<?> that = (DefaultColumn<?>) object;
+
+    return attribute.equals(that.attribute);
+  }
+
+  @Override
+  public int hashCode() {
+    return attribute.hashCode();
   }
 
   @Override

@@ -18,15 +18,21 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.MouseEvent;
 
-final class ControlDownCheckBoxMenuItem extends JCheckBoxMenuItem {
+final class PersistMenuRadioButtonMenuItem extends JRadioButtonMenuItem {
+
+  private final ToggleMenuItemBuilder.PersistMenu persistMenu;
+
+  PersistMenuRadioButtonMenuItem(ToggleMenuItemBuilder.PersistMenu persistMenu) {
+    this.persistMenu = persistMenu;
+  }
 
   @Override
   protected void processMouseEvent(MouseEvent e) {
-    JCheckBoxMenuItem menuItem = (JCheckBoxMenuItem) e.getSource();
-    if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
+    JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) e.getSource();
+    if (PersistsMenuCheckBoxMenuItem.persistMenu(e, persistMenu)) {
       menuItem.setSelected(!menuItem.isSelected());
     }
     else {

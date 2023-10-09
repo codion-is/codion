@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,15 +30,49 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultForeignKey extends DefaultAttribute<Entity> implements ForeignKey {
+final class DefaultForeignKey implements ForeignKey, Serializable {
 
   private static final long serialVersionUID = 1;
 
+  private final Attribute<Entity> attribute;
   private final List<Reference<?>> references;
 
   DefaultForeignKey(String name, EntityType entityType, List<Reference<?>> references) {
-    super(name, Entity.class, entityType);
+    this.attribute = new DefaultAttribute<>(name, Entity.class, entityType);
     this.references = validate(requireNonNull(references));
+  }
+
+  @Override
+  public Type<Entity> type() {
+    return attribute.type();
+  }
+
+  @Override
+  public String name() {
+    return attribute.name();
+  }
+
+  @Override
+  public EntityType entityType() {
+    return attribute.entityType();
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultForeignKey)) {
+      return false;
+    }
+    DefaultForeignKey that = (DefaultForeignKey) object;
+
+    return attribute.equals(that.attribute);
+  }
+
+  @Override
+  public int hashCode() {
+    return attribute.hashCode();
   }
 
   @Override
