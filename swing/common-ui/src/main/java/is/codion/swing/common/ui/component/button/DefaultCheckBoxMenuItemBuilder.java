@@ -15,7 +15,7 @@ final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>>
   }
 
   @Override
-  protected JCheckBoxMenuItem createMenuItem() {
-    return new ControlDownCheckBoxMenuItem();
+  protected JCheckBoxMenuItem createMenuItem(PersistMenu persistMenu) {
+    return new PersistsMenuCheckBoxMenuItem(persistMenu);
   }
 }

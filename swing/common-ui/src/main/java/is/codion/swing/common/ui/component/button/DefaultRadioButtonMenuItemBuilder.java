@@ -15,7 +15,7 @@ final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuild
   }
 
   @Override
-  protected JRadioButtonMenuItem createMenuItem() {
-    return new ControlDownRadioButtonMenuItem();
+  protected JRadioButtonMenuItem createMenuItem(PersistMenu persistMenu) {
+    return new PersistMenuRadioButtonMenuItem(persistMenu);
   }
 }

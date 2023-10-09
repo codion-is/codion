@@ -9703,3 +9703,4 @@
   ClientMonitorPanel and ClientUserMonitorPanel, columns popup menu added
   LoadTestPanel, columns popup menu added
   DefaultAttribute, DefaultColumn and DefaultForeignKey, inheritance replaced with composition
+  ToggleMenuItemBuilder.PersistMenu enum added along with PERSIST_MENU configuration value, ControlDownRadioButtonMenuItem and ControlDownCheckBoxMenuItem renamed PersistMenuRadioButtonMenuItem and PersistMenuCheckBoxMenuItem respectively
