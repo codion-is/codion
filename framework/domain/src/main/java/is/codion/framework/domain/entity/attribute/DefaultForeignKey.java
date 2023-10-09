@@ -61,6 +61,11 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
   }
 
   @Override
+  public String toString() {
+    return attribute.toString();
+  }
+
+  @Override
   public ForeignKeyDefiner define() {
     return new DefaultForeignKeyDefiner(this);
   }

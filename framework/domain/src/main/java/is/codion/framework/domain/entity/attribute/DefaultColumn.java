@@ -59,6 +59,11 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
   }
 
   @Override
+  public String toString() {
+    return attribute.toString();
+  }
+
+  @Override
   public Column.ColumnDefiner<T> define() {
     return new DefaultColumnDefiner<>(this);
   }
