@@ -115,6 +115,11 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     if (entity.isNull(columnDefinition.attribute()) && nullable(entity, columnDefinition.attribute())) {
       return;
     }
+    if (entity.exists() && !entity.modified(columnDefinition.attribute())) {
+      //We only want to prevent the usage of invalid items as a new value, not prevent
+      //updates to existing rows that may contain a previously entered invalid item
+      return;
+    }
     T value = entity.get(columnDefinition.attribute());
     if (!columnDefinition.valid(value)) {
       throw new ItemValidationException(columnDefinition.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
