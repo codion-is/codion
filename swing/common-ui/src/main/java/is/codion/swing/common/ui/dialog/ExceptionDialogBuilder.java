@@ -20,12 +20,12 @@ import static java.util.Arrays.asList;
 public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBuilder> {
 
   /**
-   * Specifies whether an ExceptionPanel should display system properties in the detail panel<br>
+   * Specifies whether an ExceptionPanel should include system properties in the detail panel<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
-          Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionDialogBuilder.displaySystemProperties", true);
+  PropertyValue<Boolean> SYSTEM_PROPERTIES =
+          Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionDialogBuilder.systemProperties", true);
 
   /**
    * Specifies a list of exception types, which are considered wrapping exceptions, that is, exceptions that wrap a root cause.<br>
@@ -63,6 +63,13 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
    * @see #WRAPPER_EXCEPTIONS
    */
   ExceptionDialogBuilder unwrap(Collection<Class<? extends Throwable>> exceptions);
+
+  /**
+   * @param systemProperties true if system properties should be displayed
+   * @return this builder instance
+   * @see #SYSTEM_PROPERTIES
+   */
+  ExceptionDialogBuilder systemProperties(boolean systemProperties);
 
   /**
    * Displays the exception dialog

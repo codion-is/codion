@@ -27,6 +27,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   private Collection<Class<? extends Throwable>> unwrapExceptions = WRAPPER_EXCEPTIONS.get();
   private String message;
   private boolean unwrap = true;
+  private boolean systemProperties = SYSTEM_PROPERTIES.get();
 
   @Override
   public ExceptionDialogBuilder message(String message) {
@@ -43,6 +44,12 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   @Override
   public ExceptionDialogBuilder unwrap(Collection<Class<? extends Throwable>> exceptions) {
     this.unwrapExceptions = requireNonNull(exceptions);
+    return this;
+  }
+
+  @Override
+  public ExceptionDialogBuilder systemProperties(boolean systemProperties) {
+    this.systemProperties = systemProperties;
     return this;
   }
 
@@ -84,7 +91,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   }
 
   private void displayException(Throwable exception) {
-    ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
+    ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message, systemProperties);
     new DefaultComponentDialogBuilder(exceptionPanel)
             .titleProvider(titleProvider)
             .owner(owner)
