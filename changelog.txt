@@ -9747,3 +9747,4 @@
   ToggleMenuItemBuilder.PersistMenu enum added along with PERSIST_MENU configuration value, ControlDownRadioButtonMenuItem and ControlDownCheckBoxMenuItem renamed PersistMenuRadioButtonMenuItem and PersistMenuCheckBoxMenuItem respectively
   DefaultEntitySearchModel bug fixed, searchString now uses Notify.WHEN_SET for keeping searchStringModified correct
   DefaultColumn, DefaultForeignKey, toString() implementation added
+  DefaultEntityValidator no longer validates unmodified item values for existing entities, since it should not prevent updates to an existing row that may contain invalid items
