@@ -196,7 +196,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean isLoaded(ForeignKey foreignKey) {
+  public final boolean loaded(ForeignKey foreignKey) {
     definition.foreignKeys().definition(foreignKey);
     return values.get(foreignKey) != null;
   }

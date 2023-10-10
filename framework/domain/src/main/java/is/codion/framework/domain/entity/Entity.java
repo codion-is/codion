@@ -162,7 +162,7 @@ public interface Entity extends Comparable<Entity> {
    * key value(s). Null is returned only if the actual foreign key is null.
    * @param foreignKey the foreign key for which to retrieve the value
    * @return the entity associated with {@code foreignKey}
-   * @see #isLoaded(ForeignKey)
+   * @see #loaded(ForeignKey)
    */
   Entity referencedEntity(ForeignKey foreignKey);
 
@@ -269,7 +269,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the attribute
    * @return true if the referenced entity has been loaded
    */
-  boolean isLoaded(ForeignKey foreignKey);
+  boolean loaded(ForeignKey foreignKey);
 
   /**
    * Returns the primary key of this entity.

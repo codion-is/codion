@@ -305,10 +305,10 @@ public class DefaultLocalEntityConnectionTest {
     Select select = Select.where(Condition.customCondition(Employee.NAME_IS_BLAKE_CONDITION)).build();
     result = connection.select(select);
     Entity emp = result.iterator().next();
-    assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(Employee.MGR_FK));
+    assertTrue(emp.loaded(Employee.DEPARTMENT_FK));
+    assertTrue(emp.loaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
-    assertFalse(emp.isLoaded(Employee.MGR_FK));
+    assertFalse(emp.loaded(Employee.MGR_FK));
 
     select = Select.where(select.where())
             .fetchDepth(Employee.DEPARTMENT_FK, 0)
@@ -316,8 +316,8 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
-    assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(Employee.MGR_FK));
+    assertFalse(emp.loaded(Employee.DEPARTMENT_FK));
+    assertTrue(emp.loaded(Employee.MGR_FK));
 
     select = Select.where(select.where())
             .fetchDepth(Employee.DEPARTMENT_FK, 0)
@@ -326,8 +326,8 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
-    assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
-    assertFalse(emp.isLoaded(Employee.MGR_FK));
+    assertFalse(emp.loaded(Employee.DEPARTMENT_FK));
+    assertFalse(emp.loaded(Employee.MGR_FK));
 
     select = Select.where(select.where())
             .fetchDepth(Employee.DEPARTMENT_FK, 0)
@@ -336,10 +336,10 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
-    assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(Employee.MGR_FK));
+    assertFalse(emp.loaded(Employee.DEPARTMENT_FK));
+    assertTrue(emp.loaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
-    assertTrue(emp.isLoaded(Employee.MGR_FK));
+    assertTrue(emp.loaded(Employee.MGR_FK));
 
     select = Select.where(select.where())
             .fetchDepth(Employee.DEPARTMENT_FK, 0)
@@ -348,10 +348,10 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
-    assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(Employee.MGR_FK));
+    assertFalse(emp.loaded(Employee.DEPARTMENT_FK));
+    assertTrue(emp.loaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
-    assertTrue(emp.isLoaded(Employee.MGR_FK));
+    assertTrue(emp.loaded(Employee.MGR_FK));
 
     assertEquals(4, connection.count(Employee.ID.in(asList(1, 2, 3, 4))));
     assertEquals(0, connection.count(Employee.DEPARTMENT.isNull()));
