@@ -34,7 +34,7 @@ public final class InvoiceLineTablePanel extends EntityTablePanel {
     setIncludeSouthPanel(false);
     setIncludeConditionPanel(false);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    setPreferredSize(new Dimension(360, 40));
     table().getModel().columnModel().visible(InvoiceLine.INVOICE_FK).set(false);
+    setPreferredSize(new Dimension(360, 40));
   }
 }

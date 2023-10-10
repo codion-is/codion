@@ -24,6 +24,6 @@ public final class ExceptionPanelTest {
 
   @Test
   void test() {
-    new ExceptionPanel(new Exception("Exception"), "Title");
+    new ExceptionPanel(new Exception("Exception"), "Title", true);
   }
 }

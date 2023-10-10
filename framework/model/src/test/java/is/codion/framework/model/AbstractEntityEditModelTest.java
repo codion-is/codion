@@ -185,7 +185,7 @@ public final class AbstractEntityEditModelTest {
     assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK).get());
     assertFalse(employeeEditModel.isNotNull(Employee.DEPARTMENT_FK).get());
     employeeEditModel.put(Employee.DEPARTMENT, dept.get(Department.ID));
-    assertFalse(employeeEditModel.entity().isLoaded(Employee.DEPARTMENT_FK));
+    assertFalse(employeeEditModel.entity().loaded(Employee.DEPARTMENT_FK));
     dept = employeeEditModel.get(Employee.DEPARTMENT_FK);
     assertNull(dept);
     employeeEditModel.setDefaults();

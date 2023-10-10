@@ -488,10 +488,10 @@ public class DefaultEntityTest {
     assertTrue(testEntity.isNull(Detail.MASTER_FK));
     testEntity.put(Detail.MASTER_ID, 10L);
 
-    assertFalse(testEntity.isLoaded(Detail.MASTER_FK));
+    assertFalse(testEntity.loaded(Detail.MASTER_FK));
     Entity referencedEntityValue = testEntity.referencedEntity(Detail.MASTER_FK);
     assertEquals(10L, referencedEntityValue.get(Master.ID));
-    assertFalse(testEntity.isLoaded(Detail.MASTER_FK));
+    assertFalse(testEntity.loaded(Detail.MASTER_FK));
     assertFalse(testEntity.isNull(Detail.MASTER_FK));
     assertFalse(testEntity.isNull(Detail.MASTER_ID));
 
@@ -745,7 +745,7 @@ public class DefaultEntityTest {
     assertEquals(1, emp.get(Employee.DEPARTMENT_NO));
     emp.put(Employee.DEPARTMENT_NO, 2);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
-    assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
+    assertFalse(emp.loaded(Employee.DEPARTMENT_FK));
     Entity empDept = emp.referencedEntity(Employee.DEPARTMENT_FK);
     assertEquals(Integer.valueOf(2), empDept.primaryKey().get());
 
@@ -781,10 +781,10 @@ public class DefaultEntityTest {
             .columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
 
     emp.save();
-    emp.definition().foreignKeys().get().forEach(foreignKey -> assertTrue(emp.isLoaded(foreignKey)));
+    emp.definition().foreignKeys().get().forEach(foreignKey -> assertTrue(emp.loaded(foreignKey)));
     emp.definition().foreignKeys().get().forEach(emp::remove);
     assertFalse(emp.modified());
-    emp.definition().foreignKeys().get().forEach(foreignKey -> assertFalse(emp.isLoaded(foreignKey)));
+    emp.definition().foreignKeys().get().forEach(foreignKey -> assertFalse(emp.loaded(foreignKey)));
   }
 
   @Test

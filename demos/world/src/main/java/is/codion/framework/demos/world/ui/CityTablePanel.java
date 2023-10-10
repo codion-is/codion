@@ -20,6 +20,7 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
@@ -36,6 +37,7 @@ final class CityTablePanel extends ChartTablePanel {
 
   CityTablePanel(CityTableModel tableModel) {
     super(tableModel, tableModel.chartDataset(), "Cities");
+    excludeFromEditMenu(City.LOCATION);
   }
 
   @Override

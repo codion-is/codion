@@ -109,8 +109,8 @@ final class ExceptionPanel extends JPanel {
           .visible(false)
           .build();
 
-  ExceptionPanel(Throwable throwable, String message) {
-    setThrowable(throwable, message == null ? throwable.getClass().getSimpleName() : message);
+  ExceptionPanel(Throwable throwable, String message, boolean systemProperties) {
+    setThrowable(throwable, message == null ? throwable.getClass().getSimpleName() : message, systemProperties);
     setLayout(borderLayout());
     add(createMainPanel(), BorderLayout.CENTER);
     bindEvents();
@@ -184,18 +184,18 @@ final class ExceptionPanel extends JPanel {
             Arrays.asList(stackTraceArea.getText().split("\\r?\\n")));
   }
 
-  private void setThrowable(Throwable exception, String message) {
+  private void setThrowable(Throwable exception, String message, boolean systemProperties) {
     errorMessageArea.setText(message);
     errorMessageArea.setCaretPosition(0);
-    stackTraceArea.setText(stackTraceAndProperties(exception));
+    stackTraceArea.setText(stackTraceAndProperties(exception, systemProperties));
     stackTraceArea.setCaretPosition(0);
   }
 
-  private static String stackTraceAndProperties(Throwable exception) {
+  private static String stackTraceAndProperties(Throwable exception, boolean systemProperties) {
     StringWriter stringWriter = new StringWriter();
     exception.printStackTrace(new PrintWriter(stringWriter));
     StringBuilder builder = new StringBuilder(stringWriter.toString());
-    if (ExceptionDialogBuilder.DISPLAY_SYSTEM_PROPERTIES.get()) {
+    if (systemProperties) {
       builder.append("\n");
       builder.append("--------------------------------------------Properties--------------------------------------------\n\n");
       builder.append(PropertyStore.systemProperties());
