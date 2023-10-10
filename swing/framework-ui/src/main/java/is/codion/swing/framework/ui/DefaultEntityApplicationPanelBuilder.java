@@ -504,8 +504,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   }
 
   private static void displayException(Throwable exception, JFrame applicationFrame) {
-    Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
-    displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+    if (!(exception instanceof CancelException)) {
+      Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
+      displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+    }
   }
 
   private final class DefaultDialogLoginProvider implements LoginProvider {

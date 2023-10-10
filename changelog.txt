@@ -9708,3 +9708,4 @@
   DefaultColumn, DefaultForeignKey, toString() implementation added
   DefaultEntityValidator no longer validates unmodified item values for existing entities, since it should not prevent updates to an existing row that may contain invalid items
   Entity.isLoaded() renamed loaded() for consistency
+  DefaultEntityApplicationPanelBuilder.displayException() bug fixed, now ignores CancelException
