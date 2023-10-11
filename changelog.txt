@@ -9753,3 +9753,5 @@
   ExceptionDialogBuilder.systemProperties() added
   EntityDefinition.Builder.exists() added along with DefaultEntityExists, related changes
   DefaultEntityValidator now only validates modified values for existing entities by default, EntityValidator.STRICT_VALIDATION configuration value added
+  DefaultEntitySearchModel now uses the default entity comparator to sort the search results, no longer orders by
+  EntitySearchField.TableSelectionProvider bug fixed, now uses addItemsAtSorted() respecting the table sorting status

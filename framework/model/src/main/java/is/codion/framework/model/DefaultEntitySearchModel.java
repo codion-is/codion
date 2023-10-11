@@ -162,7 +162,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> search() {
     try {
-      return connectionProvider.connection().select(select());
+      List<Entity> result = connectionProvider.connection().select(select());
+      result.sort(connectionProvider.entities().definition(entityType).comparator());
+
+      return result;
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -224,9 +227,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
             Select.where(conditionCombination) :
             Select.where(and(additionalCondition, conditionCombination));
 
-    return selectBuilder
-            .orderBy(connectionProvider.entities().definition(entityType).orderBy())
-            .build();
+    return selectBuilder.build();
   }
 
   private String prepareSearchString(String rawSearchString, SearchSettings searchSettings) {
