@@ -13,7 +13,6 @@ import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -48,7 +47,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.Color;
 import java.text.Format;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -82,10 +79,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName());
-
-  private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
-
   private final FilteredTableModel<Entity, Attribute<?>> tableModel;
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
@@ -96,7 +89,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
    */
   private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
-  private final Value<String> statusMessage = Value.value("", "");
   private final State conditionChanged = State.state();
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
@@ -490,20 +482,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     selectionModel().addSelectionListener(listener);
   }
 
-  /**
-   * @return an Observer for the table model status message, that is, the number of rows, number of selected rows etc
-   */
-  public final ValueObserver<String> statusMessageObserver() {
-    return statusMessage.observer();
-  }
-
   @Override
   public final void filterItems() {
     tableModel.filterItems();
   }
 
   @Override
-  public Value<Predicate<Entity>> includeCondition() {
+  public final Value<Predicate<Entity>> includeCondition() {
     return tableModel.includeCondition();
   }
 
@@ -906,9 +891,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addEntityListener(this::onEntitySet);
     selectionModel().addSelectedItemListener(editModel::set);
     addTableModelListener(this::onTableModelEvent);
-    Runnable statusListener = () -> statusMessage.set(statusMessage());
-    selectionModel().addSelectionListener(statusListener);
-    addDataChangedListener(statusListener);
   }
 
   private List<Entity> queryItems() throws DatabaseException {
@@ -1093,15 +1075,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             ColumnPreferences.fromJSONObject(columnAttributes, new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS));
     ColumnPreferences.applyColumnPreferences(this, columnAttributes, columnPreferences, (attribute, columnWidth) ->
             columnModel().column(attribute).setPreferredWidth(columnWidth));
-  }
-
-  private String statusMessage() {
-    int filteredItemCount = filteredItemCount();
-
-    return STATUS_MESSAGE_NUMBER_FORMAT.format(getRowCount()) + " (" +
-            STATUS_MESSAGE_NUMBER_FORMAT.format(selectionModel().selectionCount()) + " " +
-            MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
-            STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
