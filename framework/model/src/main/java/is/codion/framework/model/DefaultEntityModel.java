@@ -32,24 +32,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
 
-  /**
-   * The EntityEditModel instance
-   */
   private final E editModel;
-
-  /**
-   * The EntityTableModel model
-   */
   private final T tableModel;
-
-  /**
-   * The EntityConnection provider
-   */
   private final EntityConnectionProvider connectionProvider;
-
-  /**
-   * Holds the detail EntityModels used by this EntityModel
-   */
   private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
   private final Event<Collection<M>> activeDetailModelsEvent = Event.event();
 
