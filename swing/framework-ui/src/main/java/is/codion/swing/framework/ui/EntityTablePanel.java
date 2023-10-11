@@ -272,7 +272,7 @@ public class EntityTablePanel extends JPanel {
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
   private final FilteredTable<Entity, Attribute<?>> table;
-  private final StatusPanel statusPanel = new StatusPanel();
+  private final StatusPanel statusPanel;
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
   private Confirmer deleteConfirmer = new DeleteConfirmer();
@@ -322,6 +322,7 @@ public class EntityTablePanel extends JPanel {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
     this.table = createTable();
+    this.statusPanel = new StatusPanel();
   }
 
   @Override
