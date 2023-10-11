@@ -53,7 +53,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.*;
@@ -144,12 +144,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Provides this model with a way to check if the underlying entity is in a modified state.
    */
-  private Function<Entity, Boolean> modifiedFunction;
+  private Predicate<Entity> modified;
 
   /**
    * Provides this model with a way to check if the underlying entity exists.
    */
-  private Function<Entity, Boolean> existsFunction;
+  private Predicate<Entity> exists;
 
   /**
    * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
@@ -171,8 +171,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
-    this.modifiedFunction = Entity::modified;
-    this.existsFunction = Entity::exists;
+    this.modified = Entity::modified;
+    this.exists = entity.definition().exists();
     readOnly.set(entityDefinition().readOnly());
     configurePersistentForeignKeys();
     bindEventsInternal();
@@ -773,26 +773,25 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Sets the 'modified' function for this edit model, which is responsible for providing
+   * Sets the 'modified' predicate for this edit model, which is responsible for providing
    * the modified state of the underlying entity.
-   * By default {@link Entity#modified()} is returned.
-   * @param modifiedFunction specifies whether the given entity is modified
+   * @param modified specifies whether the given entity is modified
    * @see Entity#modified()
    * @see #modified()
    */
-  protected final void setModifiedFunction(Function<Entity, Boolean> modifiedFunction) {
-    this.modifiedFunction = requireNonNull(modifiedFunction);
+  protected final void setModifiedPredicate(Predicate<Entity> modified) {
+    this.modified = requireNonNull(modified);
   }
 
   /**
-   * Sets the 'exists' function for this edit model, which is responsible for providing
+   * Sets the 'exists' predicate for this edit model, which is responsible for providing
    * the exists state of the underlying entity.
-   * By default {@link Entity#exists()} is returned.
-   * @param existsFunction specifies whether the given entity has been persisted
+   * @param exists specifies whether the given entity has been persisted
+   * @see EntityDefinition#exists()
    * @see Entity#exists()
    */
-  protected final void setExistsFunction(Function<Entity, Boolean> existsFunction) {
-    this.existsFunction = requireNonNull(existsFunction);
+  protected final void setExistsFunction(Predicate<Entity> exists) {
+    this.exists = requireNonNull(exists);
   }
 
   /**
@@ -1027,10 +1026,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateEntityStates() {
-    entityModified.set(modifiedFunction.apply(entity));
+    entityExists.set(exists.test(entity));
+    entityModified.set(modified.test(entity));
     entityValid.set(validator.valid(entity));
     primaryKeyNull.set(entity.primaryKey().isNull());
-    entityExists.set(existsFunction.apply(entity));
   }
 
   private <T> void updateAttributeStates(Attribute<T> attribute) {

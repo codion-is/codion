@@ -97,10 +97,12 @@ public final class PetclinicImpl extends DefaultDomain {
     add(VetSpecialty.TYPE.define(
             VetSpecialty.VET.define()
                     .column()
-                    .primaryKeyIndex(0),
+                    .primaryKeyIndex(0)
+                    .updatable(true),
             VetSpecialty.SPECIALTY.define()
                     .column()
-                    .primaryKeyIndex(1),
+                    .primaryKeyIndex(1)
+                    .updatable(true),
             VetSpecialty.VET_FK.define()
                     .foreignKey()
                     .caption("Vet"),
@@ -112,7 +114,8 @@ public final class PetclinicImpl extends DefaultDomain {
                     .value(VetSpecialty.VET_FK)
                     .text(" - ")
                     .value(VetSpecialty.SPECIALTY_FK)
-                    .build()));
+                    .build())
+            .exists(new VetSpecialty.Exists()));
   }
 
   private void petType() {

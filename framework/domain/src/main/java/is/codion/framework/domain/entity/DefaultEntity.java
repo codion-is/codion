@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
 import static java.util.Collections.*;
@@ -59,6 +60,7 @@ class DefaultEntity implements Entity, Serializable {
   static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
   static final NullColorProvider NULL_COLOR_PROVIDER = new NullColorProvider();
   static final EntityValidator DEFAULT_VALIDATOR = new DefaultEntityValidator();
+  static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
   /**
    * Keep a reference to this frequently referenced object
@@ -194,7 +196,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean exists() {
-    return primaryKey().isNotNull() || originalPrimaryKey().isNotNull();
+    return definition.exists().test(this);
   }
 
   @Override

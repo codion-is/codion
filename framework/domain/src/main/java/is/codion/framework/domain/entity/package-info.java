@@ -19,6 +19,7 @@
 /**
  * Package configuration values:<br>
  * {@link is.codion.framework.domain.entity.EntityDefinition#STRICT_FOREIGN_KEYS}
+ * {@link is.codion.framework.domain.entity.EntityValidator#STRICT_VALIDATION}
  * {@link is.codion.framework.domain.entity.Entities#STRICT_DESERIALIZATION}
  * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#MAXIMUM_FRACTION_DIGITS}<br>
  * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#TIME_FORMAT}<br>

@@ -65,7 +65,7 @@ A basic CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combine
 
 == Demo application projects
 
-The following applications can be found in the *demos* folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
+The following applications can be found in the `demos` folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
 
 All these projects contain jlink/jpackage configurations for packaging the application, server, server monitor and load-test, if applicable.
 
@@ -93,7 +93,7 @@ Includes load-test, server, and server monitor modules and jlink/jpackage config
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
-NOTE: The "waterfall" master/detail UI layout in these demo applications is simply what the framework provides by default and can be customized at will.
+NOTE: The "waterfall" master/detail UI layout used in these demo applications is simply what the framework provides by default and can be customized at will.
 
 == Domain model
 
@@ -107,7 +107,7 @@ Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object 
 
 === Entities
 
-The Codion framework is based around the *Entity* class which represents a row in a table or query. An *Entity* maps *Attributes* to their respective values and keeps track of values that have been modified since they were first set.
+The Codion framework is based around the `Entity` class which represents a row in a table or query. An `Entity` maps `Attributes` to their respective values and keeps track of values that have been modified since they were first set.
 
 [source,java]
 ----
@@ -144,17 +144,17 @@ For persistance see <<Database access, Database access>> below.
 
 === Defining entities
 
-*EntityType* represents a table (or query), *Attribute* represents a typed value identifier, usually appearing as one of its subclasses *Column* or *ForeignKey*. The metadata required to present and persist entities is encapsulated by *EntityDefinition* and *AttributeDefinition*.
+`EntityType` represents a table (or query), `Attribute` represents a typed value identifier, usually appearing as one of its subclasses `Column` or `ForeignKey`. The metadata required to present and persist entities is encapsulated by `EntityDefinition` and `AttributeDefinition`.
 
-In the below example, we define a domain model with two entities, *Customer* and *Address*, with a master/detail retionship, using the following steps:
+In the below example, we define a domain model with two entities, `Customer` and `Address` with a master/detail retionship, using the following steps:
 
-. Extend the *DefaultDomain* class and create a *DomainType* constant identifying the domain model.
-. Create a namespace interface for each *Entity* and use the *DomainType* to create *EntityType* constants.
-. Use the *EntityType* constant to create *Column* constants for each column and a *ForeignKey* constant for the foreign key relationship.
+. Extend the `DefaultDomain` class and create a `DomainType` constant identifying the domain model.
+. Create a namespace interface for each `Entity` and use the `DomainType` to create `EntityType` constants.
+. Use the `EntityType` constant to create `Column` constants for each column and a `ForeignKey` constant for the foreign key relationship.
 
 NOTE:: The constants defined in the above steps represent the domain API and are usually all you need to work with the domain entities.
 
-. Use the *EntityType* constants to define each entity, based on attributes defined using the *Column* and *ForeignKey* constants, and add the entity definitions to the domain model.
+. Use the `EntityType` constants to define each entity, based on attributes defined using the `Column` and `ForeignKey` constants, and add the entity definitions to the domain model.
 
 [source,java]
 ----
@@ -328,7 +328,7 @@ add(address);
 |is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{version}
 |===
 
-The *EntityTestUnit* class provides a JUnit testing harness for the domain model. The *EntityTestUnit.test(entityType)* method runs insert, select, update and delete on a randomly (or manually) generated  entity instance, verifying the results.
+The `EntityTestUnit` class provides a JUnit testing harness for the domain model. The `EntityTestUnit.test(entityType)` method runs insert, select, update and delete on a randomly (or manually) generated  entity instance, verifying the results.
 
 [source,java]
 ----
@@ -358,7 +358,7 @@ public class StoreTest extends EntityTestUnit {
 |is.codion.swing.framework.ui|is.codion:codion-swing-framework-ui:{version}
 |===
 
-In the following example, we use the domain model from above and implement a *CustomerEditPanel* and *AddressEditPanel* by extending *EntityEditPanel*. These edit panels, as their names suggest, provide the UI for editing entity instances. In the *main* method we use these building blocks to assemble and display a client.
+In the following example, we use the domain model from above and implement a `CustomerEditPanel` and `AddressEditPanel` by extending `EntityEditPanel`. These edit panels, as their names suggest, provide the UI for editing entity instances. In the `main` method we use these building blocks to assemble and display a client.
 
 [source,java]
 ----
@@ -463,7 +463,7 @@ image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 |is.codion.framework.db.http|is.codion:codion-framework-db-http:{version}|HTTP
 |===
 
-The *EntityConnection* interface defines the database layer. There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion Server.
+The `EntityConnection` interface defines the database layer. There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion Server.
 
 [source,java]
 ----

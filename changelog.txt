@@ -9751,3 +9751,5 @@
   Entity.isLoaded() renamed loaded() for consistency
   DefaultEntityApplicationPanelBuilder.displayException() bug fixed, now ignores CancelException
   ExceptionDialogBuilder.systemProperties() added
+  EntityDefinition.Builder.exists() added along with DefaultEntityExists, related changes
+  DefaultEntityValidator now only validates modified values for existing entities by default, EntityValidator.STRICT_VALIDATION configuration value added

@@ -58,6 +58,25 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final String VALUE_REQUIRED_KEY = "value_is_required";
   private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 
+  private final boolean strictValidation;
+
+  /**
+   * Instantiates a new DefaultEntityValidator
+   * @see #STRICT_VALIDATION
+   */
+  public DefaultEntityValidator() {
+    this(STRICT_VALIDATION.get());
+  }
+
+  /**
+   * Instantiates a new DefaultEntityValidator
+   * @param strictValidation true if strict validation should be performed
+   * @see #STRICT_VALIDATION
+   */
+  public DefaultEntityValidator(boolean strictValidation) {
+    this.strictValidation = strictValidation;
+  }
+
   @Override
   public boolean valid(Entity entity) {
     try {
@@ -78,7 +97,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public void validate(Entity entity) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     List<Attribute<?>> attributes = entity.definition().attributes().definitions().stream()
-            .filter(DefaultEntityValidator::validationRequired)
+            .filter(definition -> validationRequired(entity, definition))
             .map(AttributeDefinition::attribute)
             .collect(Collectors.toList());
     for (Attribute<?> attribute : attributes) {
@@ -105,6 +124,22 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
+  private boolean validationRequired(Entity entity, AttributeDefinition<?> definition) {
+    if (definition.derived()) {
+      return false;
+    }
+    if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {
+      return false;
+    }
+    if (!entity.exists() || strictValidation) {
+      // validate all values when inserting or when strict validation is enabled
+      return true;
+    }
+
+    // only validate modified values when updating
+    return entity.modified(definition.attribute());
+  }
+
   private <T> void performNullValidation(Entity entity, AttributeDefinition<T> attributeDefinition) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attributeDefinition, "attributeDefinition");
@@ -128,11 +163,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private <T> void performItemValidation(Entity entity, ItemColumnDefinition<T> columnDefinition) throws ItemValidationException {
     if (entity.isNull(columnDefinition.attribute()) && nullable(entity, columnDefinition.attribute())) {
-      return;
-    }
-    if (entity.exists() && !entity.modified(columnDefinition.attribute())) {
-      //We only want to prevent the usage of invalid items as a new value, not prevent
-      //updates to existing rows that may contain a previously entered invalid item
       return;
     }
     T value = entity.get(columnDefinition.attribute());
@@ -188,16 +218,5 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     return definition instanceof ColumnDefinition
             && !((ColumnDefinition<?>) definition).primaryKeyColumn()
             && !((ColumnDefinition<?>) definition).columnHasDefaultValue();
-  }
-
-  private static boolean validationRequired(AttributeDefinition<?> definition) {
-    if (definition.derived()) {
-      return false;
-    }
-    if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {
-      return false;
-    }
-
-    return true;
   }
 }
