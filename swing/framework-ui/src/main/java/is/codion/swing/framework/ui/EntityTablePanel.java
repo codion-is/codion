@@ -86,6 +86,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.print.PrinterException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -97,6 +98,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.*;
@@ -267,6 +269,7 @@ public class EntityTablePanel extends JPanel {
 
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
   private static final Control NULL_CONTROL = Control.control(() -> {});
+  private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
   private final State conditionPanelVisibleState = State.state();
   private final State filterPanelVisibleState = State.state();
@@ -284,7 +287,7 @@ public class EntityTablePanel extends JPanel {
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
   private final FilteredTable<Entity, Attribute<?>> table;
-  private final StatusPanel statusPanel;
+  private final StatusPanel statusPanel = new StatusPanel();
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
   private Confirmer deleteConfirmer = new DeleteConfirmer();
@@ -334,7 +337,6 @@ public class EntityTablePanel extends JPanel {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
     this.table = createTable();
-    this.statusPanel = new StatusPanel(tableModel);
   }
 
   @Override
@@ -526,6 +528,14 @@ public class EntityTablePanel extends JPanel {
    */
   public final State showRefreshProgressBar() {
     return statusPanel.showRefreshProgressBar;
+  }
+
+  /**
+   * @return the value containing the function for creating the table status message
+   * @see #statusMessage()
+   */
+  public final Value<Function<SwingEntityTableModel, String>> statusMessage() {
+    return statusPanel.statusMessageFunction;
   }
 
   /**
@@ -1857,16 +1867,34 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static final class StatusPanel extends JPanel {
+  private static final class DefaultStatusMessage implements Function<SwingEntityTableModel, String> {
+
+    private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
+
+    @Override
+    public String apply(SwingEntityTableModel tableModel) {
+      int filteredItemCount = tableModel.filteredItemCount();
+
+      return STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getRowCount()) + " (" +
+              STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.selectionModel().selectionCount()) + " " +
+              MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
+              STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
+    }
+  }
+
+  private final class StatusPanel extends JPanel {
 
     private static final String STATUS = "status";
     private static final String REFRESHING = "refreshing";
 
+    private final Value<String> statusMessage = Value.value("", "");
+    private final Value<Function<SwingEntityTableModel, String>> statusMessageFunction =
+            Value.value(DEFAULT_STATUS_MESSAGE, DEFAULT_STATUS_MESSAGE);
     private final State showRefreshProgressBar = State.state(SHOW_REFRESH_PROGRESS_BAR.get());
 
-    private StatusPanel(SwingEntityTableModel tableModel) {
+    private StatusPanel() {
       super(new CardLayout());
-      add(Components.label(tableModel.statusMessageObserver())
+      add(Components.label(statusMessage)
               .horizontalAlignment(SwingConstants.CENTER)
               .build(), STATUS);
       add(createRefreshingProgressPanel(), REFRESHING);
@@ -1876,9 +1904,13 @@ public class EntityTablePanel extends JPanel {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });
+      Runnable statusListener = this::updateStatusMessage;
+      statusMessageFunction.addListener(statusListener);
+      tableModel.selectionModel().addSelectionListener(statusListener);
+      tableModel.addDataChangedListener(statusListener);
     }
 
-    private static JPanel createRefreshingProgressPanel() {
+    private JPanel createRefreshingProgressPanel() {
       return Components.panel(new GridBagLayout())
               .add(Components.progressBar()
                       .indeterminate(true)
@@ -1886,6 +1918,10 @@ public class EntityTablePanel extends JPanel {
                       .stringPainted(true)
                       .build(), createHorizontalFillConstraints())
               .build();
+    }
+
+    private void updateStatusMessage() {
+      statusMessage.set(statusMessageFunction.get().apply(tableModel));
     }
   }
 }
