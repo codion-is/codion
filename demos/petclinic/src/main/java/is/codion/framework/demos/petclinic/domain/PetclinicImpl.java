@@ -82,10 +82,12 @@ public final class PetclinicImpl extends DefaultDomain {
     add(VetSpecialty.TYPE.define(
             VetSpecialty.VET.define()
                     .column()
-                    .primaryKeyIndex(0),
+                    .primaryKeyIndex(0)
+                    .updatable(true),
             VetSpecialty.SPECIALTY.define()
                     .column()
-                    .primaryKeyIndex(1),
+                    .primaryKeyIndex(1)
+                    .updatable(true),
             VetSpecialty.VET_FK.define()
                     .foreignKey()
                     .caption("Vet"),
