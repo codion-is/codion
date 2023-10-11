@@ -9710,3 +9710,4 @@
   Entity.isLoaded() renamed loaded() for consistency
   DefaultEntityApplicationPanelBuilder.displayException() bug fixed, now ignores CancelException
   ExceptionDialogBuilder.systemProperties() added
+  EntityDefinition.Builder.exists() added along with DefaultEntityExists, related changes

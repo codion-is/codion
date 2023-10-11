@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
@@ -191,9 +192,8 @@ public interface Entity extends Comparable<Entity> {
   boolean modified();
 
   /**
-   * Returns true if this entity has a non-null primary key or a non-null original primary key,
-   * which is a best guess about an entity existing in a database.
    * @return true if this entity has been persisted
+   * @see EntityDefinition.Builder#exists(Predicate)
    */
   boolean exists();
 

@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Specifies an entity definition.
@@ -63,6 +64,13 @@ public interface EntityDefinition {
    * @return the validator for this entity type
    */
   EntityValidator validator();
+
+  /**
+   * The default exists predicate returns true if the entity has a non-null primary key or a non-null original primary key,
+   * which is a best guess about an entity existing in a database.
+   * @return the predicate to use to check if an entity of this type exists in the database
+   */
+  Predicate<Entity> exists();
 
   /**
    * @return the caption to use when presenting entities of this type
@@ -360,6 +368,15 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      */
     Builder comparator(Comparator<Entity> comparator);
+
+    /**
+     * Sets the predicate to use when checking if an entity of this type exists in the database.
+     * The default predicate returns true if the entity has a non-null primary key or a non-null original primary key,
+     * which is a best guess about an entity existing in a database.
+     * @param exists the entity exists predicate
+     * @return this {@link Builder} instance
+     */
+    Builder exists(Predicate<Entity> exists);
 
     /**
      * @return a new {@link EntityDefinition} instance based on this builder

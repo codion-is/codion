@@ -36,6 +36,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
@@ -148,6 +149,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final EntityValidator validator;
 
   /**
+   * The exists predicate
+   */
+  private final Predicate<Entity> exists;
+
+  /**
    * The name of the underlying table
    */
   private final transient String tableName;
@@ -210,6 +216,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.foregroundColorProvider = builder.foregroundColorProvider;
     this.comparator = builder.comparator;
     this.validator = builder.validator;
+    this.exists = builder.exists;
     this.tableName = builder.tableName;
     this.selectTableName = builder.selectTableName;
     this.selectQuery = builder.selectQuery;
@@ -351,6 +358,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public EntityValidator validator() {
     return validator;
+  }
+
+  @Override
+  public Predicate<Entity> exists() {
+    return exists;
   }
 
   @Override
@@ -980,6 +992,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private ColorProvider foregroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
     private Comparator<Entity> comparator = Text.spaceAwareCollator();
     private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
+    private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
 
     DefaultBuilder(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
       this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);
@@ -1117,6 +1130,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     @Override
     public Builder validator(EntityValidator validator) {
       this.validator = requireNonNull(validator, "validator");
+      return this;
+    }
+
+    @Override
+    public Builder exists(Predicate<Entity> exists) {
+      this.exists = requireNonNull(exists);
       return this;
     }
 
