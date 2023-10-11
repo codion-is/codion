@@ -390,6 +390,39 @@ public final class EntitiesTest {
   }
 
   @Test
+  void strictValidation() throws ValidationException {
+    Entity emp = entities.builder(TestDomain.Employee.TYPE)
+            .with(TestDomain.Employee.NAME, "1234567891000")
+            .with(TestDomain.Employee.DEPARTMENT_NO, 1)
+            .with(TestDomain.Employee.JOB, "CLERK")
+            .with(TestDomain.Employee.SALARY, 1200d)
+            .with(TestDomain.Employee.HIREDATE, LocalDateTime.now())
+            .build();
+    DefaultEntityValidator validator = new DefaultEntityValidator();
+    assertThrows(LengthValidationException.class, () -> validator.validate(emp));
+    emp.put(TestDomain.Employee.NAME, "Name");
+    emp.save();
+
+    emp.put(TestDomain.Employee.ID, 10);//now it "exists"
+    emp.put(TestDomain.Employee.NAME, "1234567891000");
+    assertThrows(LengthValidationException.class, () -> validator.validate(emp));
+    emp.save();//but not modified
+    validator.validate(emp);
+
+    DefaultEntityValidator validator2 = new DefaultEntityValidator(true);
+
+    assertThrows(LengthValidationException.class, () -> validator2.validate(emp));
+    emp.put(TestDomain.Employee.NAME, "Name");
+    emp.save();
+
+    emp.put(TestDomain.Employee.ID, 10);//now it "exists"
+    emp.put(TestDomain.Employee.NAME, "1234567891000");
+    assertThrows(LengthValidationException.class, () -> validator2.validate(emp));
+    emp.save();//but not modified
+    assertThrows(LengthValidationException.class, () -> validator2.validate(emp));//strict
+  }
+
+  @Test
   void searchColumns() {
     EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
     Collection<Column<String>> searchColumns = definition.columns().searchColumns();
