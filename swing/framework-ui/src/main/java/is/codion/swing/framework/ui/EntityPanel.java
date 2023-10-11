@@ -174,114 +174,28 @@ public class EntityPanel extends JPanel {
     UP, DOWN, RIGHT, LEFT
   }
 
-  /**
-   * The EntityModel instance used by this EntityPanel
-   */
   private final SwingEntityModel entityModel;
-
-  /**
-   * A List containing the detail panels, if any
-   */
   private final List<EntityPanel> detailPanels = new ArrayList<>();
-
-  /**
-   * The EntityEditPanel instance
-   */
   private final EntityEditPanel editPanel;
-
-  /**
-   * The EntityTablePanel instance
-   */
   private final EntityTablePanel tablePanel;
-
-  /**
-   * The base panel containing the edit and control panels
-   */
   private final JPanel editControlPanel = new JPanel(borderLayout());
-
-  /**
-   * The base panel containing the edit, control and table panels
-   */
   private final JPanel editControlTablePanel = new JPanel(borderLayout());
-
-  /**
-   * Fired before this panel is activated.
-   */
   private final Event<EntityPanel> beforeActivateEvent = Event.event();
-
-  /**
-   * The panel layout
-   */
   private final PanelLayout panelLayout;
-
-  /**
-   * The detail panel controller
-   */
   private final DetailPanelController detailPanelController;
-
-  /**
-   * The caption to use when presenting this entity panel
-   */
   private final Value<String> caption;
-
-  /**
-   * Controls the edit panel state
-   */
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
 
-  /**
-   * The description to display for this entity panel
-   */
   private String description;
-
-  /**
-   * The parent panel, if any, so that detail panels can refer to their parents
-   */
   private EntityPanel parentPanel;
-
-  /**
-   * The previous sibling panel, if any
-   */
   private EntityPanel previousSiblingPanel;
-
-  /**
-   * The next sibling panel, if any
-   */
   private EntityPanel nextSiblingPanel;
-
-  /**
-   * Specifies whether the edit controls buttons are on a toolbar instead of a button panel
-   */
   private boolean toolbarControls = TOOLBAR_CONTROLS.get();
-
-  /**
-   * indicates where the control panel should be placed in a BorderLayout
-   */
   private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
-
-  /**
-   * if true then the edit control panel should be included
-   */
   private boolean includeControlPanel = true;
-
-  /**
-   * if true and an edit panel is available the actions to toggle it is included
-   */
   private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
-
-  /**
-   * if true then the ESC key disposes the edit dialog
-   */
   private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
-
-  /**
-   * if true then keyboard navigation is enabled
-   */
   private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
-
-  /**
-   * True after {@link #initialize()} has been called
-   */
   private boolean initialized = false;
 
   static {

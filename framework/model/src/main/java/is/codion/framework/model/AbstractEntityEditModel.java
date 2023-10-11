@@ -96,59 +96,16 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
   private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
 
-  /**
-   * The Entity being edited by this model
-   */
   private final Entity entity;
-
-  /**
-   * The {@link EntityConnectionProvider} instance to use
-   */
   private final EntityConnectionProvider connectionProvider;
-
-  /**
-   * Holds the {@link EntitySearchModel}s used by this {@link EntityEditModel}
-   */
   private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
-
-  /**
-   * Holds the edit model values created via {@link #value(Attribute)}
-   */
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
-
-  /**
-   * Contains the states controlling whether values should persist for the given attribute when the model is cleared
-   */
   private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
-
-  /**
-   * The validator used by this edit model
-   */
   private final EntityValidator validator;
-
-  /**
-   * Holds events signaling value changes made via {@link #put(Attribute, Object)} or {@link #remove(Attribute)}
-   */
   private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
-
-  /**
-   * Holds events signaling value changes in the underlying {@link Entity}
-   */
   private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
-
-  /**
-   * Holds the default value suppliers for attributes
-   */
   private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
-
-  /**
-   * Provides this model with a way to check if the underlying entity is in a modified state.
-   */
   private Predicate<Entity> modified;
-
-  /**
-   * Provides this model with a way to check if the underlying entity exists.
-   */
   private Predicate<Entity> exists;
 
   /**

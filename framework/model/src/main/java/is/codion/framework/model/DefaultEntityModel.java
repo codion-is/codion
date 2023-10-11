@@ -47,24 +47,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
 
-  /**
-   * The EntityEditModel instance
-   */
   private final E editModel;
-
-  /**
-   * The EntityTableModel model
-   */
   private final T tableModel;
-
-  /**
-   * The EntityConnection provider
-   */
-  private final EntityConnectionProvider connectionProvider;
-
-  /**
-   * Holds the detail EntityModels used by this EntityModel
-   */
   private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
   private final Event<Collection<M>> activeDetailModelsEvent = Event.event();
 
@@ -74,7 +58,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(E editModel) {
     requireNonNull(editModel, "editModel");
-    this.connectionProvider = editModel.connectionProvider();
     this.editModel = editModel;
     this.tableModel = null;
     bindEventsInternal();
@@ -86,7 +69,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(T tableModel) {
     requireNonNull(tableModel, "tableModel");
-    this.connectionProvider = tableModel.connectionProvider();
     this.editModel = tableModel.editModel();
     this.tableModel = tableModel;
     bindEventsInternal();
@@ -108,12 +90,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final EntityConnectionProvider connectionProvider() {
-    return connectionProvider;
+    return editModel.connectionProvider();
   }
 
   @Override
   public final Entities entities() {
-    return connectionProvider.entities();
+    return editModel.connectionProvider().entities();
   }
 
   @Override

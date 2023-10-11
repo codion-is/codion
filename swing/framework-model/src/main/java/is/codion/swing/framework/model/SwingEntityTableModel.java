@@ -107,41 +107,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final State conditionChanged = State.state();
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
-  /**
-   * the condition used during the last successful refresh
-   */
   private Condition refreshCondition;
-
-  /**
-   * the maximum number of rows to fetch via the underlying query, -1 meaning all records should be fetched
-   */
   private int limit = -1;
-
-  /**
-   * Specifies whether the values of hidden columns are included in the underlying query
-   */
   private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
-
-  /**
-   * If true then items deleted via the edit model are removed from this table model
-   */
   private boolean removeDeletedEntities = true;
-
-  /**
-   * The action to perform when entities are inserted via the edit model
-   */
   private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
-
-  /**
-   * Specifies whether this table model is editable.
-   * @see #isCellEditable(int, int)
-   * @see #setValueAt(Object, int, int)
-   */
   private boolean editable = false;
-
-  /**
-   * Specifies whether to use the current sort order as the query order by clause
-   */
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**

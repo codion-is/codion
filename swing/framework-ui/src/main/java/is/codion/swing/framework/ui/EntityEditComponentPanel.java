@@ -120,69 +120,19 @@ public class EntityEditComponentPanel extends JPanel {
   public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
           Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
-  /**
-   * The edit model these edit components are associated with
-   */
   private final SwingEntityEditModel editModel;
-
-  /**
-   * The input component builder factory
-   */
   private final EntityComponents entityComponents;
-
-  /**
-   * Input components mapped to their respective attributes
-   */
   private final Map<Attribute<?>, JComponent> components = new HashMap<>();
-
-  /**
-   * Input component builders mapped to their respective attributes
-   */
   private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
-
-  /**
-   * Attributes that should be excluded when presenting the component selection
-   */
   private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
-
-  /**
-   * Holds the last focused input component
-   */
   private final Value<JComponent> focusedInputComponent = Value.value();
 
-  /**
-   * The component that should receive focus when the UI is initialized/cleared
-   */
   private JComponent initialFocusComponent;
-
-  /**
-   * The attribute for which component should receive the focus when the UI is initialized/cleared
-   */
   private Attribute<?> initialFocusAttribute;
-
-  /**
-   * The component that should receive focus when the UI is initialized after insert
-   */
   private JComponent afterInsertFocusComponent;
-
-  /**
-   * The attribute for which component should receive the focus when the UI is initialized after insert
-   */
   private Attribute<?> afterInsertFocusAttribute;
-
-  /**
-   * Specifies whether components created by this edit component panel should transfer focus on enter.
-   */
   private boolean transferFocusOnEnter = true;
-
-  /**
-   * The default number of text field columns
-   */
   private int defaultTextFieldColumns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
-
-  /**
-   * Specifies whether to use a modified indicator on component labels
-   */
   private boolean useModifiedIndicator = USE_MODIFIED_INDICATOR.get();
 
   /**

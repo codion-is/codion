@@ -131,47 +131,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
-  /**
-   * The controls this edit panel should include
-   */
   private final Set<ControlCode> controlCodes;
-
-  /**
-   * Controls mapped to their respective control codes
-   */
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
-
-  /**
-   * Indicates whether the panel is active and ready to receive input
-   */
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
-
-  /**
-   * The insert, update and delete confirmers
-   */
   private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
 
-  /**
-   * Indicates whether the UI should be cleared after insert has been performed
-   */
-  private boolean clearAfterInsert = true;
-
-  /**
-   * Indicates whether the UI should request focus after insert has been performed
-   * @see #requestInitialFocus()
-   */
-  private boolean requestFocusAfterInsert = true;
-
-  /**
-   * True after {@link #initialize()} has been called
-   */
-  private boolean initialized = false;
-
-  /**
-   * The action to take when a referential integrity error occurs on delete
-   */
   private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
           ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+  private boolean clearAfterInsert = true;
+  private boolean requestFocusAfterInsert = true;
+  private boolean initialized = false;
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}

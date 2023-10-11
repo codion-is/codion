@@ -57,31 +57,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private final State searchStringModified = State.state();
 
-  /**
-   * The type of the entity this search model is based on
-   */
   private final EntityType entityType;
-
-  /**
-   * The columns to use when doing the search
-   */
   private final Collection<Column<String>> searchColumns;
-
-  /**
-   * The selected entities
-   */
   private final ValueSet<Entity> selectedEntities = ValueSet.valueSet(Notify.WHEN_SET);
-
-  /**
-   * The EntityConnectionProvider instance used by this EntitySearchModel
-   */
   private final EntityConnectionProvider connectionProvider;
-
-  /**
-   * Contains the search settings for search columns
-   */
   private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
-
   private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
   private final Value<String> separator;
   private final State singleSelection = State.state(false);
