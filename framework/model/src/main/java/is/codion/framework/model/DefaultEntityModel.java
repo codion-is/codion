@@ -34,7 +34,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private final E editModel;
   private final T tableModel;
-  private final EntityConnectionProvider connectionProvider;
   private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
   private final Event<Collection<M>> activeDetailModelsEvent = Event.event();
 
@@ -44,7 +43,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(E editModel) {
     requireNonNull(editModel, "editModel");
-    this.connectionProvider = editModel.connectionProvider();
     this.editModel = editModel;
     this.tableModel = null;
     bindEventsInternal();
@@ -56,7 +54,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(T tableModel) {
     requireNonNull(tableModel, "tableModel");
-    this.connectionProvider = tableModel.connectionProvider();
     this.editModel = tableModel.editModel();
     this.tableModel = tableModel;
     bindEventsInternal();
@@ -78,12 +75,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final EntityConnectionProvider connectionProvider() {
-    return connectionProvider;
+    return editModel.connectionProvider();
   }
 
   @Override
   public final Entities entities() {
-    return connectionProvider.entities();
+    return editModel.connectionProvider().entities();
   }
 
   @Override
