@@ -9715,3 +9715,4 @@
   DefaultEntitySearchModel now uses the default entity comparator to sort the search results, no longer orders by
   EntitySearchField.TableSelectionProvider bug fixed, now uses addItemsAtSorted() respecting the table sorting status
   SwingEntityTableModel.statusMessage moved to EntityTablePanel, statusMessage() removed, EntityTablePanel.statusMessage() added, for customizing the status message
+  PersistMenuCheckBoxMenuItem, PersistMenuRadioButtonMenuItem.processMouseEvent() bug fixed, no longer disregards all mouse events except MOUSE_RELEASED
