@@ -53,7 +53,7 @@ final class ContinentPanel extends EntityPanel {
   private static final class ContinentPanelLayout implements PanelLayout {
 
     @Override
-    public void layoutPanel(EntityPanel entityPanel) {
+    public void layout(EntityPanel entityPanel) {
       ContinentPanel continentPanel = (ContinentPanel) entityPanel;
       ContinentModel model = entityPanel.model();
 

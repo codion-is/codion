@@ -9758,3 +9758,8 @@
   SwingEntityTableModel.statusMessage moved to EntityTablePanel, statusMessage() removed, EntityTablePanel.statusMessage() added, for customizing the status message
   PersistMenuCheckBoxMenuItem, PersistMenuRadioButtonMenuItem.processMouseEvent() bug fixed, no longer disregards all mouse events except MOUSE_RELEASED
   EntityEditComponentPanel.component() now returns T extends JComponent
+  TabbedApplicationPanelLayout now a concrete class, DefaultTabbedApplicationLayout removed
+  EntityApplicationPanel now handles selecting activated entity panels, instead of TabbedApplicationLayout
+  TabbedPanelLayout now a concrete class, DefaultTabbedPanelLayout removed
+  ApplicationLayout, PanelLayout.layoutPanel() renamed layout()
+  EntityPanelSelector.selectEntityPanel() renamed select()

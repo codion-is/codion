@@ -90,16 +90,12 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
                             .editPanelClass(ItemEditPanel.class)
                             .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
                                     .editPanelClass(TagItemEditPanel.class))
-                            .panelLayout(TabbedPanelLayout.builder()
-                                    .detailPanelState(PanelState.HIDDEN)
-                                    .build())),
+                            .panelLayout(detailPanelState(PanelState.HIDDEN))),
             EntityPanel.builder(tagModelBuilder)
                     .editPanelClass(TagEditPanel.class)
                     .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
                             .editPanelClass(TagItemEditPanel.class))
-                    .panelLayout(TabbedPanelLayout.builder()
-                            .detailPanelState(PanelState.HIDDEN)
-                            .build()));
+                    .panelLayout(detailPanelState(PanelState.HIDDEN)));
   }
 
   public static void main(String[] args) {

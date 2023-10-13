@@ -181,7 +181,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private boolean initialized = false;
 
   public EntityApplicationPanel(M applicationModel) {
-    this(applicationModel, new DefaultTabbedApplicationLayout());
+    this(applicationModel, new TabbedApplicationLayout());
   }
 
   public EntityApplicationPanel(M applicationModel, ApplicationLayout applicationLayout) {
@@ -366,7 +366,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       try {
         createEntityPanels().forEach(this::addEntityPanel);
         supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
-        initializeUI();
+        applicationLayout.layout(this);
         bindEventsInternal();
         bindEvents();
         onInitialized.accept(this);
@@ -741,13 +741,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes this EntityApplicationPanel UI
-   */
-  private void initializeUI() {
-    applicationLayout.layoutPanel(this);
-  }
-
-  /**
    * Creates the {@link EntityPanel}s to include in this application panel, in the order they should appear in the tab pane.
    * Returns an empty list in case this panel contains no entity panels or has a custom UI.
    * @return a List containing the {@link EntityPanel}s to include in this application panel or an empty list in case of no entity panels.
@@ -818,7 +811,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void addEntityPanel(EntityPanel entityPanel) {
     EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-    entityPanel.addBeforeActivateListener(applicationLayout::selectEntityPanel);
+    entityPanel.addBeforeActivateListener(applicationLayout::select);
+    if (entityPanel.containsEditPanel()) {
+      entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
+    }
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -909,6 +905,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
   }
 
+  private final class SelectActivatedPanelListener implements Consumer<Boolean> {
+
+    private final EntityPanel entityPanel;
+
+    private SelectActivatedPanelListener(EntityPanel entityPanel) {
+      this.entityPanel = entityPanel;
+    }
+
+    @Override
+    public void accept(Boolean active) {
+      if (active) {
+        applicationLayout.select(entityPanel);
+      }
+    }
+  }
+
   private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
 
     private final Entities entities;
@@ -988,13 +1000,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
      * Lays out the given application panel
      * @param applicationPanel the application panel
      */
-    void layoutPanel(EntityApplicationPanel<?> applicationPanel);
+    void layout(EntityApplicationPanel<?> applicationPanel);
 
     /**
      * Select the given entity panel by making it visible
      * @param entityPanel the entity panel to select
      */
-    default void selectEntityPanel(EntityPanel entityPanel) {}
+    default void select(EntityPanel entityPanel) {}
   }
 
   /**
