@@ -804,6 +804,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private void addEntityPanel(EntityPanel entityPanel) {
     EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
     entityPanel.addBeforeActivateListener(applicationLayout::selectEntityPanel);
+    if (entityPanel.containsEditPanel()) {
+      entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
+    }
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -892,6 +895,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.definition(entityType).foreignKeys().get().stream()
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
+  }
+
+  private final class SelectActivatedPanelListener implements Consumer<Boolean> {
+
+    private final EntityPanel entityPanel;
+
+    private SelectActivatedPanelListener(EntityPanel entityPanel) {
+      this.entityPanel = entityPanel;
+    }
+
+    @Override
+    public void accept(Boolean active) {
+      if (active) {
+        applicationLayout.selectEntityPanel(entityPanel);
+      }
+    }
   }
 
   private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {

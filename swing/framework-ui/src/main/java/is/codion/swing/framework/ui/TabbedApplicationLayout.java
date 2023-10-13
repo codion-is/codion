@@ -12,7 +12,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
-import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static java.util.Objects.requireNonNull;
@@ -73,9 +72,6 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   private void addTab(EntityPanel entityPanel) {
     applicationTabPane.addTab(entityPanel.caption().get(), entityPanel);
     applicationTabPane.setToolTipTextAt(applicationTabPane.getTabCount() - 1, entityPanel.getDescription());
-    if (entityPanel.containsEditPanel()) {
-      entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
-    }
   }
 
   private final class InitializeSelectedPanelListener implements ChangeListener {
@@ -84,22 +80,6 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
     public void stateChanged(ChangeEvent e) {
       if (applicationTabPane.getTabCount() > 0) {
         ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
-      }
-    }
-  }
-
-  private final class SelectActivatedPanelListener implements Consumer<Boolean> {
-
-    private final EntityPanel entityPanel;
-
-    private SelectActivatedPanelListener(EntityPanel entityPanel) {
-      this.entityPanel = entityPanel;
-    }
-
-    @Override
-    public void accept(Boolean panelActivated) {
-      if (panelActivated) {
-        selectEntityPanel(entityPanel);
       }
     }
   }
