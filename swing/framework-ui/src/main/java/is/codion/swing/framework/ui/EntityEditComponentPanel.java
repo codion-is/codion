@@ -178,16 +178,17 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * @param attribute the attribute
+   * @param <T> the component type
    * @return the component associated with the given attribute
    * @throws IllegalArgumentException in case no component or component builder has been associated with the given attribute
    */
-  public final JComponent component(Attribute<?> attribute) {
+  public final <T extends JComponent> T component(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
     if (component == null) {
       throw new IllegalArgumentException("No component associated with attribute: " + attribute);
     }
 
-    return component;
+    return (T) component;
   }
 
   /**
