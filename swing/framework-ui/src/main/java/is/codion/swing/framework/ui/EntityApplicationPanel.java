@@ -166,7 +166,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private boolean initialized = false;
 
   public EntityApplicationPanel(M applicationModel) {
-    this(applicationModel, new DefaultTabbedApplicationLayout());
+    this(applicationModel, new TabbedApplicationLayout());
   }
 
   public EntityApplicationPanel(M applicationModel, ApplicationLayout applicationLayout) {

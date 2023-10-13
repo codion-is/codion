@@ -161,11 +161,6 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
             .build();
   }
 
-  /**
-   * Creates the JTabbedPane containing the detail panels, used in case of multiple detail panels
-   *
-   * @return the JTabbedPane for holding detail panels
-   */
   private JTabbedPane createDetailTabbedPane() {
     if (!includeDetailTabPane || entityPanel.detailPanels().isEmpty()) {
       return null;
