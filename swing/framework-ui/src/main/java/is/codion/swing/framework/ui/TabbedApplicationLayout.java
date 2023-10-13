@@ -36,11 +36,12 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
           .build();
 
   /**
-   * Lays out the given application panel, by adding all root entity panels to a tabbed pane.
-   * @param applicationPanel the application panel
+   * Sets the layout to a {@link BorderLayout} and lays out the given application panel, by adding all root entity panels to a tabbed pane.
+   * Note that this method is responsible for initializing any visible entity panels using {@link EntityPanel#initialize()}.
+   * @param applicationPanel the application panel to lay out
    */
   @Override
-  public void layoutPanel(EntityApplicationPanel<?> applicationPanel) {
+  public void layout(EntityApplicationPanel<?> applicationPanel) {
     requireNonNull(applicationPanel);
     if (!applicationPanel.entityPanels().isEmpty()) {
       //initialize first panel
@@ -49,13 +50,13 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
     applicationPanel.entityPanels().forEach(this::addTab);
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
-    applicationPanel.add(borderLayoutPanel()
+    applicationPanel.add(borderLayoutPanel(new BorderLayout())
             .centerComponent(applicationTabPane)
             .build(), BorderLayout.CENTER);
   }
 
   @Override
-  public final void selectEntityPanel(EntityPanel entityPanel) {
+  public final void select(EntityPanel entityPanel) {
     requireNonNull(entityPanel);
     if (applicationTabPane.indexOfComponent(entityPanel) != -1) {
       applicationTabPane.setSelectedComponent(entityPanel);

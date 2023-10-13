@@ -411,7 +411,7 @@ public class EntityPanel extends JPanel {
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addBeforeActivateListener(detailPanelController::selectEntityPanel);
+    detailPanel.addBeforeActivateListener(detailPanelController::select);
   }
 
   /**
@@ -743,7 +743,7 @@ public class EntityPanel extends JPanel {
     if (containsTablePanel()) {
       editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     }
-    panelLayout.layoutPanel(this);
+    panelLayout.layout(this);
     if (containsEditPanel()) {
       initializeEditPanel();
       updateEditPanelState();
@@ -1233,7 +1233,7 @@ public class EntityPanel extends JPanel {
     /**
      * @param entityPanel the panel to lay out
      */
-    void layoutPanel(EntityPanel entityPanel);
+    void layout(EntityPanel entityPanel);
 
     /**
      * @return the {@link DetailPanelController} provided by this {@link PanelLayout}
@@ -1254,7 +1254,7 @@ public class EntityPanel extends JPanel {
      * is not available, calling this method has no effect.
      * @param entityPanel the entity panel to select
      */
-    void selectEntityPanel(EntityPanel entityPanel);
+    void select(EntityPanel entityPanel);
   }
 
   /**
@@ -1418,7 +1418,7 @@ public class EntityPanel extends JPanel {
     }
 
     @Override
-    public void selectEntityPanel(EntityPanel entityPanel) {}
+    public void select(EntityPanel entityPanel) {}
 
     @Override
     public Value<PanelState> detailPanelState(EntityPanel detailPanel) {

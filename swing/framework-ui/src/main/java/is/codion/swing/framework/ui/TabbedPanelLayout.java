@@ -95,7 +95,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   @Override
-  public void layoutPanel(EntityPanel entityPanel) {
+  public void layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
     int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     this.entityPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
@@ -315,7 +315,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     @Override
-    public void selectEntityPanel(EntityPanel detailPanel) {
+    public void select(EntityPanel detailPanel) {
       if (detailPanelTabbedPane != null) {
         detailPanelTabbedPane.setSelectedComponent(detailPanel);
       }
