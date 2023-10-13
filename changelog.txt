@@ -9719,3 +9719,4 @@
   EntityEditComponentPanel.component() now returns T extends JComponent
   TabbedApplicationPanelLayout now a concrete class, DefaultTabbedApplicationLayout removed
   EntityApplicationPanel now handles selecting activated entity panels, instead of TabbedApplicationLayout
+  TabbedPanelLayout now a concrete class, DefaultTabbedPanelLayout removed
