@@ -92,15 +92,17 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * Adds a validator to this {@link Value}.
    * Adding the same validator again has no effect.
    * @param validator the validator
+   * @return true if this value did not already contain the specified validator
    * @throws IllegalArgumentException in case the current value is invalid according to the validator
    */
-  void addValidator(Validator<T> validator);
+  boolean addValidator(Validator<T> validator);
 
   /**
    * Removes the given validator from this value
    * @param validator the validator
+   * @return true if this value contained the specified validator
    */
-  void removeValidator(Validator<T> validator);
+  boolean removeValidator(Validator<T> validator);
 
   /**
    * Validate the given value using all validators

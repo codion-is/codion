@@ -9725,3 +9725,4 @@
   Value.linkedValues() removed
   EventObserver.add/removeListener() now return a boolean specifying whether the listener was added/removed
   Value.validators() removed, validate() added
+  Value.add/removeValidator() now returns a boolean specifying whether the validator was added/removed

@@ -164,14 +164,14 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void addValidator(Validator<T> validator) {
+  public final boolean addValidator(Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
-    validators.add(validator);
+    return validators.add(validator);
   }
 
   @Override
-  public final void removeValidator(Validator<T> validator) {
-    validators.remove(requireNonNull(validator));
+  public final boolean removeValidator(Validator<T> validator) {
+    return validators.remove(requireNonNull(validator));
   }
 
   @Override

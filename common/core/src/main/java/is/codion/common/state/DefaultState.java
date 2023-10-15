@@ -75,13 +75,13 @@ final class DefaultState implements State {
   }
 
   @Override
-  public void addValidator(Validator<Boolean> validator) {
-    this.value.addValidator(validator);
+  public boolean addValidator(Validator<Boolean> validator) {
+    return this.value.addValidator(validator);
   }
 
   @Override
-  public void removeValidator(Validator<Boolean> validator) {
-    this.value.removeValidator(validator);
+  public boolean removeValidator(Validator<Boolean> validator) {
+    return this.value.removeValidator(validator);
   }
 
   @Override
