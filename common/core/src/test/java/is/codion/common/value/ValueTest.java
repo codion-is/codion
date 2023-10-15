@@ -59,7 +59,8 @@ public class ValueTest {
     assertTrue(valueObserver.optional().isPresent());
     assertTrue(valueObserver.equalTo(42));
     Runnable listener = eventCounter::incrementAndGet;
-    valueObserver.addListener(listener);
+    assertTrue(valueObserver.addListener(listener));
+    assertFalse(valueObserver.addListener(listener));
     valueObserver.addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
@@ -101,7 +102,8 @@ public class ValueTest {
     value.set("hello");
     assertTrue(value.optional().isPresent());
 
-    valueObserver.removeListener(listener);
+    assertTrue(valueObserver.removeListener(listener));
+    assertFalse(valueObserver.removeListener(listener));
   }
 
   @Test

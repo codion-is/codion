@@ -34,42 +34,42 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public void addListener(Runnable listener) {
-    observer().addListener(listener);
+  public boolean addListener(Runnable listener) {
+    return observer().addListener(listener);
   }
 
   @Override
-  public void removeListener(Runnable listener) {
-    observer().removeListener(listener);
+  public boolean removeListener(Runnable listener) {
+    return observer().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(Consumer<T> listener) {
-    observer().addDataListener(listener);
+  public boolean addDataListener(Consumer<T> listener) {
+    return observer().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(Consumer<T> listener) {
-    observer().removeDataListener(listener);
+  public boolean removeDataListener(Consumer<T> listener) {
+    return observer().removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(Runnable listener) {
-    observer().addWeakListener(listener);
+  public boolean addWeakListener(Runnable listener) {
+    return observer().addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(Runnable listener) {
-    observer().removeWeakListener(listener);
+  public boolean removeWeakListener(Runnable listener) {
+    return observer().removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(Consumer<T> listener) {
-    observer().addWeakDataListener(listener);
+  public boolean addWeakDataListener(Consumer<T> listener) {
+    return observer().addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(Consumer<T> listener) {
-    observer().removeWeakDataListener(listener);
+  public boolean removeWeakDataListener(Consumer<T> listener) {
+    return observer().removeWeakDataListener(listener);
   }
 }

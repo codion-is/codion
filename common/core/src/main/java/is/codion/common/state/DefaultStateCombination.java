@@ -104,43 +104,43 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public void addListener(Runnable listener) {
-    observer.addListener(listener);
+  public boolean addListener(Runnable listener) {
+    return observer.addListener(listener);
   }
 
   @Override
-  public void removeListener(Runnable listener) {
-    observer.removeListener(listener);
+  public boolean removeListener(Runnable listener) {
+    return observer.removeListener(listener);
   }
 
   @Override
-  public void addDataListener(Consumer<Boolean> listener) {
-    observer.addDataListener(listener);
+  public boolean addDataListener(Consumer<Boolean> listener) {
+    return observer.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(Consumer<Boolean> listener) {
-    observer.removeDataListener(listener);
+  public boolean removeDataListener(Consumer<Boolean> listener) {
+    return observer.removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(Runnable listener) {
-    observer.addWeakListener(listener);
+  public boolean addWeakListener(Runnable listener) {
+    return observer.addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(Runnable listener) {
-    observer.removeWeakListener(listener);
+  public boolean removeWeakListener(Runnable listener) {
+    return observer.removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(Consumer<Boolean> listener) {
-    observer.addWeakDataListener(listener);
+  public boolean addWeakDataListener(Consumer<Boolean> listener) {
+    return observer.addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(Consumer<Boolean> listener) {
-    observer.removeWeakDataListener(listener);
+  public boolean removeWeakDataListener(Consumer<Boolean> listener) {
+    return observer.removeWeakDataListener(listener);
   }
 
   private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {

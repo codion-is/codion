@@ -9723,3 +9723,4 @@
   ApplicationLayout, PanelLayout.layoutPanel() renamed layout()
   EntityPanelSelector.selectEntityPanel() renamed select()
   Value.linkedValues() removed
+  EventObserver.add/removeListener() now return a boolean specifying whether the listener was added/removed

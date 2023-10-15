@@ -25,78 +25,78 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   private List<WeakReference<Consumer<T>>> weakDataListeners;
 
   @Override
-  public void addDataListener(Consumer<T> listener) {
+  public boolean addDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      initDataListeners().add(listener);
+      return initDataListeners().add(listener);
     }
   }
 
   @Override
-  public void removeDataListener(Consumer<T> listener) {
+  public boolean removeDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      initDataListeners().remove(listener);
+      return initDataListeners().remove(listener);
     }
   }
 
   @Override
-  public void addListener(Runnable listener) {
+  public boolean addListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      initListeners().add(listener);
+      return initListeners().add(listener);
     }
   }
 
   @Override
-  public void removeListener(Runnable listener) {
+  public boolean removeListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      initListeners().remove(listener);
+      return initListeners().remove(listener);
     }
   }
 
   @Override
-  public void addWeakListener(Runnable listener) {
+  public boolean addWeakListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       List<WeakReference<Runnable>> references = initWeakListeners();
       for (WeakReference<Runnable> reference : references) {
         if (reference.get() == listener) {
-          return;
+          return false;
         }
       }
-      references.add(new WeakReference<>(listener));
+      return references.add(new WeakReference<>(listener));
     }
   }
 
   @Override
-  public void removeWeakListener(Runnable listener) {
+  public boolean removeWeakListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      initWeakListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
+      return initWeakListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
     }
   }
 
   @Override
-  public void addWeakDataListener(Consumer<T> listener) {
+  public boolean addWeakDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       List<WeakReference<Consumer<T>>> references = initWeakDataListeners();
       for (WeakReference<Consumer<T>> reference : references) {
         if (reference.get() == listener) {
-          return;
+          return false;
         }
       }
-      references.add(new WeakReference<>(listener));
+      return references.add(new WeakReference<>(listener));
     }
   }
 
   @Override
-  public void removeWeakDataListener(Consumer<T> listener) {
+  public boolean removeWeakDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      initWeakDataListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
+      return initWeakDataListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
     }
   }
 

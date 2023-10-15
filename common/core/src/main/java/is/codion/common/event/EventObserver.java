@@ -15,53 +15,61 @@ public interface EventObserver<T> {
    * Adds {@code listener} to this {@link EventObserver}.
    * Adding the same listener a second time has no effect.
    * @param listener the listener to add
+   * @return true if this observer did not already contain the specified listener
    * @throws NullPointerException in case listener is null
    */
-  void addListener(Runnable listener);
+  boolean addListener(Runnable listener);
 
   /**
    * Removes {@code listener} from this {@link EventObserver}
    * @param listener the listener to remove
+   * @return true if this observer contained the specified listener
    */
-  void removeListener(Runnable listener);
+  boolean removeListener(Runnable listener);
 
   /**
    * Adds {@code listener} to this {@link EventObserver}.
    * Adding the same listener a second time has no effect.
    * @param listener the listener to add
+   * @return true if this observer did not already contain the specified listener
    * @throws NullPointerException in case listener is null
    */
-  void addDataListener(Consumer<T> listener);
+  boolean addDataListener(Consumer<T> listener);
 
   /**
    * Removes {@code listener} from this {@link EventObserver}
    * @param listener the listener to remove
+   * @return true if this observer contained the specified listener
    */
-  void removeDataListener(Consumer<T> listener);
+  boolean removeDataListener(Consumer<T> listener);
 
   /**
    * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
    * Adding the same listener a second time has no effect.
    * @param listener the listener
+   * @return true if this observer did not already contain the specified listener
    */
-  void addWeakListener(Runnable listener);
+  boolean addWeakListener(Runnable listener);
 
   /**
    * Removes {@code listener} from this {@link EventObserver}
    * @param listener the listener to remove
+   * @return true if this observer contained the specified listener
    */
-  void removeWeakListener(Runnable listener);
+  boolean removeWeakListener(Runnable listener);
 
   /**
    * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
    * Adding the same listener a second time has no effect.
    * @param listener the listener
+   * @return true if this observer did not already contain the specified listener
    */
-  void addWeakDataListener(Consumer<T> listener);
+  boolean addWeakDataListener(Consumer<T> listener);
 
   /**
-   * Removes {@code listener} from this {@link EventObserver}
+   * Removes {@code listener} from this {@link EventObserver}.
    * @param listener the listener to remove
+   * @return true if this observer contained the specified listener
    */
-  void removeWeakDataListener(Consumer<T> listener);
+  boolean removeWeakDataListener(Consumer<T> listener);
 }

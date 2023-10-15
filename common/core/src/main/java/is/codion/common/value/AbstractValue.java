@@ -98,43 +98,43 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void addListener(Runnable listener) {
-    changeEvent.addListener(listener);
+  public final boolean addListener(Runnable listener) {
+    return changeEvent.addListener(listener);
   }
 
   @Override
-  public final void removeListener(Runnable listener) {
-    changeEvent.removeListener(listener);
+  public final boolean removeListener(Runnable listener) {
+    return changeEvent.removeListener(listener);
   }
 
   @Override
-  public final void addDataListener(Consumer<T> listener) {
-    changeEvent.addDataListener(listener);
+  public final boolean addDataListener(Consumer<T> listener) {
+    return changeEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeDataListener(Consumer<T> listener) {
-    changeEvent.removeDataListener(listener);
+  public final boolean removeDataListener(Consumer<T> listener) {
+    return changeEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addWeakListener(Runnable listener) {
-    changeEvent.addWeakListener(listener);
+  public final boolean addWeakListener(Runnable listener) {
+    return changeEvent.addWeakListener(listener);
   }
 
   @Override
-  public final void removeWeakListener(Runnable listener) {
-    changeEvent.removeWeakListener(listener);
+  public final boolean removeWeakListener(Runnable listener) {
+    return changeEvent.removeWeakListener(listener);
   }
 
   @Override
-  public final void addWeakDataListener(Consumer<T> listener) {
-    changeEvent.addWeakDataListener(listener);
+  public final boolean addWeakDataListener(Consumer<T> listener) {
+    return changeEvent.addWeakDataListener(listener);
   }
 
   @Override
-  public final void removeWeakDataListener(Consumer<T> listener) {
-    changeEvent.removeWeakDataListener(listener);
+  public final boolean removeWeakDataListener(Consumer<T> listener) {
+    return changeEvent.removeWeakDataListener(listener);
   }
 
   @Override
