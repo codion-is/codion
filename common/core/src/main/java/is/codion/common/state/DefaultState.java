@@ -6,7 +6,6 @@ package is.codion.common.state;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
-import java.util.Collection;
 import java.util.function.Consumer;
 
 final class DefaultState implements State {
@@ -86,8 +85,8 @@ final class DefaultState implements State {
   }
 
   @Override
-  public Collection<Validator<Boolean>> validators() {
-    return this.value.validators();
+  public void validate(Boolean value) {
+    this.value.validate(value);
   }
 
   @Override

@@ -38,7 +38,6 @@ public class ValueTest {
     value.set(1);
     value.addValidator(validator);
     value.addValidator(validator);
-    assertEquals(1, value.validators().size());
     value.set(null);
     assertEquals(0, value.get());
     assertThrows(IllegalArgumentException.class, () -> value.set(11));

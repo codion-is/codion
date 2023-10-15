@@ -3,7 +3,6 @@
  */
 package is.codion.common.value;
 
-import java.util.Collection;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -104,9 +103,11 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
   void removeValidator(Validator<T> validator);
 
   /**
-   * @return the validators
+   * Validate the given value using all validators
+   * @param value the value to validate
+   * @throws IllegalArgumentException in case the given value is invalid according to a validator
    */
-  Collection<Validator<T>> validators();
+  void validate(T value);
 
   /**
    * A {@link Validator} for {@link Value}s.

@@ -134,9 +134,12 @@ final class ValueLink<T> {
 
     @Override
     public void validate(T value) throws IllegalArgumentException {
-      linkedValue.validators().stream()
-              .filter(validator -> validator != excluded)
-              .forEach(validator -> validator.validate(value));
+      if (linkedValue instanceof AbstractValue) {
+        ((AbstractValue<T>) linkedValue).validators()
+                .stream()
+                .filter(validator -> validator != excluded)
+                .forEach(validator -> validator.validate(value));
+      }
     }
   }
 }

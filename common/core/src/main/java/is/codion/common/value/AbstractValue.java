@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -176,8 +175,8 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final Collection<Validator<T>> validators() {
-    return unmodifiableSet(validators);
+  public final void validate(T value) {
+    validators.forEach(validator -> validator.validate(value));
   }
 
   /**
@@ -195,6 +194,10 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   final Set<Value<T>> linkedValues() {
     return linkedValues.keySet();
+  }
+
+  final Collection<Validator<T>> validators() {
+    return validators;
   }
 
   private final class OriginalValueListener implements Consumer<T> {

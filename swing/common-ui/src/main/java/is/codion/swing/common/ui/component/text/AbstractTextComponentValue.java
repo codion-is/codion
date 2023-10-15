@@ -52,7 +52,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
     super(component, nullValue);
     DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
     if (documentFilter instanceof ValidationDocumentFilter) {
-      ((ValidationDocumentFilter<T>) documentFilter).addValidator(new CombinedValidator());
+      ((ValidationDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
     }
     if (updateOn == UpdateOn.KEYSTROKE) {
       component.getDocument().addDocumentListener(new NotifyOnContentsChanged());
@@ -75,13 +75,6 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
       if (!e.isTemporary()) {
         notifyListeners();
       }
-    }
-  }
-
-  private final class CombinedValidator implements Validator<T> {
-    @Override
-    public void validate(T value) throws IllegalArgumentException {
-      validators().forEach(validator -> validator.validate(value));
     }
   }
 }
