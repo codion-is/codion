@@ -9722,3 +9722,4 @@
   TabbedPanelLayout now a concrete class, DefaultTabbedPanelLayout removed
   ApplicationLayout, PanelLayout.layoutPanel() renamed layout()
   EntityPanelSelector.selectEntityPanel() renamed select()
+  Value.linkedValues() removed

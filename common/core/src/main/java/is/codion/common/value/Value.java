@@ -4,7 +4,6 @@
 package is.codion.common.value;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -89,11 +88,6 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * @param originalValue the original value to unlink
    */
   void unlink(ValueObserver<T> originalValue);
-
-  /**
-   * @return an unmodifiable set containing the values that have been linked to this value
-   */
-  Set<Value<T>> linkedValues();
 
   /**
    * Adds a validator to this {@link Value}.

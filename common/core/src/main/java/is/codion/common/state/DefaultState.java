@@ -7,7 +7,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.function.Consumer;
 
 final class DefaultState implements State {
@@ -74,11 +73,6 @@ final class DefaultState implements State {
   @Override
   public void unlink(ValueObserver<Boolean> originalValue) {
     this.value.unlink(originalValue);
-  }
-
-  @Override
-  public Set<Value<Boolean>> linkedValues() {
-    return this.value.linkedValues();
   }
 
   @Override

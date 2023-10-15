@@ -165,11 +165,6 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final Set<Value<T>> linkedValues() {
-    return unmodifiableSet(linkedValues.keySet());
-  }
-
-  @Override
   public final void addValidator(Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
     validators.add(validator);
@@ -196,6 +191,10 @@ public abstract class AbstractValue<T> implements Value<T> {
    */
   protected final void notifyListeners() {
     changeEvent.accept(get());
+  }
+
+  final Set<Value<T>> linkedValues() {
+    return linkedValues.keySet();
   }
 
   private final class OriginalValueListener implements Consumer<T> {
