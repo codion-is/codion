@@ -423,7 +423,7 @@ final class LocalConnectionHandler implements InvocationHandler {
           if (modified) {
             valueString.append(entity.original(columnDefinition.attribute())).append("->");
           }
-          valueString.append(entity.toString(columnDefinition.attribute()));
+          valueString.append(entity.string(columnDefinition.attribute()));
           builder.append(columnDefinition.attribute()).append(":").append(valueString).append(",");
         }
       }

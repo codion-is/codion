@@ -91,7 +91,7 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void setToStringFunction() {
     ColumnDefinition<?> job = ENTITIES.definition(Employee.TYPE).columns().definition(Employee.JOB);
-    searchModel.toStringFunction().set(entity -> entity.toString(job.attribute()));
+    searchModel.toStringFunction().set(entity -> entity.string(job.attribute()));
     Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.NAME, "Darri")
             .with(Employee.JOB, "CLERK")

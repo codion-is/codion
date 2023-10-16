@@ -317,7 +317,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public String toString(T value) {
+  public String string(T value) {
     if (value == null) {
       return "";
     }

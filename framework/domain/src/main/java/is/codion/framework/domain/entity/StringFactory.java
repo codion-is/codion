@@ -171,7 +171,7 @@ public final class StringFactory {
         return "";
       }
 
-      return entity.referencedEntity(foreignKey).toString(attribute);
+      return entity.referencedEntity(foreignKey).string(attribute);
     }
   }
 
@@ -187,7 +187,7 @@ public final class StringFactory {
 
     @Override
     public String apply(Entity entity) {
-      return entity.toString(attribute);
+      return entity.string(attribute);
     }
   }
 
