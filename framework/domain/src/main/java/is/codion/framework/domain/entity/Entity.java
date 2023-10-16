@@ -103,7 +103,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return a String representation of the value associated with {@code attribute}
    */
-  <T> String toString(Attribute<T> attribute);
+  <T> String string(Attribute<T> attribute);
 
   /**
    * Reverts the value associated with the given attribute to its original value.
@@ -521,7 +521,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(attributes);
     return requireNonNull(entities).stream()
             .map(entity -> attributes.stream()
-                    .map(entity::toString)
+                    .map(entity::string)
                     .collect(toList()))
             .collect(toList());
   }

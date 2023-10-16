@@ -1139,7 +1139,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public String string(Entity entity, Attribute<?> attribute) {
-      return entity.toString(attribute);
+      return entity.string(attribute);
     }
 
     @Override

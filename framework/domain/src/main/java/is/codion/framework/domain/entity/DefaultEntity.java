@@ -219,7 +219,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final <T> String toString(Attribute<T> attribute) {
+  public final <T> String string(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
     if (attribute instanceof ForeignKey && values.get(attribute) == null) {
       Key referencedKey = referencedKey((ForeignKey) attribute);
@@ -228,7 +228,7 @@ class DefaultEntity implements Entity, Serializable {
       }
     }
 
-    return attributeDefinition.toString(get(attributeDefinition));
+    return attributeDefinition.string(get(attributeDefinition));
   }
 
   @Override

@@ -67,7 +67,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final State singleSelection = State.state(false);
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
-  private final Value<Function<Entity, String>> toStringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
+  private final Value<Function<Entity, String>> stringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
   private final State selectionEmpty = State.state(true);
   private final String description;
 
@@ -77,7 +77,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.separator = Value.value(builder.separator, DEFAULT_SEPARATOR);
     this.searchColumns = unmodifiableCollection(builder.searchColumns);
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
-    this.toStringFunction.set(builder.toStringFunction);
+    this.stringFunction.set(builder.stringFunction);
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection.set(builder.singleSelection);
     this.selectedEntities.addValidator(new EntityValidator());
@@ -130,8 +130,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Function<Entity, String>> toStringFunction() {
-    return toStringFunction;
+  public Value<Function<Entity, String>> stringFunction() {
+    return stringFunction;
   }
 
   @Override
@@ -243,7 +243,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private String selectedEntitiesToString() {
     return selectedEntities.get().stream()
-            .map(toStringFunction.get())
+            .map(stringFunction.get())
             .collect(joining(separator.get()));
   }
 
@@ -297,7 +297,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private final EntityType entityType;
     private final EntityConnectionProvider connectionProvider;
     private Collection<Column<String>> searchColumns;
-    private Function<Entity, String> toStringFunction = DEFAULT_TO_STRING;
+    private Function<Entity, String> stringFunction = DEFAULT_TO_STRING;
     private String description;
     private boolean singleSelection = false;
     private String separator = DEFAULT_SEPARATOR;
@@ -319,8 +319,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     @Override
-    public Builder toStringFunction(Function<Entity, String> toStringFunction) {
-      this.toStringFunction = requireNonNull(toStringFunction);
+    public Builder stringFunction(Function<Entity, String> stringFunction) {
+      this.stringFunction = requireNonNull(stringFunction);
       return this;
     }
 

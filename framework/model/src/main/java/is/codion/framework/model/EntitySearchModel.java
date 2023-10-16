@@ -96,11 +96,12 @@ public interface EntitySearchModel {
   Value<Supplier<Condition>> condition();
 
   /**
-   * Note that changing this value does not change the actual search string according
+   * Note that changing this value does not change the search string accordingly.
    * @return the Value controlling the function providing the {@code toString()} implementation
    * for the entities displayed by this model
+   * @see #resetSearchString()
    */
-  Value<Function<Entity, String>> toStringFunction();
+  Value<Function<Entity, String>> stringFunction();
 
   /**
    * @return a StateObserver indicating whether the search string represents the selected entities
@@ -168,10 +169,10 @@ public interface EntitySearchModel {
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model
-     * @param toStringFunction the toString function
+     * @param stringFunction the function providing the toString() functionality
      * @return this builder
      */
-    Builder toStringFunction(Function<Entity, String> toStringFunction);
+    Builder stringFunction(Function<Entity, String> stringFunction);
 
     /**
      * @param description the description

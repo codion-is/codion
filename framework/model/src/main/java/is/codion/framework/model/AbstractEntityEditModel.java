@@ -99,13 +99,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private final Entity entity;
   private final EntityConnectionProvider connectionProvider;
+  private final EntityValidator validator;
   private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
-  private final EntityValidator validator;
   private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
+
   private Predicate<Entity> modified;
   private Predicate<Entity> exists;
 
@@ -153,9 +154,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void setDefault(Attribute<T> attribute, Supplier<T> valueSupplier) {
+  public final <T> void setDefault(Attribute<T> attribute, Supplier<T> defaultValue) {
     entityDefinition().attributes().definition(attribute);
-    defaultValueSuppliers.put(attribute, requireNonNull(valueSupplier, "valueSupplier"));
+    defaultValueSuppliers.put(attribute, requireNonNull(defaultValue, "defaultValue"));
   }
 
   @Override
@@ -357,7 +358,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
     if (readOnly.get() || !insertEnabled.get()) {
-      throw new IllegalStateException("Inserting is not enabled!");
+      throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
     }
     Entity toInsert = entity.copy();
     if (entityDefinition().primaryKey().generated()) {
@@ -379,7 +380,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
     if (readOnly.get() || !insertEnabled.get()) {
-      throw new IllegalStateException("Inserting is not enabled!");
+      throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
     }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
@@ -406,7 +407,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
     requireNonNull(entities, ENTITIES);
     if (readOnly.get() || !updateEnabled.get()) {
-      throw new IllegalStateException("Updating is not enabled!");
+      throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
     }
     if (entities.size() > 1 && !updateMultipleEnabled.get()) {
       throw new IllegalStateException("Batch update of entities is not enabled");
@@ -449,7 +450,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
     if (readOnly.get() || !deleteEnabled.get()) {
-      throw new IllegalStateException("Delete is not enabled");
+      throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
     }
     if (entities.isEmpty()) {
       return;
@@ -751,7 +752,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see EntityDefinition#exists()
    * @see Entity#exists()
    */
-  protected final void setExistsFunction(Predicate<Entity> exists) {
+  protected final void setExistsPredicate(Predicate<Entity> exists) {
     this.exists = requireNonNull(exists);
   }
 
@@ -852,10 +853,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
       onValueChange(objectAttribute, this.entity.get(objectAttribute));
     }
-    if (affectedAttributes.isEmpty()) {//no value changes to trigger state updates
+    if (affectedAttributes.isEmpty()) {//otherwise onValueChange() triggers entity state updates
       updateEntityStates();
     }
-    updateModifiedAttributeStates();
+    updateAttributeModifiedStates();
 
     entityEvent.accept(entity);
   }
@@ -1004,16 +1005,16 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
     State modifiedState = attributeModifiedMap.get(attribute);
     if (modifiedState != null) {
-      updateModifiedAttributeState(attribute, modifiedState);
+      updateAttributeModifiedState(attribute, modifiedState);
     }
   }
 
-  private void updateModifiedAttributeStates() {
-    attributeModifiedMap.forEach(this::updateModifiedAttributeState);
+  private void updateAttributeModifiedStates() {
+    attributeModifiedMap.forEach(this::updateAttributeModifiedState);
   }
 
-  private void updateModifiedAttributeState(Attribute<?> attribute, State modifiedState) {
-    modifiedState.set(entity.exists() && entity.modified(attribute));
+  private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
+    modifiedState.set(exists.test(entity) && entity.modified(attribute));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {

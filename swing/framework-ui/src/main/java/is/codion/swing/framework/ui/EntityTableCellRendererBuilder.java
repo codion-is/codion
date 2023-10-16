@@ -103,7 +103,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 
     @Override
     public Object apply(Object value) {
-      return objectAttributeDefinition.toString(value);
+      return objectAttributeDefinition.string(value);
     }
   }
 

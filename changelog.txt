@@ -9769,3 +9769,6 @@
   Value.add/removeValidator() now returns a boolean specifying whether the validator was added/removed
   FilteredTable.setColumnModel() and setSelectionModel() disabled like setTableModel()
   AbstractEntityModel.doInsert(), doUpdate() and doDelete() EntityConnection parameter added, renamed insert(), update() and delete() respectively
+  AbstractEntityEditModel.updateAttributeModifiedState() bug fixed, now uses the exists predicate, instead of entity.exists()
+  AttributeDefinition.toString(value) and Entity.toString(attribute) renamed string()
+  EntitySearchModel.toStringFunction() renamed stringFunction()

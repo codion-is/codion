@@ -45,6 +45,6 @@ final class DefaultStringFactory implements Function<Entity, String>, Serializab
   }
 
   private static String toString(Entity entity, Attribute<?> attribute) {
-    return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.toString(attribute));
+    return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.string(attribute));
   }
 }

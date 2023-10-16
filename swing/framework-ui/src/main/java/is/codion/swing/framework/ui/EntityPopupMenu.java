@@ -89,7 +89,7 @@ final class EntityPopupMenu extends JPopupMenu {
               .append(primaryKeyColumn.attribute())
               .append(" [").append(primaryKeyColumn.attribute().type().valueClass().getSimpleName()).append("]: ")
               .append(createValueString(entity, primaryKeyColumn)).toString());
-      menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(primaryKeyColumn.attribute()))));
+      menuItem.addActionListener(Control.control(() -> setClipboard(entity.string(primaryKeyColumn.attribute()))));
       setInvalidModified(menuItem, true, entity.modified(primaryKeyColumn.attribute()));
       menuItem.setToolTipText(primaryKeyColumn.attribute().name());
       rootMenu.add(menuItem);
@@ -144,7 +144,7 @@ final class EntityPopupMenu extends JPopupMenu {
                 .append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
                 .append(attributeDefinition.derived() ? "*" : "").append("]: ")
                 .append(createValueString(entity, attributeDefinition)).toString());
-        menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(attributeDefinition.attribute()))));
+        menuItem.addActionListener(Control.control(() -> setClipboard(entity.string(attributeDefinition.attribute()))));
         setInvalidModified(menuItem, valid(validator, entity, attributeDefinition.attribute()), entity.modified(attributeDefinition.attribute()));
         menuItem.setToolTipText(attributeDefinition.attribute().toString());
         rootMenu.add(menuItem);
@@ -164,7 +164,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static String createValueString(Object value, AttributeDefinition<Object> attributeDefinition) {
-    String valueAsString = value == null ? "<null>" : attributeDefinition.toString(value);
+    String valueAsString = value == null ? "<null>" : attributeDefinition.string(value);
     if (valueAsString.length() > MAXIMUM_VALUE_LENGTH) {
       valueAsString = valueAsString.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
     }

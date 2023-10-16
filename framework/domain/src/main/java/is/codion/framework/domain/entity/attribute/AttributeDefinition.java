@@ -170,7 +170,7 @@ public interface AttributeDefinition<T> {
    * @see Builder#format(Format)
    * @see Builder#dateTimePattern(String)
    */
-  String toString(T value);
+  String string(T value);
 
   /**
    * @return true if a default value has been set for this attribute

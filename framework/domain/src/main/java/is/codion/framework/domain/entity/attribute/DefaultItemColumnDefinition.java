@@ -64,7 +64,7 @@ final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> im
   }
 
   @Override
-  public String toString(T value) {
+  public String string(T value) {
     Item<T> item = itemMap.get(value);
     if (item == null) {//invalid
       if (value == null && nullable()) {

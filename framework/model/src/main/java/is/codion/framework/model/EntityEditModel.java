@@ -251,11 +251,11 @@ public interface EntityEditModel {
    * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
    * Use {@link #setDefaults()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
-   * @param valueSupplier the default value supplier
+   * @param defaultValue the default value supplier
    * @param <T> the value type
    * @see #persist(Attribute)
    */
-  <T> void setDefault(Attribute<T> attribute, Supplier<T> valueSupplier);
+  <T> void setDefault(Attribute<T> attribute, Supplier<T> defaultValue);
 
   /**
    * @return a state controlling whether this edit model posts insert, update and delete events
