@@ -30,6 +30,7 @@ import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
@@ -52,6 +53,7 @@ import javax.swing.SortOrder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -236,6 +238,28 @@ public final class FilteredTable<R, C> extends JTable {
     if (!selection.isEmpty()) {
       ((FilteredTableModel<R, C>) dataModel).selectionModel().setSelectedItems(selection);
     }
+  }
+
+  @Override
+  public void setColumnModel(TableColumnModel columnModel) {
+    if (this.columnModel != null) {
+      throw new IllegalStateException("Column model has already been set");
+    }
+    if (!(columnModel instanceof FilteredTableColumnModel)) {
+      throw new IllegalArgumentException("FilteredTable column model must be a FilteredTableColumnModel instance");
+    }
+    super.setColumnModel(columnModel);
+  }
+
+  @Override
+  public void setSelectionModel(ListSelectionModel selectionModel) {
+    if (this.selectionModel != null) {
+      throw new IllegalStateException("Selection model has already been set");
+    }
+    if (!(selectionModel instanceof FilteredTableSelectionModel)) {
+      throw new IllegalArgumentException("FilteredTable selection model must be a FilteredTableSelectionModel instance");
+    }
+    super.setSelectionModel(selectionModel);
   }
 
   /**

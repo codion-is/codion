@@ -305,7 +305,7 @@ public final class EntityDialogs {
           return false;
         }
         try {
-          componentValue.validators().forEach(validator -> validator.validate(value));
+          componentValue.validate(value);
         }
         catch (IllegalArgumentException e) {
           return false;

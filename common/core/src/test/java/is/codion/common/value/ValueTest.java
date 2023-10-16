@@ -51,9 +51,8 @@ public class ValueTest {
     value.set(11);
     assertThrows(IllegalArgumentException.class, () -> value.addValidator(validator));
     value.set(1);
-    value.addValidator(validator);
-    value.addValidator(validator);
-    assertEquals(1, value.validators().size());
+    assertTrue(value.addValidator(validator));
+    assertFalse(value.addValidator(validator));
     value.set(null);
     assertEquals(0, value.get());
     assertThrows(IllegalArgumentException.class, () -> value.set(11));
@@ -74,7 +73,8 @@ public class ValueTest {
     assertTrue(valueObserver.optional().isPresent());
     assertTrue(valueObserver.equalTo(42));
     Runnable listener = eventCounter::incrementAndGet;
-    valueObserver.addListener(listener);
+    assertTrue(valueObserver.addListener(listener));
+    assertFalse(valueObserver.addListener(listener));
     valueObserver.addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
@@ -116,7 +116,8 @@ public class ValueTest {
     value.set("hello");
     assertTrue(value.optional().isPresent());
 
-    valueObserver.removeListener(listener);
+    assertTrue(valueObserver.removeListener(listener));
+    assertFalse(valueObserver.removeListener(listener));
   }
 
   @Test

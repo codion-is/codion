@@ -76,11 +76,13 @@ final class ValueLink<T> {
     if (originalValue == linkedValue) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }
-    Set<Value<T>> linkedValues = originalValue.linkedValues();
-    if (linkedValues.contains(linkedValue)) {
-      throw new IllegalStateException("Cyclical value link detected");
+    if (originalValue instanceof AbstractValue) {
+      Set<Value<T>> linkedValues = ((AbstractValue<T>) originalValue).linkedValues();
+      if (linkedValues.contains(linkedValue)) {
+        throw new IllegalStateException("Cyclical value link detected");
+      }
+      linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
     }
-    linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
   }
 
   private final class UpdateLinkedValue implements Runnable {
@@ -147,9 +149,12 @@ final class ValueLink<T> {
 
     @Override
     public void validate(T value) throws IllegalArgumentException {
-      linkedValue.validators().stream()
-              .filter(validator -> validator != excluded)
-              .forEach(validator -> validator.validate(value));
+      if (linkedValue instanceof AbstractValue) {
+        ((AbstractValue<T>) linkedValue).validators()
+                .stream()
+                .filter(validator -> validator != excluded)
+                .forEach(validator -> validator.validate(value));
+      }
     }
   }
 }

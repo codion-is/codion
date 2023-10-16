@@ -18,8 +18,6 @@
  */
 package is.codion.common.value;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -106,28 +104,27 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
   void unlink(ValueObserver<T> originalValue);
 
   /**
-   * @return an unmodifiable set containing the values that have been linked to this value
-   */
-  Set<Value<T>> linkedValues();
-
-  /**
    * Adds a validator to this {@link Value}.
    * Adding the same validator again has no effect.
    * @param validator the validator
+   * @return true if this value did not already contain the specified validator
    * @throws IllegalArgumentException in case the current value is invalid according to the validator
    */
-  void addValidator(Validator<T> validator);
+  boolean addValidator(Validator<T> validator);
 
   /**
    * Removes the given validator from this value
    * @param validator the validator
+   * @return true if this value contained the specified validator
    */
-  void removeValidator(Validator<T> validator);
+  boolean removeValidator(Validator<T> validator);
 
   /**
-   * @return the validators
+   * Validate the given value using all validators
+   * @param value the value to validate
+   * @throws IllegalArgumentException in case the given value is invalid according to a validator
    */
-  Collection<Validator<T>> validators();
+  void validate(T value);
 
   /**
    * A {@link Validator} for {@link Value}s.

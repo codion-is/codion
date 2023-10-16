@@ -21,8 +21,6 @@ package is.codion.common.state;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.function.Consumer;
 
 final class DefaultState implements State {
@@ -92,23 +90,18 @@ final class DefaultState implements State {
   }
 
   @Override
-  public Set<Value<Boolean>> linkedValues() {
-    return this.value.linkedValues();
+  public boolean addValidator(Validator<Boolean> validator) {
+    return this.value.addValidator(validator);
   }
 
   @Override
-  public void addValidator(Validator<Boolean> validator) {
-    this.value.addValidator(validator);
+  public boolean removeValidator(Validator<Boolean> validator) {
+    return this.value.removeValidator(validator);
   }
 
   @Override
-  public void removeValidator(Validator<Boolean> validator) {
-    this.value.removeValidator(validator);
-  }
-
-  @Override
-  public Collection<Validator<Boolean>> validators() {
-    return this.value.validators();
+  public void validate(Boolean value) {
+    this.value.validate(value);
   }
 
   @Override
@@ -132,43 +125,43 @@ final class DefaultState implements State {
   }
 
   @Override
-  public void addListener(Runnable listener) {
-    observer().addListener(listener);
+  public boolean addListener(Runnable listener) {
+    return observer().addListener(listener);
   }
 
   @Override
-  public void removeListener(Runnable listener) {
-    observer().removeListener(listener);
+  public boolean removeListener(Runnable listener) {
+    return observer().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(Consumer<Boolean> listener) {
-    observer().addDataListener(listener);
+  public boolean addDataListener(Consumer<Boolean> listener) {
+    return observer().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(Consumer<Boolean> listener) {
-    observer().removeDataListener(listener);
+  public boolean removeDataListener(Consumer<Boolean> listener) {
+    return observer().removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(Runnable listener) {
-    observer().addWeakListener(listener);
+  public boolean addWeakListener(Runnable listener) {
+    return observer().addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(Runnable listener) {
-    observer().removeWeakListener(listener);
+  public boolean removeWeakListener(Runnable listener) {
+    return observer().removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(Consumer<Boolean> listener) {
-    observer().addWeakDataListener(listener);
+  public boolean addWeakDataListener(Consumer<Boolean> listener) {
+    return observer().addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(Consumer<Boolean> listener) {
-    observer().removeWeakDataListener(listener);
+  public boolean removeWeakDataListener(Consumer<Boolean> listener) {
+    return observer().removeWeakDataListener(listener);
   }
 
   private final class Notifier implements Consumer<Boolean> {

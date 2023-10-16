@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -113,43 +112,43 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void addListener(Runnable listener) {
-    changeEvent.addListener(listener);
+  public final boolean addListener(Runnable listener) {
+    return changeEvent.addListener(listener);
   }
 
   @Override
-  public final void removeListener(Runnable listener) {
-    changeEvent.removeListener(listener);
+  public final boolean removeListener(Runnable listener) {
+    return changeEvent.removeListener(listener);
   }
 
   @Override
-  public final void addDataListener(Consumer<T> listener) {
-    changeEvent.addDataListener(listener);
+  public final boolean addDataListener(Consumer<T> listener) {
+    return changeEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeDataListener(Consumer<T> listener) {
-    changeEvent.removeDataListener(listener);
+  public final boolean removeDataListener(Consumer<T> listener) {
+    return changeEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addWeakListener(Runnable listener) {
-    changeEvent.addWeakListener(listener);
+  public final boolean addWeakListener(Runnable listener) {
+    return changeEvent.addWeakListener(listener);
   }
 
   @Override
-  public final void removeWeakListener(Runnable listener) {
-    changeEvent.removeWeakListener(listener);
+  public final boolean removeWeakListener(Runnable listener) {
+    return changeEvent.removeWeakListener(listener);
   }
 
   @Override
-  public final void addWeakDataListener(Consumer<T> listener) {
-    changeEvent.addWeakDataListener(listener);
+  public final boolean addWeakDataListener(Consumer<T> listener) {
+    return changeEvent.addWeakDataListener(listener);
   }
 
   @Override
-  public final void removeWeakDataListener(Consumer<T> listener) {
-    changeEvent.removeWeakDataListener(listener);
+  public final boolean removeWeakDataListener(Consumer<T> listener) {
+    return changeEvent.removeWeakDataListener(listener);
   }
 
   @Override
@@ -180,24 +179,19 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final Set<Value<T>> linkedValues() {
-    return unmodifiableSet(linkedValues.keySet());
-  }
-
-  @Override
-  public final void addValidator(Validator<T> validator) {
+  public final boolean addValidator(Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
-    validators.add(validator);
+    return validators.add(validator);
   }
 
   @Override
-  public final void removeValidator(Validator<T> validator) {
-    validators.remove(requireNonNull(validator));
+  public final boolean removeValidator(Validator<T> validator) {
+    return validators.remove(requireNonNull(validator));
   }
 
   @Override
-  public final Collection<Validator<T>> validators() {
-    return unmodifiableSet(validators);
+  public final void validate(T value) {
+    validators.forEach(validator -> validator.validate(value));
   }
 
   /**
@@ -211,6 +205,14 @@ public abstract class AbstractValue<T> implements Value<T> {
    */
   protected final void notifyListeners() {
     changeEvent.accept(get());
+  }
+
+  final Set<Value<T>> linkedValues() {
+    return linkedValues.keySet();
+  }
+
+  final Collection<Validator<T>> validators() {
+    return validators;
   }
 
   private final class OriginalValueListener implements Consumer<T> {
