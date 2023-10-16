@@ -999,7 +999,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-    modifiedState.set(entity.exists() && entity.modified(attribute));
+    modifiedState.set(exists.test(entity) && entity.modified(attribute));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
