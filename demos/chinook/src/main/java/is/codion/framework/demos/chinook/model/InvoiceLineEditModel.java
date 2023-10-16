@@ -30,8 +30,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected Collection<Entity> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
-    EntityConnection connection = connectionProvider().connection();
+  protected Collection<Entity> insert(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
     connection.beginTransaction();
     try {
       Collection<Entity> inserted = connection.insertSelect(entities);
@@ -47,8 +46,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected Collection<Entity> doUpdate(Collection<? extends Entity> entities) throws DatabaseException {
-    EntityConnection connection = connectionProvider().connection();
+  protected Collection<Entity> update(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
     connection.beginTransaction();
     try {
       Collection<Entity> updated = connection.updateSelect(entities);
@@ -64,8 +62,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected void doDelete(Collection<? extends Entity> entities) throws DatabaseException {
-    EntityConnection connection = connectionProvider().connection();
+  protected void delete(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
     connection.beginTransaction();
     try {
       connection.delete(Entity.primaryKeys(entities));

@@ -10,6 +10,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -410,7 +411,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> updatedEntities = new ArrayList<>(doUpdate(new ArrayList<>(modifiedEntities)));
+    List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(modifiedEntities), connectionProvider.connection()));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
@@ -442,7 +443,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     notifyBeforeDelete(unmodifiableCollection(entities));
 
-    doDelete(entities);
+    delete(entities, connectionProvider.connection());
     if (entities.contains(entity)) {
       doSetEntity(null);
     }
@@ -646,37 +647,40 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Inserts the given entities into the database
+   * Inserts the given entities into the database using the given connection
    * @param entities the entities to insert
+   * @param connection the connection to use
    * @return the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Entity> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
-    return connectionProvider.connection().insertSelect(entities);
+  protected Collection<Entity> insert(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+    return requireNonNull(connection).insertSelect(entities);
   }
 
   /**
-   * Updates the given entities in the database
+   * Updates the given entities in the database using the given connection
    * @param entities the entities to update
+   * @param connection the connection to use
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Entity> doUpdate(Collection<? extends Entity> entities) throws DatabaseException {
-    return connectionProvider.connection().updateSelect(entities);
+  protected Collection<Entity> update(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+    return requireNonNull(connection).updateSelect(entities);
   }
 
   /**
-   * Deletes the given entities from the database
+   * Deletes the given entities from the database using the given connection
    * @param entities the entities to delete
+   * @param connection the connection to use
    * @throws DatabaseException in case of a database exception
    */
-  protected void doDelete(Collection<? extends Entity> entities) throws DatabaseException {
-    connectionProvider.connection().delete(Entity.primaryKeys(entities));
+  protected void delete(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+    requireNonNull(connection).delete(Entity.primaryKeys(entities));
   }
 
   /**
    * Called during the {@link #update()} function, to determine which entities need to be updated,
-   * these entities will then be forwarded to {@link #doUpdate(Collection)}.
+   * these entities will then be forwarded to {@link #update(Collection, EntityConnection)}.
    * Returns the entities that have been modified and require updating, override to be able to
    * perform an update on unmodified entities or to return an empty list to veto an update action.
    * @param entities the entities
@@ -813,7 +817,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - insert {}", this, entities);
 
-    return doInsert(entities);
+    return insert(entities, connectionProvider.connection());
   }
 
   private boolean setEntityAllowed() {
