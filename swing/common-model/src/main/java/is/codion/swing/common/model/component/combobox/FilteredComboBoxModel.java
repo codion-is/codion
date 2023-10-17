@@ -49,6 +49,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultItemValidator<>();
   private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
+  private static final Predicate<?> DEFAULT_ALLOW_SELECTION_PREDICATE = new DefaultAllowSelectionPredicate<>();
 
   private final Event<T> selectionChangedEvent = Event.event();
   private final State selectionEmpty = State.state(true);
@@ -60,7 +61,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
           Value.value((Predicate<T>) DEFAULT_ITEM_VALIDATOR, (Predicate<T>) DEFAULT_ITEM_VALIDATOR);
   private final Value<Function<Object, T>> selectedItemTranslator =
           Value.value((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR, (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR);
-  private Predicate<T> allowSelectionPredicate = new DefaultAllowSelectionPredicate<>();
+  private final Value<Predicate<T>> allowSelectionPredicate =
+          Value.value((Predicate<T>) DEFAULT_ALLOW_SELECTION_PREDICATE, (Predicate<T>) DEFAULT_ALLOW_SELECTION_PREDICATE);
 
   /**
    * set during setItems()
@@ -90,6 +92,11 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     itemValidator.addValidator(validator -> items().stream()
             .filter(Objects::nonNull)
             .forEach(validator::test));
+    allowSelectionPredicate.addValidator(predicate -> {
+      if (predicate != null && !predicate.test(selectedItem)){
+        throw new IllegalArgumentException("The current selected item does not satisfy the allow selection predicate");
+      }
+    });
   }
 
   @Override
@@ -331,22 +338,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @return the allow selection predicate
-   */
-  public final Predicate<T> getAllowSelectionPredicate() {
-    return allowSelectionPredicate;
-  }
-
-  /**
    * Provides a way for the combo box model to prevent the selection of certain items.
-   * @param allowSelectionPredicate the allow selection predicate
+   * @return the Value controlling the allow selection predicate
    * @throws IllegalArgumentException in case the current selected item does not satisfy the allow selection predicate
    */
-  public final void setAllowSelectionPredicate(Predicate<T> allowSelectionPredicate) {
-    if (!requireNonNull(allowSelectionPredicate).test(selectedItem)) {
-      throw new IllegalArgumentException("The current selected item does not satisfy the allow selection predicate");
-    }
-    this.allowSelectionPredicate = allowSelectionPredicate;
+  public final Value<Predicate<T>> allowSelectionPredicate() {
+    return allowSelectionPredicate;
   }
 
   /**
@@ -428,7 +425,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void setSelectedItem(Object item) {
     T toSelect = selectedItemTranslator.get().apply(Objects.equals(nullItem, item) ? null : item);
-    if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.test(toSelect)) {
+    if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.get().test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
       selectionEmpty.set(selectedValue() == null);
