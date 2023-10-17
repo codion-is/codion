@@ -153,7 +153,7 @@ public final class DefaultFilteredTableModelTest {
 
     done.set(0);
     cleared.set(0);
-    tableModel.setMergeOnRefresh(true);
+    tableModel.mergeOnRefresh().set(true);
     tableModel.refresh();
     assertEquals(1, done.get());
     assertEquals(0, cleared.get());
@@ -172,7 +172,7 @@ public final class DefaultFilteredTableModelTest {
                     .itemSupplier(() -> items)
                     .build();
     testModel.selectionModel().addSelectionListener(selectionEvents::incrementAndGet);
-    testModel.setMergeOnRefresh(true);
+    testModel.mergeOnRefresh().set(true);
     testModel.refresh();
     testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
     testModel.selectionModel().setSelectedIndex(1);//b
@@ -265,7 +265,7 @@ public final class DefaultFilteredTableModelTest {
     assertTrue(tableModel.containsItem(D));
     assertTrue(tableModel.containsItem(E));
 
-    tableModel.setMergeOnRefresh(true);
+    tableModel.mergeOnRefresh().set(true);
     events.set(0);
     tableModel.refresh();
     assertEquals(5, events.get());

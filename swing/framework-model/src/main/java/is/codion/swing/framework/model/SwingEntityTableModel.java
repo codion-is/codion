@@ -644,13 +644,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isMergeOnRefresh() {
-    return tableModel.isMergeOnRefresh();
-  }
-
-  @Override
-  public final void setMergeOnRefresh(boolean mergeOnRefresh) {
-    tableModel.setMergeOnRefresh(mergeOnRefresh);
+  public final State mergeOnRefresh() {
+    return tableModel.mergeOnRefresh();
   }
 
   @Override
