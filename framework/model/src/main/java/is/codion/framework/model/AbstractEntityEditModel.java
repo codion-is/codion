@@ -91,9 +91,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
-
-  private Predicate<Entity> modified;
-  private Predicate<Entity> exists;
+  private final Value<Predicate<Entity>> modifiedPredicate;
+  private final Value<Predicate<Entity>> existsPredicate;
 
   /**
    * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
@@ -115,8 +114,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
-    this.modified = Entity::modified;
-    this.exists = entity.definition().exists();
+    this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
+    this.existsPredicate = Value.value(entity.definition().exists(), entity.definition().exists());
     readOnly.set(entityDefinition().readOnly());
     configurePersistentForeignKeys();
     bindEventsInternal();
@@ -720,25 +719,25 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Sets the 'modified' predicate for this edit model, which is responsible for providing
+   * Controls the 'modified' predicate for this edit model, which is responsible for providing
    * the modified state of the underlying entity.
-   * @param modified specifies whether the given entity is modified
+   * @return the value controlling the predicate used to check if the entity is modified
    * @see Entity#modified()
    * @see #modified()
    */
-  protected final void setModifiedPredicate(Predicate<Entity> modified) {
-    this.modified = requireNonNull(modified);
+  protected final Value<Predicate<Entity>> modifiedPredicate() {
+    return modifiedPredicate;
   }
 
   /**
-   * Sets the 'exists' predicate for this edit model, which is responsible for providing
+   * Controls the 'exists' predicate for this edit model, which is responsible for providing
    * the exists state of the underlying entity.
-   * @param exists specifies whether the given entity has been persisted
+   * @return the value controlling the predicate used to check if the entity exists
    * @see EntityDefinition#exists()
    * @see Entity#exists()
    */
-  protected final void setExistsPredicate(Predicate<Entity> exists) {
-    this.exists = requireNonNull(exists);
+  protected final Value<Predicate<Entity>> existsPredicate() {
+    return existsPredicate;
   }
 
   /**
@@ -973,8 +972,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateEntityStates() {
-    entityExists.set(exists.test(entity));
-    entityModified.set(modified.test(entity));
+    entityExists.set(existsPredicate.get().test(entity));
+    entityModified.set(modifiedPredicate.get().test(entity));
     entityValid.set(validator.valid(entity));
     primaryKeyNull.set(entity.primaryKey().isNull());
   }
@@ -999,7 +998,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-    modifiedState.set(exists.test(entity) && entity.modified(attribute));
+    modifiedState.set(existsPredicate.get().test(entity) && entity.modified(attribute));
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
