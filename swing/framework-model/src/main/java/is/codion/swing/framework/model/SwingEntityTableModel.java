@@ -88,6 +88,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Value<Integer> limit = Value.value(-1, -1);
   private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
   private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
+  private final State removeDeleted = State.state(true);
+  private final Value<OnInsert> onInsert = Value.value(EntityTableModel.ON_INSERT.get(), EntityTableModel.ON_INSERT.get());
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -97,8 +99,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
   private Condition refreshCondition;
-  private boolean removeDeletedEntities = true;
-  private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
 
   /**
    * Instantiates a new SwingEntityTableModel.
@@ -224,23 +224,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final OnInsert getOnInsert() {
+  public final Value<OnInsert> onInsert() {
     return onInsert;
   }
 
   @Override
-  public final void setOnInsert(OnInsert onInsert) {
-    this.onInsert = requireNonNull(onInsert, "onInsert");
-  }
-
-  @Override
-  public final boolean isRemoveDeletedEntities() {
-    return removeDeletedEntities;
-  }
-
-  @Override
-  public final void setRemoveDeletedEntities(boolean removeDeletedEntities) {
-    this.removeDeletedEntities = removeDeletedEntities;
+  public final State removeDeleted() {
+    return removeDeleted;
   }
 
   @Override
@@ -869,7 +859,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       if (!selectionModel().isSelectionEmpty()) {
         selectionModel().clearSelection();
       }
-      switch (onInsert) {
+      switch (onInsert.get()) {
         case ADD_TOP:
           tableModel.addItemsAt(0, entitiesToAdd);
           break;
@@ -893,7 +883,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onDelete(Collection<Entity> deletedEntities) {
-    if (removeDeletedEntities) {
+    if (removeDeleted.get()) {
       removeItems(deletedEntities);
     }
   }

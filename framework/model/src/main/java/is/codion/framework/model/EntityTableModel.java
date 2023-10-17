@@ -205,33 +205,22 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   State conditionRequired();
 
   /**
-   * @return true if entities that are deleted via the associated edit model
-   * should be automatically removed from this table model
-   */
-  boolean isRemoveDeletedEntities();
-
-  /**
-   * @param removeDeletedEntities true if entities that are deleted via the associated edit model
-   * should be automatically removed from this table model
-   */
-  void setRemoveDeletedEntities(boolean removeDeletedEntities);
-
-  /**
    * @return the state controlling whether this table model responds to entity edit events, by replacing foreign key values
    * @see EntityEditEvents
    */
   State respondToEditEvents();
 
   /**
-   * @return the action performed when entities are inserted via the associated edit model
-   */
-  OnInsert getOnInsert();
-
-  /**
-   * @param onInsert the action to perform when entities are inserted via the associated edit model
+   * @return the Value controlling the action to perform when entities are inserted via the associated edit model
    * @see #ON_INSERT
    */
-  void setOnInsert(OnInsert onInsert);
+  Value<OnInsert> onInsert();
+
+  /**
+   * @return the State controlling whether entities that are deleted via the associated edit model
+   * should be automatically removed from this table model
+   */
+  State removeDeleted();
 
   /**
    * Finds entities in this table model according to the values in {@code keys}

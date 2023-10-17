@@ -158,7 +158,7 @@ public final class NotesDemo {
       super(new NoteEditModel(connectionProvider));
       //configure the table model and columns
       sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
-      setOnInsert(OnInsert.ADD_TOP_SORTED);
+      onInsert().set(OnInsert.ADD_TOP_SORTED);
       columnModel().column(Note.NOTE).setPreferredWidth(280);
       columnModel().column(Note.CREATED).setPreferredWidth(130);
       columnModel().column(Note.UPDATED).setPreferredWidth(130);

@@ -9751,3 +9751,4 @@
   EntityTableModel.is/setEditable() replaced with State based editable()
   EntityTableModel.get/setLimit() replaced with Value based limit()
   EntityTableModel.get/setOrderQueryBySortOrder() and get/setQueryHiddenColumns() replaced with State based orderQueryBySortOrder() and queryHiddenColumns()
+  EntityTableModel.get/setOnInsert() and get/setReplaceDeletedEntities() replaced with Value based onInsert() and removeDeleted()
