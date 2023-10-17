@@ -30,7 +30,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Employee.NAME);
+    initialFocusAttribute().set(Employee.NAME);
 
     createTextField(Employee.NAME)
             .columns(8)

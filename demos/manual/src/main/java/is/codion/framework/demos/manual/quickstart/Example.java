@@ -167,7 +167,7 @@ public final class Example {
 
       @Override
       protected void initializeUI() {
-        setInitialFocusAttribute(Customer.FIRST_NAME);
+        initialFocusAttribute().set(Customer.FIRST_NAME);
         createTextField(Customer.FIRST_NAME);
         createTextField(Customer.LAST_NAME);
         addInputPanel(Customer.FIRST_NAME);
@@ -196,7 +196,7 @@ public final class Example {
 
       @Override
       protected void initializeUI() {
-        setInitialFocusAttribute(CustomerAddress.CUSTOMER_FK);
+        initialFocusAttribute().set(CustomerAddress.CUSTOMER_FK);
         createForeignKeyComboBox(CustomerAddress.CUSTOMER_FK);
         createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
         addInputPanel(CustomerAddress.CUSTOMER_FK);

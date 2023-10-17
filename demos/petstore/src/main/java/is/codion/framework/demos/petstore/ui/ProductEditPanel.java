@@ -17,7 +17,7 @@ public class ProductEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Product.CATEGORY_FK);
+    initialFocusAttribute().set(Product.CATEGORY_FK);
 
     createForeignKeyComboBox(Product.CATEGORY_FK);
     createTextField(Product.NAME);

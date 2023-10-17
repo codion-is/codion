@@ -19,7 +19,7 @@ public class AddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Address.CITY);
+    initialFocusAttribute().set(Address.CITY);
 
     createTextField(Address.CITY);
     createTextField(Address.STATE);

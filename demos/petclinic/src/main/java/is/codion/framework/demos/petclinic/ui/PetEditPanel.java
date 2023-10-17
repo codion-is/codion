@@ -23,7 +23,7 @@ public final class PetEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Pet.NAME);
+    initialFocusAttribute().set(Pet.NAME);
 
     createForeignKeyComboBox(Pet.OWNER_FK);
     createTextField(Pet.NAME);

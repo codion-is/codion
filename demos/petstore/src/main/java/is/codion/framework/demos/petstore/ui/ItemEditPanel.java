@@ -20,7 +20,7 @@ public class ItemEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Item.PRODUCT_FK);
+    initialFocusAttribute().set(Item.PRODUCT_FK);
 
     createForeignKeyComboBox(Item.PRODUCT_FK);
     createTextField(Item.NAME);

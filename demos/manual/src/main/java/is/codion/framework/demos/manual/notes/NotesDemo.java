@@ -120,7 +120,7 @@ public final class NotesDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(Note.NOTE);
+      initialFocusAttribute().set(Note.NOTE);
 
       createTextField(Note.NOTE)
               .hintText("Take note...")

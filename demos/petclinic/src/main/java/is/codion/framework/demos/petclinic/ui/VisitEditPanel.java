@@ -22,7 +22,7 @@ public final class VisitEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Visit.PET_FK);
+    initialFocusAttribute().set(Visit.PET_FK);
 
     createForeignKeyComboBox(Visit.PET_FK);
     createTemporalInputPanel(Visit.VISIT_DATE);

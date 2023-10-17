@@ -23,7 +23,7 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(VetSpecialty.VET_FK);
+    initialFocusAttribute().set(VetSpecialty.VET_FK);
 
     createForeignKeyComboBox(VetSpecialty.VET_FK)
             .preferredWidth(200);

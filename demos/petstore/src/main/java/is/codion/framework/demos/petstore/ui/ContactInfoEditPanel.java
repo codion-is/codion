@@ -17,7 +17,7 @@ public class ContactInfoEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(SellerContactInfo.LAST_NAME);
+    initialFocusAttribute().set(SellerContactInfo.LAST_NAME);
 
     createTextField(SellerContactInfo.LAST_NAME);
     createTextField(SellerContactInfo.FIRST_NAME);

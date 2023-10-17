@@ -17,7 +17,7 @@ public final class PetTypeEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(PetType.NAME);
+    initialFocusAttribute().set(PetType.NAME);
 
     createTextField(PetType.NAME);
 
