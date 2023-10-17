@@ -56,6 +56,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final State selectionEmpty = State.state(true);
   private final State includeNull = State.state();
   private final Value<T> nullItem = Value.value();
+  private final State filterSelectedItem = State.state(true);
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
   private final Refresher<T> refresher;
@@ -73,7 +74,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   private boolean cleared = true;
   private T selectedItem = null;
-  private boolean filterSelectedItem = true;
 
   /**
    * Due to a java.util.ConcurrentModificationException in OSX
@@ -178,7 +178,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
       //update the selected item since the underlying data could have changed
       selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
     }
-    if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
+    if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem.get()) {
       setSelectedItem(null);
     }
     else {
@@ -410,21 +410,9 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * from the model, otherwise the selected item can potentially represent a value
    * which is not currently visible in the model.
    * This is true by default.
-   * @param filterSelectedItem if true then the selected item is changed when it is filtered out,
+   * @return the State controlling whether the selected item is changed when it is filtered
    */
-  public final void setFilterSelectedItem(boolean filterSelectedItem) {
-    this.filterSelectedItem = filterSelectedItem;
-  }
-
-  /**
-   * Specifies whether filtering can change the selected item, if true then
-   * the selected item is set to null when the currently selected item is filtered
-   * from the model, otherwise the selected item can potentially represent a value
-   * which is not currently visible in the model.
-   * This is true by default.
-   * @return true if the selected item is changed when it is filtered out
-   */
-  public final boolean isFilterSelectedItem() {
+  public final State filterSelectedItem() {
     return filterSelectedItem;
   }
 

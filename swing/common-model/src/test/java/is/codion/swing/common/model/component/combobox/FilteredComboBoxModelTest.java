@@ -149,8 +149,8 @@ public class FilteredComboBoxModelTest {
     assertNull(testModel.selectedValue());
 
     testModel.includeCondition().set(null);
-    testModel.setFilterSelectedItem(false);
-    assertFalse(testModel.isFilterSelectedItem());
+    testModel.filterSelectedItem().set(false);
+    assertFalse(testModel.filterSelectedItem().get());
     testModel.setSelectedItem(BJORN);
     testModel.includeCondition().set(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
