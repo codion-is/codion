@@ -178,13 +178,13 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @return a {@link EntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
    * @see AttributeDefinition#nullable()
-   * @see EntityComboBoxModel#setAttributes(Collection)
+   * @see EntityComboBoxModel#attributes()
    * @see ForeignKeyDefinition#attributes()
    */
   public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
     EntityComboBoxModel model = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-    model.setAttributes(foreignKeyDefinition.attributes());
+    model.attributes().set(foreignKeyDefinition.attributes());
     if (nullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }

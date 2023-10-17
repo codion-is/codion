@@ -7,6 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -44,8 +45,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
-  /** The attributes to include when selecting the entities for this combo box model, an empty list indicates all attributes */
-  private final Collection<Attribute<?>> attributes = new ArrayList<>(0);
+  /** The attributes to include when selecting the entities for this combo box model, an empty set indicates all attributes */
+  private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
   private final Entities entities;
   /** A map of keys used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
@@ -83,6 +84,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
+    attributes.addValidator(attributes -> {
+      for (Attribute<?> attribute : requireNonNull(attributes)) {
+        if (!attribute.entityType().equals(entityType)) {
+          throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
+        }
+      }
+    });
     respondToEditEvents.addDataListener(new EditEventListener());
     respondToEditEvents.set(true);
   }
@@ -149,28 +157,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Specifies the attributes to include when selecting the entities to populate this model with.
+   * Controls the attributes to include when selecting the entities to populate this model with.
    * Note that the primary key attribute values are always included.
    * An empty Collection indicates that all attributes should be selected.
-   * @param attributes the attributes to select, an empty Collection for all available attributes
-   * @throws IllegalArgumentException in case any of the given attributes is not part of the underlying entity type
+   * @return the ValueSet controlling the attributes to select, an empty ValueSet indicating all available attributes
    */
-  public final void setAttributes(Collection<Attribute<?>> attributes) {
-    for (Attribute<?> attribute : requireNonNull(attributes)) {
-      if (!attribute.entityType().equals(entityType)) {
-        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
-      }
-    }
-    this.attributes.clear();
-    this.attributes.addAll(attributes);
-  }
-
-  /**
-   * @return an unmodifiable view of the attributes to include when selecting entities for this model,
-   * an empty Collection indicates all available attributes
-   */
-  public final Collection<Attribute<?>> getAttributes() {
-    return unmodifiableCollection(attributes);
+  public final ValueSet<Attribute<?>> attributes() {
+    return attributes;
   }
 
   /**
@@ -357,16 +350,16 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
    * the condition supplier ({@link #condition()}) as well as the
-   * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
+   * select attributes ({@link #attributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
    * @see #condition()
-   * @see #getAttributes()
+   * @see #attributes()
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
     try {
       return connectionProvider.connection().select(where(conditionSupplier.get().get())
-              .attributes(attributes)
+              .attributes(attributes.get())
               .orderBy(orderBy)
               .build());
     }

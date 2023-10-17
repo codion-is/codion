@@ -9739,3 +9739,4 @@
   Refresher.get/setItemSupplier() replaced with Value based itemSupplier()
   Refresher.get/setAsyncRefresh() replaced with State based asyncRefresh()
   FilteredTableModel.get/setMergeOnRefresh() replaced with State based mergeOnRefresh()
+  EntityComboBoxModel.get/setAttributes() replaced with ValueSet based attributes()
