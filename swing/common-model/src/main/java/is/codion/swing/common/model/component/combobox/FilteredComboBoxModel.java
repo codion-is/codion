@@ -54,6 +54,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private final Event<T> selectionChangedEvent = Event.event();
   private final State selectionEmpty = State.state(true);
+  private final State includeNull = State.state();
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
   private final Refresher<T> refresher;
@@ -71,7 +72,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   private boolean cleared = true;
   private T selectedItem = null;
-  private boolean includeNull;
   private T nullItem;
   private boolean filterSelectedItem = true;
 
@@ -95,6 +95,14 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     allowSelectionPredicate.addValidator(predicate -> {
       if (predicate != null && !predicate.test(selectedItem)){
         throw new IllegalArgumentException("The current selected item does not satisfy the allow selection predicate");
+      }
+    });
+    includeNull.addDataListener(value -> {
+      if (value && !visibleItems.contains(null)) {
+        visibleItems.add(0, null);
+      }
+      else {
+        visibleItems.remove(null);
       }
     });
   }
@@ -143,7 +151,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     if (items != null) {
       items.forEach(this::validate);
       visibleItems.addAll(items);
-      if (includeNull) {
+      if (includeNull.get()) {
         visibleItems.add(0, null);
       }
     }
@@ -182,7 +190,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     if (visibleItems.isEmpty()) {
       return emptyList();
     }
-    if (!includeNull) {
+    if (!includeNull.get()) {
       return unmodifiableList(visibleItems);
     }
 
@@ -220,7 +228,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   @Override
   public final boolean visible(T item) {
     if (item == null) {
-      return includeNull;
+      return includeNull.get();
     }
 
     return visibleItems.contains(item);
@@ -324,32 +332,19 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @param includeNull if true then a null value is included as the first item
+   * @return the State controlling whether a null value is included as the first item
    * @see #setNullItem(Object)
    */
-  public final void setIncludeNull(boolean includeNull) {
-    this.includeNull = includeNull;
-    if (includeNull && !visibleItems.contains(null)) {
-      visibleItems.add(0, null);
-    }
-    else {
-      visibleItems.remove(null);
-    }
-  }
-
-  /**
-   * @return true if a null value is included
-   */
-  public final boolean isIncludeNull() {
+  public final State includeNull() {
     return includeNull;
   }
 
   /**
    * Sets the item that should represent the null value in this model.
-   * Note that {@link #setIncludeNull(boolean)} must be called as well to enable the null value.
+   * Note that {@link #includeNull()} must be used as well to enable the null value.
    * @param nullItem the item representing null
    * @throws IllegalArgumentException in case the item fails validation
-   * @see #setIncludeNull(boolean)
+   * @see #includeNull()
    */
   public final void setNullItem(T nullItem) {
     validate(nullItem);
@@ -359,10 +354,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * Returns true if this model contains null and it is selected.
    * @return true if this model contains null and it is selected, false otherwise
-   * @see #isIncludeNull()
+   * @see #includeNull()
    */
   public final boolean nullSelected() {
-    return includeNull && selectedItem == null;
+    return includeNull.get() && selectedItem == null;
   }
 
   /**

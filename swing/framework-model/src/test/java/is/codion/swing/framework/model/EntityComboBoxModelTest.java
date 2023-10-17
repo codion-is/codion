@@ -368,7 +368,7 @@ public final class EntityComboBoxModelTest {
     assertTrue(comboBoxModel.containsItem(null));
     assertEquals("-", comboBoxModel.getSelectedItem().toString());
     assertNull(comboBoxModel.selectedValue());
-    comboBoxModel.setIncludeNull(false);
+    comboBoxModel.includeNull().set(false);
     assertFalse(comboBoxModel.containsItem(null));
   }
 

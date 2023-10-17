@@ -236,11 +236,11 @@ public class FilteredComboBoxModelTest {
   void nullItem() {
     FilteredComboBoxModel<String> model = new FilteredComboBoxModel<>();
     assertFalse(model.containsItem(null));
-    model.setIncludeNull(true);
+    model.includeNull().set(true);
     assertTrue(model.containsItem(null));
-    model.setIncludeNull(false);
+    model.includeNull().set(false);
     assertFalse(model.containsItem(null));
-    model.setIncludeNull(true);
+    model.includeNull().set(true);
     model.setNullItem("-");
     assertTrue(model.containsItem(null));
     assertEquals("-", model.getSelectedItem());
@@ -311,12 +311,12 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  void setIncludeNull() {
+  void includeNull() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
     model.setItems(asList(1, 2, 3, 4, 5));
-    model.setIncludeNull(true);
-    model.setIncludeNull(true);
-    assertTrue(model.isIncludeNull());
+    model.includeNull().set(true);
+    model.includeNull().set(true);
+    assertTrue(model.includeNull().get());
     model.refresh();
   }
 
@@ -351,7 +351,7 @@ public class FilteredComboBoxModelTest {
   @BeforeEach
   void setUp() {
     testModel = new FilteredComboBoxModel<>();
-    testModel.setIncludeNull(true);
+    testModel.includeNull().set(true);
     testModel.setNullItem(NULL);
     List<String> names = new ArrayList<>();
     names.add(ANNA);
