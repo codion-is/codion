@@ -206,7 +206,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     if (nullable(column)) {
       model.includeNull().set(true);
       if (column.type().valueClass().isInterface()) {
-        model.setNullItem(ProxyBuilder.builder(column.type().valueClass())
+        model.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
                 .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
                 .build());
       }

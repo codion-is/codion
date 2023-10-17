@@ -55,6 +55,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final Event<T> selectionChangedEvent = Event.event();
   private final State selectionEmpty = State.state(true);
   private final State includeNull = State.state();
+  private final Value<T> nullItem = Value.value();
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
   private final Refresher<T> refresher;
@@ -72,7 +73,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   private boolean cleared = true;
   private T selectedItem = null;
-  private T nullItem;
   private boolean filterSelectedItem = true;
 
   /**
@@ -105,6 +105,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
         visibleItems.remove(null);
       }
     });
+    nullItem.addValidator(FilteredComboBoxModel.this::validate);
   }
 
   @Override
@@ -295,7 +296,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * Controls the Comparator used when sorting the visible items in this model and sorts the model accordingly.
-   * This Comparator must take into account the null value if a null item has been set via {@link #setNullItem(Object)}.
+   * This Comparator must take into account the null value if a null item has been set via {@link #nullItem()}.
    * If a null {@code sortComparator} is provided no sorting will be performed.
    * @return the Value controlling the sort Comparator, value may be null if the items of this model should not be sorted
    */
@@ -333,22 +334,20 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * @return the State controlling whether a null value is included as the first item
-   * @see #setNullItem(Object)
+   * @see #nullItem()
    */
   public final State includeNull() {
     return includeNull;
   }
 
   /**
-   * Sets the item that should represent the null value in this model.
+   * Controls the item that should represent the null value in this model.
    * Note that {@link #includeNull()} must be used as well to enable the null value.
-   * @param nullItem the item representing null
-   * @throws IllegalArgumentException in case the item fails validation
+   * @return the Value controlling the item representing null
    * @see #includeNull()
    */
-  public final void setNullItem(T nullItem) {
-    validate(nullItem);
-    this.nullItem = nullItem;
+  public final Value<T> nullItem() {
+    return nullItem;
   }
 
   /**
@@ -381,12 +380,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-   * via {@link #setNullItem(Object)}, {@link #selectedValue()} is usually what you want
+   * via {@link #nullItem()}, {@link #selectedValue()} is usually what you want
    */
   @Override
   public final T getSelectedItem() {
-    if (selectedItem == null && nullItem != null) {
-      return nullItem;
+    if (selectedItem == null && nullItem.isNotNull()) {
+      return nullItem.get();
     }
 
     return selectedItem;
@@ -396,7 +395,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @param item the item to select
    */
   public final void setSelectedItem(Object item) {
-    T toSelect = selectedItemTranslator.get().apply(Objects.equals(nullItem, item) ? null : item);
+    T toSelect = selectedItemTranslator.get().apply(Objects.equals(nullItem.get(), item) ? null : item);
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.get().test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
@@ -448,7 +447,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public final T getElementAt(int index) {
     T element = visibleItems.get(index);
     if (element == null) {
-      return nullItem;
+      return nullItem.get();
     }
 
     return element;
@@ -492,7 +491,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   private void validate(T item) {
-    requireNonNull(item);
     if (!itemValidator.get().test(item)) {
       throw new IllegalArgumentException("Invalid item: " + item);
     }

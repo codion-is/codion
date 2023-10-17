@@ -241,7 +241,7 @@ public class FilteredComboBoxModelTest {
     model.includeNull().set(false);
     assertFalse(model.containsItem(null));
     model.includeNull().set(true);
-    model.setNullItem("-");
+    model.nullItem().set("-");
     assertTrue(model.containsItem(null));
     assertEquals("-", model.getSelectedItem());
     model.setSelectedItem("-");
@@ -352,7 +352,7 @@ public class FilteredComboBoxModelTest {
   void setUp() {
     testModel = new FilteredComboBoxModel<>();
     testModel.includeNull().set(true);
-    testModel.setNullItem(NULL);
+    testModel.nullItem().set(NULL);
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);

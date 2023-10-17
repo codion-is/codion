@@ -9743,3 +9743,4 @@
   EntityComboBoxModel.get/setOrderBy() replaced with Value based orderBy()
   FilteredComboBoxModel.get/setSortComparator() replaced with Value based sortComparator()
   FilteredComboBoxModel.is/setIncludeNull() replaced with State based includeNull()
+  FilteredComboBoxModel.get/setNullItem() replaced with Value based nullItem()
