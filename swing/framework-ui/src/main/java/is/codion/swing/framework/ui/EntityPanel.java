@@ -1030,8 +1030,8 @@ public class EntityPanel extends JPanel {
     if (detailPanelController != null) {
       detailPanelController.setupTablePanelControls(tablePanel);
     }
-    if (tablePanel.table().getDoubleClickAction() == null) {
-      tablePanel.table().setDoubleClickAction(Control.control(new ShowHiddenEditPanelCommand()));
+    if (tablePanel.table().doubleClickAction().get() == null) {
+      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
     }
     tablePanel.initialize();
     tablePanel.setMinimumSize(new Dimension(0, 0));

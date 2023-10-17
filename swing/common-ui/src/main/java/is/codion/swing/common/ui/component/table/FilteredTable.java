@@ -9,6 +9,8 @@ import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
@@ -149,6 +151,26 @@ public final class FilteredTable<R, C> extends JTable {
   private final Event<MouseEvent> doubleClickEvent = Event.event();
 
   /**
+   * the action performed when the table is double-clicked
+   */
+  private final Value<Action> doubleClickAction;
+
+  /**
+   * If true then sorting via the table header is enabled
+   */
+  private final State sortingEnabled;
+
+  /**
+   * If true then this table scrolls to the item selected in the table model
+   */
+  private final State scrollToSelectedItem;
+
+  /**
+   * Specifies the scrolling behaviour when scrolling to the selected row/column
+   */
+  private final Value<CenterOnScroll> centerOnScroll;
+
+  /**
    * The filter condition panel
    */
   private FilteredTableConditionPanel<C> filterPanel;
@@ -158,34 +180,14 @@ public final class FilteredTable<R, C> extends JTable {
    */
   private JTextField searchField;
 
-  /**
-   * the action performed when the table is double-clicked
-   */
-  private Action doubleClickAction;
-
-  /**
-   * If true then sorting via the table header is enabled
-   */
-  private boolean sortingEnabled = true;
-
-  /**
-   * If true then this table scrolls to the item selected in the table model
-   */
-  private boolean scrollToSelectedItem = true;
-
-  /**
-   * Specifies the scrolling behaviour when scrolling to the selected row/column
-   */
-  private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
-
   private FilteredTable(DefaultBuilder<R, C> builder) {
     super(builder.tableModel, builder.tableModel.columnModel(), builder.tableModel.selectionModel());
     this.tableModel = builder.tableModel;
     this.filterPanelFactory = builder.filterPanelFactory;
-    this.centerOnScroll = builder.centerOnScroll;
-    this.doubleClickAction = builder.doubleClickAction;
-    this.scrollToSelectedItem = builder.scrollToSelectedItem;
-    this.sortingEnabled = builder.sortingEnabled;
+    this.centerOnScroll = Value.value(builder.centerOnScroll, CenterOnScroll.NEITHER);
+    this.doubleClickAction = Value.value(builder.doubleClickAction);
+    this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
+    this.sortingEnabled = State.state(builder.sortingEnabled);
     setAutoStartsEdit(builder.autoStartsEdit);
     setSelectionMode(builder.selectionMode);
     setAutoResizeMode(builder.autoResizeMode);
@@ -270,64 +272,33 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   /**
-   * @param doubleClickAction the action to perform when a double click is performed on the table,
+   * @return the Value controlling the action to perform when a double click is performed on the table,
    * null for no double click action
    */
-  public void setDoubleClickAction(Action doubleClickAction) {
-    this.doubleClickAction = doubleClickAction;
-  }
-
-  /**
-   * @return the Action performed when the table receives a double click
-   */
-  public Action getDoubleClickAction() {
+  public Value<Action> doubleClickAction() {
     return doubleClickAction;
   }
 
   /**
-   * @return true if sorting via the table header is enabled
+   * @return the State controlling whether sorting via the table header is enabled
    */
-  public boolean isSortingEnabled() {
+  public State sortingEnabled() {
     return sortingEnabled;
   }
 
   /**
-   * @param sortingEnabled true if sorting via the table header should be enabled
-   */
-  public void setSortingEnabled(boolean sortingEnabled) {
-    this.sortingEnabled = sortingEnabled;
-  }
-
-  /**
-   * @return true if the JTable instance scrolls automatically to the coordinate
+   * @return the State controlling whether the JTable instance scrolls automatically to the coordinate
    * of the item selected in the underlying table model
    */
-  public boolean isScrollToSelectedItem() {
+  public State scrollToSelectedItem() {
     return scrollToSelectedItem;
   }
 
   /**
-   * Specifies whether this table should automatically scroll to the topmost selected row.
-   * Note that no scrolling is performed if any of the selected rows are already visible.
-   * @param scrollToSelectedItem true if this table should automatically scroll to selected rows
+   * @return the Value controlling the scrolling behaviour when scrolling to the selected row/column
    */
-  public void setScrollToSelectedItem(boolean scrollToSelectedItem) {
-    this.scrollToSelectedItem = scrollToSelectedItem;
-  }
-
-  /**
-   * @return the scrolling behaviour when scrolling to the selected row/column
-   */
-  public CenterOnScroll getCenterOnScroll() {
+  public Value<CenterOnScroll> centerOnScroll() {
     return centerOnScroll;
-  }
-
-  /**
-   * Specifies the scrolling behaviour when scrolling to the selected row/column
-   * @param centerOnScroll the scrolling behaviour
-   */
-  public void setCenterOnScroll(CenterOnScroll centerOnScroll) {
-    this.centerOnScroll = requireNonNull(centerOnScroll);
   }
 
   @Override
@@ -558,7 +529,7 @@ public final class FilteredTable<R, C> extends JTable {
       if (!addToSelection) {
         setColumnSelectionInterval(rowColumn.column(), rowColumn.column());
       }
-      scrollToCoordinate(rowColumn.row(), rowColumn.column(), centerOnScroll);
+      scrollToCoordinate(rowColumn.row(), rowColumn.column(), centerOnScroll.get());
     });
   }
 
@@ -702,8 +673,8 @@ public final class FilteredTable<R, C> extends JTable {
     @Override
     public void mouseClicked(MouseEvent e) {
       if (e.getClickCount() == 2) {
-        if (doubleClickAction != null) {
-          doubleClickAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
+        if (doubleClickAction.isNotNull()) {
+          doubleClickAction.get().actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
         }
         doubleClickEvent.accept(e);
       }
@@ -714,8 +685,8 @@ public final class FilteredTable<R, C> extends JTable {
 
     @Override
     public void accept(List<Integer> selectedRowIndexes) {
-      if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
-        scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
+      if (scrollToSelectedItem.get() && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
+        scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll.get());
       }
     }
 
@@ -739,7 +710,7 @@ public final class FilteredTable<R, C> extends JTable {
   private final class MouseSortHandler extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
-      if (!sortingEnabled || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
+      if (!sortingEnabled.get() || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
         return;
       }
 
