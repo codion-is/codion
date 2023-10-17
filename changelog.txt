@@ -9736,3 +9736,4 @@
   FilteredComboBoxModel.get/setItemValidator() replaced with Value based itemValidator()
   FilteredComboBoxModel.get/setSelectedItemTranslator() replaced with Value based selectedItemTranslator()
   FilteredComboBoxModel.get/setAllowSelectionPredicate() replaced with Value based allowSelectionPredicate()
+  Refresher.get/setItemSupplier() replaced with Value based itemSupplier()

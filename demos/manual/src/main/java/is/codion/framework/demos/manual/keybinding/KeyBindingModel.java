@@ -194,7 +194,7 @@ final class KeyBindingModel {
   private static FilteredComboBoxModel<String> createComponentComboBoxModel(
           FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
     FilteredComboBoxModel<String> comboBoxModel = new FilteredComboBoxModel<>();
-    comboBoxModel.setItemSupplier(new ComponentItemSupplier(lookAndFeelComboBoxModel));
+    comboBoxModel.refresher().itemSupplier().set(new ComponentItemSupplier(lookAndFeelComboBoxModel));
 
     return comboBoxModel;
   }

@@ -304,21 +304,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @return the item supplier
-   */
-  public final Supplier<Collection<T>> getItemSupplier() {
-    return refresher.getItemSupplier();
-  }
-
-  /**
-   * Supplies the items when {@link #refresh()} is called.
-   * @param itemSupplier the item supplier
-   */
-  public final void setItemSupplier(Supplier<Collection<T>> itemSupplier) {
-    this.refresher.setItemSupplier(itemSupplier);
-  }
-
-  /**
    * Provides a way for the model to prevent the addition of certain items.
    * Trying to add items that fail validation will result in an exception.
    * Note that any translation of the selected item is done before validation.

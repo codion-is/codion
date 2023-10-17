@@ -140,15 +140,9 @@ public interface FilteredModel<T> {
     void setAsyncRefresh(boolean asyncRefresh);
 
     /**
-     * @return the item supplier
+     * @return a Value controlling the item supplier for this refresher instance
      */
-    Supplier<Collection<T>> getItemSupplier();
-
-    /**
-     * Supplies the items when {@link #refresh()} is called.
-     * @param itemSupplier the item supplier
-     */
-    void setItemSupplier(Supplier<Collection<T>> itemSupplier);
+    Value<Supplier<Collection<T>>> itemSupplier();
 
     /**
      * Refreshes the items in the associated filtered model.
@@ -209,16 +203,16 @@ public interface FilteredModel<T> {
     private final Event<?> refreshEvent = Event.event();
     private final Event<Throwable> refreshFailedEvent = Event.event();
     private final State refreshingState = State.state();
+    private final Value<Supplier<Collection<T>>> itemSupplier;
 
     private boolean asyncRefresh = ASYNC_REFRESH.get();
 
-    private Supplier<Collection<T>> itemSupplier;
 
     /**
      * @param itemSupplier the item supplier
      */
     protected AbstractRefresher(Supplier<Collection<T>> itemSupplier) {
-      this.itemSupplier = requireNonNull(itemSupplier);
+      this.itemSupplier = Value.value(requireNonNull(itemSupplier), itemSupplier);
     }
 
     @Override
@@ -232,13 +226,8 @@ public interface FilteredModel<T> {
     }
 
     @Override
-    public final Supplier<Collection<T>> getItemSupplier() {
+    public final Value<Supplier<Collection<T>>> itemSupplier() {
       return itemSupplier;
-    }
-
-    @Override
-    public final void setItemSupplier(Supplier<Collection<T>> itemSupplier) {
-      this.itemSupplier = requireNonNull(itemSupplier);
     }
 
     @Override
