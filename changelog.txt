@@ -9749,3 +9749,4 @@
   EntityEditComponentPanel.requestFocusAfterInsert() and requestFocusAfterUpdate() renamed requestAfterInsertFocus() and requestAfterUpdateFocus()
   EntityEditPanel.setReferentialIntegrityErrorHandling() replaced with Value based referentialIntegrityErrorHandling()
   EntityTableModel.is/setEditable() replaced with State based editable()
+  EntityTableModel.get/setLimit() replaced with Value based limit()

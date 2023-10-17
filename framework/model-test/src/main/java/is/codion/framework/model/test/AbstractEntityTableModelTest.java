@@ -197,12 +197,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void testTheRest() {
     assertNotNull(testModel.connectionProvider());
-    testModel.conditionRequired().set(false);
-    assertFalse(testModel.conditionRequired().get());
-    testModel.conditionRequired().set(true);
-    assertTrue(testModel.conditionRequired().get());
-    testModel.setLimit(10);
-    assertEquals(10, testModel.getLimit());
     assertNotNull(testModel.editModel());
     assertFalse(testModel.editModel().readOnly().get());
     testModel.refresh();
@@ -235,7 +229,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void limit() {
     TableModel tableModel = createEmployeeTableModel();
-    tableModel.setLimit(6);
+    tableModel.limit().set(6);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
     ColumnConditionModel<?, Double> commissionConditionModel =
@@ -246,7 +240,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     commissionConditionModel.enabled().set(false);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
-    tableModel.setLimit(-1);
+    tableModel.limit().set(-1);
     tableModel.refresh();
     assertEquals(16, tableModel.getRowCount());
   }

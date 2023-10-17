@@ -85,6 +85,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final State conditionRequired = State.state();
   private final State respondToEditEvents = State.state();
   private final State editable = State.state();
+  private final Value<Integer> limit = Value.value(-1, -1);
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -94,7 +95,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
   private Condition refreshCondition;
-  private int limit = -1;
   private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
   private boolean removeDeletedEntities = true;
   private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
@@ -204,13 +204,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final int getLimit() {
+  public final Value<Integer> limit() {
     return limit;
-  }
-
-  @Override
-  public final void setLimit(int limit) {
-    this.limit = limit;
   }
 
   @Override
@@ -731,7 +726,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * Queries the data used to populate this EntityTableModel when it is refreshed.
    * This method should take into account the condition ({EntityTableConditionModel#condition()}),
-   * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
+   * order by clause ({@link #orderBy()}), the limit ({@link #limit()}) and select attributes
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequired()
@@ -863,7 +858,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
     List<Entity> items = editModel.connectionProvider().connection().select(where(condition)
             .attributes(attributes())
-            .limit(getLimit())
+            .limit(limit().get())
             .orderBy(orderBy())
             .build());
     updateRefreshCondition(condition);

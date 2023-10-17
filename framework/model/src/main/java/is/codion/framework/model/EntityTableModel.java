@@ -12,6 +12,7 @@ import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -167,18 +168,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   Object foregroundColor(int row, Attribute<?> attribute);
 
   /**
-   * Returns the maximum number of rows to fetch via the underlying query the next time
+   * Returns the Value controlling the maximum number of rows to fetch via the underlying query the next time
    * this table model is refreshed, a value of -1 means all rows should be fetched
-   * @return the fetch count
+   * @return the value controlling the limit
    */
-  int getLimit();
-
-  /**
-   * Sets the maximum number of rows to fetch via the underlying query the next time
-   * this table model is refreshed, a value of -1 means all rows should be fetched
-   * @param limit the fetch count
-   */
-  void setLimit(int limit);
+  Value<Integer> limit();
 
   /**
    * Returns whether the values of hidden columns are included when querying data
