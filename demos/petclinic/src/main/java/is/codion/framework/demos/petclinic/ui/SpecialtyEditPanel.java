@@ -32,7 +32,7 @@ public final class SpecialtyEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Specialty.NAME);
+    initialFocusAttribute().set(Specialty.NAME);
 
     createTextField(Specialty.NAME);
 

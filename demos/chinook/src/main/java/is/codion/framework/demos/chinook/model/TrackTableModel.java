@@ -33,7 +33,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 
   public TrackTableModel(EntityConnectionProvider connectionProvider) {
     super(Track.TYPE, connectionProvider);
-    setEditable(true);
+    editable().set(true);
   }
 
   public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {

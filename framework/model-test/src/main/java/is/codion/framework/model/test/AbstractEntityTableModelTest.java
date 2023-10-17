@@ -112,12 +112,12 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void addOnInsert() throws DatabaseException, ValidationException {
+  public void onInsert() throws DatabaseException, ValidationException {
     TableModel deptModel = createDepartmentTableModel();
     deptModel.refresh();
 
     Entities entities = deptModel.entities();
-    deptModel.setOnInsert(EntityTableModel.OnInsert.ADD_BOTTOM);
+    deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_BOTTOM);
     Entity dept = entities.builder(Department.TYPE)
             .with(Department.ID, -10)
             .with(Department.LOCATION, "Nowhere1")
@@ -128,7 +128,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(count + 1, deptModel.getRowCount());
     assertEquals(dept, deptModel.visibleItems().get(deptModel.getRowCount() - 1));
 
-    deptModel.setOnInsert(EntityTableModel.OnInsert.ADD_TOP_SORTED);
+    deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_TOP_SORTED);
     Entity dept2 = entities.builder(Department.TYPE)
             .with(Department.ID, -20)
             .with(Department.LOCATION, "Nowhere2")
@@ -138,7 +138,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(count + 2, deptModel.getRowCount());
     assertEquals(dept2, deptModel.visibleItems().get(2));
 
-    deptModel.setOnInsert(EntityTableModel.OnInsert.DO_NOTHING);
+    deptModel.onInsert().set(EntityTableModel.OnInsert.DO_NOTHING);
     Entity dept3 = entities.builder(Department.TYPE)
             .with(Department.ID, -30)
             .with(Department.LOCATION, "Nowhere3")
@@ -166,15 +166,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       tableModel.select(singletonList(pk1));
       tableModel.selectionModel().setSelectedIndex(0);
       Entity selected = tableModel.selectionModel().getSelectedItem();
-      tableModel.setRemoveDeletedEntities(true);
-      assertTrue(tableModel.isRemoveDeletedEntities());
+      tableModel.removeDeleted().set(true);
       tableModel.deleteSelected();
       assertFalse(tableModel.containsItem(selected));
 
       tableModel.select(singletonList(pk2));
       selected = tableModel.selectionModel().getSelectedItem();
-      tableModel.setRemoveDeletedEntities(false);
-      assertFalse(tableModel.isRemoveDeletedEntities());
+      tableModel.removeDeleted().set(false);
       tableModel.deleteSelected();
       assertTrue(tableModel.containsItem(selected));
     }
@@ -212,12 +210,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void testTheRest() {
     assertNotNull(testModel.connectionProvider());
-    testModel.conditionRequired().set(false);
-    assertFalse(testModel.conditionRequired().get());
-    testModel.conditionRequired().set(true);
-    assertTrue(testModel.conditionRequired().get());
-    testModel.setLimit(10);
-    assertEquals(10, testModel.getLimit());
     assertNotNull(testModel.editModel());
     assertFalse(testModel.editModel().readOnly().get());
     testModel.refresh();
@@ -250,7 +242,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void limit() {
     TableModel tableModel = createEmployeeTableModel();
-    tableModel.setLimit(6);
+    tableModel.limit().set(6);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
     ColumnConditionModel<?, Double> commissionConditionModel =
@@ -261,7 +253,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     commissionConditionModel.enabled().set(false);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
-    tableModel.setLimit(-1);
+    tableModel.limit().set(-1);
     tableModel.refresh();
     assertEquals(16, tableModel.getRowCount());
   }

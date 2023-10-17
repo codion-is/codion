@@ -127,10 +127,11 @@ public class EntityEditComponentPanel extends JPanel {
   private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
   private final Value<JComponent> focusedInputComponent = Value.value();
 
-  private JComponent initialFocusComponent;
-  private Attribute<?> initialFocusAttribute;
-  private JComponent afterInsertFocusComponent;
-  private Attribute<?> afterInsertFocusAttribute;
+  private final Value<JComponent> initialFocusComponent = Value.value();
+  private final Value<Attribute<?>> initialFocusAttribute = Value.value();
+  private final Value<JComponent> afterInsertFocusComponent = Value.value();
+  private final Value<Attribute<?>> afterInsertFocusAttribute = Value.value();
+
   private boolean transferFocusOnEnter = true;
   private int defaultTextFieldColumns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
   private boolean useModifiedIndicator = USE_MODIFIED_INDICATOR.get();
@@ -208,46 +209,42 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Sets the component that should receive the focus when the UI is cleared or activated.
-   * Overrides the value set via {@link #setInitialFocusAttribute(Attribute)}
-   * @param initialFocusComponent the component
-   * @return the component
+   * Overrides the value set via {@link #initialFocusAttribute()}
+   * @return the Value controlling the initial focus component
    */
-  public final JComponent setInitialFocusComponent(JComponent initialFocusComponent) {
-    this.initialFocusComponent = requireNonNull(initialFocusComponent);
+  public final Value<JComponent> initialFocusComponent() {
     return initialFocusComponent;
   }
 
   /**
    * Sets the component associated with the given attribute as the component
    * that should receive the initial focus in this edit panel.
-   * This is overridden by setInitialFocusComponent().
-   * @param attribute the component attribute
-   * @see #setInitialFocusComponent(javax.swing.JComponent)
+   * This is overridden by {@link #initialFocusComponent()}.
+   * @return the Value controlling the initial focus attribute
+   * @see #initialFocusComponent()
    */
-  public final void setInitialFocusAttribute(Attribute<?> attribute) {
-    this.initialFocusAttribute = requireNonNull(attribute);
+  public final Value<Attribute<?>> initialFocusAttribute() {
+    return initialFocusAttribute;
   }
 
   /**
    * Sets the component that should receive the focus after an insert has been performed.
-   * Overrides the value set via {@link #setAfterInsertFocusAttribute(Attribute)}
-   * @param afterInsertFocusComponent the component
-   * @return the component
+   * Overrides the value set via {@link #afterInsertFocusAttribute()}
+   * @return the Value controlling the after insert focus component
    */
-  public final JComponent setAfterInsertFocusComponent(JComponent afterInsertFocusComponent) {
-    this.afterInsertFocusComponent = requireNonNull(afterInsertFocusComponent);
+  public final Value<JComponent> afterInsertFocusComponent() {
     return afterInsertFocusComponent;
   }
 
   /**
    * Sets the component associated with the given attribute as the component
    * that should receive the focus after an insert is performed in this edit panel.
-   * This is overridden by setAfterInsertFocusComponent().
-   * @param attribute the component attribute
-   * @see #setAfterInsertFocusComponent(JComponent)
+   * This is overridden by {@link #afterInsertFocusComponent()}.
+   * @return the Value controlling the after insert focus attribute
+   * @see #afterInsertFocusComponent()
    */
-  public final void setAfterInsertFocusAttribute(Attribute<?> attribute) {
-    this.afterInsertFocusAttribute = requireNonNull(attribute);
+  public final Value<Attribute<?>> afterInsertFocusAttribute() {
+    return afterInsertFocusAttribute;
   }
 
   /**
@@ -256,12 +253,12 @@ public class EntityEditComponentPanel extends JPanel {
    * is not focusable, this panel receives the focus.
    * Note that if this panel is not visible then calling this method has no effect.
    * @see #isVisible()
-   * @see #setInitialFocusAttribute(Attribute)
-   * @see #setInitialFocusComponent(JComponent)
+   * @see #initialFocusAttribute()
+   * @see #initialFocusComponent()
    */
   public final void requestInitialFocus() {
     if (isVisible()) {
-      requestFocus(initialFocusComponent());
+      requestFocus(getInitialFocusComponent());
     }
   }
 
@@ -909,13 +906,13 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @return the component that should get the initial focus when the UI is initialized
    */
-  protected JComponent initialFocusComponent() {
-    if (initialFocusComponent != null) {
-      return initialFocusComponent;
+  protected JComponent getInitialFocusComponent() {
+    if (initialFocusComponent.isNotNull()) {
+      return initialFocusComponent.get();
     }
 
-    if (initialFocusAttribute != null) {
-      return getComponentInternal(initialFocusAttribute);
+    if (initialFocusAttribute.isNotNull()) {
+      return getComponentInternal(initialFocusAttribute.get());
     }
 
     return null;
@@ -924,24 +921,24 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @return the component that should receive the focus when the UI is initialized after insert
    */
-  protected JComponent afterInsertFocusComponent() {
-    if (afterInsertFocusComponent != null) {
-      return afterInsertFocusComponent;
+  protected JComponent getAfterInsertFocusComponent() {
+    if (afterInsertFocusComponent.isNotNull()) {
+      return afterInsertFocusComponent.get();
     }
 
-    if (afterInsertFocusAttribute != null) {
-      return getComponentInternal(afterInsertFocusAttribute);
+    if (afterInsertFocusAttribute.isNotNull()) {
+      return getComponentInternal(afterInsertFocusAttribute.get());
     }
 
-    return initialFocusComponent();
+    return getInitialFocusComponent();
   }
 
   protected final void requestAfterInsertFocus() {
-    requestFocus(afterInsertFocusComponent());
+    requestFocus(getAfterInsertFocusComponent());
   }
 
   protected final void requestAfterUpdateFocus() {
-    requestFocus(focusedInputComponent.optional().orElse(initialFocusComponent()));
+    requestFocus(focusedInputComponent.optional().orElse(getInitialFocusComponent()));
   }
 
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {

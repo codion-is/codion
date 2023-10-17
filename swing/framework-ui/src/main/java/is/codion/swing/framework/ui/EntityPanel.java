@@ -676,7 +676,7 @@ public class EntityPanel extends JPanel {
    * defined as the initialFocusComponent gets the input focus.
    * If no edit panel is available the table panel gets the focus, otherwise the first child
    * component of this EntityPanel is used.
-   * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
+   * @see EntityEditPanel#initialFocusComponent()
    */
   public final void requestInitialFocus() {
     if (editPanel != null && editPanel.isShowing()) {
@@ -1045,8 +1045,8 @@ public class EntityPanel extends JPanel {
     if (detailPanelController != null) {
       detailPanelController.setupTablePanelControls(tablePanel);
     }
-    if (tablePanel.table().getDoubleClickAction() == null) {
-      tablePanel.table().setDoubleClickAction(Control.control(new ShowHiddenEditPanelCommand()));
+    if (tablePanel.table().doubleClickAction().get() == null) {
+      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
     }
     tablePanel.initialize();
     tablePanel.setMinimumSize(new Dimension(0, 0));

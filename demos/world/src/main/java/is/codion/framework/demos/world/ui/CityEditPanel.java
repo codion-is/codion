@@ -66,7 +66,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(City.COUNTRY_FK);
+    initialFocusAttribute().set(City.COUNTRY_FK);
 
     createForeignKeyComboBox(City.COUNTRY_FK)
             .preferredWidth(120);

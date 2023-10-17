@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -44,8 +45,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   private final EntityConnectionProvider connectionProvider;
   private final Version version;
   private final List<M> entityModels = new ArrayList<>();
-
-  private boolean warnAboutUnsavedData = EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get();
+  private final State warnAboutUnsavedData = State.state(EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get());
 
   /**
    * Instantiates a new DefaultEntityApplicationModel
@@ -158,13 +158,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final boolean isWarnAboutUnsavedData() {
+  public final State warnAboutUnsavedData() {
     return warnAboutUnsavedData;
-  }
-
-  @Override
-  public final void setWarnAboutUnsavedData(boolean warnAboutUnsavedData) {
-    this.warnAboutUnsavedData = warnAboutUnsavedData;
   }
 
   @Override

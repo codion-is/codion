@@ -40,7 +40,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
     super(tableModel);
     imagePanel = new NavigableImagePanel();
     imagePanel.setPreferredSize(Windows.screenSizeRatio(0.5));
-    table().setDoubleClickAction(viewCoverControl());
+    table().doubleClickAction().set(viewCoverControl());
   }
 
   private Control viewCoverControl() {

@@ -99,6 +99,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
   private final State conditionRequired = State.state();
   private final State respondToEditEvents = State.state();
+  private final State editable = State.state();
+  private final Value<Integer> limit = Value.value(-1, -1);
+  private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
+  private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
+  private final State removeDeleted = State.state(true);
+  private final Value<OnInsert> onInsert = Value.value(EntityTableModel.ON_INSERT.get(), EntityTableModel.ON_INSERT.get());
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -108,12 +114,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
   private Condition refreshCondition;
-  private int limit = -1;
-  private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
-  private boolean removeDeletedEntities = true;
-  private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
-  private boolean editable = false;
-  private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
    * Instantiates a new SwingEntityTableModel.
@@ -219,33 +219,18 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final int getLimit() {
+  public final Value<Integer> limit() {
     return limit;
   }
 
   @Override
-  public final void setLimit(int limit) {
-    this.limit = limit;
-  }
-
-  @Override
-  public final boolean isQueryHiddenColumns() {
+  public final State queryHiddenColumns() {
     return queryHiddenColumns;
   }
 
   @Override
-  public final void setQueryHiddenColumns(boolean queryHiddenColumns) {
-    this.queryHiddenColumns = queryHiddenColumns;
-  }
-
-  @Override
-  public final boolean isOrderQueryBySortOrder() {
+  public final State orderQueryBySortOrder() {
     return orderQueryBySortOrder;
-  }
-
-  @Override
-  public final void setOrderQueryBySortOrder(boolean orderQueryBySortOrder) {
-    this.orderQueryBySortOrder = orderQueryBySortOrder;
   }
 
   @Override
@@ -254,23 +239,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final OnInsert getOnInsert() {
+  public final Value<OnInsert> onInsert() {
     return onInsert;
   }
 
   @Override
-  public final void setOnInsert(OnInsert onInsert) {
-    this.onInsert = requireNonNull(onInsert, "onInsert");
-  }
-
-  @Override
-  public final boolean isRemoveDeletedEntities() {
-    return removeDeletedEntities;
-  }
-
-  @Override
-  public final void setRemoveDeletedEntities(boolean removeDeletedEntities) {
-    this.removeDeletedEntities = removeDeletedEntities;
+  public final State removeDeleted() {
+    return removeDeleted;
   }
 
   @Override
@@ -299,13 +274,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isEditable() {
+  public final State editable() {
     return editable;
-  }
-
-  @Override
-  public final void setEditable(boolean editable) {
-    this.editable = editable;
   }
 
   /**
@@ -317,7 +287,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public boolean isCellEditable(int rowIndex, int modelColumnIndex) {
-    if (!editable || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
+    if (!editable.get() || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
       return false;
     }
     Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
@@ -338,7 +308,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
-    if (!editable || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
+    if (!editable.get() || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
     Entity entity = itemAt(rowIndex).copy();
@@ -751,7 +721,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * Queries the data used to populate this EntityTableModel when it is refreshed.
    * This method should take into account the condition ({EntityTableConditionModel#condition()}),
-   * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
+   * order by clause ({@link #orderBy()}), the limit ({@link #limit()}) and select attributes
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequired()
@@ -809,11 +779,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * according to the sort order of column based attributes, otherwise the order by
    * clause defined for the underlying entity is returned.
    * @return the order by clause
-   * @see #setOrderQueryBySortOrder(boolean)
+   * @see #orderQueryBySortOrder()
    * @see EntityDefinition#orderBy()
    */
   protected OrderBy orderBy() {
-    if (orderQueryBySortOrder && sortModel().sorted()) {
+    if (orderQueryBySortOrder.get() && sortModel().sorted()) {
       OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByColumns().isEmpty()) {
         return orderBy;
@@ -825,12 +795,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Specifies the attributes to select when querying data. Return an empty list if all should be included.
-   * This method should take the {@link #isQueryHiddenColumns()} setting into account.
+   * This method should take the {@link #queryHiddenColumns()} setting into account.
    * @return the attributes to select when querying data, an empty Collection if all should be selected.
-   * @see #isQueryHiddenColumns()
+   * @see #queryHiddenColumns()
    */
   protected Collection<Attribute<?>> attributes() {
-    if (queryHiddenColumns || columnModel().hiddenColumns().isEmpty()) {
+    if (queryHiddenColumns.get() || columnModel().hiddenColumns().isEmpty()) {
       return emptyList();
     }
 
@@ -883,7 +853,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
     List<Entity> items = editModel.connectionProvider().connection().select(where(condition)
             .attributes(attributes())
-            .limit(getLimit())
+            .limit(limit().get())
             .orderBy(orderBy())
             .build());
     updateRefreshCondition(condition);
@@ -904,7 +874,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       if (!selectionModel().isSelectionEmpty()) {
         selectionModel().clearSelection();
       }
-      switch (onInsert) {
+      switch (onInsert.get()) {
         case ADD_TOP:
           tableModel.addItemsAt(0, entitiesToAdd);
           break;
@@ -928,7 +898,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onDelete(Collection<Entity> deletedEntities) {
-    if (removeDeletedEntities) {
+    if (removeDeleted.get()) {
       removeItems(deletedEntities);
     }
   }

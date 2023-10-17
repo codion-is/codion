@@ -75,10 +75,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
   /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
-  private boolean staticData = false;
+  private final State staticData = State.state();
+  private final State strictForeignKeyFiltering = State.state(true);
+
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private boolean strictForeignKeyFiltering = true;
 
   /**
    * @param entityType the type of the entity this combo box model should represent
@@ -94,7 +95,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     selectedItemTranslator().set(new SelectedItemTranslator());
     refresher().itemSupplier().set(new ItemSupplier());
     itemValidator().set(new ItemValidator());
-    setStaticData(this.entities.definition(entityType).staticData());
+    staticData.set(this.entities.definition(entityType).staticData());
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
@@ -130,7 +131,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive
-   * @see #setStaticData(boolean)
+   * @see #staticData()
    */
   public final void forceRefresh() {
     forceRefresh = true;
@@ -138,20 +139,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * @return true if the data for this model should only be fetched once
-   * @see #forceRefresh()
-   */
-  public final boolean isStaticData() {
-    return staticData;
-  }
-
-  /**
    * Specifies whether this models data should be considered static, that is, only fetched once.
    * Note that {@link #forceRefresh()} disregards this directive.
-   * @param staticData the value
+   * @return the State controlling whether the data is regarded as static
    */
-  public final void setStaticData(boolean staticData) {
-    this.staticData = staticData;
+  public final State staticData() {
+    return staticData;
   }
 
   /**
@@ -281,21 +274,14 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Specifies whether foreign key filtering should be strict or not.
+   * Controls whether foreign key filtering should be strict or not.
    * When the filtering is strict only entities with the correct reference are included, that is,
    * entities with null values for the given foreign key are filtered.
    * Non-strict simply means that entities with null references are not filtered.
-   * @param strictForeignKeyFiltering the value
+   * @return the State controlling whether foreign key filtering should be strict
    * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
    */
-  public final void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering) {
-    this.strictForeignKeyFiltering = strictForeignKeyFiltering;
-  }
-
-  /**
-   * @return true if strict foreign key filtering is enabled
-   */
-  public final boolean isStrictForeignKeyFiltering() {
+  public final State strictForeignKeyFiltering() {
     return strictForeignKeyFiltering;
   }
 
@@ -419,11 +405,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Predicate<Entity> filterAllCondition = item -> false;
-    if (strictForeignKeyFiltering) {
+    if (strictForeignKeyFiltering.get()) {
       includeCondition().set(filterAllCondition);
     }
     foreignKeyModel.addSelectionListener(selected -> {
-      if (selected == null && isStrictForeignKeyFiltering()) {
+      if (selected == null && strictForeignKeyFiltering.get()) {
         includeCondition().set(filterAllCondition);
       }
       else {
@@ -446,7 +432,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public Collection<Entity> get() {
-      if (staticData && !cleared() && !forceRefresh) {
+      if (staticData.get() && !cleared() && !forceRefresh) {
         return items();
       }
 
@@ -539,7 +525,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       for (Map.Entry<ForeignKey, Set<Entity.Key>> entry : foreignKeyFilterKeys.entrySet()) {
         Entity.Key referencedKey = item.referencedKey(entry.getKey());
         if (referencedKey == null) {
-          return !strictForeignKeyFiltering;
+          return !strictForeignKeyFiltering.get();
         }
         if (!entry.getValue().contains(referencedKey)) {
           return false;

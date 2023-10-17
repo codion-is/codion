@@ -32,7 +32,7 @@ public final class PlaylistEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Playlist.NAME);
+    initialFocusAttribute().set(Playlist.NAME);
 
     createTextField(Playlist.NAME);
 

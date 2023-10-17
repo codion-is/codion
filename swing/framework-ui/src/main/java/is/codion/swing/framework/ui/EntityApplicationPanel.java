@@ -291,7 +291,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException if the exit is cancelled
    * @see #addOnExitListener(Runnable)
    * @see EntityApplicationPanel#CONFIRM_EXIT
-   * @see EntityApplicationModel#isWarnAboutUnsavedData()
+   * @see EntityApplicationModel#warnAboutUnsavedData()
    */
   public final void exit() {
     if (cancelExit()) {
@@ -840,7 +840,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean cancelExit() {
-    boolean cancelForUnsavedData = applicationModel().isWarnAboutUnsavedData() && applicationModel().containsUnsavedData() &&
+    boolean cancelForUnsavedData = applicationModel().warnAboutUnsavedData().get() && applicationModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.unsavedDataWarning(),
                     FrameworkMessages.unsavedDataWarningTitle(),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;

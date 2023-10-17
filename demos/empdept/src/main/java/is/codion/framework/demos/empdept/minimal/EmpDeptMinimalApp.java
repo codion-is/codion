@@ -204,7 +204,7 @@ public final class EmpDeptMinimalApp {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(Department.DEPTNO);
+      initialFocusAttribute().set(Department.DEPTNO);
 
       createTextField(Department.DNAME);
       createTextField(Department.LOC);
@@ -227,7 +227,7 @@ public final class EmpDeptMinimalApp {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(Employee.ENAME);
+      initialFocusAttribute().set(Employee.ENAME);
 
       createTextField(Employee.ENAME);
       createForeignKeyComboBox(Employee.DEPT_FK);

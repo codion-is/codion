@@ -32,7 +32,7 @@ public final class PlaylistTrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(PlaylistTrack.PLAYLIST_FK);
+    initialFocusAttribute().set(PlaylistTrack.PLAYLIST_FK);
 
     createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
     createForeignKeySearchField(PlaylistTrack.TRACK_FK)

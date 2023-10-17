@@ -185,7 +185,7 @@ public final class EntityComboBoxModelTest {
     assertEquals(accounting, deptComboBoxModel.selectedValue());
 
     //non strict filtering
-    comboBoxModel.setStrictForeignKeyFiltering(false);
+    comboBoxModel.strictForeignKeyFiltering().set(false);
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
     assertEquals(6, comboBoxModel.getSize());
     boolean kingFound = false;
@@ -277,7 +277,7 @@ public final class EntityComboBoxModelTest {
     Runnable refreshListener = refreshed::incrementAndGet;
     comboBoxModel.refresher().addRefreshListener(refreshListener);
     assertEquals(Employee.TYPE, comboBoxModel.entityType());
-    comboBoxModel.setStaticData(false);
+    comboBoxModel.staticData().set(false);
     comboBoxModel.toString();
     assertEquals(0, comboBoxModel.getSize());
     assertNull(comboBoxModel.getSelectedItem());
@@ -347,9 +347,7 @@ public final class EntityComboBoxModelTest {
     }
 
     comboBoxModel.clear();
-    assertFalse(comboBoxModel.isStaticData());
-    comboBoxModel.setStaticData(true);
-    assertTrue(comboBoxModel.isStaticData());
+    comboBoxModel.staticData().set(true);
 
     comboBoxModel.refresh();
     items = new ArrayList<>(comboBoxModel.visibleItems());

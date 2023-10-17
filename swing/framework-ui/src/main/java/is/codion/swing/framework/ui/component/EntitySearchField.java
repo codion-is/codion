@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -123,6 +124,7 @@ public final class EntitySearchField extends HintTextField {
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
+  private final State searchOnFocusLost = State.state(true);
 
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
@@ -131,7 +133,6 @@ public final class EntitySearchField extends HintTextField {
   private Color backgroundColor;
   private Color invalidBackgroundColor;
   private boolean performingSearch = false;
-  private boolean searchOnFocusLost = true;
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
     super(searchHintEnabled ? Messages.search() + "..." : null);
@@ -178,17 +179,10 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * @return true if this field triggers a search when it loses focus
+   * @return the State controlling whether this field should trigger a search when it loses focus
    */
-  public boolean isSearchOnFocusLost() {
+  public State searchOnFocusLost() {
     return searchOnFocusLost;
-  }
-
-  /**
-   * @param searchOnFocusLost true if this field should trigger a search when it loses focus
-   */
-  public void setSearchOnFocusLost(boolean searchOnFocusLost) {
-    this.searchOnFocusLost = searchOnFocusLost;
   }
 
   /**
@@ -688,7 +682,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return searchOnFocusLost && !performingSearch && model.searchStringModified().get();
+      return searchOnFocusLost.get() && !performingSearch && model.searchStringModified().get();
     }
   }
 
@@ -776,7 +770,7 @@ public final class EntitySearchField extends HintTextField {
       if (lowerCase) {
         TextComponents.lowerCase(searchField.getDocument());
       }
-      searchField.setSearchOnFocusLost(searchOnFocusLost);
+      searchField.searchOnFocusLost.set(searchOnFocusLost);
       if (selectionProviderFactory != null) {
         searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.model()));
       }

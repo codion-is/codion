@@ -152,11 +152,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  void isEditable() {
-    testModel.setEditable(true);
+  void editable() {
+    testModel.editable().set(true);
     assertTrue(testModel.isCellEditable(0, 0));
     assertFalse(testModel.isCellEditable(0, testModel.columnModel().getColumnIndex(Detail.INT_DERIVED)));
-    testModel.setEditable(false);
+    testModel.editable().set(false);
   }
 
   @Test
@@ -164,7 +164,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     SwingEntityTableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
     assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
-    tableModel.setEditable(true);
+    tableModel.editable().set(true);
     tableModel.setValueAt("newname", 0, 1);
     Entity entity = tableModel.itemAt(0);
     assertEquals("newname", entity.get(Employee.NAME));
@@ -270,7 +270,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertTrue(orderBy.orderByColumns().get(1).ascending());
     assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
-    tableModel.setOrderQueryBySortOrder(true);
+    tableModel.orderQueryBySortOrder().set(true);
     orderBy = tableModel.orderBy();
     assertEquals(1, orderBy.orderByColumns().size());
     assertTrue(orderBy.orderByColumns().get(0).ascending());

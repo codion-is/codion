@@ -43,7 +43,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Track.ALBUM_FK);
+    initialFocusAttribute().set(Track.ALBUM_FK);
 
     createForeignKeySearchField(Track.ALBUM_FK);
     createTextField(Track.NAME);

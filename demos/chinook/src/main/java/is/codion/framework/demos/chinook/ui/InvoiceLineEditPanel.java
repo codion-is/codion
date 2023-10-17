@@ -45,7 +45,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(InvoiceLine.TRACK_FK);
+    initialFocusAttribute().set(InvoiceLine.TRACK_FK);
 
     createForeignKeySearchField(InvoiceLine.TRACK_FK)
             .selectionProviderFactory(TrackSelectionProvider::new)

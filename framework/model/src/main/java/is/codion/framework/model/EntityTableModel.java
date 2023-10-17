@@ -27,6 +27,7 @@ import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -161,14 +162,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   EntityTableConditionModel<Attribute<?>> conditionModel();
 
   /**
-   * @return true if this table model is editable
+   * @return the State controlling whether this table model is editable
    */
-  boolean isEditable();
-
-  /**
-   * @param editable true if this table model should be editable
-   */
-  void setEditable(boolean editable);
+  State editable();
 
   /**
    * @param row the row for which to retrieve the background color
@@ -187,44 +183,24 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   Object foregroundColor(int row, Attribute<?> attribute);
 
   /**
-   * Returns the maximum number of rows to fetch via the underlying query the next time
+   * Returns the Value controlling the maximum number of rows to fetch via the underlying query the next time
    * this table model is refreshed, a value of -1 means all rows should be fetched
-   * @return the fetch count
+   * @return the value controlling the limit
    */
-  int getLimit();
-
-  /**
-   * Sets the maximum number of rows to fetch via the underlying query the next time
-   * this table model is refreshed, a value of -1 means all rows should be fetched
-   * @param limit the fetch count
-   */
-  void setLimit(int limit);
+  Value<Integer> limit();
 
   /**
    * Returns whether the values of hidden columns are included when querying data
-   * @return true if the values of hidden columns are included when querying data
+   * @return the State controlling whether the values of hidden columns are included when querying data
    */
-  boolean isQueryHiddenColumns();
-
-  /**
-   * @param queryHiddenColumns true if the values of hidden columns should be included when querying data
-   * @see #QUERY_HIDDEN_COLUMNS
-   */
-  void setQueryHiddenColumns(boolean queryHiddenColumns);
+  State queryHiddenColumns();
 
   /**
    * Specifies whether the current sort order is used as a basis for the query order by clause.
    * Note that this only applies to column attributes.
-   * @return true if the current sort order should be used as a basis for the query order by clause
+   * @return the State controlling whether the current sort order should be used as a basis for the query order by clause
    */
-  boolean isOrderQueryBySortOrder();
-
-  /**
-   * Specifies whether the current sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column attributes.
-   * @param orderQueryBySortOrder true if the current sort order should be used as a basis for the query order by clause
-   */
-  void setOrderQueryBySortOrder(boolean orderQueryBySortOrder);
+  State orderQueryBySortOrder();
 
   /**
    * Deletes the selected entities
@@ -244,33 +220,22 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   State conditionRequired();
 
   /**
-   * @return true if entities that are deleted via the associated edit model
-   * should be automatically removed from this table model
-   */
-  boolean isRemoveDeletedEntities();
-
-  /**
-   * @param removeDeletedEntities true if entities that are deleted via the associated edit model
-   * should be automatically removed from this table model
-   */
-  void setRemoveDeletedEntities(boolean removeDeletedEntities);
-
-  /**
    * @return the state controlling whether this table model responds to entity edit events, by replacing foreign key values
    * @see EntityEditEvents
    */
   State respondToEditEvents();
 
   /**
-   * @return the action performed when entities are inserted via the associated edit model
-   */
-  OnInsert getOnInsert();
-
-  /**
-   * @param onInsert the action to perform when entities are inserted via the associated edit model
+   * @return the Value controlling the action to perform when entities are inserted via the associated edit model
    * @see #ON_INSERT
    */
-  void setOnInsert(OnInsert onInsert);
+  Value<OnInsert> onInsert();
+
+  /**
+   * @return the State controlling whether entities that are deleted via the associated edit model
+   * should be automatically removed from this table model
+   */
+  State removeDeleted();
 
   /**
    * Finds entities in this table model according to the values in {@code keys}

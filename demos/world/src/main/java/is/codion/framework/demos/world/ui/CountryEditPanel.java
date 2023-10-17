@@ -43,7 +43,7 @@ final class CountryEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Country.CODE);
+    initialFocusAttribute().set(Country.CODE);
 
     createTextField(Country.CODE)
             .columns(6)
@@ -141,7 +141,7 @@ final class CountryEditPanel extends EntityEditPanel {
       countryComponent.setEnabled(false);
       countryComponent.setFocusable(false);
       //and change the initial focus property
-      capitalEditPanel.setInitialFocusAttribute(City.NAME);
+      capitalEditPanel.initialFocusAttribute().set(City.NAME);
     }
 
     return capitalEditPanel;

@@ -49,7 +49,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(Customer.FIRST_NAME);
+      initialFocusAttribute().set(Customer.FIRST_NAME);
       createTextField(Customer.FIRST_NAME);
       createTextField(Customer.LAST_NAME);
       createTextField(Customer.EMAIL);
@@ -70,7 +70,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(Address.STREET);
+      initialFocusAttribute().set(Address.STREET);
       createForeignKeyComboBox(Address.CUSTOMER_FK);
       createTextField(Address.STREET);
       createTextField(Address.CITY);
