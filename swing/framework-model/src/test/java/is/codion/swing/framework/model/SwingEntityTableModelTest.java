@@ -137,11 +137,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  void isEditable() {
-    testModel.setEditable(true);
+  void editable() {
+    testModel.editable().set(true);
     assertTrue(testModel.isCellEditable(0, 0));
     assertFalse(testModel.isCellEditable(0, testModel.columnModel().getColumnIndex(Detail.INT_DERIVED)));
-    testModel.setEditable(false);
+    testModel.editable().set(false);
   }
 
   @Test
@@ -149,7 +149,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     SwingEntityTableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
     assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
-    tableModel.setEditable(true);
+    tableModel.editable().set(true);
     tableModel.setValueAt("newname", 0, 1);
     Entity entity = tableModel.itemAt(0);
     assertEquals("newname", entity.get(Employee.NAME));

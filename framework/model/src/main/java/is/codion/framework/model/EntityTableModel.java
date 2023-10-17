@@ -146,14 +146,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   EntityTableConditionModel<Attribute<?>> conditionModel();
 
   /**
-   * @return true if this table model is editable
+   * @return the State controlling whether this table model is editable
    */
-  boolean isEditable();
-
-  /**
-   * @param editable true if this table model should be editable
-   */
-  void setEditable(boolean editable);
+  State editable();
 
   /**
    * @param row the row for which to retrieve the background color

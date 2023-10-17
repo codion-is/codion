@@ -84,6 +84,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
   private final State conditionRequired = State.state();
   private final State respondToEditEvents = State.state();
+  private final State editable = State.state();
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -97,7 +98,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
   private boolean removeDeletedEntities = true;
   private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
-  private boolean editable = false;
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
@@ -284,13 +284,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isEditable() {
+  public final State editable() {
     return editable;
-  }
-
-  @Override
-  public final void setEditable(boolean editable) {
-    this.editable = editable;
   }
 
   /**
@@ -302,7 +297,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public boolean isCellEditable(int rowIndex, int modelColumnIndex) {
-    if (!editable || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
+    if (!editable.get() || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
       return false;
     }
     Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
@@ -323,7 +318,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
-    if (!editable || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
+    if (!editable.get() || editModel.readOnly().get() || !editModel.updateEnabled().get()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
     Entity entity = itemAt(rowIndex).copy();
