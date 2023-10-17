@@ -708,7 +708,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * This method should take into account the condition ({EntityTableConditionModel#condition()}),
    * order by clause ({@link #orderBy()}), the limit ({@link #limit()}) and select attributes
    * ({@link #attributes()}) when querying.
-   * @return entities selected from the database according the query condition.
+   * @return entities selected from the database according to the query condition.
    * @see #conditionRequired()
    * @see #conditionEnabled(EntityTableConditionModel)
    * @see EntityTableConditionModel#condition()
