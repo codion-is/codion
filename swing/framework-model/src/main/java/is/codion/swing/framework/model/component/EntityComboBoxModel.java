@@ -53,6 +53,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
   private final State respondToEditEvents = State.state();
+  private final Value<OrderBy> orderBy;
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -63,7 +64,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private boolean staticData = false;
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
 
   /**
@@ -74,7 +74,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
-    this.orderBy = this.entities.definition(entityType).orderBy();
+    this.orderBy = Value.value(this.entities.definition(entityType).orderBy());
     DefaultConditionSupplier defaultConditionSupplier = new DefaultConditionSupplier();
     this.conditionSupplier = Value.value(defaultConditionSupplier, defaultConditionSupplier);
     selectedItemTranslator().set(new SelectedItemTranslator());
@@ -212,20 +212,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Sets the order by to use when selecting entities for this model.
+   * Controls the order by to use when selecting entities for this model.
    * Note that in order for this to have an effect, you must disable sorting
    * by setting the sort comparator to null ({@link #setSortComparator(Comparator)}
-   * @param orderBy the order by
+   * @return the Value controlling the orderBy
    * @see #setSortComparator(Comparator)
    */
-  public final void setOrderBy(OrderBy orderBy) {
-    this.orderBy = orderBy;
-  }
-
-  /**
-   * @return the order by, possibly null
-   */
-  public final OrderBy getOrderBy() {
+  public final Value<OrderBy> orderBy() {
     return orderBy;
   }
 
@@ -350,17 +343,17 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
    * the condition supplier ({@link #condition()}) as well as the
-   * select attributes ({@link #attributes()}) and order by clause ({@link #getOrderBy()}.
+   * select attributes ({@link #attributes()}) and order by clause ({@link #orderBy()}.
    * @return the entities to present in this EntityComboBoxModel
    * @see #condition()
    * @see #attributes()
-   * @see #getOrderBy()
+   * @see #orderBy()
    */
   protected Collection<Entity> performQuery() {
     try {
       return connectionProvider.connection().select(where(conditionSupplier.get().get())
               .attributes(attributes.get())
-              .orderBy(orderBy)
+              .orderBy(orderBy.get())
               .build());
     }
     catch (DatabaseException e) {

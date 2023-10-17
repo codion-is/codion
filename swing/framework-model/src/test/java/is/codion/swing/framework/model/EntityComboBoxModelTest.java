@@ -305,12 +305,12 @@ public final class EntityComboBoxModelTest {
   }
 
   @Test
-  void setOrderBy() {
+  void orderBy() {
     comboBoxModel.setSortComparator(null);
-    comboBoxModel.setOrderBy(OrderBy.ascending(Employee.NAME));
+    comboBoxModel.orderBy().set(OrderBy.ascending(Employee.NAME));
     comboBoxModel.refresh();
     assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));
-    comboBoxModel.setOrderBy(OrderBy.descending(Employee.NAME));
+    comboBoxModel.orderBy().set(OrderBy.descending(Employee.NAME));
     comboBoxModel.refresh();
     assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
   }
