@@ -255,7 +255,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertTrue(orderBy.orderByColumns().get(1).ascending());
     assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
-    tableModel.setOrderQueryBySortOrder(true);
+    tableModel.orderQueryBySortOrder().set(true);
     orderBy = tableModel.orderBy();
     assertEquals(1, orderBy.orderByColumns().size());
     assertTrue(orderBy.orderByColumns().get(0).ascending());

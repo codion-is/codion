@@ -86,6 +86,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final State respondToEditEvents = State.state();
   private final State editable = State.state();
   private final Value<Integer> limit = Value.value(-1, -1);
+  private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
+  private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -95,10 +97,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
   private Condition refreshCondition;
-  private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
   private boolean removeDeletedEntities = true;
   private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
-  private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
    * Instantiates a new SwingEntityTableModel.
@@ -209,23 +209,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isQueryHiddenColumns() {
+  public final State queryHiddenColumns() {
     return queryHiddenColumns;
   }
 
   @Override
-  public final void setQueryHiddenColumns(boolean queryHiddenColumns) {
-    this.queryHiddenColumns = queryHiddenColumns;
-  }
-
-  @Override
-  public final boolean isOrderQueryBySortOrder() {
+  public final State orderQueryBySortOrder() {
     return orderQueryBySortOrder;
-  }
-
-  @Override
-  public final void setOrderQueryBySortOrder(boolean orderQueryBySortOrder) {
-    this.orderQueryBySortOrder = orderQueryBySortOrder;
   }
 
   @Override
@@ -784,11 +774,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * according to the sort order of column based attributes, otherwise the order by
    * clause defined for the underlying entity is returned.
    * @return the order by clause
-   * @see #setOrderQueryBySortOrder(boolean)
+   * @see #orderQueryBySortOrder()
    * @see EntityDefinition#orderBy()
    */
   protected OrderBy orderBy() {
-    if (orderQueryBySortOrder && sortModel().sorted()) {
+    if (orderQueryBySortOrder.get() && sortModel().sorted()) {
       OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByColumns().isEmpty()) {
         return orderBy;
@@ -800,12 +790,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Specifies the attributes to select when querying data. Return an empty list if all should be included.
-   * This method should take the {@link #isQueryHiddenColumns()} setting into account.
+   * This method should take the {@link #queryHiddenColumns()} setting into account.
    * @return the attributes to select when querying data, an empty Collection if all should be selected.
-   * @see #isQueryHiddenColumns()
+   * @see #queryHiddenColumns()
    */
   protected Collection<Attribute<?>> attributes() {
-    if (queryHiddenColumns || columnModel().hiddenColumns().isEmpty()) {
+    if (queryHiddenColumns.get() || columnModel().hiddenColumns().isEmpty()) {
       return emptyList();
     }
 

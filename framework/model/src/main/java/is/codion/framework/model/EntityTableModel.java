@@ -176,29 +176,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Returns whether the values of hidden columns are included when querying data
-   * @return true if the values of hidden columns are included when querying data
+   * @return the State controlling whether the values of hidden columns are included when querying data
    */
-  boolean isQueryHiddenColumns();
-
-  /**
-   * @param queryHiddenColumns true if the values of hidden columns should be included when querying data
-   * @see #QUERY_HIDDEN_COLUMNS
-   */
-  void setQueryHiddenColumns(boolean queryHiddenColumns);
+  State queryHiddenColumns();
 
   /**
    * Specifies whether the current sort order is used as a basis for the query order by clause.
    * Note that this only applies to column attributes.
-   * @return true if the current sort order should be used as a basis for the query order by clause
+   * @return the State controlling whether the current sort order should be used as a basis for the query order by clause
    */
-  boolean isOrderQueryBySortOrder();
-
-  /**
-   * Specifies whether the current sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column attributes.
-   * @param orderQueryBySortOrder true if the current sort order should be used as a basis for the query order by clause
-   */
-  void setOrderQueryBySortOrder(boolean orderQueryBySortOrder);
+  State orderQueryBySortOrder();
 
   /**
    * Deletes the selected entities

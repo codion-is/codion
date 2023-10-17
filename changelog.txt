@@ -9750,3 +9750,4 @@
   EntityEditPanel.setReferentialIntegrityErrorHandling() replaced with Value based referentialIntegrityErrorHandling()
   EntityTableModel.is/setEditable() replaced with State based editable()
   EntityTableModel.get/setLimit() replaced with Value based limit()
+  EntityTableModel.get/setOrderQueryBySortOrder() and get/setQueryHiddenColumns() replaced with State based orderQueryBySortOrder() and queryHiddenColumns()
