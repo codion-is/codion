@@ -28,7 +28,7 @@ public interface FilteredModel<T> {
    * Specifies whether data models should refresh data asynchronously or on the EDT.<br>
    * Value type: Boolean<br>
    * Default value: true
-   * @see FilteredModel.Refresher#setAsyncRefresh(boolean)
+   * @see Refresher#asyncRefresh()
    */
   PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
 
@@ -113,7 +113,7 @@ public interface FilteredModel<T> {
    * @see Refresher#observer()
    * @see Refresher#addRefreshListener(Runnable)
    * @see Refresher#addRefreshFailedListener(Consumer)
-   * @see Refresher#setAsyncRefresh(boolean)
+   * @see Refresher#asyncRefresh()
    */
   void refreshThen(Consumer<Collection<T>> afterRefresh);
 
@@ -124,20 +124,14 @@ public interface FilteredModel<T> {
   interface Refresher<T> {
 
     /**
-     * @return true if asynchronous refreshing is enabled, true by default
-     * @see #ASYNC_REFRESH
-     */
-    boolean isAsyncRefresh();
-
-    /**
      * Sometimes we'd like to be able to refresh one or more models and perform some action on
      * the refreshed data, after the refresh has finished, such as selecting a particular item or such.
      * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
      * disable asynchronous refresh, for a more predictable behaviour.
-     * @param asyncRefresh true if asynchronous refreshing should be enabled, true by default
+     * @return the State controlling whether asynchronous refreshing should be enabled, true by default
      * @see #ASYNC_REFRESH
      */
-    void setAsyncRefresh(boolean asyncRefresh);
+    State asyncRefresh();
 
     /**
      * @return a Value controlling the item supplier for this refresher instance
@@ -149,7 +143,7 @@ public interface FilteredModel<T> {
      * Note that this method only throws exceptions when run synchronously.
      * @throws RuntimeException in case of an exception when running synchronously.
      * @see #addRefreshFailedListener(Consumer)
-     * @see #setAsyncRefresh(boolean)
+     * @see #asyncRefresh()
      */
     void refresh();
 
@@ -161,7 +155,7 @@ public interface FilteredModel<T> {
      * @see #observer()
      * @see #addRefreshListener(Runnable)
      * @see #addRefreshFailedListener(Consumer)
-     * @see #setAsyncRefresh(boolean)
+     * @see #asyncRefresh()
      */
     void refreshThen(Consumer<Collection<T>> afterRefresh);
 
@@ -204,9 +198,7 @@ public interface FilteredModel<T> {
     private final Event<Throwable> refreshFailedEvent = Event.event();
     private final State refreshingState = State.state();
     private final Value<Supplier<Collection<T>>> itemSupplier;
-
-    private boolean asyncRefresh = ASYNC_REFRESH.get();
-
+    private final State asyncRefresh = State.state(ASYNC_REFRESH.get());
 
     /**
      * @param itemSupplier the item supplier
@@ -216,13 +208,8 @@ public interface FilteredModel<T> {
     }
 
     @Override
-    public final boolean isAsyncRefresh() {
+    public final State asyncRefresh() {
       return asyncRefresh;
-    }
-
-    @Override
-    public final void setAsyncRefresh(boolean asyncRefresh) {
-      this.asyncRefresh = asyncRefresh;
     }
 
     @Override
@@ -237,7 +224,7 @@ public interface FilteredModel<T> {
 
     @Override
     public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
-      if (asyncRefresh && supportsAsyncRefresh()) {
+      if (asyncRefresh.get() && supportsAsyncRefresh()) {
         refreshAsync(afterRefresh);
       }
       else {
