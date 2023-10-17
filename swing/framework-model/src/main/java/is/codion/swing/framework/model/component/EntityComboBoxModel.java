@@ -60,7 +60,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
   /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
-  private boolean staticData = false;
+  private final State staticData = State.state();
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
   private boolean strictForeignKeyFiltering = true;
@@ -79,7 +79,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     selectedItemTranslator().set(new SelectedItemTranslator());
     refresher().itemSupplier().set(new ItemSupplier());
     itemValidator().set(new ItemValidator());
-    setStaticData(this.entities.definition(entityType).staticData());
+    staticData.set(this.entities.definition(entityType).staticData());
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
@@ -115,7 +115,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive
-   * @see #setStaticData(boolean)
+   * @see #staticData()
    */
   public final void forceRefresh() {
     forceRefresh = true;
@@ -123,20 +123,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * @return true if the data for this model should only be fetched once
-   * @see #forceRefresh()
-   */
-  public final boolean isStaticData() {
-    return staticData;
-  }
-
-  /**
    * Specifies whether this models data should be considered static, that is, only fetched once.
    * Note that {@link #forceRefresh()} disregards this directive.
-   * @param staticData the value
+   * @return the State controlling whether the data is regarded as static
    */
-  public final void setStaticData(boolean staticData) {
-    this.staticData = staticData;
+  public final State staticData() {
+    return staticData;
   }
 
   /**
@@ -431,7 +423,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public Collection<Entity> get() {
-      if (staticData && !cleared() && !forceRefresh) {
+      if (staticData.get() && !cleared() && !forceRefresh) {
         return items();
       }
 

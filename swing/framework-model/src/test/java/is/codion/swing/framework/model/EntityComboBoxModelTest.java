@@ -262,7 +262,7 @@ public final class EntityComboBoxModelTest {
     Runnable refreshListener = refreshed::incrementAndGet;
     comboBoxModel.refresher().addRefreshListener(refreshListener);
     assertEquals(Employee.TYPE, comboBoxModel.entityType());
-    comboBoxModel.setStaticData(false);
+    comboBoxModel.staticData().set(false);
     comboBoxModel.toString();
     assertEquals(0, comboBoxModel.getSize());
     assertNull(comboBoxModel.getSelectedItem());
@@ -332,9 +332,7 @@ public final class EntityComboBoxModelTest {
     }
 
     comboBoxModel.clear();
-    assertFalse(comboBoxModel.isStaticData());
-    comboBoxModel.setStaticData(true);
-    assertTrue(comboBoxModel.isStaticData());
+    comboBoxModel.staticData().set(true);
 
     comboBoxModel.refresh();
     items = new ArrayList<>(comboBoxModel.visibleItems());
