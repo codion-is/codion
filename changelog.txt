@@ -9732,3 +9732,4 @@
   AttributeDefinition.toString(value) and Entity.toString(attribute) renamed string()
   EntitySearchModel.toStringFunction() renamed stringFunction()
   AbstractEntityEditModel.setModifiedPredicate() and setExistsPredicate() renamed modifiedPredicate() and existsPredicate(), now Value based
+  HintTextField.get/setHintText() replaced with Value based hintText()

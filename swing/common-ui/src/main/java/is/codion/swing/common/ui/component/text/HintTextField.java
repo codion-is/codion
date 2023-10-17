@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.value.Value;
+
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.Document;
@@ -16,7 +18,6 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -26,7 +27,8 @@ import static java.lang.Math.sqrt;
  */
 public class HintTextField extends JTextField {
 
-  private String hintText;
+  private final Value<String> hintText;
+
   private Color hintColor;
 
   /**
@@ -49,31 +51,24 @@ public class HintTextField extends JTextField {
    */
   public HintTextField(Document document, String hintText) {
     super(document, null, 0);
-    setHintText(hintText);
+    this.hintText = Value.value(hintText, "");
+    this.hintText.addListener(this::repaint);
     updateHintTextColor();
     addPropertyChangeListener("UI", new UpdateHintTextColorOnUIChange());
     addFocusListener(new UpdateHintFocusListener());
   }
 
   /**
-   * @return the hint text
+   * @return the Value controlling the hint text
    */
-  public final String getHintText() {
+  public final Value<String> hintText() {
     return hintText;
-  }
-
-  /**
-   * @param hintText the hint text
-   */
-  public final void setHintText(String hintText) {
-    this.hintText = hintText;
-    repaint();
   }
 
   @Override
   public final void paint(Graphics graphics) {
     super.paint(graphics);
-    if (!nullOrEmpty(hintText) && !isFocusOwner() && getText().isEmpty()) {
+    if (!hintText.get().isEmpty() && !isFocusOwner() && getText().isEmpty()) {
       paintHintText(graphics);
     }
   }
@@ -92,7 +87,7 @@ public class HintTextField extends JTextField {
     ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     Insets insets = getInsets();
     graphics.setColor(hintColor);
-    graphics.drawString(hintText, insets.left, getHeight() - graphics.getFontMetrics().getDescent() - insets.bottom);
+    graphics.drawString(hintText.get(), insets.left, getHeight() - graphics.getFontMetrics().getDescent() - insets.bottom);
   }
 
   private void updateHintTextColor() {
