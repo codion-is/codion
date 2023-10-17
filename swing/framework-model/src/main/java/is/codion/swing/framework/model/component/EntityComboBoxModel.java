@@ -61,9 +61,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
   private final State staticData = State.state();
+  private final State strictForeignKeyFiltering = State.state(true);
+
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private boolean strictForeignKeyFiltering = true;
 
   /**
    * @param entityType the type of the entity this combo box model should represent
@@ -258,21 +259,14 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Specifies whether foreign key filtering should be strict or not.
+   * Controls whether foreign key filtering should be strict or not.
    * When the filtering is strict only entities with the correct reference are included, that is,
    * entities with null values for the given foreign key are filtered.
    * Non-strict simply means that entities with null references are not filtered.
-   * @param strictForeignKeyFiltering the value
+   * @return the State controlling whether foreign key filtering should be strict
    * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
    */
-  public final void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering) {
-    this.strictForeignKeyFiltering = strictForeignKeyFiltering;
-  }
-
-  /**
-   * @return true if strict foreign key filtering is enabled
-   */
-  public final boolean isStrictForeignKeyFiltering() {
+  public final State strictForeignKeyFiltering() {
     return strictForeignKeyFiltering;
   }
 
@@ -396,11 +390,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Predicate<Entity> filterAllCondition = item -> false;
-    if (strictForeignKeyFiltering) {
+    if (strictForeignKeyFiltering.get()) {
       includeCondition().set(filterAllCondition);
     }
     foreignKeyModel.addSelectionListener(selected -> {
-      if (selected == null && isStrictForeignKeyFiltering()) {
+      if (selected == null && strictForeignKeyFiltering.get()) {
         includeCondition().set(filterAllCondition);
       }
       else {
@@ -516,7 +510,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       for (Map.Entry<ForeignKey, Set<Entity.Key>> entry : foreignKeyFilterKeys.entrySet()) {
         Entity.Key referencedKey = item.referencedKey(entry.getKey());
         if (referencedKey == null) {
-          return !strictForeignKeyFiltering;
+          return !strictForeignKeyFiltering.get();
         }
         if (!entry.getValue().contains(referencedKey)) {
           return false;

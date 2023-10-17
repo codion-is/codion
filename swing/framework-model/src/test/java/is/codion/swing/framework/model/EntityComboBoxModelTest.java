@@ -170,7 +170,7 @@ public final class EntityComboBoxModelTest {
     assertEquals(accounting, deptComboBoxModel.selectedValue());
 
     //non strict filtering
-    comboBoxModel.setStrictForeignKeyFiltering(false);
+    comboBoxModel.strictForeignKeyFiltering().set(false);
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
     assertEquals(6, comboBoxModel.getSize());
     boolean kingFound = false;

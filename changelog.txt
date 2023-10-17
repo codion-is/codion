@@ -9757,3 +9757,4 @@
   EntitySearchField.is/setSearchOnFocusLost() replaced with State based searchOnFocusLost()
   EntityApplicationPanel.is/setWarnAboutUnsavedData() replaced with State based warnAboutUnsavedData()
   EntityComboBoxModel.is/setStaticData() replaced with State based staticData()
+  EntityComboBoxModel.is/setStrictForeignKeyFiltering() replaced with State based strictForeignKeyFiltering()
