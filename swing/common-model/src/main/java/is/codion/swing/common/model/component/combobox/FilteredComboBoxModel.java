@@ -50,6 +50,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultItemValidator<>();
   private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
   private static final Predicate<?> DEFAULT_ALLOW_SELECTION_PREDICATE = new DefaultAllowSelectionPredicate<>();
+  private static final Comparator<?> DEFAULT_SORT_COMPARATOR = new SortComparator<>();
 
   private final Event<T> selectionChangedEvent = Event.event();
   private final State selectionEmpty = State.state(true);
@@ -63,13 +64,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
           Value.value((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR, (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR);
   private final Value<Predicate<T>> allowSelectionPredicate =
           Value.value((Predicate<T>) DEFAULT_ALLOW_SELECTION_PREDICATE, (Predicate<T>) DEFAULT_ALLOW_SELECTION_PREDICATE);
+  private final Value<Comparator<T>> sortComparator = Value.value((Comparator<T>) DEFAULT_SORT_COMPARATOR);
 
   /**
    * set during setItems()
    */
   private boolean cleared = true;
-
-  private Comparator<T> sortComparator;
   private T selectedItem = null;
   private boolean includeNull;
   private T nullItem;
@@ -83,15 +83,15 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * Instantiates a new FilteredComboBoxModel.
    * The model items are sorted automatically with a default collation based comparator.
-   * To prevent sorting call {@link #setSortComparator(Comparator)} with a null argument before adding items.
+   * To prevent sorting set the sort comparator to null via {@link #sortComparator()} before adding items.
    */
   public FilteredComboBoxModel() {
-    this.sortComparator = new SortComparator<>();
     this.refresher = new DefaultRefresher(new DefaultItemSupplier());
     includeCondition.addListener(this::filterItems);
     itemValidator.addValidator(validator -> items().stream()
             .filter(Objects::nonNull)
             .forEach(validator::test));
+    sortComparator.addListener(this::sortVisibleItems);
     allowSelectionPredicate.addValidator(predicate -> {
       if (predicate != null && !predicate.test(selectedItem)){
         throw new IllegalArgumentException("The current selected item does not satisfy the allow selection predicate");
@@ -286,21 +286,13 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @return the Comparator used when sorting the items of this model
-   */
-  public final Comparator<T> getSortComparator() {
-    return sortComparator;
-  }
-
-  /**
-   * Sets the Comparator used when sorting the items visible in this model and sorts the model accordingly.
-   * This Comparator must take into account the null value if a {@code nullValueString} is specified.
+   * Controls the Comparator used when sorting the visible items in this model and sorts the model accordingly.
+   * This Comparator must take into account the null value if a null item has been set via {@link #setNullItem(Object)}.
    * If a null {@code sortComparator} is provided no sorting will be performed.
-   * @param sortComparator the Comparator, null if the items of this model should not be sorted
+   * @return the Value controlling the sort Comparator, value may be null if the items of this model should not be sorted
    */
-  public final void setSortComparator(Comparator<T> sortComparator) {
-    this.sortComparator = sortComparator;
-    sortVisibleItems();
+  public final Value<Comparator<T>> sortComparator() {
+    return sortComparator;
   }
 
   /**
@@ -515,8 +507,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Sorts the items visible in this model
    */
   private void sortVisibleItems() {
-    if (sortComparator != null && !visibleItems.isEmpty()) {
-      visibleItems.sort(sortComparator);
+    if (sortComparator.isNotNull() && !visibleItems.isEmpty()) {
+      visibleItems.sort(sortComparator.get());
       fireContentsChanged();
     }
   }

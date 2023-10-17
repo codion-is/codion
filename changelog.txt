@@ -9741,3 +9741,4 @@
   FilteredTableModel.get/setMergeOnRefresh() replaced with State based mergeOnRefresh()
   EntityComboBoxModel.get/setAttributes() replaced with ValueSet based attributes()
   EntityComboBoxModel.get/setOrderBy() replaced with Value based orderBy()
+  FilteredComboBoxModel.get/setSortComparator() replaced with Value based sortComparator()

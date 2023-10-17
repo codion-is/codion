@@ -306,7 +306,7 @@ public final class EntityComboBoxModelTest {
 
   @Test
   void orderBy() {
-    comboBoxModel.setSortComparator(null);
+    comboBoxModel.sortComparator().set(null);
     comboBoxModel.orderBy().set(OrderBy.ascending(Employee.NAME));
     comboBoxModel.refresh();
     assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));

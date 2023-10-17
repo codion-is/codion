@@ -65,9 +65,9 @@ public class FilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    Comparator<String> comparator = testModel.getSortComparator();
-    testModel.setSortComparator(null);
-    assertNull(testModel.getSortComparator());
+    Comparator<String> comparator = testModel.sortComparator().get();
+    testModel.sortComparator().set(null);
+    assertNull(testModel.sortComparator().get());
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
@@ -82,7 +82,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(TOMAS, testModel.getElementAt(4));
     assertEquals(BJORN, testModel.getElementAt(5));
 
-    testModel.setSortComparator(comparator);
+    testModel.sortComparator().set(comparator);
     names.remove(SIGGI);
     testModel.setItems(names);
     testModel.addItem(SIGGI);
@@ -93,7 +93,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    testModel.setSortComparator((o1, o2) -> {
+    testModel.sortComparator().set((o1, o2) -> {
       if (o1 == null) {
         return -1;
       }
@@ -102,7 +102,7 @@ public class FilteredComboBoxModelTest {
       }
       return o2.compareTo(o1);
     });
-    assertNotNull(testModel.getSortComparator());
+    assertNotNull(testModel.sortComparator().get());
 
     assertEquals(TOMAS, testModel.getElementAt(1));
     assertEquals(SIGGI, testModel.getElementAt(2));

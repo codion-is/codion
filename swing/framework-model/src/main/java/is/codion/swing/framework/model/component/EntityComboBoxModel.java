@@ -21,7 +21,6 @@ import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -214,9 +213,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Controls the order by to use when selecting entities for this model.
    * Note that in order for this to have an effect, you must disable sorting
-   * by setting the sort comparator to null ({@link #setSortComparator(Comparator)}
+   * by setting the sort comparator to null ({@link #sortComparator()}
    * @return the Value controlling the orderBy
-   * @see #setSortComparator(Comparator)
+   * @see #sortComparator()
    */
   public final Value<OrderBy> orderBy() {
     return orderBy;
