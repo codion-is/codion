@@ -321,9 +321,9 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  void setItemValidator() {
+  void itemValidator() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
-    model.setItemValidator(item -> item > 0);
+    model.itemValidator().set(item -> item > 0);
     assertThrows(IllegalArgumentException.class, () -> model.setItems(asList(1, 2, 3, 4, 5, 0)));
   }
 

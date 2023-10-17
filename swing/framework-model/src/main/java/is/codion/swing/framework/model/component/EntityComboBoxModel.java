@@ -78,7 +78,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.conditionSupplier = Value.value(defaultConditionSupplier, defaultConditionSupplier);
     setSelectedItemTranslator(new SelectedItemTranslator());
     setItemSupplier(new ItemSupplier());
-    setItemValidator(new ItemValidator());
+    itemValidator().set(new ItemValidator());
     setStaticData(this.entities.definition(entityType).staticData());
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
