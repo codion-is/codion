@@ -9753,3 +9753,4 @@
   EntityTableModel.get/setOrderQueryBySortOrder() and get/setQueryHiddenColumns() replaced with State based orderQueryBySortOrder() and queryHiddenColumns()
   EntityTableModel.get/setOnInsert() and get/setReplaceDeletedEntities() replaced with Value based onInsert() and removeDeleted()
   FilteredTable, setters/getters replaced with Value/State
+  SwingEntityTreeModel, methods renamed

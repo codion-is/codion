@@ -81,8 +81,8 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * Selects the given entities in this tree model.
    * @param entities the entities to select, an empty collection to clear the selection
    */
-  public void setSelectedEntities(Collection<Entity> entities) {
-    requireNonNull(entities, "entities");
+  public void select(Collection<Entity> entities) {
+    requireNonNull(entities);
     treeSelectionModel.clearSelection();
     entities.forEach(entity -> treeSelectionModel.addSelectionPath(find(getRoot(), entity)));
   }
@@ -91,9 +91,10 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * Refreshes this tree and selects the given entities
    * @param entities the modified entities
    */
-  public void nodesUpdated(Collection<Entity> entities) {
+  public void refreshSelect(Collection<Entity> entities) {
+    requireNonNull(entities);
     refreshRoot();
-    setSelectedEntities(entities.stream()
+    select(entities.stream()
             .filter(entity -> entity.isNotNull(parentForeignKey))
             .collect(toList()));
   }
@@ -102,11 +103,11 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * Removes the given entities from this tree model
    * @param entities the entities to remove
    */
-  public void nodesDeleted(Collection<Entity> entities) {
-    for (Entity deleted : entities.stream()
+  public void remove(Collection<Entity> entities) {
+    for (Entity entity : requireNonNull(entities).stream()
             .filter(entity -> entity.isNotNull(parentForeignKey))
             .collect(toList())) {
-      TreePath treePath = find(getRoot(), deleted);
+      TreePath treePath = find(getRoot(), entity);
       if (treePath != null) {
         removeNodeFromParent((EntityTreeNode) treePath.getLastPathComponent());
       }
@@ -144,9 +145,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
   private void bindEvents(SwingEntityTableModel tableModel) {
     tableModel.refresher().addRefreshListener(this::refreshRoot);
-    tableModel.editModel().addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
-    tableModel.editModel().addAfterInsertListener(this::nodesUpdated);
-    tableModel.editModel().addAfterDeleteListener(this::nodesDeleted);
+    tableModel.editModel().addAfterUpdateListener(updatedEntities -> refreshSelect(updatedEntities.values()));
+    tableModel.editModel().addAfterInsertListener(this::refreshSelect);
+    tableModel.editModel().addAfterDeleteListener(this::remove);
   }
 
   private static TreePath find(EntityTreeNode root, Entity entity) {
