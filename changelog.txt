@@ -9755,3 +9755,4 @@
   FilteredTable, setters/getters replaced with Value/State
   SwingEntityTreeModel, methods renamed
   EntitySearchField.is/setSearchOnFocusLost() replaced with State based searchOnFocusLost()
+  EntityApplicationPanel.is/setWarnAboutUnsavedData() replaced with State based warnAboutUnsavedData()

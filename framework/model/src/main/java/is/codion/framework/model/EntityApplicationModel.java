@@ -5,6 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -97,16 +98,10 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   boolean containsEntityModel(M entityModel);
 
   /**
-   * @return true if this model warns about unsaved data
+   * @return the State controlling whether this model warns about unsaved data
    * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
    */
-  boolean isWarnAboutUnsavedData();
-
-  /**
-   * @param warnAboutUnsavedData if true then this model warns about unsaved data
-   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
-   */
-  void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
+  State warnAboutUnsavedData();
 
   /**
    * @return true if any edit model associated with this application model contains
