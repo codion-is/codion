@@ -9747,3 +9747,4 @@
   FilteredComboBoxModel.is/setFilterSelectedItem() replaced with State based filterSelectedItem()
   EntityEditPanel.is/setClearAfterInsert() and is/setRequestFocusAfterInsert() replaced with State based clearAfterInsert() and requestFocusAfterInsert()
   EntityEditComponentPanel.requestFocusAfterInsert() and requestFocusAfterUpdate() renamed requestAfterInsertFocus() and requestAfterUpdateFocus()
+  EntityEditPanel.setReferentialIntegrityErrorHandling() replaced with Value based referentialIntegrityErrorHandling()
