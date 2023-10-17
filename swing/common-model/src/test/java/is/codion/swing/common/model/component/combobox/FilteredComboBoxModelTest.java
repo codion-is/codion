@@ -80,9 +80,9 @@ public class FilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    Comparator<String> comparator = testModel.getSortComparator();
-    testModel.setSortComparator(null);
-    assertNull(testModel.getSortComparator());
+    Comparator<String> comparator = testModel.sortComparator().get();
+    testModel.sortComparator().set(null);
+    assertNull(testModel.sortComparator().get());
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
@@ -97,7 +97,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(TOMAS, testModel.getElementAt(4));
     assertEquals(BJORN, testModel.getElementAt(5));
 
-    testModel.setSortComparator(comparator);
+    testModel.sortComparator().set(comparator);
     names.remove(SIGGI);
     testModel.setItems(names);
     testModel.addItem(SIGGI);
@@ -108,7 +108,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    testModel.setSortComparator((o1, o2) -> {
+    testModel.sortComparator().set((o1, o2) -> {
       if (o1 == null) {
         return -1;
       }
@@ -117,7 +117,7 @@ public class FilteredComboBoxModelTest {
       }
       return o2.compareTo(o1);
     });
-    assertNotNull(testModel.getSortComparator());
+    assertNotNull(testModel.sortComparator().get());
 
     assertEquals(TOMAS, testModel.getElementAt(1));
     assertEquals(SIGGI, testModel.getElementAt(2));
@@ -164,8 +164,8 @@ public class FilteredComboBoxModelTest {
     assertNull(testModel.selectedValue());
 
     testModel.includeCondition().set(null);
-    testModel.setFilterSelectedItem(false);
-    assertFalse(testModel.isFilterSelectedItem());
+    testModel.filterSelectedItem().set(false);
+    assertFalse(testModel.filterSelectedItem().get());
     testModel.setSelectedItem(BJORN);
     testModel.includeCondition().set(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
@@ -251,12 +251,12 @@ public class FilteredComboBoxModelTest {
   void nullItem() {
     FilteredComboBoxModel<String> model = new FilteredComboBoxModel<>();
     assertFalse(model.containsItem(null));
-    model.setIncludeNull(true);
+    model.includeNull().set(true);
     assertTrue(model.containsItem(null));
-    model.setIncludeNull(false);
+    model.includeNull().set(false);
     assertFalse(model.containsItem(null));
-    model.setIncludeNull(true);
-    model.setNullItem("-");
+    model.includeNull().set(true);
+    model.nullItem().set("-");
     assertTrue(model.containsItem(null));
     assertEquals("-", model.getSelectedItem());
     model.setSelectedItem("-");
@@ -326,39 +326,39 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  void setIncludeNull() {
+  void includeNull() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
     model.setItems(asList(1, 2, 3, 4, 5));
-    model.setIncludeNull(true);
-    model.setIncludeNull(true);
-    assertTrue(model.isIncludeNull());
+    model.includeNull().set(true);
+    model.includeNull().set(true);
+    assertTrue(model.includeNull().get());
     model.refresh();
   }
 
   @Test
-  void setItemValidator() {
+  void itemValidator() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
-    model.setItemValidator(item -> item > 0);
+    model.itemValidator().set(item -> item > 0);
     assertThrows(IllegalArgumentException.class, () -> model.setItems(asList(1, 2, 3, 4, 5, 0)));
   }
 
   @Test
-  void setItemSupplier() {
+  void itemSupplier() {
     List<Integer> values = asList(0, 1, 2);
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
-    model.setItemSupplier(() -> values);
+    model.refresher().itemSupplier().set(() -> values);
     model.refresher().refresh();
     assertEquals(values, model.items());
   }
 
   @Test
-  void setAllowSelectionPredicate() {
+  void allowSelectionPredicate() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
     model.setItems(asList(0, 1, 2));
     model.setSelectedItem(0);
-    assertThrows(IllegalArgumentException.class, () -> model.setAllowSelectionPredicate(item -> item > 0));
+    assertThrows(IllegalArgumentException.class, () -> model.allowSelectionPredicate().set(item -> item > 0));
     model.setSelectedItem(1);
-    model.setAllowSelectionPredicate(item -> item > 0);
+    model.allowSelectionPredicate().set(item -> item > 0);
     model.setSelectedItem(0);
     assertEquals(1, model.getSelectedItem());
   }
@@ -366,8 +366,8 @@ public class FilteredComboBoxModelTest {
   @BeforeEach
   void setUp() {
     testModel = new FilteredComboBoxModel<>();
-    testModel.setIncludeNull(true);
-    testModel.setNullItem(NULL);
+    testModel.includeNull().set(true);
+    testModel.nullItem().set(NULL);
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);

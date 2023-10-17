@@ -242,8 +242,8 @@ public final class EntityComboBoxModelTest {
   @Test
   void attributes() {
     List<Attribute<?>> selectAttributes = Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK);
-    comboBoxModel.setAttributes(selectAttributes);
-    assertTrue(comboBoxModel.getAttributes().containsAll(selectAttributes));
+    comboBoxModel.attributes().set(selectAttributes);
+    assertTrue(comboBoxModel.attributes().get().containsAll(selectAttributes));
     comboBoxModel.refresh();
     for (Entity emp : comboBoxModel.items()) {
       assertTrue(emp.contains(Employee.ID));
@@ -256,7 +256,7 @@ public final class EntityComboBoxModelTest {
       assertFalse(emp.contains(Employee.HIREDATE));
       assertFalse(emp.contains(Employee.SALARY));
     }
-    comboBoxModel.setAttributes(emptyList());
+    comboBoxModel.attributes().set(emptyList());
     comboBoxModel.refresh();
     for (Entity emp : comboBoxModel.items()) {
       assertTrue(emp.contains(Employee.ID));
@@ -320,12 +320,12 @@ public final class EntityComboBoxModelTest {
   }
 
   @Test
-  void setOrderBy() {
-    comboBoxModel.setSortComparator(null);
-    comboBoxModel.setOrderBy(OrderBy.ascending(Employee.NAME));
+  void orderBy() {
+    comboBoxModel.sortComparator().set(null);
+    comboBoxModel.orderBy().set(OrderBy.ascending(Employee.NAME));
     comboBoxModel.refresh();
     assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));
-    comboBoxModel.setOrderBy(OrderBy.descending(Employee.NAME));
+    comboBoxModel.orderBy().set(OrderBy.descending(Employee.NAME));
     comboBoxModel.refresh();
     assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
   }
@@ -383,7 +383,7 @@ public final class EntityComboBoxModelTest {
     assertTrue(comboBoxModel.containsItem(null));
     assertEquals("-", comboBoxModel.getSelectedItem().toString());
     assertNull(comboBoxModel.selectedValue());
-    comboBoxModel.setIncludeNull(false);
+    comboBoxModel.includeNull().set(false);
     assertFalse(comboBoxModel.containsItem(null));
   }
 
@@ -397,10 +397,10 @@ public final class EntityComboBoxModelTest {
 
     assertThrows(IllegalArgumentException.class, () -> comboBoxModel.addItem(dept));
     assertThrows(IllegalArgumentException.class, () -> comboBoxModel.replaceItem(comboBoxModel.getElementAt(2), dept));
-    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.setNullItem(dept));
+    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.nullItem().set(dept));
 
     assertThrows(NullPointerException.class, () -> comboBoxModel.addItem(null));
     assertThrows(NullPointerException.class, () -> comboBoxModel.replaceItem(comboBoxModel.getElementAt(2), null));
-    assertThrows(NullPointerException.class, () -> comboBoxModel.setNullItem(null));
+    assertThrows(NullPointerException.class, () -> comboBoxModel.nullItem().set(null));
   }
 }

@@ -48,7 +48,7 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
 
   protected final void refreshAsync(Consumer<Collection<T>> afterRefresh) {
     cancelCurrentRefresh();
-    refreshWorker = ProgressWorker.builder(getItemSupplier()::get)
+    refreshWorker = ProgressWorker.builder(itemSupplier().get()::get)
             .onStarted(this::onRefreshStarted)
             .onResult(items -> onRefreshResult(items, afterRefresh))
             .onException(this::onRefreshFailedAsync)
@@ -58,7 +58,7 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
   protected final void refreshSync(Consumer<Collection<T>> afterRefresh) {
     onRefreshStarted();
     try {
-      onRefreshResult(getItemSupplier().get(), afterRefresh);
+      onRefreshResult(itemSupplier().get().get(), afterRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);

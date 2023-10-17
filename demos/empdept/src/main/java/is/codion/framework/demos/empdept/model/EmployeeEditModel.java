@@ -47,7 +47,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.setNullCaption("None");
       //we do not want filtering to remove a value that is selected
       //and thereby change the selection, see bindEvents() below
-      comboBoxModel.setFilterSelectedItem(false);
+      comboBoxModel.filterSelectedItem().set(false);
       //Only select the president and managers from the database
       comboBoxModel.condition().set(() ->
               Employee.JOB.in("MANAGER", "PRESIDENT"));

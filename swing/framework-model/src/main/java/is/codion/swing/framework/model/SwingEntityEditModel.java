@@ -193,13 +193,13 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @return a {@link EntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
    * @see AttributeDefinition#nullable()
-   * @see EntityComboBoxModel#setAttributes(Collection)
+   * @see EntityComboBoxModel#attributes()
    * @see ForeignKeyDefinition#attributes()
    */
   public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
     EntityComboBoxModel model = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-    model.setAttributes(foreignKeyDefinition.attributes());
+    model.attributes().set(foreignKeyDefinition.attributes());
     if (nullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }
@@ -219,9 +219,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     requireNonNull(column, "column");
     FilteredComboBoxModel<T> model = createColumnComboBoxModel(column);
     if (nullable(column)) {
-      model.setIncludeNull(true);
+      model.includeNull().set(true);
       if (column.type().valueClass().isInterface()) {
-        model.setNullItem(ProxyBuilder.builder(column.type().valueClass())
+        model.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
                 .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
                 .build());
       }
@@ -307,7 +307,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
     FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
-    model.setItemSupplier(column.type().isEnum() ?
+    model.refresher().itemSupplier().set(column.type().isEnum() ?
             new EnumAttributeItemSupplier<>(column) :
             new ColumnItemSupplier<>(connectionProvider(), column));
 

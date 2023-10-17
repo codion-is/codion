@@ -58,8 +58,8 @@ public class SwingEntityEditModelTest {
   @Test
   void comboBoxModel() {
     FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
-    model.setIncludeNull(true);
-    model.setNullItem("null");
+    model.includeNull().set(true);
+    model.nullItem().set("null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(Employee.JOB));
     assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));

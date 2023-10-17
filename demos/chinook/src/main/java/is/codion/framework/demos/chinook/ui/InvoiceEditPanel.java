@@ -47,7 +47,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
   public InvoiceEditPanel(SwingEntityEditModel editModel, EntityPanel invoiceLinePanel) {
     super(editModel);
     this.invoiceLinePanel = invoiceLinePanel;
-    setClearAfterInsert(false);
+    clearAfterInsert().set(false);
     setDefaultTextFieldColumns(12);
   }
 

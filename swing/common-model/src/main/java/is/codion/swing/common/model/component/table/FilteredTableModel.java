@@ -23,6 +23,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
+import is.codion.common.state.State;
 
 import javax.swing.table.TableModel;
 import java.text.Format;
@@ -205,16 +206,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   String rowsAsDelimitedString(char delimiter);
 
   /**
-   * @return true if merge on refresh is enabled
-   */
-  boolean isMergeOnRefresh();
-
-  /**
    * Note that when merging during refresh, the items are not sorted, since that
    * would cause an empty-selection event, defeating the purpose of merging.
-   * @param mergeOnRefresh true if merge on refresh should be enabled
+   * @return the State controlling whether merge on refresh should be enabled
    */
-  void setMergeOnRefresh(boolean mergeOnRefresh);
+  State mergeOnRefresh();
 
   /**
    * Sorts the visible items according to the {@link FilteredTableSortModel}, keeping the selected items.
@@ -259,9 +255,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * <br><br>
    * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-   * before it is repopulated, during which the selection is cleared as well. Using merge on insert
-   * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
-   * @see #setMergeOnRefresh(boolean)
+   * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
+   * ({@link #mergeOnRefresh()}) will prevent that at a considerable performance cost.
+   * @see #mergeOnRefresh()
    */
   @Override
   void refresh();
@@ -271,10 +267,10 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * <br><br>
    * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-   * before it is repopulated, during which the selection is cleared as well. Using merge on insert
-   * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
+   * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
+   * ({@link #mergeOnRefresh()}) will prevent that at a considerable performance cost.
    * @param afterRefresh called after a successful refresh, may be null
-   * @see #setMergeOnRefresh(boolean)
+   * @see #mergeOnRefresh()
    */
   @Override
   void refreshThen(Consumer<Collection<R>> afterRefresh);

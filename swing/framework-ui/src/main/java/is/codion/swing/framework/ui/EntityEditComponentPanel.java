@@ -936,11 +936,11 @@ public class EntityEditComponentPanel extends JPanel {
     return initialFocusComponent();
   }
 
-  protected final void requestFocusAfterInsert() {
+  protected final void requestAfterInsertFocus() {
     requestFocus(afterInsertFocusComponent());
   }
 
-  protected final void requestFocusAfterUpdate() {
+  protected final void requestAfterUpdateFocus() {
     requestFocus(focusedInputComponent.optional().orElse(initialFocusComponent()));
   }
 

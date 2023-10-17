@@ -22,6 +22,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -35,7 +36,6 @@ import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -59,14 +59,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
-  /** The attributes to include when selecting the entities for this combo box model, an empty list indicates all attributes */
-  private final Collection<Attribute<?>> attributes = new ArrayList<>(0);
+  /** The attributes to include when selecting the entities for this combo box model, an empty set indicates all attributes */
+  private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
   private final Entities entities;
   /** A map of keys used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
   private final State respondToEditEvents = State.state();
+  private final Value<OrderBy> orderBy;
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -77,7 +78,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private boolean staticData = false;
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
 
   /**
@@ -88,16 +88,23 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
-    this.orderBy = this.entities.definition(entityType).orderBy();
+    this.orderBy = Value.value(this.entities.definition(entityType).orderBy());
     DefaultConditionSupplier defaultConditionSupplier = new DefaultConditionSupplier();
     this.conditionSupplier = Value.value(defaultConditionSupplier, defaultConditionSupplier);
-    setSelectedItemTranslator(new SelectedItemTranslator());
-    setItemSupplier(new ItemSupplier());
-    setItemValidator(new ItemValidator());
+    selectedItemTranslator().set(new SelectedItemTranslator());
+    refresher().itemSupplier().set(new ItemSupplier());
+    itemValidator().set(new ItemValidator());
     setStaticData(this.entities.definition(entityType).staticData());
     includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
+    attributes.addValidator(attributes -> {
+      for (Attribute<?> attribute : requireNonNull(attributes)) {
+        if (!attribute.entityType().equals(entityType)) {
+          throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
+        }
+      }
+    });
     respondToEditEvents.addDataListener(new EditEventListener());
     respondToEditEvents.set(true);
   }
@@ -151,41 +158,26 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Enables the null item and sets the null item caption.
    * @param nullCaption the null item caption
    * @throws NullPointerException in case {@code nullCaption} is null
-   * @see #setIncludeNull(boolean)
-   * @see #setNullItem(Object)
+   * @see #includeNull()
+   * @see #nullItem()
    */
   public final void setNullCaption(String nullCaption) {
     requireNonNull(nullCaption, "nullCaption");
-    setIncludeNull(true);
-    setNullItem(ProxyBuilder.builder(Entity.class)
+    includeNull().set(true);
+    nullItem().set(ProxyBuilder.builder(Entity.class)
             .delegate(entities.entity(entityType))
             .method("toString", parameters -> nullCaption)
             .build());
   }
 
   /**
-   * Specifies the attributes to include when selecting the entities to populate this model with.
+   * Controls the attributes to include when selecting the entities to populate this model with.
    * Note that the primary key attribute values are always included.
    * An empty Collection indicates that all attributes should be selected.
-   * @param attributes the attributes to select, an empty Collection for all available attributes
-   * @throws IllegalArgumentException in case any of the given attributes is not part of the underlying entity type
+   * @return the ValueSet controlling the attributes to select, an empty ValueSet indicating all available attributes
    */
-  public final void setAttributes(Collection<Attribute<?>> attributes) {
-    for (Attribute<?> attribute : requireNonNull(attributes)) {
-      if (!attribute.entityType().equals(entityType)) {
-        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
-      }
-    }
-    this.attributes.clear();
-    this.attributes.addAll(attributes);
-  }
-
-  /**
-   * @return an unmodifiable view of the attributes to include when selecting entities for this model,
-   * an empty Collection indicates all available attributes
-   */
-  public final Collection<Attribute<?>> getAttributes() {
-    return unmodifiableCollection(attributes);
+  public final ValueSet<Attribute<?>> attributes() {
+    return attributes;
   }
 
   /**
@@ -234,20 +226,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Sets the order by to use when selecting entities for this model.
+   * Controls the order by to use when selecting entities for this model.
    * Note that in order for this to have an effect, you must disable sorting
-   * by setting the sort comparator to null ({@link #setSortComparator(Comparator)}
-   * @param orderBy the order by
-   * @see #setSortComparator(Comparator)
+   * by setting the sort comparator to null ({@link #sortComparator()}
+   * @return the Value controlling the orderBy
+   * @see #sortComparator()
    */
-  public final void setOrderBy(OrderBy orderBy) {
-    this.orderBy = orderBy;
-  }
-
-  /**
-   * @return the order by, possibly null
-   */
-  public final OrderBy getOrderBy() {
+  public final Value<OrderBy> orderBy() {
     return orderBy;
   }
 
@@ -372,17 +357,17 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
    * the condition supplier ({@link #condition()}) as well as the
-   * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
+   * select attributes ({@link #attributes()}) and order by clause ({@link #orderBy()}.
    * @return the entities to present in this EntityComboBoxModel
    * @see #condition()
-   * @see #getAttributes()
-   * @see #getOrderBy()
+   * @see #attributes()
+   * @see #orderBy()
    */
   protected Collection<Entity> performQuery() {
     try {
       return connectionProvider.connection().select(where(conditionSupplier.get().get())
-              .attributes(attributes)
-              .orderBy(orderBy)
+              .attributes(attributes.get())
+              .orderBy(orderBy.get())
               .build());
     }
     catch (DatabaseException e) {

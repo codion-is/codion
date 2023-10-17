@@ -135,11 +135,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
   private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
+  private final State clearAfterInsert = State.state(true);
+  private final State requestFocusAfterInsert = State.state(true);
+  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling =
+          Value.value(ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(), ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
-  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
-  private boolean clearAfterInsert = true;
-  private boolean requestFocusAfterInsert = true;
   private boolean initialized = false;
 
   /**
@@ -210,40 +210,25 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * @return true if the UI should be cleared after insert has been performed
+   * @return the State controlling whether the UI should be cleared after insert has been performed
    */
-  public final boolean isClearAfterInsert() {
+  public final State clearAfterInsert() {
     return clearAfterInsert;
   }
 
   /**
-   * @param clearAfterInsert true if the UI should be cleared after insert has been performed
-   */
-  public final void setClearAfterInsert(boolean clearAfterInsert) {
-    this.clearAfterInsert = clearAfterInsert;
-  }
-
-  /**
-   * @return true if the UI should request focus after insert has been performed
+   * @return the State controlling whether the UI should request focus after insert has been performed
    * @see #requestInitialFocus()
    */
-  public final boolean isRequestFocusAfterInsert() {
+  public final State requestFocusAfterInsert() {
     return requestFocusAfterInsert;
   }
 
   /**
-   * @param requestFocusAfterInsert true if the UI should request focus after insert has been performed
-   * @see #requestInitialFocus()
+   * @return the Value controlling the action to take on a referential integrity error on delete
    */
-  public final void setRequestFocusAfterInsert(boolean requestFocusAfterInsert) {
-    this.requestFocusAfterInsert = requestFocusAfterInsert;
-  }
-
-  /**
-   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
-   */
-  public final void setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
-    this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
+  public final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling() {
+    return referentialIntegrityErrorHandling;
   }
 
   /**
@@ -330,11 +315,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       WaitCursor.show(this);
       try {
         editModel().insert();
-        if (clearAfterInsert) {
+        if (clearAfterInsert.get()) {
           editModel().setDefaults();
         }
-        if (requestFocusAfterInsert) {
-          requestFocusAfterInsert();
+        if (requestFocusAfterInsert.get()) {
+          requestAfterInsertFocus();
         }
 
         return true;
@@ -427,7 +412,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       WaitCursor.show(this);
       try {
         editModel().update();
-        requestFocusAfterUpdate();
+        requestAfterUpdateFocus();
 
         return true;
       }
@@ -536,11 +521,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
+   * @see #referentialIntegrityErrorHandling()
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+    if (referentialIntegrityErrorHandling.equalTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
       displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }

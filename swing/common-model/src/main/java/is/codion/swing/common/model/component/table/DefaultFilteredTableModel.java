@@ -26,6 +26,7 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
@@ -82,8 +83,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
             new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
     this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
     this.refresher = new DefaultRefresher(builder.itemSupplier == null ? this::items : builder.itemSupplier);
-    this.refresher.setAsyncRefresh(builder.asyncRefresh);
-    this.refresher.mergeOnRefresh = builder.mergeOnRefresh;
+    this.refresher.asyncRefresh().set(builder.asyncRefresh);
+    this.refresher.mergeOnRefresh.set(builder.mergeOnRefresh);
     this.itemValidator = builder.itemValidator;
     bindEventsInternal();
   }
@@ -210,13 +211,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public boolean isMergeOnRefresh() {
+  public State mergeOnRefresh() {
     return refresher.mergeOnRefresh;
-  }
-
-  @Override
-  public void setMergeOnRefresh(boolean mergeOnRefresh) {
-    refresher.mergeOnRefresh = mergeOnRefresh;
   }
 
   @Override
@@ -503,7 +499,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   private final class DefaultRefresher extends AbstractFilteredModelRefresher<R> {
 
-    private boolean mergeOnRefresh = false;
+    private final State mergeOnRefresh = State.state();
 
     private DefaultRefresher(Supplier<Collection<R>> itemSupplier) {
       super(itemSupplier);
@@ -511,7 +507,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     @Override
     protected void processResult(Collection<R> items) {
-      if (mergeOnRefresh && !items.isEmpty()) {
+      if (mergeOnRefresh.get() && !items.isEmpty()) {
         merge(items);
       }
       else {
