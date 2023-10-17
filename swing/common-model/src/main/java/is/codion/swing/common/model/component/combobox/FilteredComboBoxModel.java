@@ -48,6 +48,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
 
   private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultItemValidator<>();
+  private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 
   private final Event<T> selectionChangedEvent = Event.event();
   private final State selectionEmpty = State.state(true);
@@ -57,7 +58,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final Value<Predicate<T>> includeCondition = Value.value();
   private final Value<Predicate<T>> itemValidator =
           Value.value((Predicate<T>) DEFAULT_ITEM_VALIDATOR, (Predicate<T>) DEFAULT_ITEM_VALIDATOR);
-  private Function<Object, T> selectedItemTranslator = new DefaultSelectedItemTranslator<>();
+  private final Value<Function<Object, T>> selectedItemTranslator =
+          Value.value((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR, (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR);
   private Predicate<T> allowSelectionPredicate = new DefaultAllowSelectionPredicate<>();
 
   /**
@@ -266,7 +268,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     removeItem(item);
     addItem(replacement);
     if (Objects.equals(selectedItem, item)) {
-      selectedItem = selectedItemTranslator.apply(null);
+      selectedItem = selectedItemTranslator.get().apply(null);
       setSelectedItem(replacement);
     }
   }
@@ -322,17 +324,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * Provides a way for the combo box model to translate an item when it is selected, such
    * as selecting the String "1" in a String based model when selected item is set to the number 1.
-   * @return the selected item translator
+   * @return the Value controlling the selected item translator
    */
-  public final Function<Object, T> getSelectedItemTranslator() {
+  public final Value<Function<Object, T>> selectedItemTranslator() {
     return selectedItemTranslator;
-  }
-
-  /**
-   * @param selectedItemTranslator the selected item translator
-   */
-  public final void setSelectedItemTranslator(Function<Object, T> selectedItemTranslator) {
-    this.selectedItemTranslator = requireNonNull(selectedItemTranslator);
   }
 
   /**
@@ -432,7 +427,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @param item the item to select
    */
   public final void setSelectedItem(Object item) {
-    T toSelect = selectedItemTranslator.apply(Objects.equals(nullItem, item) ? null : item);
+    T toSelect = selectedItemTranslator.get().apply(Objects.equals(nullItem, item) ? null : item);
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();

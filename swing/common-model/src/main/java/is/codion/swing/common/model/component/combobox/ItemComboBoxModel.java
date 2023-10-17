@@ -26,12 +26,12 @@ import static java.util.Objects.requireNonNull;
 public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
 
   private ItemComboBoxModel(List<Item<T>> items) {
-    setSelectedItemTranslator(new SelectedItemTranslator());
+    selectedItemTranslator().set(new SelectedItemTranslator());
     setItems(items);
   }
 
   private ItemComboBoxModel(Comparator<Item<T>> sortComparator, Collection<Item<T>> items) {
-    setSelectedItemTranslator(new SelectedItemTranslator());
+    selectedItemTranslator().set(new SelectedItemTranslator());
     setSortComparator(sortComparator);
     setItems(items);
     if (containsItem(Item.item(null))) {
