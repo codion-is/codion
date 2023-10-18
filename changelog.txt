@@ -9800,3 +9800,7 @@
   EntityComboBoxModel.is/setStaticData() replaced with State based staticData()
   EntityComboBoxModel.is/setStrictForeignKeyFiltering() replaced with State based strictForeignKeyFiltering()
   EntityEditPanel, setter/getter replaced with Value
+  EntityEditComponentPanel.component() no longer returns T extends JComponent, just JComponent, did not play well with Stream.map()
+  TabbedPanelLayout no longer adds empty border around the entity panel
+  TabbedApplicationLayout now adds an empty border around the application tab pane
+  EntityApplicationPanel.displayEntityPanel() now adds an empty border

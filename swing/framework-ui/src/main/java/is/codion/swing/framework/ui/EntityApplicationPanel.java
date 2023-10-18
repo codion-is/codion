@@ -42,6 +42,7 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -98,7 +99,9 @@ import java.util.function.Supplier;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.layout.Layouts.HORIZONTAL_VERTICAL_GAP;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A central application panel class.
@@ -683,7 +686,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       else {
-        Windows.frame(entityPanel)
+        Windows.frame(createEmptyBorderBasePanel(entityPanel))
                 .locationRelativeTo(this)
                 .title(entityPanel.caption().get())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -723,7 +726,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       else {
-        Dialogs.componentDialog(entityPanel)
+        Dialogs.componentDialog(createEmptyBorderBasePanel(entityPanel))
                 .owner(parentWindow().orElse(null))
                 .title(entityPanel.caption().get())
                 .onClosed(e -> {
@@ -829,6 +832,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     return entityPanel;
+  }
+
+  private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
+    return Components.borderLayoutPanel()
+            .centerComponent(entityPanel)
+            .border(createEmptyBorder(HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get(), 0, HORIZONTAL_VERTICAL_GAP.get()))
+            .build();
   }
 
   private JScrollPane createApplicationTree() {

@@ -29,7 +29,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.layout.Layouts.HORIZONTAL_VERTICAL_GAP;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * EntityApplicationPanel layout based on a JTabbedPane.
@@ -67,6 +69,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
     //tab pane added to a base panel for correct Look&Feel rendering
     applicationPanel.add(borderLayoutPanel(new BorderLayout())
             .centerComponent(applicationTabPane)
+            .border(createEmptyBorder(0, HORIZONTAL_VERTICAL_GAP.get(), 0, HORIZONTAL_VERTICAL_GAP.get()))
             .build(), BorderLayout.CENTER);
   }
 
