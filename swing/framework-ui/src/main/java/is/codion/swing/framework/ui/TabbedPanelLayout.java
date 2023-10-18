@@ -14,13 +14,14 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
@@ -37,6 +38,7 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
+import static is.codion.swing.common.ui.layout.Layouts.HORIZONTAL_VERTICAL_GAP;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.LEFT;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.RIGHT;
@@ -97,16 +99,12 @@ public final class TabbedPanelLayout implements PanelLayout {
   @Override
   public void layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    this.entityPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
     tableDetailSplitPane = createTableDetailSplitPane();
     detailPanelTabbedPane = createDetailTabbedPane();
     entityPanel.setLayout(borderLayout());
     entityPanel.add(tableDetailSplitPane == null ?
             entityPanel.editControlTablePanel() :
-            Components.borderLayoutPanel()
-                    .centerComponent(tableDetailSplitPane)
-                    .build(), BorderLayout.CENTER);
+            tableDetailSplitPane, BorderLayout.CENTER);
     setupResizing();
     if (detailPanelController.detailPanelState.notEqualTo(detailPanelState)) {
       detailPanelController.detailPanelState(selectedDetailPanel()).set(detailPanelState);
@@ -224,8 +222,7 @@ public final class TabbedPanelLayout implements PanelLayout {
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)
-            .border(createEmptyBorder())//minor facelift when using metal laf
-            .dividerSize(Layouts.HORIZONTAL_VERTICAL_GAP.get() * 2)
+            .dividerSize(HORIZONTAL_VERTICAL_GAP.get() * 2)
             .resizeWeight(splitPaneResizeWeight)
             .leftComponent(entityPanel.editControlTablePanel())
             .rightComponent(detailPanelTabbedPane)
@@ -342,7 +339,7 @@ public final class TabbedPanelLayout implements PanelLayout {
         return;
       }
 
-      PanelState previousPanelState = getPreviousPanelState();
+      PanelState previousPanelState = previousPanelState();
       if (detailPanelState.notEqualTo(HIDDEN)) {
         selectedDetailPanel().initialize();
       }
@@ -393,7 +390,7 @@ public final class TabbedPanelLayout implements PanelLayout {
       }
     }
 
-    private PanelState getPreviousPanelState() {
+    private PanelState previousPanelState() {
       if (detailPanelWindow != null) {
         return WINDOW;
       }
@@ -481,7 +478,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     private Window createDetailPanelWindow() {
       if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
-        return Windows.frame(detailPanelTabbedPane)
+        return Windows.frame(createEmptyBorderBasePanel(detailPanelTabbedPane))
                 .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
@@ -493,7 +490,7 @@ public final class TabbedPanelLayout implements PanelLayout {
                 .build();
       }
 
-      return Dialogs.componentDialog(detailPanelTabbedPane)
+      return Dialogs.componentDialog(createEmptyBorderBasePanel(detailPanelTabbedPane))
               .owner(entityPanel)
               .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
               .modal(false)
@@ -505,6 +502,13 @@ public final class TabbedPanelLayout implements PanelLayout {
               })
               .build();
     }
+
+  private JPanel createEmptyBorderBasePanel(JComponent component) {
+    return Components.borderLayoutPanel()
+            .centerComponent(component)
+            .border(createEmptyBorder(HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get(), 0, HORIZONTAL_VERTICAL_GAP.get()))
+            .build();
+  }
 
     private final class SelectDetailPanelCommand implements Control.Command {
 
