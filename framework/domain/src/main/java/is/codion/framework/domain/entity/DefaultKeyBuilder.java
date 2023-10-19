@@ -44,7 +44,7 @@ final class DefaultKeyBuilder implements Entity.Key.Builder {
   @Override
   public <T> Entity.Key.Builder with(Column<T> column, T value) {
     ColumnDefinition<T> columnDefinition = definition.columns().definition(column);
-    if (!columnDefinition.primaryKeyColumn()) {
+    if (!columnDefinition.primaryKey()) {
       primaryKey = false;
     }
     values.put(column, value);

@@ -132,7 +132,7 @@ final class DomainToString {
             .append(interfaceName).append(".").append(column.columnName().toUpperCase()).append(".define()")
             .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
             .append(".").append(definitionType(column, compositePrimaryKey));
-    if (!isForeignKey && !column.primaryKeyColumn()) {
+    if (!isForeignKey && !column.primaryKey()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
     }
     if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).eagerlyLoaded()) {
@@ -141,7 +141,7 @@ final class DomainToString {
     if (column.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
     }
-    if (!column.nullable() && !column.primaryKeyColumn()) {
+    if (!column.nullable() && !column.primaryKey()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
     }
     if (String.class.equals(column.attribute().type().valueClass())) {
@@ -172,7 +172,7 @@ final class DomainToString {
     if (column.attribute().type().isByteArray()) {
       return "blobColumn()";
     }
-    if (column.primaryKeyColumn()) {
+    if (column.primaryKey()) {
       return compositePrimaryKey ? "primaryKey(" + column.primaryKeyIndex() + ")" : "primaryKey()";
     }
 
