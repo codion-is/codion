@@ -27,9 +27,9 @@ public class DomainTest {
     assertThrows(IllegalArgumentException.class, () -> {
       EntityType entityType = DOMAIN.entityType("keyWithSameIndex");
       domain.add(entityType.define(
-              entityType.column("1", Integer.class).define().primaryKey().primaryKeyIndex(0),
-              entityType.column("2", Integer.class).define().primaryKey().primaryKeyIndex(1),
-              entityType.column("3", Integer.class).define().primaryKey().primaryKeyIndex(1)));
+              entityType.column("1", Integer.class).define().primaryKey(0),
+              entityType.column("2", Integer.class).define().primaryKey(1),
+              entityType.column("3", Integer.class).define().primaryKey(1)));
     });
   }
 

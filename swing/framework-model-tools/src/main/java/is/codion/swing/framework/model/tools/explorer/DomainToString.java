@@ -5,7 +5,6 @@ package is.codion.swing.framework.model.tools.explorer;
 
 import is.codion.common.Text;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -117,17 +116,12 @@ final class DomainToString {
     StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
             .append(interfaceName).append(".").append(column.columnName().toUpperCase()).append(".define()")
             .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-            .append(".").append(definitionType(column.attribute(),
-                    column.primaryKeyColumn() && !compositePrimaryKey));
+            .append(".").append(definitionType(column, compositePrimaryKey));
     if (!isForeignKey && !column.primaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
     }
     if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).eagerlyLoaded()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".eagerlyLoaded()");
-    }
-    if (column.primaryKeyColumn() && compositePrimaryKey) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".primaryKeyIndex(")
-              .append(column.primaryKeyIndex()).append(")");
     }
     if (column.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
@@ -159,12 +153,15 @@ final class DomainToString {
     return valueClassName.substring(0, 1).toLowerCase() + valueClassName.substring(1);
   }
 
-  private static String definitionType(Attribute<?> attribute, boolean primaryKey) {
-    if (attribute.type().isByteArray()) {
+  private static String definitionType(ColumnDefinition<?> column, boolean compositePrimaryKey) {
+    if (column.attribute().type().isByteArray()) {
       return "blobColumn()";
     }
+    if (column.primaryKeyColumn()) {
+      return compositePrimaryKey ? "primaryKey(" + column.primaryKeyIndex() + ")" : "primaryKey()";
+    }
 
-    return primaryKey ? "primaryKey()" : "column()";
+    return "column()";
   }
 
   private static String interfaceName(String tableName, boolean uppercase) {

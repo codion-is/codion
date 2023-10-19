@@ -47,11 +47,9 @@ class ForeignKeyDomain extends DefaultDomain {
   void maturity() {
     add(Maturity.TYPE.define(
             Maturity.NO.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             Maturity.SPECIES_NO.define()
-                    .column()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             Maturity.SPECIES_FK.define()
                     .foreignKey()));
   }
@@ -66,11 +64,9 @@ class ForeignKeyDomain extends DefaultDomain {
   void otolithCategory() {
     add(OtolithCategory.TYPE.define(
             OtolithCategory.NO.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             OtolithCategory.SPECIES_NO.define()
-                    .column()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             OtolithCategory.SPECIES_FK.define()
                     .foreignKey()));
   }
@@ -93,11 +89,9 @@ class ForeignKeyDomain extends DefaultDomain {
   void otolith() {
     add(Otolith.TYPE.define(
             Otolith.STATION_ID.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             Otolith.SPECIES_NO.define()
-                    .column()
-                    .primaryKeyIndex(1)
+                    .primaryKey(1)
                     .updatable(true)
                     .nullable(false),
             Otolith.SPECIES_FK.define()

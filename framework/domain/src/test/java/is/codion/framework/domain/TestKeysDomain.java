@@ -25,34 +25,26 @@ public final class TestKeysDomain extends DefaultDomain {
 
   public void testPrimaryKeyIndexes1() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.define().column()
-                    .primaryKeyIndex(0),
-            TestPrimaryKey.ID2.define().column()
-                    .primaryKeyIndex(1),
-            TestPrimaryKey.ID3.define().column()
-                    .primaryKeyIndex(3)));
+            TestPrimaryKey.ID1.define().primaryKey(0),
+            TestPrimaryKey.ID2.define().primaryKey(1),
+            TestPrimaryKey.ID3.define().primaryKey(3)));
   }
 
   public void testPrimaryKeyIndexes2() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.define().column()
-                    .primaryKeyIndex(1),
-            TestPrimaryKey.ID2.define().column()
-                    .primaryKeyIndex(1),
-            TestPrimaryKey.ID3.define().column()
-                    .primaryKeyIndex(2)));
+            TestPrimaryKey.ID1.define().primaryKey(1),
+            TestPrimaryKey.ID2.define().primaryKey(1),
+            TestPrimaryKey.ID3.define().primaryKey(2)));
   }
 
   public void testPrimaryKeyIndexes3() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.define().column()
-                    .primaryKeyIndex(-1)));
+            TestPrimaryKey.ID1.define().primaryKey(-1)));
   }
 
   public void testPrimaryKeyIndexes4() {
     add(TestPrimaryKey.TYPE.define(
-            TestPrimaryKey.ID1.define().column()
-                    .primaryKeyIndex(10)));
+            TestPrimaryKey.ID1.define().primaryKey(10)));
   }
 
   public interface TestFkMaster {
@@ -75,8 +67,8 @@ public final class TestKeysDomain extends DefaultDomain {
 
   public void testForeignKeys() {
     add(TestFkMaster.TYPE.define(
-            TestFkMaster.ID1.define().column()
-                    .primaryKeyIndex(0)//,
+            TestFkMaster.ID1.define()
+                    .primaryKey()//,
             //here's what we're testing for, a missing fk reference property
 //            TestFKMaster.ID1.define().column()
 //                    .primaryKeyIndex(1)

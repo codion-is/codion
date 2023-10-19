@@ -102,11 +102,11 @@ final class DatabaseDomain extends DefaultDomain {
     if (column.type().isByteArray()) {
       builder = column.define().blobColumn().caption(caption);
     }
+    else if (metadataColumn.primaryKeyColumn()) {
+      builder = column.define().primaryKey(metadataColumn.primaryKeyIndex() - 1);
+    }
     else {
       builder = column.define().column().caption(caption);
-    }
-    if (metadataColumn.primaryKeyColumn()) {
-      builder.primaryKeyIndex(metadataColumn.primaryKeyIndex() - 1);
     }
     if (!metadataColumn.primaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);

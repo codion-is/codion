@@ -252,7 +252,16 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 
     @Override
     public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey() {
-      return (ColumnDefinition.Builder<T, B>) column().primaryKeyIndex(0);
+      return new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column, 0);
+    }
+
+    @Override
+    public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey(int index) {
+      if (index < 0) {
+        throw new IllegalArgumentException("Primary key index must be at least 0: " + attribute);
+      }
+
+      return new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column, index);
     }
 
     @Override

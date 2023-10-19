@@ -49,9 +49,9 @@ public final class TestDomain extends DefaultDomain {
   void testEntity() {
     add(TestEntity.TYPE.define(
             TestEntity.DECIMAL.define()
-                    .column().primaryKeyIndex(0),
+                    .primaryKey(0),
             TestEntity.DATE_TIME.define()
-                    .column().primaryKeyIndex(1),
+                    .primaryKey(1),
             TestEntity.OFFSET_DATE_TIME.define()
                     .column(),
             TestEntity.BLOB.define()

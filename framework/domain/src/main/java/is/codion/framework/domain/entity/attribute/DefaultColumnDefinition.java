@@ -207,8 +207,9 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   static class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
           extends AbstractAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B> {
 
+    private final int primaryKeyIndex;
+
     private int columnType;
-    private int primaryKeyIndex;
     private boolean columnHasDefaultValue;
     private boolean insertable;
     private boolean updatable;
@@ -224,12 +225,17 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     List<Item<T>> items;
 
     DefaultColumnDefinitionBuilder(Column<T> column) {
+      this(column, -1);
+    }
+
+    DefaultColumnDefinitionBuilder(Column<T> column, int primaryKeyIndex) {
       super(column);
-      this.primaryKeyIndex = -1;
+      this.primaryKeyIndex = primaryKeyIndex;
       this.columnType = sqlType(column.type().valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
-      this.updatable = true;
+      nullable(primaryKeyIndex < 0);
+      this.updatable = primaryKeyIndex < 0;
       this.searchColumn = false;
       this.columnName = column.name();
       this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, column);
@@ -299,17 +305,6 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     @Override
     public B updatable(boolean updatable) {
       this.updatable = updatable;
-      return (B) this;
-    }
-
-    @Override
-    public final B primaryKeyIndex(int primaryKeyIndex) {
-      if (primaryKeyIndex < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0: " + attribute);
-      }
-      this.primaryKeyIndex = primaryKeyIndex;
-      nullable(false);
-      updatable(false);
       return (B) this;
     }
 

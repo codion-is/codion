@@ -375,16 +375,14 @@ public final class Petstore extends DefaultDomain {
   void tagItem() {
     add(TagItem.TYPE.define(
             TagItem.ITEM_ID.define()
-                    .column()
-                    .primaryKeyIndex(0)
+                    .primaryKey(0)
                     .columnName("itemid"),
             TagItem.ITEM_FK.define()
                     .foreignKey()
                     .caption(TagItem.ITEM_FK.name())
                     .fetchDepth(3),
             TagItem.TAG_ID.define()
-                    .column()
-                    .primaryKeyIndex(1)
+                    .primaryKey(1)
                     .columnName("tagid"),
             TagItem.TAG_FK.define()
                     .foreignKey()

@@ -245,7 +245,7 @@ If no primary key columns are specified, *equals()* will not work (since it is b
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=primaryKey]
 ----
 
-In case of composite primary keys you simply use a column and specify the primary key index.
+In case of composite primary keys you simply specify the primary key index.
 
 [source,java,indent=0]
 ----
