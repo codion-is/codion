@@ -29,7 +29,7 @@
  * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#USE_LEXICAL_STRING_COMPARATOR}<br>
  * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DATE_TIME_FORMAT}<br>
  * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DATE_FORMAT}<br>
- * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#FOREIGN_KEY_FETCH_DEPTH}<br>
- * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DECIMAL_ROUNDING_MODE}
+ * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DECIMAL_ROUNDING_MODE}<br>
+ * {@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH}
  */
 package is.codion.framework.domain.entity;

@@ -84,27 +84,21 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 
     private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
     private final EntityType referencedEntityType;
+    private final int fetchDepth;
 
     private List<Attribute<?>> attributes = emptyList();
-    private int fetchDepth;
     private boolean softReference;
 
-    DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey) {
+    DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, int fetchDepth) {
       super(foreignKey);
       this.referencedEntityType = foreignKey.referencedType();
-      this.fetchDepth = AttributeDefinition.FOREIGN_KEY_FETCH_DEPTH.get();
       this.softReference = false;
+      this.fetchDepth = fetchDepth;
     }
 
     @Override
     public ForeignKeyDefinition build() {
       return new DefaultForeignKeyDefinition(this);
-    }
-
-    @Override
-    public ForeignKeyDefinition.Builder fetchDepth(int fetchDepth) {
-      this.fetchDepth = fetchDepth;
-      return this;
     }
 
     @Override

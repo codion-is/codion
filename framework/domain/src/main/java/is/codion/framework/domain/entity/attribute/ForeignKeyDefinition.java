@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.Configuration;
+import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
@@ -26,6 +28,15 @@ import java.util.List;
  * Represents a reference to another entity, typically but not necessarily based on a foreign key.
  */
 public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
+
+  int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
+
+  /**
+   * Specifies the default foreign key fetch depth<br>
+   * Value type: Integer<br>
+   * Default value: 1
+   */
+  PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
   /**
    * @return the foreign key attribute this foreign key is based on.
@@ -65,12 +76,6 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
    * Builds a {@link ForeignKeyDefinition}.
    */
   interface Builder extends AttributeDefinition.Builder<Entity, Builder> {
-
-    /**
-     * @param fetchDepth the default query fetch depth for this foreign key
-     * @return this instance
-     */
-    Builder fetchDepth(int fetchDepth);
 
     /**
      * Specifies that this foreign key is not based on a physical (table) foreign key
