@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 public interface AttributeDefinition<T> {
 
   int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
-  int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
 
   /**
    * Specifies the default maximum number of fraction digits for double property values<br>
@@ -87,23 +86,16 @@ public interface AttributeDefinition<T> {
    * Value type: Character<br>
    * Default value: The grouping separator for the default locale
    */
-  PropertyValue<Character> GROUPING_SEPARATOR = Configuration.characterValue("codion.domain.groupingSeparator", DecimalFormatSymbols.getInstance()
-          .getGroupingSeparator());
+  PropertyValue<Character> GROUPING_SEPARATOR = Configuration.characterValue("codion.domain.groupingSeparator",
+          DecimalFormatSymbols.getInstance().getGroupingSeparator());
 
   /**
    * Specifies the default number decimal separator.<br>
    * Value type: Character<br>
    * Default value: The decimal separator for the default locale
    */
-  PropertyValue<Character> DECIMAL_SEPARATOR = Configuration.characterValue("codion.domain.decimalSeparator", DecimalFormatSymbols.getInstance()
-          .getDecimalSeparator());
-
-  /**
-   * Specifies the default foreign key fetch depth<br>
-   * Value type: Integer<br>
-   * Default value: 1
-   */
-  PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+  PropertyValue<Character> DECIMAL_SEPARATOR = Configuration.characterValue("codion.domain.decimalSeparator",
+          DecimalFormatSymbols.getInstance().getDecimalSeparator());
 
   /**
    * Specifies whether String values should use a lexical comparator by default<br>

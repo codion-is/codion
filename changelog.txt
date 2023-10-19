@@ -9767,3 +9767,4 @@
   ColumnDefiner.primaryKey() overloaded with index parameter, ColumnDefinition.Builder.primaryKeyIndex() removed
   ColumnDefinition.primaryKeyColumn() renamed primaryKey()
   ForeignKeyDefiner.foreignKey() overloaded with fetchDepth parameter, ForeignKeyDefinition.Builder.fetchDepth() removed
+  AttributeDefinition.FOREIGN_KEY_FETCH_DEPTH moved to ForeignKeyDefinition

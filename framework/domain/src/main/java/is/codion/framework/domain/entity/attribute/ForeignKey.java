@@ -83,7 +83,7 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
     /**
      * Instantiates a {@link ForeignKeyDefinition.Builder} instance, using the default fetch depth
      * @return a new {@link ForeignKeyDefinition.Builder}
-     * @see AttributeDefinition#FOREIGN_KEY_FETCH_DEPTH
+     * @see ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH
      */
     ForeignKeyDefinition.Builder foreignKey();
 
