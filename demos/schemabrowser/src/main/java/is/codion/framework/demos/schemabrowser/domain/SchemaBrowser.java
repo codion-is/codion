@@ -91,15 +91,13 @@ public final class SchemaBrowser extends DefaultDomain {
   void table() {
     EntityDefinition.Builder tableBuilder = Table.TYPE.define(
             Table.SCHEMA.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             Table.SCHEMA_FK.define()
                     .foreignKey()
                     .caption("Schema"),
             Table.NAME.define()
-                    .column()
-                    .caption("Name")
-                    .primaryKeyIndex(1))
+                    .primaryKey(1)
+                    .caption("Name"))
             .tableName(bundle.getString("t_table"))
             .orderBy(ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
@@ -138,19 +136,16 @@ public final class SchemaBrowser extends DefaultDomain {
   void tableColumn() {
     add(TableColumn.TYPE.define(
             TableColumn.SCHEMA.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             TableColumn.TABLE_NAME.define()
-                    .column()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             TableColumn.TABLE_FK.define()
                     .foreignKey()
                     .caption("Table")
                     .fetchDepth(2),
             TableColumn.NAME.define()
-                    .column()
-                    .caption("Column name")
-                    .primaryKeyIndex(2),
+                    .primaryKey(2)
+                    .caption("Column name"),
             TableColumn.DATA_TYPE.define()
                     .column()
                     .caption("Data type"))
@@ -181,19 +176,16 @@ public final class SchemaBrowser extends DefaultDomain {
   void constraint() {
     add(Constraint.TYPE.define(
             Constraint.SCHEMA.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             Constraint.TABLE_NAME.define()
-                    .column()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             Constraint.TABLE_FK.define()
                     .foreignKey()
                     .caption("Table")
                     .fetchDepth(2),
             Constraint.NAME.define()
-                    .column()
-                    .caption("Constraint name")
-                    .primaryKeyIndex(2),
+                    .primaryKey(2)
+                    .caption("Constraint name"),
             Constraint.CONSTRAINT_TYPE.define()
                     .column()
                     .caption("Type"))
@@ -226,14 +218,11 @@ public final class SchemaBrowser extends DefaultDomain {
   void constraintColumn() {
     add(ConstraintColumn.TYPE.define(
             ConstraintColumn.SCHEMA.define()
-                    .column()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             ConstraintColumn.TABLE_NAME.define()
-                    .column()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             ConstraintColumn.CONSTRAINT_NAME.define()
-                    .column()
-                    .primaryKeyIndex(2),
+                    .primaryKey(2),
             ConstraintColumn.CONSTRAINT_FK.define()
                     .foreignKey()
                     .caption("Constraint")

@@ -182,24 +182,6 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
     B columnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
-     * Sets the zero based primary key index of this column.
-     * Note that setting the primary key index renders this column non-null and non-updatable by default,
-     * these can be reverted by setting it as updatable and/or nullable after setting the primary key index.
-     * <pre>
-     *   ...
-     *   .primaryKeyIndex(0)
-     *   .nullable(true)
-     *   .updatable(true)
-     * </pre>
-     * @param index the zero based index
-     * @return this instance
-     * @throws IllegalArgumentException in case index is a negative number
-     * @see #nullable(boolean)
-     * @see #updatable(boolean)
-     */
-    B primaryKeyIndex(int index);
-
-    /**
      * Specifies that this column should be grouped by.
      * Also specifies that this column is not an aggregate function column.
      * @param groupBy true if this is a grouping column

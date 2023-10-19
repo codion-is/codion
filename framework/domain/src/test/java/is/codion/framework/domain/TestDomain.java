@@ -79,11 +79,11 @@ public final class TestDomain extends DefaultDomain {
   void compositeMaster() {
     add(CompositeMaster.TYPE.define(
             CompositeMaster.COMPOSITE_MASTER_ID.define()
-                    .column().primaryKeyIndex(0).nullable(true),
+                    .primaryKey(0).nullable(true),
             CompositeMaster.COMPOSITE_MASTER_ID_2.define()
-                    .column().primaryKeyIndex(1),
+                    .primaryKey(1),
             CompositeMaster.COMPOSITE_MASTER_ID_3.define()
-                    .column().primaryKeyIndex(2)));
+                    .primaryKey(2)));
   }
 
   public interface CompositeDetail {
@@ -101,11 +101,11 @@ public final class TestDomain extends DefaultDomain {
   void compositeDetail() {
     add(CompositeDetail.TYPE.define(
             CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.define()
-                    .column().primaryKeyIndex(0),
+                    .primaryKey(0),
             CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.define()
-                    .column().primaryKeyIndex(1),
+                    .primaryKey(1),
             CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.define()
-                    .column().primaryKeyIndex(2),
+                    .primaryKey(2),
             CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.define()
                     .foreignKey()
                     .caption("master")
@@ -165,8 +165,8 @@ public final class TestDomain extends DefaultDomain {
 
   void master2() {
     add(Master2.TYPE.define(
-            Master2.ID_1.define().column().primaryKeyIndex(0),
-            Master2.ID_2.define().column().primaryKeyIndex(1),
+            Master2.ID_1.define().primaryKey(0),
+            Master2.ID_2.define().primaryKey(1),
             Master2.SUPER_ID.define().column(),
             Master2.SUPER_FK.define()
                     .foreignKey().caption("Super"),
@@ -601,14 +601,11 @@ public final class TestDomain extends DefaultDomain {
   void keyTest() {
     add(KeyTest.TYPE.define(
             KeyTest.ID1.define()
-                    .primaryKey()
-                    .primaryKeyIndex(0),
+                    .primaryKey(0),
             KeyTest.ID2.define()
-                    .primaryKey()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             KeyTest.ID3.define()
-                    .primaryKey()
-                    .primaryKeyIndex(2)
+                    .primaryKey(2)
                     .nullable(true)));
   }
 

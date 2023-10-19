@@ -237,13 +237,11 @@ public final class WorldImpl extends DefaultDomain implements World {
     add(CountryLanguage.TYPE.define(
             // tag::compositePrimaryKey[]
             CountryLanguage.COUNTRY_CODE.define()
-                    .column()
-                    .primaryKeyIndex(0)
+                    .primaryKey(0)
                     .updatable(true),
             CountryLanguage.LANGUAGE.define()
-                    .column()
+                    .primaryKey(1)
                     .caption("Language")
-                    .primaryKeyIndex(1)
                     .updatable(true),
             // end::compositePrimaryKey[]
             CountryLanguage.COUNTRY_FK.define()
@@ -280,9 +278,8 @@ public final class WorldImpl extends DefaultDomain implements World {
   void lookup() {
     add(Lookup.TYPE.define(
             Lookup.COUNTRY_CODE.define()
-                    .column()
-                    .caption("Country code")
-                    .primaryKeyIndex(0),
+                    .primaryKey(0)
+                    .caption("Country code"),
             Lookup.COUNTRY_NAME.define()
                     .column()
                     .caption("Country name"),
@@ -331,8 +328,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .column()
                     .caption("Code2"),
             Lookup.CITY_ID.define()
-                    .column()
-                    .primaryKeyIndex(1),
+                    .primaryKey(1),
             Lookup.CITY_NAME.define()
                     .column()
                     .caption("City"),

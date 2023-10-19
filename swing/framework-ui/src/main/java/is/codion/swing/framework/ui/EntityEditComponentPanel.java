@@ -800,7 +800,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build boolean combo box
    * @return a boolean combo box builder
    */
-  protected ItemComboBoxBuilder<Boolean> createBooleanComboBox(Attribute<Boolean> attribute) {
+  protected final ItemComboBoxBuilder<Boolean> createBooleanComboBox(Attribute<Boolean> attribute) {
     return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute));
   }
 

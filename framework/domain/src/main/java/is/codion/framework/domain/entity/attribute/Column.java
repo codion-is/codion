@@ -61,12 +61,40 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
     <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column();
 
     /**
-     * A convenience method for creating a new {@link ColumnDefinition.Builder} instance,
-     * with the primary key index set to 0.
+     * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
+     * Note that this renders this column non-null and non-updatable by default, this can be
+     * reverted by setting it as updatable and/or nullable after defining a primary key column.
+     * <pre>
+     *   ...
+     *   .primaryKey()
+     *   .nullable(true)
+     *   .updatable(true)
+     * </pre>
      * @param <B> the builder type
      * @return a new {@link ColumnDefinition.Builder} with primary key index 0
+     * @see ColumnDefinition.Builder#nullable(boolean)
+     * @see ColumnDefinition.Builder#updatable(boolean)
      */
     <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey();
+
+    /**
+     * Returns a new {@link ColumnDefinition.Builder} instance, with the given primary key index.
+     * Note that this renders this column non-null and non-updatable by default, this can be
+     * reverted by setting it as updatable and/or nullable after defining a primary key column.
+     * <pre>
+     *   ...
+     *   .primaryKey()
+     *   .nullable(true)
+     *   .updatable(true)
+     * </pre>
+     * @param index the zero-based index of this column in the primary key
+     * @param <B> the builder type
+     * @return a new {@link ColumnDefinition.Builder} with the given primary key index
+     * @throws IllegalArgumentException in case index is a negative number
+     * @see ColumnDefinition.Builder#nullable(boolean)
+     * @see ColumnDefinition.Builder#updatable(boolean)
+     */
+    <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey(int index);
 
     /**
      * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.

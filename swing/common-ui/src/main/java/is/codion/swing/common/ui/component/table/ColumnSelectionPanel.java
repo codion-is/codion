@@ -98,7 +98,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
     Map<TableColumn, State> stateMap = new LinkedHashMap<>();
     columnModel.columns().stream()
             .sorted(new FilteredTable.ColumnComparator())
-            .forEach(column -> stateMap.put(column, columnModel.visible(column.getIdentifier())));
+            .forEach(column -> stateMap.put(column, State.state(columnModel.visible(column.getIdentifier()).get())));
 
     return stateMap;
   }

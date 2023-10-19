@@ -395,8 +395,7 @@ public final class TestDomain extends DefaultDomain {
   private void job() {
     add(Job.TYPE.define(
             Job.JOB.define()
-                    .column()
-                    .primaryKeyIndex(0)
+                    .primaryKey()
                     .groupBy(true),
             Job.MAX_SALARY.define()
                     .column()

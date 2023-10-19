@@ -57,7 +57,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
   void extended() {
     add(T_EXTENDED.define(
-            EXTENDED_ID.define().column().primaryKeyIndex(0),
+            EXTENDED_ID.define().primaryKey(),
             EXTENDED_NAME.define().column(),
             EXTENDED_DEPT_ID.define().column(),
             EXTENDED_DEPT_FK.define().foreignKey()));
@@ -101,7 +101,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
     void extendedSecond() {
       add(T_SECOND_EXTENDED.define(
-              EXTENDED_ID.define().column().primaryKeyIndex(0),
+              EXTENDED_ID.define().primaryKey(),
               EXTENDED_NAME.define().column()));
     }
   }
@@ -122,7 +122,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
     void extendedThird() {
       add(T_THIRD_EXTENDED.define(
-              EXTENDED_ID.define().column().primaryKeyIndex(0),
+              EXTENDED_ID.define().primaryKey(),
               EXTENDED_NAME.define().column()));
     }
   }
