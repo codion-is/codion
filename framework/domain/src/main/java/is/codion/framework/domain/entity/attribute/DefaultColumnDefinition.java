@@ -134,7 +134,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final boolean primaryKeyColumn() {
+  public final boolean primaryKey() {
     return primaryKeyIndex >= 0;
   }
 

@@ -418,7 +418,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       for (int i = 0; i < columnDefinitions.size(); i++) {
         ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
         boolean modified = entity.modified(columnDefinition.attribute());
-        if (columnDefinition.primaryKeyColumn() || modified) {
+        if (columnDefinition.primaryKey() || modified) {
           StringBuilder valueString = new StringBuilder();
           if (modified) {
             valueString.append(entity.original(columnDefinition.attribute())).append("->");

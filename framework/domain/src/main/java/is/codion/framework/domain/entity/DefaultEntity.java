@@ -263,7 +263,7 @@ class DefaultEntity implements Entity, Serializable {
     if (values.containsKey(attribute)) {
       value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
-      if (attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn()) {
+      if (attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKey()) {
         primaryKey = null;
       }
       if (attribute instanceof Column) {
@@ -483,7 +483,7 @@ class DefaultEntity implements Entity, Serializable {
       updateOriginalValue(attribute, newValue, previousValue);
     }
     if (attributeDefinition instanceof ColumnDefinition) {
-      if (((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn()) {
+      if (((ColumnDefinition<?>) attributeDefinition).primaryKey()) {
         primaryKey = null;
       }
       Column<T> column = (Column<T>) attribute;

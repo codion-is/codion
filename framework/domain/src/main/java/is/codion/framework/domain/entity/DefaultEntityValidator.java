@@ -195,13 +195,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private static boolean isNonGeneratedPrimaryKeyColumn(EntityDefinition definition, AttributeDefinition<?> attributeDefinition) {
     return (attributeDefinition instanceof ColumnDefinition
-            && ((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn())
+            && ((ColumnDefinition<?>) attributeDefinition).primaryKey())
             && !definition.primaryKey().generated();
   }
 
   private static boolean isNonKeyColumnWithoutDefaultValue(AttributeDefinition<?> definition) {
     return definition instanceof ColumnDefinition
-            && !((ColumnDefinition<?>) definition).primaryKeyColumn()
+            && !((ColumnDefinition<?>) definition).primaryKey()
             && !((ColumnDefinition<?>) definition).columnHasDefaultValue();
   }
 }

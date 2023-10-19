@@ -123,7 +123,7 @@ final class EntityPopupMenu extends JPopupMenu {
     EntityDefinition definition = entity.definition();
     EntityValidator validator = definition.validator();
     for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
-      boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKeyColumn();
+      boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKey();
       if (!primaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
                 .append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())

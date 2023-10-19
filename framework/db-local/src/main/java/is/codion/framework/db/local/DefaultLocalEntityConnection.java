@@ -1386,7 +1386,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static boolean isWritable(ColumnDefinition<?> column, boolean includePrimaryKeyColumns,
                                     boolean includeNonUpdatable) {
     return column.insertable() && (includeNonUpdatable || column.updatable())
-            && (includePrimaryKeyColumns || !column.primaryKeyColumn());
+            && (includePrimaryKeyColumns || !column.primaryKey());
   }
 
   private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,

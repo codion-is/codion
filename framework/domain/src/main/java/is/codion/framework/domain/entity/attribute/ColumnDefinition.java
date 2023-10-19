@@ -48,7 +48,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return true if this column is part of a primary key
    */
-  boolean primaryKeyColumn();
+  boolean primaryKey();
 
   /**
    * @return true if this column should be grouped by

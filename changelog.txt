@@ -9765,3 +9765,4 @@
   EntityApplicationPanel.displayEntityPanel() now adds an empty border
   ColumnSelectionPanel bug fixed, was showing/hiding columns dynamically, instead of on OK, preventing cancelling
   ColumnDefiner.primaryKey() overloaded with index parameter, ColumnDefinition.Builder.primaryKeyIndex() removed
+  ColumnDefinition.primaryKeyColumn() renamed primaryKey()

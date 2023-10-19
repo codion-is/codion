@@ -594,7 +594,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     public Collection<AttributeDefinition<?>> updatable() {
       List<ColumnDefinition<?>> updatableColumns = entityAttributes.columnDefinitions.stream()
               .filter(ColumnDefinition::updatable)
-              .filter(column -> (!column.primaryKeyColumn() || !primaryKey.generated()))
+              .filter(column -> (!column.primaryKey() || !primaryKey.generated()))
               .collect(toList());
       updatableColumns.removeIf(column -> foreignKeys.foreignKeyColumn(column.attribute()));
       List<AttributeDefinition<?>> updatable = new ArrayList<>(updatableColumns);
@@ -875,7 +875,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return attributeDefinitions.stream()
               .filter(ColumnDefinition.class::isInstance)
               .map(column -> (ColumnDefinition<?>) column)
-              .filter(ColumnDefinition::primaryKeyColumn)
+              .filter(ColumnDefinition::primaryKey)
               .sorted(comparingInt(ColumnDefinition::primaryKeyIndex))
               .collect(toList());
     }
@@ -900,7 +900,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void validatePrimaryKeyAttributes(Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions, EntityType entityType) {
       Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
       for (AttributeDefinition<?> definition : attributeDefinitions.values()) {
-        if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).primaryKeyColumn()) {
+        if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).primaryKey()) {
           Integer index = ((ColumnDefinition<?>) definition).primaryKeyIndex();
           if (usedPrimaryKeyIndexes.contains(index)) {
             throw new IllegalArgumentException("Primary key index " + index + " in column " + definition + " has already been used");

@@ -177,13 +177,13 @@ public final class EntityTestUtil {
 
   private static List<ColumnDefinition<?>> insertableColumnDefinitions(EntityDefinition entityDefinition) {
     return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.insertable() && (!entityDefinition.primaryKey().generated() || !column.primaryKeyColumn()))
+            .filter(column -> column.insertable() && (!entityDefinition.primaryKey().generated() || !column.primaryKey()))
             .collect(toList());
   }
 
   private static List<ColumnDefinition<?>> updatableColumnDefinitions(EntityDefinition entityDefinition) {
     return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.updatable() && !column.primaryKeyColumn())
+            .filter(column -> column.updatable() && !column.primaryKey())
             .collect(toList());
   }
 
