@@ -267,9 +267,8 @@ public final class Petstore extends DefaultDomain {
                     .columnName("productid")
                     .nullable(false),
             Item.PRODUCT_FK.define()
-                    .foreignKey()
-                    .caption(Item.PRODUCT_FK.name())
-                    .fetchDepth(2),
+                    .foreignKey(2)
+                    .caption(Item.PRODUCT_FK.name()),
             Item.NAME.define()
                     .column()
                     .caption(Item.NAME.name())
@@ -378,9 +377,8 @@ public final class Petstore extends DefaultDomain {
                     .primaryKey(0)
                     .columnName("itemid"),
             TagItem.ITEM_FK.define()
-                    .foreignKey()
-                    .caption(TagItem.ITEM_FK.name())
-                    .fetchDepth(3),
+                    .foreignKey(3)
+                    .caption(TagItem.ITEM_FK.name()),
             TagItem.TAG_ID.define()
                     .primaryKey(1)
                     .columnName("tagid"),

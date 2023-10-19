@@ -262,9 +262,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .column(),
             // tag::fetchDepth2[]
             Track.ALBUM_FK.define()
-                    .foreignKey()
-                    .attributes(Album.ARTIST_FK, Album.TITLE)
-                    .fetchDepth(2),
+                    .foreignKey(2)
+                    .attributes(Album.ARTIST_FK, Album.TITLE),
             // end::fetchDepth2[]
             Track.NAME.define()
                     .column()
@@ -371,8 +370,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false),
             // tag::fetchDepth0[]
             InvoiceLine.INVOICE_FK.define()
-                    .foreignKey()
-                    .fetchDepth(0),
+                    .foreignKey(0),
             // end::fetchDepth0[]
             InvoiceLine.TRACK_ID.define()
                     .column()
@@ -426,8 +424,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .column()
                     .nullable(false),
             PlaylistTrack.TRACK_FK.define()
-                    .foreignKey()
-                    .fetchDepth(3),
+                    .foreignKey(3),
             PlaylistTrack.ALBUM_DENORM.define()
                     .denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
             .tableName("chinook.playlisttrack")

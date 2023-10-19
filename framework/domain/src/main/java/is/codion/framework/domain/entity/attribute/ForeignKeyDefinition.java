@@ -52,12 +52,6 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
   interface Builder extends AttributeDefinition.Builder<Entity, Builder> {
 
     /**
-     * @param fetchDepth the default query fetch depth for this foreign key
-     * @return this instance
-     */
-    Builder fetchDepth(int fetchDepth);
-
-    /**
      * Specifies that this foreign key is not based on a physical (table) foreign key
      * and should not prevent deletion
      * @param softReference true if this is a soft foreign key, which does not prevent deletion

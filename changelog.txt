@@ -9766,3 +9766,4 @@
   ColumnSelectionPanel bug fixed, was showing/hiding columns dynamically, instead of on OK, preventing cancelling
   ColumnDefiner.primaryKey() overloaded with index parameter, ColumnDefinition.Builder.primaryKeyIndex() removed
   ColumnDefinition.primaryKeyColumn() renamed primaryKey()
+  ForeignKeyDefiner.foreignKey() overloaded with fetchDepth parameter, ForeignKeyDefinition.Builder.fetchDepth() removed

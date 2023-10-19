@@ -125,9 +125,8 @@ public final class SchemaBrowser extends DefaultDomain {
             TableColumn.TABLE_NAME.define()
                     .primaryKey(1),
             TableColumn.TABLE_FK.define()
-                    .foreignKey()
-                    .caption("Table")
-                    .fetchDepth(2),
+                    .foreignKey(2)
+                    .caption("Table"),
             TableColumn.NAME.define()
                     .primaryKey(2)
                     .caption("Column name"),
@@ -165,9 +164,8 @@ public final class SchemaBrowser extends DefaultDomain {
             Constraint.TABLE_NAME.define()
                     .primaryKey(1),
             Constraint.TABLE_FK.define()
-                    .foreignKey()
-                    .caption("Table")
-                    .fetchDepth(2),
+                    .foreignKey(2)
+                    .caption("Table"),
             Constraint.NAME.define()
                     .primaryKey(2)
                     .caption("Constraint name"),
@@ -209,9 +207,8 @@ public final class SchemaBrowser extends DefaultDomain {
             ConstraintColumn.CONSTRAINT_NAME.define()
                     .primaryKey(2),
             ConstraintColumn.CONSTRAINT_FK.define()
-                    .foreignKey()
-                    .caption("Constraint")
-                    .fetchDepth(3),
+                    .foreignKey(3)
+                    .caption("Constraint"),
             ConstraintColumn.COLUMN_NAME.define()
                     .column()
                     .caption("Column name"),
