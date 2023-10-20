@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.json.db;
+package is.codion.framework.json.domain;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.EntityDefinition;

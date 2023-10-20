@@ -4,7 +4,6 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -25,24 +24,20 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
-  private final ConditionDeserializer conditionDeserializer;
-  private final Entities entities;
 
-  UpdateDeserializer(ConditionDeserializer conditionDeserializer) {
+  UpdateDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Update.class);
-    this.conditionDeserializer = conditionDeserializer;
-    this.entityObjectMapper = conditionDeserializer.entityObjectMapper;
-    this.entities = conditionDeserializer.entities;
+    this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
   public Update deserialize(JsonParser parser, DeserializationContext ctxt)
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
-    EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-    EntityDefinition definition = entities.definition(entityType);
+    EntityType entityType = entityObjectMapper.entities().domainType().entityType(jsonNode.get("entityType").asText());
+    EntityDefinition definition = entityObjectMapper.entities().definition(entityType);
     JsonNode conditionNode = jsonNode.get("condition");
-    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
+    Condition condition = entityObjectMapper.deserializeCondition(definition, conditionNode);
 
     Update.Builder updateBuilder = Update.where(condition);
     JsonNode values = jsonNode.get("values");

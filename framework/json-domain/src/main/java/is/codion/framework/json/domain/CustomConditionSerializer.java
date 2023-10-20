@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.json.db;
+package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.CustomCondition;
-import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 

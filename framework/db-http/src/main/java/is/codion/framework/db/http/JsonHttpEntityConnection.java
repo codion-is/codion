@@ -18,7 +18,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.json.db.ConditionObjectMapper;
+import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
@@ -60,7 +60,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
           Locale.getDefault());
 
   private final EntityObjectMapper entityObjectMapper;
-  private final ConditionObjectMapper conditionObjectMapper;
+  private final DatabaseObjectMapper databaseObjectMapper;
 
   /**
    * Instantiates a new {@link JsonHttpEntityConnection} instance
@@ -82,7 +82,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     super(domainType, hostName, user, clientTypeId, clientId, "application/json", "/entities/json",
             port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
     this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
-    this.conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);
+    this.databaseObjectMapper = DatabaseObjectMapper.databaseObjectMapper(entityObjectMapper);
   }
 
   @Override
@@ -308,7 +308,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("updateByCondition",
-                        stringEntity(conditionObjectMapper.writeValueAsString(update)))),
+                        stringEntity(databaseObjectMapper.writeValueAsString(update)))),
                 entityObjectMapper, Integer.class);
       }
     }
@@ -348,7 +348,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("delete",
-                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(databaseObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
       }
     }
@@ -380,9 +380,9 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(select);
     try {
       ObjectNode node = entityObjectMapper.createObjectNode();
-      node.set("column", conditionObjectMapper.valueToTree(column.name()));
-      node.set("entityType", conditionObjectMapper.valueToTree(column.entityType().name()));
-      node.set("condition", conditionObjectMapper.valueToTree(select));
+      node.set("column", databaseObjectMapper.valueToTree(column.name()));
+      node.set("entityType", databaseObjectMapper.valueToTree(column.entityType().name()));
+      node.set("condition", databaseObjectMapper.valueToTree(select));
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
       }
@@ -447,7 +447,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("select",
-                        stringEntity(conditionObjectMapper.writeValueAsString(select)))),
+                        stringEntity(databaseObjectMapper.writeValueAsString(select)))),
                 entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
       }
     }
@@ -489,7 +489,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("count",
-                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(databaseObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
       }
     }

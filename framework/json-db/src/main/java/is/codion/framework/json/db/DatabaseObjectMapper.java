@@ -14,41 +14,40 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import static java.util.Objects.requireNonNull;
 
 /**
- * ObjectMapper implementation for {@link Condition} and it's subclasses.
- * For instances use the {@link #conditionObjectMapper(EntityObjectMapper)} factory method.
+ * ObjectMapper implementation for {@link Select} and {@link Update}.
+ * For instances use the {@link #databaseObjectMapper(EntityObjectMapper)} factory method.
  */
-public final class ConditionObjectMapper extends ObjectMapper {
+public final class DatabaseObjectMapper extends ObjectMapper {
 
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  private ConditionObjectMapper(EntityObjectMapper entityObjectMapper) {
+  private DatabaseObjectMapper(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = requireNonNull(entityObjectMapper);
     SimpleModule module = new SimpleModule();
-    ConditionDeserializer conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
-    module.addSerializer(Condition.class, new ConditionSerializer(entityObjectMapper));
-    module.addDeserializer(Condition.class, conditionDeserializer);
+    module.addSerializer(Condition.class, entityObjectMapper.conditionSerializer());
+    module.addDeserializer(Condition.class, entityObjectMapper.conditionDeserializer());
     module.addSerializer(Select.class, new SelectSerializer(entityObjectMapper));
-    module.addDeserializer(Select.class, new SelectDeserializer(conditionDeserializer));
+    module.addDeserializer(Select.class, new SelectDeserializer(entityObjectMapper));
     module.addSerializer(Update.class, new UpdateSerializer(entityObjectMapper));
-    module.addDeserializer(Update.class, new UpdateDeserializer(conditionDeserializer));
+    module.addDeserializer(Update.class, new UpdateDeserializer(entityObjectMapper));
     registerModule(module);
   }
 
   /**
-   * @return the {@link EntityObjectMapper} this {@link ConditionObjectMapper} uses.
+   * @return the {@link EntityObjectMapper} this {@link DatabaseObjectMapper} uses.
    */
   public EntityObjectMapper entityObjectMapper() {
     return entityObjectMapper;
   }
 
   /**
-   * Instantiates a new {@link ConditionObjectMapper}
+   * Instantiates a new {@link DatabaseObjectMapper}
    * @param entityObjectMapper a {@link EntityObjectMapper}
-   * @return a new {@link ConditionObjectMapper} instance
+   * @return a new {@link DatabaseObjectMapper} instance
    */
-  public static ConditionObjectMapper conditionObjectMapper(EntityObjectMapper entityObjectMapper) {
-    return new ConditionObjectMapper(entityObjectMapper);
+  public static DatabaseObjectMapper databaseObjectMapper(EntityObjectMapper entityObjectMapper) {
+    return new DatabaseObjectMapper(entityObjectMapper);
   }
 }

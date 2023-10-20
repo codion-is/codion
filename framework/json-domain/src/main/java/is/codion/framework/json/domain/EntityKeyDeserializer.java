@@ -3,7 +3,6 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -24,13 +23,11 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 
   private static final long serialVersionUID = 1;
 
-  private final Entities entities;
   private final EntityObjectMapper entityObjectMapper;
   private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
-  EntityKeyDeserializer(Entities entities, EntityObjectMapper entityObjectMapper) {
+  EntityKeyDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Entity.Key.class);
-    this.entities = entities;
     this.entityObjectMapper = entityObjectMapper;
   }
 
@@ -38,9 +35,9 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
   public Entity.Key deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     ObjectCodec codec = parser.getCodec();
     JsonNode node = codec.readTree(parser);
-    EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entities::definition);
+    EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entityObjectMapper.entities()::definition);
     JsonNode values = node.get("values");
-    Entity.Key.Builder builder = entities.keyBuilder(definition.entityType());
+    Entity.Key.Builder builder = entityObjectMapper.entities().keyBuilder(definition.entityType());
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();

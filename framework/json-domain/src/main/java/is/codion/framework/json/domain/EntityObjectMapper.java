@@ -5,11 +5,15 @@ package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Condition;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -38,17 +42,23 @@ public final class EntityObjectMapper extends ObjectMapper {
   private final SimpleModule module = new SimpleModule();
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
+  private final ConditionSerializer conditionSerializer;
+  private final ConditionDeserializer conditionDeserializer;
   private final Entities entities;
 
   EntityObjectMapper(Entities entities) {
     this.entities = requireNonNull(entities, "entities");
     this.entitySerializer = new EntitySerializer(this);
     this.entityDeserializer = new EntityDeserializer(entities, this);
+    this.conditionSerializer = new ConditionSerializer(this);
+    this.conditionDeserializer = new ConditionDeserializer(this);
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
-    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(entities, this));
+    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(this));
     module.addKeyDeserializer(EntityType.class, new EntityTypeKeyDeserializer(entities));
+    module.addSerializer(Condition.class, conditionSerializer);
+    module.addDeserializer(Condition.class, conditionDeserializer);
     registerModule(module);
     registerModule(new JavaTimeModule());
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -60,6 +70,20 @@ public final class EntityObjectMapper extends ObjectMapper {
    */
   public Entities entities() {
     return entities;
+  }
+
+  /**
+   * @return the serializer for {@link Condition} and sublasses
+   */
+  public StdSerializer<Condition> conditionSerializer() {
+    return conditionSerializer;
+  }
+
+  /**
+   * @return the deserializer for {@link Condition} and sublasses
+   */
+  public StdDeserializer<Condition> conditionDeserializer() {
+    return conditionDeserializer;
   }
 
   /**
@@ -78,6 +102,27 @@ public final class EntityObjectMapper extends ObjectMapper {
   public EntityObjectMapper setIncludeNullValues(boolean includeNullValues) {
     entitySerializer.setIncludeNullValues(includeNullValues);
     return this;
+  }
+
+  /**
+   * Serializes the given condition
+   * @param condition the condition to serialize
+   * @param generator the json generator
+   * @throws IOException in case of an exception
+   */
+  public void serializeCondition(Condition condition, JsonGenerator generator) throws IOException {
+    conditionSerializer.serialize(condition, generator);
+  }
+
+  /**
+   * Deserializes the given condition
+   * @param definition the entity definition
+   * @param conditionNode the condition node to deserialize
+   * @return the deserialized Condition instance
+   * @throws IOException in case of an exception
+   */
+  public Condition deserializeCondition(EntityDefinition definition, JsonNode conditionNode) throws IOException {
+    return conditionDeserializer.deserialize(definition, conditionNode);
   }
 
   /**

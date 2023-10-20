@@ -14,7 +14,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.json.db.ConditionObjectMapper;
+import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -70,7 +70,7 @@ public class EntityServiceTest {
   private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final EntityObjectMapper ENTITY_OBJECT_MAPPER = EntityObjectMapper.entityObjectMapper(ENTITIES);
-  private static final ConditionObjectMapper CONDITION_OBJECT_MAPPER = ConditionObjectMapper.conditionObjectMapper(ENTITY_OBJECT_MAPPER);
+  private static final DatabaseObjectMapper DATABASE_OBJECT_MAPPER = DatabaseObjectMapper.databaseObjectMapper(ENTITY_OBJECT_MAPPER);
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -305,10 +305,10 @@ public class EntityServiceTest {
         assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("count"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(Department.ID.equalTo(10))));
+      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(Department.ID.equalTo(10))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(1, CONDITION_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class));
+        assertEquals(1, DATABASE_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class));
       }
     }
   }
@@ -325,9 +325,9 @@ public class EntityServiceTest {
         assertEquals(10, EntityServiceTest.<List<Integer>>deserialize(response.getEntity().getContent()).get(0));
       }
       ObjectNode node = ENTITY_OBJECT_MAPPER.createObjectNode();
-      node.set("column", CONDITION_OBJECT_MAPPER.valueToTree(Department.ID.name()));
-      node.set("entityType", CONDITION_OBJECT_MAPPER.valueToTree(Department.ID.entityType().name()));
-      node.set("condition", CONDITION_OBJECT_MAPPER.valueToTree(select));
+      node.set("column", DATABASE_OBJECT_MAPPER.valueToTree(Department.ID.name()));
+      node.set("entityType", DATABASE_OBJECT_MAPPER.valueToTree(Department.ID.entityType().name()));
+      node.set("condition", DATABASE_OBJECT_MAPPER.valueToTree(select));
       post = new HttpPost(createJsonURI("values"));
       post.setEntity(new StringEntity(node.toString()));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
@@ -376,7 +376,7 @@ public class EntityServiceTest {
         assertEquals(2, EntityServiceTest.<List<Entity>>deserialize(response.getEntity().getContent()).size());
       }
       post = new HttpPost(createJsonURI("select"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(select)));
+      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(select)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent()).size());
@@ -480,7 +480,7 @@ public class EntityServiceTest {
         assertEquals(Integer.valueOf(2), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("updateByCondition"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(update)));
+      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(update)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         Integer updateCount = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class);
@@ -501,7 +501,7 @@ public class EntityServiceTest {
         assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("delete"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(deleteCondition)));
+      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(deleteCondition)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         Integer deleteCount = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class);

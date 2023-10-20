@@ -4,7 +4,6 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
@@ -13,6 +12,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -27,23 +27,21 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 
   private static final long serialVersionUID = 1;
 
-  private final ConditionDeserializer conditionDeserializer;
-  private final Entities entities;
+  private final EntityObjectMapper entityObjectMapper;
 
-  SelectDeserializer(ConditionDeserializer conditionDeserializer) {
+  SelectDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Select.class);
-    this.conditionDeserializer = conditionDeserializer;
-    this.entities = conditionDeserializer.entities;
+    this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
   public Select deserialize(JsonParser parser, DeserializationContext ctxt)
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
-    EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-    EntityDefinition definition = entities.definition(entityType);
+    EntityType entityType = entityObjectMapper.entities().domainType().entityType(jsonNode.get("entityType").asText());
+    EntityDefinition definition = entityObjectMapper.entities().definition(entityType);
     JsonNode whereConditionNode = jsonNode.get("where");
-    Condition whereCondition = conditionDeserializer.deserialize(definition, whereConditionNode);
+    Condition whereCondition = entityObjectMapper.deserializeCondition(definition, whereConditionNode);
 
     Select.Builder selectBuilder = Select.where(whereCondition);
     JsonNode orderBy = jsonNode.get("orderBy");
