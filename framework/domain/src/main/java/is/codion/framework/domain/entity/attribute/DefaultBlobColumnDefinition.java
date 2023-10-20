@@ -12,7 +12,6 @@ final class DefaultBlobColumnDefinition extends DefaultColumnDefinition<byte[]> 
   private DefaultBlobColumnDefinition(DefaultBlobColumnDefinitionBuilder builder) {
     super(builder);
     this.eagerlyLoaded = builder.eagerlyLoaded;
-    builder.hidden(true);
   }
 
   @Override
@@ -27,6 +26,7 @@ final class DefaultBlobColumnDefinition extends DefaultColumnDefinition<byte[]> 
 
     DefaultBlobColumnDefinitionBuilder(Column<byte[]> column) {
       super(column);
+      hidden(true);
     }
 
     @Override
