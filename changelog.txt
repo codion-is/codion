@@ -9768,3 +9768,4 @@
   ColumnDefinition.primaryKeyColumn() renamed primaryKey()
   ForeignKeyDefiner.foreignKey() overloaded with fetchDepth parameter, ForeignKeyDefinition.Builder.fetchDepth() removed
   AttributeDefinition.FOREIGN_KEY_FETCH_DEPTH moved to ForeignKeyDefinition
+  ForeignKeyDefiner.foreignKey() bug fixed, did not allow fetchDepth -1 (no limit)
