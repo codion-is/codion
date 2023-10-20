@@ -16,13 +16,12 @@
  *
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.json.db;
+package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

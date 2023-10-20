@@ -388,7 +388,7 @@ public class EntityTablePanel extends JPanel {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void excludeFromEditMenu(Attribute<?>... attributes) {
-    checkIfInitialized();
+    throwIfInitialized();
     for (Attribute<?> attribute : requireNonNull(attributes)) {
       tableModel().entityDefinition().attributes().definition(attribute);//just validating that the attribute exists
       excludeFromEditMenu.add(attribute);
@@ -401,7 +401,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void addPopupMenuControls(Controls additionalPopupMenuControls) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.additionalPopupControls.add(requireNonNull(additionalPopupMenuControls));
   }
 
@@ -411,7 +411,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void addToolBarControls(Controls additionalToolBarControls) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
   }
 
@@ -422,7 +422,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void setIncludeSouthPanel(boolean includeSouthPanel) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.includeSouthPanel = includeSouthPanel;
   }
 
@@ -432,7 +432,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void setIncludeConditionPanel(boolean includeConditionPanel) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.includeConditionPanel = includeConditionPanel;
   }
 
@@ -442,7 +442,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void setIncludeFilterPanel(boolean includeFilterPanel) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.includeFilterPanel = includeFilterPanel;
   }
 
@@ -452,7 +452,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void setIncludePopupMenu(boolean includePopupMenu) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.includePopupMenu = includePopupMenu;
   }
 
@@ -462,7 +462,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void setIncludeClearControl(boolean includeClearControl) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.includeClearControl = includeClearControl;
   }
 
@@ -472,7 +472,7 @@ public class EntityTablePanel extends JPanel {
    * @see #initialize()
    */
   public final void setIncludeSelectionModeControl(boolean includeSelectionModeControl) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.includeSelectionModeControl = includeSelectionModeControl;
   }
 
@@ -480,7 +480,7 @@ public class EntityTablePanel extends JPanel {
    * @param columnSelection specifies how columns are selected
    */
   public final void setColumnSelection(ColumnSelection columnSelection) {
-    checkIfInitialized();
+    throwIfInitialized();
     this.columnSelection = requireNonNull(columnSelection);
   }
 
@@ -847,7 +847,7 @@ public class EntityTablePanel extends JPanel {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   protected final void setControl(ControlCode controlCode, Control control) {
-    checkIfInitialized();
+    throwIfInitialized();
     controls.put(requireNonNull(controlCode), control == null ? NULL_CONTROL : control);
   }
 
@@ -1543,7 +1543,7 @@ public class EntityTablePanel extends JPanel {
             .enable(table);
   }
 
-  private void checkIfInitialized() {
+  private void throwIfInitialized() {
     if (initialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }

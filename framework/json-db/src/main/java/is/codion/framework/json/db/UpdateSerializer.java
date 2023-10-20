@@ -34,11 +34,9 @@ final class UpdateSerializer extends StdSerializer<Update> {
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
-  private final ConditionSerializer conditionSerializer;
 
   UpdateSerializer(EntityObjectMapper entityObjectMapper) {
     super(Update.class);
-    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
   }
 
@@ -48,7 +46,7 @@ final class UpdateSerializer extends StdSerializer<Update> {
     generator.writeStartObject();
     generator.writeStringField("entityType", update.where().entityType().name());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(update.where(), generator);
+    entityObjectMapper.serializeCondition(update.where(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
     for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {

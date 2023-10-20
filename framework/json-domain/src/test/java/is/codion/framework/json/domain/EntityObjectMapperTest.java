@@ -20,6 +20,8 @@ package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.attribute.CustomCondition;
 import is.codion.framework.json.TestDomain;
 import is.codion.framework.json.TestDomain.Department;
 import is.codion.framework.json.TestDomain.Employee;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static is.codion.framework.domain.entity.attribute.Condition.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,11 +51,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class EntityObjectMapperTest {
 
   private final Entities entities = new TestDomain().entities();
+  private final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
   @Test
   void entity() throws JsonProcessingException {
-    EntityObjectMapper mapper = new EntityObjectMapper(entities);
-
     Entity dept = entities.builder(Department.TYPE)
             .with(Department.DEPTNO, 1)
             .with(Department.NAME, "Name")
@@ -120,8 +122,6 @@ public final class EntityObjectMapperTest {
 
   @Test
   void key() throws JsonProcessingException {
-    EntityObjectMapper mapper = new EntityObjectMapper(entities);
-
     Entity.Key deptKey1 = entities.primaryKey(Department.TYPE, 1);
     Entity.Key deptKey2 = entities.primaryKey(Department.TYPE, 2);
 
@@ -146,8 +146,6 @@ public final class EntityObjectMapperTest {
 
   @Test
   void keyOld() throws Exception {
-    EntityObjectMapper mapper = new EntityObjectMapper(entities);
-
     Entity.Key key = entities.primaryKey(Department.TYPE, 42);
 
     String keyJSON = mapper.writeValueAsString(singletonList(key));
@@ -160,8 +158,6 @@ public final class EntityObjectMapperTest {
 
   @Test
   void entityOld() throws Exception {
-    EntityObjectMapper mapper = new EntityObjectMapper(entities);
-
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     LocalDate hiredate = LocalDate.parse("2001-12-20", format);
 
@@ -307,8 +303,6 @@ public final class EntityObjectMapperTest {
 
   @Test
   void dependencyMap() throws JsonProcessingException {
-    EntityObjectMapper mapper = new EntityObjectMapper(entities);
-
     Entity dept = entities.builder(Department.TYPE)
             .with(Department.DEPTNO, 1)
             .with(Department.NAME, "Name")
@@ -331,5 +325,78 @@ public final class EntityObjectMapperTest {
 
     Custom custom = new Custom("a value");
     assertEquals(custom.value, mapper.readValue(mapper.writeValueAsString(custom), Custom.class).value);
+  }
+
+  @Test
+  void condition() throws JsonProcessingException {
+    Entity dept1 = entities.builder(Department.TYPE)
+            .with(Department.DEPTNO, 1)
+            .build();
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.DEPTNO, 2)
+            .build();
+
+    Condition condition = and(
+            Employee.DEPARTMENT_FK.notIn(dept1, dept2),
+            Employee.NAME.equalToIgnoreCase("Loc"),
+            Employee.EMPNO.between(10, 40),
+            Employee.COMMISSION.isNotNull());
+
+    String jsonString = mapper.writeValueAsString(condition);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+    assertEquals(condition, readCondition);
+    assertEquals("(deptno not in (?, ?) and upper(ename) = upper(?) and (empno >= ? and empno <= ?) and comm is not null)",
+            condition.toString(entities.definition(Employee.TYPE)));
+  }
+
+  @Test
+  void nullCondition() throws JsonProcessingException {
+    Condition condition = Employee.COMMISSION.isNotNull();
+
+    String jsonString = mapper.writeValueAsString(condition);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+    assertEquals(condition.entityType(), readCondition.entityType());
+    assertEquals(condition.columns(), readCondition.columns());
+    assertEquals(condition.values(), readCondition.values());
+  }
+
+  @Test
+  void custom() throws JsonProcessingException {
+    CustomCondition customedCondition = customCondition(TestEntity.CONDITION_TYPE,
+            asList(TestEntity.DECIMAL, TestEntity.DATE_TIME),
+            asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
+
+    String jsonString = mapper.writeValueAsString(customedCondition);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+    CustomCondition readCustom = (CustomCondition) readCondition;
+
+    assertEquals(customedCondition.conditionType(), readCustom.conditionType());
+    assertEquals(customedCondition.columns(), readCustom.columns());
+    assertEquals(customedCondition.values(), readCustom.values());
+  }
+
+  @Test
+  void allCondition() throws JsonProcessingException {
+    Condition condition = Condition.all(Department.TYPE);
+
+    String jsonString = mapper.writeValueAsString(condition);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+    assertEquals(condition, readCondition);
+  }
+
+  @Test
+  void combinationOfCombinations() throws JsonProcessingException {
+    Condition select = and(
+            Employee.COMMISSION.equalTo(100d),
+            or(Employee.JOB.notEqualTo("test"),
+                    Employee.JOB.isNotNull()));
+
+    String jsonString = mapper.writeValueAsString(select);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+    assertEquals(select, readCondition);
   }
 }

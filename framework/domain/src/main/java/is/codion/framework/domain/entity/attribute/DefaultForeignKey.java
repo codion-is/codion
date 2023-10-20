@@ -215,8 +215,8 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
     @Override
     public ForeignKeyDefinition.Builder foreignKey(int fetchDepth) {
-      if (fetchDepth < 0) {
-        throw new IllegalArgumentException("Fetch depth must be at least 0: " + foreignKey);
+      if (fetchDepth < -1) {
+        throw new IllegalArgumentException("Fetch depth must be at least -1: " + foreignKey);
       }
 
       return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey, fetchDepth);

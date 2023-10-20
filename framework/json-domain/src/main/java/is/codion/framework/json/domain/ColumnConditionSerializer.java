@@ -16,11 +16,9 @@
  *
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.json.db;
+package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.attribute.ColumnCondition;
-import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.domain.entity.attribute.Condition.Combination;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -29,28 +27,26 @@ import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class ConditionCombinationSerializer implements Serializable {
+final class ColumnConditionSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final ColumnConditionSerializer columnConditionSerializer;
+  private final EntityObjectMapper entityObjectMapper;
 
-  ConditionCombinationSerializer(ColumnConditionSerializer columnConditionSerializer) {
-    this.columnConditionSerializer = requireNonNull(columnConditionSerializer);
+  ColumnConditionSerializer(EntityObjectMapper entityObjectMapper) {
+    this.entityObjectMapper = requireNonNull(entityObjectMapper);
   }
 
-  void serialize(Combination combination, JsonGenerator generator) throws IOException {
+  void serialize(ColumnCondition<?> condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("type", "combination");
-    generator.writeStringField("conjunction", combination.conjunction().name());
-    generator.writeArrayFieldStart("conditions");
-    for (Condition condition : combination.conditions()) {
-      if (condition instanceof Combination) {
-        serialize((Combination) condition, generator);
-      }
-      else if (condition instanceof ColumnCondition) {
-        columnConditionSerializer.serialize((ColumnCondition<?>) condition, generator);
-      }
+    generator.writeStringField("type", "column");
+    generator.writeStringField("column", condition.column().name());
+    generator.writeStringField("operator", condition.operator().name());
+    generator.writeBooleanField("caseSensitive", condition.caseSensitive());
+    generator.writeFieldName("values");
+    generator.writeStartArray();
+    for (Object value : condition.values()) {
+      entityObjectMapper.writeValue(generator, value);
     }
     generator.writeEndArray();
     generator.writeEndObject();

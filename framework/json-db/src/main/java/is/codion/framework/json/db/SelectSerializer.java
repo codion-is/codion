@@ -36,11 +36,11 @@ final class SelectSerializer extends StdSerializer<Select> {
 
   private static final long serialVersionUID = 1;
 
-  private final ConditionSerializer conditionSerializer;
+  private final EntityObjectMapper entityObjectMapper;
 
   SelectSerializer(EntityObjectMapper entityObjectMapper) {
     super(Select.class);
-    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
+    this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
@@ -49,7 +49,7 @@ final class SelectSerializer extends StdSerializer<Select> {
     generator.writeStartObject();
     generator.writeStringField("entityType", select.where().entityType().name());
     generator.writeFieldName("where");
-    conditionSerializer.serialize(select.where(), generator);
+    entityObjectMapper.serializeCondition(select.where(), generator);
     OrderBy orderBy = select.orderBy().orElse(null);
     if (orderBy != null) {
       generator.writeFieldName("orderBy");
