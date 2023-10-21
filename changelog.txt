@@ -9774,3 +9774,4 @@
   DefaultBlobColumnDefinition bug fixed, DefaultBlobColumnDefinitionBuilder handles default hidden state
   ConditionSerializer and friends moved to json.domain
   DefaultStateGroup refactored
+  PersistMenuCheckBoxMenuItem and PersistMenuRadioButtonMenuItem refactored
