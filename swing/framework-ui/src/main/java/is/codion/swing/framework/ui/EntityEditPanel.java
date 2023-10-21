@@ -431,10 +431,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Creates a INSERT key binding on the given component for triggering the resulting Control.
    * @param comboBox the combo box in which to select the new entity
    * @param editPanelSupplier the edit panel supplier
-   * @return the insert Control
+   * @return the add Control
    */
-  public static Control createInsertControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
-    return createInsertControl(new InsertEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox);
+  public static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
+    return createAddControl(new AddEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox);
   }
 
   /**
@@ -443,10 +443,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Creates a INSERT key binding on the given component for triggering the resulting Control.
    * @param searchField the search field in which to select the new entity
    * @param editPanelSupplier the edit panel supplier
-   * @return the insert Control
+   * @return the add Control
    */
-  public static Control createInsertControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
-    return createInsertControl(new InsertEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField);
+  public static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
+    return createAddControl(new AddEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField);
   }
 
   /**
@@ -458,11 +458,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return the edit Control
    */
   public static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
-    requireNonNull(comboBox);
-    requireNonNull(editPanelSupplier);
-
-    return createUpdateControl(new EditEntityCommand(comboBox, editPanelSupplier), comboBox,
-            comboBox.getModel().selectionEmpty().not());
+    return createEditControl(new EditEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)),
+            comboBox, comboBox.getModel().selectionEmpty().not());
   }
 
   /**
@@ -474,11 +471,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return the edit Control
    */
   public static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
-    requireNonNull(searchField);
-    requireNonNull(editPanelSupplier);
-
-    return createUpdateControl(new EditEntityCommand(searchField, editPanelSupplier), searchField,
-            searchField.model().selectionEmpty().not());
+    return createEditControl(new EditEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)),
+            searchField, searchField.model().selectionEmpty().not());
   }
 
   /**
@@ -726,10 +720,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return new LinkedHashSet<>(Arrays.asList(controlCodes));
   }
 
-  private static Control createInsertControl(InsertEntityCommand insertEntityCommand, JComponent component) {
-    Control control = Control.builder(insertEntityCommand)
+  private static Control createAddControl(AddEntityCommand addEntityCommand, JComponent component) {
+    Control control = Control.builder(addEntityCommand)
             .smallIcon(FrameworkIcons.instance().add())
-            .description(MESSAGES.getString("insert_new"))
+            .description(MESSAGES.getString("add_new"))
             .enabled(createComponentEnabledState(component))
             .build();
 
@@ -740,8 +734,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return control;
   }
 
-  private static Control createUpdateControl(EditEntityCommand editEntityCommand, JComponent component,
-                                             StateObserver selectionNonEmptyState) {
+  private static Control createEditControl(EditEntityCommand editEntityCommand, JComponent component,
+                                           StateObserver selectionNonEmptyState) {
     Control control = Control.builder(editEntityCommand)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(MESSAGES.getString("edit_selected"))
@@ -819,7 +813,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
   }
 
-  private static final class InsertEntityCommand implements Control.Command {
+  private static final class AddEntityCommand implements Control.Command {
 
     private final Supplier<EntityEditPanel> editPanelSupplier;
     private final JComponent component;
@@ -827,14 +821,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private final Consumer<List<Entity>> onInsert;
     private final List<Entity> insertedEntities = new ArrayList<>();
 
-    private InsertEntityCommand(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
+    private AddEntityCommand(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
       this.editPanelSupplier = editPanelSupplier;
       this.component = comboBox;
       this.connectionProvider = comboBox.getModel().connectionProvider();
       this.onInsert = new EntityComboBoxOnInsert();
     }
 
-    private InsertEntityCommand(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
+    private AddEntityCommand(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
       this.editPanelSupplier = editPanelSupplier;
       this.component = searchField;
       this.connectionProvider = searchField.model().connectionProvider();

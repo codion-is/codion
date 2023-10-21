@@ -32,9 +32,9 @@ public final class PetEditPanel extends EntityEditPanel {
             createForeignKeyComboBox(Pet.PET_TYPE_FK)
                     .build();
 
-    Control newPetTypeControl = createInsertControl(petTypeBox, () ->
+    Control addPetTypeControl = createAddControl(petTypeBox, () ->
             new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, editModel().connectionProvider())));
-    JPanel petTypePanel = createEastButtonPanel(petTypeBox, newPetTypeControl);
+    JPanel petTypePanel = createEastButtonPanel(petTypeBox, addPetTypeControl);
 
     setLayout(gridLayout(2, 2));
 

@@ -9775,3 +9775,4 @@
   ConditionSerializer and friends moved to json.domain
   DefaultStateGroup refactored
   PersistMenuCheckBoxMenuItem and PersistMenuRadioButtonMenuItem refactored
+  EntityEditPanel.createInsertControl() renamed createAddControl()

@@ -30,9 +30,9 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
             createForeignKeyComboBox(CustomerAddress.ADDRESS_FK)
                     .preferredWidth(200)
                     .build();
-    Control newAddressControl = createInsertControl(addressComboBox, () ->
+    Control addAddressControl = createAddControl(addressComboBox, () ->
             new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())));
-    JPanel addressPanel = createEastButtonPanel(addressComboBox, newAddressControl);
+    JPanel addressPanel = createEastButtonPanel(addressComboBox, addAddressControl);
 
     setLayout(new BorderLayout(5, 5));
 

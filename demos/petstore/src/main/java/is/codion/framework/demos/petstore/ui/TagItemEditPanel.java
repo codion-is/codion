@@ -28,7 +28,7 @@ public class TagItemEditPanel extends EntityEditPanel {
     addInputPanel(TagItem.ITEM_FK);
     EntityComboBox itemTagBox = createForeignKeyComboBox(TagItem.TAG_FK).build();
     addInputPanel(TagItem.TAG_FK, createEastButtonPanel(itemTagBox,
-            createInsertControl(itemTagBox, () ->
+            createAddControl(itemTagBox, () ->
                     new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider())))));
   }
 }
