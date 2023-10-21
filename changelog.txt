@@ -9773,3 +9773,4 @@
   DefaultColumnDefinitionBuilder.nullable() now final, called in constructor
   DefaultBlobColumnDefinition bug fixed, DefaultBlobColumnDefinitionBuilder handles default hidden state
   ConditionSerializer and friends moved to json.domain
+  DefaultStateGroup refactored
