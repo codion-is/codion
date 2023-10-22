@@ -59,6 +59,10 @@ final class SelectDeserializer extends StdDeserializer<Select> {
     Condition whereCondition = entityObjectMapper.deserializeCondition(definition, whereConditionNode);
 
     Select.Builder selectBuilder = Select.where(whereCondition);
+    JsonNode havingCondition = jsonNode.get("having");
+    if (havingCondition != null) {
+      selectBuilder.having(entityObjectMapper.deserializeCondition(definition, havingCondition));
+    }
     JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectBuilder.orderBy(deserializeOrderBy(definition, orderBy));

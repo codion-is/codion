@@ -47,9 +47,9 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
                     .preferredWidth(200)
                     .build();
 
-    Control newSpecialtyControl = createInsertControl(specialtyComboBox, () ->
+    Control addSpecialtyControl = createAddControl(specialtyComboBox, () ->
             new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider())));
-    JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyControl);
+    JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, addSpecialtyControl);
 
     setLayout(gridLayout(2, 1));
 

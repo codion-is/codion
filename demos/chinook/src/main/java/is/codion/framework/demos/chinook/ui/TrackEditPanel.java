@@ -52,14 +52,14 @@ public final class TrackEditPanel extends EntityEditPanel {
             .build();
     Supplier<EntityEditPanel> mediaTypeEditPanelSupplier = () ->
             new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
-    Control newMediaTypeControl = createInsertControl(mediaTypeBox, mediaTypeEditPanelSupplier);
+    Control addMediaTypeControl = createAddControl(mediaTypeBox, mediaTypeEditPanelSupplier);
     Control editMediaTypeControl = createEditControl(mediaTypeBox, mediaTypeEditPanelSupplier);
     EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
             .preferredWidth(140)
             .build();
     Supplier<EntityEditPanel> genreEditPanelSupplier = () ->
             new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
-    Control newGenreControl = createInsertControl(genreBox, genreEditPanelSupplier);
+    Control addGenreControl = createAddControl(genreBox, genreEditPanelSupplier);
     Control editGenreControl = createEditControl(genreBox, genreEditPanelSupplier);
     createTextInputPanel(Track.COMPOSER);
     createIntegerField(Track.MILLISECONDS)
@@ -73,8 +73,8 @@ public final class TrackEditPanel extends EntityEditPanel {
     createTextField(Track.UNITPRICE)
             .columns(4);
 
-    JPanel mediaTypePanel = createEastButtonPanel(mediaTypeBox, newMediaTypeControl, editMediaTypeControl);
-    JPanel genrePanel = createEastButtonPanel(genreBox, newGenreControl, editGenreControl);
+    JPanel mediaTypePanel = createEastButtonPanel(mediaTypeBox, addMediaTypeControl, editMediaTypeControl);
+    JPanel genrePanel = createEastButtonPanel(genreBox, addGenreControl, editGenreControl);
     JPanel genreMediaTypePanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Track.GENRE_FK, genrePanel))
             .add(createInputPanel(Track.MEDIATYPE_FK, mediaTypePanel))

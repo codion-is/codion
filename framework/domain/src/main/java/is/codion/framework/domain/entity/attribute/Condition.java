@@ -81,7 +81,7 @@ public interface Condition {
   String toString(EntityDefinition definition);
 
   /**
-   * A condition specifying all entities of a given type.
+   * A condition specifying all entities of a given type, a no-condition.
    */
   interface All extends Condition {}
 

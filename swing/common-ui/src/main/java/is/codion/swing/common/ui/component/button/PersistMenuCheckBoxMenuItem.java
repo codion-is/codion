@@ -33,23 +33,22 @@ final class PersistMenuCheckBoxMenuItem extends JCheckBoxMenuItem {
 
   @Override
   protected void processMouseEvent(MouseEvent e) {
-    JCheckBoxMenuItem menuItem = (JCheckBoxMenuItem) e.getSource();
-    if (e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e, persistMenu)) {
-      menuItem.setSelected(!menuItem.isSelected());
+    if (e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e.isControlDown(), persistMenu)) {
+      setSelected(!isSelected());
     }
     else {
       super.processMouseEvent(e);
     }
   }
 
-  static boolean persistMenu(MouseEvent e, PersistMenu persistMenu) {
+  static boolean persistMenu(boolean controlDown, PersistMenu persistMenu) {
     switch (persistMenu) {
       case NEVER:
         return false;
       case ALWAYS:
         return true;
       case CTRL_DOWN:
-        return e.isControlDown();
+        return controlDown;
       default:
         throw new IllegalArgumentException("Unknown value: " + persistMenu);
     }

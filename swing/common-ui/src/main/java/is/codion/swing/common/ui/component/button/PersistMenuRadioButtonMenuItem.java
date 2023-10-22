@@ -18,9 +18,10 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.MouseEvent;
+
+import static is.codion.swing.common.ui.component.button.PersistMenuCheckBoxMenuItem.persistMenu;
 
 final class PersistMenuRadioButtonMenuItem extends JRadioButtonMenuItem {
 
@@ -32,9 +33,8 @@ final class PersistMenuRadioButtonMenuItem extends JRadioButtonMenuItem {
 
   @Override
   protected void processMouseEvent(MouseEvent e) {
-    JCheckBoxMenuItem menuItem = (JCheckBoxMenuItem) e.getSource();
-    if (e.getID() == MouseEvent.MOUSE_RELEASED && PersistMenuCheckBoxMenuItem.persistMenu(e, persistMenu)) {
-      menuItem.setSelected(!menuItem.isSelected());
+    if (e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e.isControlDown(), persistMenu)) {
+      setSelected(!isSelected());
     }
     else {
       super.processMouseEvent(e);

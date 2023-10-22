@@ -455,11 +455,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int count(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int count(Condition where) throws DatabaseException {
+    Objects.requireNonNull(where);
     try {
       synchronized (this.entities) {
-        return onResponse(execute(createHttpPost("count", byteArrayEntity(condition))));
+        return onResponse(execute(createHttpPost("count", byteArrayEntity(where))));
       }
     }
     catch (DatabaseException e) {

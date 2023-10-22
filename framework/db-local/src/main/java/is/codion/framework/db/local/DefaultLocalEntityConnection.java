@@ -82,7 +82,6 @@ import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entity.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Condition.*;
-import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
@@ -95,7 +94,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName());
-  private static final String EXECUTE_STATEMENT = "executeStatement";
+  private static final String EXECUTE_UPDATE = "executeUpdate";
+  private static final String EXECUTE_QUERY = "executeQuery";
   private static final String RECORD_MODIFIED = "record_modified";
   private static final String CONDITION = "condition";
   private static final String ENTITIES = "entities";
@@ -289,7 +289,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(updateQuery)) {
-        int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
+        int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
         commitIfTransactionIsNotOpen();
 
         return updatedRows;
@@ -312,7 +312,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(deleteQuery)) {
-        int deleteCount = executeStatement(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
+        int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
         commitIfTransactionIsNotOpen();
 
         return deleteCount;
@@ -353,7 +353,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           statementColumns = columnDefinitions(entityDefinition, condition.columns());
           deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
           statement = prepareStatement(deleteQuery);
-          deleteCount += executeStatement(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
+          deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
           statement.close();
         }
         if (keys.size() != deleteCount) {
@@ -476,9 +476,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .where(combinedCondition)
             .groupBy(columnDefinition.columnExpression())
             .build();
+    List<Object> statementValues = statementValues(combinedCondition, select.having());
+    List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, combinedCondition, select.having());
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(selectQuery);
-           ResultSet resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition)) {
+           ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
         List<T> result = resultPacker(columnDefinition).pack(resultSet);
         commitIfTransactionIsNotOpen();
 
@@ -486,27 +488,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, asList(column, select),
-                columnDefinitions(entityDefinition, combinedCondition.columns()), e), e);
+        LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
         throw translateSQLException(e);
       }
     }
   }
 
   @Override
-  public int count(Condition condition) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(condition, CONDITION).entityType());
+  public int count(Condition where) throws DatabaseException {
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(where, "where").entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .select(where(condition)
+                    .select(where(where)
                             .attributes(entityDefinition.primaryKey().columns())
                             .build())
                     .build())
             .build();
+    List<Object> statementValues = statementValues(where);
+    List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, where);
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(selectQuery);
-           ResultSet resultSet = executeStatement(statement, selectQuery, condition, entityDefinition)) {
+           ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
         if (!resultSet.next()) {
           throw new SQLException("Row count query returned no value", SQL_STATE_NO_DATA);
         }
@@ -517,8 +520,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, condition.values(),
-                columnDefinitions(entityDefinition, condition.columns()), e), e);
+        LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
         throw translateSQLException(e);
       }
     }
@@ -806,7 +808,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
           insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
           statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
-          executeStatement(statement, insertQuery, statementColumns, statementValues, StatementType.INSERT);
+          executeUpdate(statement, insertQuery, statementColumns, statementValues, StatementType.INSERT);
           keyGenerator.afterInsert(entity, connection, statement);
 
           insertedKeys.add(entity.primaryKey());
@@ -866,7 +868,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statement = prepareStatement(updateQuery);
             statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
             statementValues.addAll(condition.values());
-            int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
+            int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
             if (updatedRows == 0) {
               throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
             }
@@ -1092,11 +1094,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     EntityDefinition entityDefinition = domainEntities.definition(select.where().entityType());
     SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
             .select(select);
-    Condition condition = select.where();
     String selectQuery = selectQueryBuilder.build();
+    List<Object> statementValues = statementValues(select.where(), select.having());
+    List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, select.where(), select.having());
     try {
       statement = prepareStatement(selectQuery, false, select.queryTimeout());
-      resultSet = executeStatement(statement, selectQuery, condition, entityDefinition);
+      resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
       return new EntityResultIterator(statement, resultSet,
               new EntityResultPacker(entityDefinition, selectQueryBuilder.selectedColumns()));
@@ -1104,20 +1107,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     catch (SQLException e) {
       closeSilently(resultSet);
       closeSilently(statement);
-      LOG.error(createLogMessage(selectQuery, condition.values(),
-              columnDefinitions(entityDefinition, condition.columns()), e), e);
+      LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
       throw e;
     }
   }
 
-  private int executeStatement(PreparedStatement statement, String query,
-                               List<ColumnDefinition<?>> statementColumns,
-                               List<?> statementValues,
-                               StatementType statementType) throws SQLException {
+  private int executeUpdate(PreparedStatement statement, String query,
+                            List<ColumnDefinition<?>> statementColumns, List<?> statementValues,
+                            StatementType statementType) throws SQLException {
     SQLException exception = null;
+    logEntry(EXECUTE_UPDATE, statementValues);
     try {
-      logEntry(EXECUTE_STATEMENT, statementValues);
-
       return setParameterValues(statement, statementColumns, statementValues).executeUpdate();
     }
     catch (SQLException e) {
@@ -1125,7 +1125,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit(EXECUTE_STATEMENT, exception);
+      logExit(EXECUTE_UPDATE, exception);
       countQuery(statementType);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
@@ -1133,14 +1133,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private ResultSet executeStatement(PreparedStatement statement, String query,
-                                     Condition condition, EntityDefinition entityDefinition) throws SQLException {
+  private ResultSet executeQuery(PreparedStatement statement, String query,
+                                 List<ColumnDefinition<?>> statementColumns, List<?> statementValues) throws SQLException {
     SQLException exception = null;
-    List<?> statementValues = condition.values();
-    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
+    logEntry(EXECUTE_QUERY, statementValues);
     try {
-      logEntry(EXECUTE_STATEMENT, statementValues);
-
       return setParameterValues(statement, statementColumns, statementValues).executeQuery();
     }
     catch (SQLException e) {
@@ -1148,12 +1145,48 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit(EXECUTE_STATEMENT, exception);
+      logExit(EXECUTE_QUERY, exception);
       countQuery(StatementType.SELECT);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
       }
     }
+  }
+
+  private static List<ColumnDefinition<?>> statementColumns(EntityDefinition entityDefinition, Condition where) {
+    return statementColumns(entityDefinition, where, null);
+  }
+
+  private static List<ColumnDefinition<?>> statementColumns(EntityDefinition entityDefinition, Condition where, Condition having) {
+    List<ColumnDefinition<?>> whereColumns = columnDefinitions(entityDefinition, where.columns());
+    if (having == null || having instanceof Condition.All) {
+      return whereColumns;
+    }
+
+    List<ColumnDefinition<?>> havingColumns = columnDefinitions(entityDefinition, having.columns());
+    List<ColumnDefinition<?>> statementColumns = new ArrayList<>(whereColumns.size() + havingColumns.size());
+    statementColumns.addAll(whereColumns);
+    statementColumns.addAll(havingColumns);
+
+    return statementColumns;
+  }
+
+  private static List<Object> statementValues(Condition where) {
+    return statementValues(where, null);
+  }
+
+  private static List<Object> statementValues(Condition where, Condition having) {
+    List<Object> whereValues = (List<Object>) where.values();
+    if (having == null || having instanceof Condition.All) {
+      return whereValues;
+    }
+
+    List<?> havingValues = having.values();
+    List<Object> statementValues = new ArrayList<>(whereValues.size() + havingValues.size());
+    statementValues.addAll(where.values());
+    statementValues.addAll(havingValues);
+
+    return statementValues;
   }
 
   private PreparedStatement prepareStatement(String query) throws SQLException {

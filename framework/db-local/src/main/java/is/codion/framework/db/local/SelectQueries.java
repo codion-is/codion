@@ -115,6 +115,9 @@ final class SelectQueries {
       if (groupBy == null) {
         groupBy(groupByClause());
       }
+      if (!(select.having() instanceof Condition.All)) {
+        havingCondition(select.having());
+      }
       select.orderBy().ifPresent(this::setOrderBy);
       forUpdate(select.forUpdate());
       if (select.limit() >= 0) {
@@ -326,6 +329,13 @@ final class SelectQueries {
       }
 
       return stringBuilder.toString();
+    }
+
+    private void havingCondition(Condition condition) {
+      String conditionString = condition.toString(definition);
+      if (!conditionString.isEmpty()) {
+        having(conditionString);
+      }
     }
 
     private void setOrderBy(OrderBy orderBy) {

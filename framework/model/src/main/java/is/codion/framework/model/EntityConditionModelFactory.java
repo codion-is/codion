@@ -60,11 +60,8 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
     }
 
     ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
-    if (column.aggregate()) {
-      return Optional.empty();
-    }
 
-    return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+    return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
             .operators(operators(attribute))
             .format(column.format())
             .dateTimePattern(column.dateTimePattern())

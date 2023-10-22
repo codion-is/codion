@@ -382,11 +382,11 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Counts the number of rows returned based on the given condition
-   * @param condition the search condition
-   * @return the number of rows fitting the given condition
+   * @param where the where condition
+   * @return the number of rows fitting the given where condition
    * @throws DatabaseException in case of a database exception
    */
-  int count(Condition condition) throws DatabaseException;
+  int count(Condition where) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
@@ -567,6 +567,11 @@ public interface EntityConnection extends AutoCloseable {
     Condition where();
 
     /**
+     * @return the having condition
+     */
+    Condition having();
+
+    /**
      * @return the OrderBy for this condition, an empty Optional if none is specified
      */
     Optional<OrderBy> orderBy();
@@ -688,6 +693,8 @@ public interface EntityConnection extends AutoCloseable {
        * @return this builder instance
        */
       Builder queryTimeout(int queryTimeout);
+
+      Builder having(Condition condition);
 
       /**
        * @return a new {@link Select} instance based on this builder

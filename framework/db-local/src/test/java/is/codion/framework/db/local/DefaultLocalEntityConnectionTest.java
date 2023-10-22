@@ -1373,6 +1373,13 @@ public class DefaultLocalEntityConnectionTest {
     assertFalse(modifiedColumns.contains(Department.DATA));
   }
 
+  @Test
+  void having() throws Exception {
+    connection.select(Select.where(all(Job.TYPE))
+            .having(Job.MAX_COMMISSION.greaterThanOrEqualTo(1500d))
+            .build());
+  }
+
   private static LocalEntityConnection createConnection() throws DatabaseException {
     return createConnection(false);
   }

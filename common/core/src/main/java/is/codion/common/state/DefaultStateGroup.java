@@ -22,7 +22,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ListIterator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,23 +45,16 @@ final class DefaultStateGroup implements State.Group {
   public void add(State state) {
     requireNonNull(state);
     synchronized (members) {
-      for (WeakReference<State> reference : members) {
-        if (reference.get() == state) {
-          return;
-        }
-      }//no duplicate states
-
-      members.add(new WeakReference<>(state));
-    }
-    synchronized (members) {
-      if (state.get()) {
-        disableOthers(state);
+      if (members.stream().anyMatch(reference -> reference.get() == state)) {
+        return;//no duplicate states
       }
+      members.add(new WeakReference<>(state));
+      stateChanged(state);
     }
     state.addDataListener(value -> {
       synchronized (members) {
         if (value) {
-          disableOthers(state);
+          stateChanged(state);
         }
       }
     });
@@ -73,16 +65,13 @@ final class DefaultStateGroup implements State.Group {
     requireNonNull(states).forEach(this::add);
   }
 
-  private void disableOthers(State state) {
-    ListIterator<WeakReference<State>> iterator = members.listIterator();
-    while (iterator.hasNext()) {
-      State memberState = iterator.next().get();
-      if (memberState == null) {//remove this dead weak reference
-        iterator.remove();
-      }
-      else if (memberState != state) {
-        memberState.set(false);
-      }
+  private void stateChanged(State state) {
+    members.removeIf(reference -> reference.get() == null);
+    if (state.get()) {
+      members.stream()
+              .map(WeakReference::get)
+              .filter(s -> s != state)
+              .forEach(s -> s.set(false));
     }
   }
 }

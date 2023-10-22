@@ -9814,3 +9814,10 @@
   DefaultColumnDefinitionBuilder.nullable() now final, called in constructor
   DefaultBlobColumnDefinition bug fixed, DefaultBlobColumnDefinitionBuilder handles default hidden state
   ConditionSerializer and friends moved to json.domain
+  DefaultStateGroup refactored
+  PersistMenuCheckBoxMenuItem and PersistMenuRadioButtonMenuItem refactored
+  EntityEditPanel.createInsertControl() renamed createAddControl()
+  Select, HAVING clause added
+  EntityTableConditionModel.condition() renamed where(), having() added, based on aggregate columns
+  EntityConditionModelFactory.createConditionModel() now creates condition models for aggregate columns
+  DefaultLocalEntityConnection, HAVING clause supported
