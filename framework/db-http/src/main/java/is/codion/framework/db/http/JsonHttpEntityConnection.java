@@ -484,12 +484,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int count(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int count(Condition where) throws DatabaseException {
+    Objects.requireNonNull(where);
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("count",
-                        stringEntity(databaseObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(databaseObjectMapper.writeValueAsString(where)))),
                 entityObjectMapper, Integer.class);
       }
     }

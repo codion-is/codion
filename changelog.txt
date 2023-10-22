@@ -9776,3 +9776,7 @@
   DefaultStateGroup refactored
   PersistMenuCheckBoxMenuItem and PersistMenuRadioButtonMenuItem refactored
   EntityEditPanel.createInsertControl() renamed createAddControl()
+  Select, HAVING clause added
+  EntityTableConditionModel.condition() renamed where(), having() added, based on aggregate columns
+  EntityConditionModelFactory.createConditionModel() now creates condition models for aggregate columns
+  DefaultLocalEntityConnection, HAVING clause supported

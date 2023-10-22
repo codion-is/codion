@@ -26,6 +26,7 @@ final class DefaultSelect implements Select, Serializable {
   private static final long serialVersionUID = 1;
 
   private final Condition where;
+  private final Condition having;
   private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
   private final Collection<Attribute<?>> attributes;
   private final OrderBy orderBy;
@@ -37,6 +38,7 @@ final class DefaultSelect implements Select, Serializable {
 
   private DefaultSelect(DefaultBuilder builder) {
     this.where = builder.where;
+    this.having = builder.having;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths == null ?
             null :
             unmodifiableMap(builder.foreignKeyFetchDepths);
@@ -52,6 +54,11 @@ final class DefaultSelect implements Select, Serializable {
   @Override
   public Condition where() {
     return where;
+  }
+
+  @Override
+  public Condition having() {
+    return having;
   }
 
   @Override
@@ -117,6 +124,7 @@ final class DefaultSelect implements Select, Serializable {
             limit == that.limit &&
             offset == that.offset &&
             where.equals(that.where) &&
+            Objects.equals(having, that.having) &&
             Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
             attributes.equals(that.attributes) &&
             Objects.equals(orderBy, that.orderBy) &&
@@ -149,6 +157,7 @@ final class DefaultSelect implements Select, Serializable {
     private Map<ForeignKey, Integer> foreignKeyFetchDepths;
     private Collection<Attribute<?>> attributes = emptyList();
 
+    private Condition having;
     private OrderBy orderBy;
     private Integer fetchDepth;
     private boolean forUpdate;
@@ -158,6 +167,7 @@ final class DefaultSelect implements Select, Serializable {
 
     DefaultBuilder(Condition where) {
       this.where = requireNonNull(where);
+      this.having = Condition.all(where.entityType());
     }
 
     @Override
@@ -216,6 +226,12 @@ final class DefaultSelect implements Select, Serializable {
     @Override
     public Builder queryTimeout(int queryTimeout) {
       this.queryTimeout = queryTimeout;
+      return this;
+    }
+
+    @Override
+    public Builder having(Condition having) {
+      this.having = requireNonNull(having);
       return this;
     }
 

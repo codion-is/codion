@@ -35,6 +35,8 @@ final class SelectSerializer extends StdSerializer<Select> {
     generator.writeStringField("entityType", select.where().entityType().name());
     generator.writeFieldName("where");
     entityObjectMapper.serializeCondition(select.where(), generator);
+    generator.writeFieldName("having");
+    entityObjectMapper.serializeCondition(select.having(), generator);
     OrderBy orderBy = select.orderBy().orElse(null);
     if (orderBy != null) {
       generator.writeFieldName("orderBy");

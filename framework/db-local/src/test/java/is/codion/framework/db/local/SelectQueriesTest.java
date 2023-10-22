@@ -51,12 +51,13 @@ public final class SelectQueriesTest {
 
     Select select = Select.where(QueryColumnsWhereClause.ENAME.equalTo("SCOTT"))
             .attributes(QueryColumnsWhereClause.ENAME)
+            .having(QueryColumnsWhereClause.EMPNO.equalTo(4))
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
             .build();
     builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .select(select);
 
     //select should not affect columns when the columns are hardcoded in the entity query
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\nand ename = ?\norder by empno desc", builder.build());
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\nand ename = ?\nhaving empno = ?\norder by empno desc", builder.build());
   }
 }

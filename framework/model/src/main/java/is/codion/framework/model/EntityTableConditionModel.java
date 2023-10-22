@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Condition;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -41,16 +40,30 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values);
 
   /**
-   * @return the current condition based on the state of the underlying condition models
+   * Returns a WHERE condition based on condition models which are based on non-aggregate function columns.
+   * @return the current where condition based on the state of the underlying condition models
    */
-  Condition condition();
+  Condition where();
 
   /**
-   * Controls the additional condition.
-   * The condition supplier may return null in case of no condition.
-   * @return the value controlling the additional conndition
+   * Returns a HAVING condition based on condition models which are based on aggregate function columns.
+   * @return the current having condition based on the state of the underlying condition models
    */
-  Value<Supplier<Condition>> additionalCondition();
+  Condition having();
+
+  /**
+   * Controls the additional where condition.
+   * The condition supplier may return null in case of no condition.
+   * @return the value controlling the additional where condition
+   */
+  Value<Supplier<Condition>> additionalWhereCondition();
+
+  /**
+   * Controls the additional having condition.
+   * The condition supplier may return null in case of no condition.
+   * @return the value controlling the additional having condition
+   */
+  Value<Supplier<Condition>> additionalHavingCondition();
 
   /**
    * @return the value controlling the conjunction
@@ -67,16 +80,6 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
    * @throws IllegalArgumentException in case no condition model exists for the given attribute
    */
   <A extends Attribute<T>, T> ColumnConditionModel<A, T> attributeModel(A attribute);
-
-  /**
-   * @param listener a listener notified each time the search condition changes
-   */
-  void addChangeListener(Consumer<Condition> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeChangeListener(Consumer<Condition> listener);
 
   /**
    * Creates a new {@link EntityTableConditionModel}
