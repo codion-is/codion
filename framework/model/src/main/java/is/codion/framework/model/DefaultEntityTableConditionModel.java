@@ -59,8 +59,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private final EntityConnectionProvider connectionProvider;
   private final TableConditionModel<C> conditionModel;
   private final Event<?> conditionChangedEvent = Event.event();
-  private final Value<Supplier<Condition>> additionalWhereCondition = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
-  private final Value<Supplier<Condition>> additionalHavingCondition = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Supplier<Condition>> additionalWhere = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Supplier<Condition>> additionalHaving = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
   private final NoneAggregatePredicate noneAggregatePredicate = new NoneAggregatePredicate();
   private final AggregatePredicate aggregatePredicate = new AggregatePredicate();
 
@@ -93,7 +93,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   @Override
   public Condition where(Conjunction conjunction) {
     requireNonNull(conjunction);
-    Collection<Condition> conditions = conditions(noneAggregatePredicate, additionalWhereCondition.get().get());
+    Collection<Condition> conditions = conditions(noneAggregatePredicate, additionalWhere.get().get());
 
     return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction, conditions);
   }
@@ -101,19 +101,19 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   @Override
   public Condition having(Conjunction conjunction) {
     requireNonNull(conjunction);
-    Collection<Condition> conditions = conditions(aggregatePredicate, additionalHavingCondition.get().get());
+    Collection<Condition> conditions = conditions(aggregatePredicate, additionalHaving.get().get());
 
     return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction, conditions);
   }
 
   @Override
-  public Value<Supplier<Condition>> additionalWhereCondition() {
-    return additionalWhereCondition;
+  public Value<Supplier<Condition>> additionalWhere() {
+    return additionalWhere;
   }
 
   @Override
-  public Value<Supplier<Condition>> additionalHavingCondition() {
-    return additionalHavingCondition;
+  public Value<Supplier<Condition>> additionalHaving() {
+    return additionalHaving;
   }
 
   @Override
@@ -172,8 +172,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private void bindEvents() {
     conditionModel.conditionModels().values().forEach(columnConditionModel ->
             columnConditionModel.addChangeListener(conditionChangedEvent));
-    additionalWhereCondition.addListener(conditionChangedEvent);
-    additionalHavingCondition.addListener(conditionChangedEvent);
+    additionalWhere.addListener(conditionChangedEvent);
+    additionalHaving.addListener(conditionChangedEvent);
   }
 
   private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,
