@@ -100,9 +100,7 @@ final class SelectQueries {
       if (groupBy == null) {
         groupBy(groupByClause());
       }
-      if (!(select.having() instanceof Condition.All)) {
-        havingCondition(select.having());
-      }
+      havingCondition(select.having());
       select.orderBy().ifPresent(this::setOrderBy);
       forUpdate(select.forUpdate());
       if (select.limit() >= 0) {
@@ -307,7 +305,6 @@ final class SelectQueries {
         if (!columnName.equals(columnExpression)) {
           stringBuilder.append(" as ").append(columnName);
         }
-
         if (i < columnDefinitions.size() - 1) {
           stringBuilder.append(", ");
         }
