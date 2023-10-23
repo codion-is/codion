@@ -61,7 +61,6 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private final Event<?> conditionChangedEvent = Event.event();
   private final Value<Supplier<Condition>> additionalWhereCondition = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
   private final Value<Supplier<Condition>> additionalHavingCondition = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
-  private final Value<Conjunction> conjunction = Value.value(Conjunction.AND, Conjunction.AND);
   private final NoneAggregatePredicate noneAggregatePredicate = new NoneAggregatePredicate();
   private final AggregatePredicate aggregatePredicate = new AggregatePredicate();
 
@@ -81,28 +80,30 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   @Override
   public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
     boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-    Condition condition = aggregateColumn ? having() : where();
+    Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
     ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
     if (columnConditionModel != null) {
       columnConditionModel.operator().set(Operator.EQUAL);
       columnConditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);
       columnConditionModel.enabled().set(!nullOrEmpty(values));
     }
-    return !condition.equals(aggregateColumn ? having() : where());
+    return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
   }
 
   @Override
-  public Condition where() {
+  public Condition where(Conjunction conjunction) {
+    requireNonNull(conjunction);
     Collection<Condition> conditions = conditions(noneAggregatePredicate, additionalWhereCondition.get().get());
 
-    return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction.get(), conditions);
+    return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction, conditions);
   }
 
   @Override
-  public Condition having() {
+  public Condition having(Conjunction conjunction) {
+    requireNonNull(conjunction);
     Collection<Condition> conditions = conditions(aggregatePredicate, additionalHavingCondition.get().get());
 
-    return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction.get(), conditions);
+    return conditions.isEmpty() ? all(entityDefinition.entityType()) : combination(conjunction, conditions);
   }
 
   @Override
@@ -155,11 +156,6 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     conditionModel.clear();
   }
 
-  @Override
-  public Value<Conjunction> conjunction() {
-    return conjunction;
-  }
-
   private Collection<Condition> conditions(Predicate<ColumnConditionModel<?, ?>> conditionModelTypePredicate, Condition additionalCondition) {
     List<Condition> conditions = conditionModel.conditionModels().values().stream()
             .filter(model -> model.enabled().get())
@@ -178,7 +174,6 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
             columnConditionModel.addChangeListener(conditionChangedEvent));
     additionalWhereCondition.addListener(conditionChangedEvent);
     additionalHavingCondition.addListener(conditionChangedEvent);
-    conjunction.addListener(conditionChangedEvent);
   }
 
   private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,

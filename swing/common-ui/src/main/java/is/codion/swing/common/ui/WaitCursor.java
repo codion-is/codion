@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import java.awt.Cursor;
 import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,13 +112,30 @@ public final class WaitCursor {
       }
 
       if ((requests == 1 && on) || (requests == 0 && !on)) {
-        SwingUtilities.invokeLater(() -> window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR));
+        setCursor(on, window);
       }
       if (requests == 0) {
         WAIT_CURSOR_REQUESTS.remove(window);
       }
       else {
         WAIT_CURSOR_REQUESTS.put(window, requests);
+      }
+    }
+  }
+
+  private static void setCursor(boolean on, Window window) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
+    }
+    else {
+      try {
+        SwingUtilities.invokeAndWait(() -> window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR));
+      }
+      catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      catch (InvocationTargetException e) {
+        throw new RuntimeException(e);
       }
     }
   }

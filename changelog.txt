@@ -9821,3 +9821,6 @@
   EntityTableConditionModel.condition() renamed where(), having() added, based on aggregate columns
   EntityConditionModelFactory.createConditionModel() now creates condition models for aggregate columns
   DefaultLocalEntityConnection, HAVING clause supported
+  TabbedApplicationPanelLayout.layout(), redundant call to initialize() removed
+  EntityTableConditionModel.conjunction() removed, conjunction parameter added to where(), having()
+  WaitCursor, tentative fix for the wait cursor ghost

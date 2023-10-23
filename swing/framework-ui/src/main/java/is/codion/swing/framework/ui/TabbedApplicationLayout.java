@@ -60,11 +60,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   @Override
   public void layout(EntityApplicationPanel<?> applicationPanel) {
     requireNonNull(applicationPanel);
-    if (!applicationPanel.entityPanels().isEmpty()) {
-      //initialize first panel
-      applicationPanel.entityPanels().get(0).initialize();
-    }
-    applicationPanel.entityPanels().forEach(this::addTab);
+    applicationPanel.entityPanels().forEach(this::addTab);//InitializeSelectedPanelListener initializes first panel
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     applicationPanel.add(borderLayoutPanel(new BorderLayout())

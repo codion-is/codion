@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
@@ -54,8 +53,6 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void test() {
     assertEquals(Employee.TYPE, conditionModel.entityType());
-    conditionModel.conjunction().set(Conjunction.OR);
-    assertEquals(Conjunction.OR, conditionModel.conjunction().get());
     assertEquals(10, conditionModel.conditionModels().size());
 
     assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
