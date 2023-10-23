@@ -40,16 +40,18 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values);
 
   /**
-   * Returns a WHERE condition based on condition models which are based on non-aggregate function columns.
+   * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.
+   * @param conjunction the conjunction to use in case of multiple enabled conditions
    * @return the current where condition based on the state of the underlying condition models
    */
-  Condition where();
+  Condition where(Conjunction conjunction);
 
   /**
-   * Returns a HAVING condition based on condition models which are based on aggregate function columns.
+   * Returns a HAVING condition based on enabled condition models which are based on aggregate function columns.
+   * @param conjunction the conjunction to use in case of multiple enabled conditions
    * @return the current having condition based on the state of the underlying condition models
    */
-  Condition having();
+  Condition having(Conjunction conjunction);
 
   /**
    * Controls the additional where condition.
@@ -64,12 +66,6 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
    * @return the value controlling the additional having condition
    */
   Value<Supplier<Condition>> additionalHavingCondition();
-
-  /**
-   * @return the value controlling the conjunction
-   * @see Conjunction
-   */
-  Value<Conjunction> conjunction();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.

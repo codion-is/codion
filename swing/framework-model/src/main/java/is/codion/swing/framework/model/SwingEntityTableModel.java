@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
@@ -706,14 +707,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * Queries the data used to populate this EntityTableModel when it is refreshed.
    * This method should take into account the where and having conditions
-   * ({@link EntityTableConditionModel#where()}, {@link EntityTableConditionModel#having()}),
+   * ({@link EntityTableConditionModel#where(Conjunction)}, {@link EntityTableConditionModel#having(Conjunction)}),
    * order by clause ({@link #orderBy()}), the limit ({@link #limit()}) and select attributes
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according to the query condition.
    * @see #conditionRequired()
    * @see #conditionEnabled(EntityTableConditionModel)
-   * @see EntityTableConditionModel#where()
-   * @see EntityTableConditionModel#having()
+   * @see EntityTableConditionModel#where(Conjunction)
+   * @see EntityTableConditionModel#having(Conjunction)
    */
   protected Collection<Entity> refreshItems() {
     try {
@@ -1017,8 +1018,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private static Select createSelect(EntityTableConditionModel<Attribute<?>> conditionModel) {
-    return Select.where(conditionModel.where())
-            .having(conditionModel.having())
+    return Select.where(conditionModel.where(Conjunction.AND))
+            .having(conditionModel.having(Conjunction.AND))
             .build();
   }
 

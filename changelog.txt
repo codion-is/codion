@@ -9781,3 +9781,4 @@
   EntityConditionModelFactory.createConditionModel() now creates condition models for aggregate columns
   DefaultLocalEntityConnection, HAVING clause supported
   TabbedApplicationPanelLayout.layout(), redundant call to initialize() removed
+  EntityTableConditionModel.conjunction() removed, conjunction parameter added to where(), having()
