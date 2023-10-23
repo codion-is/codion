@@ -9782,3 +9782,4 @@
   DefaultLocalEntityConnection, HAVING clause supported
   TabbedApplicationPanelLayout.layout(), redundant call to initialize() removed
   EntityTableConditionModel.conjunction() removed, conjunction parameter added to where(), having()
+  WaitCursor, tentative fix for the wait cursor ghost
