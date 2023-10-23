@@ -58,14 +58,14 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
    * The condition supplier may return null in case of no condition.
    * @return the value controlling the additional where condition
    */
-  Value<Supplier<Condition>> additionalWhereCondition();
+  Value<Supplier<Condition>> additionalWhere();
 
   /**
    * Controls the additional having condition.
    * The condition supplier may return null in case of no condition.
    * @return the value controlling the additional having condition
    */
-  Value<Supplier<Condition>> additionalHavingCondition();
+  Value<Supplier<Condition>> additionalHaving();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.

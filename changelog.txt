@@ -9783,3 +9783,4 @@
   TabbedApplicationPanelLayout.layout(), redundant call to initialize() removed
   EntityTableConditionModel.conjunction() removed, conjunction parameter added to where(), having()
   WaitCursor, tentative fix for the wait cursor ghost
+  EntityTableConditionModel.additionalWhereCondition() and additionalHavingCondition() renamed additionalWhere() and additionalHaving() respectively
