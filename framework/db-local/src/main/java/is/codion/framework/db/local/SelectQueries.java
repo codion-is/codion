@@ -316,7 +316,7 @@ final class SelectQueries {
     private void havingCondition(Condition condition) {
       String conditionString = condition.toString(definition);
       if (!conditionString.isEmpty()) {
-        having(conditionString);
+        having(having == null ? conditionString : "(" + having + ") and (" + conditionString + ")");
       }
     }
 
