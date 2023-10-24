@@ -70,20 +70,20 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === Selecting entities
 
-{url-entity-connection}#select{opar}is.codion.framework.db.condition.Condition{cpar}[select(Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[select(Condition condition)]
 
-{url-entity-connection}#select{opar}is.codion.framework.db.Select{cpar}[select(Select select)]
+{url-entity-connection}#select{opar}is.codion.framework.db.EntityConnection.Select{cpar}[select(Select select)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Condition{cpar}[selectSingle(Condition condition)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[selectSingle(Condition condition)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.db.Select{cpar}[selectSingle(Select select)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.db.EntityConnection.Select{cpar}[selectSingle(Select select)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=select]
 ----
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Key{cpar}[select(Key key)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Entity.Key{cpar}[select(Key key)]
 
 [source,java,indent=0]
 ----
@@ -103,9 +103,9 @@ For selecting the values of a single column.
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{cpar}[select(Column<T> column)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.domain.entity.attribute.Condition{cpar}[select(Column<T> column, Condition condition)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.Select{cpar}[select(Column<T> column, Select select)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.EntityConnection.Select{cpar}[select(Column<T> column, Select select)]
 
 [source,java,indent=0]
 ----
@@ -116,9 +116,9 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 *LocalEntityConnection* provides a way to iterate over a result set, instead of loading it into memory.
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.db.condition.Condition{cpar}[iterator(Condition condition)]
+{url-local-entity-connection}#iterator{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[iterator(Condition condition)]
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.db.Select{cpar}[iterator(Select select)]
+{url-local-entity-connection}#iterator{opar}is.codion.framework.db.EntityConnection.Select{cpar}[iterator(Select select)]
 
 [source,java,indent=0]
 ----
@@ -138,9 +138,9 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === count
 
-For selecting the row count given a condition.
+For selecting the row count given a count condition.
 
-{url-entity-connection}#count{opar}is.codion.framework.db.condition.Condition{cpar}[count(Condition condition)]
+{url-entity-connection}#count{opar}is.codion.framework.db.EntityConnection.Count{cpar}[count(Count count)]
 
 [source,java,indent=0]
 ----
@@ -210,7 +210,7 @@ or on a per entity basis via {url-javadoc}{framework-domain}/is/codion/framework
 
 For updating by condition.
 
-** {url-entity-connection}#update{opar}is.codion.framework.db.Update{cpar}[update(Update update)]
+** {url-entity-connection}#update{opar}is.codion.framework.db.EntityConnection.Update{cpar}[update(Update update)]
 
 [source,java,indent=0]
 ----
@@ -221,14 +221,14 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete{opar}is.codion.framework.db.condition.Condition{cpar}[delete(Condition condition)]
+** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[delete(Condition condition)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
 
-** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.Key{cpar}[delete(Key key)]
+** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.Entity.Key{cpar}[delete(Key key)]
 
 ** {url-entity-connection}#delete{opar}java.util.Collection{cpar}[delete(Collection<Key> keys)]
 

@@ -5,8 +5,6 @@
 
 Demonstrates basic input component usage.
 
-
-
 image::tutorials/input_components.png[]
 
 == Application Model
