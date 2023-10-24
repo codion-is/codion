@@ -540,11 +540,11 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int count(Condition criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria);
+  public int count(Count count) throws DatabaseException {
+    Objects.requireNonNull(count);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("count", criteria)));
+        return handleResponse(execute(createRequest("count", count)));
       }
     }
     catch (DatabaseException e) {
