@@ -14,31 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023, Björn Darri Sigurðsson.
+ * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.attribute;
+package is.codion.framework.domain.entity.condition;
 
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
-import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultAllCondition extends AbstractCondition implements Condition.All, Serializable {
+final class DefaultCustomCondition extends AbstractCondition implements CustomCondition {
 
   private static final long serialVersionUID = 1;
 
-  DefaultAllCondition(EntityType entityType) {
-    super(entityType, emptyList(), emptyList());
+  private final ConditionType conditionType;
+
+  DefaultCustomCondition(ConditionType conditionType, List<Column<?>> columns, List<Object> values) {
+    super(requireNonNull(conditionType).entityType(), columns, values);
+    this.conditionType = conditionType;
+  }
+
+  @Override
+  public ConditionType conditionType() {
+    return conditionType;
   }
 
   @Override
   public String toString(EntityDefinition definition) {
-    requireNonNull(definition);
-    return "";
+    return requireNonNull(definition).conditionProvider(conditionType).toString(columns(), values());
   }
 
   @Override
@@ -46,15 +52,18 @@ final class DefaultAllCondition extends AbstractCondition implements Condition.A
     if (this == object) {
       return true;
     }
-    if (!(object instanceof All)) {
+    if (!(object instanceof DefaultCustomCondition)) {
       return false;
     }
-    All that = (All) object;
-    return Objects.equals(entityType(), that.entityType());
+    if (!super.equals(object)) {
+      return false;
+    }
+    DefaultCustomCondition that = (DefaultCustomCondition) object;
+    return conditionType.equals(that.conditionType);
   }
 
   @Override
   public int hashCode() {
-    return entityType().hashCode();
+    return Objects.hash(super.hashCode(), conditionType);
   }
 }

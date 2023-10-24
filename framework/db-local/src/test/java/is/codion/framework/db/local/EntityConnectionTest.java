@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.function.Consumer;
 
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
-import static is.codion.framework.domain.entity.attribute.Condition.all;
+import static is.codion.framework.domain.entity.condition.Condition.all;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

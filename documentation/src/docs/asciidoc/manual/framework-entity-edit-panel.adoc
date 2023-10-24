@@ -52,11 +52,13 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Foreign key
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox{opar}is.codion.framework.domain.entity.ForeignKey{cpar}[createForeignKeyComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeyComboBox(foreignKey)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField{opar}is.codion.framework.domain.entity.ForeignKey{cpar}[createForeignKeyField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeySearchField{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeySearchField(foreignKey)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeySearchField{opar}is.codion.framework.domain.entity.ForeignKey{cpar}[createForeignKeySearchField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyTextField{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeyTextField(foreignKey)]
+
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLabel{opar}is.codion.framework.domain.entity.attribute.ForeignKey{cpar}[createForeignKeyLabel(foreignKey)]
 
 [source,java,indent=0]
 ----
@@ -85,7 +87,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTextField(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createFormattedTextField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createFormattedTextField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createMaskedTextField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createMaskedTextField(attribute)]
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTextArea(attribute)]
 

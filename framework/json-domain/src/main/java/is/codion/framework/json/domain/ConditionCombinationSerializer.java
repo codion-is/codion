@@ -18,9 +18,9 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.framework.domain.entity.attribute.ColumnCondition;
-import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.domain.entity.attribute.Condition.Combination;
+import is.codion.framework.domain.entity.condition.ColumnCondition;
+import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.condition.Condition.Combination;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 

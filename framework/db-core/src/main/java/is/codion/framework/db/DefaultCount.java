@@ -19,7 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.framework.db.EntityConnection.Count;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import java.io.Serializable;
 

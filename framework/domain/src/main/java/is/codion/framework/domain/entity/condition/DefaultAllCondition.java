@@ -14,35 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson.
+ * Copyright (c) 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.condition;
+
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConditionType implements ConditionType, Serializable {
+final class DefaultAllCondition extends AbstractCondition implements Condition.All, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final EntityType entityType;
-  private final String name;
-
-  DefaultConditionType(EntityType entityType, String name) {
-    this.entityType = requireNonNull(entityType);
-    this.name = requireNonNull(name);
+  DefaultAllCondition(EntityType entityType) {
+    super(entityType, emptyList(), emptyList());
   }
 
   @Override
-  public EntityType entityType() {
-    return entityType;
-  }
-
-  @Override
-  public String name() {
-    return name;
+  public String toString(EntityDefinition definition) {
+    requireNonNull(definition);
+    return "";
   }
 
   @Override
@@ -50,15 +46,15 @@ final class DefaultConditionType implements ConditionType, Serializable {
     if (this == object) {
       return true;
     }
-    if (object == null || getClass() != object.getClass()) {
+    if (!(object instanceof All)) {
       return false;
     }
-    DefaultConditionType that = (DefaultConditionType) object;
-    return entityType.equals(that.entityType) && name.equals(that.name);
+    All that = (All) object;
+    return Objects.equals(entityType(), that.entityType());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(entityType, name);
+    return entityType().hashCode();
   }
 }

@@ -32,7 +32,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
@@ -62,7 +62,7 @@ import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.entity.attribute.Condition.key;
+import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 

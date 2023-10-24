@@ -22,7 +22,7 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.db.TestDomain.Employee;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import org.junit.jupiter.api.Test;
 

@@ -16,9 +16,10 @@
  *
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.attribute;
+package is.codion.framework.domain.entity.condition;
 
 import is.codion.common.Operator;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Collection;
 

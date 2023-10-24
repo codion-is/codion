@@ -39,7 +39,7 @@ import java.util.Optional;
 import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.attribute.Condition.and;
+import static is.codion.framework.domain.entity.condition.Condition.and;
 import static java.lang.String.valueOf;
 
 /**

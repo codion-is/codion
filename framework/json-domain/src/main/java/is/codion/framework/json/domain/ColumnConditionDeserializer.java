@@ -21,8 +21,8 @@ package is.codion.framework.json.domain;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnCondition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.condition.ColumnCondition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

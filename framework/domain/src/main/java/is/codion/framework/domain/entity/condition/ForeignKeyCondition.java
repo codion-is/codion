@@ -16,9 +16,10 @@
  *
  * Copyright (c) 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.attribute;
+package is.codion.framework.domain.entity.condition;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
 
@@ -89,5 +90,14 @@ public interface ForeignKeyCondition extends Condition {
      * @return a {@link Condition}
      */
     Condition isNotNull();
+  }
+
+  /**
+   * Instantiates a new {@link Factory} instance
+   * @param foreignKey the foreign key
+   * @return a new {@link Factory} instance
+   */
+  static Factory factory(ForeignKey foreignKey) {
+    return new DefaultForeignKeyConditionFactory(foreignKey);
   }
 }

@@ -19,6 +19,7 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.condition.ColumnCondition;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

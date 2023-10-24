@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
-import static is.codion.framework.domain.entity.attribute.Condition.and;
+import static is.codion.framework.domain.entity.condition.Condition.and;
 
 public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 

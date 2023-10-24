@@ -16,10 +16,7 @@
  *
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.attribute;
-
-import is.codion.framework.domain.entity.ConditionProvider;
-import is.codion.framework.domain.entity.ConditionType;
+package is.codion.framework.domain.entity.condition;
 
 /**
  * A Condition based on a custom {@link ConditionProvider}

@@ -53,7 +53,7 @@ import java.util.Random;
 
 import static is.codion.framework.db.EntityConnection.Count.all;
 import static is.codion.framework.db.EntityConnection.Count.where;
-import static is.codion.framework.domain.entity.attribute.Condition.key;
+import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

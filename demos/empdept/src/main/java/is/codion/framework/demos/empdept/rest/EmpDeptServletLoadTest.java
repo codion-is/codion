@@ -36,7 +36,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.framework.domain.entity.attribute.Condition.all;
+import static is.codion.framework.domain.entity.condition.Condition.all;
 import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest {

@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static is.codion.framework.domain.entity.condition.ForeignKeyCondition.factory;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKey implements ForeignKey, Serializable {
@@ -110,42 +112,42 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
   @Override
   public Condition equalTo(Entity value) {
-    return new DefaultForeignKeyConditionFactory(this).equalTo(value);
+    return factory(this).equalTo(value);
   }
 
   @Override
   public Condition notEqualTo(Entity value) {
-    return new DefaultForeignKeyConditionFactory(this).notEqualTo(value);
+    return factory(this).notEqualTo(value);
   }
 
   @Override
   public Condition in(Entity... values) {
-    return new DefaultForeignKeyConditionFactory(this).in(values);
+    return factory(this).in(values);
   }
 
   @Override
   public Condition notIn(Entity... values) {
-    return new DefaultForeignKeyConditionFactory(this).notIn(values);
+    return factory(this).notIn(values);
   }
 
   @Override
   public Condition in(Collection<? extends Entity> values) {
-    return new DefaultForeignKeyConditionFactory(this).in(values);
+    return factory(this).in(values);
   }
 
   @Override
   public Condition notIn(Collection<? extends Entity> values) {
-    return new DefaultForeignKeyConditionFactory(this).notIn(values);
+    return factory(this).notIn(values);
   }
 
   @Override
   public Condition isNull() {
-    return new DefaultForeignKeyConditionFactory(this).isNull();
+    return factory(this).isNull();
   }
 
   @Override
   public Condition isNotNull() {
-    return new DefaultForeignKeyConditionFactory(this).isNotNull();
+    return factory(this).isNotNull();
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {

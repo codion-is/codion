@@ -16,30 +16,22 @@
  *
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.condition;
+
+import is.codion.framework.domain.entity.attribute.Column;
+
+import java.util.List;
 
 /**
- * Defines a custom condition type.
+ * Provides condition strings for where clauses
  */
-public interface ConditionType {
+public interface ConditionProvider {
 
   /**
-   * @return the entity type
+   * Creates a query condition string for the given values
+   * @param columns the condition columns
+   * @param values the values
+   * @return a query condition string
    */
-  EntityType entityType();
-
-  /**
-   * @return the name
-   */
-  String name();
-
-  /**
-   * Instantiates a new {@link ConditionType} for the given entity type
-   * @param entityType the entityType
-   * @param name the name
-   * @return a new condition type
-   */
-  static ConditionType conditionType(EntityType entityType, String name) {
-    return new DefaultConditionType(entityType, name);
-  }
+  String toString(List<Column<?>> columns, List<?> values);
 }
