@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
@@ -679,7 +680,14 @@ public interface EntityConnection extends AutoCloseable {
        */
       Builder queryTimeout(int queryTimeout);
 
-      Builder having(Condition condition);
+      /**
+       * The HAVING condition. Note that this condition
+       * must be based on aggregate function columns
+       * @param having the HAVING condition
+       * @return this builder instance
+       * @see ColumnDefinition#aggregate()
+       */
+      Builder having(Condition having);
 
       /**
        * @return a new {@link Select} instance based on this builder

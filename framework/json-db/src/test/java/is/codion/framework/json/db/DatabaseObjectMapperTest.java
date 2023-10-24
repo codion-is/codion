@@ -27,6 +27,7 @@ public final class DatabaseObjectMapperTest {
   @Test
   void select() throws JsonProcessingException {
     Select select = Select.where(Employee.EMPNO.equalTo(1))
+            .having(Employee.COMMISSION.greaterThan(200d))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
                     .descendingNullsLast(Employee.NAME)
@@ -45,6 +46,7 @@ public final class DatabaseObjectMapperTest {
     Select readCondition = mapper.readValue(jsonString, Select.class);
 
     assertEquals(select.where(), readCondition.where());
+    assertEquals(select.having(), readCondition.having());
     assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
     assertEquals(select.limit(), readCondition.limit());
     assertEquals(select.offset(), readCondition.offset());

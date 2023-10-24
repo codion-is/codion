@@ -9786,3 +9786,4 @@
   EntityTableConditionModel.additionalWhereCondition() and additionalHavingCondition() renamed additionalWhere() and additionalHaving() respectively
   SelectQueries bug fixed, now combines having clause from entity definition with having clauses from Select instance
   ColumnConditionPanel.add/removeAdvancedViewListener() removed
+  DefaultLocalEntityConnectionTest, having() test improved a bit, DatabaseObjectMapperTest, now includes a HAVING condition

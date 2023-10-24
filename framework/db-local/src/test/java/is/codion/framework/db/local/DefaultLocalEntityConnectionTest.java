@@ -1360,9 +1360,13 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void having() throws Exception {
-    connection.select(Select.where(all(Job.TYPE))
-            .having(Job.MAX_COMMISSION.greaterThanOrEqualTo(1500d))
+    List<Entity> jobs = connection.select(Select.where(all(Job.TYPE))
+            .having(and(
+                    Job.MAX_COMMISSION.equalTo(1500d),
+                    Job.MIN_COMMISSION.equalTo(1200d)))
             .build());
+    assertEquals(1, jobs.size());
+    assertEquals("CLERK", jobs.get(0).get(Job.JOB));
   }
 
   private static LocalEntityConnection createConnection() throws DatabaseException {
