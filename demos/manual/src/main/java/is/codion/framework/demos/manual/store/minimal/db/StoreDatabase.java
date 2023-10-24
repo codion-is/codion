@@ -18,7 +18,7 @@ import java.util.List;
 
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
-import static is.codion.framework.domain.entity.attribute.Condition.and;
+import static is.codion.framework.domain.entity.condition.Condition.and;
 import static java.util.Arrays.asList;
 
 public class StoreDatabase {

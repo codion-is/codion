@@ -14,8 +14,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 

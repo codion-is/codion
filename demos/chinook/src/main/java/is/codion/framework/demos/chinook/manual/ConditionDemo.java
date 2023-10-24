@@ -9,7 +9,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 final class ConditionDemo {
 

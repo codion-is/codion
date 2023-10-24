@@ -15,9 +15,9 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnCondition;
-import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.condition.ColumnCondition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
-import static is.codion.framework.domain.entity.attribute.Condition.all;
-import static is.codion.framework.domain.entity.attribute.Condition.combination;
+import static is.codion.framework.domain.entity.condition.Condition.all;
+import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Objects.requireNonNull;
 
 /**

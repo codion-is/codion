@@ -14,7 +14,7 @@ import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.server.EntityServer;
@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static is.codion.framework.domain.entity.attribute.Condition.keys;
+import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

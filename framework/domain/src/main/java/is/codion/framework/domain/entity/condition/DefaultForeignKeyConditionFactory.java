@@ -1,10 +1,12 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity.attribute;
+package is.codion.framework.domain.entity.condition;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
 import java.util.Collection;

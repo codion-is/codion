@@ -34,8 +34,8 @@ import java.util.Map;
 import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.framework.domain.entity.OrderBy.descending;
-import static is.codion.framework.domain.entity.attribute.Condition.all;
-import static is.codion.framework.domain.entity.attribute.Condition.and;
+import static is.codion.framework.domain.entity.condition.Condition.all;
+import static is.codion.framework.domain.entity.condition.Condition.and;
 import static java.util.Arrays.asList;
 
 /**

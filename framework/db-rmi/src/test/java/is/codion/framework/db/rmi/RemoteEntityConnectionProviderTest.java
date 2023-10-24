@@ -25,7 +25,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import static is.codion.framework.domain.entity.attribute.Condition.all;
+import static is.codion.framework.domain.entity.condition.Condition.all;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 

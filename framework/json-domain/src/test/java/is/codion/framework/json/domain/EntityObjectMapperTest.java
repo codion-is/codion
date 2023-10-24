@@ -5,8 +5,8 @@ package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.domain.entity.attribute.CustomCondition;
+import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.condition.CustomCondition;
 import is.codion.framework.json.TestDomain;
 import is.codion.framework.json.TestDomain.Department;
 import is.codion.framework.json.TestDomain.Employee;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static is.codion.framework.domain.entity.attribute.Condition.*;
+import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

@@ -6,7 +6,7 @@ package is.codion.framework.domain.entity;
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static is.codion.framework.domain.TestDomain.*;
-import static is.codion.framework.domain.entity.attribute.Condition.Combination;
+import static is.codion.framework.domain.entity.condition.Condition.Combination;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

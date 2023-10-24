@@ -6,8 +6,8 @@ package is.codion.framework.json.domain;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.Condition;
-import is.codion.framework.domain.entity.attribute.CustomCondition;
+import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.condition.CustomCondition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

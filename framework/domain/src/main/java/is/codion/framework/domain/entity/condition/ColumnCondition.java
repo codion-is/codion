@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity.attribute;
+package is.codion.framework.domain.entity.condition;
 
 import is.codion.common.Operator;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Collection;
 
@@ -225,5 +226,15 @@ public interface ColumnCondition<T> extends Condition {
      * @return a {@link ColumnCondition}
      */
     ColumnCondition<T> isNotNull();
+  }
+
+  /**
+   * Instantiates a new {@link Factory} instance
+   * @param column the column
+   * @return a new {@link Factory} instance
+   * @param <T> the column type
+   */
+  static <T> ColumnCondition.Factory<T> factory(Column<T> column) {
+    return new DefaultColumnConditionFactory<>(column);
   }
 }

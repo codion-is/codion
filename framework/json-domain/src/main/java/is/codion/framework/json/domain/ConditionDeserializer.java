@@ -6,7 +6,7 @@ package is.codion.framework.json.domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

@@ -8,7 +8,7 @@ import is.codion.framework.db.EntityConnection.Copy;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Condition;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.Arrays;

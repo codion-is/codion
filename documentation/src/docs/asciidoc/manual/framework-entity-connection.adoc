@@ -70,11 +70,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === Selecting entities
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[select(Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[select(Condition condition)]
 
 {url-entity-connection}#select{opar}is.codion.framework.db.EntityConnection.Select{cpar}[select(Select select)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[selectSingle(Condition condition)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[selectSingle(Condition condition)]
 
 {url-entity-connection}#selectSingle{opar}is.codion.framework.db.EntityConnection.Select{cpar}[selectSingle(Select select)]
 
@@ -103,7 +103,7 @@ For selecting the values of a single column.
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{cpar}[select(Column<T> column)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.domain.entity.attribute.Condition{cpar}[select(Column<T> column, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.domain.entity.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.EntityConnection.Select{cpar}[select(Column<T> column, Select select)]
 
@@ -116,7 +116,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 *LocalEntityConnection* provides a way to iterate over a result set, instead of loading it into memory.
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[iterator(Condition condition)]
+{url-local-entity-connection}#iterator{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[iterator(Condition condition)]
 
 {url-local-entity-connection}#iterator{opar}is.codion.framework.db.EntityConnection.Select{cpar}[iterator(Select select)]
 
@@ -221,7 +221,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.attribute.Condition{cpar}[delete(Condition condition)]
+** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[delete(Condition condition)]
 
 [source,java,indent=0]
 ----
