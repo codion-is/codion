@@ -3,9 +3,6 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.framework.domain.entity.ConditionProvider;
-import is.codion.framework.domain.entity.ConditionType;
-
 /**
  * A Condition based on a custom {@link ConditionProvider}
  * associated with {@link ConditionType}

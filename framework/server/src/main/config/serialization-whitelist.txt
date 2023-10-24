@@ -119,7 +119,7 @@ is.codion.framework.domain.entity.condition.AbstractColumnCondition
 is.codion.framework.domain.entity.condition.DualValueColumnCondition
 is.codion.framework.domain.entity.condition.MultiValueColumnCondition
 is.codion.framework.domain.entity.condition.SingleValueColumnCondition
-is.codion.framework.domain.entity.DefaultConditionType
+is.codion.framework.domain.entity.condition.DefaultConditionType
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntity$EntityInvoker
 is.codion.framework.domain.entity.DefaultEntityType

@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.condition;
+
+import is.codion.framework.domain.entity.EntityType;
 
 /**
  * Defines a custom condition type.

@@ -5,7 +5,6 @@ package is.codion.framework.domain;
 
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
-import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -13,6 +12,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.condition.ConditionType;
 
 import java.io.Serializable;
 import java.time.LocalDate;
