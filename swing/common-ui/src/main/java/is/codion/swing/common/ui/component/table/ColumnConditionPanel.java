@@ -177,20 +177,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   /**
-   * @param listener a listener notified each time the advanced condition state changes
-   */
-  public void addAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedView.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public void removeAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedView.removeDataListener(listener);
-  }
-
-  /**
    * @param listener listener notified when this condition panels input fields receive focus
    */
   public void addFocusGainedListener(Consumer<C> listener) {
