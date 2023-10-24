@@ -33,6 +33,7 @@ import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
@@ -543,7 +544,7 @@ public final class EntityService implements AuxiliaryServer {
       try {
         RemoteEntityConnection connection = authenticate(context);
         DatabaseObjectMapper databaseObjectMapper = databaseObjectMapper(connection.entities());
-        int rowCount = connection.count(databaseObjectMapper.readValue(context.req().getInputStream(), Condition.class));
+        int rowCount = connection.count(databaseObjectMapper.readValue(context.req().getInputStream(), Count.class));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(databaseObjectMapper.entityObjectMapper().writeValueAsString(rowCount));

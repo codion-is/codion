@@ -495,18 +495,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int count(Condition where) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(where, "where").entityType());
+  public int count(Count count) throws DatabaseException {
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(count, "count").where().entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .select(where(where)
+                    .select(where(count.where())
+                            .having(count.having())
                             .attributes(entityDefinition.primaryKey().columns())
                             .build())
                     .build())
             .build();
-    List<Object> statementValues = statementValues(where);
-    List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, where);
+    List<Object> statementValues = statementValues(count.where(), count.having());
+    List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, count.where(), count.having());
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(selectQuery);
            ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
@@ -1153,10 +1154,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private static List<ColumnDefinition<?>> statementColumns(EntityDefinition entityDefinition, Condition where) {
-    return statementColumns(entityDefinition, where, null);
-  }
-
   private static List<ColumnDefinition<?>> statementColumns(EntityDefinition entityDefinition, Condition where, Condition having) {
     List<ColumnDefinition<?>> whereColumns = columnDefinitions(entityDefinition, where.columns());
     if (having == null || having instanceof Condition.All) {
@@ -1169,10 +1166,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     statementColumns.addAll(havingColumns);
 
     return statementColumns;
-  }
-
-  private static List<Object> statementValues(Condition where) {
-    return statementValues(where, null);
   }
 
   private static List<Object> statementValues(Condition where, Condition having) {

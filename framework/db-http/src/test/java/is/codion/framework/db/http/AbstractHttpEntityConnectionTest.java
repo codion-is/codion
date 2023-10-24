@@ -30,7 +30,6 @@ import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Condition;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
@@ -52,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static is.codion.framework.db.EntityConnection.Count.all;
+import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.domain.entity.attribute.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -146,9 +147,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Condition condition = Employee.COMMISSION.isNull();
-
-    List<Entity> entities = connection.select(condition);
+    List<Entity> entities = connection.select(Employee.COMMISSION.isNull());
 
     Update update = Update.where(Employee.COMMISSION.isNull())
             .set(Employee.COMMISSION, 500d)
@@ -157,7 +156,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.count(condition));
+      assertEquals(0, connection.count(where(Employee.COMMISSION.isNull())));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -210,7 +209,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void rowCount() throws DatabaseException {
-    assertEquals(4, connection.count(Condition.all(Department.TYPE)));
+    assertEquals(4, connection.count(all(Department.TYPE)));
   }
 
   @Test

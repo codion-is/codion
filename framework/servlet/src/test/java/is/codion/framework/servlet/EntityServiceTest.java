@@ -23,6 +23,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entities;
@@ -320,13 +321,13 @@ public class EntityServiceTest {
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("count"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(Department.ID.equalTo(10))));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(Count.where(Department.ID.equalTo(10)))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("count"));
-      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(Department.ID.equalTo(10))));
+      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(Count.where(Department.ID.equalTo(10)))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(1, DATABASE_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class));

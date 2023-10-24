@@ -18,6 +18,7 @@
  */
 package is.codion.framework.json.db;
 
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entities;
@@ -42,6 +43,7 @@ public final class DatabaseObjectMapperTest {
   @Test
   void select() throws JsonProcessingException {
     Select select = Select.where(Employee.EMPNO.equalTo(1))
+            .having(Employee.COMMISSION.greaterThan(200d))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
                     .descendingNullsLast(Employee.NAME)
@@ -60,6 +62,7 @@ public final class DatabaseObjectMapperTest {
     Select readCondition = mapper.readValue(jsonString, Select.class);
 
     assertEquals(select.where(), readCondition.where());
+    assertEquals(select.having(), readCondition.having());
     assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
     assertEquals(select.limit(), readCondition.limit());
     assertEquals(select.offset(), readCondition.offset());
@@ -99,5 +102,18 @@ public final class DatabaseObjectMapperTest {
 
     assertEquals(update.where(), readCondition.where());
     assertEquals(update.columnValues(), readCondition.columnValues());
+  }
+
+  @Test
+  void count() throws JsonProcessingException {
+    Count count = Count.builder(Department.DEPTNO.between(1, 2))
+            .having(Department.NAME.equalTo("TEST"))
+            .build();
+
+    String jsonString = mapper.writeValueAsString(count);
+    Count readCount = mapper.readValue(jsonString, Count.class);
+
+    assertEquals(count.where(), readCount.where());
+    assertEquals(count.having(), readCount.having());
   }
 }
