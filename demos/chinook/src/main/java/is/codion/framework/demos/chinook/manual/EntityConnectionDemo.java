@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 import static is.codion.framework.domain.entity.attribute.Condition.all;
@@ -199,7 +200,7 @@ public final class EntityConnectionDemo {
     // tag::count[]
     EntityConnection connection = connectionProvider.connection();
 
-    int numberOfItStaff = connection.count(Employee.TITLE.equalTo("IT Staff"));
+    int numberOfItStaff = connection.count(where(Employee.TITLE.equalTo("IT Staff")));
     // end::count[]
   }
 

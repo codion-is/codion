@@ -3,6 +3,7 @@
  */
 package is.codion.framework.json.db;
 
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entities;
@@ -86,5 +87,18 @@ public final class DatabaseObjectMapperTest {
 
     assertEquals(update.where(), readCondition.where());
     assertEquals(update.columnValues(), readCondition.columnValues());
+  }
+
+  @Test
+  void count() throws JsonProcessingException {
+    Count count = Count.builder(Department.DEPTNO.between(1, 2))
+            .having(Department.NAME.equalTo("TEST"))
+            .build();
+
+    String jsonString = mapper.writeValueAsString(count);
+    Count readCount = mapper.readValue(jsonString, Count.class);
+
+    assertEquals(count.where(), readCount.where());
+    assertEquals(count.having(), readCount.having());
   }
 }

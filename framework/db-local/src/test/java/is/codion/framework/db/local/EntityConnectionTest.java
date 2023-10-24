@@ -9,6 +9,7 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.TestDomain.Department;
 import is.codion.framework.db.local.TestDomain.Employee;
@@ -68,8 +69,8 @@ public class EntityConnectionTest {
             .batchSize(2)
             .execute();
 
-    assertEquals(sourceConnection.count(all(Department.TYPE)),
-            DESTINATION_CONNECTION.count(all(Department.TYPE)));
+    assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
+            DESTINATION_CONNECTION.count(Count.all(Department.TYPE)));
 
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
@@ -81,7 +82,7 @@ public class EntityConnectionTest {
             .includePrimaryKeys(false)
             .condition(Employee.SALARY.greaterThan(1000d))
             .execute();
-    assertEquals(13, DESTINATION_CONNECTION.count(all(Employee.TYPE)));
+    assertEquals(13, DESTINATION_CONNECTION.count(Count.all(Employee.TYPE)));
 
     DESTINATION_CONNECTION.delete(all(Employee.TYPE));
     DESTINATION_CONNECTION.delete(all(Department.TYPE));
@@ -101,8 +102,8 @@ public class EntityConnectionTest {
               .onInsert(keys -> {})
               .execute();
     }
-    assertEquals(sourceConnection.count(all(Department.TYPE)),
-            DESTINATION_CONNECTION.count(all(Department.TYPE)));
+    assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
+            DESTINATION_CONNECTION.count(Count.all(Department.TYPE)));
 
     EntityConnection.insertEntities(DESTINATION_CONNECTION, Collections.emptyIterator())
             .batchSize(10)

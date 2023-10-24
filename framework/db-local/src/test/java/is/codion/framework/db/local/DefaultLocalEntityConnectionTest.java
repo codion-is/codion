@@ -16,6 +16,7 @@ import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.local.ConfigureDb.Configured;
@@ -48,6 +49,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
 
+import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.descending;
@@ -353,11 +355,11 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.loaded(Employee.MGR_FK));
 
-    assertEquals(4, connection.count(Employee.ID.in(asList(1, 2, 3, 4))));
-    assertEquals(0, connection.count(Employee.DEPARTMENT.isNull()));
-    assertEquals(0, connection.count(Employee.DEPARTMENT_FK.isNull()));
-    assertEquals(1, connection.count(Employee.MGR.isNull()));
-    assertEquals(1, connection.count(Employee.MGR_FK.isNull()));
+    assertEquals(4, connection.count(where(Employee.ID.in(asList(1, 2, 3, 4)))));
+    assertEquals(0, connection.count(where(Employee.DEPARTMENT.isNull())));
+    assertEquals(0, connection.count(where(Employee.DEPARTMENT_FK.isNull())));
+    assertEquals(1, connection.count(where(Employee.MGR.isNull())));
+    assertEquals(1, connection.count(where(Employee.MGR_FK.isNull())));
 
     assertFalse(connection.select(Employee.DEPARTMENT_FK.in(connection.select(Department.DEPTNO.equalTo(20)))).isEmpty());
   }
@@ -447,19 +449,19 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void count() throws Exception {
-    int rowCount = connection.count(all(Department.TYPE));
+    int rowCount = connection.count(Count.all(Department.TYPE));
     assertEquals(4, rowCount);
     Condition deptNoCondition = Department.DEPTNO.greaterThanOrEqualTo(30);
-    rowCount = connection.count(deptNoCondition);
+    rowCount = connection.count(Count.where(deptNoCondition));
     assertEquals(2, rowCount);
 
-    rowCount = connection.count(all(EmpnoDeptno.TYPE));
+    rowCount = connection.count(Count.all(EmpnoDeptno.TYPE));
     assertEquals(16, rowCount);
     deptNoCondition = EmpnoDeptno.DEPTNO.greaterThanOrEqualTo(30);
-    rowCount = connection.count(deptNoCondition);
+    rowCount = connection.count(Count.where(deptNoCondition));
     assertEquals(4, rowCount);
 
-    rowCount = connection.count(all(Job.TYPE));
+    rowCount = connection.count(Count.all(Job.TYPE));
     assertEquals(4, rowCount);
   }
 
@@ -655,7 +657,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.count(condition));
+      assertEquals(0, connection.count(Count.where(condition)));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -884,7 +886,7 @@ public class DefaultLocalEntityConnectionTest {
         counter++;
       }
       assertThrows(NoSuchElementException.class, iterator::next);
-      int rowCount = connection.count(condition);
+      int rowCount = connection.count(Count.where(condition));
       assertEquals(rowCount, counter);
       resultIterator.close();
       resultIterator = connection.iterator(condition);

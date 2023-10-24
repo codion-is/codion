@@ -21,6 +21,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Optional;
 
+import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.Condition.and;
@@ -84,11 +85,11 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private void authenticateUser(User user) throws LoginException {
     try (EntityConnection connection = fetchConnectionFromPool()) {
-      int rows = connection.count(and(
+      int rows = connection.count(where(and(
               Authentication.User.USERNAME
                       .equalToIgnoreCase(user.username()),
               Authentication.User.PASSWORD_HASH
-                      .equalTo(valueOf(user.password()).hashCode())));
+                      .equalTo(valueOf(user.password()).hashCode()))));
       if (rows == 0) {
         throw new ServerAuthenticationException("Wrong username or password");
       }

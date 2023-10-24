@@ -11,6 +11,7 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
@@ -77,9 +78,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int count(Condition condition) throws DatabaseException {
+  public int count(Count count) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.count(condition);
+      return connectionProxy.count(count);
     }
   }
 

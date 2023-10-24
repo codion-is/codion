@@ -9787,3 +9787,4 @@
   SelectQueries bug fixed, now combines having clause from entity definition with having clauses from Select instance
   ColumnConditionPanel.add/removeAdvancedViewListener() removed
   DefaultLocalEntityConnectionTest, having() test improved a bit, DatabaseObjectMapperTest, now includes a HAVING condition
+  EntityConnection.count() parameter changed to EntityConnection.Count, to support having clauses

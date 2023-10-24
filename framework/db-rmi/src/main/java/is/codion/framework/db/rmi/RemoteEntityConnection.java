@@ -11,6 +11,7 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Entities;
@@ -383,13 +384,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
-   * Counts the number of rows returned based on the given condition
-   * @param condition the search condition
-   * @return the number of rows fitting the given condition
+   * Counts the number of rows returned based on the given count conditions
+   * @param count the count conditions
+   * @return the number of rows fitting the given count conditions
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException   in case of a remote exception
    */
-  int count(Condition condition) throws RemoteException, DatabaseException;
+  int count(Count count) throws RemoteException, DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object

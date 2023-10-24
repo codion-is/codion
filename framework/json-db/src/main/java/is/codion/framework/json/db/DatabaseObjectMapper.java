@@ -3,6 +3,7 @@
  */
 package is.codion.framework.json.db;
 
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.attribute.Condition;
@@ -32,6 +33,8 @@ public final class DatabaseObjectMapper extends ObjectMapper {
     module.addDeserializer(Select.class, new SelectDeserializer(entityObjectMapper));
     module.addSerializer(Update.class, new UpdateSerializer(entityObjectMapper));
     module.addDeserializer(Update.class, new UpdateDeserializer(entityObjectMapper));
+    module.addSerializer(Count.class, new CountSerializer(entityObjectMapper));
+    module.addDeserializer(Count.class, new CountDeserializer(entityObjectMapper));
     registerModule(module);
   }
 

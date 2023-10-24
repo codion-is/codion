@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
@@ -367,12 +369,12 @@ public interface EntityConnection extends AutoCloseable {
   Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Counts the number of rows returned based on the given condition
-   * @param where the where condition
-   * @return the number of rows fitting the given where condition
+   * Counts the number of rows returned based on the given count conditions
+   * @param count the count conditions
+   * @return the number of rows fitting the given count conditions
    * @throws DatabaseException in case of a database exception
    */
-  int count(Condition where) throws DatabaseException;
+  int count(Count count) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
@@ -764,6 +766,80 @@ public interface EntityConnection extends AutoCloseable {
      */
     static Builder where(Condition condition) {
       return new DefaultUpdate.DefaultBuilder(condition);
+    }
+  }
+
+  /**
+   * A class encapsulating count query parameters.
+   * A factory class for {@link Count} instances via {@link Count#all(EntityType)},
+   * {@link Count#where(Condition)} and {@link Count#having(Condition)}.
+   * A factory class for {@link Count.Builder} instances via {@link Count#builder(Condition)}.
+   */
+  interface Count {
+
+    /**
+     * @return the where condition
+     */
+    Condition where();
+
+    /**
+     * @return the having condition
+     */
+    Condition having();
+
+    /**
+     * Builds a {@link Copy} instance.
+     */
+    interface Builder {
+
+      /**
+       * @param having the having condition
+       * @return this builder instance
+       */
+      Builder having(Condition having);
+
+      /**
+       * @return a new {@link Copy} instance based on this builder
+       */
+      Count build();
+    }
+
+    /**
+     * @param entityType the entity type
+     * @return a {@link Count} instance
+     */
+    static Count all(EntityType entityType) {
+      return where(Condition.all(entityType));
+    }
+
+    /**
+     * @param condition the where condition
+     * @return a {@link Count} instance
+     */
+    static Count where(Condition condition) {
+      requireNonNull(condition);
+
+      return new DefaultCount.DefaultBuilder(condition).build();
+    }
+
+    /**
+     * @param condition the having condition
+     * @return a {@link Count} instance
+     */
+    static Count having(Condition condition) {
+      requireNonNull(condition);
+
+      return new DefaultCount.DefaultBuilder(Condition.all(condition.entityType()))
+              .having(condition)
+              .build();
+    }
+
+    /**
+     * @param where the where condition
+     * @return a {@link Count.Builder} instance
+     */
+    static Builder builder(Condition where) {
+      return new DefaultCount.DefaultBuilder(where);
     }
   }
 }
