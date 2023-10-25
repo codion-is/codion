@@ -118,13 +118,13 @@ Boolean active = customer.get(Customer.ACTIVE);
 // modify values
 customer.put(Customer.LAST_NAME, "Carter");
 
-System.out.println(customer.isModified()); //true
+System.out.println(customer.modified()); //true
 System.out.println(customer.original(Customer.LAST_NAME)); //"Doe"
 
 // revert changes
 customer.put(Customer.LAST_NAME, "Doe");
 
-System.out.println(customer.isModified()); //false
+System.out.println(customer.modified()); //false
 ----
 
 For persistance see <<Database access, Database access>> below.
