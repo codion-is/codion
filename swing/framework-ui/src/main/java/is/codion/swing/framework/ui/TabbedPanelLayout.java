@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
@@ -504,9 +505,10 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
   private JPanel createEmptyBorderBasePanel(JComponent component) {
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     return Components.borderLayoutPanel()
             .centerComponent(component)
-            .border(createEmptyBorder(HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get(), 0, HORIZONTAL_VERTICAL_GAP.get()))
+            .border(createEmptyBorder(gap, gap, 0, gap))
             .build();
   }
 

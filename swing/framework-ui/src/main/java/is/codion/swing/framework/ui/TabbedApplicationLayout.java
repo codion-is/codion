@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -14,7 +15,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.layout.Layouts.HORIZONTAL_VERTICAL_GAP;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
@@ -48,9 +48,10 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
     applicationPanel.entityPanels().forEach(this::addTab);//InitializeSelectedPanelListener initializes first panel
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     applicationPanel.add(borderLayoutPanel(new BorderLayout())
             .centerComponent(applicationTabPane)
-            .border(createEmptyBorder(0, HORIZONTAL_VERTICAL_GAP.get(), 0, HORIZONTAL_VERTICAL_GAP.get()))
+            .border(createEmptyBorder(0, gap, 0, gap))
             .build(), BorderLayout.CENTER);
   }
 
