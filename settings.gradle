@@ -188,7 +188,7 @@ dependencyResolutionManagement {
             version("log4j", "2.20.0")
             version("tomcat", "10.1.2")
             //jasperreports
-            version("jasperreports", "6.20.5")
+            version("jasperreports", "6.20.6")
             version("commons.logging", "1.2")
             version("commons.digester", "2.1")
             version("commons.collections4", "4.4")
