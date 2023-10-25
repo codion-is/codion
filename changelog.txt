@@ -9790,3 +9790,4 @@
   EntityConnection.count() parameter changed to EntityConnection.Count, to support having clauses
   Condition moved from attribute to condition package
   ConditionType moved from entity to entity.condition package
+  EntityTablePanel.StatusPanel bug fixed, status message now initialized on construction

@@ -1894,6 +1894,7 @@ public class EntityTablePanel extends JPanel {
       statusMessageFunction.addListener(statusListener);
       tableModel.selectionModel().addSelectionListener(statusListener);
       tableModel.addDataChangedListener(statusListener);
+      updateStatusMessage();
     }
 
     private JPanel createRefreshingProgressPanel() {
