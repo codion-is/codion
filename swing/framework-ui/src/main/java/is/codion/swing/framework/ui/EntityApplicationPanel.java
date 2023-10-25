@@ -50,6 +50,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityPanel.EntityPanelSelector;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -99,7 +100,6 @@ import java.util.function.Supplier;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.layout.Layouts.HORIZONTAL_VERTICAL_GAP;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
@@ -835,9 +835,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     return Components.borderLayoutPanel()
             .centerComponent(entityPanel)
-            .border(createEmptyBorder(HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get(), 0, HORIZONTAL_VERTICAL_GAP.get()))
+            .border(createEmptyBorder(gap, gap, 0, gap))
             .build();
   }
 

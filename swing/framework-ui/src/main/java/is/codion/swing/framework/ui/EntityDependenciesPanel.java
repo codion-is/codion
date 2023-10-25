@@ -27,6 +27,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -45,6 +46,7 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * Displays the given dependencies in a tabbed pane.
@@ -128,6 +130,8 @@ public final class EntityDependenciesPanel extends JPanel {
     }
     else {
       EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
       Dialogs.componentDialog(dependenciesPanel)
               .owner(dialogParent)
               .title(FrameworkMessages.dependencies())

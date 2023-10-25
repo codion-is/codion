@@ -1874,12 +1874,28 @@ public class EntityTablePanel extends JPanel {
 
     @Override
     public String apply(SwingEntityTableModel tableModel) {
+      int rowCount = tableModel.getRowCount();
+      if (rowCount == 0) {
+        return "";
+      }
       int filteredItemCount = tableModel.filteredItemCount();
+      int selectionCount = tableModel.selectionModel().selectionCount();
+      StringBuilder builder = new StringBuilder(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
+      if (selectionCount > 0 || filteredItemCount > 0) {
+        builder.append(" (");
+        if (selectionCount > 0) {
+          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(selectionCount)).append(" ").append(MESSAGES.getString("selected"));
+        }
+        if (filteredItemCount > 0) {
+          if (selectionCount > 0) {
+            builder.append(" - ");
+          }
+          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount)).append(" ").append(MESSAGES.getString("hidden"));
+        }
+        builder.append(")");
+      }
 
-      return STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getRowCount()) + " (" +
-              STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.selectionModel().selectionCount()) + " " +
-              MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
-              STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
+      return builder.toString();
     }
   }
 
@@ -1909,6 +1925,7 @@ public class EntityTablePanel extends JPanel {
       statusMessageFunction.addListener(statusListener);
       tableModel.selectionModel().addSelectionListener(statusListener);
       tableModel.addDataChangedListener(statusListener);
+      updateStatusMessage();
     }
 
     private JPanel createRefreshingProgressPanel() {

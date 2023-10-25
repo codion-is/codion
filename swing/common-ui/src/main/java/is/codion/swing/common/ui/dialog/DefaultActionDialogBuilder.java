@@ -56,7 +56,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
   private Action defaultAction;
   private Action escapeAction;
-  private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+  private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 5, 10);
   private int buttonPanelConstraints = FlowLayout.TRAILING;
   private boolean modal = true;
   private boolean resizable = true;
