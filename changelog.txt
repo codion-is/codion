@@ -9791,3 +9791,4 @@
   Condition moved from attribute to condition package
   ConditionType moved from entity to entity.condition package
   EntityTablePanel.StatusPanel bug fixed, status message now initialized on construction
+  EntityTablePanel, default status message improved a bit, no longer displays zero rows selected
