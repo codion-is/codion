@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.manual.swing.common.ui.component.table;
 
 import is.codion.manual.swing.common.model.component.table.FilteredTableModelDemo.TableRow;
