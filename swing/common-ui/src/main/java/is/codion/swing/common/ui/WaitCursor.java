@@ -117,6 +117,7 @@ public final class WaitCursor {
         SwingUtilities.invokeAndWait(() -> window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR));
       }
       catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
         throw new RuntimeException(e);
       }
       catch (InvocationTargetException e) {
