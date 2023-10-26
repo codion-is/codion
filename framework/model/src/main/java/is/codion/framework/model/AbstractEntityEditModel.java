@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -260,7 +261,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final <T> T put(Attribute<T> attribute, T value) {
     entityDefinition().attributes().definition(attribute);
-    Map<Attribute<?>, Object> dependingValues = dependendingValues(attribute);
+    Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
       notifyValueEdit(attribute, value, dependingValues);
@@ -274,7 +275,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityDefinition().attributes().definition(attribute);
     T value = null;
     if (entity.contains(attribute)) {
-      Map<Attribute<?>, Object> dependingValues = dependendingValues(attribute);
+      Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
       value = entity.remove(attribute);
       notifyValueEdit(attribute, null, dependingValues);
     }
@@ -933,21 +934,26 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(insertUpdateOrDeleteEvent);
   }
 
-  private Map<Attribute<?>, Object> dependendingValues(Attribute<?> attribute) {
-    Map<Attribute<?>, Object> dependentValues = new HashMap<>();
+  private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
+    return dependingValues(attribute, new LinkedHashMap<>());
+  }
+
+  private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
     EntityDefinition entityDefinition = entityDefinition();
-    entityDefinition.attributes().derivedFrom(attribute).forEach(derivedAttribute ->
-            dependentValues.put(derivedAttribute, get(derivedAttribute)));
+    Collection<Attribute<?>> derivedAttributes = entityDefinition.attributes().derivedFrom(attribute);
+    derivedAttributes.forEach(derivedAttribute ->
+            dependingValues.put(derivedAttribute, get(derivedAttribute)));
     if (attribute instanceof Column) {
       entityDefinition.foreignKeys().definitions((Column<?>) attribute).forEach(foreignKeyDefinition ->
-              dependentValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
+              dependingValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
     }
     if (attribute instanceof ForeignKey) {
       ((ForeignKey) attribute).references().forEach(reference ->
-              dependentValues.put(reference.column(), get(reference.column())));
+              dependingValues.put(reference.column(), get(reference.column())));
     }
+    derivedAttributes.forEach(derivedAttribute -> dependingValues(derivedAttribute, dependingValues));
 
-    return dependentValues;
+    return dependingValues;
   }
 
   private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
@@ -956,7 +962,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     dependingValues.forEach((dependingAttribute, previousValue) -> {
       Object currentValue = get(dependingAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
-        notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, dependendingValues(dependingAttribute));
+        notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
       }
     });
   }
