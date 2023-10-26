@@ -665,20 +665,36 @@ public final class AbstractEntityEditModelTest {
     assertEquals(2, editModel.get(Derived.INT2));
     assertEquals(3, editModel.get(Derived.INT3));
 
-    Map<Attribute<?>, Object> values = new LinkedHashMap<>();
-    editModel.addEditListener(Derived.INT2, value -> values.put(Derived.INT2, value));
-    editModel.addEditListener(Derived.INT3, value -> values.put(Derived.INT3, value));
-    editModel.addEditListener(Derived.INT4, value -> values.put(Derived.INT4, value));
+    Map<Attribute<?>, Object> editedValues = new LinkedHashMap<>();
+    editModel.addEditListener(Derived.INT2, value -> editedValues.put(Derived.INT2, value));
+    editModel.addEditListener(Derived.INT3, value -> editedValues.put(Derived.INT3, value));
+    editModel.addEditListener(Derived.INT4, value -> editedValues.put(Derived.INT4, value));
+
+    Map<Attribute<?>, Object> changedValues = new LinkedHashMap<>();
+    editModel.addValueListener(Derived.INT2, value -> changedValues.put(Derived.INT2, value));
+    editModel.addValueListener(Derived.INT3, value -> changedValues.put(Derived.INT3, value));
+    editModel.addValueListener(Derived.INT4, value -> changedValues.put(Derived.INT4, value));
 
     editModel.put(Derived.INT, 2);
-    assertTrue(values.containsKey(Derived.INT2));
-    assertEquals(3, values.get(Derived.INT2));
-    assertTrue(values.containsKey(Derived.INT3));
-    assertEquals(4, values.get(Derived.INT3));
-    assertTrue(values.containsKey(Derived.INT4));
-    assertEquals(5, values.get(Derived.INT4));
+    assertTrue(editedValues.containsKey(Derived.INT2));
+    assertEquals(3, editedValues.get(Derived.INT2));
+    assertTrue(changedValues.containsKey(Derived.INT2));
+    assertEquals(3, changedValues.get(Derived.INT2));
+    assertTrue(editedValues.containsKey(Derived.INT3));
+    assertEquals(4, editedValues.get(Derived.INT3));
+    assertTrue(changedValues.containsKey(Derived.INT3));
+    assertEquals(4, changedValues.get(Derived.INT3));
+    assertTrue(editedValues.containsKey(Derived.INT4));
+    assertEquals(5, editedValues.get(Derived.INT4));
+    assertTrue(changedValues.containsKey(Derived.INT4));
+    assertEquals(5, changedValues.get(Derived.INT4));
 
-    List<Attribute<?>> attributes = new ArrayList<>(values.keySet());
+    List<Attribute<?>> attributes = new ArrayList<>(editedValues.keySet());
+    assertEquals(Derived.INT2, attributes.get(0));
+    assertEquals(Derived.INT3, attributes.get(1));
+    assertEquals(Derived.INT4, attributes.get(2));
+
+    attributes = new ArrayList<>(changedValues.keySet());
     assertEquals(Derived.INT2, attributes.get(0));
     assertEquals(Derived.INT3, attributes.get(1));
     assertEquals(Derived.INT4, attributes.get(2));
