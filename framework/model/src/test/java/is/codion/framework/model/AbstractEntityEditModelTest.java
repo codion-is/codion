@@ -31,11 +31,13 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Derived;
 import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
 
@@ -46,6 +48,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,6 +75,14 @@ public final class AbstractEntityEditModelTest {
   @BeforeEach
   void setUp() {
     employeeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+    employeeEditModel.setDefault(Employee.HIREDATE, LocalDate::now);
+    try {
+      Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.ID.equalTo(3));//JONES, used in containsUnsavedData()
+      employeeEditModel.setDefault(Employee.MGR_FK, () -> jones);
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test
@@ -657,18 +668,57 @@ public final class AbstractEntityEditModelTest {
     }
   }
 
+  @Test
+  public void derivedValues() {
+    EntityEditModel editModel = new TestEntityEditModel(Derived.TYPE, CONNECTION_PROVIDER);
+    assertNull(editModel.get(Derived.INT));
+    assertNull(editModel.get(Derived.INT2));
+    assertNull(editModel.get(Derived.INT3));
+
+    editModel.put(Derived.INT, 1);
+    assertEquals(1, editModel.get(Derived.INT));
+    assertEquals(2, editModel.get(Derived.INT2));
+    assertEquals(3, editModel.get(Derived.INT3));
+
+    Map<Attribute<?>, Object> editedValues = new LinkedHashMap<>();
+    editModel.addEditListener(Derived.INT2, value -> editedValues.put(Derived.INT2, value));
+    editModel.addEditListener(Derived.INT3, value -> editedValues.put(Derived.INT3, value));
+    editModel.addEditListener(Derived.INT4, value -> editedValues.put(Derived.INT4, value));
+
+    Map<Attribute<?>, Object> changedValues = new LinkedHashMap<>();
+    editModel.addValueListener(Derived.INT2, value -> changedValues.put(Derived.INT2, value));
+    editModel.addValueListener(Derived.INT3, value -> changedValues.put(Derived.INT3, value));
+    editModel.addValueListener(Derived.INT4, value -> changedValues.put(Derived.INT4, value));
+
+    editModel.put(Derived.INT, 2);
+    assertTrue(editedValues.containsKey(Derived.INT2));
+    assertEquals(3, editedValues.get(Derived.INT2));
+    assertTrue(changedValues.containsKey(Derived.INT2));
+    assertEquals(3, changedValues.get(Derived.INT2));
+    assertTrue(editedValues.containsKey(Derived.INT3));
+    assertEquals(4, editedValues.get(Derived.INT3));
+    assertTrue(changedValues.containsKey(Derived.INT3));
+    assertEquals(4, changedValues.get(Derived.INT3));
+    assertTrue(editedValues.containsKey(Derived.INT4));
+    assertEquals(5, editedValues.get(Derived.INT4));
+    assertTrue(changedValues.containsKey(Derived.INT4));
+    assertEquals(5, changedValues.get(Derived.INT4));
+
+    List<Attribute<?>> attributes = new ArrayList<>(editedValues.keySet());
+    assertEquals(Derived.INT2, attributes.get(0));
+    assertEquals(Derived.INT3, attributes.get(1));
+    assertEquals(Derived.INT4, attributes.get(2));
+
+    attributes = new ArrayList<>(changedValues.keySet());
+    assertEquals(Derived.INT2, attributes.get(0));
+    assertEquals(Derived.INT3, attributes.get(1));
+    assertEquals(Derived.INT4, attributes.get(2));
+  }
+
   private static final class TestEntityEditModel extends AbstractEntityEditModel {
 
     private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
-      setDefault(Employee.HIREDATE, LocalDate::now);
-      try {
-        Entity jones = connectionProvider.connection().selectSingle(Employee.ID.equalTo(3));//JONES, used in containsUnsavedData()
-        setDefault(Employee.MGR_FK, () -> jones);
-      }
-      catch (DatabaseException e) {
-        throw new RuntimeException(e);
-      }
     }
 
     @Override

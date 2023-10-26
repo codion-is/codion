@@ -9838,3 +9838,5 @@
   EntityEditPanel.AddEntityCommand and EditEntityCommand, PopulateUpdatedEntities and PopulateInsertedEntities listeners now class fields, removing a potential memory leak in case the editPanelSupplier keeps returning the same edit panel
   EntityEditPanel.AddEntityCommand now calls editModel().setDefaults() before displaying the panel, in case it's being reused
   AbstractEntityModelTest, AbstractEntityTableModelTest refactored
+  AbstractEntityEditModel bug fixed, did not notify value edits for a chain of derived attributes
+  AbstractEntityEditModel no longer creates edit events when notifying edits, related refactoring

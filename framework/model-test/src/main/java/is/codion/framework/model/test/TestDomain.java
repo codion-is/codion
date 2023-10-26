@@ -47,6 +47,7 @@ public final class TestDomain extends DefaultDomain {
     department();
     employee();
     enumEntity();
+    derived();
   }
 
   public interface Master {
@@ -275,7 +276,7 @@ public final class TestDomain extends DefaultDomain {
 
   public interface EnumEntity {
     EntityType TYPE = DOMAIN.entityType("enum_entity");
-    
+
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<EnumType> ENUM_TYPE = TYPE.column("enum_type", EnumType.class);
 
@@ -290,5 +291,32 @@ public final class TestDomain extends DefaultDomain {
                     .primaryKey(),
             EnumEntity.ENUM_TYPE.define()
                     .column()));
+  }
+
+  public interface Derived {
+    EntityType TYPE = DOMAIN.entityType("derived");
+
+    Column<Integer> INT = TYPE.integerColumn("int");
+    Column<Integer> INT2 = TYPE.integerColumn("int2");
+    Column<Integer> INT3 = TYPE.integerColumn("int3");
+    Column<Integer> INT4 = TYPE.integerColumn("int4");
+  }
+
+  void derived() {
+    add(Derived.TYPE.define(
+            Derived.INT.define()
+                    .column(),
+            Derived.INT2.define()
+                    .derived(sourceValues -> sourceValues.optional(Derived.INT)
+                            .map(value -> value + 1)
+                            .orElse(null), Derived.INT),
+            Derived.INT3.define()
+                    .derived(sourceValues -> sourceValues.optional(Derived.INT2)
+                            .map(value -> value + 1)
+                            .orElse(null), Derived.INT2),
+            Derived.INT4.define()
+                    .derived(sourceValues -> sourceValues.optional(Derived.INT3)
+                            .map(value -> value + 1)
+                            .orElse(null), Derived.INT3)));
   }
 }
