@@ -10,6 +10,7 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -19,7 +20,6 @@ import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
-import is.codion.framework.model.test.TestDomain.Master;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
 import org.junit.jupiter.api.Test;
@@ -50,41 +50,31 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected SwingEntityTableModel createMasterTableModel() {
-    return new SwingEntityTableModel(Master.TYPE, connectionProvider());
-  }
-
-  @Override
-  protected SwingEntityTableModel createDetailTableModel() {
-    return new SwingEntityTableModel(createDetailEditModel());
-  }
-
-  @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
-    SwingEntityTableModel deptModel = new SwingEntityTableModel(Department.TYPE, testModel.connectionProvider());
+    SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
     deptModel.sortModel().setSortOrder(Department.NAME, SortOrder.ASCENDING);
 
     return deptModel;
   }
 
   @Override
-  protected SwingEntityTableModel createEmployeeTableModel() {
-    return new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
+  protected SwingEntityTableModel createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return createTableModel(createEditModel(entityType, connectionProvider));
   }
 
   @Override
-  protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(Master.TYPE, connectionProvider());
+  protected SwingEntityTableModel createTableModel(SwingEntityEditModel editModel) {
+    return new SwingEntityTableModel(editModel);
   }
 
   @Override
-  protected SwingEntityEditModel createDetailEditModel() {
-    return new SwingEntityEditModel(Detail.TYPE, connectionProvider());
+  protected SwingEntityEditModel createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return new SwingEntityEditModel(entityType, connectionProvider);
   }
 
   @Test
   void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
-    SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
+    SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
     assertEquals(0, employeeTableModel.getRowCount());
     Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
     employeeTableModel.conditionModel().setEqualConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
@@ -146,7 +136,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void setValueAt() {
-    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
     tableModel.refresh();
     assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
     tableModel.editable().set(true);
@@ -176,7 +166,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void backgroundColor() {
-    SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
+    SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
     ColumnConditionModel<Attribute<String>, String> nameConditionModel =
             employeeTableModel.conditionModel().attributeModel(Employee.NAME);
     nameConditionModel.setEqualValue("BLAKE");
@@ -237,7 +227,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void orderQueryBySortOrder() {
-    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
     OrderBy orderBy = tableModel.orderBy();
     //default order by for entity
     assertEquals(2, orderBy.orderByColumns().size());
@@ -286,7 +276,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     EntityConnectionProvider connectionProvider = connectionProvider();
     Entity researchDept = connectionProvider.connection().select(connectionProvider.entities().primaryKey(Department.TYPE, 20));
 
-    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     assertTrue(tableModel.respondToEditEvents().get());
     tableModel.conditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
     tableModel.refresh();
@@ -315,7 +305,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void validItems() {
-    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
     Entity dept = tableModel.entities().builder(Department.TYPE)
             .with(Department.ID, 1)
             .with(Department.NAME, "dept")
@@ -329,7 +319,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void conditionChanged() {
-    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
     tableModel.refresh();
     ColumnConditionModel<?, String> nameConditionModel = tableModel.conditionModel().conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("JONES");

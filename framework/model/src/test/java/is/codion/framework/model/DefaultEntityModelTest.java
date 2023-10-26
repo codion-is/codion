@@ -36,21 +36,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
   }
 
-  @Override
-  protected TestEntityEditModel createDepartmentEditModel() {
-    return new TestEntityEditModel(Department.TYPE, connectionProvider());
-  }
-
-  @Override
-  protected TestEntityTableModel createEmployeeTableModel() {
-    return null;
-  }
-
-  @Override
-  protected TestEntityTableModel createDepartmentTableModel() {
-    return null;
-  }
-
   public static final class TestEntityEditModel extends AbstractEntityEditModel {
 
     public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {

@@ -44,21 +44,6 @@ public final class SwingEntityModelTest
     return new SwingEntityModel(Employee.TYPE, connectionProvider());
   }
 
-  @Override
-  protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(Department.TYPE, connectionProvider());
-  }
-
-  @Override
-  protected SwingEntityTableModel createEmployeeTableModel() {
-    return new SwingEntityTableModel(Employee.TYPE, connectionProvider());
-  }
-
-  @Override
-  protected SwingEntityTableModel createDepartmentTableModel() {
-    return new SwingEntityTableModel(Department.TYPE, connectionProvider());
-  }
-
   @Test
   void isModified() {
     //here we're basically testing for the entity in the edit model being modified after
