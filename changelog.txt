@@ -9794,3 +9794,4 @@
   EntityTablePanel, default status message improved a bit, no longer displays zero rows selected
   EntityDependenciesPanel.displayDependenciesDialog() now adds an empty border, for consistency, some other border related changes
   DefaultEntity.createAndCacheSingleReferenceKey() bug fixed, no longer assumes the referenced entity has a primary key
+  EntityEditPanel.AddEntityCommand and EditEntityCommand, PopulateUpdatedEntities and PopulateInsertedEntities listeners now class fields, removing a potential memory leak in case the editPanelSupplier keeps returning the same edit panel

@@ -820,6 +820,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private final EntityConnectionProvider connectionProvider;
     private final Consumer<List<Entity>> onInsert;
     private final List<Entity> insertedEntities = new ArrayList<>();
+    private final Consumer<Collection<Entity>> populateInsertedEntities = new PopulateInsertedEntities();
 
     private AddEntityCommand(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
       this.editPanelSupplier = editPanelSupplier;
@@ -868,7 +869,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = editPanelSupplier.get().initialize();
       editPanel.setBorder(emptyBorder());
-      editPanel.editModel().addAfterInsertListener(new PopulateInsertedEntities());
+      editPanel.editModel().addAfterInsertListener(populateInsertedEntities);
 
       return editPanel;
     }
@@ -932,6 +933,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private final EntityConnectionProvider connectionProvider;
     private final Consumer<List<Entity>> onUpdate;
     private final List<Entity> updatedEntities = new ArrayList<>();
+    private final PopulateUpdatedEntities populateUpdatedEntities = new PopulateUpdatedEntities();
 
     private Entity entityToUpdate;
 
@@ -994,7 +996,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = editPanelSupplier.get().initialize();
       editPanel.setBorder(emptyBorder());
-      editPanel.editModel().addAfterUpdateListener(new PopulateUpdatedEntities());
+      editPanel.editModel().addAfterUpdateListener(populateUpdatedEntities);
 
       return editPanel;
     }
