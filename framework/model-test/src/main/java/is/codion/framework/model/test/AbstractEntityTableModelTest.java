@@ -26,6 +26,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
@@ -74,7 +75,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void select() {
-    TableModel tableModel = createEmployeeTableModel();
+    TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     tableModel.refresh();
 
     List<Entity.Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
@@ -101,7 +102,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void selectedEntitiesIterator() {
-    TableModel tableModel = createEmployeeTableModel();
+    TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     tableModel.refresh();
 
     tableModel.selectionModel().setSelectedIndexes(asList(0, 3, 5));
@@ -155,7 +156,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void removeDeletedEntities() throws DatabaseException {
-    TableModel tableModel = createEmployeeTableModel();
+    TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
@@ -183,7 +184,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void findSingle() {
-    TableModel tableModel = createEmployeeTableModel();
+    TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
@@ -241,7 +242,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void limit() {
-    TableModel tableModel = createEmployeeTableModel();
+    TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     tableModel.limit().set(6);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
@@ -260,13 +261,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void setColumns() {
-    TableModel empModel = createEmployeeTableModel();
+    TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
     empModel.setVisibleColumns(Employee.COMMISSION, Employee.DEPARTMENT_FK, Employee.HIREDATE);
   }
 
   @Test
   public void conditionChangedListener() {
-    TableModel empModel = createEmployeeTableModel();
+    TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
     AtomicInteger counter = new AtomicInteger();
     Runnable conditionChangedListener = counter::incrementAndGet;
     empModel.conditionChanged().addListener(conditionChangedListener);
@@ -285,7 +286,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void testSearchState() {
-    TableModel empModel = createEmployeeTableModel();
+    TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
     assertFalse(empModel.conditionChanged().get());
     ColumnConditionModel<? extends Attribute<String>, String> jobModel =
             empModel.conditionModel().attributeModel(Employee.JOB);
@@ -309,21 +310,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
    */
   protected abstract TableModel createTestTableModel();
 
-  /**
-   * @return a EntityTableModel based on the master entity
-   * @see TestDomain.Master#TYPE
-   */
-  protected abstract TableModel createMasterTableModel();
-
   protected abstract TableModel createDepartmentTableModel();
 
-  protected abstract TableModel createEmployeeTableModel();
+  protected abstract TableModel createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider);
 
-  protected abstract EditModel createDepartmentEditModel();
+  protected abstract TableModel createTableModel(EditModel editModel);
 
-  protected abstract TableModel createDetailTableModel();
-
-  protected abstract EditModel createDetailEditModel();
+  protected abstract EditModel createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider);
 
   private static List<Entity> initTestEntities(Entities entities) {
     List<Entity> testEntities = new ArrayList<>(5);

@@ -835,6 +835,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private final EntityConnectionProvider connectionProvider;
     private final Consumer<List<Entity>> onInsert;
     private final List<Entity> insertedEntities = new ArrayList<>();
+    private final Consumer<Collection<Entity>> populateInsertedEntities = new PopulateInsertedEntities();
 
     private AddEntityCommand(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
       this.editPanelSupplier = editPanelSupplier;
@@ -852,7 +853,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     @Override
     public void perform() {
-      EntityEditPanel editPanel = createEditPanel();
+      EntityEditPanel editPanel = initializeEditPanel();
+      editPanel.editModel().setDefaults();
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
@@ -880,10 +882,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       }
     }
 
-    private EntityEditPanel createEditPanel() {
+    private EntityEditPanel initializeEditPanel() {
       EntityEditPanel editPanel = editPanelSupplier.get().initialize();
       editPanel.setBorder(emptyBorder());
-      editPanel.editModel().addAfterInsertListener(new PopulateInsertedEntities());
+      editPanel.editModel().addAfterInsertListener(populateInsertedEntities);
 
       return editPanel;
     }
@@ -947,6 +949,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private final EntityConnectionProvider connectionProvider;
     private final Consumer<List<Entity>> onUpdate;
     private final List<Entity> updatedEntities = new ArrayList<>();
+    private final PopulateUpdatedEntities populateUpdatedEntities = new PopulateUpdatedEntities();
 
     private Entity entityToUpdate;
 
@@ -975,7 +978,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       else {
         entityToUpdate = ((EntitySearchField) component).model().selectedEntity().get();
       }
-      EntityEditPanel editPanel = createEditPanel();
+      EntityEditPanel editPanel = initializeEditPanel();
       editPanel.editModel().set(connectionProvider.connection().select(entityToUpdate.primaryKey()));
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
@@ -1006,10 +1009,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       }
     }
 
-    private EntityEditPanel createEditPanel() {
+    private EntityEditPanel initializeEditPanel() {
       EntityEditPanel editPanel = editPanelSupplier.get().initialize();
       editPanel.setBorder(emptyBorder());
-      editPanel.editModel().addAfterUpdateListener(new PopulateUpdatedEntities());
+      editPanel.editModel().addAfterUpdateListener(populateUpdatedEntities);
 
       return editPanel;
     }

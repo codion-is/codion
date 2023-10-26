@@ -329,24 +329,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   protected abstract Model createDepartmentModelWithoutDetailModel();
 
   /**
-   * @return a EntityEditModel based on the department entity
-   * @see Department#TYPE
-   */
-  protected abstract EditModel createDepartmentEditModel();
-
-  /**
-   * @return a EntityTableModel based on the employee entity
-   * @see Employee#TYPE
-   */
-  protected abstract TableModel createEmployeeTableModel();
-
-  /**
-   * @return a EntityTableModel based on the department entity
-   * @see Department#TYPE
-   */
-  protected abstract TableModel createDepartmentTableModel();
-
-  /**
    * @return a EntityModel based on the employee entity
    * @see Employee#TYPE
    */
