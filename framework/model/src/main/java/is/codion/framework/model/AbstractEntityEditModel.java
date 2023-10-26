@@ -515,6 +515,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
+    entityDefinition().attributes().definition(attribute);
     if (valueEditEvents.containsKey(attribute)) {
       ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
     }
@@ -522,11 +523,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
-    editEvent(attribute).addDataListener(listener);
+    entityDefinition().attributes().definition(attribute);
+    ((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
   }
 
   @Override
   public final <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
+    entityDefinition().attributes().definition(attribute);
     if (valueChangeEvents.containsKey(attribute)) {
       ((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
     }
@@ -534,7 +537,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
-    valueEvent(attribute).addDataListener(listener);
+    entityDefinition().attributes().definition(attribute);
+    ((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
   }
 
   @Override
@@ -868,16 +872,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
   }
 
-  private <T> Event<T> editEvent(Attribute<T> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
-  }
-
-  private <T> Event<T> valueEvent(Attribute<T> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
-  }
-
   private void configurePersistentForeignKeys() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
       entityDefinition().foreignKeys().get().forEach(foreignKey ->
@@ -958,7 +952,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
     onValueChange(attribute, value);
-    editEvent(attribute).accept(value);
+    Event<T> editEvent = (Event<T>) valueEditEvents.get(attribute);
+    if (editEvent != null) {
+      editEvent.accept(value);
+    }
     dependingValues.forEach((dependingAttribute, previousValue) -> {
       Object currentValue = get(dependingAttribute);
       if (!Objects.equals(previousValue, currentValue)) {

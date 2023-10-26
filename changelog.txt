@@ -9798,3 +9798,4 @@
   EntityEditPanel.AddEntityCommand now calls editModel().setDefaults() before displaying the panel, in case it's being reused
   AbstractEntityModelTest, AbstractEntityTableModelTest refactored
   AbstractEntityEditModel bug fixed, did not notify value edits for a chain of derived attributes
+  AbstractEntityEditModel no longer creates edit events when notifying edits, related refactoring
