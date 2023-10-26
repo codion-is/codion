@@ -643,7 +643,8 @@ class DefaultEntity implements Entity, Serializable {
       return null;
     }
 
-    boolean isPrimaryKey = reference.referencedColumn().equals(referencedEntityDefinition.primaryKey().columns().get(0));
+    List<Column<?>> primaryKeyColumns = referencedEntityDefinition.primaryKey().columns();
+    boolean isPrimaryKey = primaryKeyColumns.size() == 1 && reference.referencedColumn().equals(primaryKeyColumns.get(0));
 
     return cacheReferencedKey(foreignKey,
             new DefaultKey(definition.foreignKeys().referencedBy(foreignKey),
