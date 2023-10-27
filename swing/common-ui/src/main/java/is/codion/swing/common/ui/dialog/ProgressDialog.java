@@ -43,7 +43,7 @@ import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
  */
 public final class ProgressDialog extends JDialog {
 
-  public static final int DEFAULT_PROGRESS_BAR_WIDTH = 400;
+  private static final int DEFAULT_PROGRESS_BAR_WIDTH = 400;
 
   private final JProgressBar progressBar;
 
@@ -64,7 +64,7 @@ public final class ProgressDialog extends JDialog {
 
   /**
    * Sets the progress in the underlying JProgressBar
-   * @param progress the progress (0 - 100)
+   * @param progress the progress (0 - maximumProgress)
    */
   public void setProgress(int progress) {
     progressBar.getModel().setValue(progress);
@@ -121,7 +121,7 @@ public final class ProgressDialog extends JDialog {
       progressBar.setIndeterminate(true);
     }
     else {
-      progressBar.setMaximum(100);
+      progressBar.setMaximum(builder.maximumProgress);
     }
 
     return progressBar;
@@ -137,6 +137,14 @@ public final class ProgressDialog extends JDialog {
      * @return this ProgressDialogBuilder instance
      */
     Builder indeterminate(boolean indeterminate);
+
+    /**
+     * Note that calling this method renders the progress bar determinate
+     * @param maximumProgress the maximum progress, 100 by default
+     * @return this ProgressDialogBuilder instance
+     * @see #indeterminate(boolean)
+     */
+    Builder maximumProgress(int maximumProgress);
 
     /**
      * @param stringPainted the string painted status of the progress bar
@@ -188,6 +196,7 @@ public final class ProgressDialog extends JDialog {
 
   static class DefaultBuilder extends AbstractDialogBuilder<Builder> implements Builder {
 
+    private int maximumProgress = 100;
     private boolean indeterminate = true;
     private boolean stringPainted = false;
     private JPanel northPanel;
@@ -201,6 +210,15 @@ public final class ProgressDialog extends JDialog {
     public Builder indeterminate(boolean indeterminate) {
       this.indeterminate = indeterminate;
       return this;
+    }
+
+    @Override
+    public Builder maximumProgress(int maximumProgress) {
+      if (maximumProgress < 0) {
+        throw new IllegalArgumentException("Maximum progress must be a positive integer");
+      }
+      this.maximumProgress = maximumProgress;
+      return indeterminate(false);
     }
 
     @Override

@@ -40,6 +40,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   private final ProgressTask<T, V> progressTask;
   private final ProgressDialog.Builder progressDialogBuilder;
 
+  private int maximumProgress = 100;
   private Consumer<T> onResult;
   private Consumer<Throwable> onException;
 
@@ -51,6 +52,13 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   @Override
   public ProgressWorkerDialogBuilder<T, V> indeterminate(boolean indeterminate) {
     progressDialogBuilder.indeterminate(indeterminate);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> maximumProgress(int maximumProgress) {
+    progressDialogBuilder.maximumProgress(maximumProgress);
+    this.maximumProgress = maximumProgress;
     return this;
   }
 
@@ -149,6 +157,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .build();
 
     return ProgressWorker.builder(progressTask)
+            .maximumProgress(maximumProgress)
             .onStarted(() -> progressDialog.setVisible(true))
             .onProgress(progressDialog::setProgress)
             .onPublish(chunks -> progressDialog.setMessage(message(chunks)))

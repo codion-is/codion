@@ -30,7 +30,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
@@ -52,7 +51,7 @@ public final class SearchHighlighter {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SearchHighlighter.class.getName());
 
-  private final Document document;
+  private final JTextComponent textComponent;
   private final Value<String> searchStringValue = Value.value("", "");
   private final State caseSensitiveState = State.state();
   private final Highlighter highlighter = new DefaultHighlighter();
@@ -64,7 +63,7 @@ public final class SearchHighlighter {
   private Highlighter.HighlightPainter selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
 
   private SearchHighlighter(JTextComponent textComponent) {
-    this.document = requireNonNull(textComponent).getDocument();
+    this.textComponent = requireNonNull(textComponent);
     textComponent.setHighlighter(highlighter);
     bindEvents(textComponent);
   }
@@ -104,12 +103,13 @@ public final class SearchHighlighter {
    */
   public JTextField createSearchField() {
     return new DefaultTextFieldBuilder<>(String.class, searchStringValue)
+            .selectAllOnFocusGained(true)
             .keyEvent(KeyEvents.builder(VK_DOWN)
                     .action(control(this::nextSearchPosition)))
             .keyEvent(KeyEvents.builder(VK_UP)
                     .action(control(this::previousSearchPosition)))
             .keyEvent(KeyEvents.builder(VK_ESCAPE)
-                    .action(control(() -> searchStringValue.set(null))))
+                    .action(control(textComponent::requestFocusInWindow)))
             .popupMenu(textField -> createPopupMenu(ToggleControl.builder(caseSensitiveState)
                     .name(MESSAGES.getString("case_sensitive"))
                     .build()))
@@ -173,7 +173,7 @@ public final class SearchHighlighter {
     if (!searchStringValue.get().isEmpty()) {
       Pattern pattern = Pattern.compile(searchStringValue.get(), caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
       try {
-        Matcher matcher = pattern.matcher(document.getText(0, document.getLength()));
+        Matcher matcher = pattern.matcher(textComponent.getDocument().getText(0, textComponent.getDocument().getLength()));
         int searchFrom = 0;
         while (matcher.find(searchFrom)) {
           Object highlightTag = highlighter.addHighlight(matcher.start(), matcher.end(), highlightPainter);
@@ -216,7 +216,7 @@ public final class SearchHighlighter {
   private void bindEvents(JTextComponent textComponent) {
     searchStringValue.addListener(this::searchAndHighlightResults);
     caseSensitiveState.addListener(this::searchAndHighlightResults);
-    document.addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
+    textComponent.getDocument().addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
     selectedSearchTextPosition.addDataListener(selectedSearchPosition -> {
       if (selectedSearchPosition != null) {
         try {

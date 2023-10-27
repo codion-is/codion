@@ -43,6 +43,14 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
   ProgressWorkerDialogBuilder<T, V> indeterminate(boolean indeterminate);
 
   /**
+   * Note that calling this method renders the progress bar determinate
+   * @param maximumProgress the maximum progress, 100 by default
+   * @return this Builder instance
+   * @see #indeterminate(boolean)
+   */
+  ProgressWorkerDialogBuilder<T, V> maximumProgress(int maximumProgress);
+
+  /**
    * @param stringPainted the string painted status of the progress bar
    * @return this Builder instance
    */

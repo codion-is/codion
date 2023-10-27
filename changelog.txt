@@ -9840,3 +9840,6 @@
   AbstractEntityModelTest, AbstractEntityTableModelTest refactored
   AbstractEntityEditModel bug fixed, did not notify value edits for a chain of derived attributes
   AbstractEntityEditModel no longer creates edit events when notifying edits, related refactoring
+  ProgressWorker, ProgressDialog, maximumProgress() added, no longer restricted to 100 as max
+  SearchHighlighter, ESC in search field transfers focus to the text component
+  ClientInstandeMonitorPanel, CTRL-F in log text area transfers focus to search field

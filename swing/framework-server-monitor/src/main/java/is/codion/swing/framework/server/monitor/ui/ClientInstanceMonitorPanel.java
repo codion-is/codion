@@ -21,6 +21,7 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -37,6 +38,8 @@ import javax.swing.JTree;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
@@ -64,6 +67,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private final ClientInstanceMonitor model;
   private final JTextArea logTextArea;
   private final SearchHighlighter searchHighlighter;
+  private final JTextField searchField;
 
   private final JTextField creationDateField = textField()
           .editable(false)
@@ -78,6 +82,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     this.model = requireNonNull(model);
     this.logTextArea = createLogTextArea();
     this.searchHighlighter = searchHighlighter(logTextArea);
+    this.searchField = searchHighlighter.createSearchField();
+    KeyEvents.builder(KeyEvent.VK_F)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(Control.control(searchField::requestFocusInWindow))
+            .enable(logTextArea);
     initializeUI();
     updateView();
   }
@@ -110,7 +119,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     JPanel textLogPanel = borderLayoutPanel()
             .centerComponent(new JScrollPane(logTextArea))
-            .southComponent(searchHighlighter.createSearchField())
+            .southComponent(searchField)
             .build();
 
     JTabbedPane centerPane = tabbedPane()
