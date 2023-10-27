@@ -82,7 +82,7 @@ public final class CountryReportDataSourceTest {
       icelandCityDataSource.next();
       assertEquals("Reykjavík", icelandCityDataSource.getFieldValue(field(City.NAME)));
 
-      assertEquals(100, progressCounter.get());
+      assertEquals(2, progressCounter.get());
       assertEquals("Iceland", publishedValue.get());
     }
   }

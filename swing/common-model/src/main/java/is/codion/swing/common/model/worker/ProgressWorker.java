@@ -16,7 +16,9 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A SwingWorker implementation. Note that instances of this class are not reusable.
+ * <p>A SwingWorker implementation. Note that instances of this class are not reusable.</p>
+ * <p>Note that this class does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
+ * those directly to the {@code onProgress} and {@code onPublish} handlers to run on the Event Dispatch Thread.</p>
  * <pre>
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
@@ -38,6 +40,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private static final String STATE_PROPERTY = "state";
 
   private final ProgressTask<T, V> task;
+  private final int maximumProgress;
   private final Runnable onStarted;
   private final Runnable onDone;
   private final Consumer<T> onResult;
@@ -51,6 +54,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   private ProgressWorker(DefaultBuilder<T, V> builder) {
     this.task = builder.task;
+    this.maximumProgress = builder.maximumProgress;
     this.onStarted = builder.onStarted;
     this.onDone = builder.onDone;
     this.onResult = builder.onResult;
@@ -150,7 +154,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     /**
      * Performs the task.
-     * @param progressReporter the progress reporter to report a message or progress (0 - 100).
+     * @param progressReporter the progress reporter to report a message or progress (0 - maximumProgress).
      * @return the task result
      * @throws Exception in case of an exception
      */
@@ -164,7 +168,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface ProgressReporter<V> {
 
     /**
-     * @param progress the progress, 0 - 100.
+     * @param progress the progress, 0 - maximumProgress.
      */
     void report(int progress);
 
@@ -180,6 +184,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
    * @param <V> the intermediate result type
    */
   public interface Builder<T, V> {
+
+    /**
+     * @param maximumProgress the maximum progress, 100 by default
+     * @return this builder instance
+     */
+    Builder<T, V> maximumProgress(int maximumProgress);
 
     /**
      * Note that this does not get called in case the background processing has finished
@@ -247,12 +257,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public void report(int progress) {
-      int currentProgress = getProgress();
-      if (progress != currentProgress) {
-        setProgress(progress);
-        if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
-          SwingUtilities.invokeLater(() -> onProgress.accept(progress));
-        }
+      setProgress(maximumProgress == 0 ? 100 : 100 * progress / maximumProgress);
+      if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
+        SwingUtilities.invokeLater(() -> onProgress.accept(progress));
       }
     }
 
@@ -274,6 +281,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     private final ProgressTask<T, V> task;
 
+    private int maximumProgress = 100;
     private Runnable onStarted = EMPTY_RUNNABLE;
     private Runnable onDone = EMPTY_RUNNABLE;
     private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
@@ -285,6 +293,15 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     private DefaultBuilder(ProgressTask<T, V> task) {
       this.task = requireNonNull(task);
+    }
+
+    @Override
+    public Builder<T, V> maximumProgress(int maximumProgress) {
+      if (maximumProgress < 0) {
+        throw new IllegalArgumentException("Maximum progress must be a positive integer");
+      }
+      this.maximumProgress = maximumProgress;
+      return this;
     }
 
     @Override
