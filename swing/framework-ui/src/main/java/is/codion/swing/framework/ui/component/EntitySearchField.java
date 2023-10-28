@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -71,6 +72,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
@@ -123,17 +125,13 @@ public final class EntitySearchField extends HintTextField {
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
     super(searchHintEnabled ? Messages.search() + "..." : null);
-    requireNonNull(searchModel);
-    this.model = searchModel;
+    this.model = requireNonNull(searchModel);
     this.settingsPanel = new SettingsPanel(searchModel);
     this.selectionProvider = new ListSelectionProvider(model);
-    linkToModel();
     setToolTipText(searchModel.description());
     setComponentPopupMenu(createPopupMenu());
-    addFocusListener(new SearchFocusListener());
-    addKeyListener(new EnterEscapeListener());
     configureColors();
-    linkToEnabledState(searchModel.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
+    bindEvents();
   }
 
   @Override
@@ -257,10 +255,14 @@ public final class EntitySearchField extends HintTextField {
     Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory);
   }
 
-  private void linkToModel() {
+  private void bindEvents() {
     new SearchStringValue(this).link(model.searchString());
     model.searchString().addDataListener(searchString -> updateColors());
     model.selectedEntities().addListener(() -> setCaretPosition(0));
+    searching.addDataListener(new WaitCursorListener());
+    addFocusListener(new SearchFocusListener());
+    addKeyListener(new EnterEscapeListener());
+    linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
   }
 
   private void configureColors() {
@@ -702,6 +704,19 @@ public final class EntitySearchField extends HintTextField {
           model.resetSearchString();
           selectAll();
         }
+      }
+    }
+  }
+
+  private final class WaitCursorListener implements Consumer<Boolean> {
+
+    @Override
+    public void accept(Boolean isSearching) {
+      if (isSearching) {
+        WaitCursor.show(EntitySearchField.this);
+      }
+      else {
+        WaitCursor.hide(EntitySearchField.this);
       }
     }
   }

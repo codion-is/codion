@@ -9805,3 +9805,4 @@
   AbstractEntityEditModel, some refactoring, renaming
   DefaultEntity.set(), minor refactoring to reduce garbage production
   EntitySearchField now uses ProgressWorker for async search
+  EntitySearchField, wait cursor enabled while searching, some refactoring
