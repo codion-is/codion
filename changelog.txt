@@ -9804,3 +9804,4 @@
   ClientInstandeMonitorPanel, CTRL-F in log text area transfers focus to search field
   AbstractEntityEditModel, some refactoring, renaming
   DefaultEntity.set(), minor refactoring to reduce garbage production
+  EntitySearchField now uses ProgressWorker for async search
