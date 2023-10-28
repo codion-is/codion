@@ -39,7 +39,7 @@ public final class Log4jProxy implements LoggerProxy {
   }
 
   @Override
-  public List<Object> logLevels() {
+  public List<Object> levels() {
     return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);
   }
 }

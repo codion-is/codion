@@ -855,7 +855,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Object currentLogLevel = loggerProxy.getLogLevel();
     Map<Object, State> levelStateMap = new LinkedHashMap<>();
     State.Group logLevelStateGroup = State.group();
-    for (Object logLevel : loggerProxy.logLevels()) {
+    for (Object logLevel : loggerProxy.levels()) {
       State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
       logLevelStateGroup.add(logLevelState);
       logLevelState.addDataListener(enabled -> {
