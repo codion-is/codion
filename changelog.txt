@@ -9803,3 +9803,4 @@
   SearchHighlighter, ESC in search field transfers focus to the text component
   ClientInstandeMonitorPanel, CTRL-F in log text area transfers focus to search field
   AbstractEntityEditModel, some refactoring, renaming
+  DefaultEntity.set(), minor refactoring to reduce garbage production
