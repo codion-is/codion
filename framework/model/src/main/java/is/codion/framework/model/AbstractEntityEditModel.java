@@ -120,7 +120,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     readOnly.set(entityDefinition().readOnly());
     configurePersistentForeignKeys();
     bindEventsInternal();
-    doSetEntity(defaultEntity(AttributeDefinition::defaultValue));
+    setEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
 
   @Override
@@ -199,14 +199,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void set(Entity entity) {
     if (setEntityAllowed()) {
-      doSetEntity(entity);
+      setEntity(entity);
     }
   }
 
   @Override
   public final void setDefaults() {
     if (setEntityAllowed()) {
-      doSetEntity(null);
+      setEntity(null);
     }
   }
 
@@ -355,7 +355,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
     }
     Entity inserted = insertedEntities.iterator().next();
-    doSetEntity(inserted);
+    setEntity(inserted);
 
     notifyAfterInsert(unmodifiableCollection(insertedEntities));
 
@@ -415,7 +415,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(modifiedEntities), connectionProvider.connection()));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
-      doSetEntity(updatedEntities.get(index));
+      setEntity(updatedEntities.get(index));
     }
 
     notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, updatedEntities));
@@ -446,7 +446,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     delete(entities, connectionProvider.connection());
     if (entities.contains(entity)) {
-      doSetEntity(null);
+      setDefaults();
     }
 
     notifyAfterDelete(unmodifiableCollection(entities));
@@ -836,11 +836,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return true;
   }
 
-  private void doSetEntity(Entity entity) {
+  private void setEntity(Entity entity) {
     Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? defaultEntity(this::defaultValue) : entity);
-    for (Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
-      Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
-      onValueChange(objectAttribute, this.entity.get(objectAttribute));
+    for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
+      Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
+      notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
     }
     if (affectedAttributes.isEmpty()) {//otherwise onValueChange() triggers entity state updates
       updateEntityStates();
@@ -951,7 +951,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
-    onValueChange(attribute, value);
+    notifyValueChange(attribute, value);
     Event<T> editEvent = (Event<T>) valueEditEvents.get(attribute);
     if (editEvent != null) {
       editEvent.accept(value);
@@ -964,7 +964,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     });
   }
 
-  private <T> void onValueChange(Attribute<T> attribute, T value) {
+  private <T> void notifyValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
     updateAttributeStates(attribute);
     Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);

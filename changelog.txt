@@ -9802,3 +9802,4 @@
   ProgressWorker, ProgressDialog, maximumProgress() added, no longer restricted to 100 as max
   SearchHighlighter, ESC in search field transfers focus to the text component
   ClientInstandeMonitorPanel, CTRL-F in log text area transfers focus to search field
+  AbstractEntityEditModel, some refactoring, renaming
