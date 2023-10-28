@@ -21,6 +21,7 @@
  */
 module is.codion.plugin.logback.proxy {
   requires org.slf4j;
+  requires ch.qos.logback.core;
   requires ch.qos.logback.classic;
   requires is.codion.common.core;
 
