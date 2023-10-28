@@ -66,6 +66,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -441,14 +442,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the Controls specifying the items in the 'Tools' menu
    */
   protected Controls createToolsMenuControls() {
-    Controls.Builder toolsControlsBuilder = Controls.builder()
+    return Controls.builder()
             .name(resourceBundle.getString("tools"))
-            .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0));
-    if (!logLevelStates.isEmpty()) {
-      toolsControlsBuilder.control(createLogLevelControl());
-    }
-
-    return toolsControlsBuilder.build();
+            .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
+            .build();
   }
 
   /**
@@ -469,7 +466,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the Controls specifying the items in the 'Help' menu
    */
   protected Controls createHelpMenuControls() {
-    return Controls.builder()
+    Controls controls = Controls.builder()
             .name(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
             .control(createHelpControl())
@@ -477,6 +474,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .separator()
             .control(createAboutControl())
             .build();
+
+    Controls logControls = createLogControls();
+    if (logControls != null && !logControls.empty()) {
+      controls.addSeparatorAt(2);
+      controls.addAt(3, logControls);
+    }
+
+    return controls;
   }
 
   /**
@@ -867,6 +872,34 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     return Collections.unmodifiableMap(levelStateMap);
+  }
+
+  private Controls createLogControls() {
+    Controls.Builder builder = Controls.builder()
+            .name(resourceBundle.getString("logging"))
+            .mnemonic(resourceBundle.getString("logging_mnemonic").charAt(0));
+    if (!logLevelStates.isEmpty()) {
+      builder.control(createLogLevelControl());
+    }
+    Control logFileControl = createLogFileControl();
+    if (logFileControl != null) {
+      builder.control(logFileControl);
+    }
+
+    return builder.build();
+  }
+
+  private Control createLogFileControl() {
+    Collection<String> files = LoggerProxy.instance().files();
+    if (files.isEmpty()) {
+      return null;
+    }
+    String firstLogFile = files.iterator().next();
+
+    return Control.builder(() -> Desktop.getDesktop().open(new File(firstLogFile)))
+            .name(resourceBundle.getString("open_log_file"))
+            .description(resourceBundle.getString("open_log_file") + " (" + firstLogFile + ")")
+            .build();
   }
 
   private static JScrollPane createTree(TreeModel treeModel) {

@@ -9808,3 +9808,4 @@
   EntitySearchField, wait cursor enabled while searching, some refactoring
   LoggerProxy.logLevels() renamed levels()
   LoggerProxy.files() added, implemented for Log4j and logback
+  EntityApplicationPanel, log level and log file controls moved to Help menu, Tools menu now empty and hidden by default
