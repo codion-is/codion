@@ -3,7 +3,7 @@
  */
 package is.codion.common.logging;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -51,6 +51,13 @@ public interface LoggerProxy {
    * @return the available log levels
    */
   List<Object> levels();
+
+  /**
+   * @return the log file paths, if available
+   */
+  default Collection<String> files() {
+    return emptyList();
+  }
 
   /**
    * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.

@@ -15,5 +15,6 @@ public final class Log4jProxyTest {
     proxy.getLogLevel();
     proxy.setLogLevel(proxy.levels().get(2));
     assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
+    proxy.files();
   }
 }

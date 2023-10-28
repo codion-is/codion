@@ -7,10 +7,16 @@ import is.codion.common.logging.LoggerProxy;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -41,5 +47,16 @@ public final class Log4jProxy implements LoggerProxy {
   @Override
   public List<Object> levels() {
     return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);
+  }
+
+  @Override
+  public Collection<String> files() {
+    Map<String, Appender> appenderMap = ((Logger) LogManager.getLogger()).getAppenders();
+
+    return appenderMap.values().stream()
+            .filter(RollingFileAppender.class::isInstance)
+            .map(RollingFileAppender.class::cast)
+            .map(RollingFileAppender::getFileName)
+            .collect(Collectors.toList());
   }
 }
