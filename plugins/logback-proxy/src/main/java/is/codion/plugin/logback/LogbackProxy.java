@@ -51,14 +51,14 @@ public final class LogbackProxy implements LoggerProxy {
 
     return context.getLoggerList()
             .stream()
-            .flatMap(this::appenders)
-            .filter(appender -> appender instanceof FileAppender)
+            .flatMap(LogbackProxy::appenders)
+            .filter(FileAppender.class::isInstance)
             .map(FileAppender.class::cast)
             .map(FileAppender::getFile)
             .collect(Collectors.toList());
   }
 
-  private Stream<Appender<ILoggingEvent>> appenders(Logger logger) {
+  private static Stream<Appender<ILoggingEvent>> appenders(Logger logger) {
     return StreamSupport.stream(spliteratorUnknownSize(logger.iteratorForAppenders(), 0), false);
   }
 }
