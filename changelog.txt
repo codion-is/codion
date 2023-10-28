@@ -9843,3 +9843,10 @@
   ProgressWorker, ProgressDialog, maximumProgress() added, no longer restricted to 100 as max
   SearchHighlighter, ESC in search field transfers focus to the text component
   ClientInstandeMonitorPanel, CTRL-F in log text area transfers focus to search field
+  AbstractEntityEditModel, some refactoring, renaming
+  DefaultEntity.set(), minor refactoring to reduce garbage production
+  EntitySearchField now uses ProgressWorker for async search
+  EntitySearchField, wait cursor enabled while searching, some refactoring
+  LoggerProxy.logLevels() renamed levels()
+  LoggerProxy.files() added, implemented for Log4j and logback
+  EntityApplicationPanel, log level and log file controls moved to Help menu, Tools menu now empty and hidden by default

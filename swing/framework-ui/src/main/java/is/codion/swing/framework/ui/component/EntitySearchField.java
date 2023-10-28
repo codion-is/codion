@@ -33,6 +33,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
@@ -86,10 +87,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
@@ -125,28 +128,25 @@ public final class EntitySearchField extends HintTextField {
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
   private final State searchOnFocusLost = State.state(true);
+  private final State searching = State.state();
 
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
   private SelectionProvider selectionProvider;
+  private ProgressWorker<List<Entity>, ?> searchWorker;
 
   private Color backgroundColor;
   private Color invalidBackgroundColor;
-  private boolean performingSearch = false;
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
     super(searchHintEnabled ? Messages.search() + "..." : null);
-    requireNonNull(searchModel);
-    this.model = searchModel;
+    this.model = requireNonNull(searchModel);
     this.settingsPanel = new SettingsPanel(searchModel);
     this.selectionProvider = new ListSelectionProvider(model);
-    linkToModel();
     setToolTipText(searchModel.description());
     setComponentPopupMenu(createPopupMenu());
-    addFocusListener(new SearchFocusListener());
-    addKeyListener(new EnterEscapeListener());
     configureColors();
-    Utilities.linkToEnabledState(searchModel.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
+    bindEvents();
   }
 
   @Override
@@ -270,10 +270,14 @@ public final class EntitySearchField extends HintTextField {
     Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory);
   }
 
-  private void linkToModel() {
+  private void bindEvents() {
     new SearchStringValue(this).link(model.searchString());
     model.searchString().addDataListener(searchString -> updateColors());
     model.selectedEntities().addListener(() -> setCaretPosition(0));
+    searching.addDataListener(new WaitCursorListener());
+    addFocusListener(new SearchFocusListener());
+    addKeyListener(new EnterEscapeListener());
+    linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
   }
 
   private void configureColors() {
@@ -288,49 +292,65 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void performSearch(boolean promptUser) {
-    try {
-      performingSearch = true;
-      if (nullOrEmpty(model.searchString().get())) {
-        model.selectedEntities().set(null);
-      }
-      else {
-        if (model.searchStringModified().get()) {
-          try {
-            List<Entity> queryResult = performSearch();
-            if (queryResult.size() == 1) {
-              model.selectedEntities().set(queryResult);
-            }
-            else if (promptUser) {
-              if (queryResult.isEmpty()) {
-                JOptionPane.showMessageDialog(this, FrameworkMessages.noResultsFound(),
-                        SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
-              }
-              else {
-                selectionProvider.selectEntities(this, queryResult);
-              }
-            }
-            selectAll();
-          }
-          catch (Exception e) {
-            Dialogs.displayExceptionDialog(e, Utilities.parentWindow(this));
-          }
-        }
-      }
-      updateColors();
+    if (nullOrEmpty(model.searchString().get())) {
+      model.selectedEntities().set(null);
     }
-    finally {
-      performingSearch = false;
+    else if (model.searchStringModified().get()) {
+      cancelCurrentSearch();
+      searching.set(true);
+      searchWorker = ProgressWorker.builder(model::search)
+              .onResult(searchResult -> handleResult(searchResult, promptUser))
+              .onException(this::handleException)
+              .onCancelled(this::handleCancel)
+              .onInterrupted(this::handleInterrupted)
+              .execute();
     }
   }
 
-  private List<Entity> performSearch() {
-    WaitCursor.show(this);
-    try {
-      return model.search();
+  private void cancelCurrentSearch() {
+    ProgressWorker<?, ?> currentWorker = searchWorker;
+    if (currentWorker != null) {
+      currentWorker.cancel(true);
     }
-    finally {
-      WaitCursor.hide(this);
+  }
+
+  private void handleResult(List<Entity> searchResult, boolean promptUser) {
+    searchWorker = null;
+    if (searchResult.size() == 1) {
+      model.selectedEntities().set(searchResult);
     }
+    else if (promptUser) {
+      promptUser(searchResult);
+    }
+    searching.set(false);
+    selectAll();
+    updateColors();
+  }
+
+  private void promptUser(List<Entity> searchResult) {
+    if (searchResult.isEmpty()) {
+      JOptionPane.showMessageDialog(this, FrameworkMessages.noResultsFound(),
+              SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
+    }
+    else {
+      selectionProvider.selectEntities(this, searchResult);
+    }
+  }
+
+  private void handleException(Throwable exception) {
+    searchWorker = null;
+    searching.set(false);
+    updateColors();
+    Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
+  }
+
+  private void handleCancel() {
+    searching.set(true);
+  }
+
+  private void handleInterrupted() {
+    Thread.currentThread().interrupt();
+    searching.set(true);
   }
 
   private JPopupMenu createPopupMenu() {
@@ -682,7 +702,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return searchOnFocusLost.get() && !performingSearch && model.searchStringModified().get();
+      return searchOnFocusLost.get() && !searching.get() && model.searchStringModified().get();
     }
   }
 
@@ -699,6 +719,19 @@ public final class EntitySearchField extends HintTextField {
           model.resetSearchString();
           selectAll();
         }
+      }
+    }
+  }
+
+  private final class WaitCursorListener implements Consumer<Boolean> {
+
+    @Override
+    public void accept(Boolean isSearching) {
+      if (isSearching) {
+        WaitCursor.show(EntitySearchField.this);
+      }
+      else {
+        WaitCursor.hide(EntitySearchField.this);
       }
     }
   }

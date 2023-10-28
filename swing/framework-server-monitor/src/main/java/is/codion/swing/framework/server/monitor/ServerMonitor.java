@@ -215,7 +215,7 @@ public final class ServerMonitor {
    * @return the available log levels
    */
   public List<Object> logLevels() {
-    return loggerProxy.logLevels();
+    return loggerProxy.levels();
   }
 
   /**

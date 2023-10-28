@@ -18,10 +18,12 @@
  */
 package is.codion.common.logging;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A logging proxy facilitating the setting of log levels
@@ -44,8 +46,8 @@ public interface LoggerProxy {
     public void setLogLevel(Object logLevel) {/*no op*/}
 
     @Override
-    public List<Object> logLevels() {
-      return Collections.emptyList();
+    public List<Object> levels() {
+      return emptyList();
     }
   };
 
@@ -63,7 +65,14 @@ public interface LoggerProxy {
   /**
    * @return the available log levels
    */
-  List<Object> logLevels();
+  List<Object> levels();
+
+  /**
+   * @return the log file paths, if available
+   */
+  default Collection<String> files() {
+    return emptyList();
+  }
 
   /**
    * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.
