@@ -1863,19 +1863,19 @@ public class EntityTablePanel extends JPanel {
       if (rowCount == 0) {
         return "";
       }
-      int filteredItemCount = tableModel.filteredItemCount();
+      int filteredCount = tableModel.filteredCount();
       int selectionCount = tableModel.selectionModel().selectionCount();
       StringBuilder builder = new StringBuilder(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
-      if (selectionCount > 0 || filteredItemCount > 0) {
+      if (selectionCount > 0 || filteredCount > 0) {
         builder.append(" (");
         if (selectionCount > 0) {
           builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(selectionCount)).append(" ").append(MESSAGES.getString("selected"));
         }
-        if (filteredItemCount > 0) {
+        if (filteredCount > 0) {
           if (selectionCount > 0) {
             builder.append(" - ");
           }
-          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount)).append(" ").append(MESSAGES.getString("hidden"));
+          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("hidden"));
         }
         builder.append(")");
       }

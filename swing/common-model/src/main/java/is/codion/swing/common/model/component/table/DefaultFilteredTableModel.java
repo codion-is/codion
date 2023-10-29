@@ -93,12 +93,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public int visibleItemCount() {
+  public int visibleCount() {
     return getRowCount();
   }
 
   @Override
-  public int filteredItemCount() {
+  public int filteredCount() {
     return filteredItems.size();
   }
 
@@ -185,7 +185,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public <T> Collection<T> values(C columnIdentifier) {
-    return (Collection<T>) columnValues(IntStream.range(0, visibleItemCount()).boxed(),
+    return (Collection<T>) columnValues(IntStream.range(0, visibleCount()).boxed(),
             columnModel.column(columnIdentifier).getModelIndex());
   }
 
@@ -632,7 +632,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     public ColumnSummaryModel.SummaryValues<T> values() {
       FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
       boolean subset = tableSelectionModel.selectionNotEmpty().get() &&
-              tableSelectionModel.selectionCount() != tableModel.visibleItemCount();
+              tableSelectionModel.selectionCount() != tableModel.visibleCount();
 
       return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);
     }

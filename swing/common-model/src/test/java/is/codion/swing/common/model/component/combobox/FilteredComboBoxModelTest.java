@@ -175,12 +175,12 @@ public class FilteredComboBoxModelTest {
 
     assertEquals(4, testModel.filteredItems().size());
     assertEquals(1, testModel.visibleItems().size());
-    assertEquals(4, testModel.filteredItemCount());
-    assertEquals(2, testModel.visibleItemCount());
+    assertEquals(4, testModel.filteredCount());
+    assertEquals(2, testModel.visibleCount());
     assertEquals(5, testModel.items().size());
 
     testModel.addItem(BJORN);//already contained
-    assertEquals(4, testModel.filteredItemCount());
+    assertEquals(4, testModel.filteredCount());
 
     assertFalse(testModel.visible(BJORN));
     assertTrue(testModel.contains(BJORN));

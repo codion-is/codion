@@ -65,12 +65,12 @@ public interface FilteredModel<T> {
   /**
    * @return the number of currently visible items
    */
-  int visibleItemCount();
+  int visibleCount();
 
   /**
    * @return the number of currently filtered items
    */
-  int filteredItemCount();
+  int filteredCount();
 
   /**
    * Returns true if this model contains the given item, visible or filtered.

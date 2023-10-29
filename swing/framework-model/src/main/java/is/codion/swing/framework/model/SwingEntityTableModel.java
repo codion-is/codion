@@ -450,13 +450,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final int visibleItemCount() {
-    return tableModel.visibleItemCount();
+  public final int visibleCount() {
+    return tableModel.visibleCount();
   }
 
   @Override
-  public final int filteredItemCount() {
-    return tableModel.filteredItemCount();
+  public final int filteredCount() {
+    return tableModel.filteredCount();
   }
 
   @Override
@@ -871,10 +871,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
           tableModel.addItemsAtSorted(0, entitiesToAdd);
           break;
         case ADD_BOTTOM:
-          tableModel.addItemsAt(visibleItemCount(), entitiesToAdd);
+          tableModel.addItemsAt(visibleCount(), entitiesToAdd);
           break;
         case ADD_BOTTOM_SORTED:
-          tableModel.addItemsAtSorted(visibleItemCount(), entitiesToAdd);
+          tableModel.addItemsAtSorted(visibleCount(), entitiesToAdd);
           break;
         default:
           break;
