@@ -113,8 +113,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public boolean containsItem(R item) {
-    return visibleItems.contains(item) || filteredItems.contains(item);
+  public boolean contains(R item) {
+    return visible(item) || filtered(item);
   }
 
   @Override

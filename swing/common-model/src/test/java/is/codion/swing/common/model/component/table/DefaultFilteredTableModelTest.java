@@ -88,11 +88,11 @@ public final class DefaultFilteredTableModelTest {
     tableModel.refresh();
     tableModel.includeCondition().set(item -> !item.equals(B) && !item.equals(F));
     assertFalse(tableModel.visible(B));
-    assertTrue(tableModel.containsItem(B));
+    assertTrue(tableModel.contains(B));
     tableModel.addItemsAt(0, Collections.singletonList(F));
     tableModel.sortModel().setSortOrder(0, SortOrder.DESCENDING);
     assertFalse(tableModel.visible(F));
-    assertTrue(tableModel.containsItem(F));
+    assertTrue(tableModel.contains(F));
     tableModel.includeCondition().set(null);
     assertTrue(tableModel.visible(B));
     assertTrue(tableModel.visible(F));
@@ -218,10 +218,10 @@ public final class DefaultFilteredTableModelTest {
     tableModel.removeItem(B);
     assertEquals(3, events.get());
     assertFalse(tableModel.visible(B));
-    assertTrue(tableModel.containsItem(A));
+    assertTrue(tableModel.contains(A));
     tableModel.removeItem(A);
     assertEquals(4, events.get());
-    assertFalse(tableModel.containsItem(A));
+    assertFalse(tableModel.contains(A));
     tableModel.removeItems(asList(D, E));
     assertEquals(4, events.get());//no change when removing filtered items
     assertFalse(tableModel.visible(D));
@@ -257,13 +257,13 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(1, events.get());
     List<TestRow> removed = tableModel.removeItems(1, 3);
     assertEquals(2, events.get());
-    assertTrue(tableModel.containsItem(A));
-    assertFalse(tableModel.containsItem(B));
+    assertTrue(tableModel.contains(A));
+    assertFalse(tableModel.contains(B));
     assertTrue(removed.contains(B));
-    assertFalse(tableModel.containsItem(C));
+    assertFalse(tableModel.contains(C));
     assertTrue(removed.contains(C));
-    assertTrue(tableModel.containsItem(D));
-    assertTrue(tableModel.containsItem(E));
+    assertTrue(tableModel.contains(D));
+    assertTrue(tableModel.contains(E));
 
     tableModel.mergeOnRefresh().set(true);
     events.set(0);
@@ -731,11 +731,11 @@ public final class DefaultFilteredTableModelTest {
   void filterAndRemove() {
     tableModel.refresh();
     tableModel.filterModel().conditionModel(0).setEqualValue("a");
-    assertTrue(tableModel.containsItem(B));
+    assertTrue(tableModel.contains(B));
     tableModel.removeItem(B);
-    assertFalse(tableModel.containsItem(B));
+    assertFalse(tableModel.contains(B));
     tableModel.removeItem(A);
-    assertFalse(tableModel.containsItem(A));
+    assertFalse(tableModel.contains(A));
   }
 
   @Test
@@ -759,7 +759,7 @@ public final class DefaultFilteredTableModelTest {
     assertTrue(tableModel.visible(A));
 
     assertFalse(tableModel.visible(B));
-    assertTrue(tableModel.containsItem(B));
+    assertTrue(tableModel.contains(B));
     assertTrue(tableModel.filterModel().conditionModel(0).enabled().get());
     assertEquals(4, tableModel.filteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
@@ -847,7 +847,7 @@ public final class DefaultFilteredTableModelTest {
                                                FilteredTableModel<TestRow, Integer> model) {
     for (TestRow row : rows) {
       if (includeFiltered) {
-        if (!model.containsItem(row)) {
+        if (!model.contains(row)) {
           return false;
         }
       }

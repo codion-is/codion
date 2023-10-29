@@ -34,7 +34,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
     selectedItemTranslator().set(new SelectedItemTranslator());
     sortComparator().set(sortComparator);
     setItems(items);
-    if (containsItem(Item.item(null))) {
+    if (contains(Item.item(null))) {
       setSelectedItem(null);
     }
   }
