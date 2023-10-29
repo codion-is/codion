@@ -108,12 +108,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public int visibleItemCount() {
+  public int visibleCount() {
     return getRowCount();
   }
 
   @Override
-  public int filteredItemCount() {
+  public int filteredCount() {
     return filteredItems.size();
   }
 
@@ -128,8 +128,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public boolean containsItem(R item) {
-    return visibleItems.contains(item) || filteredItems.contains(item);
+  public boolean contains(R item) {
+    return visible(item) || filtered(item);
   }
 
   @Override
@@ -200,7 +200,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public <T> Collection<T> values(C columnIdentifier) {
-    return (Collection<T>) columnValues(IntStream.range(0, visibleItemCount()).boxed(),
+    return (Collection<T>) columnValues(IntStream.range(0, visibleCount()).boxed(),
             columnModel.column(columnIdentifier).getModelIndex());
   }
 
@@ -373,7 +373,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public String getStringValueAt(int rowIndex, C columnIdentifier) {
+  public String getStringAt(int rowIndex, C columnIdentifier) {
     return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
   }
 
@@ -431,7 +431,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
     return columns.stream()
-            .map(column -> getStringValueAt(row, column.getIdentifier()))
+            .map(column -> getStringAt(row, column.getIdentifier()))
             .collect(toList());
   }
 
@@ -647,7 +647,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     public ColumnSummaryModel.SummaryValues<T> values() {
       FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
       boolean subset = tableSelectionModel.selectionNotEmpty().get() &&
-              tableSelectionModel.selectionCount() != tableModel.visibleItemCount();
+              tableSelectionModel.selectionCount() != tableModel.visibleCount();
 
       return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);
     }

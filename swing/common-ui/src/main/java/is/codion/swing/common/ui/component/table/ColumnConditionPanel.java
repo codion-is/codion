@@ -498,7 +498,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     ItemComboBoxModel<Operator> itemComboBoxModel = (ItemComboBoxModel<Operator>) operatorCombo.getModel();
     List<Item<Operator>> visibleItems = itemComboBoxModel.visibleItems();
     int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
-    if (index < itemComboBoxModel.visibleItemCount() - 1) {
+    if (index < itemComboBoxModel.visibleCount() - 1) {
       itemComboBoxModel.setSelectedItem(visibleItems.get(index + 1));
     }
   }

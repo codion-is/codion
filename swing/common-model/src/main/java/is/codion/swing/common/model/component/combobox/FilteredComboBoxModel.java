@@ -232,12 +232,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   @Override
-  public final int filteredItemCount() {
+  public final int filteredCount() {
     return filteredItems.size();
   }
 
   @Override
-  public final int visibleItemCount() {
+  public final int visibleCount() {
     return visibleItems.size();
   }
 
@@ -305,7 +305,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   @Override
-  public final boolean containsItem(T item) {
+  public final boolean contains(T item) {
     return visibleItems.contains(item) || filteredItems.contains(item);
   }
 

@@ -80,19 +80,19 @@ public interface FilteredModel<T> {
   /**
    * @return the number of currently visible items
    */
-  int visibleItemCount();
+  int visibleCount();
 
   /**
    * @return the number of currently filtered items
    */
-  int filteredItemCount();
+  int filteredCount();
 
   /**
    * Returns true if this model contains the given item, visible or filtered.
    * @param item the item
    * @return true if this model contains the item
    */
-  boolean containsItem(T item);
+  boolean contains(T item);
 
   /**
    * Returns true if this model contains the given item, and it is visible, that is, not filtered

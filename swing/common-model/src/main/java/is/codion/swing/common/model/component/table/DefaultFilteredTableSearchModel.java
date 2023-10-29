@@ -172,7 +172,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     Predicate<String> predicate = searchPredicate.get();
     for (int row = 0; row < tableModel.getRowCount(); row++) {
       for (int column = 0; column < tableModel.getColumnCount(); column++) {
-        if (predicate.test(tableModel.getStringValueAt(row, tableModel.columnModel().getColumn(column).getIdentifier()))) {
+        if (predicate.test(tableModel.getStringAt(row, tableModel.columnModel().getColumn(column).getIdentifier()))) {
           searchResults.add(new DefaultRowColumn(row, column));
         }
       }

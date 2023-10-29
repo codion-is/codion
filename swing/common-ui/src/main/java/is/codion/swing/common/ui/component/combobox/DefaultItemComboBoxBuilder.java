@@ -205,7 +205,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
         comboBoxModel = itemComboBoxModel(modelItems);
       }
     }
-    if (nullable && comboBoxModel.containsItem(nullItem)) {
+    if (nullable && comboBoxModel.contains(nullItem)) {
       comboBoxModel.setSelectedItem(null);
     }
 

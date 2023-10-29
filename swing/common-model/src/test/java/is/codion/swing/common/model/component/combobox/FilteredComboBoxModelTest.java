@@ -190,15 +190,15 @@ public class FilteredComboBoxModelTest {
 
     assertEquals(4, testModel.filteredItems().size());
     assertEquals(1, testModel.visibleItems().size());
-    assertEquals(4, testModel.filteredItemCount());
-    assertEquals(2, testModel.visibleItemCount());
+    assertEquals(4, testModel.filteredCount());
+    assertEquals(2, testModel.visibleCount());
     assertEquals(5, testModel.items().size());
 
     testModel.addItem(BJORN);//already contained
-    assertEquals(4, testModel.filteredItemCount());
+    assertEquals(4, testModel.filteredCount());
 
     assertFalse(testModel.visible(BJORN));
-    assertTrue(testModel.containsItem(BJORN));
+    assertTrue(testModel.contains(BJORN));
 
     testModel.removeListDataListener(listDataListener);
   }
@@ -250,14 +250,14 @@ public class FilteredComboBoxModelTest {
   @Test
   void nullItem() {
     FilteredComboBoxModel<String> model = new FilteredComboBoxModel<>();
-    assertFalse(model.containsItem(null));
+    assertFalse(model.contains(null));
     model.includeNull().set(true);
-    assertTrue(model.containsItem(null));
+    assertTrue(model.contains(null));
     model.includeNull().set(false);
-    assertFalse(model.containsItem(null));
+    assertFalse(model.contains(null));
     model.includeNull().set(true);
     model.nullItem().set("-");
-    assertTrue(model.containsItem(null));
+    assertTrue(model.contains(null));
     assertEquals("-", model.getSelectedItem());
     model.setSelectedItem("-");
     assertTrue(model.nullSelected());

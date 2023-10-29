@@ -376,13 +376,13 @@ public final class EntityComboBoxModelTest {
   @Test
   void nullCaption() {
     comboBoxModel.refresh();
-    assertFalse(comboBoxModel.containsItem(null));
+    assertFalse(comboBoxModel.contains(null));
     comboBoxModel.setNullCaption("-");
-    assertTrue(comboBoxModel.containsItem(null));
+    assertTrue(comboBoxModel.contains(null));
     assertEquals("-", comboBoxModel.getSelectedItem().toString());
     assertNull(comboBoxModel.selectedValue());
     comboBoxModel.includeNull().set(false);
-    assertFalse(comboBoxModel.containsItem(null));
+    assertFalse(comboBoxModel.contains(null));
   }
 
   @Test

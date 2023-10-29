@@ -9850,3 +9850,7 @@
   LoggerProxy.logLevels() renamed levels()
   LoggerProxy.files() added, implemented for Log4j and logback
   EntityApplicationPanel, log level and log file controls moved to Help menu, Tools menu now empty and hidden by default
+  AbstractEntityEditModel.dependingValues() refactored for clarity
+  FilteredModel.containsItem() renamed contains()
+  FilteredModel.visibleItemCount() and filteredItemCount() renamed visibleCount() and filteredCount() respectively
+  FilteredTableModel.getStringValueAt() renamed getStringAt()

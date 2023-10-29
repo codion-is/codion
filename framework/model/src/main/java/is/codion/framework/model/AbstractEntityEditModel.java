@@ -948,21 +948,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
-    EntityDefinition entityDefinition = entityDefinition();
-    Collection<Attribute<?>> derivedAttributes = entityDefinition.attributes().derivedFrom(attribute);
-    derivedAttributes.forEach(derivedAttribute ->
-            dependingValues.put(derivedAttribute, get(derivedAttribute)));
+    addDependingDerivedAttributes(attribute, dependingValues);
     if (attribute instanceof Column) {
-      entityDefinition.foreignKeys().definitions((Column<?>) attribute).forEach(foreignKeyDefinition ->
-              dependingValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
+      addDependingForeignKeys((Column<?>) attribute, dependingValues);
     }
-    if (attribute instanceof ForeignKey) {
-      ((ForeignKey) attribute).references().forEach(reference ->
-              dependingValues.put(reference.column(), get(reference.column())));
+    else if (attribute instanceof ForeignKey) {
+      addDependingReferencedColumns((ForeignKey) attribute, dependingValues);
     }
-    derivedAttributes.forEach(derivedAttribute -> dependingValues(derivedAttribute, dependingValues));
 
     return dependingValues;
+  }
+
+  private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
+    entityDefinition().attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
+      dependingValues.put(derivedAttribute, get(derivedAttribute));
+      addDependingDerivedAttributes(derivedAttribute, dependingValues);
+    });
+  }
+
+  private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
+    entityDefinition().foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
+            dependingValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
+  }
+
+  private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
+    foreignKey.references().forEach(reference ->
+            dependingValues.put(reference.column(), get(reference.column())));
   }
 
   private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {

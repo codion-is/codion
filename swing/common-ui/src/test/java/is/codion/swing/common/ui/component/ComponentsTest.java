@@ -536,7 +536,7 @@ public final class ComponentsTest {
     JComboBox<Item<Integer>> comboBox = componentValue.component();
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
-    assertTrue(model.containsItem(Item.item(null)));
+    assertTrue(model.contains(Item.item(null)));
 
     assertNull(value.get());
     comboBox.setSelectedItem(1);
