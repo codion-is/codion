@@ -515,8 +515,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final String getStringValueAt(int rowIndex, Attribute<?> columnIdentifier) {
-    return tableModel.getStringValueAt(rowIndex, columnIdentifier);
+  public final String getStringAt(int rowIndex, Attribute<?> columnIdentifier) {
+    return tableModel.getStringAt(rowIndex, columnIdentifier);
   }
 
   @Override

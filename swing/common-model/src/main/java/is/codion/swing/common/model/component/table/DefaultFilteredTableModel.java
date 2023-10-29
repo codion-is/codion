@@ -358,7 +358,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public String getStringValueAt(int rowIndex, C columnIdentifier) {
+  public String getStringAt(int rowIndex, C columnIdentifier) {
     return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
   }
 
@@ -416,7 +416,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
     return columns.stream()
-            .map(column -> getStringValueAt(row, column.getIdentifier()))
+            .map(column -> getStringAt(row, column.getIdentifier()))
             .collect(toList());
   }
 

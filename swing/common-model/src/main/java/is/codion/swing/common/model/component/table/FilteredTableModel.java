@@ -75,7 +75,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param columnIdentifier the column identifier
    * @return the string value
    */
-  String getStringValueAt(int rowIndex, C columnIdentifier);
+  String getStringAt(int rowIndex, C columnIdentifier);
 
   /**
    * Adds the given items to the bottom of this table model.

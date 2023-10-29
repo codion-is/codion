@@ -382,7 +382,7 @@ public final class FilteredTable<R, C> extends JTable {
     int selectedColumn = getSelectedColumn();
     if (selectedRow >= 0 && selectedColumn >= 0) {
       FilteredTableColumn<C> column = getModel().columnModel().getColumn(selectedColumn);
-      Utilities.setClipboard(getModel().getStringValueAt(selectedRow, column.getIdentifier()));
+      Utilities.setClipboard(getModel().getStringAt(selectedRow, column.getIdentifier()));
     }
   }
 
