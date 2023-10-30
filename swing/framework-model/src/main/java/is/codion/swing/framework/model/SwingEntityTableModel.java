@@ -997,12 +997,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
       Attribute<?> attribute = column.getIdentifier();
       ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-      ConditionPreferences conditionPreferences = columnConditionModel != null ?
-              conditionPreferences(attribute,
-                      columnConditionModel.autoEnable().get(),
-                      columnConditionModel.caseSensitive().get(),
-                      columnConditionModel.automaticWildcard().get()) : null;
-      conditionPreferencesMap.put(attribute, conditionPreferences);
+      if (columnConditionModel != null) {
+        conditionPreferencesMap.put(attribute, conditionPreferences(attribute,
+                columnConditionModel.autoEnable().get(),
+                columnConditionModel.caseSensitive().get(),
+                columnConditionModel.automaticWildcard().get()));
+      }
     }
 
     return conditionPreferencesMap;
