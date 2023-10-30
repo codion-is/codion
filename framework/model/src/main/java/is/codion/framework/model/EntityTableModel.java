@@ -303,19 +303,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   interface ColumnPreferences {
 
     /**
-     * The name of the root element identifying column preferences
+     * The key identifying column preferences
      */
-    String COLUMNS = "columns";
+    String COLUMNS_KEY = "columns";
 
     /**
      * The key for the 'width' property
      */
-    String PREFERENCE_COLUMN_WIDTH = "w";
+    String WIDTH_KEY = "w";
 
     /**
      * The key for the 'index' property
      */
-    String PREFERENCE_COLUMN_INDEX = "i";
+    String INDEX_KEY = "i";
 
     /**
      * @return the column attribute
@@ -338,11 +338,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     int width();
 
     /**
-     * @return the column condition model preferences, or an empty Optional if no condition model is available for this column
-     */
-    Optional<ConditionPreferences> conditionPreferences();
-
-    /**
      * @return a JSONObject representation of this column preferences instance
      */
     JSONObject toJSONObject();
@@ -352,12 +347,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      * @param attribute the attribute
      * @param index the column index, -1 if not visible
      * @param width the column width
-     * @param conditionPreferences the column condition preferences, if any
      * @return a new {@link ColumnPreferences} instance.
      */
-    static ColumnPreferences columnPreferences(Attribute<?> attribute, int index, int width,
-                                               ConditionPreferences conditionPreferences) {
-      return new DefaultColumnPreferences(attribute, index, width, conditionPreferences);
+    static ColumnPreferences columnPreferences(Attribute<?> attribute, int index, int width) {
+      return new DefaultColumnPreferences(attribute, index, width);
     }
 
     /**
@@ -369,7 +362,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
       JSONObject jsonColumnPreferences = new JSONObject();
       columnPreferences.forEach((attribute, preferences) -> jsonColumnPreferences.put(attribute.name(), preferences.toJSONObject()));
       JSONObject preferencesRoot = new JSONObject();
-      preferencesRoot.put(ColumnPreferences.COLUMNS, jsonColumnPreferences);
+      preferencesRoot.put(ColumnPreferences.COLUMNS_KEY, jsonColumnPreferences);
 
       return preferencesRoot.toString();
     }
@@ -381,7 +374,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      */
     static Map<Attribute<?>, ColumnPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
       requireNonNull(preferencesString);
-      JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS);
+      JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS_KEY);
       return requireNonNull(attributes).stream()
               .map(attribute -> DefaultColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
               .filter(Optional::isPresent)
@@ -393,18 +386,17 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      * Applies the given column preferences to the given table model
      * @param tableModel the table model to apply the preferences to
      * @param columnAttributes the available column attributes
-     * @param columnPreferences the column preferences
+     * @param preferencesString the preferences string
      * @param setColumnWidth sets the column width
      */
-    static void applyColumnPreferences(EntityTableModel<?> tableModel,
-                                       Collection<Attribute<?>> columnAttributes,
-                                       Map<Attribute<?>, ColumnPreferences> columnPreferences,
-                                       BiConsumer<Attribute<?>, Integer> setColumnWidth) {
+    static void apply(EntityTableModel<?> tableModel, Collection<Attribute<?>> columnAttributes,
+                      String preferencesString, BiConsumer<Attribute<?>, Integer> setColumnWidth) {
       requireNonNull(tableModel);
       requireNonNull(columnAttributes);
-      requireNonNull(columnPreferences);
+      requireNonNull(preferencesString);
       requireNonNull(setColumnWidth);
 
+      Map<Attribute<?>, ColumnPreferences> columnPreferences = ColumnPreferences.fromString(columnAttributes, preferencesString);
       List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
       for (Attribute<?> attribute : columnAttributes) {
         ColumnPreferences preferences = columnPreferences.get(attribute);
@@ -413,14 +405,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
         }
         else {
           setColumnWidth.accept(attribute, preferences.width());
-          preferences.conditionPreferences().ifPresent(conditionPreferences -> {
-            ColumnConditionModel<?, ?> conditionModel = tableModel.conditionModel().conditionModels().get(attribute);
-            if (conditionModel != null) {
-              conditionModel.autoEnable().set(conditionPreferences.autoEnable());
-              conditionModel.caseSensitive().set(conditionPreferences.caseSensitive());
-              conditionModel.automaticWildcard().set(conditionPreferences.automaticWildcard());
-            }
-          });
         }
       }
       List<Attribute<?>> visibleColumnAttributes = columnPreferences.values().stream()
@@ -438,24 +422,29 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     interface ConditionPreferences {
 
       /**
-       * The name of the root element identifying condition preferences
+       * The key identifying condition preferences
        */
-      String CONDITION = "con";
+      String CONDITIONS_KEY = "conditions";
+
+      /**
+       * The key for the 'autoEnable' property
+       */
+      String AUTO_ENABLE_KEY = "ae";
 
       /**
        * The key for the 'caseSensitive' property
        */
-      String PREFERENCE_AUTO_ENABLE = "ae";
-
-      /**
-       * The key for the 'caseSensitive' property
-       */
-      String PREFERENCE_CASE_SENSITIVE = "cs";
+      String CASE_SENSITIVE_KEY = "cs";
 
       /**
        * The key for the 'automaticWildcard' property
        */
-      String PREFERENCE_AUTOMATIC_WILDCARD = "aw";
+      String AUTOMATIC_WILDCARD_KEY = "aw";
+
+      /**
+       * @return the attribute
+       */
+      Attribute<?> attribute();
 
       /**
        * @return true if this condition auto enables
@@ -473,14 +462,74 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
       AutomaticWildcard automaticWildcard();
 
       /**
+       * @return a JSONObject representation of this condition preferences instance
+       */
+      JSONObject toJSONObject();
+
+      /**
        * Creates a new {@link ConditionPreferences} instance.
+       * @param attribute the attribute
        * @param autoEnable true if auto enable is enabled
        * @param caseSensitive true if case sensitive
        * @param automaticWildcard the automatic wildcard state
        * @return a new {@link ConditionPreferences} instance.
        */
-      static ConditionPreferences conditionPreferences(boolean autoEnable, boolean caseSensitive, AutomaticWildcard automaticWildcard) {
-        return new DefaultConditionPreferences(autoEnable, caseSensitive, automaticWildcard);
+      static ConditionPreferences conditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive, AutomaticWildcard automaticWildcard) {
+        return new DefaultConditionPreferences(attribute, autoEnable, caseSensitive, automaticWildcard);
+      }
+
+      /**
+       * @param conditionPreferences the condition preferences mapped to their respective attribute
+       * @return a string encoding of the given preferences
+       */
+      static String toString(Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
+        requireNonNull(conditionPreferences);
+        JSONObject jsonConditionPreferences = new JSONObject();
+        conditionPreferences.forEach((attribute, preferences) -> jsonConditionPreferences.put(attribute.name(), preferences.toJSONObject()));
+        JSONObject preferencesRoot = new JSONObject();
+        preferencesRoot.put(ConditionPreferences.CONDITIONS_KEY, jsonConditionPreferences);
+
+        return preferencesRoot.toString();
+      }
+
+      /**
+       * @param attributes the attributes
+       * @param preferencesString the preferences encoded as as string
+       * @return a map containing the {@link ColumnPreferences} instances parsed from the given string
+       */
+      static Map<Attribute<?>, ConditionPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
+        requireNonNull(preferencesString);
+        JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ConditionPreferences.CONDITIONS_KEY);
+        return requireNonNull(attributes).stream()
+                .map(attribute -> DefaultConditionPreferences.conditionPreferences(attribute, requireNonNull(jsonObject)))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(toMap(ConditionPreferences::attribute, Function.identity()));
+      }
+
+      /**
+       * Applies the given condition preferences to the given table model
+       * @param tableModel the table model to apply the preferences to
+       * @param columnAttributes the available column attributes
+       * @param preferencesString the condition preferences string
+       */
+      static void apply(EntityTableModel<?> tableModel, List<Attribute<?>> columnAttributes, String preferencesString) {
+        requireNonNull(tableModel);
+        requireNonNull(columnAttributes);
+        requireNonNull(preferencesString);
+
+        Map<Attribute<?>, ConditionPreferences> conditionPreferences = ConditionPreferences.fromString(columnAttributes, preferencesString);
+        for (Attribute<?> attribute : columnAttributes) {
+          ConditionPreferences preferences = conditionPreferences.get(attribute);
+          if (preferences != null) {
+            ColumnConditionModel<? extends Attribute<?>, Object> conditionModel = tableModel.conditionModel().conditionModel(attribute);
+            if (conditionModel != null) {
+              conditionModel.caseSensitive().set(preferences.caseSensitive());
+              conditionModel.autoEnable().set(preferences.autoEnable());
+              conditionModel.automaticWildcard().set(preferences.automaticWildcard());
+            }
+          }
+        }
       }
     }
   }
