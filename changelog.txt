@@ -9815,3 +9815,4 @@
   FilteredTableModel.getStringValueAt() renamed getStringAt()
   EntitySearchField bug fixed, searching state was not disabled properly
   EntitySearchField.setSearchIndicator() added along with SearchIndicator enum and SEARCH_INDICATOR configuration value, now provides a wait cursor or an indeterminate progress bar to indicate that a search is in progress
+  ColumnPreferences, property key names shortened in order to reduce the preferences string length, related refactoring, json dependency removed from swing.framework.model

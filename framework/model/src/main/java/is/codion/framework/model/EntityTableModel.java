@@ -310,12 +310,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     /**
      * The key for the 'width' property
      */
-    String PREFERENCE_COLUMN_WIDTH = "width";
+    String PREFERENCE_COLUMN_WIDTH = "w";
 
     /**
      * The key for the 'index' property
      */
-    String PREFERENCE_COLUMN_INDEX = "index";
+    String PREFERENCE_COLUMN_INDEX = "i";
 
     /**
      * @return the column attribute
@@ -361,11 +361,27 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     }
 
     /**
-     * @param attributes the attributes
-     * @param jsonObject the JSONObject
-     * @return a map containing the {@link ColumnPreferences} instances parsed from the given JSONObject
+     * @param columnPreferences the column preferences mapped to their respective attribute
+     * @return a string encoding of the given preferences
      */
-    static Map<Attribute<?>, ColumnPreferences> fromJSONObject(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
+    static String toString(Map<Attribute<?>, ColumnPreferences> columnPreferences) {
+      requireNonNull(columnPreferences);
+      JSONObject jsonColumnPreferences = new JSONObject();
+      columnPreferences.forEach((attribute, preferences) -> jsonColumnPreferences.put(attribute.name(), preferences.toJSONObject()));
+      JSONObject preferencesRoot = new JSONObject();
+      preferencesRoot.put(ColumnPreferences.COLUMNS, jsonColumnPreferences);
+
+      return preferencesRoot.toString();
+    }
+
+    /**
+     * @param attributes the attributes
+     * @param preferencesString the preferences encoded as as string
+     * @return a map containing the {@link ColumnPreferences} instances parsed from the given string
+     */
+    static Map<Attribute<?>, ColumnPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
+      requireNonNull(preferencesString);
+      JSONObject jsonObject = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS);
       return requireNonNull(attributes).stream()
               .map(attribute -> DefaultColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
               .filter(Optional::isPresent)
@@ -424,22 +440,22 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
       /**
        * The name of the root element identifying condition preferences
        */
-      String CONDITION = "condition";
+      String CONDITION = "con";
 
       /**
        * The key for the 'caseSensitive' property
        */
-      String PREFERENCE_AUTO_ENABLE = "autoEnable";
+      String PREFERENCE_AUTO_ENABLE = "ae";
 
       /**
        * The key for the 'caseSensitive' property
        */
-      String PREFERENCE_CASE_SENSITIVE = "caseSensitive";
+      String PREFERENCE_CASE_SENSITIVE = "cs";
 
       /**
        * The key for the 'automaticWildcard' property
        */
-      String PREFERENCE_AUTOMATIC_WILDCARD = "automaticWildcard";
+      String PREFERENCE_AUTOMATIC_WILDCARD = "aw";
 
       /**
        * @return true if this condition auto enables
