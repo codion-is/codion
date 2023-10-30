@@ -300,14 +300,13 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void handleResult(List<Entity> searchResult, boolean promptUser) {
-    searchWorker = null;
+    endSearch();
     if (searchResult.size() == 1) {
       model.selectedEntities().set(searchResult);
     }
     else if (promptUser) {
       promptUser(searchResult);
     }
-    searching.set(false);
     selectAll();
     updateColors();
   }
@@ -323,19 +322,23 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void handleException(Throwable exception) {
-    searchWorker = null;
-    searching.set(false);
+    endSearch();
     updateColors();
     Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
   }
 
   private void handleCancel() {
-    searching.set(true);
+    endSearch();
   }
 
   private void handleInterrupted() {
+    endSearch();
     Thread.currentThread().interrupt();
-    searching.set(true);
+  }
+
+  private void endSearch() {
+    searchWorker = null;
+    searching.set(false);
   }
 
   private JPopupMenu createPopupMenu() {
