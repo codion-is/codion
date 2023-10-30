@@ -9858,3 +9858,4 @@
   EntitySearchField.setSearchIndicator() added along with SearchIndicator enum and SEARCH_INDICATOR configuration value, now provides a wait cursor or an indeterminate progress bar to indicate that a search is in progress
   ColumnPreferences, property key names shortened in order to reduce the preferences string length, related refactoring, json dependency removed from swing.framework.model
   SwingEntityTableModel, column and condition preferences split up due to size
+  SwingEntityTableModel.createConditionPreferences() bug fixed, no longer adds null preferences to conditionPreferencesMap when a condition model is not available
