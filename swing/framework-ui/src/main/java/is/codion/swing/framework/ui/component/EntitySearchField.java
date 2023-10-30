@@ -18,8 +18,10 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -66,6 +68,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -123,6 +126,28 @@ public final class EntitySearchField extends HintTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
 
+  /**
+   * Specifies the way a {@link EntitySearchField} indicates that a search is in progress.
+   * Value type: {@link SearchIndicator}<br>
+   * Default value: {@link SearchIndicator#WAIT_CURSOR}
+   */
+  public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR = Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator",
+          SearchIndicator.class, SearchIndicator.WAIT_CURSOR);
+
+  /**
+   * The ways which a search field can indicate that a search is in progress.
+   */
+  public enum SearchIndicator {
+    /**
+     * Display a wait cursor while searching.
+     */
+    WAIT_CURSOR,
+    /**
+     * Display an indeterminate progress bar while searching
+     */
+    PROGRESS_BAR
+  }
+
   private final EntitySearchModel model;
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
@@ -134,6 +159,8 @@ public final class EntitySearchField extends HintTextField {
   private MultiSelectionValue multiSelectionValue;
   private SelectionProvider selectionProvider;
   private ProgressWorker<List<Entity>, ?> searchWorker;
+  private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
+  private Consumer<Boolean> searchIndicatorListener;
 
   private Color backgroundColor;
   private Color invalidBackgroundColor;
@@ -158,6 +185,9 @@ public final class EntitySearchField extends HintTextField {
     if (selectionProvider != null) {
       selectionProvider.updateUI();
     }
+    if (searchIndicatorListener instanceof ProgressBarWhileSearching) {
+      ((ProgressBarWhileSearching) searchIndicatorListener).progressBar.updateUI();
+    }
   }
 
   /**
@@ -165,6 +195,15 @@ public final class EntitySearchField extends HintTextField {
    */
   public EntitySearchModel model() {
     return model;
+  }
+
+  /**
+   * @param searchIndicator the search indicator type
+   * @see #SEARCH_INDICATOR
+   */
+  public void setSearchIndicator(SearchIndicator searchIndicator) {
+    this.searchIndicator = requireNonNull(searchIndicator);
+    updateSearchIndicator();
   }
 
   /**
@@ -274,10 +313,29 @@ public final class EntitySearchField extends HintTextField {
     new SearchStringValue(this).link(model.searchString());
     model.searchString().addDataListener(searchString -> updateColors());
     model.selectedEntities().addListener(() -> setCaretPosition(0));
-    searching.addDataListener(new WaitCursorListener());
+    updateSearchIndicator();
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
+  }
+
+  private void updateSearchIndicator() {
+    if (searchIndicatorListener != null) {
+      searching.removeDataListener(searchIndicatorListener);
+    }
+    searchIndicatorListener = createSearchIndicatorListener();
+    searching.addDataListener(searchIndicatorListener);
+  }
+
+  private Consumer<Boolean> createSearchIndicatorListener() {
+    switch (searchIndicator) {
+      case WAIT_CURSOR:
+        return new WaitCursorWhileSearching();
+      case PROGRESS_BAR:
+        return new ProgressBarWhileSearching();
+      default:
+        throw new IllegalArgumentException("Unknown search indicator: " + searchIndicator);
+    }
   }
 
   private void configureColors() {
@@ -315,14 +373,13 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void handleResult(List<Entity> searchResult, boolean promptUser) {
-    searchWorker = null;
+    endSearch();
     if (searchResult.size() == 1) {
       model.selectedEntities().set(searchResult);
     }
     else if (promptUser) {
       promptUser(searchResult);
     }
-    searching.set(false);
     selectAll();
     updateColors();
   }
@@ -338,19 +395,23 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void handleException(Throwable exception) {
-    searchWorker = null;
-    searching.set(false);
+    endSearch();
     updateColors();
     Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
   }
 
   private void handleCancel() {
-    searching.set(true);
+    endSearch();
   }
 
   private void handleInterrupted() {
+    endSearch();
     Thread.currentThread().interrupt();
-    searching.set(true);
+  }
+
+  private void endSearch() {
+    searchWorker = null;
+    searching.set(false);
   }
 
   private JPopupMenu createPopupMenu() {
@@ -723,7 +784,7 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private final class WaitCursorListener implements Consumer<Boolean> {
+  private final class WaitCursorWhileSearching implements Consumer<Boolean> {
 
     @Override
     public void accept(Boolean isSearching) {
@@ -733,6 +794,29 @@ public final class EntitySearchField extends HintTextField {
       else {
         WaitCursor.hide(EntitySearchField.this);
       }
+    }
+  }
+
+  private final class ProgressBarWhileSearching implements Consumer<Boolean> {
+
+    private final JProgressBar progressBar = Components.progressBar()
+            .indeterminate(true)
+            .string(MESSAGES.getString("searching") + "...")
+            .stringPainted(true)
+            .build();
+
+    @Override
+    public void accept(Boolean isSearching) {
+      if (isSearching) {
+        setLayout(new BorderLayout());
+        add(progressBar, BorderLayout.CENTER);
+      }
+      else {
+        remove(progressBar);
+        setLayout(null);
+      }
+      revalidate();
+      repaint();
     }
   }
 

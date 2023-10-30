@@ -55,7 +55,6 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +93,9 @@ import static java.util.stream.Collectors.toList;
 public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Attribute<?>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
+
+  private static final String COLUMN_PREFERENCES = "-columns";
+  private static final String CONDITIONS_PREFERENCES = "-conditions";
 
   private final FilteredTableModel<Entity, Attribute<?>> tableModel;
   private final SwingEntityEditModel editModel;
@@ -421,10 +423,18 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        UserPreferences.setUserPreference(userPreferencesKey(), createPreferences().toString());
+        UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,
+                ColumnPreferences.toString(createColumnPreferences()));
       }
       catch (Exception e) {
-        LOG.error("Error while saving preferences", e);
+        LOG.error("Error while saving column preferences", e);
+      }
+      try {
+        UserPreferences.setUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES,
+                ConditionPreferences.toString(createConditionPreferences()));
+      }
+      catch (Exception e) {
+        LOG.error("Error while saving condition preferences", e);
       }
     }
   }
@@ -831,7 +841,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Clears any user preferences saved for this table model
    */
   final void clearPreferences() {
-    UserPreferences.removeUserPreference(userPreferencesKey());
+    String userPreferencesKey = userPreferencesKey();
+    UserPreferences.removeUserPreference(userPreferencesKey + COLUMN_PREFERENCES);
+    UserPreferences.removeUserPreference(userPreferencesKey + CONDITIONS_PREFERENCES);
   }
 
   private void bindEvents() {
@@ -984,40 +996,45 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     return entityDefinition().attributes().definition(attribute) instanceof ColumnDefinition;
   }
 
-  private JSONObject createPreferences() throws Exception {
-    JSONObject preferencesRoot = new JSONObject();
-    preferencesRoot.put(ColumnPreferences.COLUMNS, createColumnPreferences());
-
-    return preferencesRoot;
-  }
-
-  private JSONObject createColumnPreferences() {
-    JSONObject columnPreferencesRoot = new JSONObject();
+  private Map<Attribute<?>, ColumnPreferences> createColumnPreferences() {
+    Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
     for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
       Attribute<?> attribute = column.getIdentifier();
       int index = columnModel().visible(attribute).get() ? columnModel().getColumnIndex(attribute) : -1;
-      ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-      ConditionPreferences conditionPreferences = columnConditionModel != null ?
-              conditionPreferences(columnConditionModel.autoEnable().get(),
-                      columnConditionModel.caseSensitive().get(),
-                      columnConditionModel.automaticWildcard().get()) : null;
-      ColumnPreferences columnPreferences = columnPreferences(attribute, index, column.getWidth(), conditionPreferences);
-      columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
+      columnPreferencesMap.put(attribute, columnPreferences(attribute, index, column.getWidth()));
     }
 
-    return columnPreferencesRoot;
+    return columnPreferencesMap;
+  }
+
+  private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
+    Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
+    for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
+      Attribute<?> attribute = column.getIdentifier();
+      ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
+      ConditionPreferences conditionPreferences = columnConditionModel != null ?
+              conditionPreferences(attribute,
+                      columnConditionModel.autoEnable().get(),
+                      columnConditionModel.caseSensitive().get(),
+                      columnConditionModel.automaticWildcard().get()) : null;
+      conditionPreferencesMap.put(attribute, conditionPreferences);
+    }
+
+    return conditionPreferencesMap;
   }
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      String preferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
-      try {
-        if (!preferencesString.isEmpty()) {
-          applyColumnPreferences(preferencesString);
-        }
+      String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
+      if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
+        columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
       }
-      catch (Exception e) {
-        LOG.error("Error while applying preferences: " + preferencesString, e);
+      if (!columnPreferencesString.isEmpty()) {
+        applyColumnPreferences(columnPreferencesString);
+      }
+      String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
+      if (!conditionPreferencesString.isEmpty()) {
+        applyConditionPreferences(conditionPreferencesString);
       }
     }
   }
@@ -1026,10 +1043,25 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     List<Attribute<?>> columnAttributes = columnModel().columns().stream()
             .map(FilteredTableColumn::getIdentifier)
             .collect(toList());
-    Map<Attribute<?>, ColumnPreferences> columnPreferences =
-            ColumnPreferences.fromJSONObject(columnAttributes, new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS));
-    ColumnPreferences.applyColumnPreferences(this, columnAttributes, columnPreferences, (attribute, columnWidth) ->
-            columnModel().column(attribute).setPreferredWidth(columnWidth));
+    try {
+      ColumnPreferences.apply(this, columnAttributes, preferencesString, (attribute, columnWidth) ->
+              columnModel().column(attribute).setPreferredWidth(columnWidth));
+    }
+    catch (Exception e) {
+      LOG.error("Error while applying column preferences: " + preferencesString, e);
+    }
+  }
+
+  private void applyConditionPreferences(String preferencesString) {
+    List<Attribute<?>> columnAttributes = columnModel().columns().stream()
+            .map(FilteredTableColumn::getIdentifier)
+            .collect(toList());
+    try {
+      ConditionPreferences.apply(this, columnAttributes, preferencesString);
+    }
+    catch (Exception e) {
+      LOG.error("Error while applying condition preferences: " + preferencesString, e);
+    }
   }
 
   private static Select createSelect(EntityTableConditionModel<Attribute<?>> conditionModel) {

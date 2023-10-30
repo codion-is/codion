@@ -8,8 +8,6 @@ dependencies {
 
     api project(":codion-swing-common-model")
 
-    implementation(libs.json)
-
     implementation(libs.slf4j.api)
 
     testImplementation project(":codion-framework-db-local")
