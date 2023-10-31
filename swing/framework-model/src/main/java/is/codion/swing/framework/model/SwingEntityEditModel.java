@@ -247,6 +247,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   public final void remove(ForeignKey foreignKey, Collection<Entity> entities) {
     requireNonNull(foreignKey);
     requireNonNull(entities);
+    clearForeignKeyReferences(foreignKey, entities);
     if (containsComboBoxModel(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       Entity selectedEntity = comboBoxModel.selectedValue();
@@ -260,7 +261,6 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
       else {
         comboBoxModel.setSelectedItem(null);
       }
-      clearForeignKeyReferences(foreignKey, entities);
     }
   }
 

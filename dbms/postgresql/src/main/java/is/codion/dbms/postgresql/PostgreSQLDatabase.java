@@ -156,16 +156,25 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   public String errorMessage(SQLException exception) {
     String sqlState = exception.getSQLState();
     if (NULL_VALUE_ERROR.equals(sqlState)) {
-      //null value in column "column_name" of relation "table_name" violates not-null constraint
-      String exceptionMessage = exception.getMessage();
-      String columnName = exceptionMessage.substring(exceptionMessage.indexOf("column \"") + 8, exceptionMessage.indexOf("\" of relation"));
-
-      return MESSAGES.getString("value_missing") + ": " + columnName;
+      return createNullValueErrorMessage(exception.getMessage());
     }
     if (ERROR_CODE_MAP.containsKey(exception.getSQLState())) {
       return ERROR_CODE_MAP.get(exception.getSQLState());
     }
 
     return super.errorMessage(exception);
+  }
+
+  private static String createNullValueErrorMessage(String exceptionMessage) {
+    int indexOfColumn = exceptionMessage.indexOf("column \"");
+    int indexOfRelation = exceptionMessage.indexOf("\" of relation");
+    if (indexOfColumn != -1 && indexOfRelation != -1) {
+      //null value in column "column_name" of relation "table_name" violates not-null constraint
+      String columnName = exceptionMessage.substring(indexOfColumn + 8, indexOfRelation);
+
+      return MESSAGES.getString("value_missing") + ": " + columnName;
+    }
+
+    return exceptionMessage;
   }
 }
