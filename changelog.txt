@@ -9822,3 +9822,4 @@
   EntitySearchField.Builder.selectAllOnFocusGained() and searchIndicator() added
   EntitySearchField.SettingsPanel now initialized lazily, single selection setting removed, some refactoring
   IdentityKeyGenerator bug fixed, now fetches the value by colum name as opposed to fetching the first column value, which doesn't work when getGeneratedKeys() returns all columns, like in PostgreSQL
+  SwingEntityEditModel.remove() bug fixed, only removed the value if a combo box was available
