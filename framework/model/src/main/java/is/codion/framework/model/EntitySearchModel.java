@@ -114,13 +114,12 @@ public interface EntitySearchModel {
   Value<String> separator();
 
   /**
-   * Note that changing this state clears the selected entities.
-   * @return the State representing the single selection enabled setting
+   * @return true if single selection is enabled
    */
-  State singleSelection();
+  boolean singleSelection();
 
   /**
-   * Attribute search settings
+   * Columns search settings
    */
   interface SearchSettings {
 

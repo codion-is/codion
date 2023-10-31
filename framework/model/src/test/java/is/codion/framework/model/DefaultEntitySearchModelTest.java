@@ -83,9 +83,11 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void singleSelection() {
-    searchModel.singleSelection().set(true);
+    EntitySearchModel model = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+            .singleSelection(true)
+            .build();
     List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
-    assertThrows(IllegalArgumentException.class, () -> searchModel.selectedEntities().set(entities));
+    assertThrows(IllegalArgumentException.class, () -> model.selectedEntities().set(entities));
   }
 
   @Test
@@ -106,7 +108,6 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void searchModel() {
-    searchModel.singleSelection().set(false);
     searchModel.wildcard().set('%');
     searchModel.searchString().set("joh");
     assertTrue(searchModel.selectionEmpty().get());
@@ -200,7 +201,6 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void condition() {
-    searchModel.singleSelection().set(true);
     searchModel.wildcard().set('%');
     searchModel.searchString().set("johnson");
     List<Entity> result = searchModel.search();

@@ -49,7 +49,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
   private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
   private final Value<String> separator;
-  private final State singleSelection = State.state(false);
+  private final boolean singleSelection;
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
   private final Value<Function<Entity, String>> stringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
@@ -64,7 +64,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
     this.stringFunction.set(builder.stringFunction);
     this.description = builder.description == null ? createDescription() : builder.description;
-    this.singleSelection.set(builder.singleSelection);
+    this.singleSelection = builder.singleSelection;
     this.selectedEntities.addValidator(new EntityValidator());
     bindEventsInternal();
   }
@@ -148,7 +148,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public State singleSelection() {
+  public boolean singleSelection() {
     return singleSelection;
   }
 
@@ -171,8 +171,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       throw new IllegalStateException("No search columns provided for search model: " + entityType);
     }
     Collection<Condition> conditions = new ArrayList<>();
-    String[] searchStrings = singleSelection.get() ?
-            new String[] {searchString.get()} : searchString.get().split(separator.get());
+    String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.get().split(separator.get());
     for (Column<String> column : searchColumns) {
       SearchSettings searchSettings = columnSearchSettings.get(column);
       for (String rawSearchString : searchStrings) {
@@ -207,7 +206,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     searchString.addListener(() ->
             searchStringModified.set(!searchStringRepresentSelectedEntities()));
     separator.addListener(this::resetSearchString);
-    singleSelection.addListener(() -> selectedEntities.set(null));
     selectedEntities.addListener(this::resetSearchString);
     selectedEntities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
   }
@@ -243,7 +241,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     @Override
     public void validate(Set<Entity> entities) throws IllegalArgumentException {
       if (entities != null) {
-        if (entities.size() > 1 && singleSelection.get()) {
+        if (entities.size() > 1 && singleSelection) {
           throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
         }
         entities.forEach(DefaultEntitySearchModel.this::validateType);
