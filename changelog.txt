@@ -9859,3 +9859,7 @@
   ColumnPreferences, property key names shortened in order to reduce the preferences string length, related refactoring, json dependency removed from swing.framework.model
   SwingEntityTableModel, column and condition preferences split up due to size
   SwingEntityTableModel.createConditionPreferences() bug fixed, no longer adds null preferences to conditionPreferencesMap when a condition model is not available
+  DefaultEntitySearchModel.singleSelection() no longer State based and dynamic
+  EntitySearchField.Builder.selectAllOnFocusGained() and searchIndicator() added
+  EntitySearchField.SettingsPanel now initialized lazily, single selection setting removed, some refactoring
+  IdentityKeyGenerator bug fixed, now fetches the value by colum name as opposed to fetching the first column value, which doesn't work when getGeneratedKeys() returns all columns, like in PostgreSQL

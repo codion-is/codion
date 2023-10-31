@@ -149,12 +149,12 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private final EntitySearchModel model;
-  private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
   private final State searchOnFocusLost = State.state(true);
   private final State searching = State.state();
 
+  private SettingsPanel settingsPanel;
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
   private SelectionProvider selectionProvider;
@@ -165,12 +165,26 @@ public final class EntitySearchField extends HintTextField {
   private Color backgroundColor;
   private Color invalidBackgroundColor;
 
-  private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
-    super(searchHintEnabled ? Messages.search() + "..." : null);
-    this.model = requireNonNull(searchModel);
-    this.settingsPanel = new SettingsPanel(searchModel);
+  private EntitySearchField(DefaultEntitySearchFieldBuilder builder) {
+    super(builder.searchHintEnabled ? Messages.search() + "..." : null);
+    this.model = requireNonNull(builder.searchModel);
+    setColumns(builder.columns);
+    if (builder.upperCase) {
+      TextComponents.upperCase(getDocument());
+    }
+    if (builder.lowerCase) {
+      TextComponents.lowerCase(getDocument());
+    }
+    searchOnFocusLost.set(builder.searchOnFocusLost);
+    setSearchIndicator(builder.searchIndicator);
+    if (builder.selectionProviderFactory != null) {
+      setSelectionProvider(builder.selectionProviderFactory.apply(model()));
+    }
+    if (builder.selectAllOnFocusGained) {
+      selectAllOnFocusGained(this);
+    }
     this.selectionProvider = new ListSelectionProvider(model);
-    setToolTipText(searchModel.description());
+    setToolTipText(this.model.description());
     setComponentPopupMenu(createPopupMenu());
     configureColors();
     bindEvents();
@@ -303,6 +317,18 @@ public final class EntitySearchField extends HintTextField {
     Builder searchOnFocusLost(boolean searchOnFocusLost);
 
     /**
+     * @param selectAllOnFocusGained true if the contents should be selected when the field gains focus
+     * @return this builder instance
+     */
+    Builder selectAllOnFocusGained(boolean selectAllOnFocusGained);
+
+    /**
+     * @param searchIndicator the search indicator
+     * @return this builder instance
+     */
+    Builder searchIndicator(SearchIndicator searchIndicator);
+
+    /**
      * @param selectionProviderFactory the selection provider factory to use
      * @return this builder instance
      */
@@ -415,7 +441,7 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private JPopupMenu createPopupMenu() {
-    return menu(Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
+    return menu(Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel())
                     .owner(EntitySearchField.this)
                     .title(FrameworkMessages.settings())
                     .icon(FrameworkIcons.instance().settings())
@@ -424,6 +450,14 @@ public final class EntitySearchField extends HintTextField {
             .smallIcon(FrameworkIcons.instance().settings())
             .build()))
             .createPopupMenu();
+  }
+
+  private SettingsPanel settingsPanel() {
+    if (settingsPanel == null) {
+      settingsPanel = new SettingsPanel(model);
+    }
+
+    return settingsPanel;
   }
 
   private static final class SearchStringValue extends AbstractValue<String> {
@@ -453,12 +487,20 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private void initializeUI(EntitySearchModel searchModel) {
+      setLayout(borderLayout());
+      setBorder(emptyBorder());
+      add(createSearchColumnPanel(searchModel), BorderLayout.CENTER);
+      if (!searchModel.singleSelection()) {
+        add(createSeparatorPanel(searchModel), BorderLayout.SOUTH);
+      }
+    }
+
+    private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
       CardLayout cardLayout = new CardLayout(5, 5);
       PanelBuilder columnBasePanelBuilder = Components.panel(cardLayout);
       FilteredComboBoxModel<Item<Column<String>>> columnComboBoxModel = new FilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
-      for (Map.Entry<Column<String>, EntitySearchModel.SearchSettings> entry :
-              searchModel.columnSearchSettings().entrySet()) {
+      for (Map.Entry<Column<String>, EntitySearchModel.SearchSettings> entry : searchModel.columnSearchSettings().entrySet()) {
         columnComboBoxModel.addItem(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
         columnBasePanelBuilder.add(createColumnSettingsPanel(entry.getValue()), entry.getKey().name());
       }
@@ -468,28 +510,22 @@ public final class EntitySearchField extends HintTextField {
         columnComboBoxModel.setSelectedItem(columnComboBoxModel.getElementAt(0));
       }
 
-      JPanel generalSettingsPanel = Components.gridLayoutPanel(2, 1)
-              .border(BorderFactory.createTitledBorder(""))
-              .add(Components.checkBox(searchModel.singleSelection())
-                      .text(MESSAGES.getString("single_selection"))
-                      .build())
+      return Components.borderLayoutPanel()
+              .border(BorderFactory.createTitledBorder(MESSAGES.getString("search_columns")))
+              .northComponent(Components.comboBox(columnComboBoxModel).build())
+              .centerComponent(columnBasePanel)
               .build();
+    }
 
-      JPanel separatorPanel = Components.borderLayoutPanel()
+    private static JPanel createSeparatorPanel(EntitySearchModel searchModel) {
+      return Components.borderLayoutPanel()
+              .border(BorderFactory.createTitledBorder(""))
               .centerComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
               .westComponent(Components.textField(searchModel.separator())
                       .columns(1)
                       .maximumLength(1)
                       .build())
               .build();
-
-      generalSettingsPanel.add(separatorPanel);
-
-      setLayout(borderLayout());
-      add(Components.comboBox(columnComboBoxModel).build(), BorderLayout.NORTH);
-      add(columnBasePanel, BorderLayout.CENTER);
-      add(generalSettingsPanel, BorderLayout.SOUTH);
-      setBorder(emptyBorder());
     }
 
     private static JPanel createColumnSettingsPanel(EntitySearchModel.SearchSettings settings) {
@@ -550,7 +586,7 @@ public final class EntitySearchField extends HintTextField {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .name(Messages.ok())
               .build();
-      list.setSelectionMode(searchModel.singleSelection().get() ?
+      list.setSelectionMode(searchModel.singleSelection() ?
               ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
@@ -635,7 +671,7 @@ public final class EntitySearchField extends HintTextField {
               .build();
       table = FilteredTable.builder(tableModel)
               .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-              .selectionMode(searchModel.singleSelection().get() ?
+              .selectionMode(searchModel.singleSelection() ?
                       ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
               .doubleClickAction(selectControl)
               .build();
@@ -829,6 +865,8 @@ public final class EntitySearchField extends HintTextField {
     private boolean lowerCase;
     private boolean searchHintEnabled = true;
     private boolean searchOnFocusLost = true;
+    private boolean selectAllOnFocusGained = true;
+    private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
     private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
 
     private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
@@ -872,6 +910,18 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
+    public Builder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
+      this.selectAllOnFocusGained = selectAllOnFocusGained;
+      return this;
+    }
+
+    @Override
+    public Builder searchIndicator(SearchIndicator searchIndicator) {
+      this.searchIndicator = requireNonNull(searchIndicator);
+      return this;
+    }
+
+    @Override
     public Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
       this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
       return this;
@@ -879,21 +929,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected EntitySearchField createComponent() {
-      EntitySearchField searchField = new EntitySearchField(searchModel, searchHintEnabled);
-      searchField.setColumns(columns);
-      if (upperCase) {
-        TextComponents.upperCase(searchField.getDocument());
-      }
-      if (lowerCase) {
-        TextComponents.lowerCase(searchField.getDocument());
-      }
-      searchField.searchOnFocusLost.set(searchOnFocusLost);
-      if (selectionProviderFactory != null) {
-        searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.model()));
-      }
-      selectAllOnFocusGained(searchField);
-
-      return searchField;
+      return new EntitySearchField(this);
     }
 
     @Override
