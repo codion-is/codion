@@ -28,7 +28,7 @@ final class IdentityKeyGenerator implements KeyGenerator {
     try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
       if (generatedKeys.next()) {
         ColumnDefinition<?> column = entity.definition().primaryKey().columnDefinitions().get(0);
-        entity.put((Attribute<Object>) column.attribute(), column.get(generatedKeys, 1));
+        entity.put((Attribute<Object>) column.attribute(), generatedKeys.getObject(column.columnName()));
       }
     }
   }
