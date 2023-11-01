@@ -120,5 +120,34 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
      * @throws IllegalArgumentException in case fetch depth is less than 0
      */
     ForeignKeyDefinition.Builder foreignKey(int fetchDepth);
+
+    /**
+     * Instantiates a {@link ForeignKeyDefinition.Builder} instance, using the fetch depth
+     * specified by {@link ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH}.
+     * This foreign key is marked as being soft, that is, not based on a physical (table) foreign key
+     * and should not prevent deletion
+     * @return a new {@link ForeignKeyDefinition.Builder}
+     * @see ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH
+     */
+    ForeignKeyDefinition.Builder softForeignKey();
+
+    /**
+     * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
+     * This foreign key is marked as being soft, that is, not based on a physical (table) foreign key
+     * and should not prevent deletion
+     * <pre>
+     * Fetch depth:
+     * -1: the full foreign key graph of the referenced entity is fetched.
+     *  0: the referenced entity not fetched.
+     *  1: the referenced entity is fetched, without any foreign key references.
+     *  2: the referenced entity is fetched, with a single level of foreign key references.
+     *  3: the referenced entity is fetched, with two levels of foreign key references.
+     *  4: etc...
+     *  </pre>
+     * @param fetchDepth the number of levels of foreign key references to fetch for this foreign key
+     * @return a new {@link ForeignKeyDefinition.Builder}
+     * @throws IllegalArgumentException in case fetch depth is less than 0
+     */
+    ForeignKeyDefinition.Builder softForeignKey(int fetchDepth);
   }
 }

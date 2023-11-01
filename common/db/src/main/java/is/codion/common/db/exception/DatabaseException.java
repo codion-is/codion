@@ -25,7 +25,7 @@ import java.sql.SQLException;
  */
 public class DatabaseException extends Exception {
 
-  private static final long serialVersionUID = 1483224395022566393L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * The sql statement being run when this exception occurred, if any, transient
