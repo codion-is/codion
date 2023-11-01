@@ -9827,3 +9827,4 @@
   IdentityKeyGenerator, comment added to prevent another regression bug
   ForeignKeyDefiner.softForeignKey() added, ForeignKeyDefinition.Builder.softReference() removed
   PostgreSQLDatabase, unique key error message now includes the offending columns and values
+  DatabaseException, reset serialVersionUID to 1, since this version isn't exactly backwards compatible anyway
