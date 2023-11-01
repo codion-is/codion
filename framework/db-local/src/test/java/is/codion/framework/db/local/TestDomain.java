@@ -194,10 +194,9 @@ public final class TestDomain extends DefaultDomain {
             Employee.MGR.define()
                     .column(),
             Employee.MGR_FK.define()
-                    .foreignKey()
-                    .caption(Employee.MGR_FK.name())
                     //not really soft, just for testing purposes
-                    .softReference(true),
+                    .softForeignKey()
+                    .caption(Employee.MGR_FK.name()),
             Employee.HIREDATE.define()
                     .column()
                     .caption(Employee.HIREDATE.name())
@@ -289,10 +288,9 @@ public final class TestDomain extends DefaultDomain {
             EmployeeFk.MGR.define()
                     .column(),
             EmployeeFk.MGR_FK.define()
-                    .foreignKey()
+                    .softForeignKey()
                     .caption(EmployeeFk.MGR_FK.name())
-                    .attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK)
-                    .softReference(true),
+                    .attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
             EmployeeFk.HIREDATE.define()
                     .column()
                     .caption(EmployeeFk.HIREDATE.name())

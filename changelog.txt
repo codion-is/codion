@@ -9825,3 +9825,4 @@
   SwingEntityEditModel.remove() bug fixed, only removed the value if a combo box was available
   PostgreSQLDatabase.errorMessage() bug fixed, now checks if the required text is available in the error message instead of assuming and crashing
   IdentityKeyGenerator, comment added to prevent another regression bug
+  ForeignKeyDefiner.softForeignKey() added, ForeignKeyDefinition.Builder.softReference() removed
