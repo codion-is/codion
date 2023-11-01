@@ -143,8 +143,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
     if (NULL_VALUE_ERROR.equals(sqlState)) {
       return createNullValueErrorMessage(exception.getMessage());
     }
-    if (ERROR_CODE_MAP.containsKey(exception.getSQLState())) {
-      return ERROR_CODE_MAP.get(exception.getSQLState());
+    if (UNIQUE_CONSTRAINT_ERROR.equals(sqlState)) {
+      return createUniqueConstraintErrorMessage(exception.getMessage());
+    }
+    if (ERROR_CODE_MAP.containsKey(sqlState)) {
+      return ERROR_CODE_MAP.get(sqlState);
     }
 
     return super.errorMessage(exception);
@@ -161,5 +164,18 @@ final class PostgreSQLDatabase extends AbstractDatabase {
     }
 
     return exceptionMessage;
+  }
+
+  private static String createUniqueConstraintErrorMessage(String exceptionMessage) {
+    int indexOfDetail = exceptionMessage.indexOf("Detail: Key");
+    int indexOfAlreadyExists = exceptionMessage.indexOf(" already exists.");
+    if (indexOfDetail != -1 && indexOfAlreadyExists != -1) {
+      //Detail: Key (col1, col2)=(val1, val2) already exists.
+      String values = exceptionMessage.substring(indexOfDetail + 11, indexOfAlreadyExists);
+      
+      return MESSAGES.getString("unique_key_error") + ": " + values;
+    }
+
+    return MESSAGES.getString("unique_key_error");
   }
 }
