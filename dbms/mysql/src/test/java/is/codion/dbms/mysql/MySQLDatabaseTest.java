@@ -5,7 +5,8 @@ package is.codion.dbms.mysql;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MySQLDatabaseTest {
 
@@ -22,12 +23,6 @@ public class MySQLDatabaseTest {
   @Test
   void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase(URL).sequenceQuery("seq"));
-  }
-
-  @Test
-  void supportsIsValid() {
-    MySQLDatabase db = new MySQLDatabase(URL);
-    assertTrue(db.supportsIsValid());
   }
 
   @Test

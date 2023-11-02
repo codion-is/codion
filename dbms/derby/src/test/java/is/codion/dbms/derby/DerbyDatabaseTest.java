@@ -5,7 +5,8 @@ package is.codion.dbms.derby;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DerbyDatabaseTest {
 
@@ -26,12 +27,6 @@ public class DerbyDatabaseTest {
   @Test
   void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).sequenceQuery("seq"));
-  }
-
-  @Test
-  void supportsIsValid() {
-    DerbyDatabase db = new DerbyDatabase(URL);
-    assertTrue(db.supportsIsValid());
   }
 
   @Test

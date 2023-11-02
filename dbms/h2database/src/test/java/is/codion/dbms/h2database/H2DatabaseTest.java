@@ -39,11 +39,6 @@ public class H2DatabaseTest {
   }
 
   @Test
-  void supportsIsValid() {
-    assertTrue(DATABASE.supportsIsValid());
-  }
-
-  @Test
   void autoIncrementQuery() {
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, DATABASE.autoIncrementQuery(null));
   }

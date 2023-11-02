@@ -34,8 +34,6 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
   private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
-  static final String CHECK_QUERY = "select 1";
-
   static {
     ERROR_CODE_MAP.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString("unique_key_error"));
     ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION, MESSAGES.getString("foreign_key_violation"));
@@ -112,14 +110,6 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   /**
-   * @return false
-   */
-  @Override
-  public boolean supportsIsValid() {
-    return false;
-  }
-
-  /**
    * @return true
    */
   @Override
@@ -130,11 +120,6 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   @Override
   public int maximumNumberOfParameters() {
     return MAXIMUM_STATEMENT_PARAMETERS;
-  }
-
-  @Override
-  public String checkConnectionQuery() {
-    return CHECK_QUERY;
   }
 
   @Override

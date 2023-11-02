@@ -9832,3 +9832,4 @@
   DerbyDatabase.shutdownEmbedded() moved to DerbyDatabaseFactory, now static, renamed shutdown()
   LocalEntityConnectionProvider.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT removed
   EntityConnectionProvider.Builder.onClose() added
+  Database.supportsIsValid() and checkConnectionQuery() removed

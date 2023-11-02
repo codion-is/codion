@@ -5,7 +5,8 @@ package is.codion.dbms.hsqldb;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class HSQLDatabaseTest {
 
@@ -26,12 +27,6 @@ public class HSQLDatabaseTest {
   @Test
   void sequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new HSQLDatabase(URL).sequenceQuery(null));
-  }
-
-  @Test
-  void supportsIsValid() {
-    HSQLDatabase db = new HSQLDatabase(URL);
-    assertTrue(db.supportsIsValid());
   }
 
   @Test
