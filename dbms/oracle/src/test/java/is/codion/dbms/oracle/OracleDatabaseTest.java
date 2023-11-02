@@ -20,7 +20,8 @@ package is.codion.dbms.oracle;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OracleDatabaseTest {
 
@@ -44,12 +45,6 @@ public class OracleDatabaseTest {
   }
 
   @Test
-  void supportsIsValid() {
-    OracleDatabase db = new OracleDatabase(URL);
-    assertFalse(db.supportsIsValid());
-  }
-
-  @Test
   void autoIncrementQuery() {
     OracleDatabase db = new OracleDatabase(URL);
     assertEquals("select seq.currval from dual", db.autoIncrementQuery("seq"));
@@ -65,12 +60,6 @@ public class OracleDatabaseTest {
   void url() {
     OracleDatabase db = new OracleDatabase(URL);
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.url());
-  }
-
-  @Test
-  void checkConnectionQuery() {
-    OracleDatabase db = new OracleDatabase(URL);
-    assertEquals(OracleDatabase.CHECK_QUERY, db.checkConnectionQuery());
   }
 
   @Test

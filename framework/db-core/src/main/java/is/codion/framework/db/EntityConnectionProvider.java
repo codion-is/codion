@@ -115,7 +115,8 @@ public interface EntityConnectionProvider extends AutoCloseable {
   void removeOnConnectListener(Consumer<EntityConnection> listener);
 
   /**
-   * Logs out, disconnects and performs cleanup if required
+   * Closes the underlying connection and performs cleanup if required
+   * @see EntityConnectionProvider.Builder#onClose(Consumer)
    */
   void close();
 
@@ -202,6 +203,13 @@ public interface EntityConnectionProvider extends AutoCloseable {
      * @return this builder instance
      */
     B clientVersion(Version clientVersion);
+
+    /**
+     * @param onClose called when this connection provider has been closed
+     * @return this builder instance
+     * @see EntityConnectionProvider#close()
+     */
+    B onClose(Consumer<EntityConnectionProvider> onClose);
 
     /**
      * Builds a {@link EntityConnectionProvider} instance based on this builder

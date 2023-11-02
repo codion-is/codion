@@ -47,6 +47,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private final UUID clientId;
   private final Version clientVersion;
   private final String clientTypeId;
+  private final Consumer<EntityConnectionProvider> onClose;
 
   private EntityConnection entityConnection;
   private Entities entities;
@@ -58,6 +59,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
     this.clientTypeId = builder.clientTypeId;
     this.clientVersion = builder.clientVersion;
+    this.onClose = builder.onClose;
   }
 
   @Override
@@ -139,6 +141,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       }
       entityConnection = null;
     }
+    if (onClose != null) {
+      onClose.accept(this);
+    }
   }
 
   /**
@@ -183,6 +188,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     private UUID clientId = UUID.randomUUID();
     private String clientTypeId;
     private Version clientVersion;
+    private Consumer<EntityConnectionProvider> onClose;
 
     protected AbstractBuilder(String connectionType) {
       this.connectionType = requireNonNull(connectionType);
@@ -220,6 +226,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     @Override
     public final B clientVersion(Version clientVersion) {
       this.clientVersion = clientVersion;
+      return (B) this;
+    }
+
+    @Override
+    public final B onClose(Consumer<EntityConnectionProvider> onClose) {
+      this.onClose = requireNonNull(onClose);
       return (B) this;
     }
   }

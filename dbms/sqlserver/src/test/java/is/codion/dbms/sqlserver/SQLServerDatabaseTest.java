@@ -20,7 +20,8 @@ package is.codion.dbms.sqlserver;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SQLServerDatabaseTest {
 
@@ -37,12 +38,6 @@ public class SQLServerDatabaseTest {
   @Test
   void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).sequenceQuery("seq"));
-  }
-
-  @Test
-  void supportsIsValid() {
-    SQLServerDatabase db = new SQLServerDatabase(URL);
-    assertTrue(db.supportsIsValid());
   }
 
   @Test

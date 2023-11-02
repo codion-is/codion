@@ -20,7 +20,8 @@ package is.codion.dbms.db2database;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Db2DatabaseTest {
 
@@ -48,12 +49,6 @@ public class Db2DatabaseTest {
   @Test
   void autoIncrementQueryNullIdSource() {
     assertThrows(NullPointerException.class, () -> new Db2Database(URL).autoIncrementQuery(null));
-  }
-
-  @Test
-  void supportsIsValid() {
-    Db2Database db = new Db2Database(URL);
-    assertTrue(db.supportsIsValid());
   }
 
   @Test

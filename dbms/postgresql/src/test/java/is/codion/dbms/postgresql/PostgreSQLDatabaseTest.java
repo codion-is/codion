@@ -20,7 +20,8 @@ package is.codion.dbms.postgresql;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PostgreSQLDatabaseTest {
 
@@ -44,12 +45,6 @@ public class PostgreSQLDatabaseTest {
   }
 
   @Test
-  void supportsIsValid() {
-    PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
-    assertFalse(db.supportsIsValid());
-  }
-
-  @Test
   void autoIncrementQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select currval('seq')", db.autoIncrementQuery("seq"));
@@ -59,12 +54,6 @@ public class PostgreSQLDatabaseTest {
   void sequenceQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select nextval('seq')", db.sequenceQuery("seq"));
-  }
-
-  @Test
-  void checkConnectionQuery() {
-    PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
-    assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.checkConnectionQuery());
   }
 
   @Test

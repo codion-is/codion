@@ -55,16 +55,6 @@ public class DatabaseTest {
     }
 
     @Override
-    public String checkConnectionQuery() {
-      return "select 1 from dual";
-    }
-
-    @Override
-    public boolean supportsIsValid() {
-      return false;
-    }
-
-    @Override
     public String selectForUpdateClause() {
       return "for update nowait";
     }

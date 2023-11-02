@@ -26,7 +26,6 @@ import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -136,12 +135,6 @@ public interface Database extends ConnectionFactory {
   String sequenceQuery(String sequenceName);
 
   /**
-   * This should shut down the database in case it is an embedded one
-   * and if that is applicable, such as for Derby.
-   */
-  void shutdownEmbedded();
-
-  /**
    * Returns a select for update clause, an empty string if not supported.
    * @return a select for update clause
    */
@@ -157,12 +150,6 @@ public interface Database extends ConnectionFactory {
   String limitOffsetClause(Integer limit, Integer offset);
 
   /**
-   * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.
-   * @return true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}
-   */
-  boolean supportsIsValid();
-
-  /**
    * Returns true if this database requires that subqueries by aliased.
    * @return true if subqueries require an alias
    */
@@ -174,15 +161,6 @@ public interface Database extends ConnectionFactory {
    * @return the maximum number of prepared statement parameters, supported by this database.
    */
   int maximumNumberOfParameters();
-
-  /**
-   * Returns a query to use when checking if the connection is valid,
-   * this is used in cases where the dbms does not support the isValid() call.
-   * Returning null is safe if isValid() is supported.
-   * @return a check connection query
-   * @see #supportsIsValid()
-   */
-  String checkConnectionQuery();
 
   /**
    * @return the timeout in seconds to use when checking connection validity

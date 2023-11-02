@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -97,11 +96,7 @@ public abstract class AbstractDatabase implements Database {
   public final boolean connectionValid(Connection connection) {
     requireNonNull(connection, "connection");
     try {
-      if (supportsIsValid()) {
-        return connection.isValid(validityCheckTimeout);
-      }
-
-      return validateWithQuery(connection);
+      return connection.isValid(validityCheckTimeout);
     }
     catch (SQLException e) {
       return false;
@@ -160,11 +155,6 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public boolean supportsIsValid() {
-    return true;
-  }
-
-  @Override
   public boolean subqueryRequiresAlias() {
     return false;
   }
@@ -175,17 +165,9 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public String checkConnectionQuery() {
-    throw new IllegalStateException("No check connection query specified");
-  }
-
-  @Override
   public int validityCheckTimeout() {
     return validityCheckTimeout;
   }
-
-  @Override
-  public void shutdownEmbedded() {}
 
   @Override
   public String sequenceQuery(String sequenceName) {
@@ -302,23 +284,6 @@ public abstract class AbstractDatabase implements Database {
     }
 
     return result;
-  }
-
-  private boolean validateWithQuery(Connection connection) throws SQLException {
-    try (Statement statement = setQueryTimeout(connection.createStatement())) {
-      return statement.execute(checkConnectionQuery());
-    }
-  }
-
-  private Statement setQueryTimeout(Statement statement) {
-    if (validityCheckTimeout > 0) {
-      try {
-        statement.setQueryTimeout(validityCheckTimeout);
-      }
-      catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
-    }
-
-    return statement;
   }
 
   private static final class DefaultQueryCounter implements QueryCounter {

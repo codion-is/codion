@@ -18,9 +18,7 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.database.Database;
-import is.codion.common.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 
@@ -29,14 +27,6 @@ import is.codion.framework.domain.Domain;
  * @see LocalEntityConnectionProvider#builder()
  */
 public interface LocalEntityConnectionProvider extends EntityConnectionProvider {
-
-  /**
-   * Specifies whether an embedded database is shut down when disconnected from<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT =
-          Configuration.booleanValue("codion.db.shutdownEmbeddedOnDisconnect", false);
 
   /**
    * @return the underlying domain model

@@ -20,7 +20,8 @@ package is.codion.dbms.mariadb;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MariaDBDatabaseTest {
 
@@ -37,12 +38,6 @@ public class MariaDBDatabaseTest {
   @Test
   void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MariaDBDatabase(URL).sequenceQuery("seq"));
-  }
-
-  @Test
-  void supportsIsValid() {
-    MariaDBDatabase db = new MariaDBDatabase(URL);
-    assertTrue(db.supportsIsValid());
   }
 
   @Test

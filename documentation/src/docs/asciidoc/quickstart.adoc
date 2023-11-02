@@ -41,7 +41,7 @@ The most used and tested DBMS modules are:
 
 |Db2|is.codion:codion-dbms-db2database:{codion-version}
 |Derby|is.codion:codion-dbms-derby:{codion-version}
-|H2 Database|is.codion:codion-dbms-h2database:{codion-version}
+|H2|is.codion:codion-dbms-h2database:{codion-version}
 |HSQL|is.codion:codion-dbms-hsql:{codion-version}
 |MariaDB|is.codion:codion-dbms-mariadb:{codion-version}
 |MySQL|is.codion:codion-dbms-mysql:{codion-version}

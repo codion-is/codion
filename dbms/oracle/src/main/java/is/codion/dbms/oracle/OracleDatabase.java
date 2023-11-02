@@ -54,8 +54,6 @@ final class OracleDatabase extends AbstractDatabase {
   private static final int VIEW_HAS_ERRORS_ERROR = 4063;
   private static final int TIMEOUT_ERROR = 17016;
 
-  static final String CHECK_QUERY = "select 1 from dual";
-
   static {
     ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, MESSAGES.getString("unique_key_error"));
     ERROR_CODE_MAP.put(CHILD_RECORD_ERROR, MESSAGES.getString("child_record_error"));
@@ -114,19 +112,6 @@ final class OracleDatabase extends AbstractDatabase {
   @Override
   public String limitOffsetClause(Integer limit, Integer offset) {
     return createOffsetFetchNextClause(limit, offset);
-  }
-
-  /**
-   * @return false
-   */
-  @Override
-  public boolean supportsIsValid() {
-    return false;
-  }
-
-  @Override
-  public String checkConnectionQuery() {
-    return CHECK_QUERY;
   }
 
   @Override

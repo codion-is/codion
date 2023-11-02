@@ -20,7 +20,6 @@ package is.codion.dbms.derby;
 
 import is.codion.common.db.database.AbstractDatabase;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
@@ -30,7 +29,6 @@ import static java.util.Objects.requireNonNull;
  */
 final class DerbyDatabase extends AbstractDatabase {
 
-  private static final String SHUTDOWN_ERROR_CODE = "08006";
   private static final String TIMEOUT_ERROR_CODE = "XCL52";
   private static final int FOREIGN_KEY_ERROR = 23503;
 
@@ -78,17 +76,5 @@ final class DerbyDatabase extends AbstractDatabase {
   @Override
   public boolean isTimeoutException(SQLException exception) {
     return TIMEOUT_ERROR_CODE.equals(exception.getSQLState());
-  }
-
-  @Override
-  public void shutdownEmbedded() {
-    try {
-      DriverManager.getConnection(url() + ";shutdown=true").close();
-    }
-    catch (SQLException e) {
-      if (!e.getSQLState().equals(SHUTDOWN_ERROR_CODE)) {//08006 is expected on Derby shutdown
-        System.err.println("Embedded Derby database did not successfully shut down: " + e.getMessage());
-      }
-    }
   }
 }
