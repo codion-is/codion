@@ -24,8 +24,6 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
 
-  private final boolean shutdownDatabaseOnDisconnect = SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get();
-
   private final Domain domain;
   private final Database database;
   private final int defaultQueryTimeout;
@@ -76,9 +74,6 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void close(EntityConnection connection) {
     connection.close();
-    if (shutdownDatabaseOnDisconnect) {
-      database.shutdownEmbedded();
-    }
   }
 
   private static Domain initializeDomain(DomainType domainType) {

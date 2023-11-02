@@ -9828,3 +9828,7 @@
   ForeignKeyDefiner.softForeignKey() added, ForeignKeyDefinition.Builder.softReference() removed
   PostgreSQLDatabase, unique key error message now includes the offending columns and values
   DatabaseException, reset serialVersionUID to 1, since this version isn't exactly backwards compatible anyway
+  Database.shutdownEmbedded() removed
+  DerbyDatabase.shutdownEmbedded() moved to DerbyDatabaseFactory, now static, renamed shutdown()
+  LocalEntityConnectionProvider.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT removed
+  EntityConnectionProvider.Builder.onClose() added

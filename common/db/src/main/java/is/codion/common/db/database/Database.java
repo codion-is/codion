@@ -121,12 +121,6 @@ public interface Database extends ConnectionFactory {
   String sequenceQuery(String sequenceName);
 
   /**
-   * This should shut down the database in case it is an embedded one
-   * and if that is applicable, such as for Derby.
-   */
-  void shutdownEmbedded();
-
-  /**
    * Returns a select for update clause, an empty string if not supported.
    * @return a select for update clause
    */

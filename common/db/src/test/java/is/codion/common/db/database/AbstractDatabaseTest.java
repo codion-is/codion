@@ -39,7 +39,6 @@ public final class AbstractDatabaseTest {
     assertEquals("for update nowait", database.selectForUpdateClause());
     assertTrue(database.supportsIsValid());
     assertEquals("name", database.name());
-    database.shutdownEmbedded();
     database.errorMessage(new SQLException());
   }
 
