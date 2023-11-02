@@ -36,11 +36,11 @@ public final class DesignAndStyle {
     FilteredTableSelectionModel<List<String>> selectionModel = null;
 
     //tag::factories[]
-    Event<String> event = event();              // Event.event()
+    Event<String> event = event(); // Event.event()
 
     Value<Integer> value = value(42); // Value.value()
 
-    State state = state(true);            // State.state()
+    State state = state(true); // State.state()
 
     EntityTableConditionModel<Attribute<?>> conditionModel =
             entityTableConditionModel(Customer.TYPE, connectionProvider);
