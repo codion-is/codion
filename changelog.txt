@@ -9834,3 +9834,4 @@
   EntityConnectionProvider.Builder.onClose() added
   Database.supportsIsValid() and checkConnectionQuery() removed
   FilteredTableSortModel.sort() removed, comparator() added
+  LoadTestModel.removeSelectedApplications() added, available in LoadTestPanel application table popup menu

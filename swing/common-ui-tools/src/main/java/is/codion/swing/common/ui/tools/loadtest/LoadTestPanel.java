@@ -17,6 +17,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.tools.randomizer.ItemRandomizerPanel;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
@@ -52,9 +53,9 @@ import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.tools.randomizer.ItemRandomizerPanel.itemRandomizerPanel;
 import static java.util.Objects.requireNonNull;
-import static javax.swing.BorderFactory.createEtchedBorder;
-import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.BorderFactory.*;
 import static org.jfree.chart.ChartFactory.createXYStepChart;
 
 /**
@@ -147,12 +148,14 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private void initializeUI() {
     setLayout(borderLayout());
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    setBorder(createEmptyBorder(gap, gap, 0, gap));
     add(createCenterPanel(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);
   }
 
   private ItemRandomizerPanel<UsageScenario<T>> createScenarioPanel() {
-    ItemRandomizerPanel<UsageScenario<T>> panel = ItemRandomizerPanel.itemRandomizerPanel(loadTestModel.scenarioChooser());
+    ItemRandomizerPanel<UsageScenario<T>> panel = itemRandomizerPanel(loadTestModel.scenarioChooser());
     panel.setBorder(createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
@@ -341,6 +344,9 @@ public final class LoadTestPanel<T> extends JPanel {
                     .control(Control.builder(table.getModel()::refresh)
                             .name("Refresh")
                             .enabled(model().autoRefreshApplications().not()))
+                    .separator()
+                    .control(Control.builder(model()::removeSelectedApplications)
+                            .name("Remove selected"))
                     .separator()
                     .controls(Controls.builder()
                             .name("Columns")

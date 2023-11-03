@@ -99,6 +99,12 @@ public class LoadTestModelTest {
     SCENARIO.resetRunCount();
     assertEquals(0, SCENARIO.successfulRunCount());
     assertEquals(0, SCENARIO.unsuccessfulRunCount());
+
+    model.applicationTableModel().refresh();
+    model.applicationTableModel().selectionModel().setSelectedIndex(0);
+    model.removeSelectedApplications();
+    assertEquals(4, model.applicationCount().get());
+
     model.clearChartData();
     model.removeApplicationBatch();
     assertEquals(0, model.applicationCount().get());
