@@ -214,7 +214,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   public void sortItems() {
     if (sortModel.sorted()) {
       List<R> selectedItems = selectionModel.getSelectedItems();
-      sortModel.sort(visibleItems);
+      visibleItems.sort(sortModel.comparator());
       fireTableRowsUpdated(0, visibleItems.size());
       selectionModel.setSelectedItems(selectedItems);
     }
@@ -232,7 +232,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
         filteredItems.add(item);
       }
     }
-    sortModel.sort(visibleItems);
+    visibleItems.sort(sortModel.comparator());
     fireTableDataChanged();
     selectionModel.setSelectedItems(selectedItems);
   }
@@ -260,7 +260,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   @Override
   public void addItemsAtSorted(int index, Collection<R> items) {
     if (addItemsAtInternal(index, items) && sortModel.sorted()) {
-      sortModel.sort(visibleItems);
+      visibleItems.sort(sortModel.comparator());
       fireTableDataChanged();
     }
   }
@@ -278,7 +278,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   @Override
   public void addItemSorted(R item) {
     if (addItemInternal(item) && sortModel.sorted()) {
-      sortModel.sort(visibleItems);
+      visibleItems.sort(sortModel.comparator());
       fireTableDataChanged();
     }
   }

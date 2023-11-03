@@ -9833,3 +9833,4 @@
   LocalEntityConnectionProvider.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT removed
   EntityConnectionProvider.Builder.onClose() added
   Database.supportsIsValid() and checkConnectionQuery() removed
+  FilteredTableSortModel.sort() removed, comparator() added
