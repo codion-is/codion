@@ -47,6 +47,6 @@ module is.codion.framework.demos.empdept {
 
   provides is.codion.framework.domain.Domain
           with is.codion.framework.demos.empdept.domain.EmpDept;
-  provides is.codion.common.rmi.server.LoginProxy
-          with is.codion.framework.demos.empdept.server.EmpDeptLoginProxy;
+  provides is.codion.common.rmi.server.Authenticator
+          with is.codion.framework.demos.empdept.server.EmpDeptAuthenticator;
 }

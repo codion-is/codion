@@ -22,7 +22,7 @@
  * {@link is.codion.common.rmi.client.ConnectionRequest}<br>
  * {@link is.codion.common.rmi.server.Server}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration}<br>
- * {@link is.codion.common.rmi.server.LoginProxy}<br>
+ * {@link is.codion.common.rmi.server.Authenticator}<br>
  * {@link is.codion.common.rmi.server.RemoteClient}<br>
  */
 module is.codion.common.rmi {
@@ -37,5 +37,5 @@ module is.codion.common.rmi {
   exports is.codion.common.rmi.server.exception;
 
   uses is.codion.common.rmi.server.AuxiliaryServerFactory;
-  uses is.codion.common.rmi.server.LoginProxy;
+  uses is.codion.common.rmi.server.Authenticator;
 }
