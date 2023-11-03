@@ -141,7 +141,7 @@ public final class LoadTestPanel<T> extends JPanel {
                             .createControl())
                     .control(ToggleControl.builder(loadTestModel.collectChartData())
                             .name("Collect chart data"))
-                    .control(Control.builder(loadTestModel::clearChartData)
+                    .control(Control.builder(loadTestModel::clearCharts)
                             .name("Clear charts")))
             .build();
   }

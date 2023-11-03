@@ -152,7 +152,7 @@ public interface LoadTestModel<T> {
   /**
    * Clears the accumulated chart data
    */
-  void clearChartData();
+  void clearCharts();
 
   /**
    * @param name the scenario name

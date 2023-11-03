@@ -242,7 +242,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public void clearChartData() {
+  public void clearCharts() {
     scenariosRunSeries.clear();
     delayedScenarioRunsSeries.clear();
     minimumThinkTimeSeries.clear();

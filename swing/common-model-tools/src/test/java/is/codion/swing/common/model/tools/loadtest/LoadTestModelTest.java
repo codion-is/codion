@@ -105,7 +105,7 @@ public class LoadTestModelTest {
     model.removeSelectedApplications();
     assertEquals(4, model.applicationCount().get());
 
-    model.clearChartData();
+    model.clearCharts();
     model.removeApplicationBatch();
     assertEquals(0, model.applicationCount().get());
 
