@@ -22,17 +22,11 @@ https://blog.tneitzel.eu/posts/01-attacking-java-rmi-via-ssrf[Attacking Java RMI
 
 === Authentication
 
-The Codion server does not perform any user authentication by default, it leaves that up the underlying database. An authentication layer can be added by implementing a {url-javadoc}{common-rmi}/is/codion/common/rmi/server/LoginProxy.html[LoginProxy] and setting the following system property.
+The Codion server does not perform any user authentication by default, it leaves that up the underlying database. An authentication layer can be added by implementing a {url-javadoc}{common-rmi}/is/codion/common/rmi/server/Authenticator.html[Authenticator] and registering it with the ServiceLoader.
 
-[source]
-----
-codion.server.loginProxyClasses=com.app.server.AppLoginProxy # <1>
-----
-<1> A comma separated list of login proxies
+==== Authenticator examples
 
-==== Login proxy examples
-
-<<{dir-tutorials}/chinook/chinook.adoc#_login_proxy, ChinookLoginProxy>>
+<<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>>
 
 === RMI SSL encryption
 

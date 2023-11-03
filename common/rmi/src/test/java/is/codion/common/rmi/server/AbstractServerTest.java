@@ -42,8 +42,7 @@ public class AbstractServerTest {
   @AfterAll
   static void stopServer() {
     server.shutdown();
-    assertEquals(3, TestLoginProxy.LOGOUT_COUNTER.get());
-    assertEquals(1, TestLoginProxy.CLOSE_COUNTER.get());
+    assertEquals(1, TestAuthenticator.CLOSE_COUNTER.get());
   }
 
   @Test
@@ -119,10 +118,10 @@ public class AbstractServerTest {
   }
 
   @Test
-  void testLoginProxy() throws RemoteException, ServerException {
-    TestLoginProxy.LOGIN_COUNTER.set(0);
-    TestLoginProxy.LOGOUT_COUNTER.set(0);
-    TestLoginProxy.CLOSE_COUNTER.set(0);
+  void testAuthenticator() throws RemoteException, ServerException {
+    TestAuthenticator.LOGIN_COUNTER.set(0);
+    TestAuthenticator.LOGOUT_COUNTER.set(0);
+    TestAuthenticator.CLOSE_COUNTER.set(0);
 
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(CLIENT_TYPE_ID).build();
     ServerTest connection = server.connect(connectionRequest);
@@ -132,21 +131,21 @@ public class AbstractServerTest {
     server.disconnect(connectionRequest.clientId());
 
     connection = server.connect(connectionRequest);
-    assertEquals(2, TestLoginProxy.LOGIN_COUNTER.get());
+    assertEquals(2, TestAuthenticator.LOGIN_COUNTER.get());
     assertNotNull(connection);
     assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
     server.disconnect(connectionRequest.clientId());
-    assertEquals(2, TestLoginProxy.LOGOUT_COUNTER.get());
+    assertEquals(2, TestAuthenticator.LOGOUT_COUNTER.get());
 
     connection = server.connect(connectionRequest);
-    assertEquals(3, TestLoginProxy.LOGIN_COUNTER.get());
+    assertEquals(3, TestAuthenticator.LOGIN_COUNTER.get());
     assertNotNull(connection);
     assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
     server.disconnect(connectionRequest.clientId());
 
-    assertThrows(IllegalStateException.class, () -> server.addLoginProxy(new TestLoginProxy()));
+    assertThrows(IllegalStateException.class, () -> server.addAuthenticator(new TestAuthenticator()));
   }
 
   @Test
@@ -266,7 +265,7 @@ public class AbstractServerTest {
     private TestServer() throws RemoteException {
       super(CONFIGURATION);
       setAdmin(new DefaultServerAdmin(this, CONFIGURATION));
-      addLoginProxy(new TestLoginProxy());
+      addAuthenticator(new TestAuthenticator());
     }
 
     @Override
@@ -291,7 +290,7 @@ public class AbstractServerTest {
     }
   }
 
-  public static final class TestLoginProxy implements LoginProxy {
+  public static final class TestAuthenticator implements Authenticator {
 
     static final AtomicInteger LOGIN_COUNTER = new AtomicInteger();
     static final AtomicInteger LOGOUT_COUNTER = new AtomicInteger();

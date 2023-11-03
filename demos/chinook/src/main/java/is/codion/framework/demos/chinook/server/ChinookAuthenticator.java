@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.rmi.server.LoginProxy;
+import is.codion.common.rmi.server.Authenticator;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
@@ -28,10 +28,10 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
 import static java.lang.String.valueOf;
 
 /**
- * A {@link is.codion.common.rmi.server.LoginProxy} implementation
+ * A {@link Authenticator} implementation
  * authenticating via a user lookup table.
  */
-public final class ChinookLoginProxy implements LoginProxy {
+public final class ChinookAuthenticator implements Authenticator {
 
   /**
    * The Database instance we're connecting to.
@@ -54,7 +54,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    */
   private final ConnectionPoolWrapper connectionPool;
 
-  public ChinookLoginProxy() throws DatabaseException {
+  public ChinookAuthenticator() throws DatabaseException {
     connectionPool = ConnectionPoolFactory.instance().createConnectionPoolWrapper(database, databaseUser);
   }
 

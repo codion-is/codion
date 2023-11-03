@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.server;
 
-import is.codion.common.rmi.server.LoginProxy;
+import is.codion.common.rmi.server.Authenticator;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public final class EmpDeptLoginProxy implements LoginProxy {
+public final class EmpDeptAuthenticator implements Authenticator {
 
   private final Map<String, String> users = new HashMap<>();
   private final User databaseUser = User.parse("scott:tiger");
 
-  public EmpDeptLoginProxy() {
+  public EmpDeptAuthenticator() {
     users.put("scott", "tiger");
     users.put("john", "hello");
     users.put("helen", "juno");

@@ -239,12 +239,12 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/MediaTypeEditPanel.ja
 include::{dir-source}/is/codion/framework/demos/chinook/ui/ChinookAppPanel.java[lines=4..-1]
 ----
 
-[#_login_proxy]
-== Login proxy
+[#_authenticator]
+== Authenticator
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/server/ChinookLoginProxy.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/server/ChinookAuthenticator.java[lines=4..-1]
 ----
 
 [#_load_test]

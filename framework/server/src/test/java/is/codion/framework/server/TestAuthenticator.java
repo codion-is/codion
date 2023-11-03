@@ -3,7 +3,7 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.rmi.server.LoginProxy;
+import is.codion.common.rmi.server.Authenticator;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
@@ -15,12 +15,12 @@ import java.util.Optional;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 
-public final class TestLoginProxy implements LoginProxy {
+public final class TestAuthenticator implements Authenticator {
 
   private final Map<String, String> users = new HashMap<>();
   private final User databaseUser = User.parse("scott:tiger");
 
-  public TestLoginProxy() {
+  public TestAuthenticator() {
     users.put("scott", "tiger");
     users.put("john", "hello");
     users.put("helen", "juno");
@@ -28,7 +28,7 @@ public final class TestLoginProxy implements LoginProxy {
 
   @Override
   public Optional<String> clientTypeId() {
-    return Optional.of("TestLoginProxy");
+    return Optional.of("TestAuthenticator");
   }
 
   @Override

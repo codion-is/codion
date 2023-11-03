@@ -55,7 +55,7 @@ public class EntityServerTest {
   @BeforeAll
   public static synchronized void setUp() throws Exception {
     String serverName = CONFIGURATION.serverName();
-    EntityServer.startServer(CONFIGURATION).addLoginProxy(new TestLoginProxy());
+    EntityServer.startServer(CONFIGURATION).addAuthenticator(new TestAuthenticator());
     server = (Server<RemoteEntityConnection, EntityServerAdmin>)
             LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), CONFIGURATION.registryPort()).lookup(serverName);
     admin = server.serverAdmin(ADMIN_USER);
@@ -221,10 +221,10 @@ public class EntityServerTest {
     server.disconnect(connectionRequestTwo.clientId());
     assertEquals(0, admin.connectionCount());
 
-    //testing with the TestLoginProxy
+    //testing with the TestAuthenticator
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
-    final String testClientTypeId = "TestLoginProxy";
+    final String testClientTypeId = "TestAuthenticator";
     User john = User.parse("john:hello");
     ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
             .user(john)

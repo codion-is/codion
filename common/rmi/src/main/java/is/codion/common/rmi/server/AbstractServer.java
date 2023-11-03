@@ -56,8 +56,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private static final String CLIENT_ID = "clientId";
 
   private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
-  private final Map<String, LoginProxy> loginProxies = new HashMap<>();
-  private final Collection<LoginProxy> sharedLoginProxies = new ArrayList<>();
+  private final Map<String, Authenticator> authenticators = new HashMap<>();
+  private final Collection<Authenticator> sharedAuthenticators = new ArrayList<>();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
   private final TaskScheduler connectionMaintenanceScheduler;
 
@@ -89,7 +89,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
               .start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
-      loadLoginProxies();
+      loadAuthenticators();
     }
     catch (Throwable exception) {
       throw logShutdownAndReturn(new RuntimeException(exception));
@@ -198,12 +198,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     if (clientConnection != null) {
       disconnect(clientConnection.connection());
       RemoteClient remoteClient = clientConnection.remoteClient();
-      for (LoginProxy loginProxy : sharedLoginProxies) {
-        loginProxy.logout(remoteClient);
+      for (Authenticator authenticator : sharedAuthenticators) {
+        authenticator.logout(remoteClient);
       }
-      LoginProxy loginProxy = loginProxies.get(remoteClient.clientTypeId());
-      if (loginProxy != null) {
-        loginProxy.logout(remoteClient);
+      Authenticator authenticator = authenticators.get(remoteClient.clientTypeId());
+      if (authenticator != null) {
+        authenticator.logout(remoteClient);
       }
       LOG.debug("Client disconnected {}", remoteClient);
     }
@@ -227,8 +227,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
         LOG.debug("Error while disconnecting a client on shutdown: " + clientId, e);
       }
     }
-    sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
-    loginProxies.values().forEach(AbstractServer::closeLoginProxy);
+    sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
+    authenticators.values().forEach(AbstractServer::closeAuthenticator);
     auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
     if (OBJECT_INPUT_FILTER_ON_CLASSPATH && serializationDryRun()) {
       writeDryRunWhitelist();
@@ -237,23 +237,23 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   /**
-   * Adds a {@link LoginProxy} instance to this server.
-   * If {@link LoginProxy#clientTypeId()} is empty, the login proxy
+   * Adds a {@link Authenticator} instance to this server.
+   * If {@link Authenticator#clientTypeId()} is empty, the authenticator
    * is shared between all clients, otherwise it is only used for clients with the given id.
-   * @param loginProxy the login proxy to add
-   * @throws IllegalStateException in case a login proxy with the same clientTypeId has been added
+   * @param authenticator the authenticator to add
+   * @throws IllegalStateException in case an authenticator with the same clientTypeId has been added
    */
-  public final void addLoginProxy(LoginProxy loginProxy) {
-    requireNonNull(loginProxy, "loginProxy");
-    if (loginProxy.clientTypeId().isPresent()) {
-      String clientTypeId = loginProxy.clientTypeId().get();
-      if (loginProxies.containsKey(clientTypeId)) {
-        throw new IllegalStateException("LoginProxy for clientTypeId '" + clientTypeId + "' has alread been added");
+  public final void addAuthenticator(Authenticator authenticator) {
+    requireNonNull(authenticator, "authenticator");
+    if (authenticator.clientTypeId().isPresent()) {
+      String clientTypeId = authenticator.clientTypeId().get();
+      if (authenticators.containsKey(clientTypeId)) {
+        throw new IllegalStateException("Authenticator for clientTypeId '" + clientTypeId + "' has alread been added");
       }
-      loginProxies.put(clientTypeId, loginProxy);
+      authenticators.put(clientTypeId, authenticator);
     }
     else {
-      sharedLoginProxies.add(loginProxy);
+      sharedAuthenticators.add(authenticator);
     }
   }
 
@@ -399,13 +399,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
     RemoteClient remoteClient = remoteClient(connectionRequest,
             clientHost((String) connectionRequest.parameters().get(CLIENT_HOST)));
-    for (LoginProxy loginProxy : sharedLoginProxies) {
-      remoteClient = loginProxy.login(remoteClient);
+    for (Authenticator authenticator : sharedAuthenticators) {
+      remoteClient = authenticator.login(remoteClient);
     }
-    LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.clientTypeId());
-    LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
-    if (clientLoginProxy != null) {
-      remoteClient = clientLoginProxy.login(remoteClient);
+    Authenticator clientAuthenticator = authenticators.get(connectionRequest.clientTypeId());
+    LOG.debug("Connecting client {}, authenticator {}", connectionRequest, clientAuthenticator);
+    if (clientAuthenticator != null) {
+      remoteClient = clientAuthenticator.login(remoteClient);
     }
     ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
     connections.put(remoteClient.clientId(), clientConnection);
@@ -459,12 +459,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void closeLoginProxy(LoginProxy loginProxy) {
+  private static void closeAuthenticator(Authenticator authenticator) {
     try {
-      loginProxy.close();
+      authenticator.close();
     }
     catch (Exception e) {
-      LOG.error("Exception while closing loginProxy for client type: " + loginProxy.clientTypeId(), e);
+      LOG.error("Exception while closing authenticator for client type: " + authenticator.clientTypeId(), e);
     }
   }
 
@@ -525,12 +525,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private void loadLoginProxies() {
-    LoginProxy.loginProxies().forEach(loginProxy -> {
-      String clientTypeId = loginProxy.clientTypeId().orElse(null);
-      LOG.info("Server loading login proxy '" + loginProxy.getClass().getName() + "' as service, " +
+  private void loadAuthenticators() {
+    Authenticator.authenticators().forEach(authenticator -> {
+      String clientTypeId = authenticator.clientTypeId().orElse(null);
+      LOG.info("Server loading authenticator '" + authenticator.getClass().getName() + "' as service, " +
               (clientTypeId == null ? "shared" : "(clientTypeId: '" + clientTypeId + "'"));
-      addLoginProxy(loginProxy);
+      addAuthenticator(authenticator);
     });
   }
 
