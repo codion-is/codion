@@ -14,28 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2011 - 2023, Björn Darri Sigurðsson.
+ * Copyright (c) 2004 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.server;
+package is.codion.framework.demos.empdept.server;
 
-import is.codion.common.rmi.server.LoginProxy;
+import is.codion.common.rmi.server.Authenticator;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static is.codion.common.rmi.server.RemoteClient.remoteClient;
-
-public final class TestLoginProxy implements LoginProxy {
+public final class EmpDeptAuthenticator implements Authenticator {
 
   private final Map<String, String> users = new HashMap<>();
   private final User databaseUser = User.parse("scott:tiger");
 
-  public TestLoginProxy() {
+  public EmpDeptAuthenticator() {
     users.put("scott", "tiger");
     users.put("john", "hello");
     users.put("helen", "juno");
@@ -43,14 +41,14 @@ public final class TestLoginProxy implements LoginProxy {
 
   @Override
   public Optional<String> clientTypeId() {
-    return Optional.of("TestLoginProxy");
+    return Optional.of("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel");
   }
 
   @Override
-  public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
+  public RemoteClient login(RemoteClient remoteClient) throws LoginException {
     authenticateUser(remoteClient.user());
 
-    return remoteClient(remoteClient.connectionRequest(), databaseUser, remoteClient.clientHost());
+    return remoteClient.withDatabaseUser(databaseUser);
   }
 
   @Override
@@ -61,9 +59,9 @@ public final class TestLoginProxy implements LoginProxy {
     users.clear();
   }
 
-  private void authenticateUser(User user) throws ServerAuthenticationException {
+  private void authenticateUser(User user) throws LoginException {
     String password = users.get(user.username());
-    if (password == null || !Arrays.equals(password.toCharArray(), user.password())) {
+    if (password == null || !password.equals(String.valueOf(user.password()))) {
       throw new ServerAuthenticationException("Wrong username or password");
     }
   }

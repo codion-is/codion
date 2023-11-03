@@ -26,14 +26,14 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
- * A login proxy.
+ * An authenticator.
  */
-public interface LoginProxy {
+public interface Authenticator {
 
   /**
-   * Returns the the id of the client type for which to use this login proxy.
-   * If none is specified, this login proxy is shared between all clients.
-   * @return the String identifying the client type for which to use this login proxy or an empty optional in case this login proxy should be shared
+   * Returns the the id of the client type for which to use this authenticator.
+   * If none is specified, this authenticator is shared between all clients.
+   * @return the String identifying the client type for which to use this authenticator or an empty optional in case this authenticator should be shared
    */
   default Optional<String> clientTypeId() {
     return Optional.empty();
@@ -57,24 +57,25 @@ public interface LoginProxy {
   void logout(RemoteClient remoteClient);
 
   /**
-   * Disposes of all resources used by this LoginProxy, after a call to this
-   * method the proxy should be regarded as unusable.
-   * This method should be called by a server using this LoginProxy on shutdown,
-   * giving the LoginProxy a chance to release resources in an orderly manner.
+   * Disposes of all resources used by this authenticator, after a call to this
+   * method the authenticator should be regarded as unusable.
+   * This method should be called by a server using this authenticator on shutdown,
+   * giving the authenticator a chance to release resources in an orderly manner.
    * Any exception thrown by this method is ignored.
    */
   void close();
 
   /**
-   * @return a list containing all the LoginProxies registered with {@link ServiceLoader}.
+   * @return a list containing all the authenticators registered with {@link ServiceLoader}.
    */
-  static List<LoginProxy> loginProxies() {
-    List<LoginProxy> loginProxies = new ArrayList<>();
-    ServiceLoader<LoginProxy> loader = ServiceLoader.load(LoginProxy.class);
-    for (LoginProxy loginProxy : loader) {
-      loginProxies.add(loginProxy);
+  static List<Authenticator> authenticators() {
+    List<Authenticator> authenticators = new ArrayList<>();
+    ServiceLoader<Authenticator> loader = ServiceLoader.load(Authenticator.class);
+    for (Authenticator authenticator : loader) {
+      authenticators.add(authenticator);
     }
+    System.out.println(authenticators.size());
 
-    return loginProxies;
+    return authenticators;
   }
 }

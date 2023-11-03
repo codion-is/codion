@@ -14,26 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2004 - 2023, Björn Darri Sigurðsson.
+ * Copyright (c) 2011 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.framework.demos.empdept.server;
+package is.codion.framework.server;
 
-import is.codion.common.rmi.server.LoginProxy;
+import is.codion.common.rmi.server.Authenticator;
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public final class EmpDeptLoginProxy implements LoginProxy {
+import static is.codion.common.rmi.server.RemoteClient.remoteClient;
+
+public final class TestAuthenticator implements Authenticator {
 
   private final Map<String, String> users = new HashMap<>();
   private final User databaseUser = User.parse("scott:tiger");
 
-  public EmpDeptLoginProxy() {
+  public TestAuthenticator() {
     users.put("scott", "tiger");
     users.put("john", "hello");
     users.put("helen", "juno");
@@ -41,14 +43,14 @@ public final class EmpDeptLoginProxy implements LoginProxy {
 
   @Override
   public Optional<String> clientTypeId() {
-    return Optional.of("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel");
+    return Optional.of("TestAuthenticator");
   }
 
   @Override
-  public RemoteClient login(RemoteClient remoteClient) throws LoginException {
+  public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
     authenticateUser(remoteClient.user());
 
-    return remoteClient.withDatabaseUser(databaseUser);
+    return remoteClient(remoteClient.connectionRequest(), databaseUser, remoteClient.clientHost());
   }
 
   @Override
@@ -59,9 +61,9 @@ public final class EmpDeptLoginProxy implements LoginProxy {
     users.clear();
   }
 
-  private void authenticateUser(User user) throws LoginException {
+  private void authenticateUser(User user) throws ServerAuthenticationException {
     String password = users.get(user.username());
-    if (password == null || !password.equals(String.valueOf(user.password()))) {
+    if (password == null || !Arrays.equals(password.toCharArray(), user.password())) {
       throw new ServerAuthenticationException("Wrong username or password");
     }
   }
