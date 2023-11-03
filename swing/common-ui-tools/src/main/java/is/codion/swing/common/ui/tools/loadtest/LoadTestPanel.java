@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.tools.loadtest;
 
 import is.codion.common.Separators;
+import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel.Application;
@@ -16,6 +17,7 @@ import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.tools.randomizer.ItemRandomizerPanel;
@@ -30,7 +32,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -41,7 +42,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,7 +67,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-  private static final int USERNAME_PASSWORD_COLUMNS = 6;
+  private static final int USER_COLUMNS = 6;
   private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
@@ -241,23 +241,32 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel createUserPanel() {
     User user = loadTestModel.user().get();
     JTextField usernameField = textField()
-            .initialValue(user.username())
-            .columns(USERNAME_PASSWORD_COLUMNS)
+            .initialValue(user == null ? null : user.username())
+            .columns(USER_COLUMNS)
+            .editable(false)
             .build();
-    JPasswordField passwordField = passwordField()
-            .initialValue(String.valueOf(user.password()))
-            .columns(USERNAME_PASSWORD_COLUMNS)
-            .build();
-    ActionListener userInfoListener = e -> loadTestModel.user().set(User.user(usernameField.getText(), passwordField.getPassword()));
-    usernameField.addActionListener(userInfoListener);
-    passwordField.addActionListener(userInfoListener);
+    loadTestModel.user().addDataListener(u -> usernameField.setText(u.username()));
 
-    return flexibleGridLayoutPanel(1, 4)
-            .add(new JLabel("Username"))
+    return flexibleGridLayoutPanel(1, 3)
+            .add(new JLabel("User"))
             .add(usernameField)
-            .add(new JLabel("Password"))
-            .add(passwordField)
+            .add(new JButton(Control.builder(this::setUser)
+                    .name("...")
+                    .description("Set the application user")
+                    .build()))
             .build();
+  }
+
+  private void setUser() {
+    User user = loadTestModel.user().get();
+    try {
+      loadTestModel.user().set(Dialogs.loginDialog()
+              .owner(LoadTestPanel.this)
+              .title("User")
+              .defaultUser(user == null ? null : User.user(user.username()))
+              .show());
+    }
+    catch (CancelException ignored) {/**/}
   }
 
   private JTabbedPane createScenarioOverviewChartPanel() {
