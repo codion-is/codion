@@ -133,7 +133,7 @@ public class EntityLoadTestModelTest {
 
     loadTest.paused().set(true);
 
-    loadTest.clearChartData();
+    loadTest.clearCharts();
 
     loadTest.applicationBatchSize().set(1);
     loadTest.removeApplicationBatch();

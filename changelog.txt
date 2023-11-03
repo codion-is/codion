@@ -9874,3 +9874,7 @@
   LocalEntityConnectionProvider.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT removed
   EntityConnectionProvider.Builder.onClose() added
   Database.supportsIsValid() and checkConnectionQuery() removed
+  FilteredTableSortModel.sort() removed, comparator() added
+  LoadTestModel.removeSelectedApplications() added, available in LoadTestPanel application table popup menu
+  LoadTestPanel, user selection panel improved, now displays login dialog when setting the user
+  LoadTestModel.clearChartData() renamed clearCharts()

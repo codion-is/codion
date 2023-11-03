@@ -42,6 +42,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final Event<C> sortingChangedEvent = Event.event();
   private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
   private final Set<C> columnSortingDisabled = new HashSet<>();
+  private final RowComparator comparator = new RowComparator();
 
   DefaultFilteredTableSortModel(FilteredTableColumnModel<C> columnModel, ColumnValueProvider<R, C> columnValueProvider) {
     this.columnModel = requireNonNull(columnModel);
@@ -49,8 +50,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public void sort(List<R> items) {
-    requireNonNull(items, "items").sort(new RowComparator());
+  public Comparator<R> comparator() {
+    return comparator;
   }
 
   @Override

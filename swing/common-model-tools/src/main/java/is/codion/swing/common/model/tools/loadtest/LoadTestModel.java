@@ -160,9 +160,14 @@ public interface LoadTestModel<T> {
   void removeApplicationBatch();
 
   /**
+   * Removes the selected applications
+   */
+  void removeSelectedApplications();
+
+  /**
    * Clears the accumulated chart data
    */
-  void clearChartData();
+  void clearCharts();
 
   /**
    * @param name the scenario name

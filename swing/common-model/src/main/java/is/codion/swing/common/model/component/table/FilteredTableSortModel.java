@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import javax.swing.SortOrder;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -32,10 +33,9 @@ import static java.util.Objects.requireNonNull;
 public interface FilteredTableSortModel<R, C> {
 
   /**
-   * Sorts the given list according to the sort configuration
-   * @param items the items to sort
+   * @return a {@link Comparator} based on this sort model
    */
-  void sort(List<R> items);
+  Comparator<R> comparator();
 
   /**
    * Clears the sorting state and adds the given column sorting order.

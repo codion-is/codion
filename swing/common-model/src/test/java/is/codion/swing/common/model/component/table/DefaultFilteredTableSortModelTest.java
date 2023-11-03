@@ -24,6 +24,7 @@ import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -61,44 +62,46 @@ public class DefaultFilteredTableSortModelTest {
     Row thirdRow = new Row(1, 3, 6);
     List<Row> items = asList(firstRow, secondRow, thirdRow);
 
-    model.sort(items);
+    Comparator<Row> rowComparator = model.comparator();
+
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
     model.setSortOrder(0, SortOrder.ASCENDING);
-    model.sort(items);
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
     model.setSortOrder(2, SortOrder.ASCENDING);
-    model.sort(items);
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
     model.setSortOrder(0, SortOrder.ASCENDING);
     model.addSortOrder(1, SortOrder.DESCENDING);
-    model.sort(items);
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(firstRow));
     assertEquals(2, items.indexOf(secondRow));
 
     model.addSortOrder(2, SortOrder.DESCENDING);
-    model.sort(items);
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(firstRow));
 
     model.addSortOrder(2, SortOrder.ASCENDING);
-    model.sort(items);
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(firstRow));
     assertEquals(2, items.indexOf(secondRow));
 
     model.setSortOrder(2, SortOrder.ASCENDING);
-    model.sort(items);
+    items.sort(rowComparator);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
@@ -124,7 +127,7 @@ public class DefaultFilteredTableSortModelTest {
     DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(columnModel, (row, columnIdentifier) -> row.toString());
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
-    model.sort(collections);
+    collections.sort(model.comparator());
   }
 
   private static final class Row {

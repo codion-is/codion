@@ -50,6 +50,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -256,7 +257,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public void clearChartData() {
+  public void clearCharts() {
     scenariosRunSeries.clear();
     delayedScenarioRunsSeries.clear();
     minimumThinkTimeSeries.clear();
@@ -320,6 +321,24 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
         List<ApplicationRunner> toStop = applications.stream()
                 .filter(applicationRunner -> !applicationRunner.stopped.get())
                 .limit(batchSize)
+                .collect(toList());
+        toStop.forEach(this::stop);
+      }
+    }
+  }
+
+  @Override
+  public void removeSelectedApplications() {
+    synchronized (applications) {
+      List<? extends DefaultLoadTestModel<?>.ApplicationRunner> applicationRunners =
+              applicationTableModel.selectionModel().getSelectedItems().stream()
+                      .map(DefaultApplication.class::cast)
+                      .map(application -> application.applicationRunner)
+                      .collect(toList());
+      if (!applicationRunners.isEmpty()) {
+        List<ApplicationRunner> toStop = applications.stream()
+                .filter(applicationRunner -> !applicationRunner.stopped.get())
+                .filter(applicationRunners::contains)
                 .collect(toList());
         toStop.forEach(this::stop);
       }
@@ -952,6 +971,24 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     @Override
     public LocalDateTime created() {
       return created;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (this == object) {
+        return true;
+      }
+      if (!(object instanceof DefaultApplication)) {
+        return false;
+      }
+      DefaultApplication that = (DefaultApplication) object;
+
+      return Objects.equals(applicationRunner, that.applicationRunner);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(applicationRunner);
     }
   }
 

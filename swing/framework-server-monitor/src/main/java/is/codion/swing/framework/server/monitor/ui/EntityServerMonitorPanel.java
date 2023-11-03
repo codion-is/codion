@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
@@ -61,6 +62,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
@@ -160,6 +162,8 @@ public final class EntityServerMonitorPanel extends JPanel {
       tabbedPaneBuilder.tab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
     }
     setLayout(new BorderLayout());
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    setBorder(createEmptyBorder(gap, gap, 0, gap));
     add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);
   }
