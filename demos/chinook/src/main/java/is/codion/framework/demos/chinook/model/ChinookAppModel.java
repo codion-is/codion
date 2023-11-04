@@ -16,23 +16,21 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
   public ChinookAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider, VERSION);
-    addEntityModel(createArtistModel(connectionProvider));
+    addEntityModel(createAlbumModel(connectionProvider));
     addEntityModel(createPlaylistModel(connectionProvider));
     addEntityModel(createCustomerModel(connectionProvider));
   }
 
-  private static SwingEntityModel createArtistModel(EntityConnectionProvider connectionProvider) {
-    SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+  private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
     SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
     trackModel.editModel().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 
     albumModel.addDetailModel(trackModel);
-    artistModel.addDetailModel(albumModel);
 
-    artistModel.tableModel().refresh();
+    albumModel.tableModel().refresh();
 
-    return artistModel;
+    return albumModel;
   }
 
   private static SwingEntityModel createPlaylistModel(EntityConnectionProvider connectionProvider) {
