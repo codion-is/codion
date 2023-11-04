@@ -3,7 +3,7 @@
  * {@link is.codion.framework.model.EntityApplicationModel#USERNAME_PREFIX}<br>
  * {@link is.codion.framework.model.EntityApplicationModel#AUTHENTICATION_REQUIRED}<br>
  * {@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}<br>
- * {@link is.codion.framework.model.EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}<br>
+ * {@link is.codion.framework.model.EntityEditModel#PERSIST_FOREIGN_KEYS}<br>
  * {@link is.codion.framework.model.EntityEditModel#WARN_ABOUT_UNSAVED_DATA}<br>
  * {@link is.codion.framework.model.EntityEditModel#EDIT_EVENTS}<br>
  * {@link is.codion.framework.model.EntityTableModel#QUERY_HIDDEN_COLUMNS}<br>

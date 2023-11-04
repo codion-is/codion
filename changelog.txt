@@ -9839,3 +9839,4 @@
   LoadTestModel.clearChartData() renamed clearCharts()
   LoginProxy renamed Authenticator
   Chinook demo improvements
+  EntityEditModel.PERSIST_FOREIGN_KEY_VALUES renamed to PERSIST_FOREIGN_KEYS
