@@ -395,7 +395,7 @@ public final class EntitySearchField extends HintTextField {
               SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      selectionProviderFactory.apply(model).selectEntities(this, searchResult);
+      selectionProviderFactory.apply(model).select(this, searchResult);
     }
   }
 
@@ -534,7 +534,7 @@ public final class EntitySearchField extends HintTextField {
      * @param dialogOwner the dialog owner
      * @param entities the entities to select from
      */
-    void selectEntities(JComponent dialogOwner, List<Entity> entities);
+    void select(JComponent dialogOwner, List<Entity> entities);
 
     /**
      * Sets the preferred size of the selection component.
@@ -614,7 +614,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public void selectEntities(JComponent dialogOwner, List<Entity> entities) {
+    public void select(JComponent dialogOwner, List<Entity> entities) {
       requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
@@ -706,7 +706,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public void selectEntities(JComponent dialogOwner, List<Entity> entities) {
+    public void select(JComponent dialogOwner, List<Entity> entities) {
       table.getModel().addItemsAtSorted(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
