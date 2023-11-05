@@ -105,7 +105,7 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(EntitySearchModel)
  * @see #singleSelectionValue()
  * @see #multiSelectionValue()
- * @see #setSelectionProvider(SelectionProvider)
+ * @see #setSelectionProviderFactory(Function)
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -142,7 +142,7 @@ public final class EntitySearchField extends HintTextField {
   private SettingsPanel settingsPanel;
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
-  private SelectionProvider selectionProvider;
+  private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
   private ProgressWorker<List<Entity>, ?> searchWorker;
   private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
   private Consumer<Boolean> searchIndicatorListener;
@@ -162,7 +162,7 @@ public final class EntitySearchField extends HintTextField {
     }
     searchOnFocusLost.set(builder.searchOnFocusLost);
     setSearchIndicator(builder.searchIndicator);
-    selectionProvider = builder.selectionProviderFactory.apply(model);
+    selectionProviderFactory = builder.selectionProviderFactory;
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
     }
@@ -177,9 +177,6 @@ public final class EntitySearchField extends HintTextField {
     super.updateUI();
     if (model != null) {
       configureColors();
-    }
-    if (selectionProvider != null) {
-      selectionProvider.updateUI();
     }
     if (searchIndicatorListener instanceof ProgressBarWhileSearching) {
       ((ProgressBarWhileSearching) searchIndicatorListener).progressBar.updateUI();
@@ -203,14 +200,14 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Sets the SelectionProvider, that is, the object responsible for providing the component used
+   * Sets the factory for the SelectionProvider responsible for providing the component used
    * for selecting items from the search result.
-   * @param selectionProvider the {@link SelectionProvider} implementation to use when presenting
+   * @param selectionProviderFactory a factory for the {@link SelectionProvider} implementation to use when presenting
    * a selection dialog to the user
-   * @throws NullPointerException in case {@code selectionProvider} is null
+   * @throws NullPointerException in case {@code selectionProviderFactory} is null
    */
-  public void setSelectionProvider(SelectionProvider selectionProvider) {
-    this.selectionProvider = requireNonNull(selectionProvider);
+  public void setSelectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
+    this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
   }
 
   /**
@@ -398,7 +395,7 @@ public final class EntitySearchField extends HintTextField {
               SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      selectionProvider.selectEntities(this, searchResult);
+      selectionProviderFactory.apply(model).selectEntities(this, searchResult);
     }
   }
 
@@ -544,11 +541,6 @@ public final class EntitySearchField extends HintTextField {
      * @param preferredSize the preferred selection component size
      */
     void setPreferredSize(Dimension preferredSize);
-
-    /**
-     * Updates the UI of all the components used in this selection provider.
-     */
-    void updateUI();
   }
 
   /**
@@ -638,11 +630,6 @@ public final class EntitySearchField extends HintTextField {
     @Override
     public void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
-    }
-
-    @Override
-    public void updateUI() {
-      Utilities.updateUI(basePanel, list, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private static final class SelectCommand implements Control.Command {
@@ -736,11 +723,6 @@ public final class EntitySearchField extends HintTextField {
     @Override
     public void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
-    }
-
-    @Override
-    public void updateUI() {
-      Utilities.updateUI(basePanel, searchPanel, table, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
