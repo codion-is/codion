@@ -31,6 +31,7 @@ module is.codion.framework.demos.chinook {
   requires is.codion.plugin.imagepanel;
   requires jasperreports;
   requires com.formdev.flatlaf.intellijthemes;
+  requires org.kordamp.ikonli.foundation;
 
   exports is.codion.framework.demos.chinook.model
           to is.codion.swing.framework.model, is.codion.swing.framework.ui;
