@@ -120,7 +120,7 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(EntitySearchModel)
  * @see #singleSelectionValue()
  * @see #multiSelectionValue()
- * @see #setSelectionProvider(SelectionProvider)
+ * @see #setSelectionProviderFactory(Function)
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -157,7 +157,7 @@ public final class EntitySearchField extends HintTextField {
   private SettingsPanel settingsPanel;
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
-  private SelectionProvider selectionProvider;
+  private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
   private ProgressWorker<List<Entity>, ?> searchWorker;
   private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
   private Consumer<Boolean> searchIndicatorListener;
@@ -177,13 +177,10 @@ public final class EntitySearchField extends HintTextField {
     }
     searchOnFocusLost.set(builder.searchOnFocusLost);
     setSearchIndicator(builder.searchIndicator);
-    if (builder.selectionProviderFactory != null) {
-      setSelectionProvider(builder.selectionProviderFactory.apply(model()));
-    }
+    selectionProviderFactory = builder.selectionProviderFactory;
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
     }
-    selectionProvider = builder.selectionProviderFactory.apply(model);
     setToolTipText(model.description());
     setComponentPopupMenu(createPopupMenu());
     configureColors();
@@ -195,9 +192,6 @@ public final class EntitySearchField extends HintTextField {
     super.updateUI();
     if (model != null) {
       configureColors();
-    }
-    if (selectionProvider != null) {
-      selectionProvider.updateUI();
     }
     if (searchIndicatorListener instanceof ProgressBarWhileSearching) {
       ((ProgressBarWhileSearching) searchIndicatorListener).progressBar.updateUI();
@@ -221,14 +215,14 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Sets the SelectionProvider, that is, the object responsible for providing the component used
+   * Sets the factory for the SelectionProvider responsible for providing the component used
    * for selecting items from the search result.
-   * @param selectionProvider the {@link SelectionProvider} implementation to use when presenting
+   * @param selectionProviderFactory a factory for the {@link SelectionProvider} implementation to use when presenting
    * a selection dialog to the user
-   * @throws NullPointerException in case {@code selectionProvider} is null
+   * @throws NullPointerException in case {@code selectionProviderFactory} is null
    */
-  public void setSelectionProvider(SelectionProvider selectionProvider) {
-    this.selectionProvider = requireNonNull(selectionProvider);
+  public void setSelectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
+    this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
   }
 
   /**
@@ -416,7 +410,7 @@ public final class EntitySearchField extends HintTextField {
               SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      selectionProvider.selectEntities(this, searchResult);
+      selectionProviderFactory.apply(model).select(this, searchResult);
     }
   }
 
@@ -545,6 +539,8 @@ public final class EntitySearchField extends HintTextField {
 
   /**
    * Provides a way for the user to select one or more of a given set of entities
+   * @see #listSelectionProvider(EntitySearchModel)
+   * @see #tableSelectionProvider(EntitySearchModel)
    */
   public interface SelectionProvider {
 
@@ -553,24 +549,54 @@ public final class EntitySearchField extends HintTextField {
      * @param dialogOwner the dialog owner
      * @param entities the entities to select from
      */
-    void selectEntities(JComponent dialogOwner, List<Entity> entities);
+    void select(JComponent dialogOwner, List<Entity> entities);
 
     /**
      * Sets the preferred size of the selection component.
      * @param preferredSize the preferred selection component size
      */
     void setPreferredSize(Dimension preferredSize);
-
-    /**
-     * Updates the UI of all the components used in this selection provider.
-     */
-    void updateUI();
   }
 
   /**
-   * A {@link SelectionProvider} implementation based on {@link JList}
+   * A {@link SelectionProvider} based on a {@link JList}.
    */
-  public static final class ListSelectionProvider implements SelectionProvider {
+  public interface ListSelectionProvider extends SelectionProvider {
+
+    /**
+     * @return the list used for selecting entities
+     */
+    JList<Entity> list();
+  }
+
+  /**
+   * A {@link SelectionProvider} based on a {@link FilteredTable}.
+   */
+  public interface TableSelectionProvider extends SelectionProvider {
+
+    /**
+     * @return the table used for selecting entities
+     */
+    FilteredTable<Entity, Attribute<?>> table();
+  }
+
+  /**
+   * @param searchModel the search model
+   * @return a {@link SelectionProvider} based on a {@link JList}.
+   */
+  public static ListSelectionProvider listSelectionProvider(EntitySearchModel searchModel) {
+    return new DefaultListSelectionProvider(searchModel);
+  }
+
+  /**
+   * @param searchModel the search model
+   * @return a {@link SelectionProvider} based on a {@link FilteredTable}.
+   */
+  public static TableSelectionProvider tableSelectionProvider(EntitySearchModel searchModel) {
+    return new DefaultTableSelectionProvider(searchModel);
+  }
+
+  private static final class DefaultListSelectionProvider implements ListSelectionProvider {
 
     private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
     private final JList<Entity> list = new JList<>(listModel);
@@ -578,11 +604,7 @@ public final class EntitySearchField extends HintTextField {
     private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
-    /**
-     * Instantiates a new {@link JList} based {@link SelectionProvider}.
-     * @param searchModel the {@link EntitySearchModel}
-     */
-    public ListSelectionProvider(EntitySearchModel searchModel) {
+    private DefaultListSelectionProvider(EntitySearchModel searchModel) {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .name(Messages.ok())
               .build();
@@ -602,7 +624,12 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public void selectEntities(JComponent dialogOwner, List<Entity> entities) {
+    public JList<Entity> list() {
+      return list;
+    }
+
+    @Override
+    public void select(JComponent dialogOwner, List<Entity> entities) {
       requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
@@ -618,11 +645,6 @@ public final class EntitySearchField extends HintTextField {
     @Override
     public void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
-    }
-
-    @Override
-    public void updateUI() {
-      Utilities.updateUI(basePanel, list, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private static final class SelectCommand implements Control.Command {
@@ -643,10 +665,7 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  /**
-   * A {@link SelectionProvider} implementation based on {@link FilteredTable}
-   */
-  public static class TableSelectionProvider implements SelectionProvider {
+  private static final class DefaultTableSelectionProvider implements TableSelectionProvider {
 
     private final FilteredTable<Entity, Attribute<?>> table;
     private final JScrollPane scrollPane;
@@ -654,11 +673,7 @@ public final class EntitySearchField extends HintTextField {
     private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
-    /**
-     * Instantiates a new {@link FilteredTable} based {@link SelectionProvider}.
-     * @param searchModel the {@link EntitySearchModel}
-     */
-    public TableSelectionProvider(EntitySearchModel searchModel) {
+    private DefaultTableSelectionProvider(EntitySearchModel searchModel) {
       requireNonNull(searchModel);
       SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.entityType(), searchModel.connectionProvider()) {
         @Override
@@ -701,12 +716,12 @@ public final class EntitySearchField extends HintTextField {
     /**
      * @return the underlying FilteredTable
      */
-    public final FilteredTable<Entity, Attribute<?>> table() {
+    public FilteredTable<Entity, Attribute<?>> table() {
       return table;
     }
 
     @Override
-    public final void selectEntities(JComponent dialogOwner, List<Entity> entities) {
+    public void select(JComponent dialogOwner, List<Entity> entities) {
       table.getModel().addItemsAtSorted(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
@@ -721,13 +736,8 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public final void setPreferredSize(Dimension preferredSize) {
+    public void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
-    }
-
-    @Override
-    public void updateUI() {
-      Utilities.updateUI(basePanel, searchPanel, table, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
@@ -959,7 +969,7 @@ public final class EntitySearchField extends HintTextField {
 
       @Override
       public SelectionProvider apply(EntitySearchModel searchModel) {
-        return new ListSelectionProvider(searchModel);
+        return new DefaultListSelectionProvider(searchModel);
       }
     }
   }
