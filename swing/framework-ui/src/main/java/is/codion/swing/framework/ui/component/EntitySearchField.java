@@ -162,13 +162,10 @@ public final class EntitySearchField extends HintTextField {
     }
     searchOnFocusLost.set(builder.searchOnFocusLost);
     setSearchIndicator(builder.searchIndicator);
-    if (builder.selectionProviderFactory != null) {
-      setSelectionProvider(builder.selectionProviderFactory.apply(model()));
-    }
+    selectionProvider = builder.selectionProviderFactory.apply(model);
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
     }
-    selectionProvider = builder.selectionProviderFactory.apply(model);
     setToolTipText(model.description());
     setComponentPopupMenu(createPopupMenu());
     configureColors();
@@ -530,6 +527,8 @@ public final class EntitySearchField extends HintTextField {
 
   /**
    * Provides a way for the user to select one or more of a given set of entities
+   * @see #listSelectionProvider(EntitySearchModel)
+   * @see #tableSelectionProvider(EntitySearchModel)
    */
   public interface SelectionProvider {
 
@@ -553,9 +552,44 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * A {@link SelectionProvider} implementation based on {@link JList}
+   * A {@link SelectionProvider} based on a {@link JList}.
    */
-  public static final class ListSelectionProvider implements SelectionProvider {
+  public interface ListSelectionProvider extends SelectionProvider {
+
+    /**
+     * @return the list used for selecting entities
+     */
+    JList<Entity> list();
+  }
+
+  /**
+   * A {@link SelectionProvider} based on a {@link FilteredTable}.
+   */
+  public interface TableSelectionProvider extends SelectionProvider {
+
+    /**
+     * @return the table used for selecting entities
+     */
+    FilteredTable<Entity, Attribute<?>> table();
+  }
+
+  /**
+   * @param searchModel the search model
+   * @return a {@link SelectionProvider} based on a {@link JList}.
+   */
+  public static ListSelectionProvider listSelectionProvider(EntitySearchModel searchModel) {
+    return new DefaultListSelectionProvider(searchModel);
+  }
+
+  /**
+   * @param searchModel the search model
+   * @return a {@link SelectionProvider} based on a {@link FilteredTable}.
+   */
+  public static TableSelectionProvider tableSelectionProvider(EntitySearchModel searchModel) {
+    return new DefaultTableSelectionProvider(searchModel);
+  }
+
+  private static final class DefaultListSelectionProvider implements ListSelectionProvider {
 
     private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
     private final JList<Entity> list = new JList<>(listModel);
@@ -563,11 +597,7 @@ public final class EntitySearchField extends HintTextField {
     private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
-    /**
-     * Instantiates a new {@link JList} based {@link SelectionProvider}.
-     * @param searchModel the {@link EntitySearchModel}
-     */
-    public ListSelectionProvider(EntitySearchModel searchModel) {
+    private DefaultListSelectionProvider(EntitySearchModel searchModel) {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .name(Messages.ok())
               .build();
@@ -584,6 +614,11 @@ public final class EntitySearchField extends HintTextField {
         }
       });
       basePanel.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    @Override
+    public JList<Entity> list() {
+      return list;
     }
 
     @Override
@@ -628,10 +663,7 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  /**
-   * A {@link SelectionProvider} implementation based on {@link FilteredTable}
-   */
-  public static class TableSelectionProvider implements SelectionProvider {
+  private static final class DefaultTableSelectionProvider implements TableSelectionProvider {
 
     private final FilteredTable<Entity, Attribute<?>> table;
     private final JScrollPane scrollPane;
@@ -639,11 +671,7 @@ public final class EntitySearchField extends HintTextField {
     private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
-    /**
-     * Instantiates a new {@link FilteredTable} based {@link SelectionProvider}.
-     * @param searchModel the {@link EntitySearchModel}
-     */
-    public TableSelectionProvider(EntitySearchModel searchModel) {
+    private DefaultTableSelectionProvider(EntitySearchModel searchModel) {
       requireNonNull(searchModel);
       SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.entityType(), searchModel.connectionProvider()) {
         @Override
@@ -686,12 +714,12 @@ public final class EntitySearchField extends HintTextField {
     /**
      * @return the underlying FilteredTable
      */
-    public final FilteredTable<Entity, Attribute<?>> table() {
+    public FilteredTable<Entity, Attribute<?>> table() {
       return table;
     }
 
     @Override
-    public final void selectEntities(JComponent dialogOwner, List<Entity> entities) {
+    public void selectEntities(JComponent dialogOwner, List<Entity> entities) {
       table.getModel().addItemsAtSorted(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
@@ -706,7 +734,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public final void setPreferredSize(Dimension preferredSize) {
+    public void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
@@ -944,7 +972,7 @@ public final class EntitySearchField extends HintTextField {
 
       @Override
       public SelectionProvider apply(EntitySearchModel searchModel) {
-        return new ListSelectionProvider(searchModel);
+        return new DefaultListSelectionProvider(searchModel);
       }
     }
   }

@@ -9841,3 +9841,4 @@
   Chinook demo improvements
   EntityEditModel.PERSIST_FOREIGN_KEY_VALUES renamed to PERSIST_FOREIGN_KEYS
   EntitySearchField bug fixed, did not use the selectionProviderFactory from the builder
+  EntitySearchField.ListSelectionProvider and TableSelectionProvider interfaces added, default implementations renamed DefaultListSelectionProvider and DefaultTableSelectionProvider, now private, static factory methods added
