@@ -47,11 +47,11 @@ import java.util.function.Supplier;
 public interface EntityEditModel {
 
   /**
-   * Specifies whether writable foreign key values should persist when the model is cleared or be initialized to null<br>
+   * Specifies whether writable foreign key values should persist when the model is cleared or set to null<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.persistForeignKeyValues", true);
+  PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.persistForeignKeys", true);
 
   /**
    * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
@@ -268,7 +268,7 @@ public interface EntityEditModel {
    * Returns a State controlling whether the last used value for this attribute should persist when the model is cleared.
    * @param attribute the attribute
    * @return a State controlling whether the given attribute value should persist when the model is cleared
-   * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
+   * @see EntityEditModel#PERSIST_FOREIGN_KEYS
    */
   State persist(Attribute<?> attribute);
 
@@ -503,9 +503,10 @@ public interface EntityEditModel {
   void removeValueChangeListener(Consumer<Attribute<?>> listener);
 
   /**
-   * Notified each time the entity is set via {@link #set(Entity)}.
+   * Notified each time the entity is set via {@link #set(Entity)} or {@link #setDefaults()}.
    * @param listener a listener notified each time the entity is set, possibly to null
    * @see #set(Entity)
+   * @see #setDefaults()
    */
   void addEntityListener(Consumer<Entity> listener);
 

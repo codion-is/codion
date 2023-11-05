@@ -888,7 +888,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void configurePersistentForeignKeys() {
-    if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
+    if (EntityEditModel.PERSIST_FOREIGN_KEYS.get()) {
       entityDefinition().foreignKeys().get().forEach(foreignKey ->
               persist(foreignKey).set(foreignKeyWritable(foreignKey)));
     }

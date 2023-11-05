@@ -891,8 +891,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private Controls createLogControls() {
     Controls.Builder builder = Controls.builder()
-            .name(resourceBundle.getString("logging"))
-            .mnemonic(resourceBundle.getString("logging_mnemonic").charAt(0));
+            .name(resourceBundle.getString("log"))
+            .mnemonic(resourceBundle.getString("log_mnemonic").charAt(0));
     if (!logLevelStates.isEmpty()) {
       builder.control(createLogLevelControl());
     }

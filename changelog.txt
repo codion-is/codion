@@ -9879,3 +9879,6 @@
   LoadTestPanel, user selection panel improved, now displays login dialog when setting the user
   LoadTestModel.clearChartData() renamed clearCharts()
   LoginProxy renamed Authenticator
+  Chinook demo improvements
+  EntityEditModel.PERSIST_FOREIGN_KEY_VALUES renamed to PERSIST_FOREIGN_KEYS
+  EntitySearchField bug fixed, did not use the selectionProviderFactory from the builder

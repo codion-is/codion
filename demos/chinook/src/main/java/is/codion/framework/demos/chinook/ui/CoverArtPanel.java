@@ -26,6 +26,10 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
+
+import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -44,11 +48,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
  * A panel for displaying a cover image, based on a byte array.
@@ -57,13 +61,11 @@ final class CoverArtPanel extends JPanel {
 
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CoverArtPanel.class.getName());
 
-  private static final Dimension EMBEDDED_SIZE = new Dimension(240, 240);
+  private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);
   private static final Dimension DIALOG_SIZE = new Dimension(400, 400);
   private static final String[] IMAGE_FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "png", "bmp", "gif"};
 
   private static final String COVER = "cover";
-  private static final String SELECT_COVER = "select_cover";
-  private static final String REMOVE_COVER = "remove_cover";
   private static final String SELECT_IMAGE = "select_image";
   private static final String IMAGES = "images";
 
@@ -83,21 +85,23 @@ final class CoverArtPanel extends JPanel {
     this.imagePanel = createImagePanel();
     this.basePanel = createPanel();
     add(basePanel, BorderLayout.CENTER);
-    setBorder(createTitledBorder(BUNDLE.getString(COVER)));
     bindEvents();
   }
 
   private JPanel createPanel() {
     return borderLayoutPanel()
-            .border(emptyBorder())
             .preferredSize(EMBEDDED_SIZE)
             .centerComponent(imagePanel)
-            .southComponent(buttonPanel(Controls.builder()
-                    .control(Control.builder(this::selectCover)
-                            .name(BUNDLE.getString(SELECT_COVER)))
-                    .control(Control.builder(this::removeCover)
-                            .name(BUNDLE.getString(REMOVE_COVER))
-                            .enabled(imageSelected)))
+            .southComponent(borderLayoutPanel()
+                    .eastComponent(buttonPanel(Controls.builder()
+                            .control(Control.builder(this::selectCover)
+                                    .smallIcon(FrameworkIcons.instance().icon(Foundation.PLUS)))
+                            .control(Control.builder(this::removeCover)
+                                    .smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
+                                    .enabled(imageSelected)))
+                            .buttonGap(0)
+                            .border(createEmptyBorder(0, 0, Layouts.HORIZONTAL_VERTICAL_GAP.get(), 0))
+                            .build())
                     .build())
             .build();
   }
@@ -166,6 +170,7 @@ final class CoverArtPanel extends JPanel {
     panel.setNavigationImageEnabled(false);
     panel.setMoveImageEnabled(false);
     panel.setTransferHandler(new CoverTransferHandler());
+    panel.setBorder(createEtchedBorder());
 
     return panel;
   }

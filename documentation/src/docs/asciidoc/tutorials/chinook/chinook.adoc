@@ -133,12 +133,12 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/InvoiceLineTablePanel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/ArtistPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/ui/ArtistEditPanel.java[lines=19..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/ArtistEditPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/ui/AlbumPanel.java[lines=19..-1]
 ----
 
 [source,java]
