@@ -152,7 +152,7 @@ public final class EntitySearchField extends HintTextField {
 
   private EntitySearchField(DefaultEntitySearchFieldBuilder builder) {
     super(builder.searchHintEnabled ? Messages.search() + "..." : null);
-    this.model = requireNonNull(builder.searchModel);
+    model = requireNonNull(builder.searchModel);
     setColumns(builder.columns);
     if (builder.upperCase) {
       TextComponents.upperCase(getDocument());
@@ -168,8 +168,8 @@ public final class EntitySearchField extends HintTextField {
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
     }
-    this.selectionProvider = new ListSelectionProvider(model);
-    setToolTipText(this.model.description());
+    selectionProvider = builder.selectionProviderFactory.apply(model);
+    setToolTipText(model.description());
     setComponentPopupMenu(createPopupMenu());
     configureColors();
     bindEvents();
@@ -852,7 +852,7 @@ public final class EntitySearchField extends HintTextField {
     private boolean searchOnFocusLost = true;
     private boolean selectAllOnFocusGained = true;
     private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
-    private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
+    private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory = new ListSelectionProviderFactory();
 
     private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
       this.searchModel = searchModel;
@@ -938,6 +938,14 @@ public final class EntitySearchField extends HintTextField {
               .modifiers(SHIFT_DOWN_MASK)
               .action(component.transferFocusBackwardAction)
               .enable(component);
+    }
+
+    private static final class ListSelectionProviderFactory implements Function<EntitySearchModel, SelectionProvider> {
+
+      @Override
+      public SelectionProvider apply(EntitySearchModel searchModel) {
+        return new ListSelectionProvider(searchModel);
+      }
     }
   }
 }
