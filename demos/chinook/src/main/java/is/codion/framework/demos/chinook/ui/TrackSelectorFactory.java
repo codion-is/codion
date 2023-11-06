@@ -8,27 +8,27 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.framework.ui.component.EntitySearchField.SelectionProvider;
-import is.codion.swing.framework.ui.component.EntitySearchField.TableSelectionProvider;
+import is.codion.swing.framework.ui.component.EntitySearchField.Selector;
+import is.codion.swing.framework.ui.component.EntitySearchField.TableSelector;
 
 import java.awt.Dimension;
 import java.util.function.Function;
 
-import static is.codion.swing.framework.ui.component.EntitySearchField.tableSelectionProvider;
+import static is.codion.swing.framework.ui.component.EntitySearchField.tableSelector;
 import static javax.swing.SortOrder.ASCENDING;
 
-final class TrackSelectionProviderFactory implements Function<EntitySearchModel, SelectionProvider> {
+final class TrackSelectorFactory implements Function<EntitySearchModel, Selector> {
 
   @Override
-  public TableSelectionProvider apply(EntitySearchModel searchModel) {
-    TableSelectionProvider selectionProvider = tableSelectionProvider(searchModel);
-    FilteredTableModel<Entity, Attribute<?>> tableModel = selectionProvider.table().getModel();
+  public TableSelector apply(EntitySearchModel searchModel) {
+    TableSelector selector = tableSelector(searchModel);
+    FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
     tableModel.columnModel().setVisibleColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
     tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
     tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
     tableModel.sortModel().addSortOrder(Track.NAME, ASCENDING);
-    selectionProvider.setPreferredSize(new Dimension(500, 300));
+    selector.setPreferredSize(new Dimension(500, 300));
 
-    return selectionProvider;
+    return selector;
   }
 }

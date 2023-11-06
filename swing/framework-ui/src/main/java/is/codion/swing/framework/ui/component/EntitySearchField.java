@@ -98,14 +98,14 @@ import static java.util.Objects.requireNonNull;
  * condition then that entity is selected, otherwise a component displaying the entities
  * fitting the condition is shown in a dialog allowing either a single or multiple
  * selection based on the search model settings.
- * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
+ * {@link ListSelector} is the default {@link Selector}.
  * Use {@link EntitySearchField#builder(EntitySearchModel)} or {@link EntitySearchField#builder(EntityType, EntityConnectionProvider)} for a builder instance.
  * @see EntitySearchModel
  * @see #builder(EntityType, EntityConnectionProvider)
  * @see #builder(EntitySearchModel)
  * @see #singleSelectionValue()
  * @see #multiSelectionValue()
- * @see #setSelectionProviderFactory(Function)
+ * @see #setSelectorFactory(Function)
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -142,7 +142,7 @@ public final class EntitySearchField extends HintTextField {
   private SettingsPanel settingsPanel;
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
-  private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
+  private Function<EntitySearchModel, Selector> selectorFactory;
   private ProgressWorker<List<Entity>, ?> searchWorker;
   private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
   private Consumer<Boolean> searchIndicatorListener;
@@ -162,7 +162,7 @@ public final class EntitySearchField extends HintTextField {
     }
     searchOnFocusLost.set(builder.searchOnFocusLost);
     setSearchIndicator(builder.searchIndicator);
-    selectionProviderFactory = builder.selectionProviderFactory;
+    selectorFactory = builder.selectorFactory;
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
     }
@@ -200,14 +200,13 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Sets the factory for the SelectionProvider responsible for providing the component used
-   * for selecting items from the search result.
-   * @param selectionProviderFactory a factory for the {@link SelectionProvider} implementation to use when presenting
+   * Sets the factory for the {@link Selector} responsible for selecting items from the search result.
+   * @param selectorFactory a factory for the {@link Selector} implementation to use when presenting
    * a selection dialog to the user
-   * @throws NullPointerException in case {@code selectionProviderFactory} is null
+   * @throws NullPointerException in case {@code selectorFactory} is null
    */
-  public void setSelectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
-    this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
+  public void setSelectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
+    this.selectorFactory = requireNonNull(selectorFactory);
   }
 
   /**
@@ -308,10 +307,10 @@ public final class EntitySearchField extends HintTextField {
     Builder searchIndicator(SearchIndicator searchIndicator);
 
     /**
-     * @param selectionProviderFactory the selection provider factory to use
+     * @param selectorFactory the selector factory to use
      * @return this builder instance
      */
-    Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory);
+    Builder selectorFactory(Function<EntitySearchModel, Selector> selectorFactory);
   }
 
   private void bindEvents() {
@@ -395,7 +394,7 @@ public final class EntitySearchField extends HintTextField {
               SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      selectionProviderFactory.apply(model).select(this, searchResult);
+      selectorFactory.apply(model).select(this, searchResult);
     }
   }
 
@@ -524,10 +523,10 @@ public final class EntitySearchField extends HintTextField {
 
   /**
    * Provides a way for the user to select one or more of a given set of entities
-   * @see #listSelectionProvider(EntitySearchModel)
-   * @see #tableSelectionProvider(EntitySearchModel)
+   * @see #listSelector(EntitySearchModel)
+   * @see #tableSelector(EntitySearchModel)
    */
-  public interface SelectionProvider {
+  public interface Selector {
 
     /**
      * Displays a dialog for selecting from the given entities.
@@ -544,9 +543,9 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * A {@link SelectionProvider} based on a {@link JList}.
+   * A {@link Selector} based on a {@link JList}.
    */
-  public interface ListSelectionProvider extends SelectionProvider {
+  public interface ListSelector extends Selector {
 
     /**
      * @return the list used for selecting entities
@@ -555,9 +554,9 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * A {@link SelectionProvider} based on a {@link FilteredTable}.
+   * A {@link Selector} based on a {@link FilteredTable}.
    */
-  public interface TableSelectionProvider extends SelectionProvider {
+  public interface TableSelector extends Selector {
 
     /**
      * @return the table used for selecting entities
@@ -567,21 +566,21 @@ public final class EntitySearchField extends HintTextField {
 
   /**
    * @param searchModel the search model
-   * @return a {@link SelectionProvider} based on a {@link JList}.
+   * @return a {@link Selector} based on a {@link JList}.
    */
-  public static ListSelectionProvider listSelectionProvider(EntitySearchModel searchModel) {
-    return new DefaultListSelectionProvider(searchModel);
+  public static ListSelector listSelector(EntitySearchModel searchModel) {
+    return new DefaultListSelector(searchModel);
   }
 
   /**
    * @param searchModel the search model
-   * @return a {@link SelectionProvider} based on a {@link FilteredTable}.
+   * @return a {@link Selector} based on a {@link FilteredTable}.
    */
-  public static TableSelectionProvider tableSelectionProvider(EntitySearchModel searchModel) {
-    return new DefaultTableSelectionProvider(searchModel);
+  public static TableSelector tableSelector(EntitySearchModel searchModel) {
+    return new DefaultTableSelector(searchModel);
   }
 
-  private static final class DefaultListSelectionProvider implements ListSelectionProvider {
+  private static final class DefaultListSelector implements ListSelector {
 
     private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
     private final JList<Entity> list = new JList<>(listModel);
@@ -589,7 +588,7 @@ public final class EntitySearchField extends HintTextField {
     private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
-    private DefaultListSelectionProvider(EntitySearchModel searchModel) {
+    private DefaultListSelector(EntitySearchModel searchModel) {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .name(Messages.ok())
               .build();
@@ -650,7 +649,7 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private static final class DefaultTableSelectionProvider implements TableSelectionProvider {
+  private static final class DefaultTableSelector implements TableSelector {
 
     private final FilteredTable<Entity, Attribute<?>> table;
     private final JScrollPane scrollPane;
@@ -658,7 +657,7 @@ public final class EntitySearchField extends HintTextField {
     private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
-    private DefaultTableSelectionProvider(EntitySearchModel searchModel) {
+    private DefaultTableSelector(EntitySearchModel searchModel) {
       requireNonNull(searchModel);
       SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.entityType(), searchModel.connectionProvider()) {
         @Override
@@ -862,7 +861,7 @@ public final class EntitySearchField extends HintTextField {
     private boolean searchOnFocusLost = true;
     private boolean selectAllOnFocusGained = true;
     private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
-    private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory = new ListSelectionProviderFactory();
+    private Function<EntitySearchModel, Selector> selectorFactory = new ListSelectorFactory();
 
     private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
       this.searchModel = searchModel;
@@ -917,8 +916,8 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
-      this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
+    public Builder selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
+      this.selectorFactory = requireNonNull(selectorFactory);
       return this;
     }
 
@@ -950,11 +949,11 @@ public final class EntitySearchField extends HintTextField {
               .enable(component);
     }
 
-    private static final class ListSelectionProviderFactory implements Function<EntitySearchModel, SelectionProvider> {
+    private static final class ListSelectorFactory implements Function<EntitySearchModel, Selector> {
 
       @Override
-      public SelectionProvider apply(EntitySearchModel searchModel) {
-        return new DefaultListSelectionProvider(searchModel);
+      public Selector apply(EntitySearchModel searchModel) {
+        return new DefaultListSelector(searchModel);
       }
     }
   }
