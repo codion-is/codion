@@ -83,6 +83,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -476,9 +477,7 @@ public final class EntitySearchField extends HintTextField {
       setLayout(borderLayout());
       setBorder(emptyBorder());
       add(createSearchColumnPanel(searchModel), BorderLayout.CENTER);
-      if (!searchModel.singleSelection()) {
-        add(createSeparatorPanel(searchModel), BorderLayout.SOUTH);
-      }
+      add(createSouthPanel(searchModel), BorderLayout.SOUTH);
     }
 
     private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
@@ -503,13 +502,35 @@ public final class EntitySearchField extends HintTextField {
               .build();
     }
 
+    private static JPanel createSouthPanel(EntitySearchModel searchModel) {
+      PanelBuilder southPanelBuilder = gridLayoutPanel(1, 0)
+              .border(BorderFactory.createTitledBorder(""));
+      if (!searchModel.singleSelection()) {
+        southPanelBuilder.add(createSeparatorPanel(searchModel));
+      }
+      else {
+        southPanelBuilder.add(new JLabel());
+      }
+      southPanelBuilder.add(createLimitPanel(searchModel));
+
+      return southPanelBuilder.build();
+    }
+
     private static JPanel createSeparatorPanel(EntitySearchModel searchModel) {
       return Components.borderLayoutPanel()
-              .border(BorderFactory.createTitledBorder(""))
-              .centerComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
-              .westComponent(Components.textField(searchModel.separator())
+              .westComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
+              .centerComponent(Components.textField(searchModel.separator())
                       .columns(1)
                       .maximumLength(1)
+                      .build())
+              .build();
+    }
+
+    private static JPanel createLimitPanel(EntitySearchModel searchModel) {
+      return Components.borderLayoutPanel()
+              .westComponent(new JLabel(MESSAGES.getString("result_limit")))
+              .centerComponent(Components.integerField(searchModel.limit())
+                      .columns(4)
                       .build())
               .build();
     }

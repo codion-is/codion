@@ -9849,3 +9849,4 @@
   EntitySearchModel.limit() added, along with builder method and configuration value
   EntitySearchField now displays a message in case the search result limit has been reached
   EntitySearchField.Builder.limit() convenience method added
+  EntitySearchField, limit added to settings panel
