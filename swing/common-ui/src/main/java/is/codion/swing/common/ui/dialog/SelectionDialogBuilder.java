@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import javax.swing.JComponent;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -43,4 +44,18 @@ public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialog
    * @throws is.codion.common.model.CancelException in case the user cancelled
    */
   Collection<T> select();
+
+  /**
+   * Provides the user with the ability to select a value.
+   * @param <T> the value type
+   */
+  interface Selector<T> {
+
+    /**
+     * @param dialogOwner the dialog owner
+     * @return the selected value, an empty Optional if nothing was selected
+     * @throws is.codion.common.model.CancelException in case the user cancelled
+     */
+    Optional<T> select(JComponent dialogOwner);
+  }
 }

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -29,7 +30,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private int columns = -1;
   private Action action;
   private ActionListener actionListener;
-  private SelectionProvider<T> selectionProvider;
+  private Selector<T> selector;
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
   private String hintText;
@@ -67,8 +68,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  public final B selectionProvider(SelectionProvider<T> selectionProvider) {
-    this.selectionProvider = requireNonNull(selectionProvider);
+  public final B selector(Selector<T> selector) {
+    this.selector = requireNonNull(selector);
     return (B) this;
   }
 
@@ -106,8 +107,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     if (actionListener != null) {
       textField.addActionListener(actionListener);
     }
-    if (selectionProvider != null) {
-      addSelectionProvider(textField, selectionProvider);
+    if (selector != null) {
+      setSelector(textField, selector);
     }
     if (hintText != null && textField instanceof HintTextField) {
       ((HintTextField) textField).hintText().set(hintText);
@@ -137,27 +138,27 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     return format;
   }
 
-  private void addSelectionProvider(C textField, SelectionProvider<T> selectionProvider) {
+  private void setSelector(C textField, Selector<T> selector) {
     KeyEvents.builder(VK_SPACE)
             .modifiers(CTRL_DOWN_MASK)
-            .action(new SelectionAction<>(textField, selectionProvider))
+            .action(new SelectionAction<>(textField, selector))
             .enable(textField);
   }
 
   private static final class SelectionAction<T> extends AbstractAction {
 
     private final JTextField textField;
-    private final SelectionProvider<T> selectionProvider;
+    private final Selector<T> selector;
 
-    private SelectionAction(JTextField textField, SelectionProvider<T> selectionProvider) {
+    private SelectionAction(JTextField textField, Selector<T> selector) {
       super("DefaultTextFieldBuilder.SelectionAction");
       this.textField = textField;
-      this.selectionProvider = selectionProvider;
+      this.selector = selector;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      selectionProvider.select(textField)
+      selector.select(textField)
               .ifPresent(value -> textField.setText(value.toString()));
     }
   }

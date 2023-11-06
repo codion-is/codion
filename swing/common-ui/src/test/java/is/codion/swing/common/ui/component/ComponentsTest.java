@@ -568,7 +568,7 @@ public final class ComponentsTest {
             .upperCase(true)
             .selectAllOnFocusGained(true)
             .action(Control.control(() -> {}))
-            .selectionProvider(component -> Optional.empty())
+            .selector(component -> Optional.empty())
             .format(null)
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(value)

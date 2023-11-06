@@ -9845,3 +9845,4 @@
   EntitySearchField.setSelectionProvider() replaced with setSelectionProviderFactory(), selectionProvider now dynamically created instead of having it hang around in memory, SelectionProvider.updateUI() removed
   EntitySearchField.SelectionProvider.selectEntities() renamed select()
   EntitySearchModel.SelectionProvider renamed Selector
+  SelectionProvider renamed Selector and moved to SelectionDialogBuilder, select() parameter now JComponent dialogOwner
