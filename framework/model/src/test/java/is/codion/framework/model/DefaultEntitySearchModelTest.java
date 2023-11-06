@@ -213,6 +213,16 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(result.isEmpty());
   }
 
+  @Test
+  void limit() {
+    searchModel.searchString().set("j");
+    assertEquals(4, searchModel.search().size());
+    searchModel.limit().set(3);
+    assertEquals(3, searchModel.search().size());
+    searchModel.limit().set(null);
+    assertEquals(4, searchModel.search().size());
+  }
+
   @BeforeEach
   void setUp() throws Exception {
     searchColumns = asList(Employee.NAME, Employee.JOB);

@@ -53,6 +53,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
   private final Value<Function<Entity, String>> stringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
+  private final Value<Integer> limit;
   private final State selectionEmpty = State.state(true);
   private final String description;
 
@@ -66,6 +67,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection = builder.singleSelection;
     this.selectedEntities.addValidator(new EntityValidator());
+    this.limit = Value.value(builder.limit, builder.limit);
     bindEventsInternal();
   }
 
@@ -107,6 +109,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public Value<Character> wildcard() {
     return wildcard;
+  }
+
+  @Override
+  public Value<Integer> limit() {
+    return limit;
   }
 
   @Override
@@ -185,13 +192,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
         }
       }
     }
+
+    return Select.where(createCombinedCondition(conditions))
+            .limit(limit.get())
+            .build();
+  }
+
+  private Condition createCombinedCondition(Collection<Condition> conditions) {
     Condition conditionCombination = or(conditions);
     Condition additionalCondition = condition.get().get();
-    Select.Builder selectBuilder = additionalCondition == null ?
-            Select.where(conditionCombination) :
-            Select.where(and(additionalCondition, conditionCombination));
 
-    return selectBuilder.build();
+    return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
   }
 
   private String prepareSearchString(String rawSearchString, SearchSettings searchSettings) {
@@ -284,6 +295,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private String description;
     private boolean singleSelection = false;
     private String separator = DEFAULT_SEPARATOR;
+    private int limit = LIMIT.get();
 
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);
@@ -322,6 +334,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     @Override
     public Builder separator(String separator) {
       this.separator = requireNonNull(separator);
+      return this;
+    }
+
+    @Override
+    public Builder limit(int limit) {
+      this.limit = limit;
       return this;
     }
 

@@ -9846,3 +9846,4 @@
   EntitySearchField.SelectionProvider.selectEntities() renamed select()
   EntitySearchModel.SelectionProvider renamed Selector
   SelectionProvider renamed Selector and moved to SelectionDialogBuilder, select() parameter now JComponent dialogOwner
+  EntitySearchModel.limit() added, along with builder method and configuration value
