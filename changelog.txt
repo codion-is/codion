@@ -9847,3 +9847,4 @@
   EntitySearchModel.SelectionProvider renamed Selector
   SelectionProvider renamed Selector and moved to SelectionDialogBuilder, select() parameter now JComponent dialogOwner
   EntitySearchModel.limit() added, along with builder method and configuration value
+  EntitySearchField now displays a message in case the search result limit has been reached

@@ -60,6 +60,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -88,6 +89,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
+import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -582,14 +584,19 @@ public final class EntitySearchField extends HintTextField {
 
   private static final class DefaultListSelector implements ListSelector {
 
+    private final EntitySearchModel searchModel;
     private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
     private final JList<Entity> list = new JList<>(listModel);
     private final JScrollPane scrollPane = new JScrollPane(list);
     private final JPanel basePanel = new JPanel(borderLayout());
+    private final JLabel resultLimitLabel = Components.label()
+            .horizontalAlignment(SwingConstants.RIGHT)
+            .build();
     private final Control selectControl;
 
     private DefaultListSelector(EntitySearchModel searchModel) {
-      selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
+      this.searchModel = requireNonNull(searchModel);
+      selectControl = Control.builder(new SelectCommand(searchModel, list))
               .name(Messages.ok())
               .build();
       list.setSelectionMode(searchModel.singleSelection() ?
@@ -605,6 +612,9 @@ public final class EntitySearchField extends HintTextField {
         }
       });
       basePanel.add(scrollPane, BorderLayout.CENTER);
+      basePanel.add(resultLimitLabel, BorderLayout.SOUTH);
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      basePanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 
     @Override
@@ -616,6 +626,7 @@ public final class EntitySearchField extends HintTextField {
     public void select(JComponent dialogOwner, List<Entity> entities) {
       requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
+      initializeResultLimitMessage(resultLimitLabel, searchModel.limit().get(), entities.size());
 
       Dialogs.okCancelDialog(basePanel)
               .owner(dialogOwner)
@@ -651,14 +662,18 @@ public final class EntitySearchField extends HintTextField {
 
   private static final class DefaultTableSelector implements TableSelector {
 
+    private final EntitySearchModel searchModel;
     private final FilteredTable<Entity, Attribute<?>> table;
     private final JScrollPane scrollPane;
     private final JPanel searchPanel = new JPanel(borderLayout());
     private final JPanel basePanel = new JPanel(borderLayout());
+    private final JLabel resultLimitLabel = Components.label()
+            .horizontalAlignment(SwingConstants.RIGHT)
+            .build();
     private final Control selectControl;
 
     private DefaultTableSelector(EntitySearchModel searchModel) {
-      requireNonNull(searchModel);
+      this.searchModel = requireNonNull(searchModel);
       SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.entityType(), searchModel.connectionProvider()) {
         @Override
         protected Collection<Entity> refreshItems() {
@@ -691,6 +706,7 @@ public final class EntitySearchField extends HintTextField {
       tableModel.sortModel().setSortOrder(searchColumns.iterator().next(), SortOrder.ASCENDING);
       scrollPane = new JScrollPane(table);
       searchPanel.add(table.searchField(), BorderLayout.WEST);
+      searchPanel.add(resultLimitLabel, BorderLayout.CENTER);
       basePanel.add(scrollPane, BorderLayout.CENTER);
       basePanel.add(searchPanel, BorderLayout.SOUTH);
       int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
@@ -708,6 +724,7 @@ public final class EntitySearchField extends HintTextField {
     public void select(JComponent dialogOwner, List<Entity> entities) {
       table.getModel().addItemsAtSorted(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
+      initializeResultLimitMessage(resultLimitLabel, searchModel.limit().get(), entities.size());
 
       Dialogs.okCancelDialog(basePanel)
               .owner(dialogOwner)
@@ -734,6 +751,15 @@ public final class EntitySearchField extends HintTextField {
     private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
       column.setCellRenderer(EntityTableCellRenderer.builder((SwingEntityTableModel) table.getModel(), column.getIdentifier()).build());
     }
+  }
+
+  private static void initializeResultLimitMessage(JLabel label, int limit, int resultSize) {
+    boolean resultLimitReached = limit == resultSize;
+    if (resultLimitReached) {
+      label.setText(format(MESSAGES.getString("result_limited"), limit));
+      label.setVisible(true);
+    }
+    label.setVisible(resultLimitReached);
   }
 
   private static final class SingleSelectionValue extends AbstractComponentValue<Entity, EntitySearchField> {
