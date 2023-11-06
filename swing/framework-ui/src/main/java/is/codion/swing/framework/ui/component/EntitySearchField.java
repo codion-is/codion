@@ -313,6 +313,12 @@ public final class EntitySearchField extends HintTextField {
      * @return this builder instance
      */
     Builder selectorFactory(Function<EntitySearchModel, Selector> selectorFactory);
+
+    /**
+     * @param limit the search result limit
+     * @return this builder instance
+     */
+    Builder limit(int limit);
   }
 
   private void bindEvents() {
@@ -944,6 +950,12 @@ public final class EntitySearchField extends HintTextField {
     @Override
     public Builder selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
       this.selectorFactory = requireNonNull(selectorFactory);
+      return this;
+    }
+
+    @Override
+    public Builder limit(int limit) {
+      this.searchModel.limit().set(limit);
       return this;
     }
 
