@@ -18,6 +18,8 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Configuration;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -39,6 +41,13 @@ import java.util.function.Supplier;
  * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
  */
 public interface EntitySearchModel {
+
+  /**
+   * Specifies the default search result limit, that is, the maximum number of results, -1 meaning no limit<br>
+   * Value type: Integer<br>
+   * Default value: -1
+   */
+  PropertyValue<Integer> LIMIT = Configuration.integerValue("is.codion.framework.model.EntitySearchModel.limit", -1);
 
   /**
    * @return the type of the entity this search model is based on
@@ -79,6 +88,11 @@ public interface EntitySearchModel {
    * @return the Value controlling the wildcard character
    */
   Value<Character> wildcard();
+
+  /**
+   * @return the value controlling the search result limit
+   */
+  Value<Integer> limit();
 
   /**
    * Performs a query based on the current search configuration
@@ -192,6 +206,12 @@ public interface EntitySearchModel {
      * @return this builder
      */
     Builder separator(String multipleItemSeparator);
+
+    /**
+     * @param limit the search result limit
+     * @return this builder
+     */
+    Builder limit(int limit);
 
     /**
      * @return a new {@link EntitySearchModel} based on this builder
