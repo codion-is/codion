@@ -20,9 +20,9 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.component.text.SelectionProvider;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -177,12 +177,12 @@ public final class Dialogs {
   }
 
   /**
-   * Returns a {@link SelectionProvider} implmentation based on a selection dialog.
+   * Returns a {@link Selector} implmentation based on a selection dialog.
    * @param valueSupplier supplies the values for the selection dialog
    * @param <T> the type of values being looked up
-   * @return a new {@link SelectionProvider} based on a selection dialog
+   * @return a new {@link Selector} based on a selection dialog
    */
-  public static <T> SelectionProvider<T> selectionProvider(Supplier<Collection<T>> valueSupplier) {
+  public static <T> Selector<T> selector(Supplier<Collection<T>> valueSupplier) {
     requireNonNull(valueSupplier);
     return dialogOwner -> selectionDialog(valueSupplier.get())
             .owner(dialogOwner)

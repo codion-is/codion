@@ -27,10 +27,9 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
-import is.codion.swing.framework.ui.component.EntitySearchField.SelectionProvider;
-import is.codion.swing.framework.ui.component.EntitySearchField.TableSelectionProvider;
+import is.codion.swing.framework.ui.component.EntitySearchField.Selector;
+import is.codion.swing.framework.ui.component.EntitySearchField.TableSelector;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -41,6 +40,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
@@ -60,7 +60,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
             .columns(14)
-            .selectionProviderFactory(new CustomerSelectionProviderFactory());
+            .selectorFactory(new CustomerSelectorFactory());
     createTemporalInputPanel(Invoice.DATE)
             .columns(6)
             .buttonFocusable(false);
@@ -108,7 +108,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .add(cityPostalCodeStateCountryPanel)
             .build();
 
-    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(editModel().entities().definition(InvoiceLine.TYPE).caption()));
+    invoiceLinePanel.setBorder(createTitledBorder(editModel().entities().definition(InvoiceLine.TYPE).caption()));
     invoiceLinePanel.initialize();
 
     setLayout(borderLayout());
@@ -117,18 +117,18 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     add(invoiceLinePanel, BorderLayout.EAST);
   }
 
-  private static final class CustomerSelectionProviderFactory implements Function<EntitySearchModel, SelectionProvider> {
+  private static final class CustomerSelectorFactory implements Function<EntitySearchModel, Selector> {
 
     @Override
-    public SelectionProvider apply(EntitySearchModel searchModel) {
-      TableSelectionProvider selectionProvider = EntitySearchField.tableSelectionProvider(searchModel);
-      FilteredTableModel<Entity, Attribute<?>> tableModel = selectionProvider.table().getModel();
+    public Selector apply(EntitySearchModel searchModel) {
+      TableSelector selector = EntitySearchField.tableSelector(searchModel);
+      FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
       tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
       tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       tableModel.sortModel().addSortOrder(Customer.FIRSTNAME, ASCENDING);
-      selectionProvider.setPreferredSize(new Dimension(500, 300));
+      selector.setPreferredSize(new Dimension(500, 300));
 
-      return selectionProvider;
+      return selector;
     }
   }
 }

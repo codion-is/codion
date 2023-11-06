@@ -208,7 +208,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackComponentFactory
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackSelectionProviderFactory.java[lines=19..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/ui/TrackSelectorFactory.java[lines=19..-1]
 ----
 
 [source,java]

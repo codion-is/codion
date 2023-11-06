@@ -57,7 +57,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.STATE)
             .columns(4)
             .upperCase(true)
-            .selectionProvider(Dialogs.selectionProvider(new StateValueSupplier()));
+            .selector(Dialogs.selector(new StateValueSupplier()));
     createTextField(Customer.COUNTRY)
             .columns(8);
     createTextField(Customer.PHONE);

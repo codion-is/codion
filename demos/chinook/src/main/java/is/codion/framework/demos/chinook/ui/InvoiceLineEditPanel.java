@@ -48,7 +48,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
     initialFocusAttribute().set(InvoiceLine.TRACK_FK);
 
     createForeignKeySearchField(InvoiceLine.TRACK_FK)
-            .selectionProviderFactory(new TrackSelectionProviderFactory())
+            .selectorFactory(new TrackSelectorFactory())
             .columns(15);
     createTextField(InvoiceLine.QUANTITY)
             .selectAllOnFocusGained(true)

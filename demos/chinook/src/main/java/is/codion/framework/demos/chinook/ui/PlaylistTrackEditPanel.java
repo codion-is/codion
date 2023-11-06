@@ -36,7 +36,7 @@ public final class PlaylistTrackEditPanel extends EntityEditPanel {
 
     createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
     createForeignKeySearchField(PlaylistTrack.TRACK_FK)
-            .selectionProviderFactory(new TrackSelectionProviderFactory())
+            .selectorFactory(new TrackSelectorFactory())
             .columns(30);
 
     setLayout(gridLayout(2, 1));
