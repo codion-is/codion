@@ -78,7 +78,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void wrongEntityType() {
-    assertThrows(IllegalArgumentException.class, () -> searchModel.selectedEntity().set(ENTITIES.entity(Department.TYPE)));
+    assertThrows(IllegalArgumentException.class, () -> searchModel.entity().set(ENTITIES.entity(Department.TYPE)));
   }
 
   @Test
@@ -87,7 +87,7 @@ public final class DefaultEntitySearchModelTest {
             .singleSelection(true)
             .build();
     List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
-    assertThrows(IllegalArgumentException.class, () -> model.selectedEntities().set(entities));
+    assertThrows(IllegalArgumentException.class, () -> model.entities().set(entities));
   }
 
   @Test
@@ -98,11 +98,11 @@ public final class DefaultEntitySearchModelTest {
             .with(Employee.NAME, "Darri")
             .with(Employee.JOB, "CLERK")
             .build();
-    searchModel.selectedEntity().set(employee);
+    searchModel.entity().set(employee);
     assertEquals(searchModel.searchString().get(), "CLERK");
     searchModel.stringFunction().set(null);
-    searchModel.selectedEntity().set(null);
-    searchModel.selectedEntity().set(employee);
+    searchModel.entity().set(null);
+    searchModel.entity().set(employee);
     assertEquals(searchModel.searchString().get(), "Darri");
   }
 
@@ -119,7 +119,7 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
     assertEquals(searchModel.searchString().get(), "joh");
-    searchModel.selectedEntities().set(result);
+    searchModel.entities().set(result);
     assertFalse(searchModel.selectionEmpty().get());
     assertEquals("John" + searchModel.separator().get() + "johnson", searchModel.searchString().get());
 
@@ -175,7 +175,7 @@ public final class DefaultEntitySearchModelTest {
     assertEquals(2, result.size());
     assertTrue(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
-    searchModel.selectedEntities().set(result);
+    searchModel.entities().set(result);
     assertFalse(searchModel.searchStringModified().get());
 
     searchModel.searchString().set("and; rew");
@@ -205,10 +205,10 @@ public final class DefaultEntitySearchModelTest {
     searchModel.searchString().set("johnson");
     List<Entity> result = searchModel.search();
     assertEquals(1, result.size());
-    searchModel.selectedEntities().set(result);
+    searchModel.entities().set(result);
     searchModel.condition().set(() ->
             Condition.customCondition(Employee.CONDITION_1_TYPE));
-    assertEquals(1, searchModel.selectedEntities().get().size());
+    assertEquals(1, searchModel.entities().get().size());
     result = searchModel.search();
     assertTrue(result.isEmpty());
   }

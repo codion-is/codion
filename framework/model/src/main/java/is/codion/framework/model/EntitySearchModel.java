@@ -47,12 +47,12 @@ public interface EntitySearchModel {
   /**
    * @return a Value controlling the selected entity
    */
-  Value<Entity> selectedEntity();
+  Value<Entity> entity();
 
   /**
    * @return a Value controlling the selected entities
    */
-  ValueSet<Entity> selectedEntities();
+  ValueSet<Entity> entities();
 
   /**
    * @return a string describing this search model, by default a comma separated list of search column names

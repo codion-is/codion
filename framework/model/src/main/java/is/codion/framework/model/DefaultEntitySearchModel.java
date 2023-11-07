@@ -45,7 +45,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private final EntityType entityType;
   private final Collection<Column<String>> columns;
-  private final ValueSet<Entity> selectedEntities = ValueSet.valueSet(Notify.WHEN_SET);
+  private final ValueSet<Entity> entities = ValueSet.valueSet(Notify.WHEN_SET);
   private final EntityConnectionProvider connectionProvider;
   private final Map<Column<String>, Settings> settings;
   private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
@@ -68,7 +68,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.stringFunction.set(builder.stringFunction);
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection = builder.singleSelection;
-    this.selectedEntities.addValidator(new EntityValidator());
+    this.entities.addValidator(new EntityValidator());
     this.limit = Value.value(builder.limit, builder.limit);
     bindEventsInternal();
   }
@@ -94,13 +94,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Entity> selectedEntity() {
-    return selectedEntities.value();
+  public Value<Entity> entity() {
+    return entities.value();
   }
 
   @Override
-  public ValueSet<Entity> selectedEntities() {
-    return selectedEntities;
+  public ValueSet<Entity> entities() {
+    return entities;
   }
 
   @Override
@@ -130,7 +130,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public void reset() {
-    searchString.set(selectedEntitiesToString());
+    searchString.set(entitiesToString());
   }
 
   @Override
@@ -217,16 +217,16 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private void bindEventsInternal() {
     searchString.addListener(() ->
-            searchStringModified.set(!searchStringRepresentSelectedEntities()));
+            searchStringModified.set(!searchStringRepresentEntities()));
     separator.addListener(this::reset);
-    selectedEntities.addListener(this::reset);
-    selectedEntities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
+    entities.addListener(this::reset);
+    entities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
   }
 
-  private boolean searchStringRepresentSelectedEntities() {
-    String selectedAsString = selectedEntitiesToString();
-    return (selectedEntities.get().isEmpty() && nullOrEmpty(searchString.get()))
-            || !selectedEntities.get().isEmpty() && selectedAsString.equals(searchString.get());
+  private boolean searchStringRepresentEntities() {
+    String selectedAsString = entitiesToString();
+    return (entities.get().isEmpty() && nullOrEmpty(searchString.get()))
+            || !entities.get().isEmpty() && selectedAsString.equals(searchString.get());
   }
 
   private String createDescription() {
@@ -237,8 +237,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
             .collect(joining(", "));
   }
 
-  private String selectedEntitiesToString() {
-    return selectedEntities.get().stream()
+  private String entitiesToString() {
+    return entities.get().stream()
             .map(stringFunction.get())
             .collect(joining(separator.get()));
   }

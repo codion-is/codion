@@ -922,7 +922,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
       @Override
       public void accept(List<Entity> inserted) {
-        ((EntitySearchField) component).model().selectedEntities().set(inserted);
+        ((EntitySearchField) component).model().entities().set(inserted);
       }
     }
   }
@@ -961,7 +961,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
         entityToUpdate = ((EntityComboBox) component).getModel().selectedValue();
       }
       else {
-        entityToUpdate = ((EntitySearchField) component).model().selectedEntity().get();
+        entityToUpdate = ((EntitySearchField) component).model().entity().get();
       }
       EntityEditPanel editPanel = initializeEditPanel();
       editPanel.editModel().set(connectionProvider.connection().select(entityToUpdate.primaryKey()));
@@ -1042,7 +1042,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
       @Override
       public void accept(List<Entity> updated) {
-        ((EntitySearchField) component).model().selectedEntities().set(updated);
+        ((EntitySearchField) component).model().entities().set(updated);
       }
     }
 

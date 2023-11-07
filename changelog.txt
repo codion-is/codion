@@ -9854,3 +9854,4 @@
   EntitySearchModel.searchColumns() renamed columns()
   EntitySearchModel.SearchSettings renamed Settings
   EntitySearchModel.columnSearchSettings() renamed settings()
+  EntitySearchModel.selectedEntity() and selectedEntities() renamed entity() and entities() respectively

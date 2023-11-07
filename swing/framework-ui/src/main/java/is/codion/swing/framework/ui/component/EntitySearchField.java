@@ -325,7 +325,7 @@ public final class EntitySearchField extends HintTextField {
   private void bindEvents() {
     new SearchStringValue(this).link(model.searchString());
     model.searchString().addDataListener(searchString -> updateColors());
-    model.selectedEntities().addListener(() -> setCaretPosition(0));
+    model.entities().addListener(() -> setCaretPosition(0));
     updateSearchIndicator();
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
@@ -364,7 +364,7 @@ public final class EntitySearchField extends HintTextField {
 
   private void performSearch(boolean promptUser) {
     if (nullOrEmpty(model.searchString().get())) {
-      model.selectedEntities().set(null);
+      model.entities().set(null);
     }
     else if (model.searchStringModified().get()) {
       cancelCurrentSearch();
@@ -388,7 +388,7 @@ public final class EntitySearchField extends HintTextField {
   private void handleResult(List<Entity> searchResult, boolean promptUser) {
     endSearch();
     if (searchResult.size() == 1) {
-      model.selectedEntities().set(searchResult);
+      model.entities().set(searchResult);
     }
     else if (promptUser) {
       promptUser(searchResult);
@@ -681,7 +681,7 @@ public final class EntitySearchField extends HintTextField {
 
       @Override
       public void perform() {
-        searchModel.selectedEntities().set(list.getSelectedValuesList());
+        searchModel.entities().set(list.getSelectedValuesList());
         Utilities.disposeParentWindow(list);
       }
     }
@@ -770,7 +770,7 @@ public final class EntitySearchField extends HintTextField {
 
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
       return () -> {
-        searchModel.selectedEntities().set(tableModel.selectionModel().getSelectedItems());
+        searchModel.entities().set(tableModel.selectionModel().getSelectedItems());
         Utilities.disposeParentWindow(table);
       };
     }
@@ -793,17 +793,17 @@ public final class EntitySearchField extends HintTextField {
 
     private SingleSelectionValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.model().selectedEntity().addListener(this::notifyListeners);
+      searchField.model().entity().addListener(this::notifyListeners);
     }
 
     @Override
     protected Entity getComponentValue() {
-      return component().model().selectedEntity().get();
+      return component().model().entity().get();
     }
 
     @Override
     protected void setComponentValue(Entity value) {
-      component().model().selectedEntity().set(value);
+      component().model().entity().set(value);
     }
   }
 
@@ -811,17 +811,17 @@ public final class EntitySearchField extends HintTextField {
 
     private MultiSelectionValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.model().selectedEntities().addListener(this::notifyListeners);
+      searchField.model().entities().addListener(this::notifyListeners);
     }
 
     @Override
     protected Collection<Entity> getComponentValue() {
-      return component().model().selectedEntities().get();
+      return component().model().entities().get();
     }
 
     @Override
     protected void setComponentValue(Collection<Entity> value) {
-      component().model().selectedEntities().set(value);
+      component().model().entities().set(value);
     }
   }
 
@@ -836,7 +836,7 @@ public final class EntitySearchField extends HintTextField {
     public void focusLost(FocusEvent e) {
       if (!e.isTemporary()) {
         if (getText().isEmpty()) {
-          model().selectedEntities().set(null);
+          model().entities().set(null);
         }
         else if (shouldPerformSearch()) {
           performSearch(false);
@@ -992,7 +992,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected void setInitialValue(EntitySearchField component, Entity initialValue) {
-      component.model().selectedEntity().set(initialValue);
+      component.model().entity().set(initialValue);
     }
 
     @Override
