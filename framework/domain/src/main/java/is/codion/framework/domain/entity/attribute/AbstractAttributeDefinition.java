@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.common.Rounder;
 import is.codion.common.Text;
 import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -34,17 +35,27 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.notNull;
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
 
   private static final long serialVersionUID = 1;
+
+  private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
+  private static final String INVALID_ITEM_SUFFIX = ResourceBundle.getBundle(AbstractAttributeDefinition.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
 
   private static final Comparator<?> LEXICAL_COMPARATOR = Text.spaceAwareCollator();
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
@@ -136,6 +147,16 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   private final Comparator<T> comparator;
 
   /**
+   * The valid items for this attribute, may be null
+   */
+  private final List<Item<T>> items;
+
+  /**
+   * The valid items for this attribute mapped to their respective values
+   */
+  private final Map<T, Item<T>> itemMap;
+
+  /**
    * The caption from the resource bundle, if any
    */
   private transient String resourceCaption;
@@ -170,6 +191,9 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     this.comparator = builder.comparator;
     this.dateTimePattern = builder.dateTimePattern;
     this.dateTimeFormatter = builder.dateTimeFormatter;
+    this.items = builder.items;
+    this.itemMap = items == null ? null : items.stream()
+            .collect(toMap(Item::get, Function.identity()));
   }
 
   @Override
@@ -272,6 +296,16 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
+  public final boolean validItem(T value) {
+    return itemMap == null || itemMap.containsKey(value);
+  }
+
+  @Override
+  public final List<Item<T>> items() {
+    return items == null ? emptyList() : items;
+  }
+
+  @Override
   public final int maximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
       return -1;
@@ -332,7 +366,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public String string(T value) {
+  public final String string(T value) {
+    if (itemMap != null) {
+      return itemString(value);
+    }
+
     if (value == null) {
       return "";
     }
@@ -347,6 +385,20 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     return value.toString();
+  }
+
+  private String itemString(T value) {
+    Item<T> item = itemMap.get(value);
+    if (item == null) {//invalid
+      if (value == null && nullable()) {
+        //technically valid
+        return "";
+      }
+      //mark invalid values
+      return value + " <" + INVALID_ITEM_SUFFIX + ">";
+    }
+
+    return item.caption();
   }
 
   private String defaultDateTimePattern() {
@@ -453,6 +505,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     private Comparator<T> comparator;
     private String dateTimePattern;
     private DateTimeFormatter dateTimeFormatter;
+    private List<Item<T>> items;
 
     AbstractAttributeDefinitionBuilder(Attribute<T> attribute) {
       this.attribute = requireNonNull(attribute);
@@ -654,6 +707,23 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     public B comparator(Comparator<T> comparator) {
       this.comparator = requireNonNull(comparator);
       return (B) this;
+    }
+
+    @Override
+    public final B items(List<Item<T>> items) {
+      this.items = unmodifiableList(validateItems(items));
+      return (B) this;
+    }
+
+    private static <T> List<Item<T>> validateItems(List<Item<T>> items) {
+      if (requireNonNull(items).size() != items.stream()
+              .map(Item::get)
+              .collect(toSet())
+              .size()) {
+        throw new IllegalArgumentException("Item list contains duplicate values: " + items);
+      }
+
+      return items;
     }
 
     private static Format defaultFormat(Attribute<?> attribute) {

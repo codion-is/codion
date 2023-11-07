@@ -518,8 +518,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private static JPanel createSouthPanel(EntitySearchModel searchModel) {
-      PanelBuilder southPanelBuilder = gridLayoutPanel(1, 0)
-              .border(BorderFactory.createTitledBorder(""));
+      PanelBuilder southPanelBuilder = gridLayoutPanel(1, 0);
       if (!searchModel.singleSelection()) {
         southPanelBuilder.add(createSeparatorPanel(searchModel));
       }

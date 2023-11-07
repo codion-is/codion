@@ -241,17 +241,14 @@ public final class AttributeDefinitionTest {
   }
 
   @Test
-  void itemColumn() {
+  void itemAttribute() {
     List<Item<Integer>> itemsDuplicate = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
     assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").define().column().items(itemsDuplicate));
 
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
-    ItemColumnDefinition<Integer> attribute = (ItemColumnDefinition<Integer>) ENTITY_TYPE.integerColumn("item").define().column().items(items).build();
-    assertFalse(attribute.valid(4));
-    assertThrows(IllegalArgumentException.class, () -> attribute.item(4));
-    assertTrue(attribute.valid(null));
-    assertTrue(attribute.valid(2));
-    assertNotNull(attribute.item(null));
-    assertNotNull(attribute.item(1));
+    AttributeDefinition<Integer> attribute = ENTITY_TYPE.integerAttribute("item").define().attribute().items(items).build();
+    assertFalse(attribute.validItem(4));
+    assertTrue(attribute.validItem(null));
+    assertTrue(attribute.validItem(2));
   }
 }

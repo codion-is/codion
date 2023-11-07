@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
@@ -42,7 +41,7 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 
   private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
     super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().type().valueClass(),
-            attributeDefinition.attribute().type().isBoolean() && !(attributeDefinition instanceof ItemColumnDefinition));
+            attributeDefinition.attribute().type().isBoolean() && attributeDefinition.items().isEmpty());
     tableModel.entityDefinition().attributes().definition(attributeDefinition.attribute());
     displayValueProvider(new DefaultDisplayValueProvider(attributeDefinition));
     cellColorProvider(new EntityCellColorProvider(tableModel));

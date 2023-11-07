@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
 import java.io.IOException;
@@ -539,7 +538,7 @@ class DefaultEntity implements Entity, Serializable {
     if (attributeDefinition.derived()) {
       throw new IllegalArgumentException("Can not set the value of a derived attribute");
     }
-    if (attributeDefinition instanceof ItemColumnDefinition && value != null && !((ItemColumnDefinition<T>) attributeDefinition).valid(value)) {
+    if (value != null && !attributeDefinition.validItem(value)) {
       throw new IllegalArgumentException("Invalid item value: " + value + " for attribute " + attributeDefinition.attribute());
     }
     if (value != null && attributeDefinition instanceof ForeignKeyDefinition) {

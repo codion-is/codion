@@ -41,7 +41,6 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
@@ -1211,7 +1210,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
       AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-      if (attribute.type().isNumerical() && !(attributeDefinition instanceof ItemColumnDefinition)) {
+      if (attribute.type().isNumerical() && attributeDefinition.items().isEmpty()) {
         return Optional.of(summaryValueProvider(attribute, tableModel, format));
       }
 

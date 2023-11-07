@@ -23,7 +23,6 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
@@ -113,8 +112,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
       performNullValidation(entity, definition);
     }
-    if (definition instanceof ItemColumnDefinition) {
-      performItemValidation(entity, (ItemColumnDefinition<T>) definition);
+    if (!definition.items().isEmpty()) {
+      performItemValidation(entity, definition);
     }
     if (attribute.type().isNumerical()) {
       performRangeValidation(entity, (Attribute<Number>) attribute);
@@ -161,13 +160,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  private <T> void performItemValidation(Entity entity, ItemColumnDefinition<T> columnDefinition) throws ItemValidationException {
-    if (entity.isNull(columnDefinition.attribute()) && nullable(entity, columnDefinition.attribute())) {
+  private <T> void performItemValidation(Entity entity, AttributeDefinition<T> attributeDefinition) throws ItemValidationException {
+    if (entity.isNull(attributeDefinition.attribute()) && nullable(entity, attributeDefinition.attribute())) {
       return;
     }
-    T value = entity.get(columnDefinition.attribute());
-    if (!columnDefinition.valid(value)) {
-      throw new ItemValidationException(columnDefinition.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
+    T value = entity.get(attributeDefinition.attribute());
+    if (!attributeDefinition.validItem(value)) {
+      throw new ItemValidationException(attributeDefinition.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
     }
   }
 

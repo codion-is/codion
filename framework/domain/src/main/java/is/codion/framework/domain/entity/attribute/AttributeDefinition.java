@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.Configuration;
 import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -29,6 +30,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -253,6 +255,22 @@ public interface AttributeDefinition<T> {
   Comparator<T> comparator();
 
   /**
+   * Validates the given value against the valid items for this attribute.
+   * Always returns true if this is not an item based attribute.
+   * @param value the value to validate
+   * @return true if the given value is a valid item for this attribute
+   * @see #items()
+   */
+  boolean validItem(T value);
+
+  /**
+   * Returns the valid items for this attribute or an empty list in
+   * case this is not an item based attribute
+   * @return an unmodifiable view of the valid items for this attribute
+   */
+  List<Item<T>> items();
+
+  /**
    * Supplies values, for example default ones.
    * @param <T> the value type
    */
@@ -444,6 +462,13 @@ public interface AttributeDefinition<T> {
      * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
     B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
+
+    /**
+     * @param items the Items representing all the valid values for this attribute
+     * @return this builder instance
+     * @throws IllegalArgumentException in case the valid item list contains duplicate values
+     */
+    B items(List<Item<T>> items);
 
     /**
      * Builds a new attribute definition instance
