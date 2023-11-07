@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
@@ -307,7 +306,7 @@ public final class EntityDialogs {
     public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
               .attributes().definition(attribute);
-      if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.type().isString()) {
+      if (attributeDefinition.items().isEmpty() && attribute.type().isString()) {
         //special handling for non-item based String attributes, text input panel instead of a text field
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)

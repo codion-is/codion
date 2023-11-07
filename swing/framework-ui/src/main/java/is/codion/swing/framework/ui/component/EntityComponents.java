@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
@@ -88,7 +87,7 @@ public class EntityComponents {
       return false;
     }
     AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-    if (attributeDefinition instanceof ItemColumnDefinition) {
+    if (!attributeDefinition.items().isEmpty()) {
       return true;
     }
 
@@ -120,7 +119,7 @@ public class EntityComponents {
    */
   public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-    if (attributeDefinition instanceof ItemColumnDefinition) {
+    if (!attributeDefinition.items().isEmpty()) {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
     }
     Attribute.Type<T> type = attribute.type();
@@ -264,19 +263,19 @@ public class EntityComponents {
 
   /**
    * Creates a JComboBox builder based on the given attribute.
-   * Note that the attribute must be associated with a {@link ItemColumnDefinition}.
+   * Note that the attribute must have items associated.
    * @param attribute the attribute
    * @param <T> the attribute type
    * @return an {@link is.codion.common.item.Item} based JComboBox builder
-   * @throws IllegalArgumentException in case the given attribute is not associated with a {@link ItemColumnDefinition}
+   * @throws IllegalArgumentException in case the given attribute has no associated items
    */
   public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-    if (!(attributeDefinition instanceof ItemColumnDefinition)) {
-      throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not an item column");
+    if (attributeDefinition.items().isEmpty()) {
+      throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
     }
 
-    return Components.itemComboBox(((ItemColumnDefinition<T>) attributeDefinition).items())
+    return Components.itemComboBox(attributeDefinition.items())
             .toolTipText(attributeDefinition.description())
             .nullable(attributeDefinition.nullable());
   }
@@ -647,11 +646,11 @@ public class EntityComponents {
    */
   public final <T> ItemSpinnerBuilder<T> itemSpinner(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-    if (!(attributeDefinition instanceof ItemColumnDefinition)) {
-      throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item column");
+    if (attributeDefinition.items().isEmpty()) {
+      throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
     }
 
-    return Components.<T>itemSpinner(new SpinnerListModel(((ItemColumnDefinition<T>) attributeDefinition).items()))
+    return Components.<T>itemSpinner(new SpinnerListModel(attributeDefinition.items()))
             .toolTipText(attributeDefinition.description());
   }
 

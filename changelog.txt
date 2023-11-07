@@ -9857,3 +9857,4 @@
   EntitySearchModel.selectedEntity() and selectedEntities() renamed entity() and entities() respectively
   FilteredComboBoxModel.addItem(), removeItem() and replaceItem() renamed add(), remove() and replace() respectively
   FilteredComboBoxModel.sortComparator() renamed comparator()
+  ItemColumnDefinition removed, item functionality moved to AttributeDefinition

@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,8 +102,8 @@ public final class EntityTestUtil {
       if (attributeDefinition instanceof ForeignKeyDefinition) {
         return (T) referenceEntity(((ForeignKeyDefinition) attributeDefinition).attribute(), referenceEntities);
       }
-      if (attributeDefinition instanceof ItemColumnDefinition) {
-        return randomItem((ItemColumnDefinition<T>) attributeDefinition);
+      if (!attributeDefinition.items().isEmpty()) {
+        return randomItem(attributeDefinition);
       }
       Attribute<?> attribute = attributeDefinition.attribute();
       if (attribute.type().isBoolean()) {
@@ -218,8 +217,8 @@ public final class EntityTestUtil {
     return referenceEntities == null ? null : referenceEntities.get(foreignKey);
   }
 
-  private static <T> T randomItem(ItemColumnDefinition<T> columnDefinition) {
-    List<Item<T>> items = columnDefinition.items();
+  private static <T> T randomItem(AttributeDefinition<T> attributeDefinition) {
+    List<Item<T>> items = attributeDefinition.items();
     Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
     return item.get();
