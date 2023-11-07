@@ -9851,3 +9851,4 @@
   EntitySearchField.Builder.limit() convenience method added
   EntitySearchField, limit added to settings panel
   EntitySearchModel.resetSearchString() renamed reset()
+  EntitySearchModel.searchColumns() renamed columns()

@@ -728,7 +728,7 @@ public final class EntitySearchField extends HintTextField {
               .action(Control.control(table.searchField()::requestFocusInWindow))
               .enable(table);
       tableModel.columnModel().columns().forEach(this::configureColumn);
-      Collection<Column<String>> searchColumns = searchModel.searchColumns();
+      Collection<Column<String>> searchColumns = searchModel.columns();
       tableModel.columnModel().setVisibleColumns(searchColumns.toArray(new Attribute[0]));
       tableModel.sortModel().setSortOrder(searchColumns.iterator().next(), SortOrder.ASCENDING);
       scrollPane = new JScrollPane(table);

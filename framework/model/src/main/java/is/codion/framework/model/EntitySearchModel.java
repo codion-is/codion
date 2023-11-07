@@ -62,7 +62,7 @@ public interface EntitySearchModel {
   /**
    * @return the columns used when performing a search
    */
-  Collection<Column<String>> searchColumns();
+  Collection<Column<String>> columns();
 
   /**
    * Resets the search string so that is represents the selected entities
@@ -159,11 +159,11 @@ public interface EntitySearchModel {
   interface Builder {
 
     /**
-     * @param searchColumns the search columns
+     * @param columns the columns to search by
      * @return this builder
-     * @throws IllegalArgumentException in case {@code searchColumns} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder searchColumns(Collection<Column<String>> searchColumns);
+    Builder columns(Collection<Column<String>> columns);
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model

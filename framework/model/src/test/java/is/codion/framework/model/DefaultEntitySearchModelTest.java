@@ -54,25 +54,25 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  void constructorNullSearchColumns() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(null));
+  void constructorNullColumns() {
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).columns(null));
   }
 
   @Test
-  void searchWithNoSearchColumns() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(emptyList()));
+  void searchWithNoColumns() {
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).columns(emptyList()));
   }
 
   @Test
-  void constructorIncorrectEntitySearchColumn() {
+  void constructorIncorrectEntityColumn() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-            .searchColumns(singletonList(Department.NAME)));
+            .columns(singletonList(Department.NAME)));
   }
 
   @Test
   void theRest() {
     assertNotNull(searchModel.connectionProvider());
-    assertTrue(searchModel.searchColumns().containsAll(searchColumns));
+    assertTrue(searchModel.columns().containsAll(searchColumns));
     assertNotNull(searchModel.wildcard().get());
   }
 
@@ -227,7 +227,7 @@ public final class DefaultEntitySearchModelTest {
   void setUp() throws Exception {
     searchColumns = asList(Employee.NAME, Employee.JOB);
     searchModel = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-            .searchColumns(searchColumns)
+            .columns(searchColumns)
             .build();
 
     CONNECTION_PROVIDER.connection().beginTransaction();
