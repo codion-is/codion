@@ -223,7 +223,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     if (containsComboBoxModel(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       for (Entity inserted : entities) {
-        comboBoxModel.addItem(inserted);
+        comboBoxModel.add(inserted);
       }
     }
   }
@@ -236,7 +236,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     if (containsComboBoxModel(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       Entity selectedEntity = comboBoxModel.selectedValue();
-      entities.forEach(comboBoxModel::removeItem);
+      entities.forEach(comboBoxModel::remove);
       if (comboBoxModel.visible(selectedEntity)) {
         comboBoxModel.setSelectedItem(selectedEntity);
       }//if the null value is selected we're fine, otherwise select topmost item
@@ -264,7 +264,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     super.replaceForeignKey(foreignKey, entities);
     if (containsComboBoxModel(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
-      entities.forEach(foreignKeyValue -> comboBoxModel.replaceItem(foreignKeyValue, foreignKeyValue));
+      entities.forEach(foreignKeyValue -> comboBoxModel.replace(foreignKeyValue, foreignKeyValue));
     }
   }
 

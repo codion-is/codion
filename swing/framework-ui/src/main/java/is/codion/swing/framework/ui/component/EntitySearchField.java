@@ -486,7 +486,7 @@ public final class EntitySearchField extends HintTextField {
       FilteredComboBoxModel<Item<Column<String>>> columnComboBoxModel = new FilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
       for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
-        columnComboBoxModel.addItem(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
+        columnComboBoxModel.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
         columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
       }
       JPanel columnBasePanel = columnBasePanelBuilder.build();

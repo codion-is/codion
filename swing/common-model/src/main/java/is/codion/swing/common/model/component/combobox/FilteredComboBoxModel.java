@@ -248,7 +248,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @throws IllegalArgumentException in case the item fails validation
    * @see #includeCondition()
    */
-  public final void addItem(T item) {
+  public final void add(T item) {
     validate(item);
     if (includeCondition.isNull() || includeCondition.get().test(item)) {
       if (!visibleItems.contains(item)) {
@@ -265,7 +265,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Removes the given item from this model
    * @param item the item to remove
    */
-  public final void removeItem(T item) {
+  public final void remove(T item) {
     requireNonNull(item);
     filteredItems.remove(item);
     if (visibleItems.remove(item)) {
@@ -279,10 +279,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @param replacement the replacement item
    * @throws IllegalArgumentException in case the replacement item fails validation
    */
-  public final void replaceItem(T item, T replacement) {
+  public final void replace(T item, T replacement) {
     validate(replacement);
-    removeItem(item);
-    addItem(replacement);
+    remove(item);
+    add(replacement);
     if (Objects.equals(selectedItem, item)) {
       selectedItem = selectedItemTranslator.get().apply(null);
       setSelectedItem(replacement);
