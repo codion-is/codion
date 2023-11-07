@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Responsible for performing entity searches based on a search text and set of condition attributes.
+ * Searches for entities based on a search text and set of String based condition columns.
  * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
  */
 public interface EntitySearchModel {
@@ -80,9 +80,11 @@ public interface EntitySearchModel {
   Value<Integer> limit();
 
   /**
-   * Performs a query based on the current search configuration
+   * Performs a query based on the current search configuration and returns the result.
+   * Note that the number of search results may be limited via {@link #limit()}.
    * @return a list containing the entities fulfilling the current condition
-   * @throws IllegalStateException in case no search attributes are specified
+   * @throws IllegalStateException in case no search columns are specified
+   * @see #limit()
    */
   List<Entity> search();
 
