@@ -221,9 +221,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Controls the order by to use when selecting entities for this model.
    * Note that in order for this to have an effect, you must disable sorting
-   * by setting the sort comparator to null ({@link #sortComparator()}
+   * by setting the sort comparator to null ({@link #comparator()}
    * @return the Value controlling the orderBy
-   * @see #sortComparator()
+   * @see #comparator()
    */
   public final Value<OrderBy> orderBy() {
     return orderBy;
@@ -473,7 +473,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public void accept(Collection<Entity> inserted) {
-      inserted.forEach(EntityComboBoxModel.this::addItem);
+      inserted.forEach(EntityComboBoxModel.this::add);
     }
   }
 
@@ -481,7 +481,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public void accept(Map<Entity.Key, Entity> updated) {
-      updated.forEach((key, entity) -> replaceItem(Entity.entity(key), entity));
+      updated.forEach((key, entity) -> replace(Entity.entity(key), entity));
     }
   }
 
@@ -489,7 +489,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public void accept(Collection<Entity> deleted) {
-      deleted.forEach(EntityComboBoxModel.this::removeItem);
+      deleted.forEach(EntityComboBoxModel.this::remove);
     }
   }
 

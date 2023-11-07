@@ -928,7 +928,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       public void accept(List<Entity> inserted) {
         EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
         Entity item = inserted.get(0);
-        comboBoxModel.addItem(item);
+        comboBoxModel.add(item);
         comboBoxModel.setSelectedItem(item);
       }
     }
@@ -937,7 +937,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
       @Override
       public void accept(List<Entity> inserted) {
-        ((EntitySearchField) component).model().selectedEntities().set(inserted);
+        ((EntitySearchField) component).model().entities().set(inserted);
       }
     }
   }
@@ -976,7 +976,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
         entityToUpdate = ((EntityComboBox) component).getModel().selectedValue();
       }
       else {
-        entityToUpdate = ((EntitySearchField) component).model().selectedEntity().get();
+        entityToUpdate = ((EntitySearchField) component).model().entity().get();
       }
       EntityEditPanel editPanel = initializeEditPanel();
       editPanel.editModel().set(connectionProvider.connection().select(entityToUpdate.primaryKey()));
@@ -1048,7 +1048,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       public void accept(List<Entity> updated) {
         EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
         Entity item = updated.get(0);
-        comboBoxModel.replaceItem(entityToUpdate, item);
+        comboBoxModel.replace(entityToUpdate, item);
         comboBoxModel.setSelectedItem(item);
       }
     }
@@ -1057,7 +1057,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
       @Override
       public void accept(List<Entity> updated) {
-        ((EntitySearchField) component).model().selectedEntities().set(updated);
+        ((EntitySearchField) component).model().entities().set(updated);
       }
     }
 

@@ -37,7 +37,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Responsible for performing entity searches based on a search text and set of condition attributes.
+ * Searches for entities based on a search text and set of String based condition columns.
  * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
  */
 public interface EntitySearchModel {
@@ -62,12 +62,12 @@ public interface EntitySearchModel {
   /**
    * @return a Value controlling the selected entity
    */
-  Value<Entity> selectedEntity();
+  Value<Entity> entity();
 
   /**
    * @return a Value controlling the selected entities
    */
-  ValueSet<Entity> selectedEntities();
+  ValueSet<Entity> entities();
 
   /**
    * @return a string describing this search model, by default a comma separated list of search column names
@@ -77,12 +77,12 @@ public interface EntitySearchModel {
   /**
    * @return the columns used when performing a search
    */
-  Collection<Column<String>> searchColumns();
+  Collection<Column<String>> columns();
 
   /**
    * Resets the search string so that is represents the selected entities
    */
-  void resetSearchString();
+  void reset();
 
   /**
    * @return the Value controlling the wildcard character
@@ -95,9 +95,11 @@ public interface EntitySearchModel {
   Value<Integer> limit();
 
   /**
-   * Performs a query based on the current search configuration
+   * Performs a query based on the current search configuration and returns the result.
+   * Note that the number of search results may be limited via {@link #limit()}.
    * @return a list containing the entities fulfilling the current condition
-   * @throws IllegalStateException in case no search attributes are specified
+   * @throws IllegalStateException in case no search columns are specified
+   * @see #limit()
    */
   List<Entity> search();
 
@@ -113,7 +115,7 @@ public interface EntitySearchModel {
    * Note that changing this value does not change the search string accordingly.
    * @return the Value controlling the function providing the {@code toString()} implementation
    * for the entities displayed by this model
-   * @see #resetSearchString()
+   * @see #reset()
    */
   Value<Function<Entity, String>> stringFunction();
 
@@ -128,9 +130,9 @@ public interface EntitySearchModel {
   StateObserver selectionEmpty();
 
   /**
-   * @return the settings associated with the search Column
+   * @return the settings associated with each search column
    */
-  Map<Column<String>, SearchSettings> columnSearchSettings();
+  Map<Column<String>, Settings> settings();
 
   /**
    * @return the Value representing the search string
@@ -148,9 +150,9 @@ public interface EntitySearchModel {
   boolean singleSelection();
 
   /**
-   * Columns search settings
+   * Column search settings
    */
-  interface SearchSettings {
+  interface Settings {
 
     /**
      * @return a State representing whether a wildcard is automatically prepended to the search string
@@ -174,11 +176,11 @@ public interface EntitySearchModel {
   interface Builder {
 
     /**
-     * @param searchColumns the search columns
+     * @param columns the columns to search by
      * @return this builder
-     * @throws IllegalArgumentException in case {@code searchColumns} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder searchColumns(Collection<Column<String>> searchColumns);
+    Builder columns(Collection<Column<String>> columns);
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model

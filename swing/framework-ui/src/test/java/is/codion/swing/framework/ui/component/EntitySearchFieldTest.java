@@ -59,9 +59,9 @@ public class EntitySearchFieldTest {
 
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 
-    searchModel.selectedEntity().set(sales);
+    searchModel.entity().set(sales);
     assertEquals(sales, value.get());
-    searchModel.selectedEntity().set(null);
+    searchModel.entity().set(null);
     assertNull(value.get());
 
     ComponentValue<Collection<Entity>, EntitySearchField> multiSelectionValue = value.component().multiSelectionValue();
@@ -72,14 +72,14 @@ public class EntitySearchFieldTest {
 
     Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("RESEARCH"));
 
-    searchModel.selectedEntities().set(Arrays.asList(sales, research));
+    searchModel.entities().set(Arrays.asList(sales, research));
 
     assertTrue(multiSelectionValue.get().containsAll(Arrays.asList(sales, research)));
     assertEquals(singleSelectionValue.get(), sales);
 
     singleSelectionValue.set(null);
 
-    assertTrue(searchModel.selectedEntities().get().isEmpty());
+    assertTrue(searchModel.entities().get().isEmpty());
     assertNull(singleSelectionValue.get());
   }
 }

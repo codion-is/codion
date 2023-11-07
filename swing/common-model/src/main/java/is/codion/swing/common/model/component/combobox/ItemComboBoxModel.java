@@ -45,9 +45,9 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
     setItems(items);
   }
 
-  private ItemComboBoxModel(Comparator<Item<T>> sortComparator, Collection<Item<T>> items) {
+  private ItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
     selectedItemTranslator().set(new SelectedItemTranslator());
-    sortComparator().set(sortComparator);
+    comparator().set(comparator);
     setItems(items);
     if (contains(Item.item(null))) {
       setSelectedItem(null);
@@ -104,25 +104,25 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
   }
 
   /**
-   * @param sortComparator the sort comparator to use
+   * @param comparator the comparator to use when sorting
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> sortComparator) {
-    return new ItemComboBoxModel<>(requireNonNull(sortComparator), null);
+  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
+    return new ItemComboBoxModel<>(requireNonNull(comparator), null);
   }
 
   /**
    * @param items the items
-   * @param sortComparator the sort comparator to use
+   * @param comparator the comparator to use when sorting
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> sortComparator) {
+  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> comparator) {
     requireNonNull(items);
-    requireNonNull(sortComparator);
+    requireNonNull(comparator);
 
-    return new ItemComboBoxModel<>(sortComparator, items);
+    return new ItemComboBoxModel<>(comparator, items);
   }
 
   /**

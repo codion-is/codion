@@ -35,7 +35,6 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,8 +45,10 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
@@ -58,10 +59,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final State searchStringModified = State.state();
 
   private final EntityType entityType;
-  private final Collection<Column<String>> searchColumns;
-  private final ValueSet<Entity> selectedEntities = ValueSet.valueSet(Notify.WHEN_SET);
+  private final Collection<Column<String>> columns;
+  private final ValueSet<Entity> entities = ValueSet.valueSet(Notify.WHEN_SET);
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
+  private final Map<Column<String>, Settings> settings;
   private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
   private final Value<String> separator;
   private final boolean singleSelection;
@@ -76,12 +77,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.entityType = builder.entityType;
     this.connectionProvider = builder.connectionProvider;
     this.separator = Value.value(builder.separator, DEFAULT_SEPARATOR);
-    this.searchColumns = unmodifiableCollection(builder.searchColumns);
-    this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
+    this.columns = unmodifiableCollection(builder.columns);
+    this.settings = unmodifiableMap(columns.stream()
+            .collect(toMap(Function.identity(), column -> new DefaultSettings())));
     this.stringFunction.set(builder.stringFunction);
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection = builder.singleSelection;
-    this.selectedEntities.addValidator(new EntityValidator());
+    this.entities.addValidator(new EntityValidator());
     this.limit = Value.value(builder.limit, builder.limit);
     bindEventsInternal();
   }
@@ -97,8 +99,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Collection<Column<String>> searchColumns() {
-    return searchColumns;
+  public Collection<Column<String>> columns() {
+    return columns;
   }
 
   @Override
@@ -107,18 +109,18 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Entity> selectedEntity() {
-    return selectedEntities.value();
+  public Value<Entity> entity() {
+    return entities.value();
   }
 
   @Override
-  public ValueSet<Entity> selectedEntities() {
-    return selectedEntities;
+  public ValueSet<Entity> entities() {
+    return entities;
   }
 
   @Override
-  public Map<Column<String>, SearchSettings> columnSearchSettings() {
-    return columnSearchSettings;
+  public Map<Column<String>, Settings> settings() {
+    return settings;
   }
 
   @Override
@@ -142,8 +144,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void resetSearchString() {
-    searchString.set(selectedEntitiesToString());
+  public void reset() {
+    searchString.set(entitiesToString());
   }
 
   @Override
@@ -189,17 +191,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
    * @throws IllegalStateException in case no search columns are specified
    */
   private Select select() {
-    if (searchColumns.isEmpty()) {
+    if (columns.isEmpty()) {
       throw new IllegalStateException("No search columns provided for search model: " + entityType);
     }
     Collection<Condition> conditions = new ArrayList<>();
     String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.get().split(separator.get());
-    for (Column<String> column : searchColumns) {
-      SearchSettings searchSettings = columnSearchSettings.get(column);
+    for (Column<String> column : columns) {
+      Settings columnSettings = settings.get(column);
       for (String rawSearchString : searchStrings) {
-        String preparedSearchString = prepareSearchString(rawSearchString, searchSettings);
+        String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
         boolean containsWildcards = containsWildcards(preparedSearchString);
-        if (searchSettings.caseSensitive().get()) {
+        if (columnSettings.caseSensitive().get()) {
           conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
         }
         else {
@@ -220,9 +222,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
   }
 
-  private String prepareSearchString(String rawSearchString, SearchSettings searchSettings) {
-    boolean wildcardPrefix = searchSettings.wildcardPrefix().get();
-    boolean wildcardPostfix = searchSettings.wildcardPostfix().get();
+  private String prepareSearchString(String rawSearchString, Settings settings) {
+    boolean wildcardPrefix = settings.wildcardPrefix().get();
+    boolean wildcardPostfix = settings.wildcardPostfix().get();
 
     return rawSearchString.equals(String.valueOf(wildcard.get())) ? String.valueOf(wildcard.get()) :
             ((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
@@ -230,28 +232,28 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private void bindEventsInternal() {
     searchString.addListener(() ->
-            searchStringModified.set(!searchStringRepresentSelectedEntities()));
-    separator.addListener(this::resetSearchString);
-    selectedEntities.addListener(this::resetSearchString);
-    selectedEntities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
+            searchStringModified.set(!searchStringRepresentEntities()));
+    separator.addListener(this::reset);
+    entities.addListener(this::reset);
+    entities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
   }
 
-  private boolean searchStringRepresentSelectedEntities() {
-    String selectedAsString = selectedEntitiesToString();
-    return (selectedEntities.get().isEmpty() && nullOrEmpty(searchString.get()))
-            || !selectedEntities.get().isEmpty() && selectedAsString.equals(searchString.get());
+  private boolean searchStringRepresentEntities() {
+    String selectedAsString = entitiesToString();
+    return (entities.get().isEmpty() && nullOrEmpty(searchString.get()))
+            || !entities.get().isEmpty() && selectedAsString.equals(searchString.get());
   }
 
   private String createDescription() {
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
 
-    return searchColumns.stream()
+    return columns.stream()
             .map(column -> definition.columns().definition(column).caption())
             .collect(joining(", "));
   }
 
-  private String selectedEntitiesToString() {
-    return selectedEntities.get().stream()
+  private String entitiesToString() {
+    return entities.get().stream()
             .map(stringFunction.get())
             .collect(joining(separator.get()));
   }
@@ -279,7 +281,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     return value.contains("%") || value.contains("_");
   }
 
-  private static final class DefaultSearchSettings implements SearchSettings {
+  private static final class DefaultSettings implements Settings {
 
     private final State wildcardPrefixState = State.state(true);
     private final State wildcardPostfixState = State.state(true);
@@ -305,7 +307,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
     private final EntityType entityType;
     private final EntityConnectionProvider connectionProvider;
-    private Collection<Column<String>> searchColumns;
+    private Collection<Column<String>> columns;
     private Function<Entity, String> stringFunction = DEFAULT_TO_STRING;
     private String description;
     private boolean singleSelection = false;
@@ -315,16 +317,16 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);
       this.connectionProvider = requireNonNull(connectionProvider);
-      this.searchColumns = connectionProvider.entities().definition(entityType).columns().searchColumns();
+      this.columns = connectionProvider.entities().definition(entityType).columns().searchColumns();
     }
 
     @Override
-    public Builder searchColumns(Collection<Column<String>> searchColumns) {
-      if (requireNonNull(searchColumns).isEmpty()) {
+    public Builder columns(Collection<Column<String>> columns) {
+      if (requireNonNull(columns).isEmpty()) {
         throw new IllegalArgumentException("One or more search column is required");
       }
-      validateSearchColumns(searchColumns);
-      this.searchColumns = searchColumns;
+      validateColumns(columns);
+      this.columns = columns;
       return this;
     }
 
@@ -363,8 +365,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       return new DefaultEntitySearchModel(this);
     }
 
-    private void validateSearchColumns(Collection<Column<String>> searchColumns) {
-      for (Column<String> column : searchColumns) {
+    private void validateColumns(Collection<Column<String>> columns) {
+      for (Column<String> column : columns) {
         if (!entityType.equals(column.entityType())) {
           throw new IllegalArgumentException("Column '" + column + "' is not part of entity " + entityType);
         }

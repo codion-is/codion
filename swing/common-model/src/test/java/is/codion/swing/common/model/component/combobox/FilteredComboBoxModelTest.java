@@ -80,9 +80,9 @@ public class FilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    Comparator<String> comparator = testModel.sortComparator().get();
-    testModel.sortComparator().set(null);
-    assertNull(testModel.sortComparator().get());
+    Comparator<String> comparator = testModel.comparator().get();
+    testModel.comparator().set(null);
+    assertNull(testModel.comparator().get());
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
@@ -97,10 +97,10 @@ public class FilteredComboBoxModelTest {
     assertEquals(TOMAS, testModel.getElementAt(4));
     assertEquals(BJORN, testModel.getElementAt(5));
 
-    testModel.sortComparator().set(comparator);
+    testModel.comparator().set(comparator);
     names.remove(SIGGI);
     testModel.setItems(names);
-    testModel.addItem(SIGGI);
+    testModel.add(SIGGI);
 
     assertEquals(ANNA, testModel.getElementAt(1));
     assertEquals(BJORN, testModel.getElementAt(2));
@@ -108,7 +108,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    testModel.sortComparator().set((o1, o2) -> {
+    testModel.comparator().set((o1, o2) -> {
       if (o1 == null) {
         return -1;
       }
@@ -117,7 +117,7 @@ public class FilteredComboBoxModelTest {
       }
       return o2.compareTo(o1);
     });
-    assertNotNull(testModel.sortComparator().get());
+    assertNotNull(testModel.comparator().get());
 
     assertEquals(TOMAS, testModel.getElementAt(1));
     assertEquals(SIGGI, testModel.getElementAt(2));
@@ -194,7 +194,7 @@ public class FilteredComboBoxModelTest {
     assertEquals(2, testModel.visibleCount());
     assertEquals(5, testModel.items().size());
 
-    testModel.addItem(BJORN);//already contained
+    testModel.add(BJORN);//already contained
     assertEquals(4, testModel.filteredCount());
 
     assertFalse(testModel.visible(BJORN));
@@ -204,28 +204,28 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  void removeItem() {
+  void remove() {
     //remove filtered item
     testModel.includeCondition().set(item -> !item.equals(BJORN));
-    testModel.removeItem(BJORN);
+    testModel.remove(BJORN);
     testModel.includeCondition().set(null);
     assertFalse(testModel.visible(BJORN));
 
     //remove visible item
-    testModel.removeItem(KALLI);
+    testModel.remove(KALLI);
     assertFalse(testModel.visible(KALLI));
   }
 
   @Test
-  void addItem() {
+  void add() {
     testModel.clear();
     //add filtered item
     testModel.includeCondition().set(item -> !item.equals(BJORN));
-    testModel.addItem(BJORN);
+    testModel.add(BJORN);
     assertFalse(testModel.visible(BJORN));
 
     //add visible item
-    testModel.addItem(KALLI);
+    testModel.add(KALLI);
     assertTrue(testModel.visible(KALLI));
 
     testModel.includeCondition().set(null);
