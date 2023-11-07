@@ -9852,3 +9852,5 @@
   EntitySearchField, limit added to settings panel
   EntitySearchModel.resetSearchString() renamed reset()
   EntitySearchModel.searchColumns() renamed columns()
+  EntitySearchModel.SearchSettings renamed Settings
+  EntitySearchModel.columnSearchSettings() renamed settings()

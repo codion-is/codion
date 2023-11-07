@@ -113,9 +113,9 @@ public interface EntitySearchModel {
   StateObserver selectionEmpty();
 
   /**
-   * @return the settings associated with the search Column
+   * @return the settings associated with each search column
    */
-  Map<Column<String>, SearchSettings> columnSearchSettings();
+  Map<Column<String>, Settings> settings();
 
   /**
    * @return the Value representing the search string
@@ -133,9 +133,9 @@ public interface EntitySearchModel {
   boolean singleSelection();
 
   /**
-   * Columns search settings
+   * Column search settings
    */
-  interface SearchSettings {
+  interface Settings {
 
     /**
      * @return a State representing whether a wildcard is automatically prepended to the search string

@@ -485,9 +485,9 @@ public final class EntitySearchField extends HintTextField {
       PanelBuilder columnBasePanelBuilder = Components.panel(cardLayout);
       FilteredComboBoxModel<Item<Column<String>>> columnComboBoxModel = new FilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
-      for (Map.Entry<Column<String>, EntitySearchModel.SearchSettings> entry : searchModel.columnSearchSettings().entrySet()) {
+      for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
         columnComboBoxModel.addItem(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
-        columnBasePanelBuilder.add(createColumnSettingsPanel(entry.getValue()), entry.getKey().name());
+        columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
       }
       JPanel columnBasePanel = columnBasePanelBuilder.build();
       if (columnComboBoxModel.getSize() > 0) {
@@ -535,7 +535,7 @@ public final class EntitySearchField extends HintTextField {
               .build();
     }
 
-    private static JPanel createColumnSettingsPanel(EntitySearchModel.SearchSettings settings) {
+    private static JPanel createSettingsPanel(EntitySearchModel.Settings settings) {
       return Components.gridLayoutPanel(3, 1)
               .add(Components.checkBox(settings.caseSensitive())
                       .text(MESSAGES.getString("case_sensitive"))

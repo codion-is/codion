@@ -20,7 +20,6 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,8 +30,10 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
@@ -46,7 +47,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Collection<Column<String>> columns;
   private final ValueSet<Entity> selectedEntities = ValueSet.valueSet(Notify.WHEN_SET);
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
+  private final Map<Column<String>, Settings> settings;
   private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
   private final Value<String> separator;
   private final boolean singleSelection;
@@ -62,7 +63,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.connectionProvider = builder.connectionProvider;
     this.separator = Value.value(builder.separator, DEFAULT_SEPARATOR);
     this.columns = unmodifiableCollection(builder.columns);
-    this.columns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
+    this.settings = unmodifiableMap(columns.stream()
+            .collect(toMap(Function.identity(), column -> new DefaultSettings())));
     this.stringFunction.set(builder.stringFunction);
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection = builder.singleSelection;
@@ -102,8 +104,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Map<Column<String>, SearchSettings> columnSearchSettings() {
-    return columnSearchSettings;
+  public Map<Column<String>, Settings> settings() {
+    return settings;
   }
 
   @Override
@@ -180,11 +182,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     Collection<Condition> conditions = new ArrayList<>();
     String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.get().split(separator.get());
     for (Column<String> column : columns) {
-      SearchSettings searchSettings = columnSearchSettings.get(column);
+      Settings columnSettings = settings.get(column);
       for (String rawSearchString : searchStrings) {
-        String preparedSearchString = prepareSearchString(rawSearchString, searchSettings);
+        String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
         boolean containsWildcards = containsWildcards(preparedSearchString);
-        if (searchSettings.caseSensitive().get()) {
+        if (columnSettings.caseSensitive().get()) {
           conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
         }
         else {
@@ -205,9 +207,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
   }
 
-  private String prepareSearchString(String rawSearchString, SearchSettings searchSettings) {
-    boolean wildcardPrefix = searchSettings.wildcardPrefix().get();
-    boolean wildcardPostfix = searchSettings.wildcardPostfix().get();
+  private String prepareSearchString(String rawSearchString, Settings settings) {
+    boolean wildcardPrefix = settings.wildcardPrefix().get();
+    boolean wildcardPostfix = settings.wildcardPostfix().get();
 
     return rawSearchString.equals(String.valueOf(wildcard.get())) ? String.valueOf(wildcard.get()) :
             ((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
@@ -264,7 +266,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     return value.contains("%") || value.contains("_");
   }
 
-  private static final class DefaultSearchSettings implements SearchSettings {
+  private static final class DefaultSettings implements Settings {
 
     private final State wildcardPrefixState = State.state(true);
     private final State wildcardPostfixState = State.state(true);
