@@ -67,7 +67,7 @@ public interface EntitySearchModel {
   /**
    * Resets the search string so that is represents the selected entities
    */
-  void resetSearchString();
+  void reset();
 
   /**
    * @return the Value controlling the wildcard character
@@ -98,7 +98,7 @@ public interface EntitySearchModel {
    * Note that changing this value does not change the search string accordingly.
    * @return the Value controlling the function providing the {@code toString()} implementation
    * for the entities displayed by this model
-   * @see #resetSearchString()
+   * @see #reset()
    */
   Value<Function<Entity, String>> stringFunction();
 

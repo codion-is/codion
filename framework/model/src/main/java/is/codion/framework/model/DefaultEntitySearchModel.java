@@ -127,7 +127,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void resetSearchString() {
+  public void reset() {
     searchString.set(selectedEntitiesToString());
   }
 
@@ -216,8 +216,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private void bindEventsInternal() {
     searchString.addListener(() ->
             searchStringModified.set(!searchStringRepresentSelectedEntities()));
-    separator.addListener(this::resetSearchString);
-    selectedEntities.addListener(this::resetSearchString);
+    separator.addListener(this::reset);
+    selectedEntities.addListener(this::reset);
     selectedEntities.addDataListener(entities -> selectionEmpty.set(entities.isEmpty()));
   }
 
