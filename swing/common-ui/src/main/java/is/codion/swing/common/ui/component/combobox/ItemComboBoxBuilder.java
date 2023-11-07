@@ -37,10 +37,10 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
   ItemComboBoxBuilder<T> sorted(boolean sorted);
 
   /**
-   * @param sortComparator if specified the combo box items are sorted using this comparator
+   * @param comparator if specified the combo box items are sorted using this comparator
    * @return this builder instance
    */
-  ItemComboBoxBuilder<T> sortComparator(Comparator<Item<T>> sortComparator);
+  ItemComboBoxBuilder<T> comparator(Comparator<Item<T>> comparator);
 
   /**
    * @param completionMode the completion mode

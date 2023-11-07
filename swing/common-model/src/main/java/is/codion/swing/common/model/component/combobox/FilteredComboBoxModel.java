@@ -50,7 +50,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultItemValidator<>();
   private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
   private static final Predicate<?> DEFAULT_ALLOW_SELECTION_PREDICATE = new DefaultAllowSelectionPredicate<>();
-  private static final Comparator<?> DEFAULT_SORT_COMPARATOR = new SortComparator<>();
+  private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
   private final Event<T> selectionChangedEvent = Event.event();
   private final State selectionEmpty = State.state(true);
@@ -67,7 +67,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
           Value.value((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR, (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR);
   private final Value<Predicate<T>> allowSelectionPredicate =
           Value.value((Predicate<T>) DEFAULT_ALLOW_SELECTION_PREDICATE, (Predicate<T>) DEFAULT_ALLOW_SELECTION_PREDICATE);
-  private final Value<Comparator<T>> sortComparator = Value.value((Comparator<T>) DEFAULT_SORT_COMPARATOR);
+  private final Value<Comparator<T>> comparator = Value.value((Comparator<T>) DEFAULT_COMPARATOR);
 
   /**
    * set during setItems()
@@ -83,7 +83,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * Instantiates a new FilteredComboBoxModel.
    * The model items are sorted automatically with a default collation based comparator.
-   * To prevent sorting set the sort comparator to null via {@link #sortComparator()} before adding items.
+   * To prevent sorting set the comparator to null via {@link #comparator()} before adding items.
    */
   public FilteredComboBoxModel() {
     this.refresher = new DefaultRefresher(new DefaultItemSupplier());
@@ -91,7 +91,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     itemValidator.addValidator(validator -> items().stream()
             .filter(Objects::nonNull)
             .forEach(validator::test));
-    sortComparator.addListener(this::sortVisibleItems);
+    comparator.addListener(this::sortVisibleItems);
     allowSelectionPredicate.addValidator(predicate -> {
       if (predicate != null && !predicate.test(selectedItem)){
         throw new IllegalArgumentException("The current selected item does not satisfy the allow selection predicate");
@@ -297,11 +297,11 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * Controls the Comparator used when sorting the visible items in this model and sorts the model accordingly.
    * This Comparator must take into account the null value if a null item has been set via {@link #nullItem()}.
-   * If a null {@code sortComparator} is provided no sorting will be performed.
-   * @return the Value controlling the sort Comparator, value may be null if the items of this model should not be sorted
+   * If a null {@code comparator} is provided no sorting will be performed.
+   * @return the Value controlling the comparator used when sorting, value may be null if the items of this model should not be sorted
    */
-  public final Value<Comparator<T>> sortComparator() {
-    return sortComparator;
+  public final Value<Comparator<T>> comparator() {
+    return comparator;
   }
 
   /**
@@ -488,8 +488,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Sorts the items visible in this model
    */
   private void sortVisibleItems() {
-    if (sortComparator.isNotNull() && !visibleItems.isEmpty()) {
-      visibleItems.sort(sortComparator.get());
+    if (comparator.isNotNull() && !visibleItems.isEmpty()) {
+      visibleItems.sort(comparator.get());
       fireContentsChanged();
     }
   }
@@ -599,7 +599,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private static final class SortComparator<T> implements Comparator<T> {
+  private static final class DefaultComparator<T> implements Comparator<T> {
 
     private final Comparator<T> comparator = Text.spaceAwareCollator();
 

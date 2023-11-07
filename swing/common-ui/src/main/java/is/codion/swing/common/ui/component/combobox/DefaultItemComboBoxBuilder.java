@@ -32,7 +32,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   private final List<ItemListener> itemListeners = new ArrayList<>();
 
   private ItemComboBoxModel<T> comboBoxModel;
-  private Comparator<Item<T>> sortComparator;
+  private Comparator<Item<T>> comparator;
   private boolean sorted = true;
   private boolean nullable;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
@@ -72,11 +72,11 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   }
 
   @Override
-  public ItemComboBoxBuilder<T> sortComparator(Comparator<Item<T>> sortComparator) {
+  public ItemComboBoxBuilder<T> comparator(Comparator<Item<T>> comparator) {
     if (comboBoxModel != null) {
       throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting comparator");
     }
-    this.sortComparator = sortComparator;
+    this.comparator = comparator;
     return this;
   }
 
@@ -180,8 +180,8 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
       if (nullable && !modelItems.contains(nullItem)) {
         modelItems.add(0, nullItem);
       }
-      if (sortComparator != null) {
-        comboBoxModel = sortedItemComboBoxModel(modelItems, sortComparator);
+      if (comparator != null) {
+        comboBoxModel = sortedItemComboBoxModel(modelItems, comparator);
       }
       else if (sorted) {
         comboBoxModel = sortedItemComboBoxModel(modelItems);
