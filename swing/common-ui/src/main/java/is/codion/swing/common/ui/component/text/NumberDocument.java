@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -77,6 +78,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
     catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  final void addListener(Consumer<T> listener) {
+    getDocumentFilter().value.addDataListener(listener);
   }
 
   void setTextComponent(JTextComponent textComponent) {
@@ -315,6 +320,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
     private final NumberRangeValidator<T> rangeValidator;
     private final NumberParser<T> parser;
+    private final Value<T> value = Value.value();
 
     private JTextComponent textComponent;
     private boolean convertGroupingToDecimalSeparator = true;
@@ -353,6 +359,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
           if (textComponent != null) {
             textComponent.getCaret().setDot(offset + text.length() + parseResult.charetOffset());
           }
+          value.set(parseResult.value());
         }
       }
     }

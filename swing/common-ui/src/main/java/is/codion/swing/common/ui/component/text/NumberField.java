@@ -6,11 +6,9 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.event.KeyAdapter;
@@ -41,15 +39,12 @@ public final class NumberField<T extends Number> extends HintTextField {
   public static final PropertyValue<Boolean> CONVERT_GROUPING_TO_DECIMAL_SEPARATOR =
           Configuration.booleanValue("is.codion.swing.common.ui.component.text.NumberField.convertGroupingToDecimalSeparator", true);
 
-  private final Value<T> value = Value.value();
-
   private NumberField(NumberDocument<T> document) {
     super(document);
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    document.addDocumentListener(new SetNumberListener());
   }
 
   @Override
@@ -191,10 +186,10 @@ public final class NumberField<T extends Number> extends HintTextField {
   }
 
   /**
-   * @param listener a listener notified when the value changes
+   * @param listener a listener notified when the underlying value changes
    */
-  public void addValueListener(Consumer<T> listener) {
-    value.addDataListener(listener);
+  public void addListener(Consumer<T> listener) {
+    getTypedDocument().addListener(listener);
   }
 
   /**
@@ -350,13 +345,6 @@ public final class NumberField<T extends Number> extends HintTextField {
         }
       }
       catch (BadLocationException ignored) {/*Not happening*/}
-    }
-  }
-
-  private final class SetNumberListener implements DocumentAdapter {
-    @Override
-    public void contentsChanged(DocumentEvent e) {
-      value.set(getTypedDocument().getNumber());
     }
   }
 

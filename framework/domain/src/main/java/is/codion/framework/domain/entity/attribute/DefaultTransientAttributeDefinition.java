@@ -9,7 +9,7 @@ class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition
 
   private final boolean modifiesEntity;
 
-  protected DefaultTransientAttributeDefinition(DefaultTransientAttributeDefinitionBuilder<T, ?> builder) {
+  private DefaultTransientAttributeDefinition(DefaultTransientAttributeDefinitionBuilder<T, ?> builder) {
     super(builder);
     this.modifiesEntity = builder.modifiesEntity;
   }

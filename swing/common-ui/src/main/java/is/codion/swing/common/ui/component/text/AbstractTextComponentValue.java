@@ -9,10 +9,12 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.function.Consumer;
 
 /**
  * An abstract {@link ComponentValue} implementation for a text component.
@@ -55,10 +57,23 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
       ((ValidationDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
     }
     if (updateOn == UpdateOn.KEYSTROKE) {
-      component.getDocument().addDocumentListener(new NotifyOnContentsChanged());
+      Document document = component.getDocument();
+      if (document instanceof NumberDocument) {
+        ((NumberDocument<Number>) document).addListener(new NotifyOnNumberChanged());
+      }
+      else {
+        document.addDocumentListener(new NotifyOnContentsChanged());
+      }
     }
     else {
       component.addFocusListener(new NotifyOnFocusLost());
+    }
+  }
+
+  private final class NotifyOnNumberChanged implements Consumer<Number> {
+    @Override
+    public void accept(Number value) {
+      notifyListeners();
     }
   }
 
