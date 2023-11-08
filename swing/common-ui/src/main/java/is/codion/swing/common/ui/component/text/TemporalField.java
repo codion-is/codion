@@ -111,7 +111,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   /**
    * @param listener notified each time the value changes
    */
-  public void addTemporalListener(Consumer<T> listener) {
+  public void addListener(Consumer<T> listener) {
     value.addDataListener(listener);
   }
 
