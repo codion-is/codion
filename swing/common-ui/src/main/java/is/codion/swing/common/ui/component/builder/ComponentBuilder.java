@@ -330,8 +330,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   ScrollPaneBuilder scrollPane();
 
   /**
-   * @param onBuild called when the component has been built, before any values are linked, not called on subsequent
-   * calls until {@link #clear()} has been called.
+   * @param onBuild called when the component has been built, not called on subsequent calls until {@link #clear()} has been called.
    * @return this builder instance
    */
   B onBuild(Consumer<C> onBuild);
@@ -344,7 +343,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 
   /**
    * Builds and returns the component, note that subsequent calls return the same component until {@link #clear()} has been called.
-   * @param onBuild called after the first call when the component is built, before any values are linked, not called on subsequent calls.
+   * @param onBuild called after the first call when the component is built, not called on subsequent calls.
    * @return the component
    */
   C build(Consumer<C> onBuild);

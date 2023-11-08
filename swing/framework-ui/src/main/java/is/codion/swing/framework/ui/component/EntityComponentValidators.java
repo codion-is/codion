@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
+import is.codion.swing.common.ui.component.text.NumberField;
 
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -150,6 +151,9 @@ public final class EntityComponentValidators {
       configureColors();
       if (textComponent instanceof JFormattedTextField) {
         editModel.addValueListener(attribute, value -> validate());
+      }
+      else if (textComponent instanceof NumberField) {
+        ((NumberField<?>) textComponent).addListener(value -> validate());
       }
       else {
         textComponent.getDocument().addDocumentListener((DocumentAdapter) event -> validate());
