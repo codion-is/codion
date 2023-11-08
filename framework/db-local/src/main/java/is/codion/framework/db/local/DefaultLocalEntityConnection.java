@@ -766,11 +766,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.defaultQueryTimeout = defaultQueryTimeout;
   }
 
-  @Override
-  public Domain domain() {
-    return domain;
-  }
-
   private Collection<Key> insert(Collection<? extends Entity> entities, Collection<Entity> insertedEntities) throws DatabaseException {
     checkIfReadOnly(entities);
 

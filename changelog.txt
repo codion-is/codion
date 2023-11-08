@@ -9863,3 +9863,4 @@
   TemporalField.addTemporalListener() renamed addListener()
   EntityComponentValidators bug fixed, special handling added for NumberField, using addListener() instead of DocumentListener
   AbstractComponentBuilder, buildEvent now triggered after the component has been fully built, as in, no longer before values are linked and events are added, otherwise validators get notified before values change, for example NumberField
+  LocalEntityConnection.domain() removed
