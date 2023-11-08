@@ -1195,7 +1195,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ForeignKeyDefinition> initializeNonSoftForeignKeyReferences(EntityType entityType) {
     return domain.entities().definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
-            .filter(foreignKeyDefinition -> !foreignKeyDefinition.softReference())
+            .filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())
             .filter(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(entityType))
             .collect(toList());
   }
