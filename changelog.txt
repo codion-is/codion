@@ -9859,3 +9859,4 @@
   FilteredComboBoxModel.sortComparator() renamed comparator()
   ItemColumnDefinition removed, item functionality moved to AttributeDefinition
   NumberDocument.addListener() added, since a DocumentListener triggered a null value event between actual values, since replace is always used, this listener is only notified with actual values. NumberField.value moved to NumberParsingDocumentFilter
+  UpdateOn.KEYSTROKE renamed VALUE_CHANGE

@@ -12,7 +12,7 @@ public enum UpdateOn {
    */
   FOCUS_LOST,
   /**
-   * Update on each keystroke.
+   * Update each time the text field value changes.
    */
-  KEYSTROKE
+  VALUE_CHANGE
 }

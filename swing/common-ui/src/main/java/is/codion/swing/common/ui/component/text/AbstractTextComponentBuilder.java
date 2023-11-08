@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
         extends AbstractComponentBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
 
-  protected UpdateOn updateOn = UpdateOn.KEYSTROKE;
+  protected UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
 
   private final List<CaretListener> caretListeners = new ArrayList<>();
 

@@ -250,7 +250,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     private final String dateTimePattern;
 
     private int columns;
-    private UpdateOn updateOn = UpdateOn.KEYSTROKE;
+    private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
     private boolean selectAllOnFocusGained;
     private boolean buttonFocusable;
     private ImageIcon buttonIcon;
