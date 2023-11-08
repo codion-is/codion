@@ -446,10 +446,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (transferHandler != null) {
       component.setTransferHandler(transferHandler);
     }
-    buildEvent.accept(component);
-    if (onBuild != null) {
-      onBuild.accept(component);
-    }
     validators.forEach(validator -> componentValue(component).addValidator(validator));
     if (initialValue != null) {
       setInitialValue(component, initialValue);
@@ -470,6 +466,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
     keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
     componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
+
+    buildEvent.accept(component);
+    if (onBuild != null) {
+      onBuild.accept(component);
+    }
 
     return component;
   }

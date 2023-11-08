@@ -9899,3 +9899,8 @@
   FilteredComboBoxModel.addItem(), removeItem() and replaceItem() renamed add(), remove() and replace() respectively
   FilteredComboBoxModel.sortComparator() renamed comparator()
   ItemColumnDefinition removed, item functionality moved to AttributeDefinition
+  NumberDocument.addListener() added, since a DocumentListener triggered a null value event between actual values, since replace is always used, this listener is only notified with actual values. NumberField.value moved to NumberParsingDocumentFilter
+  UpdateOn.KEYSTROKE renamed VALUE_CHANGE
+  TemporalField.addTemporalListener() renamed addListener()
+  EntityComponentValidators bug fixed, special handling added for NumberField, using addListener() instead of DocumentListener
+  AbstractComponentBuilder, buildEvent now triggered after the component has been fully built, as in, no longer before values are linked and events are added, otherwise validators get notified before values change, for example NumberField

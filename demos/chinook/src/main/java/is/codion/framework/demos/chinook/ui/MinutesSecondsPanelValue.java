@@ -39,8 +39,8 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
   MinutesSecondsPanelValue(boolean horizontal) {
     super(new MinutesSecondsPanel(horizontal));
-    component().minutesField.addValueListener(minutes -> notifyListeners());
-    component().secondsField.addValueListener(seconds -> notifyListeners());
+    component().minutesField.addListener(minutes -> notifyListeners());
+    component().secondsField.addListener(seconds -> notifyListeners());
   }
 
   @Override

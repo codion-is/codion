@@ -278,7 +278,7 @@ public final class ComponentsTest {
             Components.temporalInputPanel(LocalDate.class, "dd-MM-yyyy", value)
                     .columns(8)
                     .selectAllOnFocusGained(true)
-                    .updateOn(UpdateOn.KEYSTROKE)
+                    .updateOn(UpdateOn.VALUE_CHANGE)
                     .buildValue();
     assertNull(componentValue.get());
 
@@ -600,7 +600,7 @@ public final class ComponentsTest {
             .transferFocusOnEnter(true)
             .autoscrolls(true)
             .rowsColumns(4, 2)
-            .updateOn(UpdateOn.KEYSTROKE)
+            .updateOn(UpdateOn.VALUE_CHANGE)
             .lineWrap(true)
             .wrapStyleWord(true)
             .linkedValue(value);
@@ -626,7 +626,7 @@ public final class ComponentsTest {
             .maximumLength(10)
             .caption("caption")
             .dialogTitle("title")
-            .updateOn(UpdateOn.KEYSTROKE)
+            .updateOn(UpdateOn.VALUE_CHANGE)
             .linkedValue(value)
             .buildValue();
     TextInputPanel inputPanel = componentValue.component();

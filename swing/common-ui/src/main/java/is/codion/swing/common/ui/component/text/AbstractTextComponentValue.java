@@ -24,10 +24,12 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.function.Consumer;
 
 /**
  * An abstract {@link ComponentValue} implementation for a text component.
@@ -38,7 +40,7 @@ import java.awt.event.FocusEvent;
 public abstract class AbstractTextComponentValue<T, C extends JTextComponent> extends AbstractComponentValue<T, C> {
 
   /**
-   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#KEYSTROKE}
+   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}
    * update on policy and no null value.
    * @param component the component
    */
@@ -47,13 +49,13 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
   }
 
   /**
-   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#KEYSTROKE}
+   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}
    * update on policy.
    * @param component the component
    * @param nullValue the value to use instead of null
    */
   protected AbstractTextComponentValue(C component, T nullValue) {
-    this(component, nullValue, UpdateOn.KEYSTROKE);
+    this(component, nullValue, UpdateOn.VALUE_CHANGE);
   }
 
   /**
@@ -69,11 +71,24 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
     if (documentFilter instanceof ValidationDocumentFilter) {
       ((ValidationDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
     }
-    if (updateOn == UpdateOn.KEYSTROKE) {
-      component.getDocument().addDocumentListener(new NotifyOnContentsChanged());
+    if (updateOn == UpdateOn.VALUE_CHANGE) {
+      Document document = component.getDocument();
+      if (document instanceof NumberDocument) {
+        ((NumberDocument<Number>) document).addListener(new NotifyOnNumberChanged());
+      }
+      else {
+        document.addDocumentListener(new NotifyOnContentsChanged());
+      }
     }
     else {
       component.addFocusListener(new NotifyOnFocusLost());
+    }
+  }
+
+  private final class NotifyOnNumberChanged implements Consumer<Number> {
+    @Override
+    public void accept(Number value) {
+      notifyListeners();
     }
   }
 

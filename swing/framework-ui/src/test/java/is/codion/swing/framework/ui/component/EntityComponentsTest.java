@@ -250,7 +250,7 @@ public final class EntityComponentsTest {
             entityComponents.textArea(Detail.STRING)
                     .transferFocusOnEnter(true)
                     .rowsColumns(4, 2)
-                    .updateOn(UpdateOn.KEYSTROKE)
+                    .updateOn(UpdateOn.VALUE_CHANGE)
                     .lineWrap(true)
                     .wrapStyleWord(true)
                     .linkedValue(editModel.value(Detail.STRING))
@@ -267,7 +267,7 @@ public final class EntityComponentsTest {
                     .transferFocusOnEnter(true)
                     .columns(10)
                     .buttonFocusable(true)
-                    .updateOn(UpdateOn.KEYSTROKE)
+                    .updateOn(UpdateOn.VALUE_CHANGE)
                     .linkedValue(editModel.value(Detail.STRING))
                     .buildValue();
     TextInputPanel inputPanel = componentValue.component();
