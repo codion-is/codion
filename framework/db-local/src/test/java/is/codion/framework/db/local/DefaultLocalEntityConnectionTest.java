@@ -1272,11 +1272,6 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void domain() {
-    assertInstanceOf(TestDomain.class, connection.domain());
-  }
-
-  @Test
   void modifiedColumns() {
     Entity entity = ENTITIES.builder(Department.TYPE)
             .with(Department.DEPTNO, 1)

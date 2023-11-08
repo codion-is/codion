@@ -50,10 +50,9 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
   int fetchDepth();
 
   /**
-   * @return true if this foreign key is not based on a physical (table) foreign key
-   * and should not prevent deletion
+   * @return true if this foreign key is not based on a physical (table) foreign key and should not prevent deletion
    */
-  boolean softReference();
+  boolean soft();
 
   /**
    * Returns true if the given foreign key reference column is read-only, as in, not updated when the foreign key value is set.

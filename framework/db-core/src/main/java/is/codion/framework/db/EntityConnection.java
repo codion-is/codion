@@ -379,7 +379,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the entities that depend on {@code entities}
    * @throws IllegalArgumentException in case the entities are not of the same type
    * @throws DatabaseException in case of a database exception
-   * @see ForeignKeyDefinition#softReference()
+   * @see ForeignKeyDefinition#soft()
    */
   Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException;
 

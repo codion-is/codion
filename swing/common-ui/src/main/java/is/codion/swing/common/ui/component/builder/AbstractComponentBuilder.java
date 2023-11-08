@@ -221,14 +221,14 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   public final B popupMenuControl(Function<C, Control> popupMenuControl) {
     requireNonNull(popupMenuControl);
 
-    return popupMenuControls(component -> Controls.controls(popupMenuControl.apply(component)));
+    return popupMenuControls(comp -> Controls.controls(popupMenuControl.apply(comp)));
   }
 
   @Override
   public final B popupMenuControls(Function<C, Controls> popupMenuControls) {
     requireNonNull(popupMenuControls);
 
-    return popupMenu(component -> MenuBuilder.builder(popupMenuControls.apply(component)).createPopupMenu());
+    return popupMenu(comp -> MenuBuilder.builder(popupMenuControls.apply(comp)).createPopupMenu());
   }
 
   @Override

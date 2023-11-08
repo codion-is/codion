@@ -1506,7 +1506,7 @@ public class EntityTablePanel extends JPanel {
   private boolean includeViewDependenciesControl() {
     return tableModel.entities().definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
-            .filter(foreignKeyDefinition -> !foreignKeyDefinition.softReference())
+            .filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())
             .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
   }
 

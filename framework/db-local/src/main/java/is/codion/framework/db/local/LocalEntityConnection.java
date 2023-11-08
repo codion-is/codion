@@ -134,11 +134,6 @@ public interface LocalEntityConnection extends EntityConnection {
   void setDefaultQueryTimeout(int queryTimeout);
 
   /**
-   * @return the underlying domain model
-   */
-  Domain domain();
-
-  /**
    * Constructs a new LocalEntityConnection instance
    * @param database the Database instance
    * @param domain the domain model

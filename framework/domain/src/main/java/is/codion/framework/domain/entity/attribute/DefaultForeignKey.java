@@ -89,7 +89,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
   @Override
   public EntityType referencedType() {
-    return references.get(0).referencedColumn().entityType();
+    return references.get(0).foreign().entityType();
   }
 
   @Override
@@ -154,16 +154,16 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
     if (references.isEmpty()) {
       throw new IllegalArgumentException("No references provided for foreign key: " + name());
     }
-    EntityType referencedEntityType = references.get(0).referencedColumn().entityType();
+    EntityType referencedEntityType = references.get(0).foreign().entityType();
     List<Reference<?>> referenceList = new ArrayList<>(references.size());
     for (Reference<?> reference : references) {
       if (!entityType().equals(reference.column().entityType())) {
         throw new IllegalArgumentException("Entity type " + entityType() +
                 " expected, got " + reference.column().entityType());
       }
-      if (!referencedEntityType.equals(reference.referencedColumn().entityType())) {
+      if (!referencedEntityType.equals(reference.foreign().entityType())) {
         throw new IllegalArgumentException("Entity type " + referencedEntityType +
-                " expected, got " + reference.referencedColumn().entityType());
+                " expected, got " + reference.foreign().entityType());
       }
       if (referenceList.stream().anyMatch(existingReference -> existingReference.column().equals(reference.column()))) {
         throw new IllegalArgumentException("Foreign key already contains a reference for column: " + reference.column());
@@ -180,14 +180,14 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
     private static final long serialVersionUID = 1;
 
     private final Column<T> column;
-    private final Column<T> referencedColumn;
+    private final Column<T> foreign;
 
-    DefaultReference(Column<T> column, Column<T> referencedColumn) {
-      if (requireNonNull(column, "column").equals(requireNonNull(referencedColumn, "referencedColumn"))) {
-        throw new IllegalArgumentException("column and referencedColumn can not be the same");
+    DefaultReference(Column<T> column, Column<T> foreign) {
+      if (requireNonNull(column, "column").equals(requireNonNull(foreign, "foreign"))) {
+        throw new IllegalArgumentException("column and foreign column may not be the same");
       }
       this.column = column;
-      this.referencedColumn = referencedColumn;
+      this.foreign = foreign;
     }
 
     @Override
@@ -196,8 +196,8 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
     }
 
     @Override
-    public Column<T> referencedColumn() {
-      return referencedColumn;
+    public Column<T> foreign() {
+      return foreign;
     }
   }
 

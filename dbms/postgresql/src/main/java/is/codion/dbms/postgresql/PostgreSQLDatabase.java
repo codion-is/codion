@@ -47,10 +47,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   private static final String MISSING_PRIVS_ERROR = "42501";
 
   private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
+  private static final String UNIQUE_KEY_ERROR = "unique_key_error";
   private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
   static {
-    ERROR_CODE_MAP.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString("unique_key_error"));
+    ERROR_CODE_MAP.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString(UNIQUE_KEY_ERROR));
     ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION, MESSAGES.getString("foreign_key_violation"));
     ERROR_CODE_MAP.put(NULL_VALUE_ERROR, MESSAGES.getString("null_value_error"));
     ERROR_CODE_MAP.put(INTEGRITY_CONSTRAINT_VIOLATION, MESSAGES.getString("integrity_constraint_error"));
@@ -124,9 +125,6 @@ final class PostgreSQLDatabase extends AbstractDatabase {
     return TIMEOUT_ERROR.equals(exception.getSQLState());
   }
 
-  /**
-   * @return true
-   */
   @Override
   public boolean subqueryRequiresAlias() {
     return true;
@@ -173,9 +171,9 @@ final class PostgreSQLDatabase extends AbstractDatabase {
       //Detail: Key (col1, col2)=(val1, val2) already exists.
       String values = exceptionMessage.substring(indexOfDetail + 11, indexOfAlreadyExists);
       
-      return MESSAGES.getString("unique_key_error") + ": " + values;
+      return MESSAGES.getString(UNIQUE_KEY_ERROR) + ": " + values;
     }
 
-    return MESSAGES.getString("unique_key_error");
+    return MESSAGES.getString(UNIQUE_KEY_ERROR);
   }
 }

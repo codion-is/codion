@@ -108,7 +108,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private final Domain domain;
-  private final Entities domainEntities;
   private final DatabaseConnection connection;
   private final SelectQueries selectQueries;
   private final Map<EntityType, List<ColumnDefinition<?>>> insertableColumnsCache = new HashMap<>();
@@ -148,13 +147,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.domain = domain;
     this.connection = connection;
     this.domain.configureConnection(connection);
-    this.domainEntities = domain.entities();
     this.selectQueries = new SelectQueries(connection.database());
   }
 
   @Override
   public Entities entities() {
-    return domainEntities;
+    return domain.entities();
   }
 
   @Override
@@ -306,7 +304,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public int delete(Condition condition) throws DatabaseException {
     checkIfReadOnly(requireNonNull(condition, CONDITION).entityType());
 
-    EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
+    EntityDefinition entityDefinition = definition(condition.entityType());
     List<?> statementValues = condition.values();
     List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     String deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
@@ -347,7 +345,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         int deleteCount = 0;
         for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
-          EntityDefinition entityDefinition = domainEntities.definition(entityTypeKeys.getKey());
+          EntityDefinition entityDefinition = definition(entityTypeKeys.getKey());
           condition = keys(entityTypeKeys.getValue());
           statementValues = condition.values();
           statementColumns = columnDefinitions(entityDefinition, condition.columns());
@@ -463,7 +461,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(column, "column").entityType());
+    EntityDefinition entityDefinition = definition(requireNonNull(column, "column").entityType());
     if (!requireNonNull(select, "select").where().entityType().equals(column.entityType())) {
       throw new IllegalArgumentException("Condition entity type " + column.entityType() + " required, got " + select.where().entityType());
     }
@@ -496,7 +494,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public int count(Count count) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(count, "count").where().entityType());
+    EntityDefinition entityDefinition = definition(requireNonNull(count, "count").where().entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
@@ -643,7 +641,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
+    EntityDefinition entityDefinition = definition(requireNonNull(primaryKey, "primaryKey").entityType());
     checkIfReadOnly(entityDefinition.entityType());
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columns().definition(blobColumn);
     Condition condition = key(primaryKey);
@@ -689,7 +687,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
+    EntityDefinition entityDefinition = definition(requireNonNull(primaryKey, "primaryKey").entityType());
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columns().definition(blobColumn);
     Exception exception = null;
     Condition condition = key(primaryKey);
@@ -781,11 +779,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.defaultQueryTimeout = defaultQueryTimeout;
   }
 
-  @Override
-  public Domain domain() {
-    return domain;
-  }
-
   private Collection<Key> insert(Collection<? extends Entity> entities, Collection<Entity> insertedEntities) throws DatabaseException {
     checkIfReadOnly(entities);
 
@@ -797,7 +790,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         for (Entity entity : entities) {
-          EntityDefinition entityDefinition = domainEntities.definition(entity.entityType());
+          EntityDefinition entityDefinition = definition(entity.entityType());
           KeyGenerator keyGenerator = entityDefinition.primaryKey().generator();
           keyGenerator.beforeInsert(entity, connection);
 
@@ -853,7 +846,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
 
         for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-          EntityDefinition entityDefinition = domainEntities.definition(entityTypeEntities.getKey());
+          EntityDefinition entityDefinition = definition(entityTypeEntities.getKey());
           List<ColumnDefinition<?>> updatableColumns = updatableColumns(entityDefinition);
 
           List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
@@ -922,7 +915,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void performOptimisticLocking(Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
-      EntityDefinition definition = domainEntities.definition(entitiesByEntityTypeEntry.getKey());
+      EntityDefinition definition = definition(entitiesByEntityTypeEntry.getKey());
       if (definition.optimisticLocking()) {
         checkIfMissingOrModified(entitiesByEntityTypeEntry.getKey(), entitiesByEntityTypeEntry.getValue());
       }
@@ -954,7 +947,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
                                    List<Object> statementValues) throws UpdateException {
-    EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
+    EntityDefinition entityDefinition = definition(update.where().entityType());
     for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
       ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
       if (!columnDefinition.updatable()) {
@@ -1040,7 +1033,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private Collection<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
                                                             Collection<Attribute<?>> conditionSelectAttributes) {
-    Collection<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeys().definitions();
+    Collection<ForeignKeyDefinition> foreignKeyDefinitions = definition(entityType).foreignKeys().definitions();
     if (conditionSelectAttributes.isEmpty()) {
       return foreignKeyDefinitions;
     }
@@ -1092,7 +1085,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(select, CONDITION);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    EntityDefinition entityDefinition = domainEntities.definition(select.where().entityType());
+    EntityDefinition entityDefinition = definition(select.where().entityType());
     SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
             .select(select);
     String selectQuery = selectQueryBuilder.build();
@@ -1215,9 +1208,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private List<ForeignKeyDefinition> initializeNonSoftForeignKeyReferences(EntityType entityType) {
-    return domainEntities.definitions().stream()
+    return domain.entities().definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
-            .filter(foreignKeyDefinition -> !foreignKeyDefinition.softReference())
+            .filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())
             .filter(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(entityType))
             .collect(toList());
   }
@@ -1259,7 +1252,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private List<Attribute<?>> collectPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
-    EntityDefinition entityDefinition = domainEntities.definition(entityType);
+    EntityDefinition entityDefinition = definition(entityType);
     List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
             new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
     entityDefinition.primaryKey().columnDefinitions().forEach(primaryKeyColumn -> {
@@ -1381,9 +1374,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private void checkIfReadOnly(EntityType entityType) throws DatabaseException {
-    if (domainEntities.definition(entityType).readOnly()) {
+    if (definition(entityType).readOnly()) {
       throw new DatabaseException("Entities of type: " + entityType + " are read only");
     }
+  }
+
+  private EntityDefinition definition(EntityType entityType) {
+    return domain.entities().definition(entityType);
   }
 
   private List<Entity> cachedResult(Select select) {
