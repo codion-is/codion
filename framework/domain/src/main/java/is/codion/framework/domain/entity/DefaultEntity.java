@@ -510,7 +510,7 @@ class DefaultEntity implements Entity, Serializable {
     EntityDefinition referencedEntity = definition.foreignKeys().referencedBy(foreignKey);
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.referencedColumn());
+      ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.foreign());
       if (!referencedColumn.nullable() && isNull(reference.column())) {
         return true;
       }
@@ -551,7 +551,7 @@ class DefaultEntity implements Entity, Serializable {
       boolean containsValue = contains(reference.column());
       if (containsValue) {
         Object currentReferenceValue = get(reference.column());
-        Object newReferenceValue = foreignKeyValue.get(reference.referencedColumn());
+        Object newReferenceValue = foreignKeyValue.get(reference.foreign());
         if (!Objects.equals(currentReferenceValue, newReferenceValue)) {
           throw new IllegalArgumentException("Foreign key " + foreignKeyDefinition + " is not allowed to modify read-only reference: " +
                   reference.column() + " from " + currentReferenceValue + " to " + newReferenceValue);
@@ -567,7 +567,7 @@ class DefaultEntity implements Entity, Serializable {
         ForeignKey foreignKey = foreignKeyDefinition.attribute();
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
-        if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).referencedColumn()))) {
+        if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).foreign()))) {
           remove(foreignKey);
           removeCachedReferencedKey(foreignKey);
         }
@@ -590,7 +590,7 @@ class DefaultEntity implements Entity, Serializable {
       ForeignKey.Reference<?> reference = references.get(i);
       if (!foreignKeyDefinition.readOnly(reference.column())) {
         AttributeDefinition<Object> columnDefinition = definition.columns().definition((Column<Object>) reference.column());
-        put(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.referencedColumn()));
+        put(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.foreign()));
       }
     }
   }
@@ -616,12 +616,12 @@ class DefaultEntity implements Entity, Serializable {
     Map<Column<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.referencedColumn());
+      ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.foreign());
       Object value = values.get(reference.column());
       if (value == null && !referencedColumn.nullable()) {
         return null;
       }
-      keyValues.put(reference.referencedColumn(), value);
+      keyValues.put(reference.foreign(), value);
     }
     Set<Column<?>> referencedColumns = keyValues.keySet();
     List<Column<?>> primaryKeyColumns = referencedEntity.primaryKey().columns();
@@ -639,11 +639,11 @@ class DefaultEntity implements Entity, Serializable {
     }
 
     List<Column<?>> primaryKeyColumns = referencedEntityDefinition.primaryKey().columns();
-    boolean isPrimaryKey = primaryKeyColumns.size() == 1 && reference.referencedColumn().equals(primaryKeyColumns.get(0));
+    boolean isPrimaryKey = primaryKeyColumns.size() == 1 && reference.foreign().equals(primaryKeyColumns.get(0));
 
     return cacheReferencedKey(foreignKey,
             new DefaultKey(definition.foreignKeys().referencedBy(foreignKey),
-                    reference.referencedColumn(), value, isPrimaryKey));
+                    reference.foreign(), value, isPrimaryKey));
   }
 
   private Key cacheReferencedKey(ForeignKey foreignKey, Key referencedKey) {

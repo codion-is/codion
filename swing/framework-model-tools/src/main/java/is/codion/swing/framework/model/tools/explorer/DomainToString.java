@@ -70,8 +70,8 @@ final class DomainToString {
       foreignKeyDefinition.references().forEach(reference -> {
         StringBuilder referenceBuilder = new StringBuilder();
         referenceBuilder.append(reference.column().name().toUpperCase()).append(", ")
-                .append(interfaceName(reference.referencedColumn().entityType().name(), true))
-                .append(".").append(reference.referencedColumn().name().toUpperCase());
+                .append(interfaceName(reference.foreign().entityType().name(), true))
+                .append(".").append(reference.foreign().name().toUpperCase());
         references.add(referenceBuilder.toString());
       });
 

@@ -48,20 +48,20 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
     Column<T> column();
 
     /**
-     * @return the column in the parent entity
+     * @return the referenced foreign column in the parent entity
      */
-    Column<T> referencedColumn();
+    Column<T> foreign();
   }
 
   /**
    * Returns a new {@link Reference} based on the given columns.
    * @param column the local column
-   * @param referencedColumn the referenced column
+   * @param foreign the referenced foreign column
    * @param <T> the column type
    * @return a new {@link Reference} based on the given columns
    */
-  static <T> Reference<T> reference(Column<T> column, Column<T> referencedColumn) {
-    return new DefaultForeignKey.DefaultReference<>(column, referencedColumn);
+  static <T> Reference<T> reference(Column<T> column, Column<T> foreign) {
+    return new DefaultForeignKey.DefaultReference<>(column, foreign);
   }
 
   /**
