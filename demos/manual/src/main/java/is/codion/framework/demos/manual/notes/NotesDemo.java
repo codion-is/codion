@@ -173,7 +173,7 @@ public final class NotesDemo {
       // Exclude the Note.UPDATED attribute from the Edit popup menu since
       // the value is set automatically and shouldn't be editable via the UI.
       // Note.CREATED is excluded by default since it is not updatable.
-      excludeFromEditMenu(Note.UPDATED);
+      editableAttributes().remove(Note.UPDATED);
     }
   }
 

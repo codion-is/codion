@@ -22,7 +22,7 @@ final class CityTablePanel extends ChartTablePanel {
 
   CityTablePanel(CityTableModel tableModel) {
     super(tableModel, tableModel.chartDataset(), "Cities");
-    excludeFromEditMenu(City.LOCATION);
+    editableAttributes().remove(City.LOCATION);
   }
 
   @Override
