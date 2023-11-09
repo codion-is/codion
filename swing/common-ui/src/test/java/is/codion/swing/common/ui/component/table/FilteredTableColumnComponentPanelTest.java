@@ -43,15 +43,15 @@ public class FilteredTableColumnComponentPanelTest {
     columnModel.visible(1).set(false);
 
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
-    assertTrue(panel.columnComponents().containsKey(1));
+    assertTrue(panel.components().containsKey(1));
 
-    assertNull(panel.columnComponents().get(1).getParent());
+    assertNull(panel.components().get(1).getParent());
     columnModel.visible(1).set(true);
-    assertNotNull(panel.columnComponents().get(1).getParent());
+    assertNotNull(panel.components().get(1).getParent());
     columnModel.visible(2).set(false);
-    assertNull(panel.columnComponents().get(2).getParent());
+    assertNull(panel.components().get(2).getParent());
     columnModel.visible(2).set(true);
-    assertNotNull(panel.columnComponents().get(2).getParent());
+    assertNotNull(panel.components().get(2).getParent());
   }
 
   @Test
@@ -62,11 +62,11 @@ public class FilteredTableColumnComponentPanelTest {
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
-    assertEquals(100, panel.columnComponents().get(0).getPreferredSize().width);
+    assertEquals(100, panel.components().get(0).getPreferredSize().width);
     column1.setWidth(90);
-    assertEquals(90, panel.columnComponents().get(1).getPreferredSize().width);
+    assertEquals(90, panel.components().get(1).getPreferredSize().width);
     column2.setWidth(80);
-    assertEquals(80, panel.columnComponents().get(2).getPreferredSize().width);
+    assertEquals(80, panel.components().get(2).getPreferredSize().width);
   }
 
   private static Map<Integer, JPanel> createColumnComponents(FilteredTableColumnModel<Integer> columnModel) {

@@ -1623,7 +1623,7 @@ public class EntityTablePanel extends JPanel {
 
   private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
     if (tableConditionPanel != null) {
-      tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
+      tableConditionPanel.componentPanel().components().values().forEach(this::configureHorizontalAlignment);
     }
 
     return tableConditionPanel;
@@ -1660,7 +1660,7 @@ public class EntityTablePanel extends JPanel {
       if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
         conditionPanelVisibleState.set(true);
       }
-      List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.componentPanel().columnComponents().values().stream()
+      List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.componentPanel().components().values().stream()
               .filter(panel -> tableModel.columnModel().visible(panel.model().columnIdentifier()).get())
               .map(panel -> tableModel.entityDefinition().attributes().definition(panel.model().columnIdentifier()))
               .sorted(AttributeDefinition.definitionComparator())
@@ -1691,7 +1691,7 @@ public class EntityTablePanel extends JPanel {
                                                Control refreshControl) {
     columns.forEach(column -> {
       ColumnConditionPanel<?, ?> columnConditionPanel =
-              tableConditionPanel.componentPanel().columnComponents().get(column.getIdentifier());
+              tableConditionPanel.componentPanel().components().get(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);

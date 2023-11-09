@@ -9878,3 +9878,4 @@
   FilteredTable bug fixed, now updates the UI hidden column components
   Value.Validator.validate(), explicit throws clause removed
   FilteredTableColumnModel.visibleColumns() and hiddenColumns() renamed visible() and hidden() respectively
+  FilteredTableColumnComponentPanel.columnComponents() renamed components()

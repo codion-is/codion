@@ -42,18 +42,18 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
   private final Collection<FilteredTableColumn<C>> columns;
   private final Box.Filler scrollBarFiller;
   private final JPanel basePanel;
-  private final Map<C, T> columnComponents;
+  private final Map<C, T> components;
   private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-  private FilteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> columnComponents) {
+  private FilteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> components) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.columns();
-    requireNonNull(columnComponents).forEach((columnIdentifier, component) -> {
+    requireNonNull(components).forEach((columnIdentifier, component) -> {
       if (!columnModel.containsColumn(columnIdentifier)) {
         throw new IllegalArgumentException("Column " + columnIdentifier + " is not part of column model");
       }
     });
-    this.columnComponents = Collections.unmodifiableMap(columnComponents);
+    this.components = Collections.unmodifiableMap(components);
     this.basePanel = new JPanel(FlexibleGridLayout.builder()
             .rows(1)
             .build());
@@ -69,8 +69,8 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(scrollBarFiller, basePanel);
-    if (columnComponents != null) {
-      Utilities.updateUI(columnComponents.values());
+    if (components != null) {
+      Utilities.updateUI(components.values());
     }
     if (nullComponents != null) {
       Utilities.updateUI(nullComponents.values());
@@ -80,8 +80,8 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
   /**
    * @return the column components mapped their respective column identifiers
    */
-  public Map<C, T> columnComponents() {
-    return columnComponents;
+  public Map<C, T> components() {
+    return components;
   }
 
   /**
@@ -139,7 +139,7 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
   }
 
   private JComponent columnComponent(FilteredTableColumn<C> column) {
-    return columnComponents.getOrDefault(column.getIdentifier(),
+    return components.getOrDefault(column.getIdentifier(),
             (T) nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
   }
 

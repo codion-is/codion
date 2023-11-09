@@ -73,7 +73,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
    * @throws IllegalArgumentException in case no condition panel exists for the given column
    */
   public <T> ColumnConditionPanel<C, T> conditionPanel(C columnIdentifier) {
-    ColumnConditionPanel<C, ?> conditionPanel = componentPanel.columnComponents().get(requireNonNull(columnIdentifier));
+    ColumnConditionPanel<C, ?> conditionPanel = componentPanel.components().get(requireNonNull(columnIdentifier));
     if (conditionPanel == null) {
       throw new IllegalArgumentException("No condition panel available for column: " + columnIdentifier);
     }
@@ -97,7 +97,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
    * @param listener a listener notified when a condition panel receives focus
    */
   public void addFocusGainedListener(Consumer<C> listener) {
-    componentPanel().columnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
+    componentPanel().components().values().forEach(panel -> panel.addFocusGainedListener(listener));
   }
 
   /**
@@ -114,13 +114,13 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   private void clearConditions() {
-    componentPanel.columnComponents().values().stream()
+    componentPanel.components().values().stream()
             .map(ColumnConditionPanel::model)
             .forEach(ColumnConditionModel::clear);
   }
 
   private void setAdvancedView(boolean advanced) {
-    componentPanel.columnComponents().forEach((column, panel) -> panel.advancedView().set(advanced));
+    componentPanel.components().forEach((column, panel) -> panel.advancedView().set(advanced));
   }
 
   private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(
