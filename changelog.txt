@@ -9875,3 +9875,4 @@
   TabbedPanelLayout.INCLUDE_DETAIL_PANEL_CONTROLS renamed INCLUDE_DETAIL_CONTROLS
   EntityTablePanel.excludeFromEditMenu() replaced with editableAttributes() ValueSet
   ValueSet.addAll() and removeAll() added
+  FilteredTable bug fixed, now updates the UI hidden column components

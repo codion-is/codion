@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
@@ -51,11 +52,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
@@ -200,6 +205,9 @@ public final class FilteredTable<R, C> extends JTable {
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(getTableHeader(), searchField, filterPanel);
+    Utilities.updateUI(getModel().columnModel().hiddenColumns().stream()
+            .flatMap(FilteredTable::columnComponents)
+            .collect(Collectors.toList()));
   }
 
   @Override
@@ -661,6 +669,21 @@ public final class FilteredTable<R, C> extends JTable {
             .modifiers(ALT_DOWN_MASK)
             .action(control(() -> toggleColumnSorting(getSelectedColumn(), false)))
             .enable(this);
+  }
+
+  private static Stream<JComponent> columnComponents(FilteredTableColumn<?> column) {
+    Collection<JComponent> components = new ArrayList<>(3);
+    addIfComponent(components, column.getCellRenderer());
+    addIfComponent(components, column.getCellEditor());
+    addIfComponent(components, column.getHeaderRenderer());
+
+    return components.stream();
+  }
+
+  private static void addIfComponent(Collection<JComponent> components, Object object) {
+    if (object instanceof JComponent) {
+      components.add((JComponent) object);
+    }
   }
 
   /**
