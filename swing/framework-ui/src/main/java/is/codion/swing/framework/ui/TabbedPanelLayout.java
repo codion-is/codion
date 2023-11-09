@@ -58,12 +58,13 @@ import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 public final class TabbedPanelLayout implements PanelLayout {
 
   /**
-   * Specifies whether actions to hide detail panels or show them in a dialog are available to the user<br>
+   * Specifies whether actions to hide detail panels or show them in a dialog should be available to the user,
+   * for example in a popup menu or on a toolbar.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> INCLUDE_DETAIL_PANEL_CONTROLS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.TabEntityPanelLayout.includeDetailPanelControls", true);
+  public static final PropertyValue<Boolean> INCLUDE_DETAIL_CONTROLS =
+          Configuration.booleanValue("is.codion.swing.framework.ui.TabbedPanelLayout.includeDetailControls", true);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedPanelLayout.class.getName());
 
@@ -87,7 +88,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   private TabbedPanelLayout(DefaultBuilder builder) {
     this.detailPanelState = builder.detailPanelState;
     this.includeDetailTabPane = builder.includeDetailTabPane;
-    this.includeDetailPanelControls = builder.includeDetailPanelControls;
+    this.includeDetailPanelControls = builder.includeDetailControls;
     this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
     this.detailController = new TabbedDetailController();
   }
@@ -163,10 +164,10 @@ public final class TabbedPanelLayout implements PanelLayout {
     Builder includeDetailTabPane(boolean includeDetailTabPane);
 
     /**
-     * @param includeDetailPanelControls true if detail panel controls should be available
+     * @param includeDetailControls true if detail panel controls should be available
      * @return this builder instance
      */
-    Builder includeDetailPanelControls(boolean includeDetailPanelControls);
+    Builder includeDetailControls(boolean includeDetailControls);
 
     /**
      * @return a new {@link TabbedPanelLayout} instance based on this builder
@@ -543,7 +544,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     private PanelState detailPanelState = EMBEDDED;
     private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
     private boolean includeDetailTabPane = true;
-    private boolean includeDetailPanelControls = INCLUDE_DETAIL_PANEL_CONTROLS.get();
+    private boolean includeDetailControls = INCLUDE_DETAIL_CONTROLS.get();
 
     @Override
     public Builder detailPanelState(PanelState detailPanelState) {
@@ -564,8 +565,8 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     @Override
-    public Builder includeDetailPanelControls(boolean includeDetailPanelControls) {
-      this.includeDetailPanelControls = includeDetailPanelControls;
+    public Builder includeDetailControls(boolean includeDetailControls) {
+      this.includeDetailControls = includeDetailControls;
       return this;
     }
 

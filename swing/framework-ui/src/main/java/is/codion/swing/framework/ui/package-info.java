@@ -24,6 +24,6 @@
  * {@link is.codion.swing.framework.ui.EntityTablePanel#SHOW_REFRESH_PROGRESS_BAR}<br>
  * {@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
  * {@link is.codion.swing.framework.ui.TabbedApplicationLayout#TAB_PLACEMENT}<br>
- * {@link is.codion.swing.framework.ui.TabbedPanelLayout#INCLUDE_DETAIL_PANEL_CONTROLS}<br>
+ * {@link is.codion.swing.framework.ui.TabbedPanelLayout#INCLUDE_DETAIL_CONTROLS}<br>
  */
 package is.codion.swing.framework.ui;

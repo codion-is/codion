@@ -9871,3 +9871,5 @@
   EntityPanel.EntityPanelSelector renamed Selector
   EntityPanel.DetailPanelController renamed DetailController, related refactoring/renaming
   EntityPanel.DetailController.detailPanelState() renamed panelState()
+  TabbedPanelLayout.Builder.includeDetailPanelControls renamed includeDetailControls()
+  TabbedPanelLayout.INCLUDE_DETAIL_PANEL_CONTROLS renamed INCLUDE_DETAIL_CONTROLS

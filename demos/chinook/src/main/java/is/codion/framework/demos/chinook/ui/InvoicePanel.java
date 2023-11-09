@@ -14,7 +14,7 @@ public final class InvoicePanel extends EntityPanel {
     super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
             TabbedPanelLayout.builder()
                     .includeDetailTabPane(false)
-                    .includeDetailPanelControls(false)
+                    .includeDetailControls(false)
                     .build());
     tablePanel().excludeFromEditMenu(Invoice.TOTAL);
     addDetailPanel(invoiceLinePanel);
