@@ -69,16 +69,10 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   /**
    * @param <T> the column value type
    * @param columnIdentifier the column identifier
-   * @return the condition panel associated with the given column
-   * @throws IllegalArgumentException in case no condition panel exists for the given column
+   * @return the condition panel associated with the given column or an empty Optional in case of no condition panel
    */
-  public <T> ColumnConditionPanel<C, T> conditionPanel(C columnIdentifier) {
-    ColumnConditionPanel<C, ?> conditionPanel = componentPanel.components().get(requireNonNull(columnIdentifier));
-    if (conditionPanel == null) {
-      throw new IllegalArgumentException("No condition panel available for column: " + columnIdentifier);
-    }
-
-    return (ColumnConditionPanel<C, T>) conditionPanel;
+  public <T> Optional<ColumnConditionPanel<C, T>> conditionPanel(C columnIdentifier) {
+    return Optional.ofNullable((ColumnConditionPanel<C, T>) componentPanel.components().get(requireNonNull(columnIdentifier)));
   }
 
   /**

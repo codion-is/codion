@@ -1666,14 +1666,16 @@ public class EntityTablePanel extends JPanel {
               .sorted(AttributeDefinition.definitionComparator())
               .collect(toList());
       if (attributeDefinitions.size() == 1) {
-        tableConditionPanel.conditionPanel(attributeDefinitions.get(0).attribute()).requestInputFocus();
+        tableConditionPanel.conditionPanel(attributeDefinitions.get(0).attribute())
+                .ifPresent(ColumnConditionPanel::requestInputFocus);
       }
       else if (!attributeDefinitions.isEmpty()) {
         Dialogs.selectionDialog(attributeDefinitions)
                 .owner(dialogOwner)
                 .title(dialogTitle)
                 .selectSingle()
-                .ifPresent(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()).requestInputFocus());
+                .flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))
+                .ifPresent(ColumnConditionPanel::requestInputFocus);
       }
     }
   }
