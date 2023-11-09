@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,10 +54,10 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   /**
-   * @return the underlying component panel
+   * @return an unmodifiable view of the condition panels
    */
-  public FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel() {
-    return componentPanel;
+  public Collection<ColumnConditionPanel<C, ?>> conditionPanels() {
+    return componentPanel.components().values();
   }
 
   /**
@@ -91,7 +92,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
    * @param listener a listener notified when a condition panel receives focus
    */
   public void addFocusGainedListener(Consumer<C> listener) {
-    componentPanel().components().values().forEach(panel -> panel.addFocusGainedListener(listener));
+    componentPanel.components().values().forEach(panel -> panel.addFocusGainedListener(listener));
   }
 
   /**

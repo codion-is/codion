@@ -1623,7 +1623,7 @@ public class EntityTablePanel extends JPanel {
 
   private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
     if (tableConditionPanel != null) {
-      tableConditionPanel.componentPanel().components().values().forEach(this::configureHorizontalAlignment);
+      tableConditionPanel.conditionPanels().forEach(this::configureHorizontalAlignment);
     }
 
     return tableConditionPanel;
@@ -1660,7 +1660,7 @@ public class EntityTablePanel extends JPanel {
       if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
         conditionPanelVisibleState.set(true);
       }
-      List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.componentPanel().components().values().stream()
+      List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.conditionPanels().stream()
               .filter(panel -> tableModel.columnModel().visible(panel.model().columnIdentifier()).get())
               .map(panel -> tableModel.entityDefinition().attributes().definition(panel.model().columnIdentifier()))
               .sorted(AttributeDefinition.definitionComparator())
@@ -1691,16 +1691,16 @@ public class EntityTablePanel extends JPanel {
   private static void addRefreshOnEnterControl(Collection<FilteredTableColumn<Attribute<?>>> columns,
                                                FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
                                                Control refreshControl) {
-    columns.forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel =
-              tableConditionPanel.componentPanel().components().get(column.getIdentifier());
-      if (columnConditionPanel != null) {
-        enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.lowerBoundField(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.upperBoundField(), refreshControl);
-      }
-    });
+    columns.stream()
+            .map(column -> tableConditionPanel.conditionPanel(column.getIdentifier()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .forEach(columnConditionPanel -> {
+              enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
+              enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
+              enableRefreshOnEnterControl(columnConditionPanel.lowerBoundField(), refreshControl);
+              enableRefreshOnEnterControl(columnConditionPanel.upperBoundField(), refreshControl);
+            });
   }
 
   private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
