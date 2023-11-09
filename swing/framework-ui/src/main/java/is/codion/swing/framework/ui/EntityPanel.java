@@ -1027,9 +1027,6 @@ public class EntityPanel extends JPanel {
               .control(createToggleEditPanelControl())
               .build());
     }
-    if (detailPanelController != null) {
-      detailPanelController.setupTablePanelControls(tablePanel);
-    }
     if (tablePanel.table().doubleClickAction().get() == null) {
       tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
     }
@@ -1231,7 +1228,8 @@ public class EntityPanel extends JPanel {
     default void updateUI() {}
 
     /**
-     * @param entityPanel the panel to lay out
+     * Lays out the panel and adds any layout or detail panel related controls to this panel
+     * @param entityPanel the panel to lay out and configure
      */
     void layout(EntityPanel entityPanel);
 
@@ -1269,12 +1267,6 @@ public class EntityPanel extends JPanel {
      * @return the value controlling the state of the given detail panel
      */
     Value<PanelState> detailPanelState(EntityPanel detailPanel);
-
-    /**
-     * Adds any detail panel related controls to the table panel popup menu and toolbar
-     * @param tablePanel the table panel
-     */
-    void setupTablePanelControls(EntityTablePanel tablePanel);
   }
 
   /**
@@ -1424,8 +1416,5 @@ public class EntityPanel extends JPanel {
     public Value<PanelState> detailPanelState(EntityPanel detailPanel) {
       return detailPanelState;
     }
-
-    @Override
-    public void setupTablePanelControls(EntityTablePanel tablePanel) {}
   }
 }

@@ -107,6 +107,7 @@ public final class TabbedPanelLayout implements PanelLayout {
             entityPanel.editControlTablePanel() :
             tableDetailSplitPane, BorderLayout.CENTER);
     setupResizing();
+    setupControls();
     if (detailPanelController.detailPanelState.notEqualTo(detailPanelState)) {
       detailPanelController.detailPanelState(selectedDetailPanel()).set(detailPanelState);
     }
@@ -203,6 +204,18 @@ public final class TabbedPanelLayout implements PanelLayout {
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(resizeLeftAction)
               .enable(entityPanel.editControlPanel());
+    }
+  }
+
+  private void setupControls() {
+    if (entityPanel.containsTablePanel()) {
+      EntityTablePanel tablePanel = entityPanel.tablePanel();
+      Controls controls = Controls.controls();
+      detailPanelController.toggleDetailPanelControl().ifPresent(controls::add);
+      if (controls.notEmpty()) {
+        tablePanel.addToolBarControls(controls);
+      }
+      detailPanelController.detailPanelControls().ifPresent(tablePanel::addPopupMenuControls);
     }
   }
 
@@ -323,16 +336,6 @@ public final class TabbedPanelLayout implements PanelLayout {
     @Override
     public Value<PanelState> detailPanelState(EntityPanel detailPanel) {
       return detailPanelState;
-    }
-
-    @Override
-    public void setupTablePanelControls(EntityTablePanel tablePanel) {
-      Controls controls = Controls.controls();
-      toggleDetailPanelControl().ifPresent(controls::add);
-      if (controls.notEmpty()) {
-        tablePanel.addToolBarControls(controls);
-      }
-      detailPanelControls().ifPresent(tablePanel::addPopupMenuControls);
     }
 
     private void updateDetailPanelState() {
@@ -504,13 +507,13 @@ public final class TabbedPanelLayout implements PanelLayout {
               .build();
     }
 
-  private JPanel createEmptyBorderBasePanel(JComponent component) {
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    return Components.borderLayoutPanel()
-            .centerComponent(component)
-            .border(createEmptyBorder(gap, gap, 0, gap))
-            .build();
-  }
+    private JPanel createEmptyBorderBasePanel(JComponent component) {
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      return Components.borderLayoutPanel()
+              .centerComponent(component)
+              .border(createEmptyBorder(gap, gap, 0, gap))
+              .build();
+    }
 
     private final class SelectDetailPanelCommand implements Control.Command {
 

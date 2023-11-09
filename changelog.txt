@@ -9867,3 +9867,4 @@
   ForeignKeyDefinition.softReference() renamed soft()
   ForeignKey.Reference.referencedColumn() renamed foreign()
   Authenticator.logout() and close() now have empty default implementations
+  EntityPanel.DetailPanelController.setupTablePanelControls() removed, PanelLayout.layout() now responsible for setting up controls
