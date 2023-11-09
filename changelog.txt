@@ -9916,3 +9916,11 @@
   TabbedPanelLayout.INCLUDE_DETAIL_PANEL_CONTROLS renamed INCLUDE_DETAIL_CONTROLS
   EntityTablePanel.excludeFromEditMenu() replaced with editableAttributes() ValueSet
   ValueSet.addAll() and removeAll() added
+  FilteredTable bug fixed, now updates the UI hidden column components
+  Value.Validator.validate(), explicit throws clause removed
+  FilteredTableColumnModel.visibleColumns() and hiddenColumns() renamed visible() and hidden() respectively
+  FilteredTableColumnComponentPanel.columnComponents() renamed components()
+  FilteredTableConditionPanel.conditionPanel(columnIdentifier) now returns Optional instead of throwing if not found
+  FilteredTableConditionPanel.componentPanel() removed, conditionPanels() added
+  ColumnConditionPanel.advancedView() renamed advanced()
+  FilteredTableConditionPanel.advancedView() renamed advanced()

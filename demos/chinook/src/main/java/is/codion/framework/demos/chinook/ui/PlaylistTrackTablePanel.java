@@ -32,7 +32,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
   }
 
   private void configureTrackConditionPanel() {
-    EntitySearchField equalField = (EntitySearchField) conditionPanel().conditionPanel(PlaylistTrack.TRACK_FK).equalField();
-    equalField.setSelectorFactory(new TrackSelectorFactory());
+    conditionPanel().conditionPanel(PlaylistTrack.TRACK_FK)
+            .map(conditionPanel -> (EntitySearchField) conditionPanel.equalField())
+            .ifPresent(equalField -> equalField.setSelectorFactory(new TrackSelectorFactory()));
   }
 }

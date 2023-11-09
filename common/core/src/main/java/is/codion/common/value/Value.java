@@ -137,7 +137,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
      * @param value the value to validate
      * @throws IllegalArgumentException in case of an invalid value
      */
-    void validate(T value) throws IllegalArgumentException;
+    void validate(T value);
   }
 
   /**

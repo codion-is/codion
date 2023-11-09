@@ -812,7 +812,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @see #queryHiddenColumns()
    */
   protected Collection<Attribute<?>> attributes() {
-    if (queryHiddenColumns.get() || columnModel().hiddenColumns().isEmpty()) {
+    if (queryHiddenColumns.get() || columnModel().hidden().isEmpty()) {
       return emptyList();
     }
 

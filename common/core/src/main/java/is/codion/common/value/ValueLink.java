@@ -148,7 +148,7 @@ final class ValueLink<T> {
     }
 
     @Override
-    public void validate(T value) throws IllegalArgumentException {
+    public void validate(T value) {
       if (linkedValue instanceof AbstractValue) {
         ((AbstractValue<T>) linkedValue).validators()
                 .stream()
