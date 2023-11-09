@@ -9866,3 +9866,4 @@
   LocalEntityConnection.domain() removed
   ForeignKeyDefinition.softReference() renamed soft()
   ForeignKey.Reference.referencedColumn() renamed foreign()
+  Authenticator.logout() and close() now have empty default implementations

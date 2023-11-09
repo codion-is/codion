@@ -76,9 +76,6 @@ public final class ChinookAuthenticator implements Authenticator {
   }
 
   @Override
-  public void logout(RemoteClient remoteClient) {}
-
-  @Override
   public void close() {
     connectionPool.close();
   }
