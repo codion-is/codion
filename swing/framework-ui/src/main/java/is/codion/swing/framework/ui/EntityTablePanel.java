@@ -25,6 +25,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -92,7 +93,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -101,6 +101,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.Components.toolBar;
@@ -114,6 +115,7 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -282,7 +284,7 @@ public class EntityTablePanel extends JPanel {
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
-  private final Set<Attribute<?>> excludeFromEditMenu = new HashSet<>();
+  private final ValueSet<Attribute<?>> editableAttributes;
 
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
@@ -336,6 +338,10 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
+    this.editableAttributes = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
+            .map(AttributeDefinition::attribute)
+            .collect(toSet()));
+    this.editableAttributes.addValidator(new EditMenuAttributeValidator());
     this.table = createTable();
     this.statusPanel = new StatusPanel();
   }
@@ -383,16 +389,12 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Specifies that the given attribute should be excluded from the edit selected entities menu.
-   * @param attributes the attributes to exclude from the edit menu
-   * @throws IllegalStateException in case the panel has already been initialized
+   * Specifies the attributes that should be editable in this table panel, such as via the edit selected entities menu.
+   * Modifying this {@link ValueSet} after the panel has been initialized will result in a {@link IllegalStateException} being thrown
+   * @return the attributes that should be editable via this table panel
    */
-  public final void excludeFromEditMenu(Attribute<?>... attributes) {
-    throwIfInitialized();
-    for (Attribute<?> attribute : requireNonNull(attributes)) {
-      tableModel().entityDefinition().attributes().definition(attribute);//just validating that the attribute exists
-      excludeFromEditMenu.add(attribute);
-    }
+  public final ValueSet<Attribute<?>> editableAttributes() {
+    return editableAttributes;
   }
 
   /**
@@ -1125,8 +1127,8 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
-    tableModel.entityDefinition().attributes().updatable().stream()
-            .filter(attributeDefinition -> !excludeFromEditMenu.contains(attributeDefinition.attribute()))
+    editableAttributes.get().stream()
+            .map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
             .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
                     .name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
@@ -1275,12 +1277,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeEditSelectedControls() {
-    long updatableAttributeCount = tableModel.entityDefinition().attributes().updatable().stream()
-            .map(AttributeDefinition::attribute)
-            .filter(attribute -> !excludeFromEditMenu.contains(attribute))
-            .count();
-
-    return updatableAttributeCount > 0 &&
+    return !editableAttributes.empty() &&
             !tableModel.editModel().readOnly().get() &&
             tableModel.editModel().updateEnabled().get();
   }
@@ -1811,6 +1808,16 @@ public class EntityTablePanel extends JPanel {
     public boolean confirm(JComponent dialogOwner) {
       return confirm(dialogOwner, FrameworkMessages.confirmDeleteSelected(
               tableModel.selectionModel().selectionCount()), FrameworkMessages.delete());
+    }
+  }
+
+  private final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
+
+    @Override
+    public void validate(Set<Attribute<?>> attributes) {
+      throwIfInitialized();
+      //validate that the attributes exists
+      attributes.forEach(attribute -> tableModel.entityDefinition().attributes().definition(attribute));
     }
   }
 

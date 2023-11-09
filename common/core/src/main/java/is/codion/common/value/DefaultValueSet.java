@@ -55,9 +55,35 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
+  public boolean addAll(T... values) {
+    requireNonNull(values);
+    Set<T> newValues = new LinkedHashSet<>(this.values);
+    boolean added = false;
+    for (T value : values) {
+      added = newValues.add(value) || added;
+    }
+    set(newValues);
+
+    return added;
+  }
+
+  @Override
   public boolean remove(T value) {
     Set<T> newValues = new LinkedHashSet<>(values);
     boolean removed = newValues.remove(value);
+    set(newValues);
+
+    return removed;
+  }
+
+  @Override
+  public boolean removeAll(T... values) {
+    requireNonNull(values);
+    Set<T> newValues = new LinkedHashSet<>(this.values);
+    boolean removed = false;
+    for (T value : values) {
+      removed = newValues.remove(value) || removed;
+    }
     set(newValues);
 
     return removed;

@@ -182,7 +182,7 @@ public class EntityPanel extends JPanel {
   private final JPanel editControlTablePanel = new JPanel(borderLayout());
   private final Event<EntityPanel> beforeActivateEvent = Event.event();
   private final PanelLayout panelLayout;
-  private final DetailPanelController detailPanelController;
+  private final DetailController detailController;
   private final Value<String> caption;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
 
@@ -287,7 +287,7 @@ public class EntityPanel extends JPanel {
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
     this.panelLayout = requireNonNull(panelLayout);
-    this.detailPanelController = panelLayout.detailPanelController().orElse(new NullDetailPanelController());
+    this.detailController = panelLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -339,8 +339,8 @@ public class EntityPanel extends JPanel {
    * @return the detail panel controller
    * @param <T> the detail panel controller type
    */
-  public final <T extends DetailPanelController> T detailPanelController() {
-    return (T) detailPanelController;
+  public final <T extends DetailController> T detailController() {
+    return (T) detailController;
   }
 
   /**
@@ -426,7 +426,7 @@ public class EntityPanel extends JPanel {
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addBeforeActivateListener(detailPanelController::select);
+    detailPanel.addBeforeActivateListener(detailController::select);
   }
 
   /**
@@ -1042,9 +1042,6 @@ public class EntityPanel extends JPanel {
               .control(createToggleEditPanelControl())
               .build());
     }
-    if (detailPanelController != null) {
-      detailPanelController.setupTablePanelControls(tablePanel);
-    }
     if (tablePanel.table().doubleClickAction().get() == null) {
       tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
     }
@@ -1246,15 +1243,16 @@ public class EntityPanel extends JPanel {
     default void updateUI() {}
 
     /**
-     * @param entityPanel the panel to lay out
+     * Lays out the panel and adds any layout or detail panel related controls to this panel
+     * @param entityPanel the panel to lay out and configure
      */
     void layout(EntityPanel entityPanel);
 
     /**
-     * @return the {@link DetailPanelController} provided by this {@link PanelLayout}
+     * @return the {@link DetailController} provided by this {@link PanelLayout}
      * @param <T> the detail panel controller type
      */
-    default <T extends DetailPanelController> Optional<T> detailPanelController() {
+    default <T extends DetailController> Optional<T> detailController() {
       return Optional.empty();
     }
   }
@@ -1262,7 +1260,7 @@ public class EntityPanel extends JPanel {
   /**
    * Selects an entity panel.
    */
-  public interface EntityPanelSelector {
+  public interface Selector {
 
     /**
      * Selects the given entity panel. If the entityPanel
@@ -1275,7 +1273,7 @@ public class EntityPanel extends JPanel {
   /**
    * Controls the detail panels of a entity panel
    */
-  public interface DetailPanelController extends EntityPanelSelector {
+  public interface DetailController extends Selector {
 
     /**
      * Note that the detail panel state may be shared between detail panels,
@@ -1283,13 +1281,7 @@ public class EntityPanel extends JPanel {
      * @param detailPanel the detail panel
      * @return the value controlling the state of the given detail panel
      */
-    Value<PanelState> detailPanelState(EntityPanel detailPanel);
-
-    /**
-     * Adds any detail panel related controls to the table panel popup menu and toolbar
-     * @param tablePanel the table panel
-     */
-    void setupTablePanelControls(EntityTablePanel tablePanel);
+    Value<PanelState> panelState(EntityPanel detailPanel);
   }
 
   /**
@@ -1420,12 +1412,12 @@ public class EntityPanel extends JPanel {
     EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
   }
 
-  private static final class NullDetailPanelController implements DetailPanelController {
+  private static final class NullDetailController implements DetailController {
 
-    private final Value<PanelState> detailPanelState = Value.value(HIDDEN);
+    private final Value<PanelState> panelState = Value.value(HIDDEN);
 
-    private NullDetailPanelController() {
-      detailPanelState.addValidator(value -> {
+    private NullDetailController() {
+      panelState.addValidator(value -> {
         if (value != HIDDEN) {
           throw new IllegalArgumentException("No detail controller available, can not set the detail panel state");
         }
@@ -1436,11 +1428,8 @@ public class EntityPanel extends JPanel {
     public void select(EntityPanel entityPanel) {}
 
     @Override
-    public Value<PanelState> detailPanelState(EntityPanel detailPanel) {
-      return detailPanelState;
+    public Value<PanelState> panelState(EntityPanel detailPanel) {
+      return panelState;
     }
-
-    @Override
-    public void setupTablePanelControls(EntityTablePanel tablePanel) {}
   }
 }

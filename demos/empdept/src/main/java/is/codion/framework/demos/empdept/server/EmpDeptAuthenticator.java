@@ -52,9 +52,6 @@ public final class EmpDeptAuthenticator implements Authenticator {
   }
 
   @Override
-  public void logout(RemoteClient remoteClient) {}
-
-  @Override
   public void close() {
     users.clear();
   }

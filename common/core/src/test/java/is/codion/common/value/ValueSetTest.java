@@ -70,16 +70,14 @@ public class ValueSetTest {
     assertTrue(valueSet.empty());
     assertFalse(valueSet.notEmpty());
     assertTrue(valueSet.add(3));
-    assertFalse(valueSet.remove(1));
-    assertFalse(valueSet.remove(2));
+    assertFalse(valueSet.removeAll(1, 2));
 
     assertTrue(valueSet.add(null));
     assertFalse(valueSet.add(null));
     assertTrue(valueSet.remove(null));
 
     valueSet.clear();
-    valueSet.add(1);
-    valueSet.add(2);
+    valueSet.addAll(1, 2);
 
     valueSet.set(null);
     assertTrue(valueSet.add(1));
@@ -99,6 +97,12 @@ public class ValueSetTest {
 
     valueSet.clear();
     assertNull(value.get());
+
+    assertTrue(valueSet.addAll(1, 2, 3));
+    assertFalse(valueSet.addAll(1, 2, 3));
+    assertTrue(valueSet.removeAll(1, 2));
+    assertFalse(valueSet.removeAll(1, 2));
+    assertTrue(valueSet.removeAll(2, 3));
   }
 
   @Test

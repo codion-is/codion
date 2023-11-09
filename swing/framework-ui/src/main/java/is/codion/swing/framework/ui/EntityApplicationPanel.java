@@ -52,7 +52,6 @@ import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
-import is.codion.swing.framework.ui.EntityPanel.EntityPanelSelector;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -1038,7 +1037,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Handles laying out an EntityApplicationPanel.
    */
-  public interface ApplicationLayout extends EntityPanelSelector {
+  public interface ApplicationLayout extends EntityPanel.Selector {
 
     /**
      * Lays out the given application panel

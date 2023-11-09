@@ -54,9 +54,6 @@ public final class TestAuthenticator implements Authenticator {
   }
 
   @Override
-  public void logout(RemoteClient remoteClient) {}
-
-  @Override
   public void close() {
     users.clear();
   }

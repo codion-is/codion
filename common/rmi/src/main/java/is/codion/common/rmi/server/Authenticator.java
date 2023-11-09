@@ -54,7 +54,7 @@ public interface Authenticator {
    * Called after the given client has been disconnected
    * @param remoteClient the remote client
    */
-  void logout(RemoteClient remoteClient);
+  default void logout(RemoteClient remoteClient) {}
 
   /**
    * Disposes of all resources used by this authenticator, after a call to this
@@ -63,18 +63,16 @@ public interface Authenticator {
    * giving the authenticator a chance to release resources in an orderly manner.
    * Any exception thrown by this method is ignored.
    */
-  void close();
+  default void close() {}
 
   /**
    * @return a list containing all the authenticators registered with {@link ServiceLoader}.
    */
   static List<Authenticator> authenticators() {
     List<Authenticator> authenticators = new ArrayList<>();
-    ServiceLoader<Authenticator> loader = ServiceLoader.load(Authenticator.class);
-    for (Authenticator authenticator : loader) {
+    for (Authenticator authenticator : ServiceLoader.load(Authenticator.class)) {
       authenticators.add(authenticator);
     }
-    System.out.println(authenticators.size());
 
     return authenticators;
   }
