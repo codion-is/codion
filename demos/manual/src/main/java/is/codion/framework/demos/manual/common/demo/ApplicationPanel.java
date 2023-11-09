@@ -322,7 +322,7 @@ public final class ApplicationPanel extends JPanel {
     private final List<String> swearWords = asList("fuck", "shit");
 
     @Override
-    public void validate(String value) throws IllegalArgumentException {
+    public void validate(String value) {
       if (value != null) {
         String lowerCaseValue = value.toLowerCase();
         swearWords.forEach(swearWord -> {

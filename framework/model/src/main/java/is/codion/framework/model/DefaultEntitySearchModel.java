@@ -252,7 +252,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final class EntityValidator implements Value.Validator<Set<Entity>> {
 
     @Override
-    public void validate(Set<Entity> entitySet) throws IllegalArgumentException {
+    public void validate(Set<Entity> entitySet) {
       if (entitySet != null) {
         if (entitySet.size() > 1 && singleSelection) {
           throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");

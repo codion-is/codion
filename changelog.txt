@@ -9876,3 +9876,4 @@
   EntityTablePanel.excludeFromEditMenu() replaced with editableAttributes() ValueSet
   ValueSet.addAll() and removeAll() added
   FilteredTable bug fixed, now updates the UI hidden column components
+  Value.Validator.validate(), explicit throws clause removed
