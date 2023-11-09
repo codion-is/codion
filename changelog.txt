@@ -9881,3 +9881,5 @@
   FilteredTableColumnComponentPanel.columnComponents() renamed components()
   FilteredTableConditionPanel.conditionPanel(columnIdentifier) now returns Optional instead of throwing if not found
   FilteredTableConditionPanel.componentPanel() removed, conditionPanels() added
+  ColumnConditionPanel.advancedView() renamed advanced()
+  FilteredTableConditionPanel.advancedView() renamed advanced()

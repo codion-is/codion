@@ -35,7 +35,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 
   private final TableConditionModel<C> conditionModel;
   private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
-  private final State advancedViewState = State.state();
+  private final State advanced = State.state();
 
   private FilteredTableConditionPanel(TableConditionModel<C> conditionModel, FilteredTableColumnModel<C> columnModel,
                                       ColumnConditionPanel.Factory<C> conditionPanelFactory) {
@@ -44,7 +44,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
             createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
     setLayout(new BorderLayout());
     add(componentPanel, BorderLayout.CENTER);
-    advancedViewState.addDataListener(this::setAdvancedView);
+    advanced.addDataListener(this::onAdvancedChanged);
   }
 
   @Override
@@ -63,8 +63,8 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   /**
    * @return the state controlling the advanced view status of this condition panel
    */
-  public State advancedView() {
-    return advancedViewState;
+  public State advanced() {
+    return advanced;
   }
 
   /**
@@ -81,7 +81,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
    */
   public Controls controls() {
     return Controls.builder()
-            .control(ToggleControl.builder(advancedViewState)
+            .control(ToggleControl.builder(advanced)
                     .name(Messages.advanced()))
             .control(Control.builder(this::clearConditions)
                     .name(Messages.clear()))
@@ -114,8 +114,8 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
             .forEach(ColumnConditionModel::clear);
   }
 
-  private void setAdvancedView(boolean advanced) {
-    componentPanel.components().forEach((column, panel) -> panel.advancedView().set(advanced));
+  private void onAdvancedChanged(boolean advancedView) {
+    componentPanel.components().forEach((column, panel) -> panel.advanced().set(advancedView));
   }
 
   private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(

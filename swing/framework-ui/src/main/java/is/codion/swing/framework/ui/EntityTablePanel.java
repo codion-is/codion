@@ -559,7 +559,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void toggleConditionPanel() {
     if (conditionPanel != null) {
-      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedView(), conditionPanelVisibleState);
+      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advanced(), conditionPanelVisibleState);
     }
   }
 
@@ -568,7 +568,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void toggleFilterPanel() {
     if (filterPanel != null) {
-      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedView(), filterPanelVisibleState);
+      toggleConditionPanel(filterPanelScrollPane, filterPanel.advanced(), filterPanelVisibleState);
     }
   }
 
@@ -1381,7 +1381,7 @@ public class EntityTablePanel extends JPanel {
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
       addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, conditionRefreshControl);
-      conditionPanel.advancedView().addDataListener(advanced -> {
+      conditionPanel.advanced().addDataListener(advanced -> {
         if (conditionPanelVisibleState.get()) {
           revalidate();
         }
@@ -1389,7 +1389,7 @@ public class EntityTablePanel extends JPanel {
     }
     if (filterPanel != null) {
       filterPanel.addFocusGainedListener(table::scrollToColumn);
-      filterPanel.advancedView().addDataListener(advanced -> {
+      filterPanel.advanced().addDataListener(advanced -> {
         if (filterPanelVisibleState.get()) {
           revalidate();
         }

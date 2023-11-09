@@ -77,7 +77,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
 
   private final Event<C> focusGainedEvent = Event.event();
-  private final State advancedView = State.state();
+  private final State advanced = State.state();
 
   private ColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
@@ -144,8 +144,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the state controlling the advanced view status of this condition panel
    */
-  public State advancedView() {
-    return advancedView;
+  public State advanced() {
+    return advanced;
   }
 
   /**
@@ -360,7 +360,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedView.addDataListener(this::onAdvancedViewChange);
+    advanced.addDataListener(this::onAdvancedChanged);
     conditionModel.operator().addDataListener(this::onOperatorChanged);
     FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
@@ -423,16 +423,16 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     repaint();
   }
 
-  private void onAdvancedViewChange(boolean advancedView) {
+  private void onAdvancedChanged(boolean advancedView) {
     if (advancedView) {
-      setAdvancedView();
+      setAdvanced();
     }
     else {
-      setSimpleView();
+      setSimple();
     }
   }
 
-  private void setSimpleView() {
+  private void setSimple() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
     boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
     if (parentOfFocusOwner) {
@@ -448,7 +448,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
   }
 
-  private void setAdvancedView() {
+  private void setAdvanced() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
     boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
     if (parentOfFocusOwner) {
@@ -503,7 +503,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.operator().get());
-    onAdvancedViewChange(advancedView.get());
+    onAdvancedChanged(advanced.get());
     addStringConfigurationPopupMenu();
   }
 
@@ -512,7 +512,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       boolean requestFocus = boundFieldHasFocus();
       clearInputPanel(requestFocus);
       inputPanel.add(boundField, BorderLayout.CENTER);
-      if (!advancedView.get()) {
+      if (!advanced.get()) {
         inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
       }
       if (requestFocus) {
@@ -528,7 +528,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       rangePanel.add(lowerBoundField);
       rangePanel.add(upperBoundField);
       inputPanel.add(rangePanel, BorderLayout.CENTER);
-      if (!advancedView.get()) {
+      if (!advanced.get()) {
         inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
       }
       if (requestFocus) {
