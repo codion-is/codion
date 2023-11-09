@@ -205,7 +205,7 @@ public final class FilteredTable<R, C> extends JTable {
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(getTableHeader(), searchField, filterPanel);
-    Utilities.updateUI(getModel().columnModel().hiddenColumns().stream()
+    Utilities.updateUI(getModel().columnModel().hidden().stream()
             .flatMap(FilteredTable::columnComponents)
             .collect(Collectors.toList()));
   }

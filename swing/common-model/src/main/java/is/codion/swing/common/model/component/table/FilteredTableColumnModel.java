@@ -27,12 +27,12 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   /**
    * @return an unmodifiable view of the currently visible columns
    */
-  List<FilteredTableColumn<C>> visibleColumns();
+  List<FilteredTableColumn<C>> visible();
 
   /**
    * @return an unmodifiable view of currently hidden columns, in no particular order
    */
-  Collection<FilteredTableColumn<C>> hiddenColumns();
+  Collection<FilteredTableColumn<C>> hidden();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.

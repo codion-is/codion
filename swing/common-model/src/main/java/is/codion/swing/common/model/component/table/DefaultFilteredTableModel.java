@@ -370,7 +370,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
                     .collect(toList()) :
             selectionModel.getSelectedIndexes();
 
-    List<FilteredTableColumn<C>> visibleColumns = columnModel().visibleColumns();
+    List<FilteredTableColumn<C>> visibleColumns = columnModel().visible();
 
     return Text.delimitedString(visibleColumns.stream()
             .map(column -> String.valueOf(column.getHeaderValue()))

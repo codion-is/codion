@@ -76,7 +76,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public List<FilteredTableColumn<C>> visibleColumns() {
+  public List<FilteredTableColumn<C>> visible() {
     List<FilteredTableColumn<C>> tableColumns = new ArrayList<>(tableColumnModel.getColumnCount());
     Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
@@ -87,7 +87,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public Collection<FilteredTableColumn<C>> hiddenColumns() {
+  public Collection<FilteredTableColumn<C>> hidden() {
     return unmodifiableCollection(hiddenColumns.values().stream()
             .map(hiddenColumn -> hiddenColumn.column)
             .collect(Collectors.toList()));
