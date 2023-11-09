@@ -1245,7 +1245,7 @@ public class EntityPanel extends JPanel {
   /**
    * Selects an entity panel.
    */
-  public interface EntityPanelSelector {
+  public interface Selector {
 
     /**
      * Selects the given entity panel. If the entityPanel
@@ -1258,7 +1258,7 @@ public class EntityPanel extends JPanel {
   /**
    * Controls the detail panels of a entity panel
    */
-  public interface DetailPanelController extends EntityPanelSelector {
+  public interface DetailPanelController extends Selector {
 
     /**
      * Note that the detail panel state may be shared between detail panels,
