@@ -9883,3 +9883,4 @@
   FilteredTableConditionPanel.componentPanel() removed, conditionPanels() added
   ColumnConditionPanel.advancedView() renamed advanced()
   FilteredTableConditionPanel.advancedView() renamed advanced()
+  LoadTestModel.Application.exception() now returns Throwable and message() returns the exception message

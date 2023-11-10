@@ -290,9 +290,14 @@ public interface LoadTestModel<T> {
     Integer duration();
 
     /**
+     * @return the exception from the last run, if any
+     */
+    Throwable exception();
+
+    /**
      * @return the exception message from the last run, if any
      */
-    String exception();
+    String message();
 
     /**
      * @return the application create time
