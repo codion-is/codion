@@ -364,6 +364,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private FilteredTable<Application, Integer> createApplicationsTable() {
     return FilteredTable.builder(model().applicationTableModel())
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .doubleClickAction(Control.control(this::viewException))
             .popupMenuControls(table -> Controls.builder()
                     .control(Control.builder(table.getModel()::refresh)
                             .name("Refresh")
@@ -380,6 +381,11 @@ public final class LoadTestPanel<T> extends JPanel {
                             .build())
                     .build())
             .build();
+  }
+
+  private void viewException() {
+    model().applicationTableModel().selectionModel().selectedItem().map(Application::exception)
+            .ifPresent(value -> Dialogs.displayExceptionDialog(value, Utilities.parentWindow(this)));
   }
 
   private void onScenarioSelectionChanged(List<RandomItem<UsageScenario<T>>> selectedScenarios) {

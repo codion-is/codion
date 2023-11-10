@@ -41,7 +41,7 @@ public abstract class AbstractCondition implements Condition, Serializable {
 
   protected AbstractCondition(EntityType entityType, List<Column<?>> columns, Collection<?> values) {
     this.entityType = requireNonNull(entityType);
-    this.columns = validateColumns(unmodifiableList(new ArrayList<>(columns)));
+    this.columns = validate(unmodifiableList(new ArrayList<>(columns)));
     this.values = unmodifiableList(new ArrayList<>(values));
   }
 
@@ -79,11 +79,13 @@ public abstract class AbstractCondition implements Condition, Serializable {
     return Objects.hash(entityType, columns, values);
   }
 
-  private List<Column<?>> validateColumns(List<Column<?>> columns) {
-    for (Column<?> column : columns) {
-      if (!column.entityType().equals(entityType)) {
-        throw new IllegalArgumentException("Condition column entityType mismatch, " +
-                entityType + " expected, got: " + column.entityType());
+  private List<Column<?>> validate(List<Column<?>> columns) {
+    if (!columns.isEmpty()) {
+      for (Column<?> column : columns) {
+        if (!column.entityType().equals(entityType)) {
+          throw new IllegalArgumentException("Condition column entityType mismatch, " +
+                  entityType + " expected, got: " + column.entityType());
+        }
       }
     }
 

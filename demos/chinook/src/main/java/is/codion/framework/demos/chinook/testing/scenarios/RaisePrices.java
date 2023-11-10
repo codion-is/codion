@@ -18,30 +18,37 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
-import is.codion.framework.demos.chinook.model.ChinookAppModel;
-import is.codion.framework.demos.chinook.model.TrackTableModel;
-import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRows;
+import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 
-public final class RaisePrices extends AbstractEntityUsageScenario<ChinookAppModel> {
+public final class RaisePrices extends AbstractUsageScenario<EntityConnectionProvider> {
+
+  private static final BigDecimal PRICE_INCREASE = BigDecimal.valueOf(0.01);
 
   @Override
-  protected void perform(ChinookAppModel application) throws Exception {
-    SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
-    artistModel.tableModel().refresh();
-    selectRandomRows(artistModel.tableModel(), 2);
-    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
-    selectRandomRows(albumModel.tableModel(), 0.5);
-    TrackTableModel trackTableModel =
-            albumModel.detailModel(Track.TYPE).tableModel();
-    selectRandomRows(trackTableModel, 4);
-    trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.01));
+  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
+    EntityConnection connection = connectionProvider.connection();
+    Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
+    List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
+            .limit(1)
+            .build());
+    if (!albums.isEmpty()) {
+      List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(albums.get(0)));
+      Collection<Long> trackIds = Entity.values(Track.ID, tracks);
+      connection.execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, PRICE_INCREASE));
+    }
   }
 }

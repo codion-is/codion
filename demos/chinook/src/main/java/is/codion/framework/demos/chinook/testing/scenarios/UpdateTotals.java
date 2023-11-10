@@ -18,37 +18,48 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
-import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRows;
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 
-public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookAppModel> {
+public final class UpdateTotals extends AbstractUsageScenario<EntityConnectionProvider> {
 
-  private final Random random = new Random();
+  private static final Random RANDOM = new Random();
 
   @Override
-  protected void perform(ChinookAppModel application) throws Exception {
-    SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
-    customerModel.tableModel().refresh();
-    selectRandomRows(customerModel.tableModel(), random.nextInt(6) + 2);
-    SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
-    selectRandomRows(invoiceModel.tableModel(), random.nextInt(6) + 2);
-    SwingEntityTableModel invoiceLineTableModel =
-            invoiceModel.detailModel(InvoiceLine.TYPE).tableModel();
-    Collection<Entity> invoiceLines = invoiceLineTableModel.items();
-    invoiceLines.forEach(invoiceLine ->
-            invoiceLine.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1));
-
-    invoiceLineTableModel.editModel().update(invoiceLines);
+  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
+    EntityConnection connection = connectionProvider.connection();
+    Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
+    List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));
+    if (!invoiceIds.isEmpty()) {
+      Entity invoice = connection.selectSingle(Invoice.ID.equalTo(invoiceIds.get(RANDOM.nextInt(invoiceIds.size()))));
+      Collection<Entity> invoiceLines = connection.select(InvoiceLine.INVOICE_FK.equalTo(invoice));
+      invoiceLines.forEach(invoiceLine ->
+              invoiceLine.put(InvoiceLine.QUANTITY, RANDOM.nextInt(4) + 1));
+      connection.beginTransaction();
+      try {
+        Collection<Entity> updated = connection.updateSelect(invoiceLines.stream()
+                .filter(Entity::modified)
+                .collect(Collectors.toList()));
+        connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));
+        connection.commitTransaction();
+      }
+      catch (DatabaseException e) {
+        connection.rollbackTransaction();
+        throw e;
+      }
+    }
   }
 }

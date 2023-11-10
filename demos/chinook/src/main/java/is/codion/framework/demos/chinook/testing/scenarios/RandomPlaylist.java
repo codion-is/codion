@@ -18,16 +18,15 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
-import is.codion.framework.demos.chinook.model.ChinookAppModel;
-import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +35,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 
-public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookAppModel> {
+public final class RandomPlaylist extends AbstractUsageScenario<EntityConnectionProvider> {
 
   private static final Random RANDOM = new Random();
   private static final String PLAYLIST_NAME = "Random playlist";
@@ -44,17 +43,35 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
           asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
   @Override
-  protected void perform(ChinookAppModel application) throws Exception {
-    SwingEntityModel playlistModel = application.entityModel(Playlist.TYPE);
-    PlaylistTableModel playlistTableModel = playlistModel.tableModel();
-    playlistTableModel.refresh();
-    List<Entity> playlistGenres = application.connectionProvider().connection()
-            .select(Genre.NAME.in(GENRES));
-    playlistTableModel.createRandomPlaylist(new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
-            RANDOM.nextInt(20) + 25, playlistGenres));
-    SwingEntityTableModel playlistTrackTableModel = playlistModel.detailModel(PlaylistTrack.TYPE).tableModel();
-    playlistTrackTableModel.selectionModel().selectAll();
-    playlistTrackTableModel.deleteSelected();
-    playlistTableModel.deleteSelected();
+  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
+    EntityConnection connection = connectionProvider.connection();
+    List<Entity> playlistGenres = connection.select(Genre.NAME.in(GENRES));
+    RandomPlaylistParameters parameters = new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
+            RANDOM.nextInt(20) + 25, playlistGenres);
+    Entity playlist = createPlaylist(connection, parameters);
+    Collection<Entity> playlistTracks = connection.select(PlaylistTrack.PLAYLIST_FK.equalTo(playlist));
+    Collection<Entity.Key> toDelete = Entity.primaryKeys(playlistTracks);
+    toDelete.add(playlist.primaryKey());
+
+    connection.delete(toDelete);
+  }
+
+  private static Entity createPlaylist(EntityConnection connection,
+                                       RandomPlaylistParameters parameters) throws DatabaseException {
+    connection.beginTransaction();
+    try {
+      Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
+      connection.commitTransaction();
+
+      return randomPlaylist;
+    }
+    catch (DatabaseException e) {
+      connection.rollbackTransaction();
+      throw e;
+    }
+    catch (Exception e) {
+      connection.rollbackTransaction();
+      throw new RuntimeException(e);
+    }
   }
 }

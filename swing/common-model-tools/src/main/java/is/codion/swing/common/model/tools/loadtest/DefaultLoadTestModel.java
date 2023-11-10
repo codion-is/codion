@@ -478,6 +478,10 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
                     .headerValue("Exception")
                     .columnClass(Throwable.class)
                     .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.MESSAGE)
+                    .headerValue("Message")
+                    .columnClass(String.class)
+                    .build(),
             FilteredTableColumn.builder(ApplicationColumnValueProvider.CREATED)
                     .headerValue("Created")
                     .columnClass(LocalDateTime.class)
@@ -923,7 +927,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private final String scenario;
     private final Boolean successful;
     private final int duration;
-    private final String exception;
+    private final Throwable exception;
     private final LocalDateTime created;
 
     private DefaultApplication(DefaultLoadTestModel<?>.ApplicationRunner applicationRunner) {
@@ -934,7 +938,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       this.scenario = runResult == null ? null : runResult.scenario();
       this.successful = runResult == null ? null : runResult.successful();
       this.duration = runResult == null ? null : runResult.duration();
-      this.exception = runResult == null ? null : runResult.exception().map(Throwable::getMessage).orElse(null);
+      this.exception = runResult == null ? null : runResult.exception().orElse(null);
       this.created = applicationRunner.created();
     }
 
@@ -964,8 +968,13 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     @Override
-    public String exception() {
+    public Throwable exception() {
       return exception;
+    }
+
+    @Override
+    public String message() {
+      return exception == null ? null : exception.getMessage();
     }
 
     @Override
@@ -1016,7 +1025,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private static final int SUCCESSFUL = 3;
     private static final int DURATION = 4;
     private static final int EXCEPTION = 5;
-    private static final int CREATED = 6;
+    private static final int MESSAGE = 6;
+    private static final int CREATED = 7;
 
     @Override
     public Object value(Application application, Integer columnIdentifier) {
@@ -1033,6 +1043,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
           return application.duration();
         case EXCEPTION:
           return application.exception();
+        case MESSAGE:
+          return application.message();
         case CREATED:
           return application.created();
         default:

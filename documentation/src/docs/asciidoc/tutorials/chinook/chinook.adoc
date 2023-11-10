@@ -257,6 +257,11 @@ include::{dir-source}/is/codion/framework/demos/chinook/testing/ChinookLoadTest.
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/LoadTestUtil.java[lines=19..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/chinook/testing/scenarios/InsertDeleteAlbum.java[lines=19..-1]
 ----
 

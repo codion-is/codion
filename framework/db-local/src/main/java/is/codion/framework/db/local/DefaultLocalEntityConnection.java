@@ -112,7 +112,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final SelectQueries selectQueries;
   private final Map<EntityType, List<ColumnDefinition<?>>> insertableColumnsCache = new HashMap<>();
   private final Map<EntityType, List<ColumnDefinition<?>>> updatableColumnsCache = new HashMap<>();
-  private final Map<EntityType, List<ForeignKeyDefinition>> nonSoftForeignKeyReferenceCache = new HashMap<>();
+  private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
   private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
   private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
@@ -540,7 +540,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     synchronized (connection) {
       try {
-        for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entityTypes.iterator().next())) {
+        for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
           List<Entity> dependencies = doSelect(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
           if (!dependencies.isEmpty()) {
             dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
@@ -1201,13 +1201,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * @param entityType the entityType
-   * @return all non-soft foreign keys in the domain referencing entities of type {@code entityType}
+   * @return all hard (non-soft) foreign keys in the domain referencing entities of type {@code entityType}
    */
-  private Collection<ForeignKeyDefinition> nonSoftForeignKeyReferences(EntityType entityType) {
-    return nonSoftForeignKeyReferenceCache.computeIfAbsent(entityType, this::initializeNonSoftForeignKeyReferences);
+  private Collection<ForeignKeyDefinition> hardForeignKeyReferences(EntityType entityType) {
+    return hardForeignKeyReferenceCache.computeIfAbsent(entityType, this::initializeHardForeignKeyReferences);
   }
 
-  private List<ForeignKeyDefinition> initializeNonSoftForeignKeyReferences(EntityType entityType) {
+  private List<ForeignKeyDefinition> initializeHardForeignKeyReferences(EntityType entityType) {
     return domain.entities().definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
             .filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())

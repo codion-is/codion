@@ -9924,3 +9924,7 @@
   FilteredTableConditionPanel.componentPanel() removed, conditionPanels() added
   ColumnConditionPanel.advancedView() renamed advanced()
   FilteredTableConditionPanel.advancedView() renamed advanced()
+  LoadTestModel.Application.exception() now returns Throwable and message() returns the exception message
+  LoadTestPanel, double clicking an application now displays the last exception in a dialog
+  AbstractCondition, column validation skipped in case of no columns
+  Chinook demo load test now EntityConnectionProvider based
