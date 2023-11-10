@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -13,16 +12,14 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.List;
-import java.util.Random;
 
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 
 public final class ViewInvoice extends AbstractUsageScenario<EntityConnectionProvider> {
 
-  private static final Random RANDOM = new Random();
-
   @Override
-  protected void perform(EntityConnectionProvider connectionProvider) throws DatabaseException {
+  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
     EntityConnection connection = connectionProvider.connection();
     Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
     List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));

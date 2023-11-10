@@ -12,13 +12,11 @@ import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
 public final class ViewGenre extends AbstractUsageScenario<EntityConnectionProvider> {
-
-  private static final Random RANDOM = new Random();
 
   @Override
   protected void perform(EntityConnectionProvider connectionProvider) throws Exception {

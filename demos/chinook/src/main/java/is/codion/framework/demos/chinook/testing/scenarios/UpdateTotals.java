@@ -14,14 +14,12 @@ import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 
 public final class UpdateTotals extends AbstractUsageScenario<EntityConnectionProvider> {
-
-  private static final Random RANDOM = new Random();
 
   @Override
   protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
@@ -33,18 +31,22 @@ public final class UpdateTotals extends AbstractUsageScenario<EntityConnectionPr
       Collection<Entity> invoiceLines = connection.select(InvoiceLine.INVOICE_FK.equalTo(invoice));
       invoiceLines.forEach(invoiceLine ->
               invoiceLine.put(InvoiceLine.QUANTITY, RANDOM.nextInt(4) + 1));
-      connection.beginTransaction();
-      try {
-        Collection<Entity> updated = connection.updateSelect(invoiceLines.stream()
-                .filter(Entity::modified)
-                .collect(Collectors.toList()));
-        connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));
-        connection.commitTransaction();
-      }
-      catch (DatabaseException e) {
-        connection.rollbackTransaction();
-        throw e;
-      }
+      updateInvoiceLines(invoiceLines.stream()
+              .filter(Entity::modified)
+              .collect(Collectors.toList()), connection);
+    }
+  }
+
+  private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+    connection.beginTransaction();
+    try {
+      Collection<Entity> updated = connection.updateSelect(invoiceLines);
+      connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));
+      connection.commitTransaction();
+    }
+    catch (DatabaseException e) {
+      connection.rollbackTransaction();
+      throw e;
     }
   }
 }
