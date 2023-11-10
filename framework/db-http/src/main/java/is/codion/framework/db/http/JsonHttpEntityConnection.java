@@ -23,6 +23,7 @@ import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpEntity;
@@ -384,7 +385,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
       node.set("entityType", databaseObjectMapper.valueToTree(column.entityType().name()));
       node.set("condition", databaseObjectMapper.valueToTree(select));
       synchronized (this.entities) {
-        return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
+        return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper,
+                entityObjectMapper.getTypeFactory().constructCollectionType(List.class, column.type().valueClass()));
       }
     }
     catch (DatabaseException e) {
@@ -554,14 +556,18 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   private static <T> T onJsonResponse(CloseableHttpResponse closeableHttpResponse, ObjectMapper mapper,
+                                      JavaType javaType) throws Exception {
+    try (CloseableHttpResponse response = closeableHttpResponse) {
+      throwIfError(response);
+
+      return mapper.readValue(response.getEntity().getContent(), javaType);
+    }
+  }
+
+  private static <T> T onJsonResponse(CloseableHttpResponse closeableHttpResponse, ObjectMapper mapper,
                                       TypeReference<T> typeReference) throws Exception {
     try (CloseableHttpResponse response = closeableHttpResponse) {
-      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        response.getEntity().writeTo(outputStream);
-
-        throw Serializer.<Exception>deserialize(outputStream.toByteArray());
-      }
+      throwIfError(response);
 
       return mapper.readValue(response.getEntity().getContent(), typeReference);
     }
@@ -574,18 +580,22 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   private static <T> T onJsonResponse(CloseableHttpResponse closeableHttpResponse, ObjectMapper mapper,
                                       Class<T> valueClass) throws Exception {
     try (CloseableHttpResponse response = closeableHttpResponse) {
-      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        response.getEntity().writeTo(outputStream);
-
-        throw Serializer.<Exception>deserialize(outputStream.toByteArray());
-      }
+      throwIfError(response);
 
       if (mapper != null && valueClass != null) {
         return mapper.readValue(response.getEntity().getContent(), valueClass);
       }
 
       return null;
+    }
+  }
+
+  private static void throwIfError(CloseableHttpResponse response) throws Exception {
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      response.getEntity().writeTo(outputStream);
+
+      throw Serializer.<Exception>deserialize(outputStream.toByteArray());
     }
   }
 

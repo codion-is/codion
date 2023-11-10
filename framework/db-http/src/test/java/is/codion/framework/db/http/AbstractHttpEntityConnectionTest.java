@@ -77,25 +77,25 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void insert() throws DatabaseException {
     Entity entity = connection.entities().builder(Department.TYPE)
-            .with(Department.ID, 33)
+            .with(Department.ID, 33L)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
     Entity.Key key = connection.insert(entity);
-    assertEquals(Integer.valueOf(33), key.get());
+    assertEquals(Long.valueOf(33), key.get());
     connection.delete(key);
   }
 
   @Test
   void selectByKey() throws DatabaseException {
-    Entity.Key key = connection.entities().primaryKey(Department.TYPE, 10);
+    Entity.Key key = connection.entities().primaryKey(Department.TYPE, 10L);
     Collection<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   void selectByKeyDifferentEntityTypes() throws DatabaseException {
-    Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 10);
+    Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 10L);
     Entity.Key empKey = connection.entities().primaryKey(Employee.TYPE, 8);
 
     Collection<Entity> selected = connection.select(asList(deptKey, empKey));
@@ -163,7 +163,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKeyDifferentEntityTypes() throws DatabaseException {
-    Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 40);
+    Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 40L);
     Entity.Key empKey = connection.entities().primaryKey(Employee.TYPE, 1);
     connection.beginTransaction();
     try {
@@ -195,6 +195,8 @@ abstract class AbstractHttpEntityConnectionTest {
   void selectValues() throws DatabaseException {
     List<String> values = connection.select(Department.NAME);
     assertEquals(4, values.size());
+    List<Long> ids = connection.select(Department.ID);
+    assertTrue(ids.get(0) instanceof Long);
   }
 
   @Test
