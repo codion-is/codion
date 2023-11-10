@@ -22,10 +22,10 @@ import java.util.Random;
 
 final class LoadTestUtil {
 
-  private static final Random RANDOM = new Random();
-
   private static final int MAX_ARTIST_ID = 275;
   private static final int MAX_CUSTOMER_ID = 59;
+
+  static final Random RANDOM = new Random();
 
   static long randomArtistId() {
     return RANDOM.nextInt(MAX_ARTIST_ID) + 1;

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -35,7 +34,7 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.r
 public final class ViewAlbum extends AbstractUsageScenario<EntityConnectionProvider> {
 
   @Override
-  protected void perform(EntityConnectionProvider connectionProvider) throws DatabaseException {
+  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
     EntityConnection connection = connectionProvider.connection();
     Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
     List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))

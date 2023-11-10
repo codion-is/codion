@@ -30,14 +30,13 @@ import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static java.util.Arrays.asList;
 
 public final class RandomPlaylist extends AbstractUsageScenario<EntityConnectionProvider> {
 
-  private static final Random RANDOM = new Random();
   private static final String PLAYLIST_NAME = "Random playlist";
   private static final Collection<String> GENRES =
           asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");

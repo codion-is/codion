@@ -32,17 +32,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 import static is.codion.framework.domain.entity.condition.Condition.all;
-import static java.util.Arrays.asList;
 
 public final class InsertDeleteAlbum extends AbstractUsageScenario<EntityConnectionProvider> {
 
-  private static final Random RANDOM = new Random();
-  private static final Collection<String> GENRES =
-          asList("Classical", "Easy Listening", "Jazz", "Latin", "Reggae", "Soundtrack");
+  private static final BigDecimal UNIT_PRICE = BigDecimal.valueOf(2);
 
   @Override
   protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
@@ -53,17 +50,17 @@ public final class InsertDeleteAlbum extends AbstractUsageScenario<EntityConnect
             .with(Album.TITLE, "Title")
             .build();
     album = connection.insertSelect(album);
-    List<Entity> genres = connection.select(Genre.NAME.in(GENRES));
+    List<Entity> genres = connection.select(all(Genre.TYPE));
     List<Entity> mediaTypes = connection.select(all(MediaType.TYPE));
     Collection<Entity> tracks = new ArrayList<>(10);
     for (int i = 0; i < 10; i++) {
       Entity track = connectionProvider.entities().builder(Track.TYPE)
               .with(Track.ALBUM_FK, album)
               .with(Track.NAME, "Track " + i)
-              .with(Track.BYTES, 10000000)
+              .with(Track.BYTES, RANDOM.nextInt(1_000_000))
               .with(Track.COMPOSER, "Composer")
-              .with(Track.MILLISECONDS, 1000000)
-              .with(Track.UNITPRICE, BigDecimal.valueOf(2))
+              .with(Track.MILLISECONDS, RANDOM.nextInt(1_000_000))
+              .with(Track.UNITPRICE, UNIT_PRICE)
               .with(Track.GENRE_FK, genres.get(RANDOM.nextInt(genres.size())))
               .with(Track.MEDIATYPE_FK, mediaTypes.get(RANDOM.nextInt(mediaTypes.size())))
               .build();
