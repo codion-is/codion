@@ -3,23 +3,32 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
-import is.codion.framework.demos.chinook.model.ChinookAppModel;
-import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
+import java.util.List;
 
-public final class ViewAlbum extends AbstractEntityUsageScenario<ChinookAppModel> {
+import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
+
+public final class ViewAlbum extends AbstractUsageScenario<EntityConnectionProvider> {
 
   @Override
-  protected void perform(ChinookAppModel application) {
-    SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
-    artistModel.tableModel().refresh();
-    selectRandomRow(artistModel.tableModel());
-    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
-    selectRandomRow(albumModel.tableModel());
+  protected void perform(EntityConnectionProvider connectionProvider) throws DatabaseException {
+    EntityConnection connection = connectionProvider.connection();
+    Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
+    List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
+            .limit(1)
+            .build());
+    if (!albums.isEmpty()) {
+      connection.select(Chinook.Track.ALBUM_FK.equalTo(albums.get(0)));
+    }
   }
 
   @Override
