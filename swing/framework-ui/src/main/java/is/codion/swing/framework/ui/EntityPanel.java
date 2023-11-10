@@ -724,18 +724,7 @@ public class EntityPanel extends JPanel {
 
   /**
    * Initializes this EntityPanels UI.
-   * <pre>
-   * The default layout is as follows:
-   * __________________________________
-   * |  edit    |control|             |
-   * |  panel   | panel |             |
-   * |__________|_______|   detail    |
-   * |                  |   panel     |
-   * |   table panel    |             |
-   * |(EntityTablePanel)|             |
-   * |                  |             |
-   * |__________________|_____________|
-   * </pre>
+   * @see #panelLayout()
    * @see #editControlPanel()
    * @see #editControlTablePanel()
    */

@@ -53,7 +53,19 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 /**
- * A {@link PanelLayout} implementation based on a JTabbedPane.
+ * A {@link PanelLayout} implementation based on a JTabbedPane.<br>
+ * <pre>
+ * The default layout is as follows:
+ * __________________________________
+ * |  edit    |control|             |
+ * |  panel   | panel |             |
+ * |__________|_______|   detail    |
+ * |                  |   panel     |
+ * |   table panel    |             |
+ * |(EntityTablePanel)|             |
+ * |                  |             |
+ * |__________________|_____________|
+ * </pre>
  */
 public final class TabbedPanelLayout implements PanelLayout {
 
