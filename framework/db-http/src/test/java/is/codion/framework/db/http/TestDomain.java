@@ -66,7 +66,7 @@ public final class TestDomain extends DefaultDomain {
   public interface Department {
     EntityType TYPE = DOMAIN.entityType("scott.dept");
 
-    Column<Integer> ID = TYPE.integerColumn("deptno");
+    Column<Long> ID = TYPE.longColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
   }
@@ -104,7 +104,7 @@ public final class TestDomain extends DefaultDomain {
     Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
     Column<Double> SALARY = TYPE.doubleColumn("sal");
     Column<Double> COMMISSION = TYPE.doubleColumn("comm");
-    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+    Column<Long> DEPARTMENT = TYPE.longColumn("deptno");
     Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
     Column<byte[]> DATA = TYPE.byteArrayColumn("data");
 
