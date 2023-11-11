@@ -15,6 +15,7 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
@@ -41,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,8 +50,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.descending;
@@ -83,6 +87,59 @@ public class DefaultLocalEntityConnectionTest {
     try (LocalEntityConnection connection = new DefaultLocalEntityConnection(Database.instance(), new ConfigureDb(), UNIT_TEST_USER)) {
       //throws exception if table does not exist, which is created during connection configuration
       connection.select(all(Configured.TYPE));
+    }
+  }
+
+  @Test
+  void copy() throws DatabaseException {
+    try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
+         EntityConnection destinationConnection = createDestinationConnection()) {
+      EntityConnection.copyEntities(sourceConnection, destinationConnection)
+              .entityTypes(Department.TYPE)
+              .batchSize(2)
+              .execute();
+
+      assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
+              destinationConnection.count(Count.all(Department.TYPE)));
+
+      assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, destinationConnection)
+              .entityTypes(Employee.TYPE)
+              .batchSize(-10));
+
+      EntityConnection.copyEntities(sourceConnection, destinationConnection)
+              .entityTypes(Employee.TYPE)
+              .batchSize(2)
+              .includePrimaryKeys(false)
+              .condition(Employee.SALARY.greaterThan(1000d))
+              .execute();
+      assertEquals(13, destinationConnection.count(Count.all(Employee.TYPE)));
+
+      destinationConnection.delete(all(Employee.TYPE));
+      destinationConnection.delete(all(Department.TYPE));
+    }
+  }
+
+  @Test
+  void insert() throws DatabaseException {
+    try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
+         EntityConnection destinationConnection = createDestinationConnection()) {
+      List<Entity> departments = sourceConnection.select(all(Department.TYPE));
+      assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(destinationConnection, departments.iterator())
+              .batchSize(-10));
+
+      Consumer<Integer> progressReporter = currentProgress -> {};
+      EntityConnection.insertEntities(destinationConnection, departments.iterator())
+              .batchSize(2)
+              .progressReporter(progressReporter)
+              .onInsert(keys -> {})
+              .execute();
+      assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
+              destinationConnection.count(Count.all(Department.TYPE)));
+
+      EntityConnection.insertEntities(destinationConnection, Collections.emptyIterator())
+              .batchSize(10)
+              .execute();
+      destinationConnection.delete(all(Department.TYPE));
     }
   }
 
@@ -1387,5 +1444,20 @@ public class DefaultLocalEntityConnectionTest {
     }
 
     return new DefaultLocalEntityConnection(database, DOMAIN, UNIT_TEST_USER);
+  }
+
+  private static EntityConnection createDestinationConnection() {
+    try {
+      Database destinationDatabase = H2DatabaseFactory.createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
+      LocalEntityConnection destinationConnection = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
+      destinationConnection.databaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk if exists");
+      destinationConnection.delete(all(Employee.TYPE));
+      destinationConnection.delete(all(Department.TYPE));
+
+      return destinationConnection;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
