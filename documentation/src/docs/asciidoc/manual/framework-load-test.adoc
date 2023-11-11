@@ -12,6 +12,6 @@ include::{dir-source}/is/codion/framework/demos/manual/store/test/StoreLoadTest.
 
 == Examples
 
-* <<{dir-tutorials}/empdept/empdept.adoc#_load_test, EmpDept application load test>>
+* <<{dir-tutorials}/employees/employees.adoc#_load_test, Employees application load test>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_load_test, Chinook application load test>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_load_test, Petstore application load test>>

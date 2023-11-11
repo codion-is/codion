@@ -28,6 +28,6 @@ include::{dir-source}/is/codion/framework/demos/manual/store/Misc.java[tags=jasp
 
 == Examples
 
-* <<{dir-tutorials}/empdept/empdept.adoc#_ui, EmpDept UI layer>>
+* <<{dir-tutorials}/employees/employees.adoc#_ui, Employees UI layer>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_ui, Chinook UI layer>>
 * <<{dir-tutorials}/world/world.adoc#_ui, World UI layer>>

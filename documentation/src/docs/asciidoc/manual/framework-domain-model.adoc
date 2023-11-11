@@ -344,7 +344,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 === Examples
 * <<{dir-tutorials}/world/world.adoc#_domain_model, World domain model>>
-* <<{dir-tutorials}/empdept/empdept.adoc#_domain_model, EmpDept domain model>>
+* <<{dir-tutorials}/employees/employees.adoc#_domain_model, Employees domain model>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_domain_model, Petstore domain model>>
 
@@ -462,7 +462,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 == Examples
 
-* <<{dir-tutorials}/empdept/empdept.adoc#_domain, EmpDept domain model>>
+* <<{dir-tutorials}/employees/employees.adoc#_domain, Employees domain model>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_domain, Petstore domain model>>
 
@@ -545,6 +545,6 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreTest.ja
 
 === Examples
 
-* <<{dir-tutorials}/empdept/empdept.adoc#_domain_unit_test, EmpDept domain model test>>
+* <<{dir-tutorials}/employees/employees.adoc#_domain_unit_test, Employees domain model test>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_domain_unit_test, Chinook domain model test>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_domain_unit_test, Petstore domain model test>>

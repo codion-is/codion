@@ -145,8 +145,8 @@ project(":codion-plugin-tomcat-pool").projectDir = file("plugins/tomcat-pool")
 include "codion-demos-chinook"
 project(":codion-demos-chinook").projectDir = file("demos/chinook")
 
-include "codion-demos-empdept"
-project(":codion-demos-empdept").projectDir = file("demos/empdept")
+include "codion-demos-employees"
+project(":codion-demos-employees").projectDir = file("demos/employees")
 
 include "codion-demos-manual"
 project(":codion-demos-manual").projectDir = file("demos/manual")

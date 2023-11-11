@@ -24,7 +24,7 @@ dependencies {
 test {
     systemProperty "codion.db.initScripts",
             "../chinook/src/main/sql/create_schema.sql," +
-                    "../empdept/src/main/sql/create_schema.sql," +
+                    "../employees/src/main/sql/create_schema.sql," +
                     "../petclinic/src/main/sql/create_schema.sql," +
                     "../petstore/src/main/sql/create_schema.sql," +
                     "../world/src/main/sql/create_schema.sql"
@@ -38,7 +38,7 @@ runClientLocal {
             "codion.client.connectionType": "local",
             "codion.db.url"               : "jdbc:h2:mem:h2db",
             "codion.db.initScripts"       : "../chinook/src/main/sql/create_schema.sql," +
-                    "../empdept/src/main/sql/create_schema.sql," +
+                    "../employees/src/main/sql/create_schema.sql," +
                     "../petclinic/src/main/sql/create_schema.sql," +
                     "../petstore/src/main/sql/create_schema.sql," +
                     "../world/src/main/sql/create_schema.sql"

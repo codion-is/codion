@@ -80,7 +80,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/StoreApplicat
 
 The model layer classes expose a number of <<manual.adoc#_core_classes, *Event* and *State* observers>> as well as *addListener* methods.
 
-* <<{dir-tutorials}/empdept/empdept.adoc#_model, EmpDept entity models>>
+* <<{dir-tutorials}/employees/employees.adoc#_model, Employees entity models>>
 
 The example below prints, to the standard output, all changes made to a given attribute value as well as a message indicating that a table refresh has started.
 
@@ -90,4 +90,4 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel
 ----
 
 == Examples
-* <<{dir-tutorials}/empdept/empdept.adoc#_model, EmpDept entity models>>
+* <<{dir-tutorials}/employees/employees.adoc#_model, Employees entity models>>

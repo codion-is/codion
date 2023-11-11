@@ -1,12 +1,12 @@
-[#_empdept_tutorial]
-= EmpDept Tutorial
+[#_employees_tutorial]
+= Employees Tutorial
 :docinfo: shared-head
 :toc: left
 :imagesdir: ../../images
 :basedir: ../..
-:dir-source: ../../../../../../demos/empdept/src/main/java
-:dir-test-source: ../../../../../../demos/empdept/src/test/java
-:dir-source-sql: ../../../../../../demos/empdept/src/main/sql
+:dir-source: ../../../../../../demos/employees/src/main/java
+:dir-test-source: ../../../../../../demos/employees/src/test/java
+:dir-source-sql: ../../../../../../demos/employees/src/main/sql
 :url-javadoc: link:../../api
 
 == Screenshots
@@ -14,7 +14,7 @@
 .Departments
 [%collapsible]
 ====
-image::tutorials/empdept/departments.png[]
+image::tutorials/employees/departments.png[]
 ====
 
 == Database
