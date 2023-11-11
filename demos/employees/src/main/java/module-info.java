@@ -17,9 +17,9 @@
  * Copyright (c) 2023, Björn Darri Sigurðsson.
  */
 /**
- * EmpDept demo.
+ * Employees demo.
  */
-module is.codion.framework.demos.empdept {
+module is.codion.framework.demos.employees {
   requires jasperreports;
   requires is.codion.framework.db.http;
   requires is.codion.framework.db.local;
@@ -33,20 +33,20 @@ module is.codion.framework.demos.empdept {
   requires is.codion.plugin.jasperreports;
   requires com.formdev.flatlaf.intellijthemes;
 
-  exports is.codion.framework.demos.empdept.domain
+  exports is.codion.framework.demos.employees.domain
           to is.codion.framework.domain, is.codion.framework.db.local;
-  exports is.codion.framework.demos.empdept.model
+  exports is.codion.framework.demos.employees.model
           to is.codion.swing.framework.ui;
-  exports is.codion.framework.demos.empdept.ui
+  exports is.codion.framework.demos.employees.ui
           to is.codion.swing.framework.ui;
-  exports is.codion.framework.demos.empdept.server
+  exports is.codion.framework.demos.employees.server
           to java.rmi;
   //for loading of reports from classpath
-  opens is.codion.framework.demos.empdept.domain
+  opens is.codion.framework.demos.employees.domain
           to is.codion.plugin.jasperreports;
 
   provides is.codion.framework.domain.Domain
-          with is.codion.framework.demos.empdept.domain.EmpDept;
+          with is.codion.framework.demos.employees.domain.Employees;
   provides is.codion.common.rmi.server.Authenticator
-          with is.codion.framework.demos.empdept.server.EmpDeptAuthenticator;
+          with is.codion.framework.demos.employees.server.EmployeesAuthenticator;
 }
