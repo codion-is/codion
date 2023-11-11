@@ -27,7 +27,7 @@ asciidoctor {
     // since the sources included in the docs may have changed, there"s definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"))
-    inputs.dir(new File("../demos/empdept/src"))
+    inputs.dir(new File("../demos/employees/src"))
     inputs.dir(new File("../demos/manual/src"))
     inputs.dir(new File("../demos/petclinic/src"))
     inputs.dir(new File("../demos/petstore/src"))

@@ -47,6 +47,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +73,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private final List<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
   private final List<KeyListener> keyListeners = new ArrayList<>();
   private final List<ComponentListener> componentListeners = new ArrayList<>();
+  private final List<PropertyChangeListener> propertyChangeListeners = new ArrayList<>();
+  private final Map<String, PropertyChangeListener> propertyChangeListenerMap = new HashMap<>();
   private final List<Value.Validator<T>> validators = new ArrayList<>();
 
   private C component;
@@ -334,6 +337,18 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B propertyChangeListener(PropertyChangeListener propertyChangeListener) {
+    this.propertyChangeListeners.add(requireNonNull(propertyChangeListener));
+    return (B) this;
+  }
+
+  @Override
+  public final B propertyChangeListener(String propertyName, PropertyChangeListener propertyChangeListener) {
+    this.propertyChangeListenerMap.put(requireNonNull(propertyName), requireNonNull(propertyChangeListener));
+    return (B) this;
+  }
+
+  @Override
   public final B transferHandler(TransferHandler transferHandler) {
     this.transferHandler = requireNonNull(transferHandler);
     return (B) this;
@@ -466,6 +481,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
     keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
     componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
+    propertyChangeListeners.forEach(listener -> component.addPropertyChangeListener(listener));
+    propertyChangeListenerMap.forEach((propertyName, listener) -> component.addPropertyChangeListener(propertyName, listener));
 
     buildEvent.accept(component);
     if (onBuild != null) {

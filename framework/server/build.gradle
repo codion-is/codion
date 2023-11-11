@@ -30,7 +30,7 @@ dependencies {
     serverRuntime project(":codion-plugin-hikari-pool")
     serverRuntime project(":codion-plugin-logback-proxy")
 
-    serverRuntime project(path: ":codion-demos-empdept", configuration: "domain")
+    serverRuntime project(path: ":codion-demos-employees", configuration: "domain")
     serverRuntime project(path: ":codion-demos-chinook", configuration: "domain")
     serverRuntime project(path: ":codion-demos-petclinic", configuration: "domain")
     serverRuntime project(path: ":codion-demos-petstore", configuration: "domain")
@@ -51,7 +51,7 @@ tasks.register("runServer", JavaExec) {
     maxHeapSize = "256m"
     systemProperties = [
             "codion.db.url"                                 : "jdbc:h2:mem:h2db",
-            "codion.db.initScripts"                         : "../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql",
+            "codion.db.initScripts"                         : "../../demos/employees/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql",
             "codion.server.connectionPoolUsers"             : "scott:tiger",
             "codion.server.port"                            : "2222",
             "codion.server.admin.port"                      : "2223",

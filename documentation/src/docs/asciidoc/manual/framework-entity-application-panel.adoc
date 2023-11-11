@@ -13,6 +13,6 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/StoreApplication
 
 == Examples
 
-* <<{dir-tutorials}/empdept/empdept.adoc#_main_application_panel, EmpDept application panel>>
+* <<{dir-tutorials}/employees/employees.adoc#_main_application_panel, Employees application panel>>
 * <<{dir-tutorials}/chinook/chinook.adoc#_main_application_panel, Chinook application panel>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_main_application_panel, Petstore application panel>>

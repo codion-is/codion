@@ -262,10 +262,10 @@ public class EntityServerTest {
       fail("Should not be able to connect with an invalid user");
     }
     catch (LoginException ignored) {/*ignored*/}
-    Collection<RemoteClient> empDeptClients = admin.clients(testClientTypeId);
-    assertEquals(2, empDeptClients.size());
-    for (RemoteClient empDeptClient : empDeptClients) {
-      assertEquals(UNIT_TEST_USER, empDeptClient.databaseUser());
+    Collection<RemoteClient> employeesClients = admin.clients(testClientTypeId);
+    assertEquals(2, employeesClients.size());
+    for (RemoteClient employeesClient : employeesClients) {
+      assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());
     }
     server.disconnect(connectionRequestJohn.clientId());
     assertEquals(1, admin.connectionCount());

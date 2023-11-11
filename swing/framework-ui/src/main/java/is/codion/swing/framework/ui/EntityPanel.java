@@ -739,25 +739,12 @@ public class EntityPanel extends JPanel {
 
   /**
    * Initializes this EntityPanels UI.
-   * <pre>
-   * The default layout is as follows:
-   * __________________________________
-   * |  edit    |control|             |
-   * |  panel   | panel |             |
-   * |__________|_______|   detail    |
-   * |                  |   panel     |
-   * |   table panel    |             |
-   * |(EntityTablePanel)|             |
-   * |                  |             |
-   * |__________________|_____________|
-   * </pre>
+   * @see #panelLayout()
    * @see #editControlPanel()
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
-    if (containsTablePanel()) {
-      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
-    }
+    setupToggleEditPanelControl();
     panelLayout.layout(this);
     if (containsEditPanel()) {
       initializeEditPanel();
@@ -1005,6 +992,15 @@ public class EntityPanel extends JPanel {
     }
   }
 
+  protected final void initializeTablePanel() {
+    editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
+    if (tablePanel.table().doubleClickAction().get() == null) {
+      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
+    }
+    tablePanel.initialize();
+    tablePanel.setMinimumSize(new Dimension(0, 0));
+  }
+
   final void setParentPanel(EntityPanel parentPanel) {
     if (this.parentPanel != null) {
       throw new IllegalStateException("Parent panel has already been set for " + this);
@@ -1036,22 +1032,14 @@ public class EntityPanel extends JPanel {
     entityPanels.add(detailPanel);
   }
 
-  private void initializeTablePanel() {
-    if (includeToggleEditPanelControl && editPanel != null) {
+  private void setupToggleEditPanelControl() {
+    if (containsTablePanel() && containsEditPanel() && includeToggleEditPanelControl ) {
       tablePanel.addToolBarControls(Controls.builder()
               .control(createToggleEditPanelControl())
               .build());
     }
-    if (tablePanel.table().doubleClickAction().get() == null) {
-      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
-    }
-    tablePanel.initialize();
-    tablePanel.setMinimumSize(new Dimension(0, 0));
   }
 
-  /**
-   * @return a control for toggling the edit panel
-   */
   private Control createToggleEditPanelControl() {
     return Control.builder(this::toggleEditPanelState)
             .smallIcon(FrameworkIcons.instance().editPanel())

@@ -9929,3 +9929,8 @@
   AbstractCondition, column validation skipped in case of no columns
   Chinook demo load test now EntityConnectionProvider based
   JsonHttpEntityConnection.select(column) bug fixed, now uses dynamically created JavaType when deserializing, otherwise Longs become Integers
+  EntityPanel.initializeUI() bug fixed, refactored in order for the toggle edit panel control to appear before the detail panel control on the table panel toolbar
+  LoadTestPanel, applications table no longer scrolls to selected item
+  DefaultLocalEntityConnectionTest merged with EntityConnectionTest from same package
+  ComponentBuilder.propertyChangeListener() added
+  EmpDept demo renamed Employees

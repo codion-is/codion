@@ -365,6 +365,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return FilteredTable.builder(model().applicationTableModel())
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .doubleClickAction(Control.control(this::viewException))
+            .scrollToSelectedItem(false)
             .popupMenuControls(table -> Controls.builder()
                     .control(Control.builder(table.getModel()::refresh)
                             .name("Refresh")

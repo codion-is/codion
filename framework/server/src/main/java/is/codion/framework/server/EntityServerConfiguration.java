@@ -67,7 +67,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 
   /**
    * Specifies the default client connection timeout (ms) in a comma separated list.
-   * Example: is.codion.demos.empdept.client.ui.EmpDeptAppPanel:60000,is.codion.demos.chinook.ui.ChinookAppPanel:120000
+   * Example: is.codion.demos.employees.client.ui.EmployeesAppPanel:60000,is.codion.demos.chinook.ui.ChinookAppPanel:120000
    * Value type: String<br>
    * Default value: none
    */

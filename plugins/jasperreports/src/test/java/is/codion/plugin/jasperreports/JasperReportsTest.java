@@ -79,7 +79,7 @@ public class JasperReportsTest {
   void fillDataSourceReport() throws ReportException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    JRReport wrapper = JasperReports.fileReport("empdept_employees.jasper");
+    JRReport wrapper = JasperReports.fileReport("employees.jasper");
     JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override

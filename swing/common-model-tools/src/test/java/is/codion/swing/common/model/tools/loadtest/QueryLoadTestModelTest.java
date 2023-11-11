@@ -69,7 +69,7 @@ public final class QueryLoadTestModelTest {
 
   private static Database createTestDatabaseInstance() {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("../../demos/empdept/src/main/sql/create_schema.sql");
+    Database.DATABASE_INIT_SCRIPTS.set("../../demos/employees/src/main/sql/create_schema.sql");
 
     return Database.instance();
   }

@@ -746,8 +746,8 @@ public class DefaultEntityTest {
     emp.put(Employee.DEPARTMENT_NO, 2);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
     assertFalse(emp.loaded(Employee.DEPARTMENT_FK));
-    Entity empDept = emp.referencedEntity(Employee.DEPARTMENT_FK);
-    assertEquals(Integer.valueOf(2), empDept.primaryKey().get());
+    Entity referencedDept = emp.referencedEntity(Employee.DEPARTMENT_FK);
+    assertEquals(Integer.valueOf(2), referencedDept.primaryKey().get());
 
     Entity dept2 = ENTITIES.builder(Department.TYPE)
             .with(Department.ID, 3)
