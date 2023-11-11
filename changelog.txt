@@ -9892,3 +9892,4 @@
   LoadTestPanel, applications table no longer scrolls to selected item
   DefaultLocalEntityConnectionTest merged with EntityConnectionTest from same package
   ComponentBuilder.propertyChangeListener() added
+  EmpDept demo renamed Employees

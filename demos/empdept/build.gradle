@@ -34,30 +34,30 @@ dependencies {
 
 buildReports {
     sourceDir = file("src/main/reports")
-    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/empdept/domain")
+    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/employees/domain")
 }
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainType", "EmpDept"
+    systemProperty "codion.client.domainType", "Employees"
 }
 
 runClientLocal {
-    mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
+    mainClass.set("is.codion.framework.demos.employees.ui.EmployeesAppPanel")
 }
 
 runClientRMI {
-    mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
+    mainClass.set("is.codion.framework.demos.employees.ui.EmployeesAppPanel")
 }
 
 runClientHttp {
-    mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
+    mainClass.set("is.codion.framework.demos.employees.ui.EmployeesAppPanel")
 }
 
 runLoadTestRMI {
-    mainClass.set("is.codion.framework.demos.empdept.testing.EmpDeptLoadTest")
+    mainClass.set("is.codion.framework.demos.employees.testing.EmployeesLoadTest")
 }
 
 runLoadTestHttp {
-    mainClass.set("is.codion.framework.demos.empdept.testing.EmpDeptLoadTest")
+    mainClass.set("is.codion.framework.demos.employees.testing.EmployeesLoadTest")
 }

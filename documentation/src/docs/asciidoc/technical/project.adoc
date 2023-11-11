@@ -24,7 +24,7 @@ NOTE: The demos use an embedded in-memory database, so changes to data do not pe
 
 === Local database connection
 
-You can start by running a client from one of the demo projects (empdept, chinook, petstore or world) with a local database connection.
+You can start by running a client from one of the demo projects (employees, chinook, petstore or world) with a local database connection.
 
 [source,shell]
 ----
