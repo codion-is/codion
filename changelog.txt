@@ -9891,3 +9891,4 @@
   EntityPanel.initializeUI() bug fixed, refactored in order for the toggle edit panel control to appear before the detail panel control on the table panel toolbar
   LoadTestPanel, applications table no longer scrolls to selected item
   DefaultLocalEntityConnectionTest merged with EntityConnectionTest from same package
+  ComponentBuilder.propertyChangeListener() added

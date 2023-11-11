@@ -31,6 +31,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -287,6 +288,21 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @see JComponent#addComponentListener(ComponentListener)
    */
   B componentListener(ComponentListener componentListener);
+
+  /**
+   * @param propertyChangeListener the property change listener
+   * @return this builder instance
+   * @see JComponent#addPropertyChangeListener(PropertyChangeListener)
+   */
+  B propertyChangeListener(PropertyChangeListener propertyChangeListener);
+
+  /**
+   * @param propertyName the name of the property to listen for
+   * @param propertyChangeListener the property change listener
+   * @return this builder instance
+   * @see JComponent#addPropertyChangeListener(String, PropertyChangeListener)
+   */
+  B propertyChangeListener(String propertyName, PropertyChangeListener propertyChangeListener);
 
   /**
    * @param transferHandler the transfer handler
