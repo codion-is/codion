@@ -9894,3 +9894,4 @@
   ComponentBuilder.propertyChangeListener() added
   EmpDept demo renamed Employees
   DefaultEntityExists now uses only the original primary key
+  DefaultInputDialogBuilder, now uses Layouts.HORIZONTAL_VERTICAL_GAP when configuring the component border
