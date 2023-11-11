@@ -49,7 +49,7 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
    * Creates a new {@link BorderLayoutPanelBuilder} instance using a new
    * {@link BorderLayout} instance with the default horizontal and vertical gap.
    * @return a border layout panel builder
-   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   * @see Layouts#GAP
    */
   static BorderLayoutPanelBuilder builder() {
     return builder(Layouts.borderLayout());

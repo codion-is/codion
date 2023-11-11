@@ -32,7 +32,7 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
   ButtonPanelBuilder preferredButtonSize(Dimension preferredButtonSize);
 
   /**
-   * Default is {@link is.codion.swing.common.ui.layout.Layouts#HORIZONTAL_VERTICAL_GAP}.
+   * Default is {@link is.codion.swing.common.ui.layout.Layouts#GAP}.
    * @param buttonGap the gap between buttons in pixels
    * @return this builder instance
    */

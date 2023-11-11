@@ -966,7 +966,7 @@ public class EntityPanel extends JPanel {
   protected final void initializeEditPanel() {
     editPanel.initialize();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    int gap = Layouts.GAP.get();
     editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {
@@ -1084,7 +1084,7 @@ public class EntityPanel extends JPanel {
   }
 
   private Window createEditWindow() {
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    int gap = Layouts.GAP.get();
     JPanel basePanel = Components.borderLayoutPanel()
             .border(createEmptyBorder(gap, gap, 0, gap))
             .centerComponent(editControlPanel)

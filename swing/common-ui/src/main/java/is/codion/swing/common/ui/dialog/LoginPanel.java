@@ -192,7 +192,7 @@ final class LoginPanel extends JPanel {
 
   private static GridBagConstraints createGridBagConstraints() {
     GridBagConstraints constraints = new GridBagConstraints();
-    int insets = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    int insets = Layouts.GAP.get();
     constraints.insets = new Insets(insets, insets, insets, insets);
 
     return constraints;

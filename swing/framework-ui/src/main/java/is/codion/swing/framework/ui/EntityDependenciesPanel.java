@@ -115,7 +115,7 @@ public final class EntityDependenciesPanel extends JPanel {
     }
     else {
       EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
-      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      int gap = Layouts.GAP.get();
       dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
       Dialogs.componentDialog(dependenciesPanel)
               .owner(dialogParent)
