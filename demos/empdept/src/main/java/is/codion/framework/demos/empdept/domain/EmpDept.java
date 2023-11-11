@@ -41,14 +41,14 @@ public final class EmpDept extends DefaultDomain {
     EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
 
     /** Columns for the columns in the scott.dept table */
-    Column<Integer> ID = TYPE.integerColumn("deptno");
+    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
 
     /** Bean getters and setters */
-    Integer getId();
+    Integer getDeptno();
 
-    void setId(Integer id);
+    void setDeptno(Integer deptno);
 
     String getName();
 
@@ -61,13 +61,12 @@ public final class EmpDept extends DefaultDomain {
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
-
   /** Entity type for the table scott.emp */
   public interface Employee extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.emp", Employee.class);
 
     /** Columns for the columns in the scott.emp table */
-    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> NAME = TYPE.stringColumn("ename");
     Column<String> JOB = TYPE.stringColumn("job");
     Column<Integer> MGR = TYPE.integerColumn("mgr");
@@ -77,7 +76,7 @@ public final class EmpDept extends DefaultDomain {
     Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 
     /** Foreign key attribute for the DEPTNO column in the table scott.emp */
-    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
     /** Foreign key attribute for the MGR column in the table scott.emp */
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     /** Attribute for the denormalized department location property */
@@ -86,9 +85,9 @@ public final class EmpDept extends DefaultDomain {
     JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 
     List<Item<String>> JOB_VALUES = asList(
-            item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
-            item("MANAGER", "Manager"), item("PRESIDENT", "President"),
-            item("SALESMAN", "Salesman"));
+            item("Analyst"), item("Clerk"),
+            item("Manager"), item("President"),
+            item("Salesman"));
 
     /** Bean getters and setters */
     Integer getId();
@@ -138,15 +137,15 @@ public final class EmpDept extends DefaultDomain {
   void department() {
     /*Defining the entity Department.TYPE*/
     add(Department.TYPE.define(
-            Department.ID.define()
+            Department.DEPTNO.define()
                     .primaryKey()
-                    .caption("Department no.")
+                    .caption("Deptno.")
                     .updatable(true)
                     .nullable(false)
-                    .beanProperty("id"),
+                    .beanProperty("deptno"),
             Department.NAME.define()
                     .column()
-                    .caption("Department name")
+                    .caption("Name")
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
@@ -158,7 +157,7 @@ public final class EmpDept extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
-            .caption("Departments"));
+            .caption("Department"));
   }
   // end::defineDepartment[]
 
@@ -168,7 +167,6 @@ public final class EmpDept extends DefaultDomain {
     add(Employee.TYPE.define(
             Employee.ID.define()
                     .primaryKey()
-                    .caption("Employee no.")
                     .beanProperty("id"),
             Employee.NAME.define()
                     .column()
@@ -225,7 +223,7 @@ public final class EmpDept extends DefaultDomain {
             .stringFactory(Employee.NAME)
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
-              if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
+              if (attribute.equals(Employee.JOB) && "Manager".equals(entity.get(Employee.JOB))) {
                 return Color.CYAN;
               }
 

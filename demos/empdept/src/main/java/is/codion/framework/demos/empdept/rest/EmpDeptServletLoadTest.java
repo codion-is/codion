@@ -90,7 +90,7 @@ public final class EmpDeptServletLoadTest {
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      client.connection().select(Department.NAME.equalTo("ACCOUNTING"));
+      client.connection().select(Department.NAME.equalTo("Accounting"));
     }
   }
 
@@ -107,7 +107,7 @@ public final class EmpDeptServletLoadTest {
       List<Entity> departments = client.connection().select(all(Department.TYPE));
 
       client.connection().select(Employee.DEPARTMENT
-              .equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.ID)));
+              .equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.DEPTNO)));
     }
   }
 
@@ -122,7 +122,7 @@ public final class EmpDeptServletLoadTest {
     protected void perform(EntityConnectionProvider client) throws Exception {
       int deptNo = new Random().nextInt(5000);
       client.connection().insert(client.entities().builder(Department.TYPE)
-              .with(Department.ID, deptNo)
+              .with(Department.DEPTNO, deptNo)
               .with(Department.NAME, Text.randomString(4, 8))
               .with(Department.LOCATION, Text.randomString(5, 10))
               .build());

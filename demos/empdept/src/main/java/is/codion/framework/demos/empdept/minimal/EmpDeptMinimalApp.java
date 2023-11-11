@@ -21,7 +21,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * EmpDept minimal application demo
@@ -57,7 +57,7 @@ public final class EmpDeptMinimalApp {
   interface Employee {
     EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> ENAME = TYPE.stringColumn("ename");
     Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
     Column<String> JOB = TYPE.stringColumn("job");
@@ -67,7 +67,7 @@ public final class EmpDeptMinimalApp {
     Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 
     ForeignKey DEPT_FK = TYPE.foreignKey("dept_fk", DEPTNO, Department.DEPTNO);
-    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.EMPNO);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
   }
 
   /**
@@ -102,7 +102,7 @@ public final class EmpDeptMinimalApp {
        * department as well as the manager
        */
       add(Employee.TYPE.define(
-              Employee.EMPNO.define()
+              Employee.ID.define()
                       .primaryKey(),
               Employee.ENAME.define()
                       .column()
@@ -168,7 +168,7 @@ public final class EmpDeptMinimalApp {
       EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.condition().set(() ->
-                Employee.JOB.in("MANAGER", "PRESIDENT"));
+                Employee.JOB.in("Manager", "President"));
       }
 
       return comboBoxModel;
@@ -191,11 +191,13 @@ public final class EmpDeptMinimalApp {
     protected void initializeUI() {
       initialFocusAttribute().set(Department.DEPTNO);
 
+      createTextField(Department.DEPTNO);
       createTextField(Department.DNAME);
       createTextField(Department.LOC);
 
-      setLayout(new GridLayout(2, 1, 5, 5));
+      setLayout(gridLayout(3, 1));
 
+      addInputPanel(Department.DEPTNO);
       addInputPanel(Department.DNAME);
       addInputPanel(Department.LOC);
     }
@@ -222,7 +224,7 @@ public final class EmpDeptMinimalApp {
       createTextField(Employee.SAL);
       createTextField(Employee.COMM);
 
-      setLayout(new GridLayout(4, 2, 5, 5));
+      setLayout(gridLayout(4, 2));
 
       addInputPanel(Employee.ENAME);
       addInputPanel(Employee.DEPT_FK);

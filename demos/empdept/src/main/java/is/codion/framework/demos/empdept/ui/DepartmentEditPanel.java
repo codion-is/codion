@@ -7,9 +7,8 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import javax.swing.JTextField;
-
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 // tag::constructor[]
 public class DepartmentEditPanel extends EntityEditPanel {
@@ -22,32 +21,35 @@ public class DepartmentEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    initialFocusAttribute().set(Department.ID);
+    initialFocusAttribute().set(Department.DEPTNO);
 
-    JTextField departmentIdField = createTextField(Department.ID)
-            .build();
+    createTextField(Department.DEPTNO)
+            .columns(3);
     createTextField(Department.NAME)
-            .upperCase(true);
+            .columns(8);
     createTextField(Department.LOCATION)
-            .upperCase(true);
+            .columns(12);
 
     //we don't allow editing of the department number since it's a primary key
     editModel().primaryKeyNull().addListener(() -> {
       if (editModel().exists().get()) {
-        departmentIdField.setEnabled(false);
+        component(Department.DEPTNO).setEnabled(false);
         initialFocusAttribute().set(Department.NAME);
       }
       else {
-        departmentIdField.setEnabled(true);
-        initialFocusAttribute().set(Department.ID);
+        component(Department.DEPTNO).setEnabled(true);
+        initialFocusAttribute().set(Department.DEPTNO);
       }
     });
 
-    setLayout(gridLayout(3, 1));
-
-    addInputPanel(Department.ID);
-    addInputPanel(Department.NAME);
-    addInputPanel(Department.LOCATION);
+    setLayout(borderLayout());
+    add(borderLayoutPanel()
+            .northComponent(borderLayoutPanel()
+                    .westComponent(createInputPanel(Department.DEPTNO))
+                    .centerComponent(createInputPanel(Department.NAME))
+                    .build())
+            .centerComponent(createInputPanel(Department.LOCATION))
+            .build(), borderLayout().CENTER);
   }
 }
 // end::initializeUI[]
