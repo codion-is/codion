@@ -388,7 +388,7 @@ public interface EntityDefinition {
 
     /**
      * Sets the predicate to use when checking if an entity of this type exists in the database.
-     * The default predicate returns true if the entity has a non-null primary key or a non-null original primary key,
+     * The default predicate returns true if the entity has a non-null original primary key,
      * which is a best guess about an entity existing in a database.
      * @param exists the entity exists predicate
      * @return this {@link Builder} instance

@@ -162,7 +162,7 @@ public final class EntityServerMonitorPanel extends JPanel {
       tabbedPaneBuilder.tab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
     }
     setLayout(new BorderLayout());
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    int gap = Layouts.GAP.get();
     setBorder(createEmptyBorder(gap, gap, 0, gap));
     add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);

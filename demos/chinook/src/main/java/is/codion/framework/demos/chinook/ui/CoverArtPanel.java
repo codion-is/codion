@@ -100,7 +100,7 @@ final class CoverArtPanel extends JPanel {
                                     .smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
                                     .enabled(imageSelected)))
                             .buttonGap(0)
-                            .border(createEmptyBorder(0, 0, Layouts.HORIZONTAL_VERTICAL_GAP.get(), 0))
+                            .border(createEmptyBorder(0, 0, Layouts.GAP.get(), 0))
                             .build())
                     .build())
             .build();

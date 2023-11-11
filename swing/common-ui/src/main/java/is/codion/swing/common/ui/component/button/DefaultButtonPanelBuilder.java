@@ -40,7 +40,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
   private boolean buttonsFocusable = true;
   private Dimension preferredButtonSize;
-  private int buttonGap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+  private int buttonGap = Layouts.GAP.get();
 
   DefaultButtonPanelBuilder(Action... actions) {
     this(Controls.controls(actions));

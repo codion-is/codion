@@ -155,7 +155,6 @@ public final class Employees extends DefaultDomain {
             Department.DEPTNO.define()
                     .primaryKey()
                     .caption("Deptno.")
-                    .updatable(true)
                     .nullable(false)
                     .beanProperty("deptno"),
             Department.NAME.define()

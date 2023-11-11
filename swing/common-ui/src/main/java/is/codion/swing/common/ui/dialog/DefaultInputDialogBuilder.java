@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,6 +38,7 @@ import java.awt.Window;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
@@ -51,7 +51,8 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
     this.componentValue = requireNonNull(componentValue);
     this.basePanel.add(componentValue.component(), BorderLayout.CENTER);
-    this.basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+    int gap = Layouts.GAP.get();
+    this.basePanel.setBorder(createEmptyBorder(gap, gap, 0, gap));
   }
 
   @Override

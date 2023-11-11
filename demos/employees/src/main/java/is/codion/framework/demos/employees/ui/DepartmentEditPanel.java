@@ -39,23 +39,16 @@ public class DepartmentEditPanel extends EntityEditPanel {
     initialFocusAttribute().set(Department.DEPTNO);
 
     createTextField(Department.DEPTNO)
-            .columns(3);
+            .columns(3)
+            //don't allow editing of existing department numbers
+            .enabled(editModel().exists().not());
     createTextField(Department.NAME)
             .columns(8);
     createTextField(Department.LOCATION)
             .columns(12);
 
-    //we don't allow editing of the department number since it's a primary key
-    editModel().primaryKeyNull().addListener(() -> {
-      if (editModel().exists().get()) {
-        component(Department.DEPTNO).setEnabled(false);
-        initialFocusAttribute().set(Department.NAME);
-      }
-      else {
-        component(Department.DEPTNO).setEnabled(true);
-        initialFocusAttribute().set(Department.DEPTNO);
-      }
-    });
+    editModel().exists().addDataListener(exists ->
+            initialFocusAttribute().set(exists ? Department.NAME: Department.DEPTNO));
 
     setLayout(borderLayout());
     add(borderLayoutPanel()

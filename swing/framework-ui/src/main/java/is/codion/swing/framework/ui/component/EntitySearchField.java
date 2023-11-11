@@ -654,7 +654,7 @@ public final class EntitySearchField extends HintTextField {
       });
       basePanel.add(scrollPane, BorderLayout.CENTER);
       basePanel.add(resultLimitLabel, BorderLayout.SOUTH);
-      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      int gap = Layouts.GAP.get();
       basePanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 
@@ -750,7 +750,7 @@ public final class EntitySearchField extends HintTextField {
       searchPanel.add(resultLimitLabel, BorderLayout.CENTER);
       basePanel.add(scrollPane, BorderLayout.CENTER);
       basePanel.add(searchPanel, BorderLayout.SOUTH);
-      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      int gap = Layouts.GAP.get();
       basePanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 

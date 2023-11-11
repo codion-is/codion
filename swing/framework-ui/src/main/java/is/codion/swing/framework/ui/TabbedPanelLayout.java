@@ -54,7 +54,7 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
-import static is.codion.swing.common.ui.layout.Layouts.HORIZONTAL_VERTICAL_GAP;
+import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.LEFT;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.RIGHT;
@@ -271,7 +271,7 @@ public final class TabbedPanelLayout implements PanelLayout {
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)
-            .dividerSize(HORIZONTAL_VERTICAL_GAP.get() * 2)
+            .dividerSize(GAP.get() * 2)
             .resizeWeight(splitPaneResizeWeight)
             .leftComponent(entityPanel.editControlTablePanel())
             .rightComponent(detailPanelTabbedPane)
@@ -543,7 +543,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     private JPanel createEmptyBorderBasePanel(JComponent component) {
-      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      int gap = Layouts.GAP.get();
       return Components.borderLayoutPanel()
               .centerComponent(component)
               .border(createEmptyBorder(gap, gap, 0, gap))

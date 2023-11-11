@@ -31,12 +31,12 @@ public final class Borders {
   private Borders() {}
 
   /**
-   * Creates en empty border using the value of {@link Layouts#HORIZONTAL_VERTICAL_GAP}
+   * Creates en empty border using the value of {@link Layouts#GAP}
    * as the top, bottom, left and right values.
    * @return a new empty border
    */
   public static Border emptyBorder() {
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    int gap = Layouts.GAP.get();
 
     return BorderFactory.createEmptyBorder(gap, gap, gap, gap);
   }

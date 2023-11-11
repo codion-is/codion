@@ -27,11 +27,11 @@ import java.awt.GridLayout;
 
 /**
  * A utility class for layouts. All layouts created use the centrally configured hgap and vgap.
- * @see #HORIZONTAL_VERTICAL_GAP
+ * @see #GAP
  */
 public final class Layouts {
 
-  private static final int DEFAULT_HOR_VERT_GAP = 5;
+  private static final int DEFAULT_GAP = 5;
 
   /**
    * Specifies the default horizontal and vertical component gap, used by the layout factory methods, by default this is 5
@@ -40,27 +40,27 @@ public final class Layouts {
    * @see #gridLayout(int, int)
    * @see #flexibleGridLayout(int, int)
    */
-  public static final Value<Integer> HORIZONTAL_VERTICAL_GAP = Configuration.integerValue("is.codion.swing.common.ui.layout.Layouts.horizontalVerticalGap", DEFAULT_HOR_VERT_GAP);
+  public static final Value<Integer> GAP = Configuration.integerValue("is.codion.swing.common.ui.layout.Layouts.gap", DEFAULT_GAP);
 
   private Layouts() {}
 
   /**
    * Creates a BorderLayout using the default vertical and horizontal gap value
    * @return a BorderLayout
-   * @see #HORIZONTAL_VERTICAL_GAP
+   * @see #GAP
    */
   public static BorderLayout borderLayout() {
-    return new BorderLayout(HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
+    return new BorderLayout(GAP.get(), GAP.get());
   }
 
   /**
    * Creates a FlowLayout using the default vertical and horizontal gap value
    * @param alignment the alignment
    * @return a FlowLayout
-   * @see #HORIZONTAL_VERTICAL_GAP
+   * @see #GAP
    */
   public static FlowLayout flowLayout(int alignment) {
-    return new FlowLayout(alignment, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
+    return new FlowLayout(alignment, GAP.get(), GAP.get());
   }
 
   /**
@@ -68,10 +68,10 @@ public final class Layouts {
    * @param rows the number of rows
    * @param columns the number of columns
    * @return a GridLayout
-   * @see #HORIZONTAL_VERTICAL_GAP
+   * @see #GAP
    */
   public static GridLayout gridLayout(int rows, int columns) {
-    return new GridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
+    return new GridLayout(rows, columns, GAP.get(), GAP.get());
   }
 
   /**
@@ -80,7 +80,7 @@ public final class Layouts {
    * @param rows the number of rows
    * @param columns the number of columns
    * @return a FlexibleGridLayout
-   * @see #HORIZONTAL_VERTICAL_GAP
+   * @see #GAP
    */
   public static FlexibleGridLayout flexibleGridLayout(int rows, int columns) {
     return flexibleGridLayout()
@@ -91,11 +91,11 @@ public final class Layouts {
   /**
    * Creates a FlexibleGridLayout.Builder using the default vertical and horizontal gap value
    * @return a FlexibleGridLayout.Builder instance
-   * @see #HORIZONTAL_VERTICAL_GAP
+   * @see #GAP
    */
   public static FlexibleGridLayout.Builder flexibleGridLayout() {
     return FlexibleGridLayout.builder()
-            .horizontalGap(HORIZONTAL_VERTICAL_GAP.get())
-            .verticalGap(HORIZONTAL_VERTICAL_GAP.get());
+            .horizontalGap(GAP.get())
+            .verticalGap(GAP.get());
   }
 }

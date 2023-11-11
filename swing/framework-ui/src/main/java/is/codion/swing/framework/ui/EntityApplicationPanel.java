@@ -839,7 +839,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    int gap = Layouts.GAP.get();
     return Components.borderLayoutPanel()
             .centerComponent(entityPanel)
             .border(createEmptyBorder(gap, gap, 0, gap))

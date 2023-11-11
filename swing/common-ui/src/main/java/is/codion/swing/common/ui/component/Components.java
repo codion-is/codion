@@ -1017,7 +1017,7 @@ public final class Components {
    * Creates a new {@link BorderLayoutPanelBuilder} instance using a new
    * {@link BorderLayout} instance with the default horizontal and vertical gap.
    * @return a border layout panel builder
-   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   * @see Layouts#GAP
    */
   public static BorderLayoutPanelBuilder borderLayoutPanel() {
     return BorderLayoutPanelBuilder.builder();
@@ -1037,7 +1037,7 @@ public final class Components {
    * @param rows the number of rows
    * @param columns the number of columns
    * @return a grid layout panel builder
-   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   * @see Layouts#GAP
    */
   public static PanelBuilder gridLayoutPanel(int rows, int columns) {
     return panel(gridLayout(rows, columns));
@@ -1049,7 +1049,7 @@ public final class Components {
    * @param rows the number of rows
    * @param columns the number of columns
    * @return a flexible grid layout panel builder
-   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   * @see Layouts#GAP
    */
   public static PanelBuilder flexibleGridLayoutPanel(int rows, int columns) {
     return panel(flexibleGridLayout(rows, columns));
@@ -1060,7 +1060,7 @@ public final class Components {
    * horizontal and vertical gap.
    * @param alignment the flow layout alignment
    * @return a flow layout panel builder
-   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   * @see Layouts#GAP
    */
   public static PanelBuilder flowLayoutPanel(int alignment) {
     return panel(flowLayout(alignment));

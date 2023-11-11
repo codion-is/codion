@@ -953,10 +953,18 @@ public class DefaultEntityTest {
     assertTrue(emp.originalPrimaryKey().isNull());
     assertFalse(emp.exists());
     emp.put(Employee.ID, 1);
-    assertTrue(emp.exists());
+    assertTrue(emp.originalPrimaryKey().isNull());
+    assertFalse(emp.exists());
     emp.save();
+    assertTrue(emp.exists());
     emp.put(Employee.ID, 2);
     assertTrue(emp.exists());
+    emp.save();
+    assertTrue(emp.exists());
+    emp.put(Employee.ID, null);
+    assertTrue(emp.exists());
+    emp.save();
+    assertFalse(emp.exists());
     emp.remove(Employee.ID);
     assertFalse(emp.exists());
   }
