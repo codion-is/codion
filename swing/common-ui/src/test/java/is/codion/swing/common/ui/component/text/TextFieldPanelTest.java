@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TextInputPanelTest {
+public class TextFieldPanelTest {
 
   @Test
   void test() {
-    TextInputPanel panel = TextInputPanel.builder()
+    TextFieldPanel panel = TextFieldPanel.builder()
             .caption("caption")
             .dialogTitle("title")
             .build();
@@ -27,12 +27,12 @@ public class TextInputPanelTest {
 
   @Test
   void constructorNullTextComponent() {
-    assertThrows(NullPointerException.class, () -> TextInputPanel.builder(null));
+    assertThrows(NullPointerException.class, () -> TextFieldPanel.builder(null));
   }
 
   @Test
   void setTextExceedMaxLength() {
-    TextInputPanel panel = TextInputPanel.builder()
+    TextFieldPanel panel = TextFieldPanel.builder()
             .maximumLength(5)
             .dialogTitle("title")
             .build();
@@ -43,7 +43,7 @@ public class TextInputPanelTest {
   @Test
   void enabledState() throws InterruptedException {
     State enabledState = State.state();
-    TextInputPanel inputPanel = TextInputPanel.builder()
+    TextFieldPanel inputPanel = TextFieldPanel.builder()
             .build();
     linkToEnabledState(enabledState, inputPanel);
     assertFalse(inputPanel.textField().isEnabled());

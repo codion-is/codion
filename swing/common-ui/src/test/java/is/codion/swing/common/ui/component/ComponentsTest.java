@@ -15,7 +15,7 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
-import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -598,9 +598,9 @@ public final class ComponentsTest {
   }
 
   @Test
-  void textInputPanel() {
+  void textFieldPanel() {
     Value<String> value = Value.value();
-    ComponentValue<String, TextInputPanel> componentValue = Components.textInputPanel()
+    ComponentValue<String, TextFieldPanel> componentValue = Components.textFieldPanel()
             .transferFocusOnEnter(true)
             .columns(10)
             .buttonFocusable(true)
@@ -614,13 +614,13 @@ public final class ComponentsTest {
             .updateOn(UpdateOn.VALUE_CHANGE)
             .linkedValue(value)
             .buildValue();
-    TextInputPanel inputPanel = componentValue.component();
-    inputPanel.setText("hello");
+    TextFieldPanel textFieldPanel = componentValue.component();
+    textFieldPanel.setText("hello");
     assertEquals("hello", value.get());
 
     assertEquals(value.get(), componentValue.get());
 
-    inputPanel.setText("");
+    textFieldPanel.setText("");
 
     assertNull(componentValue.get());
 
@@ -630,7 +630,7 @@ public final class ComponentsTest {
     componentValue.component().setText("");
     assertNull(componentValue.get());
 
-    assertThrows(IllegalArgumentException.class, () -> inputPanel.textField().setText("asdfasdfasdfasdfasdf"));
+    assertThrows(IllegalArgumentException.class, () -> textFieldPanel.textField().setText("asdfasdfasdfasdfasdf"));
   }
 
   @Test

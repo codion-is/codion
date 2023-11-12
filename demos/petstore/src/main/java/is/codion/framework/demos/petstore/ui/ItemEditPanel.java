@@ -24,7 +24,7 @@ public class ItemEditPanel extends EntityEditPanel {
 
     createForeignKeyComboBox(Item.PRODUCT_FK);
     createTextField(Item.NAME);
-    createTextInputPanel(Item.DESCRIPTION)
+    createTextFieldPanel(Item.DESCRIPTION)
             .buttonFocusable(false);
     createTextField(Item.PRICE);
     EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)

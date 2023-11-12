@@ -41,7 +41,7 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -411,18 +411,18 @@ public final class Components {
   }
 
   /**
-   * @return a {@link TextInputPanel} builder
+   * @return a {@link TextFieldPanel} builder
    */
-  public static TextInputPanel.Builder textInputPanel() {
-    return TextInputPanel.builder();
+  public static TextFieldPanel.Builder textFieldPanel() {
+    return TextFieldPanel.builder();
   }
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a {@link TextInputPanel} builder
+   * @return a {@link TextFieldPanel} builder
    */
-  public static TextInputPanel.Builder textInputPanel(Value<String> linkedValue) {
-    return TextInputPanel.builder(linkedValue);
+  public static TextFieldPanel.Builder textFieldPanel(Value<String> linkedValue) {
+    return TextFieldPanel.builder(linkedValue);
   }
 
   /**

@@ -28,7 +28,7 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -308,14 +308,14 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a {@link TextInputPanel} builder based on the given attribute.
+   * Creates a {@link TextFieldPanel} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a {@link TextInputPanel} builder
+   * @return a {@link TextFieldPanel} builder
    */
-  public final TextInputPanel.Builder textInputPanel(Attribute<String> attribute) {
+  public final TextFieldPanel.Builder textFieldPanel(Attribute<String> attribute) {
     AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-    return Components.textInputPanel()
+    return Components.textFieldPanel()
             .toolTipText(attributeDefinition.description())
             .maximumLength(attributeDefinition.maximumLength())
             .dialogTitle(attributeDefinition.caption())

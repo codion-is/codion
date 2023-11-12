@@ -31,7 +31,7 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -349,7 +349,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param defaultTextFieldColumns the default text field columns
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
-   * @see #createTextInputPanel(Attribute)
+   * @see #createTextFieldPanel(Attribute)
    */
   protected final void setDefaultTextFieldColumns(int defaultTextFieldColumns) {
     this.defaultTextFieldColumns = defaultTextFieldColumns;
@@ -510,12 +510,12 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for text input panels.
-   * @param attribute the attribute for which to build a text input panel
-   * @return a text input panel builder
+   * Creates a builder for text field panels.
+   * @param attribute the attribute for which to build a text field panel
+   * @return a text field panel builder
    */
-  protected final TextInputPanel.Builder createTextInputPanel(Attribute<String> attribute) {
-    return setComponentBuilder(attribute, entityComponents.textInputPanel(attribute)
+  protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
+    return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(inputPanel -> addValidator(attribute, inputPanel.textField(), editModel())));
   }

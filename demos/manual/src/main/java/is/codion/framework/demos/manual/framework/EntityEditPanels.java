@@ -11,7 +11,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
-import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
@@ -163,8 +163,8 @@ public final class EntityEditPanels {
                       .rowsColumns(5, 20)
                       .build();
 
-      TextInputPanel inputPanel =
-              createTextInputPanel(Demo.LONG_TEXT)
+      TextFieldPanel inputPanel =
+              createTextFieldPanel(Demo.LONG_TEXT)
                       .build();
       // end::textValue[]
     }
