@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,8 +48,7 @@ public class TemporalInputPanelTest {
 
   @Test
   void unsupportedType() {
-    TemporalInputPanel<LocalTime> panel = TemporalInputPanel.builder(LocalTime.class, "hh:MM").build();
-    assertFalse(panel.calendarButton().isPresent());
+    assertThrows(IllegalArgumentException.class, () -> TemporalInputPanel.builder(LocalTime.class, "hh:MM"));
   }
 
   @Test
@@ -64,11 +62,10 @@ public class TemporalInputPanelTest {
     TemporalInputPanel<LocalDate> inputPanel = TemporalInputPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
     linkToEnabledState(enabledState, inputPanel);
     assertFalse(inputPanel.temporalField().isEnabled());
-    Optional<JButton> calendarButton = inputPanel.calendarButton();
-    assertTrue(calendarButton.isPresent());
-    assertFalse(calendarButton.get().isEnabled());
+    JButton calendarButton = inputPanel.calendarButton();
+    assertFalse(calendarButton.isEnabled());
     enabledState.set(true);
     Thread.sleep(100);
-    assertTrue(calendarButton.get().isEnabled());
+    assertTrue(calendarButton.isEnabled());
   }
 }

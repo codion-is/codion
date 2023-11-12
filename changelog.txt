@@ -9897,3 +9897,4 @@
   DefaultInputDialogBuilder, now uses Layouts.HORIZONTAL_VERTICAL_GAP when configuring the component border
   Layouts.HORIZONTAL_VERTICAL_GAP renamed GAP
   EntityComponents, EntityEditComponentPanel, temporal type specific field methods removed
+  TemporalField, TemporalInputPanel, calendar functionality moved to TemporalField, related refactoring

@@ -4,14 +4,12 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,51 +21,35 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
-import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel for Temporal input
+ * A panel for Temporal input with a button for displaying a calendar
  * @param <T> the Temporal type supplied by this panel
+ * @see #supports(Class)
  */
 public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalInputPanel.class.getName());
+  private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(LocalDate.class, LocalDateTime.class);
 
   private final TemporalField<T> temporalField;
   private final JButton calendarButton;
-  private final ImageIcon buttonIcon;
 
   TemporalInputPanel(DefaultBuilder<T> builder) {
     super(new BorderLayout());
     this.temporalField = requireNonNull(builder.createTemporalField());
-    this.buttonIcon = builder.buttonIcon;
     add(temporalField, BorderLayout.CENTER);
-    if (supportsCalendar(temporalField.temporalClass())) {
-      Control displayCalendarControl = Control.builder(this::displayCalendar)
-              .name(buttonIcon == null ? "..." : null)
-              .smallIcon(buttonIcon)
-              .description(MESSAGES.getString("display_calendar"))
-              .build();
-      KeyEvents.builder(VK_INSERT)
-              .action(displayCalendarControl)
-              .enable(temporalField);
-      calendarButton = new JButton(displayCalendarControl);
-      calendarButton.setPreferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height));
-      calendarButton.setFocusable(builder.buttonFocusable);
-      add(calendarButton, BorderLayout.EAST);
-    }
-    else {
-      calendarButton = null;
-    }
+    Control calendarControl = temporalField.calendarControl()
+            .orElseThrow(() -> new IllegalArgumentException("TemporalField does not support a calendar for: " + temporalField.temporalClass()));
+    calendarButton = new JButton(calendarControl);
+    calendarButton.setPreferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height));
+    calendarButton.setFocusable(builder.buttonFocusable);
+    add(calendarButton, BorderLayout.EAST);
     addFocusListener(new InputFocusAdapter(temporalField));
   }
 
@@ -81,8 +63,8 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @return the calendar button
    */
-  public Optional<JButton> calendarButton() {
-    return Optional.ofNullable(calendarButton);
+  public JButton calendarButton() {
+    return calendarButton;
   }
 
   /**
@@ -129,14 +111,21 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
     temporalField.setEnabled(enabled);
-    if (calendarButton != null) {
-      calendarButton.setEnabled(enabled);
-    }
   }
 
   @Override
   public void setToolTipText(String text) {
     temporalField.setToolTipText(text);
+  }
+
+  /**
+   * {@link TemporalInputPanel} supports {@link LocalDate} and {@link LocalDateTime}.
+   * @param temporalClass the temporal type
+   * @return true if {@link TemporalInputPanel} supports the given type
+   * @param <T> the temporal type
+   */
+  public static <T extends Temporal> boolean supports(Class<T> temporalClass) {
+    return SUPPORTED_TYPES.contains(requireNonNull(temporalClass));
   }
 
   /**
@@ -161,32 +150,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
                                                         String dateTimePattern,
                                                         Value<T> linkedValue) {
     return new DefaultBuilder<>(valueClass, dateTimePattern, requireNonNull(linkedValue));
-  }
-
-  private void displayCalendar() {
-    if (LocalDate.class.equals(temporalField.temporalClass())) {
-      Dialogs.calendarDialog()
-              .owner(temporalField)
-              .icon(buttonIcon)
-              .initialValue((LocalDate) getTemporal())
-              .selectLocalDate()
-              .ifPresent(temporalField::setTemporal);
-    }
-    else if (LocalDateTime.class.equals(temporalField.temporalClass())) {
-      Dialogs.calendarDialog()
-              .owner(temporalField)
-              .icon(buttonIcon)
-              .initialValue((LocalDateTime) getTemporal())
-              .selectLocalDateTime()
-              .ifPresent(temporalField::setTemporal);
-    }
-    else {
-      throw new IllegalArgumentException("Unsupported temporal type: " + temporalField.temporalClass());
-    }
-  }
-
-  private static boolean supportsCalendar(Class<?> temporalClass) {
-    return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
   }
 
   /**
@@ -220,10 +183,10 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     Builder<T> buttonFocusable(boolean buttonFocusable);
 
     /**
-     * @param buttonIcon the button icon
+     * @param calendarIcon the calendar icon
      * @return this builder instance
      */
-    Builder<T> buttonIcon(ImageIcon buttonIcon);
+    Builder<T> calendarIcon(ImageIcon calendarIcon);
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
@@ -243,9 +206,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
           extends AbstractComponentBuilder<T, TemporalInputPanel<T>, Builder<T>>
           implements Builder<T> {
 
-    private static final List<Class<?>> SUPPORTED_TYPES =
-            Arrays.asList(LocalTime.class, LocalDate.class, LocalDateTime.class, OffsetDateTime.class);
-
     private final Class<T> valueClass;
     private final String dateTimePattern;
 
@@ -253,12 +213,12 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
     private boolean selectAllOnFocusGained;
     private boolean buttonFocusable;
-    private ImageIcon buttonIcon;
+    private ImageIcon calendarIcon;
 
     private DefaultBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
       super(linkedValue);
-      if (!SUPPORTED_TYPES.contains(requireNonNull(valueClass))) {
-        throw new IllegalStateException("Unsupported temporal type: " + valueClass);
+      if (!supports(valueClass)) {
+        throw new IllegalArgumentException("Unsupported temporal type: " + valueClass);
       }
       this.valueClass = valueClass;
       this.dateTimePattern = requireNonNull(dateTimePattern);
@@ -289,8 +249,8 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
 
     @Override
-    public Builder<T> buttonIcon(ImageIcon buttonIcon) {
-      this.buttonIcon = buttonIcon;
+    public Builder<T> calendarIcon(ImageIcon calendarIcon) {
+      this.calendarIcon = calendarIcon;
       return this;
     }
 
@@ -319,6 +279,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
+              .calendarIcon(calendarIcon)
               .build();
     }
   }

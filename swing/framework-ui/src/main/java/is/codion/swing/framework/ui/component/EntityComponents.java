@@ -304,7 +304,7 @@ public class EntityComponents {
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
     return Components.temporalInputPanel(attribute.type().valueClass(), dateTimePattern)
             .toolTipText(entityDefinition.attributes().definition(attribute).description())
-            .buttonIcon(FrameworkIcons.instance().calendar());
+            .calendarIcon(FrameworkIcons.instance().calendar());
   }
 
   /**
@@ -350,8 +350,7 @@ public class EntityComponents {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     if (attribute.type().isTemporal()) {
-      return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
-              .toolTipText(attributeDefinition.description());
+      return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
     }
 
     return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
@@ -381,7 +380,8 @@ public class EntityComponents {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
     return Components.temporalField(attributeDefinition.attribute().type().valueClass(), dateTimePattern)
-            .toolTipText(attributeDefinition.description());
+            .toolTipText(attributeDefinition.description())
+            .calendarIcon(FrameworkIcons.instance().calendar());
   }
 
   /**

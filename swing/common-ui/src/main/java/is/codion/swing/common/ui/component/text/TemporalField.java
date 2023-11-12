@@ -4,12 +4,15 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
@@ -24,10 +27,10 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_UP;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,6 +40,8 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(Class, String, Value)
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalField.class.getName());
 
   private static final char DAY = 'd';
   private static final char MONTH = 'M';
@@ -51,6 +56,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final Value<T> value = Value.value();
   private final State valueNotNullState = State.state(false);
   private final String dateTimePattern;
+  private final ImageIcon calendarIcon;
+  private final Control calendarControl;
 
   private TemporalField(DefaultTemporalFieldBuilder<T> builder) {
     super(createFormatter(builder.mask));
@@ -59,6 +66,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.formatter = builder.dateTimeFormatter;
     this.dateTimeParser = builder.dateTimeParser;
     this.dateTimePattern = builder.dateTimePattern;
+    this.calendarIcon = builder.calendarIcon;
     this.value.addDataListener(temporal -> valueNotNullState.set(temporal != null));
     setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
@@ -72,6 +80,21 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
                     .enabled(valueNotNullState)
                     .build())
             .enable(this);
+    calendarControl = createCalendarControl();
+    if (calendarControl != null) {
+      KeyEvents.builder(VK_INSERT)
+              .action(calendarControl)
+              .enable(this);
+    }
+  }
+
+  /**
+   * Returns a Control for displaying a calendar, an empty Optional
+   * in case a Calendar is not supported for the given temporal type
+   * @return a Control for displaying a calendar
+   */
+  public Optional<Control> calendarControl() {
+    return Optional.ofNullable(calendarControl);
   }
 
   /**
@@ -185,6 +208,48 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
+  private Control createCalendarControl() {
+    if (supportsCalendar(temporalClass)) {
+      return Control.builder(this::displayCalendar)
+              .name(calendarIcon == null ? "..." : null)
+              .smallIcon(calendarIcon)
+              .description(MESSAGES.getString("display_calendar"))
+              .enabled(calendarEnabledState())
+              .build();
+    }
+
+    return null;
+  }
+
+  private StateObserver calendarEnabledState() {
+    State enabledState = State.state(isEnabled());
+    addPropertyChangeListener("enabled", event -> enabledState.set((Boolean) event.getNewValue()));
+
+    return enabledState.observer();
+  }
+
+  private void displayCalendar() {
+    if (LocalDate.class.equals(temporalClass())) {
+      Dialogs.calendarDialog()
+              .owner(this)
+              .icon(calendarIcon)
+              .initialValue((LocalDate) getTemporal())
+              .selectLocalDate()
+              .ifPresent(this::setTemporal);
+    }
+    else if (LocalDateTime.class.equals(temporalClass())) {
+      Dialogs.calendarDialog()
+              .owner(this)
+              .icon(calendarIcon)
+              .initialValue((LocalDateTime) getTemporal())
+              .selectLocalDateTime()
+              .ifPresent(this::setTemporal);
+    }
+    else {
+      throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass());
+    }
+  }
+
   /**
    * A builder for {@link TemporalField}.
    * @param <T> the temporal type
@@ -214,6 +279,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @see JFormattedTextField#PERSIST
      */
     Builder<T> focusLostBehaviour(int focusLostBehaviour);
+
+    /**
+     * @param calendarIcon the calendar icon
+     * @return this builder instance
+     */
+    Builder<T> calendarIcon(ImageIcon calendarIcon);
   }
 
   /**
@@ -242,6 +313,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private DateTimeFormatter dateTimeFormatter;
     private DateTimeParser<T> dateTimeParser;
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
+    private ImageIcon calendarIcon;
 
     private DefaultTemporalFieldBuilder(Class<T> temporalClass, String dateTimePattern,
                                         Value<T> linkedValue) {
@@ -268,6 +340,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     @Override
     public Builder<T> focusLostBehaviour(int focusLostBehaviour) {
       this.focusLostBehaviour = focusLostBehaviour;
+      return this;
+    }
+
+    @Override
+    public Builder<T> calendarIcon(ImageIcon calendarIcon) {
+      this.calendarIcon = calendarIcon;
       return this;
     }
 
@@ -336,6 +414,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     catch (ParseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static boolean supportsCalendar(Class<?> temporalClass) {
+    return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
   }
 
   private static final class LocalTimeParser implements DateTimeParser<LocalTime> {
