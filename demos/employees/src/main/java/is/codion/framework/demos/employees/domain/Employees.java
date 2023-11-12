@@ -212,7 +212,7 @@ public final class Employees extends DefaultDomain {
                     .beanProperty("hiredate")
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDash()
-                            .yearTwoDigits()
+                            .yearFourDigits()
                             .build()),
             Employee.DEPARTMENT_LOCATION.define()
                     .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
