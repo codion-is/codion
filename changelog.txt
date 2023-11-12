@@ -9896,3 +9896,4 @@
   DefaultEntityExists now uses only the original primary key
   DefaultInputDialogBuilder, now uses Layouts.HORIZONTAL_VERTICAL_GAP when configuring the component border
   Layouts.HORIZONTAL_VERTICAL_GAP renamed GAP
+  EntityComponents, EntityEditComponentPanel, temporal type specific field methods removed

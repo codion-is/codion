@@ -44,10 +44,6 @@ import java.math.BigDecimal;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 
@@ -123,17 +119,8 @@ public class EntityComponents {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
     }
     Attribute.Type<T> type = attribute.type();
-    if (type.isLocalTime()) {
-      return (ComponentBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute);
-    }
-    if (type.isLocalDate()) {
-      return (ComponentBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute);
-    }
-    if (type.isLocalDateTime()) {
-      return (ComponentBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute);
-    }
-    if (type.isOffsetDateTime()) {
-      return (ComponentBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute);
+    if (type.isTemporal()) {
+      return (ComponentBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
     }
     if (type.isString() || type.isCharacter()) {
       return (ComponentBuilder<T, C, B>) textField(attribute);
@@ -362,108 +349,15 @@ public class EntityComponents {
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-    Class<T> valueClass = attribute.type().valueClass();
-    if (valueClass.equals(LocalTime.class)) {
-      return (TextFieldBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute)
-              .toolTipText(attributeDefinition.description());
-    }
-    else if (valueClass.equals(LocalDate.class)) {
-      return (TextFieldBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute)
-              .toolTipText(attributeDefinition.description());
-    }
-    else if (valueClass.equals(LocalDateTime.class)) {
-      return (TextFieldBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute)
-              .toolTipText(attributeDefinition.description());
-    }
-    else if (valueClass.equals(OffsetDateTime.class)) {
-      return (TextFieldBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
+    if (attribute.type().isTemporal()) {
+      return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
               .toolTipText(attributeDefinition.description());
     }
 
-    return (TextFieldBuilder<T, C, B>) Components.textField(valueClass)
+    return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
             .format(attributeDefinition.format())
             .maximumLength(attributeDefinition.maximumLength())
             .toolTipText(attributeDefinition.description());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
-    return localTimeField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @param dateTimePattern the date time pattern
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
-    return Components.localTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.attributes().definition(attribute).description());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
-    return localDateField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @param dateTimePattern the date time pattern
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
-    return Components.localDateField(dateTimePattern)
-            .toolTipText(entityDefinition.attributes().definition(attribute).description());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
-    return localDateTimeField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @param dateTimePattern the date time pattern
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
-    return Components.localDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.attributes().definition(attribute).description());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
-    return offsetDateTimeField(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
-  }
-
-  /**
-   * Creates a {@link TemporalField} builder based on the given attribute.
-   * @param attribute the attribute
-   * @param dateTimePattern the date time pattern
-   * @return a {@link TemporalField} builder
-   */
-  public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
-    return Components.offsetDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.attributes().definition(attribute).description());
   }
 
   /**

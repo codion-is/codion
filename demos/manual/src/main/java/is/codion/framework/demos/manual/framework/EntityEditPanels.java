@@ -101,7 +101,7 @@ public final class EntityEditPanels {
                       .build();
 
       TemporalField<LocalDate> localDateField =
-              createLocalDateField(Demo.LOCAL_DATE)
+              createTemporalField(Demo.LOCAL_DATE)
                       .build();
 
       TemporalInputPanel<LocalDate> inputPanel =
