@@ -46,7 +46,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
             .columns(14)
             .selectorFactory(new CustomerSelectorFactory());
-    createTemporalInputPanel(Invoice.DATE)
+    createTemporalFieldPanel(Invoice.DATE)
             .columns(6)
             .buttonFocusable(false);
 

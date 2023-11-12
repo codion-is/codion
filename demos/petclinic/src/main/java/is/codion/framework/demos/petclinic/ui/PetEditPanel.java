@@ -27,7 +27,7 @@ public final class PetEditPanel extends EntityEditPanel {
 
     createForeignKeyComboBox(Pet.OWNER_FK);
     createTextField(Pet.NAME);
-    createTemporalInputPanel(Pet.BIRTH_DATE);
+    createTemporalFieldPanel(Pet.BIRTH_DATE);
     EntityComboBox petTypeBox =
             createForeignKeyComboBox(Pet.PET_TYPE_FK)
                     .build();

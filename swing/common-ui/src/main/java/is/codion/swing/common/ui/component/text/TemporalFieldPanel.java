@@ -29,18 +29,18 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel for Temporal input with a button for displaying a calendar
+ * A panel for a TemporalField with button for displaying a calendar
  * @param <T> the Temporal type supplied by this panel
  * @see #supports(Class)
  */
-public final class TemporalInputPanel<T extends Temporal> extends JPanel {
+public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
   private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(LocalDate.class, LocalDateTime.class);
 
   private final TemporalField<T> temporalField;
   private final JButton calendarButton;
 
-  TemporalInputPanel(DefaultBuilder<T> builder) {
+  TemporalFieldPanel(DefaultBuilder<T> builder) {
     super(new BorderLayout());
     this.temporalField = requireNonNull(builder.createTemporalField());
     add(temporalField, BorderLayout.CENTER);
@@ -119,9 +119,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
-   * {@link TemporalInputPanel} supports {@link LocalDate} and {@link LocalDateTime}.
+   * {@link TemporalFieldPanel} supports {@link LocalDate} and {@link LocalDateTime}.
    * @param temporalClass the temporal type
-   * @return true if {@link TemporalInputPanel} supports the given type
+   * @return true if {@link TemporalFieldPanel} supports the given type
    * @param <T> the temporal type
    */
   public static <T extends Temporal> boolean supports(Class<T> temporalClass) {
@@ -153,10 +153,10 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
-   * Builds a TemporalInputPanel.
+   * Builds a {@link TemporalFieldPanel}
    * @param <T> the temporal type
    */
-  public interface Builder<T extends Temporal> extends ComponentBuilder<T, TemporalInputPanel<T>, Builder<T>> {
+  public interface Builder<T extends Temporal> extends ComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>> {
 
     /**
      * @param selectAllOnFocusGained if true the component will select contents on focus gained
@@ -203,7 +203,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private static final class DefaultBuilder<T extends Temporal>
-          extends AbstractComponentBuilder<T, TemporalInputPanel<T>, Builder<T>>
+          extends AbstractComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>>
           implements Builder<T> {
 
     private final Class<T> valueClass;
@@ -255,22 +255,22 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
 
     @Override
-    protected TemporalInputPanel<T> createComponent() {
-      return new TemporalInputPanel<>(this);
+    protected TemporalFieldPanel<T> createComponent() {
+      return new TemporalFieldPanel<>(this);
     }
 
     @Override
-    protected ComponentValue<T, TemporalInputPanel<T>> createComponentValue(TemporalInputPanel<T> component) {
-      return new TemporalInputPanelValue<>(component);
+    protected ComponentValue<T, TemporalFieldPanel<T>> createComponentValue(TemporalFieldPanel<T> component) {
+      return new TemporalFieldPanelValue<>(component);
     }
 
     @Override
-    protected void enableTransferFocusOnEnter(TemporalInputPanel<T> component) {
+    protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component) {
       component.setTransferFocusOnEnter(true);
     }
 
     @Override
-    protected void setInitialValue(TemporalInputPanel<T> component, T initialValue) {
+    protected void setInitialValue(TemporalFieldPanel<T> component, T initialValue) {
       component.setTemporal(initialValue);
     }
 
@@ -284,9 +284,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
   }
 
-  private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
+  private static final class TemporalFieldPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalFieldPanel<T>> {
 
-    private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
+    private TemporalFieldPanelValue(TemporalFieldPanel<T> inputPanel) {
       super(inputPanel);
       inputPanel.temporalField().addListener(temporal -> notifyListeners());
     }

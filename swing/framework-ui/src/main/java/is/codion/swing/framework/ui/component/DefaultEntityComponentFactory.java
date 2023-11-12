@@ -6,7 +6,7 @@ package is.codion.swing.framework.ui.component;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -30,7 +30,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue, inputComponents);
     }
     if (attribute.type().isTemporal()) {
-      return createTemporalValue(attribute, (Temporal) initialValue, inputComponents);
+      return createTemporalComponentValue(attribute, (Temporal) initialValue, inputComponents);
     }
     if (attribute.type().isByteArray()) {
       return (ComponentValue<T, C>) fileInputPanel()
@@ -56,11 +56,11 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
             .buildValue();
   }
 
-  private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalValue(A attribute,
-                                                                                                            Temporal initialValue,
-                                                                                                            EntityComponents inputComponents) {
-    if (TemporalInputPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
-      return (ComponentValue<T, C>) inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
+  private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute,
+                                                                                                                     Temporal initialValue,
+                                                                                                                     EntityComponents inputComponents) {
+    if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
+      return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute)
               .initialValue(initialValue)
               .buildValue();
     }

@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel;
@@ -104,8 +104,8 @@ public final class EntityEditPanels {
               createTemporalField(Demo.LOCAL_DATE)
                       .build();
 
-      TemporalInputPanel<LocalDate> inputPanel =
-              createTemporalInputPanel(Demo.LOCAL_DATE)
+      TemporalFieldPanel<LocalDate> temporalPanel =
+              createTemporalFieldPanel(Demo.LOCAL_DATE)
                       .build();
       // end::temporalValue[]
     }

@@ -67,7 +67,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Temporal
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTemporalInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalFieldPanel{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTemporalFieldPanel(attribute)]
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLocalDateField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createLocalDateField(attribute)]
 

@@ -9898,3 +9898,4 @@
   Layouts.HORIZONTAL_VERTICAL_GAP renamed GAP
   EntityComponents, EntityEditComponentPanel, temporal type specific field methods removed
   TemporalField, TemporalInputPanel, calendar functionality moved to TemporalField, related refactoring
+  TemporalInputPanel renamed TemporalFieldPanel

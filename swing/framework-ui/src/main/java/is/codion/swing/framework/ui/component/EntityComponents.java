@@ -25,7 +25,7 @@ import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
@@ -285,24 +285,24 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a {@link TemporalInputPanel} builder based on the given attribute.
+   * Creates a {@link TemporalFieldPanel} builder based on the given attribute.
    * @param attribute the attribute
    * @param <T> the attribute type
-   * @return a {@link TemporalInputPanel} builder
+   * @return a {@link TemporalFieldPanel} builder
    */
-  public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
-    return temporalInputPanel(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
+  public final <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
+    return temporalFieldPanel(attribute, entityDefinition.attributes().definition(attribute).dateTimePattern());
   }
 
   /**
-   * Creates a {@link TemporalInputPanel} builder based on the given attribute.
+   * Creates a {@link TemporalFieldPanel} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
    * @param <T> the attribute type
-   * @return a {@link TemporalInputPanel} builder
+   * @return a {@link TemporalFieldPanel} builder
    */
-  public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
-    return Components.temporalInputPanel(attribute.type().valueClass(), dateTimePattern)
+  public final <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
+    return Components.temporalFieldPanel(attribute.type().valueClass(), dateTimePattern)
             .toolTipText(entityDefinition.attributes().definition(attribute).description())
             .calendarIcon(FrameworkIcons.instance().calendar());
   }

@@ -164,7 +164,7 @@ public final class ApplicationPanel extends JPanel {
             .enabled(inputEnabledState)
             .build(inputPanel::add);
 
-    localDateTimeInputPanel(LocaleDateTimePattern.builder()
+    localDateTimeFieldPanel(LocaleDateTimePattern.builder()
             .delimiterDot()
             .yearTwoDigits()
             .hoursMinutes()
