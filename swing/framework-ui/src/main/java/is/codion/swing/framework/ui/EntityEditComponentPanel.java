@@ -43,10 +43,10 @@ import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -72,10 +72,6 @@ import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -368,7 +364,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param defaultTextFieldColumns the default text field columns
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
-   * @see #createTextInputPanel(Attribute)
+   * @see #createTextFieldPanel(Attribute)
    */
   protected final void setDefaultTextFieldColumns(int defaultTextFieldColumns) {
     this.defaultTextFieldColumns = defaultTextFieldColumns;
@@ -529,36 +525,36 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for text input panels.
-   * @param attribute the attribute for which to build a text input panel
-   * @return a text input panel builder
+   * Creates a builder for text field panels.
+   * @param attribute the attribute for which to build a text field panel
+   * @return a text field panel builder
    */
-  protected final TextInputPanel.Builder createTextInputPanel(Attribute<String> attribute) {
-    return setComponentBuilder(attribute, entityComponents.textInputPanel(attribute)
+  protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
+    return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(inputPanel -> addValidator(attribute, inputPanel.textField(), editModel())));
   }
 
   /**
-   * Creates a builder for temporal input panels.
-   * @param attribute the attribute for which to build a temporal input panel
+   * Creates a builder for temporal field panels.
+   * @param attribute the attribute for which to build a temporal field panel
    * @param <T> the temporal type
    * @return a text area builder
    */
-  protected final <T extends Temporal> TemporalInputPanel.Builder<T> createTemporalInputPanel(Attribute<T> attribute) {
-    return setComponentBuilder(attribute, entityComponents.temporalInputPanel(attribute)
+  protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute) {
+    return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute)
             .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.temporalField(), editModel())));
   }
 
   /**
-   * Creates a builder for temporal input panels.
-   * @param attribute the attribute for which to build a temporal input panel
+   * Creates a builder for temporal field panels.
+   * @param attribute the attribute for which to build a temporal field panel
    * @param dateTimePattern the date time pattern
    * @param <T> the temporal type
    * @return a text area builder
    */
-  protected final <T extends Temporal> TemporalInputPanel.Builder<T> createTemporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
-    return setComponentBuilder(attribute, entityComponents.temporalInputPanel(attribute, dateTimePattern)
+  protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
+    return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute, dateTimePattern)
             .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.temporalField(), editModel())));
   }
 
@@ -573,90 +569,6 @@ public class EntityEditComponentPanel extends JPanel {
   protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
     return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
             .columns(defaultTextFieldColumns)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @return a local time field builder
-   */
-  protected final TemporalField.Builder<LocalTime> createLocalTimeField(Attribute<LocalTime> attribute) {
-    return setComponentBuilder(attribute, entityComponents.localTimeField(attribute)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @param dateTimePattern the date time pattern
-   * @return a local time field builder
-   */
-  protected final TemporalField.Builder<LocalTime> createLocalTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
-    return setComponentBuilder(attribute, entityComponents.localTimeField(attribute, dateTimePattern)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @return a local date field builder
-   */
-  protected final TemporalField.Builder<LocalDate> createLocalDateField(Attribute<LocalDate> attribute) {
-    return setComponentBuilder(attribute, entityComponents.localDateField(attribute)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @param dateTimePattern the date time pattern
-   * @return a local date field builder
-   */
-  protected final TemporalField.Builder<LocalDate> createLocalDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
-    return setComponentBuilder(attribute, entityComponents.localDateField(attribute, dateTimePattern)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @return a local date time field builder
-   */
-  protected final TemporalField.Builder<LocalDateTime> createLocalDateTimeField(Attribute<LocalDateTime> attribute) {
-    return setComponentBuilder(attribute, entityComponents.localDateTimeField(attribute)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @param dateTimePattern the date time pattern
-   * @return a local date time field builder
-   */
-  protected final TemporalField.Builder<LocalDateTime> createLocalDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
-    return setComponentBuilder(attribute, entityComponents.localDateTimeField(attribute, dateTimePattern)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @return an offset date time field builder
-   */
-  protected final TemporalField.Builder<OffsetDateTime> createOffsetDateTimeField(Attribute<OffsetDateTime> attribute) {
-    return setComponentBuilder(attribute, entityComponents.offsetDateTimeField(attribute)
-            .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
-  }
-
-  /**
-   * Creates a builder for temporal fields.
-   * @param attribute the attribute for which to build a temporal field
-   * @param dateTimePattern the date time pattern
-   * @return an offset date time field builder
-   */
-  protected final TemporalField.Builder<OffsetDateTime> createOffsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
-    return setComponentBuilder(attribute, entityComponents.offsetDateTimeField(attribute, dateTimePattern)
             .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
   }
 

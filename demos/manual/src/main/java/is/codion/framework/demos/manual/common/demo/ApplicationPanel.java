@@ -111,7 +111,7 @@ public final class ApplicationPanel extends JPanel {
             .enabled(inputEnabledState)
             .build(inputPanel::add);
 
-    textInputPanel(model.longStringValue())
+    textFieldPanel(model.longStringValue())
             .columns(20)
             .maximumLength(400)
             .buttonFocusable(true)
@@ -179,7 +179,7 @@ public final class ApplicationPanel extends JPanel {
             .enabled(inputEnabledState)
             .build(inputPanel::add);
 
-    localDateTimeInputPanel(LocaleDateTimePattern.builder()
+    localDateTimeFieldPanel(LocaleDateTimePattern.builder()
             .delimiterDot()
             .yearTwoDigits()
             .hoursMinutes()

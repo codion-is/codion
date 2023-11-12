@@ -67,7 +67,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .add(dateTimeField())
             .add(calendar())
             .add(entityField())
-            .add(textInput())
+            .add(textFieldPanel())
             .add(dependencies())
             .scrollPane()
             .verticalUnitIncrement(VERTICAL_UNIT_INCREMENT)
@@ -184,10 +184,10 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private static JPanel textInput() {
+  private static JPanel textFieldPanel() {
     return gridLayoutPanel(0, 2)
             .addAll(new JLabel(MESSAGES.getString("display_input_dialog")), new JLabel(INSERT))
-            .border(createTitledBorder(MESSAGES.getString("text_input_panel")))
+            .border(createTitledBorder(MESSAGES.getString("text_field_panel")))
             .build();
   }
 

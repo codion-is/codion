@@ -82,7 +82,7 @@ public final class EntityEditPanelTest {
       createForeignKeyComboBox(Employee.DEPARTMENT_FK);
       createTextField(Employee.SALARY);
       createTextField(Employee.COMMISSION);
-      createTemporalInputPanel(Employee.HIREDATE);
+      createTemporalFieldPanel(Employee.HIREDATE);
     }
 
     @Override

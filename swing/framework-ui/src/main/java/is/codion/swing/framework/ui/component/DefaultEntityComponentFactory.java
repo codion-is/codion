@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui.component;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -39,15 +40,12 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
   public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
     requireNonNull(attribute, "attribute");
     requireNonNull(editModel, "editModel");
-    if (attribute instanceof ForeignKey) {
-      return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
-    }
-
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
+    if (attribute instanceof ForeignKey) {
+      return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue, inputComponents);
+    }
     if (attribute.type().isTemporal()) {
-      return (ComponentValue<T, C>) inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
-              .initialValue((Temporal) initialValue)
-              .buildValue();
+      return createTemporalComponentValue(attribute, (Temporal) initialValue, inputComponents);
     }
     if (attribute.type().isByteArray()) {
       return (ComponentValue<T, C>) fileInputPanel()
@@ -60,8 +58,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
   }
 
   private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
-                                                              Entity initialValue) {
-    EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
+                                                              Entity initialValue, EntityComponents inputComponents) {
     if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
       return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
               .initialValue(initialValue)
@@ -70,6 +67,20 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     }
 
     return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, editModel.createForeignKeySearchModel(foreignKey))
+            .initialValue(initialValue)
+            .buildValue();
+  }
+
+  private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute,
+                                                                                                                     Temporal initialValue,
+                                                                                                                     EntityComponents inputComponents) {
+    if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
+      return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute)
+              .initialValue(initialValue)
+              .buildValue();
+    }
+
+    return (ComponentValue<T, C>) inputComponents.temporalField((Attribute<Temporal>) attribute)
             .initialValue(initialValue)
             .buildValue();
   }

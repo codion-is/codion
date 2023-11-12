@@ -322,9 +322,9 @@ public final class EntityDialogs {
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
               .attributes().definition(attribute);
       if (attributeDefinition.items().isEmpty() && attribute.type().isString()) {
-        //special handling for non-item based String attributes, text input panel instead of a text field
+        //special handling for non-item based String attributes, text field panel instead of a text field
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
-                .textInputPanel((Attribute<String>) attribute)
+                .textFieldPanel((Attribute<String>) attribute)
                 .initialValue((String) initialValue)
                 .buildValue();
       }

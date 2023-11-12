@@ -61,7 +61,7 @@ public final class TrackEditPanel extends EntityEditPanel {
             new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
     Control addGenreControl = createAddControl(genreBox, genreEditPanelSupplier);
     Control editGenreControl = createEditControl(genreBox, genreEditPanelSupplier);
-    createTextInputPanel(Track.COMPOSER);
+    createTextFieldPanel(Track.COMPOSER);
     createIntegerField(Track.MILLISECONDS)
             .columns(5);
 

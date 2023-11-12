@@ -235,7 +235,7 @@ public final class EmployeesMinimalApp {
       createForeignKeyComboBox(Employee.DEPT_FK);
       createTextField(Employee.JOB);
       createForeignKeyComboBox(Employee.MGR_FK);
-      createTemporalInputPanel(Employee.HIREDATE);
+      createTemporalFieldPanel(Employee.HIREDATE);
       createTextField(Employee.SAL);
       createTextField(Employee.COMM);
 
