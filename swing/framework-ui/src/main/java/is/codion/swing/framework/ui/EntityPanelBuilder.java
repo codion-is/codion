@@ -30,6 +30,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private boolean refreshWhenInitialized = true;
   private Dimension preferredSize;
   private boolean conditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
+  private boolean filterPanelVisible = EntityTablePanel.FILTER_PANEL_VISIBLE.get();
   private PanelLayout panelLayout;
 
   private Class<? extends EntityPanel> panelClass;
@@ -88,6 +89,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   @Override
   public EntityPanel.Builder conditionPanelVisible(boolean conditionPanelVisible) {
     this.conditionPanelVisible = conditionPanelVisible;
+    return this;
+  }
+
+  @Override
+  public EntityPanel.Builder filterPanelVisible(boolean filterPanelVisible) {
+    this.filterPanelVisible = filterPanelVisible;
     return this;
   }
 
@@ -192,8 +199,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = createPanel(model);
-      if (entityPanel.tablePanel() != null && conditionPanelVisible) {
+      if (entityPanel.containsTablePanel()) {
         entityPanel.tablePanel().conditionPanelVisible().set(conditionPanelVisible);
+        entityPanel.tablePanel().filterPanelVisible().set(filterPanelVisible);
       }
       if (!detailPanelBuilders.isEmpty()) {
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {

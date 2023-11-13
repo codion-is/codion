@@ -1304,6 +1304,12 @@ public class EntityPanel extends JPanel {
     Builder conditionPanelVisible(boolean conditionPanelVisible);
 
     /**
+     * @param filterPanelVisible if true then the table filter panel is made visible when the panel is initialized
+     * @return this builder instance
+     */
+    Builder filterPanelVisible(boolean filterPanelVisible);
+
+    /**
      * @param panelLayout the panel layout to use
      * @return this builder instane
      */

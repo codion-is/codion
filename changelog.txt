@@ -9906,3 +9906,4 @@
   TabbedPanelLayout.ActivateDetailCommand renamed ActivateDetailPanel, now sets panel state to EMBEDDED only when hidden
   EntityEditComponentPanel.componentAttributes() renamed attributes()
   EntityPanelBuilder.refreshOnInit() and tableConditionPanelVisible() renamed refreshWhenInitialized() and conditionPanelVisible() respectively
+  EntityPanelBuilder.filterPanelVisible() added along with EntityTablePanel
