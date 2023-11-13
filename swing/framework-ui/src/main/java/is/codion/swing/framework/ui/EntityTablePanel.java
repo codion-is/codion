@@ -164,6 +164,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.conditionPanelVisible", false);
 
   /**
+   * Specifies whether table filter panels should be visible or not by default<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> FILTER_PANEL_VISIBLE =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
+
+  /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -273,14 +281,14 @@ public class EntityTablePanel extends JPanel {
   private static final Control NULL_CONTROL = Control.control(() -> {});
   private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
-  private final State conditionPanelVisibleState = State.state();
-  private final State filterPanelVisibleState = State.state();
+  private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
+  private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
 
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> tableCellEditorComponentFactories = new HashMap<>();
+  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
@@ -566,7 +574,7 @@ public class EntityTablePanel extends JPanel {
   public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorFactory(A attribute,
                                                                                                 EntityComponentFactory<T, A, C> componentFactory) {
     tableModel().entityDefinition().attributes().definition(attribute);
-    tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
+    cellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -1301,7 +1309,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
-    return ((EntityComponentFactory<T, Attribute<T>, ?>) tableCellEditorComponentFactories.computeIfAbsent(attribute, a ->
+    return ((EntityComponentFactory<T, Attribute<T>, ?>) cellEditorComponentFactories.computeIfAbsent(attribute, a ->
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).componentValue(attribute, tableModel.editModel(), initialValue);
   }
 

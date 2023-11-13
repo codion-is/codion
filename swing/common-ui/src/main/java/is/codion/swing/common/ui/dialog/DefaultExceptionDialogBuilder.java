@@ -70,6 +70,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
   @Override
   public void show(Throwable exception) {
+    requireNonNull(exception);
     Throwable rootCause = unwrap ? unwrapExceptions(exception, unwrapExceptions) : exception;
     setTitle(rootCause);
     setMessage(rootCause);

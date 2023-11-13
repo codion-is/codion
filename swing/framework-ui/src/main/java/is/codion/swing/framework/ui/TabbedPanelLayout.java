@@ -203,29 +203,29 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void setupResizing() {
-    ResizeHorizontallyAction resizeRightAction = new ResizeHorizontallyAction(entityPanel, RIGHT);
-    ResizeHorizontallyAction resizeLeftAction = new ResizeHorizontallyAction(entityPanel, LEFT);
+    ResizeHorizontally resizeRight = new ResizeHorizontally(entityPanel, RIGHT);
+    ResizeHorizontally resizeLeft = new ResizeHorizontally(entityPanel, LEFT);
 
     KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeRightAction)
+            .action(resizeRight)
             .enable(entityPanel);
     KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeLeftAction)
+            .action(resizeLeft)
             .enable(entityPanel);
     if (entityPanel.containsEditPanel()) {
       KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeRightAction)
+              .action(resizeRight)
               .enable(entityPanel.editControlPanel());
       KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeLeftAction)
+              .action(resizeLeft)
               .enable(entityPanel.editControlPanel());
     }
   }
@@ -285,7 +285,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     TabbedPaneBuilder builder = tabbedPane()
             .focusable(false)
-            .changeListener(e -> selectedDetailPanel().activatePanel());
+            .changeListener(e -> selectedDetailPanel().activate());
     entityPanel.detailPanels().forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
             .toolTipText(detailPanel.getDescription())
             .add());
@@ -296,12 +296,12 @@ public final class TabbedPanelLayout implements PanelLayout {
     return builder.build();
   }
 
-  private static final class ResizeHorizontallyAction extends AbstractAction {
+  private static final class ResizeHorizontally extends AbstractAction {
 
     private final EntityPanel panel;
     private final EntityPanel.Direction direction;
 
-    private ResizeHorizontallyAction(EntityPanel panel, EntityPanel.Direction direction) {
+    private ResizeHorizontally(EntityPanel panel, EntityPanel.Direction direction) {
       super("Resize " + direction);
       this.panel = panel;
       this.direction = direction;
@@ -370,6 +370,8 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     @Override
     public Value<PanelState> panelState(EntityPanel detailPanel) {
+      requireNonNull(detailPanel);
+
       return panelState;
     }
 
@@ -479,7 +481,7 @@ public final class TabbedPanelLayout implements PanelLayout {
               .name(MESSAGES.getString(DETAIL_TABLES))
               .smallIcon(FrameworkIcons.instance().detail());
       entityPanel.detailPanels().forEach(detailPanel ->
-              controls.control(Control.builder(new SelectDetailCommand(detailPanel))
+              controls.control(Control.builder(new ActivateDetailPanel(detailPanel))
                       .name(detailPanel.caption().get())));
 
       return controls.build();
@@ -550,18 +552,20 @@ public final class TabbedPanelLayout implements PanelLayout {
               .build();
     }
 
-    private final class SelectDetailCommand implements Control.Command {
+    private final class ActivateDetailPanel implements Control.Command {
 
       private final EntityPanel detailPanel;
 
-      private SelectDetailCommand(EntityPanel detailPanel) {
+      private ActivateDetailPanel(EntityPanel detailPanel) {
         this.detailPanel = detailPanel;
       }
 
       @Override
       public void perform() {
-        panelState.set(EMBEDDED);
-        detailPanel.activatePanel();
+        if (panelState.equalTo(HIDDEN)) {
+          panelState.set(EMBEDDED);
+        }
+        detailPanel.activate();
       }
     }
   }

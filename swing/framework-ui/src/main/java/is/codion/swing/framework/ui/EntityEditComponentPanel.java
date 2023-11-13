@@ -89,6 +89,7 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntityComponentValidators.addFormattedValidator;
 import static is.codion.swing.framework.ui.component.EntityComponentValidators.addValidator;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 
@@ -166,11 +167,11 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @return an unmodifiable view of the attributes that have associated components.
    */
-  public final Collection<Attribute<?>> componentAttributes() {
+  public final Collection<Attribute<?>> attributes() {
     Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
     attributes.addAll(componentBuilders.keySet());
 
-    return Collections.unmodifiableCollection(attributes);
+    return unmodifiableCollection(attributes);
   }
 
   /**

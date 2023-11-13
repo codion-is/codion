@@ -748,7 +748,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Creates the {@link EntityPanel}s to include in this application panel, in the order they should appear in the tab pane.
+   * Creates the {@link EntityPanel}s to include in this application panel.
    * Returns an empty list in case this panel contains no entity panels or has a custom UI.
    * @return a List containing the {@link EntityPanel}s to include in this application panel or an empty list in case of no entity panels.
    */
@@ -818,7 +818,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void addEntityPanel(EntityPanel entityPanel) {
     EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-    entityPanel.addBeforeActivateListener(applicationLayout::select);
+    entityPanel.addActivateListener(applicationLayout::select);
     if (entityPanel.containsEditPanel()) {
       entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
     }
