@@ -27,9 +27,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private final SwingEntityModel model;
 
   private String caption;
-  private boolean refreshOnInit = true;
+  private boolean refreshWhenInitialized = true;
   private Dimension preferredSize;
-  private boolean tableConditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
+  private boolean conditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
   private PanelLayout panelLayout;
 
   private Class<? extends EntityPanel> panelClass;
@@ -80,14 +80,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder refreshOnInit(boolean refreshOnInit) {
-    this.refreshOnInit = refreshOnInit;
+  public EntityPanel.Builder refreshWhenInitialized(boolean refreshWhenInitialized) {
+    this.refreshWhenInitialized = refreshWhenInitialized;
     return this;
   }
 
   @Override
-  public EntityPanel.Builder tableConditionPanelVisible(boolean tableConditionPanelVisible) {
-    this.tableConditionPanelVisible = tableConditionPanelVisible;
+  public EntityPanel.Builder conditionPanelVisible(boolean conditionPanelVisible) {
+    this.conditionPanelVisible = conditionPanelVisible;
     return this;
   }
 
@@ -192,8 +192,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = createPanel(model);
-      if (entityPanel.tablePanel() != null && tableConditionPanelVisible) {
-        entityPanel.tablePanel().conditionPanelVisible().set(tableConditionPanelVisible);
+      if (entityPanel.tablePanel() != null && conditionPanelVisible) {
+        entityPanel.tablePanel().conditionPanelVisible().set(conditionPanelVisible);
       }
       if (!detailPanelBuilders.isEmpty()) {
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
@@ -203,7 +203,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         }
       }
       onBuildPanel.accept(entityPanel);
-      if (refreshOnInit && model.containsTableModel()) {
+      if (refreshWhenInitialized && model.containsTableModel()) {
         model.tableModel().refresh();
       }
 

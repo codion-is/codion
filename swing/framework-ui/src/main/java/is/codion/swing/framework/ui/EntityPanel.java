@@ -1290,17 +1290,18 @@ public class EntityPanel extends JPanel {
     Builder detailPanelBuilder(EntityPanel.Builder panelBuilder);
 
     /**
-     * @param refreshOnInit if true then the data model this panel is based on will be refreshed when
+     * Default true.
+     * @param refreshWhenInitialized if true then the data model this panel is based on will be refreshed when
      * the panel is initialized
      * @return this builder instance
      */
-    Builder refreshOnInit(boolean refreshOnInit);
+    Builder refreshWhenInitialized(boolean refreshWhenInitialized);
 
     /**
-     * @param tableConditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
+     * @param conditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
      * @return this builder instance
      */
-    Builder tableConditionPanelVisible(boolean tableConditionPanelVisible);
+    Builder conditionPanelVisible(boolean conditionPanelVisible);
 
     /**
      * @param panelLayout the panel layout to use
