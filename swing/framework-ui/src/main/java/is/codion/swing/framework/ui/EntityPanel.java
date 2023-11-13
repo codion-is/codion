@@ -551,13 +551,18 @@ public class EntityPanel extends JPanel {
 
   /**
    * @param listener notified before this panel is activated
-   * @see #activatePanel()
+   * @see #activate()
    */
   public final void addBeforeActivateListener(Consumer<EntityPanel> listener) {
     beforeActivateEvent.addDataListener(listener);
   }
 
-  public final void activatePanel() {
+  /**
+   * Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
+   * It is up the panel or application layout to make sure this panel is visible before activation.
+   * @see #addBeforeActivateListener(Consumer)
+   */
+  public final void activate() {
     beforeActivateEvent.accept(this);
     initialize();
     Window parentWindow = parentWindow(this);
@@ -1136,22 +1141,22 @@ public class EntityPanel extends JPanel {
       switch (direction) {
         case LEFT:
           if (previousSiblingPanel != null) {
-            previousSiblingPanel.activatePanel();
+            previousSiblingPanel.activate();
           }
           break;
         case RIGHT:
           if (nextSiblingPanel != null) {
-            nextSiblingPanel.activatePanel();
+            nextSiblingPanel.activate();
           }
           break;
         case UP:
           if (parentPanel != null) {
-            parentPanel.activatePanel();
+            parentPanel.activate();
           }
           break;
         case DOWN:
           activeDetailPanel()
-                  .ifPresent(EntityPanel::activatePanel);
+                  .ifPresent(EntityPanel::activate);
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);

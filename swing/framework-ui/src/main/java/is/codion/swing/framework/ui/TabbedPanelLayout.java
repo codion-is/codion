@@ -270,7 +270,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     TabbedPaneBuilder builder = tabbedPane()
             .focusable(false)
-            .changeListener(e -> selectedDetailPanel().activatePanel());
+            .changeListener(e -> selectedDetailPanel().activate());
     entityPanel.detailPanels().forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
             .toolTipText(detailPanel.getDescription())
             .add());
@@ -546,7 +546,7 @@ public final class TabbedPanelLayout implements PanelLayout {
       @Override
       public void perform() {
         panelState.set(EMBEDDED);
-        detailPanel.activatePanel();
+        detailPanel.activate();
       }
     }
   }
