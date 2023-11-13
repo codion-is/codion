@@ -188,29 +188,29 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void setupResizing() {
-    ResizeHorizontallyAction resizeRightAction = new ResizeHorizontallyAction(entityPanel, RIGHT);
-    ResizeHorizontallyAction resizeLeftAction = new ResizeHorizontallyAction(entityPanel, LEFT);
+    ResizeHorizontally resizeRight = new ResizeHorizontally(entityPanel, RIGHT);
+    ResizeHorizontally resizeLeft = new ResizeHorizontally(entityPanel, LEFT);
 
     KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeRightAction)
+            .action(resizeRight)
             .enable(entityPanel);
     KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeLeftAction)
+            .action(resizeLeft)
             .enable(entityPanel);
     if (entityPanel.containsEditPanel()) {
       KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeRightAction)
+              .action(resizeRight)
               .enable(entityPanel.editControlPanel());
       KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeLeftAction)
+              .action(resizeLeft)
               .enable(entityPanel.editControlPanel());
     }
   }
@@ -281,12 +281,12 @@ public final class TabbedPanelLayout implements PanelLayout {
     return builder.build();
   }
 
-  private static final class ResizeHorizontallyAction extends AbstractAction {
+  private static final class ResizeHorizontally extends AbstractAction {
 
     private final EntityPanel panel;
     private final EntityPanel.Direction direction;
 
-    private ResizeHorizontallyAction(EntityPanel panel, EntityPanel.Direction direction) {
+    private ResizeHorizontally(EntityPanel panel, EntityPanel.Direction direction) {
       super("Resize " + direction);
       this.panel = panel;
       this.direction = direction;
@@ -355,6 +355,8 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     @Override
     public Value<PanelState> panelState(EntityPanel detailPanel) {
+      requireNonNull(detailPanel);
+
       return panelState;
     }
 

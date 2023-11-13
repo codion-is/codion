@@ -165,7 +165,7 @@ public class EntityPanel extends JPanel {
   private final EntityTablePanel tablePanel;
   private final JPanel editControlPanel = new JPanel(borderLayout());
   private final JPanel editControlTablePanel = new JPanel(borderLayout());
-  private final Event<EntityPanel> beforeActivateEvent = Event.event();
+  private final Event<EntityPanel> activateEvent = Event.event();
   private final PanelLayout panelLayout;
   private final DetailController detailController;
   private final Value<String> caption;
@@ -411,7 +411,7 @@ public class EntityPanel extends JPanel {
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addBeforeActivateListener(detailController::select);
+    detailPanel.addActivateListener(detailController::select);
   }
 
   /**
@@ -553,17 +553,17 @@ public class EntityPanel extends JPanel {
    * @param listener notified before this panel is activated
    * @see #activate()
    */
-  public final void addBeforeActivateListener(Consumer<EntityPanel> listener) {
-    beforeActivateEvent.addDataListener(listener);
+  public final void addActivateListener(Consumer<EntityPanel> listener) {
+    activateEvent.addDataListener(listener);
   }
 
   /**
    * Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
    * It is up the panel or application layout to make sure this panel is visible before activation.
-   * @see #addBeforeActivateListener(Consumer)
+   * @see #addActivateListener(Consumer)
    */
   public final void activate() {
-    beforeActivateEvent.accept(this);
+    activateEvent.accept(this);
     initialize();
     Window parentWindow = parentWindow(this);
     if (parentWindow != null) {
@@ -888,33 +888,33 @@ public class EntityPanel extends JPanel {
       }
     }
     if (containsEditPanel()) {
-      Control selectEditPanelControl = Control.control(this::selectEditPanel);
-      Control selectInputComponentControl = Control.control(this::selectInputComponent);
+      Control selectEditPanel = Control.control(this::selectEditPanel);
+      Control selectInputComponent = Control.control(this::selectInputComponent);
       KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectEditPanelControl)
+              .action(selectEditPanel)
               .enable(this);
       KeyEvents.builder(VK_I)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectInputComponentControl)
+              .action(selectInputComponent)
               .enable(this);
       KeyEvents.builder(VK_I)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectInputComponentControl)
+              .action(selectInputComponent)
               .enable(editControlPanel);
-      ToggleEditPanelStateAction toggleEditPanelStateAction = new ToggleEditPanelStateAction(this);
+      ToggleEditPanel toggleEditPanel = new ToggleEditPanel(this);
       KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(toggleEditPanelStateAction)
+              .action(toggleEditPanel)
               .enable(this);
       KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(toggleEditPanelStateAction)
+              .action(toggleEditPanel)
               .enable(editControlPanel);
     }
     if (useKeyboardNavigation) {
@@ -926,43 +926,43 @@ public class EntityPanel extends JPanel {
     KeyEvents.builder(VK_UP)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(UP))
+            .action(new Navigate(UP))
             .enable(this);
     KeyEvents.builder(VK_DOWN)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(DOWN))
+            .action(new Navigate(DOWN))
             .enable(this);
     KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(RIGHT))
+            .action(new Navigate(RIGHT))
             .enable(this);
     KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(LEFT))
+            .action(new Navigate(LEFT))
             .enable(this);
     if (containsEditPanel()) {
       KeyEvents.builder(VK_UP)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(UP))
+              .action(new Navigate(UP))
               .enable(editControlPanel);
       KeyEvents.builder(VK_DOWN)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(DOWN))
+              .action(new Navigate(DOWN))
               .enable(editControlPanel);
       KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(RIGHT))
+              .action(new Navigate(RIGHT))
               .enable(editControlPanel);
       KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(LEFT))
+              .action(new Navigate(LEFT))
               .enable(editControlPanel);
     }
   }
@@ -984,7 +984,7 @@ public class EntityPanel extends JPanel {
   protected final void initializeTablePanel() {
     editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     if (tablePanel.table().doubleClickAction().get() == null) {
-      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanelCommand()));
+      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanel()));
     }
     tablePanel.initialize();
     tablePanel.setMinimumSize(new Dimension(0, 0));
@@ -1117,7 +1117,7 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private final class ShowHiddenEditPanelCommand implements Control.Command {
+  private final class ShowHiddenEditPanel implements Control.Command {
 
     @Override
     public void perform() {
@@ -1127,11 +1127,11 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private final class NavigateAction extends AbstractAction {
+  private final class Navigate extends AbstractAction {
 
     private final Direction direction;
 
-    private NavigateAction(Direction direction) {
+    private Navigate(Direction direction) {
       super("Navigate " + direction);
       this.direction = direction;
     }
@@ -1173,11 +1173,11 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private static final class ToggleEditPanelStateAction extends AbstractAction {
+  private static final class ToggleEditPanel extends AbstractAction {
 
     private final EntityPanel panel;
 
-    private ToggleEditPanelStateAction(EntityPanel panel) {
+    private ToggleEditPanel(EntityPanel panel) {
       super("ToggleEditPanelState");
       this.panel = panel;
     }
@@ -1406,6 +1406,8 @@ public class EntityPanel extends JPanel {
 
     @Override
     public Value<PanelState> panelState(EntityPanel detailPanel) {
+      requireNonNull(detailPanel);
+
       return panelState;
     }
   }
