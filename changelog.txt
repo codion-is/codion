@@ -9900,3 +9900,4 @@
   TemporalField, TemporalInputPanel, calendar functionality moved to TemporalField, related refactoring
   TemporalInputPanel renamed TemporalFieldPanel
   TextInputPanel renamed TextFieldPanel
+  TemporalFieldPanel, TemporalField, supported types moved to CalendarPanel

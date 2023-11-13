@@ -33,11 +33,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -49,6 +53,8 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -67,6 +73,9 @@ import static javax.swing.BorderFactory.createTitledBorder;
 public final class CalendarPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(CalendarPanel.class.getName());
+
+  private static final Set<Class<? extends Temporal>> SUPPORTED_TYPES =
+          unmodifiableSet(new HashSet<>(asList(LocalDate.class, LocalDateTime.class)));
 
   private static final int YEAR_COLUMNS = 4;
   private static final int TIME_COLUMNS = 2;
@@ -205,6 +214,13 @@ public final class CalendarPanel extends JPanel {
    */
   public static CalendarPanel dateTimeCalendarPanel() {
     return new CalendarPanel(true);
+  }
+
+  /**
+   * @return the temporal types supported by this calendar panel
+   */
+  public static Collection<Class<? extends Temporal>> supportedTypes() {
+    return SUPPORTED_TYPES;
   }
 
   void previousMonth() {

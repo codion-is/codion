@@ -8,6 +8,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -59,7 +60,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final ImageIcon calendarIcon;
   private final Control calendarControl;
 
-  private TemporalField(DefaultTemporalFieldBuilder<T> builder) {
+  private TemporalField(DefaultBuilder<T> builder) {
     super(createFormatter(builder.mask));
     setToolTipText(builder.dateTimePattern);
     this.temporalClass = builder.temporalClass;
@@ -148,7 +149,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @return a new builder
    */
   public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern) {
-    return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, null);
+    return new DefaultBuilder<>(temporalClass, dateTimePattern, null);
   }
 
   /**
@@ -163,7 +164,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern,
                                                         Value<T> linkedValue) {
-    return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
+    return new DefaultBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
   }
 
   private void increment() {
@@ -209,7 +210,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   }
 
   private Control createCalendarControl() {
-    if (supportsCalendar(temporalClass)) {
+    if (CalendarPanel.supportedTypes().contains(temporalClass)) {
       return Control.builder(this::displayCalendar)
               .name(calendarIcon == null ? "..." : null)
               .smallIcon(calendarIcon)
@@ -303,7 +304,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     T parse(CharSequence text, DateTimeFormatter formatter);
   }
 
-  private static final class DefaultTemporalFieldBuilder<T extends Temporal>
+  private static final class DefaultBuilder<T extends Temporal>
           extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
 
     private final Class<T> temporalClass;
@@ -315,8 +316,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
     private ImageIcon calendarIcon;
 
-    private DefaultTemporalFieldBuilder(Class<T> temporalClass, String dateTimePattern,
-                                        Value<T> linkedValue) {
+    private DefaultBuilder(Class<T> temporalClass, String dateTimePattern, Value<T> linkedValue) {
       super(temporalClass, linkedValue);
       this.temporalClass = temporalClass;
       this.dateTimePattern = requireNonNull(dateTimePattern);
@@ -462,5 +462,15 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
         return LocalDateTime.parse(text, formatter).atZone(zone).toOffsetDateTime();
       }
     }
+  }
+
+  public static void main(String... args) {
+    Value<LocalDate> value = Value.value();
+    ComponentValue<LocalDate, TemporalField<LocalDate>> builtValue = new DefaultBuilder<>(LocalDate.class, "dd.MM.yyyy", value)
+            .columns(10)
+            .buildValue();
+    value.addDataListener(System.out::println);
+    Dialogs.componentDialog(builtValue.component())
+            .show();
   }
 }

@@ -7,6 +7,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -22,8 +23,6 @@ import java.awt.event.FocusEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -34,8 +33,6 @@ import static java.util.Objects.requireNonNull;
  * @see #supports(Class)
  */
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
-
-  private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(LocalDate.class, LocalDateTime.class);
 
   private final TemporalField<T> temporalField;
   private final JButton calendarButton;
@@ -125,7 +122,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
    * @param <T> the temporal type
    */
   public static <T extends Temporal> boolean supports(Class<T> temporalClass) {
-    return SUPPORTED_TYPES.contains(requireNonNull(temporalClass));
+    return CalendarPanel.supportedTypes().contains(requireNonNull(temporalClass));
   }
 
   /**
