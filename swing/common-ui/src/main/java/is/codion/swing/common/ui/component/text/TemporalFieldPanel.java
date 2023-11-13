@@ -177,6 +177,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
     Builder<T> updateOn(UpdateOn updateOn);
 
     /**
+     * Default false.
      * @param buttonFocusable true if the calendar button should be focusable
      * @return this builder instance
      */

@@ -68,7 +68,7 @@ public interface EntityDefinition {
   EntityValidator validator();
 
   /**
-   * The default exists predicate returns true if the entity has a non-null primary key or a non-null original primary key,
+   * The default exists predicate returns true if the entity has a non-null original primary key,
    * which is a best guess about an entity existing in a database.
    * @return the predicate to use to check if an entity of this type exists in the database
    */

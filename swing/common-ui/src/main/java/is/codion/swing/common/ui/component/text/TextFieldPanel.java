@@ -188,6 +188,7 @@ public final class TextFieldPanel extends JPanel {
     Builder textAreaSize(Dimension textAreaSize);
 
     /**
+     * Default false.
      * @param buttonFocusable true if the input button should be focusable
      * @return this builder instance
      */
