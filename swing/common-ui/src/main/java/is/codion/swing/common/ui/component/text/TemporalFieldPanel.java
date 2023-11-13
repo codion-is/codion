@@ -39,7 +39,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
   TemporalFieldPanel(DefaultBuilder<T> builder) {
     super(new BorderLayout());
-    this.temporalField = requireNonNull(builder.createTemporalField());
+    temporalField = requireNonNull(builder.createTemporalField());
     add(temporalField, BorderLayout.CENTER);
     Control calendarControl = temporalField.calendarControl()
             .orElseThrow(() -> new IllegalArgumentException("TemporalField does not support a calendar for: " + temporalField.temporalClass()));
@@ -204,39 +204,33 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
           extends AbstractComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>>
           implements Builder<T> {
 
-    private final Class<T> valueClass;
-    private final String dateTimePattern;
+    private final TemporalField.Builder<T> temporalFieldBuilder;
 
-    private int columns;
-    private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
-    private boolean selectAllOnFocusGained;
     private boolean buttonFocusable;
-    private ImageIcon calendarIcon;
 
     private DefaultBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
       super(linkedValue);
       if (!supports(valueClass)) {
         throw new IllegalArgumentException("Unsupported temporal type: " + valueClass);
       }
-      this.valueClass = valueClass;
-      this.dateTimePattern = requireNonNull(dateTimePattern);
+      temporalFieldBuilder = TemporalField.builder(valueClass, requireNonNull(dateTimePattern));
     }
 
     @Override
     public Builder<T> selectAllOnFocusGained(boolean selectAllOnFocusGained) {
-      this.selectAllOnFocusGained = selectAllOnFocusGained;
+      temporalFieldBuilder.selectAllOnFocusGained(selectAllOnFocusGained);
       return this;
     }
 
     @Override
     public Builder<T> columns(int columns) {
-      this.columns = columns;
+      temporalFieldBuilder.columns(columns);
       return this;
     }
 
     @Override
     public Builder<T> updateOn(UpdateOn updateOn) {
-      this.updateOn = requireNonNull(updateOn);
+      temporalFieldBuilder.updateOn(updateOn);
       return this;
     }
 
@@ -248,7 +242,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
     @Override
     public Builder<T> calendarIcon(ImageIcon calendarIcon) {
-      this.calendarIcon = calendarIcon;
+      temporalFieldBuilder.calendarIcon(calendarIcon);
       return this;
     }
 
@@ -273,12 +267,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
     }
 
     private TemporalField<T> createTemporalField() {
-      return TemporalField.builder(valueClass, dateTimePattern)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns)
-              .calendarIcon(calendarIcon)
-              .build();
+      return temporalFieldBuilder.clear().build();
     }
   }
 
