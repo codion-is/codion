@@ -25,13 +25,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private final EntityType entityType;
   private final SwingEntityModel.Builder modelBuilder;
   private final SwingEntityModel model;
+  private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
   private String caption;
   private boolean refreshWhenInitialized = true;
   private Dimension preferredSize;
   private boolean conditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
   private boolean filterPanelVisible = EntityTablePanel.FILTER_PANEL_VISIBLE.get();
-  private PanelLayout panelLayout;
+  private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
 
   private Class<? extends EntityPanel> panelClass;
   private Class<? extends EntityTablePanel> tablePanelClass;
@@ -40,8 +41,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private Consumer<EntityPanel> onBuildPanel = new EmptyOnBuild<>();
   private Consumer<EntityEditPanel> onBuildEditPanel = new EmptyOnBuild<>();
   private Consumer<EntityTablePanel> onBuildTablePanel = new EmptyOnBuild<>();
-
-  private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
   EntityPanelBuilder(SwingEntityModel.Builder modelBuilder) {
     this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
@@ -263,15 +262,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
   }
 
-  private EntityPanel createPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel)
-          throws Exception {
-    if (panelLayout != null) {
-      return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, PanelLayout.class)
-              .newInstance(entityModel, editPanel, tablePanel, panelLayout);
-    }
-
-    return  panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
-            .newInstance(entityModel, editPanel, tablePanel);
+  private EntityPanel createPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) throws Exception {
+    return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, PanelLayout.class)
+            .newInstance(entityModel, editPanel, tablePanel, panelLayout);
   }
 
   private EntityEditPanel createEditPanel(SwingEntityEditModel editModel) {
