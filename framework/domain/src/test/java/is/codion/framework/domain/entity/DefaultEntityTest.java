@@ -947,7 +947,6 @@ public class DefaultEntityTest {
   @Test
   void exists() {
     Entity emp = ENTITIES.builder(Employee.TYPE)
-            .with(Employee.NAME, "Name")
             .with(Employee.ID, null)
             .build();
     assertTrue(emp.originalPrimaryKey().isNull());
@@ -966,6 +965,24 @@ public class DefaultEntityTest {
     emp.save();
     assertFalse(emp.exists());
     emp.remove(Employee.ID);
+    assertFalse(emp.exists());
+
+    emp = ENTITIES.entity(Employee.TYPE);
+    assertFalse(emp.exists());
+    emp.put(Employee.ID, 1);
+    assertTrue(emp.exists());
+    emp.put(Employee.ID, null);
+    assertTrue(emp.exists());
+    emp.save();
+    assertFalse(emp.exists());
+
+    emp = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 1)
+            .build();
+    assertTrue(emp.exists());
+    emp.put(Employee.ID, null);
+    assertTrue(emp.exists());
+    emp.save();
     assertFalse(emp.exists());
   }
 

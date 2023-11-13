@@ -62,8 +62,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .columns(14)
             .selectorFactory(new CustomerSelectorFactory());
     createTemporalFieldPanel(Invoice.DATE)
-            .columns(6)
-            .buttonFocusable(false);
+            .columns(6);
 
     createTextField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained(true);
