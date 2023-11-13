@@ -416,8 +416,7 @@ public class EntityPanel extends JPanel {
 
   /**
    * Initializes this EntityPanel, in case of some specific initialization code you can override the
-   * {@link #initializeUI()} method and add your code there.
-   * This method marks this panel as initialized which prevents it from running again, whether an exception occurs or not.
+   * {@link #initializeUI()} method and add your code there. Calling this method a second time has no effect.
    * @param <T> the entity panel type
    * @return this EntityPanel instance
    */
