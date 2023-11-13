@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.demos.employees.rest;
+package is.codion.framework.demos.employees.testing;
 
 import is.codion.common.Text;
 import is.codion.common.model.CancelException;
