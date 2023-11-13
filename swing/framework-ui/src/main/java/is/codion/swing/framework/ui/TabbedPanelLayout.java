@@ -464,7 +464,7 @@ public final class TabbedPanelLayout implements PanelLayout {
               .name(MESSAGES.getString(DETAIL_TABLES))
               .smallIcon(FrameworkIcons.instance().detail());
       entityPanel.detailPanels().forEach(detailPanel ->
-              controls.control(Control.builder(new SelectDetailCommand(detailPanel))
+              controls.control(Control.builder(new ActivateDetailPanel(detailPanel))
                       .name(detailPanel.caption().get())));
 
       return controls.build();
@@ -535,17 +535,19 @@ public final class TabbedPanelLayout implements PanelLayout {
               .build();
     }
 
-    private final class SelectDetailCommand implements Control.Command {
+    private final class ActivateDetailPanel implements Control.Command {
 
       private final EntityPanel detailPanel;
 
-      private SelectDetailCommand(EntityPanel detailPanel) {
+      private ActivateDetailPanel(EntityPanel detailPanel) {
         this.detailPanel = detailPanel;
       }
 
       @Override
       public void perform() {
-        panelState.set(EMBEDDED);
+        if (panelState.equalTo(HIDDEN)) {
+          panelState.set(EMBEDDED);
+        }
         detailPanel.activate();
       }
     }
