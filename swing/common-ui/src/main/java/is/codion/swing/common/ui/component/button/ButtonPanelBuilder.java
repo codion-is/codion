@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 
@@ -67,28 +66,5 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
    */
   static ButtonPanelBuilder builder(Controls.Builder controlsBuilder) {
     return builder(requireNonNull(controlsBuilder).build());
-  }
-
-  /**
-   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and non-focusable buttons based on buttonActions
-   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
-   * @param centerComponent the center component
-   * @param buttonActions the button actions
-   * @return a panel
-   * @see #createEastFocusableButtonPanel(JComponent, Action...)
-   */
-  static JPanel createEastButtonPanel(JComponent centerComponent, Action... buttonActions) {
-    return DefaultButtonPanelBuilder.createEastButtonPanel(centerComponent, false, buttonActions);
-  }
-
-  /**
-   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and focusable buttons based on buttonActions
-   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
-   * @param centerComponent the center component
-   * @param buttonActions the button actions
-   * @return a panel
-   */
-  static JPanel createEastFocusableButtonPanel(JComponent centerComponent, Action... buttonActions) {
-    return DefaultButtonPanelBuilder.createEastButtonPanel(centerComponent, true, buttonActions);
   }
 }

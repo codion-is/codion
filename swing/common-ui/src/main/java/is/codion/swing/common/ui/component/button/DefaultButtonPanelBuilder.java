@@ -3,18 +3,15 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -77,21 +74,6 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
     return buttonBuilder().orElse(ButtonBuilder.builder()
             .focusable(buttonsFocusable)
             .preferredSize(preferredButtonSize));
-  }
-
-  static JPanel createEastButtonPanel(JComponent centerComponent, boolean buttonFocusable, Action... buttonActions) {
-    requireNonNull(centerComponent, "centerComponent");
-    requireNonNull(buttonActions, "buttonActions");
-
-    ButtonPanelBuilder buttonPanelBuilder = new DefaultButtonPanelBuilder(buttonActions)
-            .buttonsFocusable(buttonFocusable)
-            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height))
-            .buttonGap(0);
-
-    return Components.panel(new BorderLayout())
-            .add(centerComponent, BorderLayout.CENTER)
-            .add(buttonPanelBuilder.build(), BorderLayout.EAST)
-            .build();
   }
 
   private final class ButtonControlHandler extends ControlHandler {

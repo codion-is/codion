@@ -23,10 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastFocusableButtonPanel;
-import static is.codion.swing.framework.ui.component.EntityControls.createAddControl;
-import static is.codion.swing.framework.ui.component.EntityControls.createEditControl;
+import static is.codion.swing.framework.ui.component.EntityControls.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -46,10 +43,7 @@ public final class EntitySearchFieldPanel extends JPanel {
       actions.add(createEditControl(searchFieldValue.component(), builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
-    JPanel basePanel = builder.buttonsFocusable ?
-            createEastFocusableButtonPanel(searchFieldValue.component(), actions.toArray(new Action[0])) :
-            createEastButtonPanel(searchFieldValue.component(), actions.toArray(new Action[0]));
-    add(basePanel, BorderLayout.CENTER);
+    add(createEastButtonPanel(searchFieldValue.component(), builder.buttonsFocusable, actions.toArray(new Action[0])), BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(searchFieldValue.component()));
   }
 

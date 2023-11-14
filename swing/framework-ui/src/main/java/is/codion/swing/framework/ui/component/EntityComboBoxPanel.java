@@ -23,10 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastFocusableButtonPanel;
-import static is.codion.swing.framework.ui.component.EntityControls.createAddControl;
-import static is.codion.swing.framework.ui.component.EntityControls.createEditControl;
+import static is.codion.swing.framework.ui.component.EntityControls.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -46,10 +43,7 @@ public final class EntityComboBoxPanel extends JPanel {
       actions.add(createEditControl(comboBoxValue.component(), builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
-    JPanel basePanel = builder.buttonsFocusable ?
-            createEastFocusableButtonPanel(comboBoxValue.component(), actions.toArray(new Action[0])) :
-            createEastButtonPanel(comboBoxValue.component(), actions.toArray(new Action[0]));
-    add(basePanel, BorderLayout.CENTER);
+    add(createEastButtonPanel(comboBoxValue.component(), builder.buttonsFocusable, actions.toArray(new Action[0])), BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(comboBoxValue.component()));
   }
 
