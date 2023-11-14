@@ -14,6 +14,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -21,18 +23,25 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
+import static java.awt.ComponentOrientation.getOrientation;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
@@ -89,6 +98,34 @@ final class EntityControls {
   static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
     return createEditControl(new EditEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)),
             searchField, searchField.model().selectionEmpty().not());
+  }
+
+  static String validateButtonLocation(String buttonLocation) {
+    requireNonNull(buttonLocation);
+    if (!buttonLocation.equals(BorderLayout.WEST) && ! buttonLocation.equals(BorderLayout.EAST)) {
+      throw new IllegalArgumentException("Button location must be BorderLayout.WEST or BorderLayout.EAST");
+    }
+    return buttonLocation;
+  }
+
+  static JPanel createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
+                                  String borderLayoutConstraints, Action... buttonActions) {
+    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(buttonActions, "buttonActions");
+
+    ButtonPanelBuilder buttonPanelBuilder = ButtonPanelBuilder.builder(buttonActions)
+            .buttonsFocusable(buttonFocusable)
+            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height))
+            .buttonGap(0);
+
+    return Components.panel(new BorderLayout())
+            .add(centerComponent, BorderLayout.CENTER)
+            .add(buttonPanelBuilder.build(), borderLayoutConstraints)
+            .build();
+  }
+
+  static String defaultButtonLocation() {
+    return getOrientation(Locale.getDefault()) == ComponentOrientation.LEFT_TO_RIGHT ? BorderLayout.EAST : BorderLayout.WEST;
   }
 
   private static Control createAddControl(AddEntityCommand addEntityCommand, JComponent component) {

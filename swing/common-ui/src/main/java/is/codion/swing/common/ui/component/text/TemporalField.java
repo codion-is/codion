@@ -431,10 +431,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
-  private static boolean supportsCalendar(Class<?> temporalClass) {
-    return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
-  }
-
   private static final class LocalTimeParser implements DateTimeParser<LocalTime> {
 
     @Override

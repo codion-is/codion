@@ -23,10 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastFocusableButtonPanel;
-import static is.codion.swing.framework.ui.component.EntityControls.createAddControl;
-import static is.codion.swing.framework.ui.component.EntityControls.createEditControl;
+import static is.codion.swing.framework.ui.component.EntityControls.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -46,10 +43,8 @@ public final class EntitySearchFieldPanel extends JPanel {
       actions.add(createEditControl(searchFieldValue.component(), builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
-    JPanel basePanel = builder.buttonsFocusable ?
-            createEastFocusableButtonPanel(searchFieldValue.component(), actions.toArray(new Action[0])) :
-            createEastButtonPanel(searchFieldValue.component(), actions.toArray(new Action[0]));
-    add(basePanel, BorderLayout.CENTER);
+    add(createButtonPanel(searchFieldValue.component(), builder.buttonsFocusable, builder.buttonLocation,
+            actions.toArray(new Action[0])), BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(searchFieldValue.component()));
   }
 
@@ -105,6 +100,14 @@ public final class EntitySearchFieldPanel extends JPanel {
      * @return this builder instance
      */
     Builder buttonsFocusable(boolean buttonsFocusable);
+
+    /**
+     * Must be one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
+     * @param buttonLocation the button location
+     * @return this builder instance
+     * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
+     */
+    Builder buttonLocation(String buttonLocation);
 
     /**
      * @param columns the number of colums in the text field
@@ -190,6 +193,7 @@ public final class EntitySearchFieldPanel extends JPanel {
     private boolean addButton;
     private boolean editButton;
     private boolean buttonsFocusable;
+    private String buttonLocation = defaultButtonLocation();
 
     private DefaultBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
       super(linkedValue);
@@ -212,6 +216,12 @@ public final class EntitySearchFieldPanel extends JPanel {
     @Override
     public Builder buttonsFocusable(boolean buttonsFocusable) {
       this.buttonsFocusable = buttonsFocusable;
+      return this;
+    }
+
+    @Override
+    public Builder buttonLocation(String buttonLocation) {
+      this.buttonLocation = validateButtonLocation(buttonLocation);
       return this;
     }
 

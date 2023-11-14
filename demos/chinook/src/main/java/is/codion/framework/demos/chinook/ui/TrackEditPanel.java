@@ -43,13 +43,11 @@ public final class TrackEditPanel extends EntityEditPanel {
 
     createForeignKeySearchField(Track.ALBUM_FK);
     createTextField(Track.NAME);
-    createForeignKeyComboBoxPanel(Track.MEDIATYPE_FK, () ->
-            new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider())))
+    createForeignKeyComboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
             .preferredWidth(200)
             .addButton(true)
             .editButton(true);
-    createForeignKeyComboBoxPanel(Track.GENRE_FK, () ->
-            new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider())))
+    createForeignKeyComboBoxPanel(Track.GENRE_FK, this::createGenreEditPanel)
             .preferredWidth(200)
             .addButton(true)
             .editButton(true);
@@ -87,5 +85,13 @@ public final class TrackEditPanel extends EntityEditPanel {
     addInputPanel(Track.COMPOSER);
     add(durationPanel);
     add(unitPricePanel);
+  }
+
+  private EntityEditPanel createMediaTypeEditPanel() {
+    return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
+  }
+
+  private GenreEditPanel createGenreEditPanel() {
+    return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
   }
 }

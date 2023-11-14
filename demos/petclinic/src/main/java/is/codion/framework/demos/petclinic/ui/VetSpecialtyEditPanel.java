@@ -37,8 +37,7 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
     createForeignKeyComboBox(VetSpecialty.VET_FK)
             .preferredWidth(200);
-    createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, () ->
-            new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider())))
+    createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
             .preferredWidth(200)
             .addButton(true);
 
@@ -46,5 +45,9 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
     addInputPanel(VetSpecialty.VET_FK);
     addInputPanel(VetSpecialty.SPECIALTY_FK);
+  }
+
+  private SpecialtyEditPanel createSpecialtyEditPanel() {
+    return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider()));
   }
 }
