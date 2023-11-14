@@ -8,9 +8,6 @@ import is.codion.framework.demos.petstore.domain.Petstore.TagItem;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.component.EntityComboBox;
-
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
 public class TagItemEditPanel extends EntityEditPanel {
 
@@ -20,15 +17,14 @@ public class TagItemEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
+    initialFocusAttribute().set(TagItem.ITEM_FK);
+    createForeignKeyComboBox(TagItem.ITEM_FK)
+            .preferredWidth(180);
+    createForeignKeyComboBoxPanel(TagItem.TAG_FK, () ->
+            new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider())))
+            .addButton(true);
     setLayout(Layouts.flexibleGridLayout(2, 1));
-    EntityComboBox itemBox = createForeignKeyComboBox(TagItem.ITEM_FK)
-            .preferredWidth(180)
-            .build();
-    initialFocusComponent().set(itemBox);
     addInputPanel(TagItem.ITEM_FK);
-    EntityComboBox itemTagBox = createForeignKeyComboBox(TagItem.TAG_FK).build();
-    addInputPanel(TagItem.TAG_FK, createEastButtonPanel(itemTagBox,
-            createAddControl(itemTagBox, () ->
-                    new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider())))));
+    addInputPanel(TagItem.TAG_FK);
   }
 }

@@ -6,10 +6,8 @@ package is.codion.framework.demos.petstore.ui;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
 public class ItemEditPanel extends EntityEditPanel {
 
@@ -27,12 +25,14 @@ public class ItemEditPanel extends EntityEditPanel {
     createTextFieldPanel(Item.DESCRIPTION)
             .buttonFocusable(false);
     createTextField(Item.PRICE);
-    EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)
-            .preferredWidth(140)
-            .build();
-    EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK)
-            .preferredWidth(140)
-            .build();
+    createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, () ->
+            new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider())))
+            .preferredWidth(220)
+            .addButton(true);
+    createForeignKeyComboBoxPanel(Item.ADDRESS_FK, () ->
+            new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))
+            .preferredWidth(220)
+            .addButton(true);
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);
     createCheckBox(Item.DISABLED);
@@ -42,12 +42,8 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.NAME);
     addInputPanel(Item.DESCRIPTION);
     addInputPanel(Item.PRICE);
-    addInputPanel(Item.CONTACT_INFO_FK, createEastButtonPanel(contactInfoBox,
-            createAddControl(contactInfoBox, () ->
-                    new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider())))));
-    addInputPanel(Item.ADDRESS_FK, createEastButtonPanel(addressBox,
-            createAddControl(addressBox, () ->
-                    new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))));
+    addInputPanel(Item.CONTACT_INFO_FK);
+    addInputPanel(Item.ADDRESS_FK);
     addInputPanel(Item.IMAGE_URL);
     addInputPanel(Item.IMAGE_THUMB_URL);
     addInputPanel(Item.DISABLED);

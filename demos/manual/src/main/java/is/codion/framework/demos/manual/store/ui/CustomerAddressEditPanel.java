@@ -5,15 +5,10 @@ package is.codion.framework.demos.manual.store.ui;
 
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.component.EntityComboBox;
 
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 // tag::customerAddressEditPanel[]
 public class CustomerAddressEditPanel extends EntityEditPanel {
@@ -26,17 +21,14 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     initialFocusAttribute().set(CustomerAddress.ADDRESS_FK);
 
-    EntityComboBox addressComboBox =
-            createForeignKeyComboBox(CustomerAddress.ADDRESS_FK)
-                    .preferredWidth(200)
-                    .build();
-    Control addAddressControl = createAddControl(addressComboBox, () ->
-            new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())));
-    JPanel addressPanel = createEastButtonPanel(addressComboBox, addAddressControl);
+    createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, () ->
+            new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))
+            .preferredWidth(280)
+            .addButton(true);
 
-    setLayout(new BorderLayout(5, 5));
+    setLayout(borderLayout());
 
-    addInputPanel(CustomerAddress.ADDRESS_FK, addressPanel);
+    addInputPanel(CustomerAddress.ADDRESS_FK);
   }
 }
 // end::customerAddressEditPanel[]
