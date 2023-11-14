@@ -297,6 +297,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 
       private EntitySearchFieldPanelValue(EntitySearchFieldPanel component) {
         super(component);
+        component.searchFieldValue.addListener(this::notifyListeners);
       }
 
       @Override

@@ -9911,3 +9911,4 @@
   EntityComboBoxPanel added to ease the creation of a combo box with add and edit buttons
   EntitySearchFieldPanel added to ease the creation of a search field with add and edit buttons
   EntityEditPanel, add and edit control functionality moved to EntityControls
+  EntityComboBoxPanel, EntitySearchFieldPanel, bug fixed, value was not updated
