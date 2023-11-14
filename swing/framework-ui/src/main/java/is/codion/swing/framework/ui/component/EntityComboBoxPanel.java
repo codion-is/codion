@@ -43,7 +43,8 @@ public final class EntityComboBoxPanel extends JPanel {
       actions.add(createEditControl(comboBoxValue.component(), builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
-    add(createEastButtonPanel(comboBoxValue.component(), builder.buttonsFocusable, actions.toArray(new Action[0])), BorderLayout.CENTER);
+    add(createButtonPanel(comboBoxValue.component(), builder.buttonsFocusable, builder.buttonLocation,
+            actions.toArray(new Action[0])), BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(comboBoxValue.component()));
   }
 
@@ -101,6 +102,14 @@ public final class EntityComboBoxPanel extends JPanel {
     Builder buttonsFocusable(boolean buttonsFocusable);
 
     /**
+     * Must be one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}.
+     * @param buttonLocation the button location
+     * @return this builder instance
+     * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
+     */
+    Builder buttonLocation(String buttonLocation);
+
+    /**
      * @return a new {@link EntityComboBoxPanel} based on this builder
      */
     EntityComboBoxPanel build();
@@ -128,6 +137,7 @@ public final class EntityComboBoxPanel extends JPanel {
     private boolean addButton;
     private boolean editButton;
     private boolean buttonsFocusable;
+    private String buttonLocation = defaultButtonLocation();
 
     private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
       super(linkedValue);
@@ -150,6 +160,12 @@ public final class EntityComboBoxPanel extends JPanel {
     @Override
     public Builder buttonsFocusable(boolean buttonsFocusable) {
       this.buttonsFocusable = buttonsFocusable;
+      return this;
+    }
+
+    @Override
+    public Builder buttonLocation(String buttonLocation) {
+      this.buttonLocation = validateButtonLocation(buttonLocation);
       return this;
     }
 

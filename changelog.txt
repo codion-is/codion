@@ -9913,3 +9913,4 @@
   EntityEditPanel, add and edit control functionality moved to EntityControls
   EntityComboBoxPanel, EntitySearchFieldPanel, bug fixed, value was not updated
   ButtonPanelBuilder.createEastButtonPanel() and createEastFocusableButtonPanel() removed, functionality moved to EntityControls
+  EntityComboBoxPanel.Builder, EntitySearchFieldPanel.Builder.buttonLocation() added

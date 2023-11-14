@@ -29,16 +29,19 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
+import static java.awt.ComponentOrientation.getOrientation;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
@@ -97,7 +100,16 @@ final class EntityControls {
             searchField, searchField.model().selectionEmpty().not());
   }
 
-  static JPanel createEastButtonPanel(JComponent centerComponent, boolean buttonFocusable, Action... buttonActions) {
+  static String validateButtonLocation(String buttonLocation) {
+    requireNonNull(buttonLocation);
+    if (!buttonLocation.equals(BorderLayout.WEST) && ! buttonLocation.equals(BorderLayout.EAST)) {
+      throw new IllegalArgumentException("Button location must be BorderLayout.WEST or BorderLayout.EAST");
+    }
+    return buttonLocation;
+  }
+
+  static JPanel createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
+                                  String borderLayoutConstraints, Action... buttonActions) {
     requireNonNull(centerComponent, "centerComponent");
     requireNonNull(buttonActions, "buttonActions");
 
@@ -108,8 +120,12 @@ final class EntityControls {
 
     return Components.panel(new BorderLayout())
             .add(centerComponent, BorderLayout.CENTER)
-            .add(buttonPanelBuilder.build(), BorderLayout.EAST)
+            .add(buttonPanelBuilder.build(), borderLayoutConstraints)
             .build();
+  }
+
+  static String defaultButtonLocation() {
+    return getOrientation(Locale.getDefault()) == ComponentOrientation.LEFT_TO_RIGHT ? BorderLayout.EAST : BorderLayout.WEST;
   }
 
   private static Control createAddControl(AddEntityCommand addEntityCommand, JComponent component) {
