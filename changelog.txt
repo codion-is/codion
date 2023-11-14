@@ -9909,3 +9909,4 @@
   EntityPanelBuilder.filterPanelVisible() added along with EntityTablePanel.FILTER_PANEL_VISIBLE configuration value
   EntityTablePanel.initialize() bug fixed, did not initialize filter panel visibility
   EntityComboBoxPanel added to ease the creation of a combo box with add and edit buttons
+  EntitySearchFieldPanel added to ease the creation of a search field with add and edit buttons

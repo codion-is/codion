@@ -39,6 +39,7 @@ import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntitySearchField;
+import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -780,6 +781,19 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey))
+            .columns(defaultTextFieldColumns));
+  }
+
+  /**
+   * Creates a builder for a foreign key search field panel
+   * @param foreignKey the foreign key
+   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @return a foreign key combo box panel builder
+   */
+  protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,
+                                                                                  Supplier<EntityEditPanel> editPanelSupplier) {
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
+                    editModel().foreignKeySearchModel(foreignKey), editPanelSupplier)
             .columns(defaultTextFieldColumns));
   }
 
