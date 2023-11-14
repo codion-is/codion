@@ -25,8 +25,8 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastFocusableButtonPanel;
-import static is.codion.swing.framework.ui.EntityEditPanel.createAddControl;
-import static is.codion.swing.framework.ui.EntityEditPanel.createEditControl;
+import static is.codion.swing.framework.ui.component.EntityControls.createAddControl;
+import static is.codion.swing.framework.ui.component.EntityControls.createEditControl;
 import static java.util.Objects.requireNonNull;
 
 /**

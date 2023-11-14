@@ -35,7 +35,7 @@ public final class TrackEditPanel extends EntityEditPanel {
             .editButton(true);
     createForeignKeyComboBoxPanel(Track.GENRE_FK, () ->
             new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider())))
-            .preferredWidth(220)
+            .preferredWidth(200)
             .addButton(true)
             .editButton(true);
     createTextFieldPanel(Track.COMPOSER);
