@@ -9947,4 +9947,9 @@
   TabbedPanelLayout.ActivateDetailCommand renamed ActivateDetailPanel, now sets panel state to EMBEDDED only when hidden
   EntityEditComponentPanel.componentAttributes() renamed attributes()
   EntityPanelBuilder.refreshOnInit() and tableConditionPanelVisible() renamed refreshWhenInitialized() and conditionPanelVisible() respectively
-  EntityPanelBuilder.filterPanelVisible() added along with EntityTablePanel
+  EntityPanelBuilder.filterPanelVisible() added along with EntityTablePanel.FILTER_PANEL_VISIBLE configuration value
+  EntityTablePanel.initialize() bug fixed, did not initialize filter panel visibility
+  EntityComboBoxPanel added to ease the creation of a combo box with add and edit buttons
+  EntitySearchFieldPanel added to ease the creation of a search field with add and edit buttons
+  EntityEditPanel, add and edit control functionality moved to EntityControls
+  EntityComboBoxPanel, EntitySearchFieldPanel, bug fixed, value was not updated

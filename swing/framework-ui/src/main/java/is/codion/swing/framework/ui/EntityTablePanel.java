@@ -770,6 +770,7 @@ public class EntityTablePanel extends JPanel {
         setupTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
+        setFilterPanelVisibleInternal(filterPanelVisibleState.get());
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
         setupKeyboardActions();

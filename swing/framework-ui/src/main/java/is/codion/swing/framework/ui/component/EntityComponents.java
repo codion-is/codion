@@ -45,6 +45,7 @@ import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.BoundedRangeModel;
@@ -61,6 +62,7 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.time.temporal.Temporal;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static java.util.Arrays.asList;
@@ -223,6 +225,22 @@ public class EntityComponents {
   }
 
   /**
+   * Creates a builder for a foreign key combo box panel
+   * @param foreignKey the foreign key
+   * @param comboBoxModel the combo box model
+   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @return a foreign key combo box panel builder
+   */
+  public final EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
+                                                                   EntityComboBoxModel comboBoxModel,
+                                                                   Supplier<EntityEditPanel> editPanelSupplier) {
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+
+    return EntityComboBoxPanel.builder(comboBoxModel, editPanelSupplier)
+            .toolTipText(foreignKeyDefinition.description());
+  }
+
+  /**
    * Creates a foreign key search field builder based on the given foreign key.
    * @param foreignKey the foreign key
    * @param searchModel the search model
@@ -233,6 +251,22 @@ public class EntityComponents {
 
     return EntitySearchField.builder(searchModel)
             .toolTipText(foreignKeyDefinition.description() == null ? searchModel.description() : foreignKeyDefinition.description());
+  }
+
+  /**
+   * Creates a builder for a foreign key search field panel
+   * @param foreignKey the foreign key
+   * @param searchModel the search model
+   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @return a foreign key search field panel builder
+   */
+  public final EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
+                                                                         EntitySearchModel searchModel,
+                                                                         Supplier<EntityEditPanel> editPanelSupplier) {
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+
+    return EntitySearchFieldPanel.builder(searchModel, editPanelSupplier)
+            .toolTipText(foreignKeyDefinition.description());
   }
 
   /**

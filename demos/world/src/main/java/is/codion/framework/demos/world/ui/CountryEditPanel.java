@@ -25,14 +25,12 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 final class CountryEditPanel extends EntityEditPanel {
@@ -73,12 +71,10 @@ final class CountryEditPanel extends EntityEditPanel {
             .preferredWidth(120)
             .editable(true);
     createTextField(Country.HEADOFSTATE);
-    EntityComboBox capitalComboBox = createForeignKeyComboBox(Country.CAPITAL_FK)
-            .preferredWidth(120)
-            .build();
     //create a panel with a button for adding a new city
-    JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
-            createAddControl(capitalComboBox, this::createCapitalEditPanel));
+    createForeignKeyComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
+            .preferredWidth(120)
+            .addButton(true);
     //add a field displaying the avarage city population for the selected country
     CountryEditModel editModel = editModel();
     NumberField<Double> averageCityPopulationField = doubleField()
@@ -115,7 +111,7 @@ final class CountryEditPanel extends EntityEditPanel {
     add(codePanel);
     addInputPanel(Country.NAME);
     addInputPanel(Country.LOCALNAME);
-    addInputPanel(Country.CAPITAL_FK, capitalPanel);
+    addInputPanel(Country.CAPITAL_FK);
     addInputPanel(Country.CONTINENT);
     addInputPanel(Country.REGION);
     add(surfaceAreaIndYearPanel);

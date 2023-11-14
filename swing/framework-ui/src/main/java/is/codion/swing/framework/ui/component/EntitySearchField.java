@@ -209,6 +209,27 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
+   * @param transferFocusOnEnter true if this component should transfer focus on Enter
+   */
+  public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
+    KeyEvents.Builder transferForward = KeyEvents.builder(VK_ENTER)
+            .condition(WHEN_FOCUSED)
+            .action(transferFocusAction);
+    KeyEvents.Builder transferBackward = KeyEvents.builder(VK_ENTER)
+            .condition(WHEN_FOCUSED)
+            .modifiers(SHIFT_DOWN_MASK)
+            .action(transferFocusBackwardAction);
+    if (transferFocusOnEnter) {
+      transferForward.enable(this);
+      transferBackward.enable(this);
+    }
+    else {
+      transferForward.disable(this);
+      transferBackward.disable(this);
+    }
+  }
+
+  /**
    * @param searchIndicator the search indicator type
    * @see #SEARCH_INDICATOR
    */
@@ -1011,15 +1032,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected void enableTransferFocusOnEnter(EntitySearchField component) {
-      KeyEvents.builder(VK_ENTER)
-              .condition(WHEN_FOCUSED)
-              .action(component.transferFocusAction)
-              .enable(component);
-      KeyEvents.builder(VK_ENTER)
-              .condition(WHEN_FOCUSED)
-              .modifiers(SHIFT_DOWN_MASK)
-              .action(component.transferFocusBackwardAction)
-              .enable(component);
+      component.setTransferFocusOnEnter(true);
     }
 
     private static final class ListSelectorFactory implements Function<EntitySearchModel, Selector> {

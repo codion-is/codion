@@ -51,8 +51,10 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
+import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntitySearchField;
+import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -83,6 +85,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -771,6 +774,21 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * Creates a builder for a foreign key combo box panel
+   * @param foreignKey the foreign key
+   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @return a foreign key combo box panel builder
+   */
+  protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
+                                                                            Supplier<EntityEditPanel> editPanelSupplier) {
+    EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
+    comboBoxModel.refresher().addRefreshFailedListener(this::onException);
+
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanelSupplier))
+            .onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.entityComboBox()));
+  }
+
+  /**
    * Creates a builder for foreign key search fields.
    * @param foreignKey the foreign key for which to build a search field
    * @return a foreign key search field builder
@@ -778,6 +796,19 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey))
+            .columns(defaultTextFieldColumns));
+  }
+
+  /**
+   * Creates a builder for a foreign key search field panel
+   * @param foreignKey the foreign key
+   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @return a foreign key combo box panel builder
+   */
+  protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,
+                                                                                  Supplier<EntityEditPanel> editPanelSupplier) {
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
+                    editModel().foreignKeySearchModel(foreignKey), editPanelSupplier)
             .columns(defaultTextFieldColumns));
   }
 
