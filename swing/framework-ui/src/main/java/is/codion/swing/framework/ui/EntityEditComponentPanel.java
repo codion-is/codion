@@ -774,9 +774,9 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for a foreign key combo box panel
+   * Creates a builder for a foreign key combo box panel with optional buttons for adding and editing items.
    * @param foreignKey the foreign key
-   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
    * @return a foreign key combo box panel builder
    */
   protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
@@ -785,7 +785,7 @@ public class EntityEditComponentPanel extends JPanel {
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanelSupplier))
-            .onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.entityComboBox()));
+            .onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
   }
 
   /**
@@ -800,9 +800,9 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for a foreign key search field panel
+   * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
    * @param foreignKey the foreign key
-   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
    * @return a foreign key combo box panel builder
    */
   protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,

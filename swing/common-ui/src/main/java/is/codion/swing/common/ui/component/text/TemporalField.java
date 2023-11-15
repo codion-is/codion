@@ -474,14 +474,4 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       }
     }
   }
-
-  public static void main(String... args) {
-    Value<LocalDate> value = Value.value();
-    ComponentValue<LocalDate, TemporalField<LocalDate>> builtValue = new DefaultBuilder<>(LocalDate.class, "dd.MM.yyyy", value)
-            .columns(10)
-            .buildValue();
-    value.addDataListener(System.out::println);
-    Dialogs.componentDialog(builtValue.component())
-            .show();
-  }
 }
