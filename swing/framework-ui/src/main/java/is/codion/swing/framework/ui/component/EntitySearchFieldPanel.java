@@ -31,28 +31,28 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntitySearchFieldPanel extends JPanel {
 
-  private final ComponentValue<Entity, EntitySearchField> searchFieldValue;
+  private final EntitySearchField entitySearchField;
 
   private EntitySearchFieldPanel(DefaultBuilder builder) {
-    searchFieldValue = builder.createSearchFieldValue();
+    entitySearchField = builder.createSearchField();
     List<Action> actions = new ArrayList<>();
     if (builder.addButton) {
-      actions.add(createAddControl(searchFieldValue.component(), builder.editPanelSupplier));
+      actions.add(createAddControl(entitySearchField, builder.editPanelSupplier));
     }
     if (builder.editButton) {
-      actions.add(createEditControl(searchFieldValue.component(), builder.editPanelSupplier));
+      actions.add(createEditControl(entitySearchField, builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
-    add(createButtonPanel(searchFieldValue.component(), builder.buttonsFocusable, builder.buttonLocation,
+    add(createButtonPanel(entitySearchField, builder.buttonsFocusable, builder.buttonLocation,
             actions.toArray(new Action[0])), BorderLayout.CENTER);
-    addFocusListener(new InputFocusAdapter(searchFieldValue.component()));
+    addFocusListener(new InputFocusAdapter(entitySearchField));
   }
 
   /**
    * @return the {@link EntityComboBox}
    */
   public EntitySearchField entitySearchField() {
-    return searchFieldValue.component();
+    return entitySearchField;
   }
 
   /**
@@ -296,28 +296,28 @@ public final class EntitySearchFieldPanel extends JPanel {
 
     @Override
     protected void setInitialValue(EntitySearchFieldPanel component, Entity initialValue) {
-      component.searchFieldValue.set(initialValue);
+      component.entitySearchField.model().entity().set(initialValue);
     }
 
-    private ComponentValue<Entity, EntitySearchField> createSearchFieldValue() {
-      return searchFieldBuilder.clear().buildValue();
+    private EntitySearchField createSearchField() {
+      return searchFieldBuilder.clear().build();
     }
 
     private static class EntitySearchFieldPanelValue extends AbstractComponentValue<Entity, EntitySearchFieldPanel> {
 
       private EntitySearchFieldPanelValue(EntitySearchFieldPanel component) {
         super(component);
-        component.searchFieldValue.addListener(this::notifyListeners);
+        component.entitySearchField.model().entity().addListener(this::notifyListeners);
       }
 
       @Override
       protected Entity getComponentValue() {
-        return component().searchFieldValue.get();
+        return component().entitySearchField.model().entity().get();
       }
 
       @Override
       protected void setComponentValue(Entity entity) {
-        component().searchFieldValue.set(entity);
+        component().entitySearchField.model().entity().set(entity);
       }
     }
   }

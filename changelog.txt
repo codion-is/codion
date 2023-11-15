@@ -9914,3 +9914,4 @@
   EntityComboBoxPanel, EntitySearchFieldPanel, bug fixed, value was not updated
   ButtonPanelBuilder.createEastButtonPanel() and createEastFocusableButtonPanel() removed, functionality moved to EntityControls
   EntityComboBoxPanel.Builder, EntitySearchFieldPanel.Builder.buttonLocation() added
+  EntityComboBoxPanel, EntitySearchFieldPanel refactored and simplified, tests added
