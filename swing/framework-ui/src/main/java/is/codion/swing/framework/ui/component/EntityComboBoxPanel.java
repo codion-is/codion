@@ -31,28 +31,28 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityComboBoxPanel extends JPanel {
 
-  private final EntityComboBox entityComboBox;
+  private final EntityComboBox comboBox;
 
   private EntityComboBoxPanel(DefaultBuilder builder) {
-    entityComboBox = builder.createComboBox();
+    comboBox = builder.createComboBox();
     List<Action> actions = new ArrayList<>();
     if (builder.addButton) {
-      actions.add(createAddControl(entityComboBox, builder.editPanelSupplier));
+      actions.add(createAddControl(comboBox, builder.editPanelSupplier));
     }
     if (builder.editButton) {
-      actions.add(createEditControl(entityComboBox, builder.editPanelSupplier));
+      actions.add(createEditControl(comboBox, builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
-    add(createButtonPanel(entityComboBox, builder.buttonsFocusable, builder.buttonLocation,
+    add(createButtonPanel(comboBox, builder.buttonsFocusable, builder.buttonLocation,
             actions.toArray(new Action[0])), BorderLayout.CENTER);
-    addFocusListener(new InputFocusAdapter(entityComboBox));
+    addFocusListener(new InputFocusAdapter(comboBox));
   }
 
   /**
    * @return the {@link EntityComboBox}
    */
-  public EntityComboBox entityComboBox() {
-    return entityComboBox;
+  public EntityComboBox comboBox() {
+    return comboBox;
   }
 
   /**
@@ -181,12 +181,12 @@ public final class EntityComboBoxPanel extends JPanel {
 
     @Override
     protected void enableTransferFocusOnEnter(EntityComboBoxPanel component) {
-      TransferFocusOnEnter.enable(component.entityComboBox());
+      TransferFocusOnEnter.enable(component.comboBox());
     }
 
     @Override
     protected void setInitialValue(EntityComboBoxPanel component, Entity initialValue) {
-      component.entityComboBox.setSelectedItem(initialValue);
+      component.comboBox.setSelectedItem(initialValue);
     }
 
     private EntityComboBox createComboBox() {
@@ -197,17 +197,17 @@ public final class EntityComboBoxPanel extends JPanel {
 
       private EntityComboBoxPanelValue(EntityComboBoxPanel component) {
         super(component);
-        component.entityComboBox.getModel().addSelectionListener(entity -> notifyListeners());
+        component.comboBox.getModel().addSelectionListener(entity -> notifyListeners());
       }
 
       @Override
       protected Entity getComponentValue() {
-        return component().entityComboBox.getModel().selectedValue();
+        return component().comboBox.getModel().selectedValue();
       }
 
       @Override
       protected void setComponentValue(Entity entity) {
-        component().entityComboBox.setSelectedItem(entity);
+        component().comboBox.setSelectedItem(entity);
       }
     }
   }

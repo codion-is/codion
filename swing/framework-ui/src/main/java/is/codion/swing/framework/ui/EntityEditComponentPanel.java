@@ -770,7 +770,7 @@ public class EntityEditComponentPanel extends JPanel {
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanelSupplier))
-            .onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.entityComboBox()));
+            .onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
   }
 
   /**
