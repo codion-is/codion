@@ -210,10 +210,10 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder for a foreign key combo box panel
+   * Creates a builder for a foreign key combo box panel with optional buttons for adding and editing items.
    * @param foreignKey the foreign key
    * @param comboBoxModel the combo box model
-   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
    * @return a foreign key combo box panel builder
    */
   public final EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
@@ -239,10 +239,10 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder for a foreign key search field panel
+   * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
    * @param foreignKey the foreign key
    * @param searchModel the search model
-   * @param editPanelSupplier the edit panel supplier to use for the add and or edit buttons
+   * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
    * @return a foreign key search field panel builder
    */
   public final EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
