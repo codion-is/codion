@@ -467,6 +467,11 @@ public interface EntityDefinition {
   interface Columns {
 
     /**
+     * @return all columns for this entity type
+     */
+    Collection<Column<?>> get();
+
+    /**
      * @return a list containing the column definitions for this entity type
      */
     List<ColumnDefinition<?>> definitions();

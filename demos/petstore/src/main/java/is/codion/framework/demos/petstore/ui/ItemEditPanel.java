@@ -40,14 +40,12 @@ public class ItemEditPanel extends EntityEditPanel {
     createTextFieldPanel(Item.DESCRIPTION)
             .buttonFocusable(false);
     createTextField(Item.PRICE);
-    createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, () ->
-            new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider())))
+    createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
             .preferredWidth(220)
-            .addButton(true);
-    createForeignKeyComboBoxPanel(Item.ADDRESS_FK, () ->
-            new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))
+            .add(true);
+    createForeignKeyComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
             .preferredWidth(220)
-            .addButton(true);
+            .add(true);
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);
     createCheckBox(Item.DISABLED);
@@ -62,5 +60,13 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.IMAGE_URL);
     addInputPanel(Item.IMAGE_THUMB_URL);
     addInputPanel(Item.DISABLED);
+  }
+
+  private ContactInfoEditPanel createContactInfoEditPanel() {
+    return new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider()));
+  }
+
+  private AddressEditPanel createAddressEditPanel() {
+    return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
   }
 }

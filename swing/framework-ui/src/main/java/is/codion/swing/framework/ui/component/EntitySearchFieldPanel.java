@@ -51,10 +51,10 @@ public final class EntitySearchFieldPanel extends JPanel {
   private EntitySearchFieldPanel(DefaultBuilder builder) {
     searchField = builder.createSearchField();
     List<Action> actions = new ArrayList<>();
-    if (builder.addButton) {
+    if (builder.add) {
       actions.add(createAddControl(searchField, builder.editPanelSupplier));
     }
-    if (builder.editButton) {
+    if (builder.edit) {
       actions.add(createEditControl(searchField, builder.editPanelSupplier));
     }
     setLayout(new BorderLayout());
@@ -98,16 +98,16 @@ public final class EntitySearchFieldPanel extends JPanel {
   public interface Builder extends ComponentBuilder<Entity, EntitySearchFieldPanel, Builder> {
 
     /**
-     * @param addButton true if a 'Add' button should be included
+     * @param add true if a 'Add' button should be included
      * @return this builder instance
      */
-    Builder addButton(boolean addButton);
+    Builder add(boolean add);
 
     /**
-     * @param editButton true if a 'Edit' button should be included
+     * @param edit true if a 'Edit' button should be included
      * @return this builder instance
      */
-    Builder editButton(boolean editButton);
+    Builder edit(boolean edit);
 
     /**
      * Default false
@@ -205,8 +205,8 @@ public final class EntitySearchFieldPanel extends JPanel {
     private final EntitySearchField.Builder searchFieldBuilder;
     private final Supplier<EntityEditPanel> editPanelSupplier;
 
-    private boolean addButton;
-    private boolean editButton;
+    private boolean add;
+    private boolean edit;
     private boolean buttonsFocusable;
     private String buttonLocation = defaultButtonLocation();
 
@@ -217,14 +217,14 @@ public final class EntitySearchFieldPanel extends JPanel {
     }
 
     @Override
-    public Builder addButton(boolean addButton) {
-      this.addButton = addButton;
+    public Builder add(boolean add) {
+      this.add = add;
       return this;
     }
 
     @Override
-    public Builder editButton(boolean editButton) {
-      this.editButton = editButton;
+    public Builder edit(boolean edit) {
+      this.edit = edit;
       return this;
     }
 

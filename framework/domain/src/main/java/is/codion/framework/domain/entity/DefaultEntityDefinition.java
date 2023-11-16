@@ -631,6 +631,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static final long serialVersionUID = 1;
 
     @Override
+    public Collection<Column<?>> get() {
+      return entityAttributes.columns;
+    }
+
+    @Override
     public List<ColumnDefinition<?>> definitions() {
       return entityAttributes.columnDefinitions;
     }
@@ -756,6 +761,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Map<Attribute<?>, AttributeDefinition<?>> attributeMap;
     private final List<AttributeDefinition<?>> attributeDefinitions;
     private final List<ColumnDefinition<?>> columnDefinitions;
+    private final Collection<Column<?>> columns;
     private final List<Column<?>> primaryKeyColumns;
     private final List<ColumnDefinition<?>> primaryKeyColumnDefinitions;
     private final List<ForeignKeyDefinition> foreignKeyDefinitions;
@@ -784,6 +790,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.attributeNameMap = unmodifiableMap(attributeNameMap(attributeMap));
       this.attributeDefinitions = unmodifiableList(new ArrayList<>(attributeMap.values()));
       this.columnDefinitions = unmodifiableList(columnDefinitions());
+      this.columns = unmodifiableList(columnDefinitions.stream()
+              .map(ColumnDefinition::attribute)
+              .collect(toList()));
       this.primaryKeyColumnDefinitions = unmodifiableList(primaryKeyColumnDefinitions());
       this.primaryKeyColumns = unmodifiableList(primaryKeyColumns());
       this.foreignKeyDefinitions = unmodifiableList(foreignKeyDefinitions());

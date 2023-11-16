@@ -9956,3 +9956,6 @@
   ButtonPanelBuilder.createEastButtonPanel() and createEastFocusableButtonPanel() removed, functionality moved to EntityControls
   EntityComboBoxPanel.Builder, EntitySearchFieldPanel.Builder.buttonLocation() added
   EntityComboBoxPanel, EntitySearchFieldPanel refactored and simplified, tests added
+  EntityDefinition.Columns.get() added
+  Entity.columnValuesEqual() replaced with valuesEqual(), overloaded with Attributes parameter
+  EntityComboBoxPanel, EntitySearchFieldPanel.Builder.addButton() and editButton() renamed add() and edit()

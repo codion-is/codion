@@ -42,8 +42,8 @@ public final class AlbumEditPanel extends EntityEditPanel {
     initialFocusAttribute().set(Album.ARTIST_FK);
 
     createForeignKeySearchFieldPanel(Album.ARTIST_FK, this::createArtistEditPanel)
-            .addButton(true)
-            .editButton(true);
+            .add(true)
+            .edit(true);
     createTextField(Album.TITLE);
     setComponent(Album.COVER, new CoverArtPanel(editModel().value(Album.COVER)));
 

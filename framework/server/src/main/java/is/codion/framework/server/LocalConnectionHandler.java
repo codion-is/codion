@@ -40,7 +40,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -429,9 +428,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
     private static String entityToString(Entity entity) {
       StringBuilder builder = new StringBuilder(entity.entityType().name()).append(" {");
-      List<ColumnDefinition<?>> columnDefinitions = entity.definition().columns().definitions();
-      for (int i = 0; i < columnDefinitions.size(); i++) {
-        ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
+      for (ColumnDefinition<?> columnDefinition : entity.definition().columns().definitions()) {
         boolean modified = entity.modified(columnDefinition.attribute());
         if (columnDefinition.primaryKey() || modified) {
           StringBuilder valueString = new StringBuilder();
