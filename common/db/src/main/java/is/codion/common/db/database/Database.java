@@ -24,6 +24,32 @@ import java.util.Collection;
 public interface Database extends ConnectionFactory {
 
   /**
+   * Specifies common database operations.
+   */
+  enum Operation {
+    /**
+     * Select
+     */
+    SELECT,
+    /**
+     * Update
+     */
+    UPDATE,
+    /**
+     * Insert
+     */
+    INSERT,
+    /**
+     * Delete
+     */
+    DELETE,
+    /**
+     * Other
+     */
+    OTHER
+  }
+
+  /**
    * The possible select for update support values.
    */
   enum SelectForUpdateSupport {
@@ -156,9 +182,10 @@ public interface Database extends ConnectionFactory {
    * Returns a user-friendly error message for the given exception,
    * otherwise simply return the message from {@code exception}
    * @param exception the underlying SQLException
+   * @param operation the operation resulting in the exception
    * @return the message assigned to the given exception
    */
-  String errorMessage(SQLException exception);
+  String errorMessage(SQLException exception, Operation operation);
 
   /**
    * Returns true if this exception represents a login credentials failure

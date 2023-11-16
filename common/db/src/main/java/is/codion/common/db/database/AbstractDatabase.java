@@ -73,7 +73,7 @@ public abstract class AbstractDatabase implements Database {
       if (isAuthenticationException(e)) {
         throw new AuthenticationException(e.getMessage());
       }
-      throw new DatabaseException(e, errorMessage(e));
+      throw new DatabaseException(e, errorMessage(e, Operation.OTHER));
     }
   }
 
@@ -160,7 +160,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public String errorMessage(SQLException exception) {
+  public String errorMessage(SQLException exception, Operation operation) {
     return exception.getMessage();
   }
 
