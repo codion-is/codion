@@ -22,8 +22,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   private static final Map<String, String> ERROR_CODE_MAP = new HashMap<>();
 
   private static final String INVALID_PASS = "28P01";
-  private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
   private static final String FOREIGN_KEY_VIOLATION = "23503";
+  private static final String FOREIGN_KEY_VIOLATION_DELETE = "23503_delete";
   private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
   private static final String TIMEOUT_ERROR = "57014";//query_cancelled
   private static final String NULL_VALUE_ERROR = "23502";
@@ -38,18 +38,14 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   static {
     ERROR_CODE_MAP.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString(UNIQUE_KEY_ERROR));
     ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION, MESSAGES.getString("foreign_key_violation"));
+    ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION_DELETE, MESSAGES.getString("foreign_key_violation_delete"));
     ERROR_CODE_MAP.put(NULL_VALUE_ERROR, MESSAGES.getString("null_value_error"));
-    ERROR_CODE_MAP.put(INTEGRITY_CONSTRAINT_VIOLATION, MESSAGES.getString("integrity_constraint_error"));
     ERROR_CODE_MAP.put(CHECK_CONSTRAINT_ERROR, MESSAGES.getString("check_constraint_error"));
     ERROR_CODE_MAP.put(MISSING_PRIVS_ERROR, MESSAGES.getString("missing_privileges_error"));
     ERROR_CODE_MAP.put(VALUE_TOO_LARGE_ERROR, MESSAGES.getString("value_too_large_for_column_error"));
   }
 
   private final boolean nowait;
-
-  PostgreSQLDatabase(String url) {
-    this(url, false);
-  }
 
   PostgreSQLDatabase(String url, boolean nowait) {
     super(url);
@@ -97,7 +93,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return INTEGRITY_CONSTRAINT_VIOLATION.equals(exception.getSQLState()) || FOREIGN_KEY_VIOLATION.equals(exception.getSQLState());
+    return FOREIGN_KEY_VIOLATION.equals(exception.getSQLState());
   }
 
   @Override
@@ -121,7 +117,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String errorMessage(SQLException exception) {
+  public String errorMessage(SQLException exception, Operation operation) {
     String sqlState = exception.getSQLState();
     if (NULL_VALUE_ERROR.equals(sqlState)) {
       return createNullValueErrorMessage(exception.getMessage());
@@ -129,11 +125,14 @@ final class PostgreSQLDatabase extends AbstractDatabase {
     if (UNIQUE_CONSTRAINT_ERROR.equals(sqlState)) {
       return createUniqueConstraintErrorMessage(exception.getMessage());
     }
+    if (FOREIGN_KEY_VIOLATION.equals(sqlState) && operation == Operation.DELETE) {
+      return ERROR_CODE_MAP.get(FOREIGN_KEY_VIOLATION_DELETE);
+    }
     if (ERROR_CODE_MAP.containsKey(sqlState)) {
       return ERROR_CODE_MAP.get(sqlState);
     }
 
-    return super.errorMessage(exception);
+    return super.errorMessage(exception, operation);
   }
 
   private static String createNullValueErrorMessage(String exceptionMessage) {

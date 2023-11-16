@@ -9920,3 +9920,4 @@
   EntityComboBoxPanel, EntitySearchFieldPanel.Builder.addButton() and editButton() renamed add() and edit()
   Database.Operation enum added
   Database.errorMessage() now takes a Operation parameter, so that referential integrity error messages can differ between insert and delete, related refactoring
+  PostgreSQLDatabase.errorMessage() now uses Database.Operation to create separate foreign key error messages, depending on the operation
