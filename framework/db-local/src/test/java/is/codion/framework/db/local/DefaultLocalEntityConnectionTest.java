@@ -874,8 +874,8 @@ public class DefaultLocalEntityConnectionTest {
         fail("RecordModifiedException should have been thrown");
       }
       catch (RecordModifiedException e) {
-        assertTrue(((Entity) e.modifiedRow()).columnValuesEqual(updatedDepartment));
-        assertTrue(((Entity) e.row()).columnValuesEqual(department));
+        assertTrue(((Entity) e.modifiedRow()).valuesEqual(updatedDepartment));
+        assertTrue(((Entity) e.row()).valuesEqual(department));
       }
     }
     finally {
@@ -916,8 +916,10 @@ public class DefaultLocalEntityConnectionTest {
         fail("RecordModifiedException should have been thrown");
       }
       catch (RecordModifiedException e) {
-        assertTrue(((Entity) e.modifiedRow()).columnValuesEqual(updatedEmployee));
-        assertTrue(((Entity) e.row()).columnValuesEqual(employee));
+        //use columns here since the modified row entity contains no foreign key values
+        Collection<Column<?>> columns = updatedEmployee.definition().columns().get();
+        assertTrue(((Entity) e.modifiedRow()).valuesEqual(updatedEmployee, columns));
+        assertTrue(((Entity) e.row()).valuesEqual(employee, columns));
       }
     }
     finally {

@@ -206,13 +206,23 @@ public interface Entity extends Comparable<Entity> {
   Entity clearPrimaryKey();
 
   /**
-   * Compares all column based values in the given entity to the values in this entity instance.
-   * Returns true if these two entities contain values for the same columns and all the values are equal.
+   * Compares the values of all attributes in the given entity to the values in this entity instance.
+   * Returns true if these two entities contain values for the same attributes and all the values are equal.
    * @param entity the entity to compare to
-   * @return true if all the column based values in this entity instance are present and equal to the values in the given entity
+   * @return true if all values in this entity instance are present and equal to the values in the given entity
    * @throws IllegalArgumentException in case the entity is not of the same type
    */
-  boolean columnValuesEqual(Entity entity);
+  boolean valuesEqual(Entity entity);
+
+  /**
+   * Compares the values of the given attributes in the given entity to the values in this entity instance.
+   * Returns true if these two entities contain values for the same attributes and all the values are equal.
+   * @param entity the entity to compare to
+   * @param attributes the attributes to compare
+   * @return true if all the given values in this entity instance are present and equal to the values in the given entity
+   * @throws IllegalArgumentException in case the entity is not of the same type
+   */
+  boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes);
 
   /**
    * After a call to this method this Entity contains the same values and original values as the source entity.

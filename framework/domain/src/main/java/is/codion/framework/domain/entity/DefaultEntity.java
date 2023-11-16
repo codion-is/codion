@@ -346,14 +346,19 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean columnValuesEqual(Entity entity) {
+  public boolean valuesEqual(Entity entity) {
+    return valuesEqual(entity, definition.attributes().get());
+  }
+
+  @Override
+  public final boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes) {
     if (!definition.entityType().equals(requireNonNull(entity).entityType())) {
       throw new IllegalArgumentException("Entity of type " + definition.entityType() +
               " expected, got: " + entity.entityType());
     }
 
-    return definition.columns().definitions().stream()
-            .allMatch(column -> valueEqual(entity, column));
+    return requireNonNull(attributes).stream()
+            .allMatch(attribute -> valueEqual(entity, attribute));
   }
 
   /**
@@ -756,16 +761,17 @@ class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private boolean valueEqual(Entity entity, AttributeDefinition<?> attributeDefinition) {
-    Attribute<?> attribute = attributeDefinition.attribute();
+  private boolean valueEqual(Entity entity, Attribute<?> attribute) {
     if (contains(attribute) != entity.contains(attribute)) {
       return false;
     }
+    Object value = get(attribute);
+    Object other = entity.get(attribute);
     if (attribute.type().isByteArray()) {
-      return Arrays.equals((byte[]) get(attributeDefinition), (byte[]) entity.get(attribute));
+      return Arrays.equals((byte[]) value, (byte[]) other);
     }
 
-    return Objects.equals(get(attributeDefinition), entity.get(attribute));
+    return Objects.equals(value, other);
   }
 
   private boolean isModifiedInternal(Attribute<?> attribute) {

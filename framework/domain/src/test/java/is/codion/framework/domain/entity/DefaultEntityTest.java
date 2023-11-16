@@ -98,7 +98,7 @@ public class DefaultEntityTest {
     assertEquals(1, fromFile.size());
     Entity entityFromFile = (Entity) fromFile.get(0);
     assertEquals(Detail.TYPE, entity.entityType());
-    assertTrue(entity.columnValuesEqual(entityFromFile));
+    assertTrue(entity.valuesEqual(entityFromFile));
     assertTrue(entityFromFile.modified());
     assertTrue(entityFromFile.modified(Detail.STRING));
     assertEquals(originalStringValue, entityFromFile.original(Detail.STRING));
@@ -138,7 +138,7 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.set(testEntity);
     assertEquals(test, testEntity, "Entities should be equal after a calling set()");
-    assertTrue(test.columnValuesEqual(testEntity), "Entity values should be equal after a calling set()");
+    assertTrue(test.valuesEqual(testEntity), "Entity values should be equal after a calling set()");
 
     assertTrue(test.set(test).isEmpty());
 
@@ -395,7 +395,7 @@ public class DefaultEntityTest {
     Entity test2 = testEntity.deepCopy();
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
     assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
-    assertTrue(test2.columnValuesEqual(testEntity), "Entity attribute values should be equal after .getCopy()");
+    assertTrue(test2.valuesEqual(testEntity), "Entity attribute values should be equal after deepCopy()");
     assertNotSame(testEntity.referencedEntity(Detail.MASTER_FK), test2.referencedEntity(Detail.MASTER_FK), "This should be a deep copy");
 
     test2.put(Detail.DOUBLE, 2.1);
@@ -449,8 +449,8 @@ public class DefaultEntityTest {
             .with(Department.LOCATION, "Location")
             .with(Department.ACTIVE, true)
             .build();
-    assertTrue(dept.columnValuesEqual(dept.copyBuilder().build()));
-    assertFalse(dept.columnValuesEqual(dept.copyBuilder().with(Department.NAME, "new name").build()));
+    assertTrue(dept.valuesEqual(dept.copyBuilder().build()));
+    assertFalse(dept.valuesEqual(dept.copyBuilder().with(Department.NAME, "new name").build()));
 
     dept.put(Department.NAME, "New name");
     assertTrue(dept.copyBuilder().build().modified());
@@ -560,37 +560,37 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void columnValuesEqual() {
+  void valuesEqual() {
     Entity testEntityOne = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     Entity testEntityTwo = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
 
-    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
     testEntityTwo.put(Detail.INT, 42);
-    assertFalse(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertFalse(testEntityOne.valuesEqual(testEntityTwo));
 
     testEntityOne.put(Detail.INT, 42);
-    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
     testEntityTwo.remove(Detail.INT);
-    assertFalse(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertFalse(testEntityOne.valuesEqual(testEntityTwo));
 
     testEntityOne.remove(Detail.INT);
-    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
     Random random = new Random();
     byte[] bytes = new byte[1024];
     random.nextBytes(bytes);
 
     testEntityOne.put(Detail.BYTES, bytes);
-    assertFalse(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertFalse(testEntityOne.valuesEqual(testEntityTwo));
 
     testEntityTwo.put(Detail.BYTES, bytes);
-    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+    assertTrue(testEntityOne.valuesEqual(testEntityTwo));
 
-    assertThrows(IllegalArgumentException.class, () -> testEntityOne.columnValuesEqual(ENTITIES.entity(Master.TYPE)));
+    assertThrows(IllegalArgumentException.class, () -> testEntityOne.valuesEqual(ENTITIES.entity(Master.TYPE)));
   }
 
   @Test
@@ -757,13 +757,13 @@ public class DefaultEntityTest {
 
     Entity copy = emp.deepCopy();
     assertNotSame(emp, copy);
-    assertTrue(emp.columnValuesEqual(copy));
+    assertTrue(emp.valuesEqual(copy));
     assertNotSame(emp.get(Employee.MANAGER_FK), copy.get(Employee.MANAGER_FK));
-    assertTrue(emp.referencedEntity(Employee.MANAGER_FK).columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK)));
+    assertTrue(emp.referencedEntity(Employee.MANAGER_FK).valuesEqual(copy.referencedEntity(Employee.MANAGER_FK)));
     assertNotSame(emp.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK),
             copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK));
     assertTrue(emp.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)
-            .columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
+            .valuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
 
     emp.save();
     emp.definition().foreignKeys().get().forEach(foreignKey -> assertTrue(emp.loaded(foreignKey)));
