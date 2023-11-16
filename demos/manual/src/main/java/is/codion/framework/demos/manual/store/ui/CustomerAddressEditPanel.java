@@ -21,14 +21,17 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     initialFocusAttribute().set(CustomerAddress.ADDRESS_FK);
 
-    createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, () ->
-            new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))
+    createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
             .preferredWidth(280)
             .add(true);
 
     setLayout(borderLayout());
 
     addInputPanel(CustomerAddress.ADDRESS_FK);
+  }
+
+  private AddressEditPanel createAddressEditPanel() {
+    return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
   }
 }
 // end::customerAddressEditPanel[]

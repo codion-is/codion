@@ -20,11 +20,14 @@ public class TagItemEditPanel extends EntityEditPanel {
     initialFocusAttribute().set(TagItem.ITEM_FK);
     createForeignKeyComboBox(TagItem.ITEM_FK)
             .preferredWidth(180);
-    createForeignKeyComboBoxPanel(TagItem.TAG_FK, () ->
-            new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider())))
+    createForeignKeyComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
             .add(true);
     setLayout(Layouts.flexibleGridLayout(2, 1));
     addInputPanel(TagItem.ITEM_FK);
     addInputPanel(TagItem.TAG_FK);
+  }
+
+  private TagEditPanel createTagEditPanel() {
+    return new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider()));
   }
 }
