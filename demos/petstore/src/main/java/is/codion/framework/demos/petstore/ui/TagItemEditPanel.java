@@ -22,7 +22,7 @@ public class TagItemEditPanel extends EntityEditPanel {
             .preferredWidth(180);
     createForeignKeyComboBoxPanel(TagItem.TAG_FK, () ->
             new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider())))
-            .addButton(true);
+            .add(true);
     setLayout(Layouts.flexibleGridLayout(2, 1));
     addInputPanel(TagItem.ITEM_FK);
     addInputPanel(TagItem.TAG_FK);

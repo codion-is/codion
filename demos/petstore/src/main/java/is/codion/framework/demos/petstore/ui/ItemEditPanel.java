@@ -28,11 +28,11 @@ public class ItemEditPanel extends EntityEditPanel {
     createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, () ->
             new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider())))
             .preferredWidth(220)
-            .addButton(true);
+            .add(true);
     createForeignKeyComboBoxPanel(Item.ADDRESS_FK, () ->
             new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))
             .preferredWidth(220)
-            .addButton(true);
+            .add(true);
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);
     createCheckBox(Item.DISABLED);

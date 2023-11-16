@@ -9917,3 +9917,4 @@
   EntityComboBoxPanel, EntitySearchFieldPanel refactored and simplified, tests added
   EntityDefinition.Columns.get() added
   Entity.columnValuesEqual() replaced with valuesEqual(), overloaded with Attributes parameter
+  EntityComboBoxPanel, EntitySearchFieldPanel.Builder.addButton() and editButton() renamed add() and edit()

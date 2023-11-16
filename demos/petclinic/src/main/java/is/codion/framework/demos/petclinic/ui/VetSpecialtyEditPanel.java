@@ -24,7 +24,7 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
             .preferredWidth(200);
     createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
             .preferredWidth(200)
-            .addButton(true);
+            .add(true);
 
     setLayout(gridLayout(2, 1));
 
