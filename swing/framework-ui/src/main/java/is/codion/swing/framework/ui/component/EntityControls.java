@@ -50,6 +50,8 @@ final class EntityControls {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityControls.class.getName());
 
+  private EntityControls() {}
+
   /**
    * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog and if insert is performed
    * adds the new entity to the {@code comboBox} and selects it.
