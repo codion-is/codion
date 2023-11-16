@@ -20,6 +20,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.DeleteException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
@@ -77,6 +78,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
+import static is.codion.common.db.database.Database.Operation.*;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entity.*;
@@ -101,11 +103,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String ENTITIES = "entities";
   private static final String ENTITY = "entity";
   private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
-
-  // For counting queries.
-  private enum StatementType {
-    SELECT, UPDATE, INSERT, DELETE
-  }
 
   private final Domain domain;
   private final DatabaseConnection connection;
@@ -287,7 +284,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(updateQuery)) {
-        int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
+        int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
         commitIfTransactionIsNotOpen();
 
         return updatedRows;
@@ -295,7 +292,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, UPDATE);
       }
     }
   }
@@ -310,7 +307,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(deleteQuery)) {
-        int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
+        int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
         commitIfTransactionIsNotOpen();
 
         return deleteCount;
@@ -318,7 +315,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, DELETE);
       }
     }
   }
@@ -351,7 +348,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           statementColumns = columnDefinitions(entityDefinition, condition.columns());
           deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
           statement = prepareStatement(deleteQuery);
-          deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
+          deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
           statement.close();
         }
         if (keys.size() != deleteCount) {
@@ -362,7 +359,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(deleteQuery, condition == null ? emptyList() : statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, DELETE);
       }
       catch (DeleteException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
@@ -416,7 +413,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
     }
   }
@@ -440,7 +437,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
     }
   }
@@ -487,7 +484,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
     }
   }
@@ -520,7 +517,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
     }
   }
@@ -551,7 +548,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
     }
 
@@ -624,7 +621,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
-        throw new ReportException(translateSQLException(e));
+        throw new ReportException(translateSQLException(e, OTHER));
       }
       catch (ReportException e) {
         exception = e;
@@ -670,7 +667,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, UPDATE);
       }
       catch (UpdateException e) {
         exception = e;
@@ -680,7 +677,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       finally {
         logExit("writeBlob", exception);
-        countQuery(StatementType.UPDATE);
+        countQuery(UPDATE);
       }
     }
   }
@@ -712,7 +709,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, condition.values(), statementColumns, exception), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
       catch (RecordNotFoundException e) {
         exception = e;
@@ -722,7 +719,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       finally {
         logExit("readBlob", exception);
-        countQuery(StatementType.SELECT);
+        countQuery(SELECT);
       }
     }
   }
@@ -744,7 +741,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         return entityIterator(select);
       }
       catch (SQLException e) {
-        throw translateSQLException(e);
+        throw translateSQLException(e, SELECT);
       }
     }
   }
@@ -802,7 +799,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
           insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
           statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
-          executeUpdate(statement, insertQuery, statementColumns, statementValues, StatementType.INSERT);
+          executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
           keyGenerator.afterInsert(entity, connection, statement);
 
           insertedKeys.add(entity.primaryKey());
@@ -823,7 +820,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, INSERT);
       }
       finally {
         closeSilently(statement);
@@ -862,7 +859,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statement = prepareStatement(updateQuery);
             statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
             statementValues.addAll(condition.values());
-            int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
+            int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
             if (updatedRows == 0) {
               throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
             }
@@ -885,7 +882,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
+        throw translateSQLException(e, UPDATE);
       }
       catch (RecordModifiedException e) {
         rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
@@ -1108,7 +1105,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private int executeUpdate(PreparedStatement statement, String query,
                             List<ColumnDefinition<?>> statementColumns, List<?> statementValues,
-                            StatementType statementType) throws SQLException {
+                            Operation operation) throws SQLException {
     SQLException exception = null;
     logEntry(EXECUTE_UPDATE, statementValues);
     try {
@@ -1120,7 +1117,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     finally {
       logExit(EXECUTE_UPDATE, exception);
-      countQuery(statementType);
+      countQuery(operation);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
       }
@@ -1140,7 +1137,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     finally {
       logExit(EXECUTE_QUERY, exception);
-      countQuery(StatementType.SELECT);
+      countQuery(SELECT);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
       }
@@ -1266,19 +1263,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .collect(toList());
   }
 
-  private DatabaseException translateSQLException(SQLException exception) {
+  private DatabaseException translateSQLException(SQLException exception, Operation operation) {
     Database database = connection.database();
     if (database.isUniqueConstraintException(exception)) {
-      return new UniqueConstraintException(exception, database.errorMessage(exception));
+      return new UniqueConstraintException(exception, database.errorMessage(exception, operation));
     }
     else if (database.isReferentialIntegrityException(exception)) {
-      return new ReferentialIntegrityException(exception, database.errorMessage(exception));
+      return new ReferentialIntegrityException(exception, database.errorMessage(exception, operation));
     }
     else if (database.isTimeoutException(exception)) {
-      return new QueryTimeoutException(exception, database.errorMessage(exception));
+      return new QueryTimeoutException(exception, database.errorMessage(exception, operation));
     }
 
-    return new DatabaseException(exception, database.errorMessage(exception));
+    return new DatabaseException(exception, database.errorMessage(exception, operation));
   }
 
   private void rollbackQuietly() {
@@ -1342,8 +1339,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return logMessage.toString();
   }
 
-  private void countQuery(StatementType statementType) {
-    switch (statementType) {
+  private void countQuery(Operation operation) {
+    switch (operation) {
       case SELECT:
         connection.database().queryCounter().select();
         break;

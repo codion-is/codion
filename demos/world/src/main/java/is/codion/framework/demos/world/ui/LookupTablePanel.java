@@ -68,7 +68,7 @@ final class LookupTablePanel extends EntityTablePanel {
           .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
           .name("Show map")
           .build();
-  private final JScrollPane columnSelectionPanel = scrollPane(createColumnSelectionToolBar())
+  private final JScrollPane columnSelectionScrollPane = scrollPane(createColumnSelectionToolBar())
           .verticalUnitIncrement(16)
           .build();
   private final JXMapKit mapKit = Maps.createMapKit();
@@ -118,7 +118,7 @@ final class LookupTablePanel extends EntityTablePanel {
   @Override
   protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
     super.layoutPanel(tablePanel, southPanel);
-    add(columnSelectionPanel, BorderLayout.EAST);
+    add(columnSelectionScrollPane, BorderLayout.EAST);
   }
 
   private void bindEvents() {
@@ -139,7 +139,7 @@ final class LookupTablePanel extends EntityTablePanel {
     }
   }
 
-  private void setMapDialogVisible(boolean mapDialogVisible) {
+  private void setMapDialogVisible(boolean visible) {
     if (mapKitDialog == null) {
       mapKitDialog = Dialogs.componentDialog(mapKit)
               .owner(this)
@@ -147,10 +147,10 @@ final class LookupTablePanel extends EntityTablePanel {
               .title("World Map")
               .size(DEFAULT_MAP_SIZE)
               .onShown(dialog -> displayCityLocations())
-              .onClosed(e -> this.mapDialogVisible.set(false))
+              .onClosed(e -> mapDialogVisible.set(false))
               .build();
     }
-    mapKitDialog.setVisible(mapDialogVisible);
+    mapKitDialog.setVisible(visible);
   }
 
   private void exportCSV() {
@@ -190,6 +190,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .add(createSelectAllColumnsControl(toggleColumnsControls))
             .addSeparator()
             .addAll(toggleColumnsControls))
+            .floatable(false)
             .orientation(SwingConstants.VERTICAL)
             .toggleButtonType(ToggleButtonType.CHECKBOX)
             .buttonBuilder(ButtonBuilder.builder().includeText(true))
@@ -198,7 +199,7 @@ final class LookupTablePanel extends EntityTablePanel {
   }
 
   private void setColumnSelectionPanelVisible(boolean visible) {
-    columnSelectionPanel.setVisible(visible);
+    columnSelectionScrollPane.setVisible(visible);
     revalidate();
   }
 

@@ -30,7 +30,6 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -127,17 +126,15 @@ final class EntityControls {
 
   static JPanel createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
                                   String borderLayoutConstraints, Action... buttonActions) {
-    requireNonNull(centerComponent, "centerComponent");
-    requireNonNull(buttonActions, "buttonActions");
-
-    ButtonPanelBuilder buttonPanelBuilder = ButtonPanelBuilder.builder(buttonActions)
-            .buttonsFocusable(buttonFocusable)
-            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height))
-            .buttonGap(0);
+    Dimension preferredSize = centerComponent.getPreferredSize();
 
     return Components.panel(new BorderLayout())
             .add(centerComponent, BorderLayout.CENTER)
-            .add(buttonPanelBuilder.build(), borderLayoutConstraints)
+            .add(Components.buttonPanel(buttonActions)
+                    .buttonsFocusable(buttonFocusable)
+                    .preferredButtonSize(new Dimension(preferredSize.height, preferredSize.height))
+                    .buttonGap(0)
+                    .build(), borderLayoutConstraints)
             .build();
   }
 

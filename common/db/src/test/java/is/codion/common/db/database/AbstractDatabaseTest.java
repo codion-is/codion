@@ -18,6 +18,7 @@
  */
 package is.codion.common.db.database;
 
+import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
@@ -53,7 +54,7 @@ public final class AbstractDatabaseTest {
   void test() {
     assertEquals("for update nowait", database.selectForUpdateClause());
     assertEquals("name", database.name());
-    database.errorMessage(new SQLException());
+    database.errorMessage(new SQLException(), Operation.OTHER);
   }
 
   @Test

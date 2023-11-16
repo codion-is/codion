@@ -115,7 +115,7 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String errorMessage(SQLException exception) {
+  public String errorMessage(SQLException exception, Operation operation) {
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
       String exceptionMessage = exception.getMessage();
       int newlineIndex = exception.getMessage().indexOf('\n');
