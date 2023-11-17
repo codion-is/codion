@@ -9925,3 +9925,4 @@
   TemporalField bug fixed, no longer sets the value to null on every edit
   DefaultLoadTestModel.thinkTime() bug fixed, always returned minimum think time
   LoadTestModel, usage scenario duration now in microseconds, related refactoring
+  DefaultLoadTestModel.DefaultApplication bug fixed, tried to assign null duration to an int
