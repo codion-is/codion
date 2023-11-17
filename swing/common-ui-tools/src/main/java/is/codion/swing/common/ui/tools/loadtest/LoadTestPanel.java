@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.tools.loadtest;
 import is.codion.common.Separators;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel.Application;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
@@ -13,6 +14,7 @@ import is.codion.swing.common.model.tools.randomizer.ItemRandomizer.RandomItem;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -40,8 +42,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,6 +75,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
+  private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
 
   private final LoadTestModel<T> loadTestModel;
   private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
@@ -351,6 +356,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .doubleClickAction(Control.control(this::viewException))
             .scrollToSelectedItem(false)
+            .cellRendererFactory(new ApplicationTableCellRendererFactory())
             .popupMenuControls(table -> Controls.builder()
                     .control(Control.builder(table.getModel()::refresh)
                             .name("Refresh")
@@ -448,6 +454,20 @@ public final class LoadTestPanel<T> extends JPanel {
             .add(new JLabel("Memory usage:"))
             .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
             .build();
+  }
+
+  private final class ApplicationTableCellRendererFactory implements FilteredTableCellRendererFactory<Integer>{
+
+    @Override
+    public TableCellRenderer tableCellRenderer(FilteredTableColumn<Integer> column) {
+      FilteredTableCellRenderer.Builder<Application, Integer> builder =
+              FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
+      if (column.getIdentifier().equals(Application.DURATION)) {
+        builder.displayValueProvider(DURATION_FORMAT::format);
+      }
+
+      return builder.build();
+    }
   }
 
   private static final class ClearExceptionsCommand implements Control.Command {

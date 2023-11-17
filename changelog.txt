@@ -9924,3 +9924,4 @@
   DefaultLocalEntityConnection.fillReport(), now uses Operation.SELECT instead of OTHER when translating SQLException, since reports are basically select queries
   TemporalField bug fixed, no longer sets the value to null on every edit
   DefaultLoadTestModel.thinkTime() bug fixed, always returned minimum think time
+  LoadTestModel, usage scenario duration now in microseconds, related refactoring

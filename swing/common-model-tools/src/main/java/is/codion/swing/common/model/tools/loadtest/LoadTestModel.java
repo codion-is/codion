@@ -264,6 +264,15 @@ public interface LoadTestModel<T> {
    */
   interface Application {
 
+    int NAME = 0;
+    int USERNAME = 1;
+    int SCENARIO = 2;
+    int SUCCESSFUL = 3;
+    int DURATION = 4;
+    int EXCEPTION = 5;
+    int MESSAGE = 6;
+    int CREATED = 7;
+
     /**
      * @return the name of the application
      */
@@ -285,7 +294,7 @@ public interface LoadTestModel<T> {
     Boolean successful();
 
     /**
-     * @return the duration of the last scenario run, in milliseconds
+     * @return the duration of the last scenario run, in microseconds
      */
     Integer duration();
 

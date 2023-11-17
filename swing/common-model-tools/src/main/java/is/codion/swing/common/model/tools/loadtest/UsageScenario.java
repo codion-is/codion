@@ -78,7 +78,7 @@ public interface UsageScenario<T> {
     String scenario();
 
     /**
-     * @return the duration in milliseconds
+     * @return the duration in microseconds
      */
     int duration();
 
@@ -94,7 +94,7 @@ public interface UsageScenario<T> {
 
     /**
      * @param scenarioName the name of the usage scenario
-     * @param duration the duriation in milliseconds
+     * @param duration the duriation in microseconds
      * @return a new {@link RunResult} instance
      */
     static RunResult success(String scenarioName, int duration) {
