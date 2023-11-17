@@ -184,7 +184,7 @@ dependencyResolutionManagement {
             version("javalin", "4.6.7")
             //plugins
             version("hikari", "4.0.3")
-            version("jackson", "2.15.3")
+            version("jackson", "2.16.0")
             version("log4j", "2.20.0")
             version("tomcat", "10.0.6")
             //jasperreports
