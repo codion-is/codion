@@ -393,7 +393,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
    * @see #maximumThinkTime()
    */
   private int thinkTime() {
-    int time = minimumThinkTime.get() - maximumThinkTime.get();
+    int time = maximumThinkTime.get() - minimumThinkTime.get();
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.get() : minimumThinkTime.get();
   }
 
