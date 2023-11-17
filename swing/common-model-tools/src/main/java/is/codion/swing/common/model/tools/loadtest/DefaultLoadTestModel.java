@@ -299,7 +299,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     synchronized (applications) {
       int batchSize = applicationBatchSize.get();
       for (int i = 0; i < batchSize; i++) {
-        int initialDelay = thinkTime();
+        int initialDelay = initTime();
         if (loginDelayFactor.get() > 0) {
           initialDelay *= loginDelayFactor.get();
         }
@@ -402,13 +402,13 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     shutdownEvent.addListener(listener);
   }
 
-  /**
-   * @return a random think time in milliseconds based on the values of minimumThinkTime and maximumThinkTime
-   * @see #minimumThinkTime()
-   * @see #maximumThinkTime()
-   */
+  private int initTime() {
+    int time = maximumThinkTime.get() - minimumThinkTime.get();
+    return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.get()) + minimumThinkTime.get() : minimumThinkTime.get();
+  }
+
   private int thinkTime() {
-    int time = minimumThinkTime.get() - maximumThinkTime.get();
+    int time = maximumThinkTime.get() - minimumThinkTime.get();
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.get() : minimumThinkTime.get();
   }
 
@@ -454,35 +454,35 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
     return Arrays.asList(
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.APPLICATION)
-                    .headerValue("Application")
+            FilteredTableColumn.builder(Application.NAME)
+                    .headerValue("Name")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.USERNAME)
+            FilteredTableColumn.builder(Application.USERNAME)
                     .headerValue("User")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.SCENARIO)
+            FilteredTableColumn.builder(Application.SCENARIO)
                     .headerValue("Scenario")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.SUCCESSFUL)
+            FilteredTableColumn.builder(Application.SUCCESSFUL)
                     .headerValue("Success")
                     .columnClass(Boolean.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.DURATION)
-                    .headerValue("Duration (ms)")
+            FilteredTableColumn.builder(Application.DURATION)
+                    .headerValue("Duration (μs)")
                     .columnClass(Integer.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.EXCEPTION)
+            FilteredTableColumn.builder(Application.EXCEPTION)
                     .headerValue("Exception")
                     .columnClass(Throwable.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.MESSAGE)
+            FilteredTableColumn.builder(Application.MESSAGE)
                     .headerValue("Message")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(ApplicationColumnValueProvider.CREATED)
+            FilteredTableColumn.builder(Application.CREATED)
                     .headerValue("Created")
                     .columnClass(LocalDateTime.class)
                     .build()
@@ -550,9 +550,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     private T initializeApplication() {
       try {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         T application = applicationFactory.apply(user);
-        int duration = (int) (System.currentTimeMillis() - startTime);
+        int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
         addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", duration, null));
         LOG.debug("LoadTestModel initialized application: {}", application);
 
@@ -1019,33 +1019,24 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   private static final class ApplicationColumnValueProvider implements ColumnValueProvider<Application, Integer> {
 
-    private static final int APPLICATION = 0;
-    private static final int USERNAME = 1;
-    private static final int SCENARIO = 2;
-    private static final int SUCCESSFUL = 3;
-    private static final int DURATION = 4;
-    private static final int EXCEPTION = 5;
-    private static final int MESSAGE = 6;
-    private static final int CREATED = 7;
-
     @Override
     public Object value(Application application, Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case APPLICATION:
+        case Application.NAME:
           return application.name();
-        case USERNAME:
+        case Application.USERNAME:
           return application.username();
-        case SCENARIO:
+        case Application.SCENARIO:
           return application.scenario();
-        case SUCCESSFUL:
+        case Application.SUCCESSFUL:
           return application.successful();
-        case DURATION:
+        case Application.DURATION:
           return application.duration();
-        case EXCEPTION:
+        case Application.EXCEPTION:
           return application.exception();
-        case MESSAGE:
+        case Application.MESSAGE:
           return application.message();
-        case CREATED:
+        case Application.CREATED:
           return application.created();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);

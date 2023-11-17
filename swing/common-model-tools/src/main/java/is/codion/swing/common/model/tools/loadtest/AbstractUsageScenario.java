@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
@@ -126,11 +127,11 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
     }
     try {
       prepare(application);
-      long startTime = System.currentTimeMillis();
+      long startTime = System.nanoTime();
       perform(application);
       successfulRunCount.incrementAndGet();
 
-      return RunResult.success(name, (int) (System.currentTimeMillis() - startTime));
+      return RunResult.success(name, (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
     }
     catch (Throwable e) {
       unsuccessfulRunCount.incrementAndGet();

@@ -30,6 +30,8 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
 import java.time.DateTimeException;
@@ -70,7 +72,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeFormatter formatter;
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
-  private final State valueNotNullState = State.state(false);
+  private final State valueNull = State.state();
   private final String dateTimePattern;
   private final ImageIcon calendarIcon;
   private final Control calendarControl;
@@ -83,17 +85,16 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.dateTimeParser = builder.dateTimeParser;
     this.dateTimePattern = builder.dateTimePattern;
     this.calendarIcon = builder.calendarIcon;
-    this.value.addDataListener(temporal -> valueNotNullState.set(temporal != null));
     setFocusLostBehavior(builder.focusLostBehaviour);
-    getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
+    getDocument().addDocumentListener(new TemporalDocumentListener());
     KeyEvents.builder(VK_UP)
             .action(Control.builder(this::increment)
-                    .enabled(valueNotNullState)
+                    .enabled(valueNull.not())
                     .build())
             .enable(this);
     KeyEvents.builder(VK_DOWN)
             .action(Control.builder(this::decrement)
-                    .enabled(valueNotNullState)
+                    .enabled(valueNull.not())
                     .build())
             .enable(this);
     calendarControl = createCalendarControl();
@@ -263,6 +264,21 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
     else {
       throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass());
+    }
+  }
+
+  private final class TemporalDocumentListener implements DocumentAdapter {
+
+    @Override
+    public void contentsChanged(DocumentEvent e) {
+      T temporal = getTemporal();
+      // preventing the value from becoming null on every single edit, since replace
+      // is implemented as a remove and insert, the remove resulting in a null value,
+      // so we only set the value to null on insert
+      if (temporal != null || e.getType() == EventType.INSERT) {
+        value.set(temporal);
+        valueNull.set(temporal == null);
+      }
     }
   }
 
