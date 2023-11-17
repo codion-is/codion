@@ -606,7 +606,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
-        throw new ReportException(translateSQLException(e, OTHER));
+        throw new ReportException(translateSQLException(e, SELECT));
       }
       catch (ReportException e) {
         exception = e;
