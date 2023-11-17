@@ -41,7 +41,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.SwingUtilities;
 import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -100,8 +99,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   private final Event<?> shutdownEvent = Event.event();
 
   private final Value<User> user;
-
-  private volatile boolean shuttingDown = false;
 
   private final List<ApplicationRunner> applications = new ArrayList<>();
   private final FilteredTableModel<Application, Integer> applicationTableModel;
@@ -162,7 +159,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
             .build();
-    this.applicationsRefreshScheduler = TaskScheduler.builder(new TableRefreshTask())
+    this.applicationsRefreshScheduler = TaskScheduler.builder(applicationTableModel::refresh)
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
             .start();
     bindEvents();
@@ -362,7 +359,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   @Override
   public void shutdown() {
-    shuttingDown = true;
+    applicationsRefreshScheduler.stop();
     chartUpdateScheduler.stop();
     synchronized (applications) {
       new ArrayList<>(applications).forEach(this::stop);
@@ -584,24 +581,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
   }
 
-  private final class TableRefreshTask implements Runnable {
-
-    @Override
-    public void run() {
-      if (!shuttingDown) {
-        SwingUtilities.invokeLater(applicationTableModel::refresh);
-      }
-    }
-  }
-
   private final class ChartUpdateTask implements Runnable {
 
     @Override
     public void run() {
-      if (!shuttingDown) {
-        counter.updateRequestsPerSecond();
-        updateChartData();
-      }
+      counter.updateRequestsPerSecond();
+      updateChartData();
     }
 
     private void updateChartData() {
@@ -937,7 +922,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       this.user = applicationRunner.user.username();
       this.scenario = runResult == null ? null : runResult.scenario();
       this.successful = runResult == null ? null : runResult.successful();
-      this.duration = runResult == null ? null : runResult.duration();
+      this.duration = runResult == null ? -1 : runResult.duration();
       this.exception = runResult == null ? null : runResult.exception().orElse(null);
       this.created = applicationRunner.created();
     }

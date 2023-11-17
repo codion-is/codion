@@ -56,12 +56,15 @@ public final class ChinookLoadTest {
   private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
     @Override
     public EntityConnectionProvider apply(User user) {
-      return EntityConnectionProvider.builder()
-            .domainType(Chinook.DOMAIN)
-            .clientTypeId(ChinookAppPanel.class.getName())
-            .clientVersion(ChinookAppModel.VERSION)
-            .user(user)
-            .build();
+      EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+              .domainType(Chinook.DOMAIN)
+              .clientTypeId(ChinookAppPanel.class.getName())
+              .clientVersion(ChinookAppModel.VERSION)
+              .user(user)
+              .build();
+      connectionProvider.connection();
+
+      return connectionProvider;
     }
   }
 }

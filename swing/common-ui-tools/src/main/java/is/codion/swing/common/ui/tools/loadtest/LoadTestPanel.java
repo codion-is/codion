@@ -111,6 +111,7 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public LoadTestPanel(LoadTestModel<T> loadTestModel) {
     this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
+    this.loadTestModel.applicationTableModel().refresher().addRefreshFailedListener(this::displayException);
     initializeUI();
   }
 
@@ -392,7 +393,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private void viewException() {
     model().applicationTableModel().selectionModel().selectedItem().map(Application::exception)
-            .ifPresent(value -> Dialogs.displayExceptionDialog(value, Utilities.parentWindow(this)));
+            .ifPresent(this::displayException);
   }
 
   private void onScenarioSelectionChanged(List<RandomItem<UsageScenario<T>>> selectedScenarios) {
@@ -464,6 +465,10 @@ public final class LoadTestPanel<T> extends JPanel {
     System.exit(0);
   }
 
+  private void displayException(Throwable exception) {
+    Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
+  }
+
   private static JPanel createSouthPanel() {
     return flowLayoutPanel(FlowLayout.TRAILING)
             .add(new JLabel("Memory usage:"))
@@ -478,7 +483,7 @@ public final class LoadTestPanel<T> extends JPanel {
       FilteredTableCellRenderer.Builder<Application, Integer> builder =
               FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
       if (column.getIdentifier().equals(Application.DURATION)) {
-        builder.displayValueProvider(DURATION_FORMAT::format);
+        builder.displayValueProvider(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
       }
 
       return builder.build();
