@@ -33,7 +33,7 @@ final class FileJRReport extends AbstractJRReport {
   }
 
   @Override
-  public JasperReport loadReport() throws ReportException {
+  public JasperReport load() throws ReportException {
     String fullReportPath = fullReportPath();
     try {
       if (fullReportPath.toLowerCase().startsWith("http")) {

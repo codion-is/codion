@@ -418,9 +418,9 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws is.codion.common.db.report.ReportException in case of a report exception
    * @throws RemoteException in case of a remote exception
-   * @see Report#fillReport(java.sql.Connection, Object)
+   * @see Report#fill(java.sql.Connection, Object)
    */
-  <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException, DatabaseException, ReportException;
+  <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException, DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} into the blob field specified by {@code attribute} for the given entity

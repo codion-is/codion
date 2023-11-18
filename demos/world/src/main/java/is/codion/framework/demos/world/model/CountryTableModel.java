@@ -59,7 +59,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 
   private static Map<String, Object> reportParameters() throws ReportException {
     return new HashMap<>(singletonMap(CITY_SUBREPORT_PARAMETER,
-            classPathReport(CityTableModel.class, CITY_REPORT).loadReport()));
+            classPathReport(CityTableModel.class, CITY_REPORT).load()));
   }
 
   private void configureCapitalConditionModel() {

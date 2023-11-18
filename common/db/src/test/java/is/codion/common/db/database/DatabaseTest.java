@@ -56,7 +56,7 @@ public class DatabaseTest {
 
     @Override
     public String selectForUpdateClause() {
-      return "for update nowait";
+      return FOR_UPDATE_NOWAIT;
     }
 
     @Override

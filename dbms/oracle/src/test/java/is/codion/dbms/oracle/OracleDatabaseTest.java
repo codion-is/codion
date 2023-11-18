@@ -47,13 +47,13 @@ public class OracleDatabaseTest {
   @Test
   void autoIncrementQuery() {
     OracleDatabase db = new OracleDatabase(URL);
-    assertEquals("select seq.currval from dual", db.autoIncrementQuery("seq"));
+    assertEquals("SELECT seq.CURRVAL FROM DUAL", db.autoIncrementQuery("seq"));
   }
 
   @Test
   void sequenceQuery() {
     OracleDatabase db = new OracleDatabase(URL);
-    assertEquals("select seq.nextval from dual", db.sequenceQuery("seq"));
+    assertEquals("SELECT seq.NEXTVAL FROM DUAL", db.sequenceQuery("seq"));
   }
 
   @Test

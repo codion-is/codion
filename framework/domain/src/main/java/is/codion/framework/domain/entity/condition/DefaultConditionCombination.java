@@ -98,9 +98,9 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
   private static String toString(Conjunction conjunction) {
     switch (conjunction) {
       case AND:
-        return " and ";
+        return " AND ";
       case OR:
-        return " or ";
+        return " OR ";
       default:
         throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
     }

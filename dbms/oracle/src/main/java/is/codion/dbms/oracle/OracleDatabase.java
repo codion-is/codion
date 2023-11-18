@@ -92,12 +92,12 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String autoIncrementQuery(String idSource) {
-    return "select " + requireNonNull(idSource, "idSource") + ".currval from dual";
+    return "SELECT " + requireNonNull(idSource, "idSource") + ".CURRVAL FROM DUAL";
   }
 
   @Override
   public String sequenceQuery(String sequenceName) {
-    return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
+    return "SELECT " + requireNonNull(sequenceName, "sequenceName") + ".NEXTVAL FROM DUAL";
   }
 
   @Override

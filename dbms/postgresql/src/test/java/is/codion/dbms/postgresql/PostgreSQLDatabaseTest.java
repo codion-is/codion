@@ -47,13 +47,13 @@ public class PostgreSQLDatabaseTest {
   @Test
   void autoIncrementQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL, true);
-    assertEquals("select currval('seq')", db.autoIncrementQuery("seq"));
+    assertEquals("SELECT CURRVAL('seq')", db.autoIncrementQuery("seq"));
   }
 
   @Test
   void sequenceQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL, true);
-    assertEquals("select nextval('seq')", db.sequenceQuery("seq"));
+    assertEquals("SELECT NEXTVAL('seq')", db.sequenceQuery("seq"));
   }
 
   @Test

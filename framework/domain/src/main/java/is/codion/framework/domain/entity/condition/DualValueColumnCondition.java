@@ -55,13 +55,13 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
   protected String toString(String columnExpression) {
     switch (operator()) {
       case BETWEEN:
-        return "(" + columnExpression + " >= ? and " + columnExpression + " <= ?)";
+        return "(" + columnExpression + " >= ? AND " + columnExpression + " <= ?)";
       case NOT_BETWEEN:
-        return "(" + columnExpression + " < ? or " + columnExpression + " > ?)";
+        return "(" + columnExpression + " < ? OR " + columnExpression + " > ?)";
       case BETWEEN_EXCLUSIVE:
-        return "(" + columnExpression + " > ? and " + columnExpression + " < ?)";
+        return "(" + columnExpression + " > ? AND " + columnExpression + " < ?)";
       case NOT_BETWEEN_EXCLUSIVE:
-        return "(" + columnExpression + " <= ? or " + columnExpression + " >= ?)";
+        return "(" + columnExpression + " <= ? OR " + columnExpression + " >= ?)";
       default:
         throw new IllegalStateException("Unsupported dual value operator: " + operator());
     }

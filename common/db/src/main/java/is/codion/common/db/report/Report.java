@@ -51,14 +51,14 @@ public interface Report<T, R, P> {
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  R fillReport(Connection connection, P parameters) throws ReportException;
+  R fill(Connection connection, P parameters) throws ReportException;
 
   /**
    * Loads the report this report wrapper is based on.
    * @return a loaded report object
    * @throws ReportException in case of an exception
    */
-  T loadReport() throws ReportException;
+  T load() throws ReportException;
 
   /**
    * @return true if this report has been cached

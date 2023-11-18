@@ -346,7 +346,7 @@ public final class EntityObjectMapperTest {
     Condition readCondition = mapper.readValue(jsonString, Condition.class);
 
     assertEquals(condition, readCondition);
-    assertEquals("(deptno not in (?, ?) and upper(ename) = upper(?) and (empno >= ? and empno <= ?) and comm is not null)",
+    assertEquals("(deptno NOT IN (?, ?) AND UPPER(ename) = UPPER(?) AND (empno >= ? AND empno <= ?) AND comm IS NOT NULL)",
             condition.toString(entities.definition(Employee.TYPE)));
   }
 

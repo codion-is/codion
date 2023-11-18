@@ -63,16 +63,16 @@ final class SelectQueries {
 
   final class Builder {
 
-    private static final String SELECT = "select ";
-    private static final String FROM = "from ";
-    private static final String WHERE = "where ";
-    private static final String AND = "and ";
-    private static final String GROUP_BY = "group by ";
-    private static final String HAVING = "having ";
-    private static final String ORDER_BY = "order by ";
+    private static final String SELECT = "SELECT ";
+    private static final String FROM = "FROM ";
+    private static final String WHERE = "WHERE ";
+    private static final String AND = "AND ";
+    private static final String GROUP_BY = "GROUP BY ";
+    private static final String HAVING = "HAVING ";
+    private static final String ORDER_BY = "ORDER BY ";
     private static final String NEWLINE = "\n";
-    private static final String NULL_FIRST = " nulls first";
-    private static final String NULL_LAST = " nulls last";
+    private static final String NULL_FIRST = " NULLS FIRST";
+    private static final String NULL_LAST = " NULLS LAST";
 
     private final EntityDefinition definition;
 
@@ -155,7 +155,7 @@ final class SelectQueries {
     }
 
     Builder subquery(String subquery) {
-      return from("(" + subquery + ")" + (database.subqueryRequiresAlias() ? " as row_count" : ""));
+      return from("(" + subquery + ")" + (database.subqueryRequiresAlias() ? " AS row_count" : ""));
     }
 
     Builder from(String from) {
@@ -318,7 +318,7 @@ final class SelectQueries {
         String columnExpression = columnDefinition.columnExpression();
         stringBuilder.append(columnExpression);
         if (!columnName.equals(columnExpression)) {
-          stringBuilder.append(" as ").append(columnName);
+          stringBuilder.append(" AS ").append(columnName);
         }
         if (i < columnDefinitions.size() - 1) {
           stringBuilder.append(", ");
@@ -331,7 +331,7 @@ final class SelectQueries {
     private void havingCondition(Condition condition) {
       String conditionString = condition.toString(definition);
       if (!conditionString.isEmpty()) {
-        having(having == null ? conditionString : "(" + having + ") and (" + conditionString + ")");
+        having(having == null ? conditionString : "(" + having + ") AND (" + conditionString + ")");
       }
     }
 
@@ -355,7 +355,7 @@ final class SelectQueries {
 
     private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
       return entityDefinition.columns().definition(orderByColumn.column()).columnExpression() +
-              (orderByColumn.ascending() ? "" : " desc") +
+              (orderByColumn.ascending() ? "" : " DESC") +
               nullOrderString(orderByColumn.nullOrder());
     }
 

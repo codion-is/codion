@@ -100,7 +100,7 @@ public final class JasperReports {
     requireNonNull(dataSource, "dataSource");
     requireNonNull(reportParameters, "reportParameters");
     try {
-      return JasperFillManager.fillReport(report.loadReport(), reportParameters, dataSource);
+      return JasperFillManager.fillReport(report.load(), reportParameters, dataSource);
     }
     catch (RuntimeException re) {
       throw re;

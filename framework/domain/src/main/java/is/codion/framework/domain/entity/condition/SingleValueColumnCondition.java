@@ -88,17 +88,17 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
     if (value == null) {
-      return identifier + (notEqual ? " is not null" : " is null");
+      return identifier + (notEqual ? " IS NOT NULL" : " IS NULL");
     }
 
     boolean isString = column().type().isString();
     boolean caseInsensitiveString = isString && !caseSensitive();
     if (caseInsensitiveString) {
-      identifier = "upper(" + identifier + ")";
+      identifier = "UPPER(" + identifier + ")";
     }
-    String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
+    String valuePlaceholder = caseInsensitiveString ? "UPPER(?)" : "?";
     if (isString && useLikeOperator) {
-      return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
+      return identifier + (notEqual ? " NOT LIKE " : " LIKE ") + valuePlaceholder;
     }
 
     return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;

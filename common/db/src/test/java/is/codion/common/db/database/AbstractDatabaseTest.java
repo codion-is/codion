@@ -42,7 +42,7 @@ public final class AbstractDatabaseTest {
     }
     @Override
     public String selectForUpdateClause() {
-      return "for update nowait";
+      return FOR_UPDATE_NOWAIT;
     }
     @Override
     public String limitOffsetClause(Integer limit, Integer offset) {
@@ -52,7 +52,7 @@ public final class AbstractDatabaseTest {
 
   @Test
   void test() {
-    assertEquals("for update nowait", database.selectForUpdateClause());
+    assertEquals(AbstractDatabase.FOR_UPDATE_NOWAIT, database.selectForUpdateClause());
     assertEquals("name", database.name());
     database.errorMessage(new SQLException(), Operation.OTHER);
   }
@@ -78,13 +78,13 @@ public final class AbstractDatabaseTest {
   @Test
   void limitOffset() {
     assertEquals("", database.createOffsetFetchNextClause(null, null));
-    assertEquals("offset 5 rows", database.createOffsetFetchNextClause(null, 5));
-    assertEquals("fetch next 10 rows only", database.createOffsetFetchNextClause(10, null));
-    assertEquals("offset 5 rows fetch next 10 rows only", database.createOffsetFetchNextClause(10, 5));
+    assertEquals("OFFSET 5 ROWS", database.createOffsetFetchNextClause(null, 5));
+    assertEquals("FETCH NEXT 10 ROWS ONLY", database.createOffsetFetchNextClause(10, null));
+    assertEquals("OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY", database.createOffsetFetchNextClause(10, 5));
     assertEquals("", database.limitOffsetClause(null, null));
-    assertEquals("offset 5", database.limitOffsetClause(null, 5));
-    assertEquals("limit 10", database.limitOffsetClause(10, null));
-    assertEquals("limit 10 offset 5", database.limitOffsetClause(10, 5));
+    assertEquals("OFFSET 5", database.limitOffsetClause(null, 5));
+    assertEquals("LIMIT 10", database.limitOffsetClause(10, null));
+    assertEquals("LIMIT 10 OFFSET 5", database.limitOffsetClause(10, 5));
   }
 
   @Test

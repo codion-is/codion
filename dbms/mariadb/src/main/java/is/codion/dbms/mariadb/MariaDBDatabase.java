@@ -34,7 +34,7 @@ final class MariaDBDatabase extends AbstractDatabase {
 
   private static final String JDBC_URL_PREFIX = "jdbc:mariadb://";
 
-  static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
+  static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ID() FROM DUAL";
 
   MariaDBDatabase(String jdbUrl) {
     super(jdbUrl);
@@ -57,7 +57,7 @@ final class MariaDBDatabase extends AbstractDatabase {
 
   @Override
   public String selectForUpdateClause() {
-    return "for update";
+    return FOR_UPDATE;
   }
 
   @Override

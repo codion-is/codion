@@ -218,7 +218,7 @@ final class DefaultMethodLogger implements MethodLogger {
           stringBuilder.append(NEWLINE).append(padString).append(enterMessage.replace(NEWLINE, NEWLINE + padString));
         }
         else {
-          stringBuilder.append(" : ").append(enterMessage);
+          stringBuilder.append(": ").append(enterMessage);
         }
       }
       if (exitTime != 0) {

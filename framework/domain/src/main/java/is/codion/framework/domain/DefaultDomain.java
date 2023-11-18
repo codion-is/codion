@@ -323,7 +323,7 @@ public abstract class DefaultDomain implements Domain {
         throw new IllegalArgumentException("Report has already been defined: " + reportType);
       }
       try {
-        report.loadReport();
+        report.load();
         reports.put(reportType, report);
       }
       catch (ReportException e) {

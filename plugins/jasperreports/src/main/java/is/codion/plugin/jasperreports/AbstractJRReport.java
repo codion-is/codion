@@ -38,7 +38,7 @@ abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint
   }
 
   @Override
-  public final JasperPrint fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
+  public final JasperPrint fill(Connection connection, Map<String, Object> parameters) throws ReportException {
     requireNonNull(connection, "connection");
     try {
       return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);

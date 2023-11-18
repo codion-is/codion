@@ -205,14 +205,14 @@ public final class WorldImpl extends DefaultDomain implements World {
             // tag::subqueryColumn[]
             Country.NO_OF_CITIES.define()
                     .subquery(
-                            "select count(*) from world.city " +
-                            "where city.countrycode = country.code")
+                            "SELECT COUNT(*) FROM world.city " +
+                            "WHERE city.countrycode = country.code")
                     .caption("No. of cities"),
             // end::subqueryColumn[]
             Country.NO_OF_LANGUAGES.define()
                     .subquery(
-                            "select count(*) from world.countrylanguage " +
-                            "where countrylanguage.countrycode = country.code")
+                            "SELECT COUNT(*) FROM world.countrylanguage " +
+                            "WHERE countrylanguage.countrycode = country.code")
                     .caption("No. of languages"),
             // tag::blobColumn[]
             Country.FLAG.define()

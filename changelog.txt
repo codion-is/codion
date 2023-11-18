@@ -9968,3 +9968,7 @@
   LoadTestModel, usage scenario duration now in microseconds, related refactoring
   DefaultLoadTestModel.DefaultApplication bug fixed, tried to assign null duration to an int
   LoadTestPanel, no longer refreshes application table model on the EDT, now displays refresh exceptions and no longer crashes on null duration
+  EntityConnection.fillReport() renamed report(), Report.fillReport() and loadReport() renamed fill() and load() respectively, ReportType.fillReport() renamed fill()
+  DefaultLocalEntityConnection, minor logging improvements
+  Database, SQL keywords now in uppercase
+  DefaultLocalEntityConnection.select(column) now logs result packing

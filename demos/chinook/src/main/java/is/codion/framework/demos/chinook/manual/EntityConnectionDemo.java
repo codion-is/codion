@@ -372,7 +372,7 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    JasperPrint jasperPrint = connection.fillReport(Customer.REPORT, reportParameters);
+    JasperPrint jasperPrint = connection.report(Customer.REPORT, reportParameters);
     //end::report[]
   }
 

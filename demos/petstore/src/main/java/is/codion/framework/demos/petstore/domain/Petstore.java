@@ -365,7 +365,7 @@ public final class Petstore extends DefaultDomain {
                     .maximumLength(30)
                     .nullable(false),
             Tag.REFCOUNT.define()
-                    .subquery("select count(*) from petstore.tag_item where tagid = tag.tagid")
+                    .subquery("SELECT COUNT(*) FROM petstore.tag_item WHERE tagid = tag.tagid")
                     .caption(Tag.REFCOUNT.name())
                     .columnName("refcount"))
             .tableName("petstore.tag")

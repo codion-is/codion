@@ -102,6 +102,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String CONDITION = "condition";
   private static final String ENTITIES = "entities";
   private static final String ENTITY = "entity";
+  private static final String PACK_RESULT = "packResult";
   private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
   private final Domain domain;
@@ -405,7 +406,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         List<Entity> result = new ArrayList<>();
         for (List<Key> entityTypeKeys : mapKeysToType(keys).values()) {
-          result.addAll(doSelect(where(keys(entityTypeKeys)).build()));
+          result.addAll(query(where(keys(entityTypeKeys)).build()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -428,7 +429,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(select, "select");
     synchronized (connection) {
       try {
-        List<Entity> result = doSelect(select);
+        List<Entity> result = query(select);
         if (!select.forUpdate()) {
           commitIfTransactionIsNotOpen();
         }
@@ -476,7 +477,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(selectQuery);
            ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
-        List<T> result = resultPacker(columnDefinition).pack(resultSet);
+        List<T> result = packResult(columnDefinition, resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -493,7 +494,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public int count(Count count) throws DatabaseException {
     EntityDefinition entityDefinition = definition(requireNonNull(count, "count").where().entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
-            .columns("count(*)")
+            .columns("COUNT(*)")
             .subquery(selectQueries.builder(entityDefinition)
                     .select(where(count.where())
                             .having(count.having())
@@ -538,7 +539,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
-          List<Entity> dependencies = doSelect(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
+          List<Entity> dependencies = query(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
           if (!dependencies.isEmpty()) {
             dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
             dependencyMap.get(foreignKeyReference.entityType()).addAll(dependencies);
@@ -565,7 +566,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(functionType, "functionType");
     DatabaseException exception = null;
     try {
-      logEntry("executeFunction: " + functionType, argument);
+      logEntry("execute", functionType, argument);
       synchronized (connection) {
         return functionType.execute((C) this, domain.function(functionType), argument);
       }
@@ -576,7 +577,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeFunction: " + functionType, exception);
+      logExit("execute", exception);
     }
   }
 
@@ -590,7 +591,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(procedureType, "procedureType");
     DatabaseException exception = null;
     try {
-      logEntry("executeProcedure: " + procedureType, argument);
+      logEntry("execute", procedureType, argument);
       synchronized (connection) {
         procedureType.execute((C) this, domain.procedure(procedureType), argument);
       }
@@ -601,18 +602,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeProcedure: " + procedureType, exception);
+      logExit("execute", exception);
     }
   }
 
   @Override
-  public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
+  public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
     requireNonNull(reportType, "report");
     Exception exception = null;
     synchronized (connection) {
       try {
-        logEntry("fillReport: " + reportType, reportParameters);
-        R result = reportType.fillReport(domain.report(reportType), connection.getConnection(), reportParameters);
+        logEntry("report", reportType, reportParameters);
+        R result = reportType.fill(domain.report(reportType), connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -630,7 +631,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        logExit("fillReport: " + reportType, exception);
+        logExit("report", exception);
       }
     }
   }
@@ -738,7 +739,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public ResultIterator<Entity> iterator(Select select) throws DatabaseException {
     synchronized (connection) {
       try {
-        return entityIterator(select);
+        return resultIterator(select);
       }
       catch (SQLException e) {
         throw translateSQLException(e, SELECT);
@@ -810,7 +811,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
         if (insertedEntities != null) {
           for (List<Key> entityTypeKeys : mapKeysToType(insertedKeys).values()) {
-            insertedEntities.addAll(doSelect(where(keys(entityTypeKeys)).build(), 0));//bypass caching
+            insertedEntities.addAll(query(where(keys(entityTypeKeys)).build(), 0));//bypass caching
           }
         }
         commitIfTransactionIsNotOpen();
@@ -869,7 +870,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementValues.clear();
           }
           if (updatedEntities != null) {
-            List<Entity> selected = doSelect(where(keys(primaryKeys(entitiesToUpdate))).build(), 0);//bypass caching
+            List<Entity> selected = query(where(keys(primaryKeys(entitiesToUpdate))).build(), 0);//bypass caching
             if (selected.size() != entitiesToUpdate.size()) {
               throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                       selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -925,7 +926,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .attributes(primaryKeyAndWritableColumnAttributes(entityType))
             .forUpdate()
             .build();
-    Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(doSelect(selectForUpdate));
+    Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(query(selectForUpdate));
     for (Entity entity : entities) {
       Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
       if (current == null) {
@@ -960,23 +961,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return updateQuery;
   }
 
-  private List<Entity> doSelect(Select select) throws SQLException {
+  private List<Entity> query(Select select) throws SQLException {
     List<Entity> result = cachedResult(select);
     if (result != null) {
       LOG.debug("Returning cached result: " + select.where().entityType());
       return result;
     }
 
-    return cacheResult(select, doSelect(select, 0));
+    return cacheResult(select, query(select, 0));
   }
 
-  private List<Entity> doSelect(Select select, int currentForeignKeyFetchDepth) throws SQLException {
+  private List<Entity> query(Select select, int currentForeignKeyFetchDepth) throws SQLException {
     List<Entity> result;
-    try (ResultIterator<Entity> iterator = entityIterator(select)) {
+    try (ResultIterator<Entity> iterator = resultIterator(select)) {
       result = packResult(iterator);
     }
     if (!result.isEmpty()) {
-      setForeignKeys(result, select, currentForeignKeyFetchDepth);
+      populateForeignKeys(result, select, currentForeignKeyFetchDepth);
     }
 
     return result;
@@ -993,10 +994,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see Select.Builder#fetchDepth(int)
    */
-  private void setForeignKeys(List<Entity> entities, Select select,
-                              int currentForeignKeyFetchDepth) throws SQLException {
+  private void populateForeignKeys(List<Entity> entities, Select select,
+                                   int currentForeignKeyFetchDepth) throws SQLException {
     Collection<ForeignKeyDefinition> foreignKeysToSet =
-            foreignKeysToSet(entities.get(0).entityType(), select.attributes());
+            foreignKeysToPopulate(entities.get(0).entityType(), select.attributes());
     for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
       ForeignKey foreignKey = foreignKeyDefinition.attribute();
       int conditionOrForeignKeyFetchDepthLimit = select.fetchDepth(foreignKey)
@@ -1004,7 +1005,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (withinFetchDepthLimit(currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit)
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
-          logEntry("setForeignKeys", foreignKeyDefinition);
+          logEntry("populateForeignKeys", foreignKeyDefinition);
           Collection<Key> referencedKeys = referencedKeys(foreignKey, entities);
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
@@ -1012,7 +1013,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            Map<Key, Entity> referencedEntitiesMappedByKey = selectReferencedEntities(foreignKeyDefinition,
+            Map<Key, Entity> referencedEntitiesMappedByKey = queryReferencedEntities(foreignKeyDefinition,
                     new ArrayList<>(referencedKeys), currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit);
             for (int j = 0; j < entities.size(); j++) {
               Entity entity = entities.get(j);
@@ -1022,20 +1023,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
         }
         finally {
-          logExit("setForeignKeys");
+          logExit("populateForeignKeys");
         }
       }
     }
   }
 
-  private Collection<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
-                                                            Collection<Attribute<?>> conditionSelectAttributes) {
+  private Collection<ForeignKeyDefinition> foreignKeysToPopulate(EntityType entityType,
+                                                                 Collection<Attribute<?>> conditionAttributes) {
     Collection<ForeignKeyDefinition> foreignKeyDefinitions = definition(entityType).foreignKeys().definitions();
-    if (conditionSelectAttributes.isEmpty()) {
+    if (conditionAttributes.isEmpty()) {
       return foreignKeyDefinitions;
     }
 
-    Set<Attribute<?>> selectAttributes = new HashSet<>(conditionSelectAttributes);
+    Set<Attribute<?>> selectAttributes = new HashSet<>(conditionAttributes);
 
     return foreignKeyDefinitions.stream()
             .filter(foreignKeyDefinition -> selectAttributes.contains(foreignKeyDefinition.attribute()))
@@ -1046,8 +1047,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return !limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit;
   }
 
-  private Map<Key, Entity> selectReferencedEntities(ForeignKeyDefinition foreignKeyDefinition, List<Key> referencedKeys,
-                                                    int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
+  private Map<Key, Entity> queryReferencedEntities(ForeignKeyDefinition foreignKeyDefinition, List<Key> referencedKeys,
+                                                   int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
     Key referencedKey = referencedKeys.get(0);
     Collection<Column<?>> keyColumns = referencedKey.columns();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
@@ -1058,7 +1059,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               .fetchDepth(conditionFetchDepthLimit)
               .attributes(attributesToSelect(foreignKeyDefinition, keyColumns))
               .build();
-      referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1).stream()
+      referencedEntities.addAll(query(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1).stream()
               .map(IMMUTABLE)
               .collect(toList()));
     }
@@ -1078,14 +1079,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return keyBuilder.build();
   }
 
-  private ResultIterator<Entity> entityIterator(Select select) throws SQLException {
+  private ResultIterator<Entity> resultIterator(Select select) throws SQLException {
     requireNonNull(select, CONDITION);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     EntityDefinition entityDefinition = definition(select.where().entityType());
-    SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
+    SelectQueries.Builder queryBuilder = selectQueries.builder(entityDefinition)
             .select(select);
-    String selectQuery = selectQueryBuilder.build();
+    String selectQuery = queryBuilder.build();
     List<Object> statementValues = statementValues(select.where(), select.having());
     List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, select.where(), select.having());
     try {
@@ -1093,7 +1094,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
       return new EntityResultIterator(statement, resultSet,
-              new EntityResultPacker(entityDefinition, selectQueryBuilder.selectedColumns()));
+              new EntityResultPacker(entityDefinition, queryBuilder.selectedColumns()));
     }
     catch (SQLException e) {
       closeSilently(resultSet);
@@ -1216,7 +1217,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException packingException = null;
     List<Entity> result = new ArrayList<>();
     try {
-      logEntry("packResult");
+      logEntry(PACK_RESULT);
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
@@ -1228,7 +1229,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("packResult", packingException, "row count: " + result.size());
+      logExit(PACK_RESULT, packingException, "row count: " + result.size());
+    }
+  }
+
+  private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
+    SQLException packingException = null;
+    List<T> result = emptyList();
+    try {
+      logEntry(PACK_RESULT);
+      result = resultPacker(columnDefinition).pack(resultSet);
+
+      return result;
+    }
+    catch (SQLException e) {
+      packingException = e;
+      throw e;
+    }
+    finally {
+      logExit(PACK_RESULT, packingException, "row count: " + result.size());
     }
   }
 
@@ -1325,6 +1344,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.enter(method, argument);
+    }
+  }
+
+  private void logEntry(String method, Object... arguments) {
+    MethodLogger methodLogger = connection.getMethodLogger();
+    if (methodLogger != null && methodLogger.isEnabled()) {
+      methodLogger.enter(method, arguments);
     }
   }
 

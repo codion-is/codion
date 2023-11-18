@@ -40,7 +40,7 @@ public final class ViewCustomerReport extends AbstractUsageScenario<EntityConnec
     Collection<Long> customerIDs = Collections.singletonList(customer.primaryKey().get());
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
-    connection.fillReport(Customer.REPORT, reportParameters);
+    connection.report(Customer.REPORT, reportParameters);
   }
 
   @Override

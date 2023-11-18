@@ -33,7 +33,7 @@ final class HSQLDatabase extends AbstractDatabase {
   private static final String JDBC_URL_PREFIX_RES = "jdbc:hsqldb:res:";
 
   static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
-  static final String SEQUENCE_VALUE_QUERY = "select next value for ";
+  static final String SEQUENCE_VALUE_QUERY = "SELECT NEXT VALUE FOR ";
 
   private final boolean nowait;
 

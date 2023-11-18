@@ -45,9 +45,9 @@ final class DefaultJRReportType implements JRReportType, Serializable {
   }
 
   @Override
-  public JasperPrint fillReport(Report<JasperReport, JasperPrint, Map<String, Object>> report,
-                                Connection connection, Map<String, Object> parameters) throws ReportException {
-    return reportType.fillReport(report, connection, parameters);
+  public JasperPrint fill(Report<JasperReport, JasperPrint, Map<String, Object>> report,
+                          Connection connection, Map<String, Object> parameters) throws ReportException {
+    return reportType.fill(report, connection, parameters);
   }
 
   @Override

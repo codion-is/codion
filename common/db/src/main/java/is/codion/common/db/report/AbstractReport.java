@@ -78,7 +78,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
   }
 
   /**
-   * Returns the underlying report, either from the cache, if enabled or via {@link #loadReport()}.
+   * Returns the underlying report, either from the cache, if enabled or via {@link #load()}.
    * @return the report
    * @throws ReportException in case of an exception
    * @see Report#CACHE_REPORTS
@@ -88,13 +88,13 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
       return cachedReport();
     }
 
-    return loadReport();
+    return load();
   }
 
   private synchronized T cachedReport() {
     if (cachedReport == null) {
       try {
-        cachedReport = loadReport();
+        cachedReport = load();
       }
       catch (ReportException e) {
         throw new RuntimeException(e);
