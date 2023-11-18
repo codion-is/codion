@@ -87,6 +87,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String CONDITION = "condition";
   private static final String ENTITIES = "entities";
   private static final String ENTITY = "entity";
+  private static final String PACK_RESULT = "packResult";
   private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
   private final Domain domain;
@@ -461,7 +462,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try (PreparedStatement statement = prepareStatement(selectQuery);
            ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
-        List<T> result = resultPacker(columnDefinition).pack(resultSet);
+        List<T> result = packResult(columnDefinition, resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -1201,7 +1202,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException packingException = null;
     List<Entity> result = new ArrayList<>();
     try {
-      logEntry("packResult");
+      logEntry(PACK_RESULT);
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
@@ -1213,7 +1214,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("packResult", packingException, "row count: " + result.size());
+      logExit(PACK_RESULT, packingException, "row count: " + result.size());
+    }
+  }
+
+  private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
+    SQLException packingException = null;
+    List<T> result = emptyList();
+    try {
+      logEntry(PACK_RESULT);
+      result = resultPacker(columnDefinition).pack(resultSet);
+
+      return result;
+    }
+    catch (SQLException e) {
+      packingException = e;
+      throw e;
+    }
+    finally {
+      logExit(PACK_RESULT, packingException, "row count: " + result.size());
     }
   }
 

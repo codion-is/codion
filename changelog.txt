@@ -9930,3 +9930,4 @@
   EntityConnection.fillReport() renamed report(), Report.fillReport() and loadReport() renamed fill() and load() respectively, ReportType.fillReport() renamed fill()
   DefaultLocalEntityConnection, minor logging improvements
   Database, SQL keywords now in uppercase
+  DefaultLocalEntityConnection.select(column) now logs result packing
