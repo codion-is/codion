@@ -46,7 +46,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
     JasperPrint customerReport = tableModel().connectionProvider().connection()
-            .fillReport(Customer.REPORT, reportParameters);
+            .report(Customer.REPORT, reportParameters);
 
     Dialogs.componentDialog(new JRViewer(customerReport))
             .owner(this)

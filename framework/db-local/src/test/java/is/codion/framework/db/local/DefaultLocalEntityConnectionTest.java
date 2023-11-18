@@ -258,10 +258,10 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void fillReport() throws Exception {
+  void report() throws Exception {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    assertEquals("result", connection.fillReport(REPORT, reportParameters));
+    assertEquals("result", connection.report(REPORT, reportParameters));
   }
 
   @Test

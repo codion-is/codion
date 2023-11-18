@@ -20,7 +20,7 @@ final class ClassPathJRReport extends AbstractJRReport {
   }
 
   @Override
-  public JasperReport loadReport() throws ReportException {
+  public JasperReport load() throws ReportException {
     try {
       return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
     }

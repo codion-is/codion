@@ -27,7 +27,7 @@ public interface ReportType<T, R, P> {
    * @return a report result
    * @throws ReportException in case of an exception
    */
-  R fillReport(Report<T, R, P> report, Connection connection, P parameters) throws ReportException;
+  R fill(Report<T, R, P> report, Connection connection, P parameters) throws ReportException;
 
   /**
    * Instantiates a new Report instance with the given name.

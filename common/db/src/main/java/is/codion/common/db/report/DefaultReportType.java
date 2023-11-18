@@ -24,8 +24,8 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
   }
 
   @Override
-  public R fillReport(Report<T, R, P> report, Connection connection, P parameters) throws ReportException {
-    return report.fillReport(connection, parameters);
+  public R fill(Report<T, R, P> report, Connection connection, P parameters) throws ReportException {
+    return report.fill(connection, parameters);
   }
 
   @Override

@@ -504,8 +504,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
-    Objects.requireNonNull(reportType, "report");
+  public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
+    Objects.requireNonNull(reportType, "reportType");
     try {
       synchronized (this.entities) {
         return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));

@@ -460,7 +460,7 @@ public final class EntityService implements AuxiliaryServer {
         ReportType<?, ?, Object> reportType = (ReportType<?, ?, Object>) parameters.get(0);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
-                .result(Serializer.serialize(connection.fillReport(reportType, parameters.get(1))));
+                .result(Serializer.serialize(connection.report(reportType, parameters.get(1))));
       }
       catch (Exception e) {
         handleException(context, e);

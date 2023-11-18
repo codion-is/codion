@@ -386,9 +386,9 @@ public interface EntityConnection extends AutoCloseable {
    * @return the filled result object
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.report.ReportException in case of a report exception
-   * @see Report#fillReport(java.sql.Connection, Object)
+   * @see Report#fill(java.sql.Connection, Object)
    */
-  <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
+  <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} into the blob field specified by {@code blobColumn} for the given entity

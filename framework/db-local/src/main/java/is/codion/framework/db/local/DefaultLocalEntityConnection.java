@@ -591,13 +591,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
+  public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
     requireNonNull(reportType, "report");
     Exception exception = null;
     synchronized (connection) {
       try {
-        logEntry("fillReport: " + reportType, reportParameters);
-        R result = reportType.fillReport(domain.report(reportType), connection.getConnection(), reportParameters);
+        logEntry("report: " + reportType, reportParameters);
+        R result = reportType.fill(domain.report(reportType), connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -615,7 +615,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        logExit("fillReport: " + reportType, exception);
+        logExit("report: " + reportType, exception);
       }
     }
   }

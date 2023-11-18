@@ -138,11 +138,11 @@ public final class TestDomain extends DefaultDomain {
 
     add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {
       @Override
-      public Object fillReport(Connection connection, Object parameters) {
+      public Object fill(Connection connection, Object parameters) {
         return null;
       }
       @Override
-      public Object loadReport() {
+      public Object load() {
         return null;
       }
     });

@@ -38,7 +38,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     reportParameters.put("DEPTNO", departmentNumbers);
 
     JasperPrint employeeReport = tableModel().connectionProvider().connection()
-            .fillReport(Employee.EMPLOYEE_REPORT, reportParameters);
+            .report(Employee.EMPLOYEE_REPORT, reportParameters);
 
     Dialogs.componentDialog(new JRViewer(employeeReport))
             .owner(this)

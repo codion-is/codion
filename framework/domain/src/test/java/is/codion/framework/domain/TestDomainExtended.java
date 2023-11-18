@@ -59,12 +59,12 @@ public final class TestDomainExtended extends DefaultDomain {
   void report() {
     add(REP_TYPE, new AbstractReport<Object, Object, Object>("", false) {
       @Override
-      public Object fillReport(Connection connection, Object parameters) {
+      public Object fill(Connection connection, Object parameters) {
         return null;
       }
 
       @Override
-      public Object loadReport() {
+      public Object load() {
         return null;
       }
     });

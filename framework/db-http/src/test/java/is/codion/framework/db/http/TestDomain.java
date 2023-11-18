@@ -37,12 +37,12 @@ public final class TestDomain extends DefaultDomain {
     operations();
     add(REPORT, new AbstractReport<Object, String, String>("report.path", false) {
       @Override
-      public String fillReport(Connection connection, String parameters) {
+      public String fill(Connection connection, String parameters) {
         return "result";
       }
 
       @Override
-      public Object loadReport() {
+      public Object load() {
         return null;
       }
     });

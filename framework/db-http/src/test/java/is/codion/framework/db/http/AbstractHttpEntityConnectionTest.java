@@ -69,8 +69,8 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void fillReport() throws ReportException, DatabaseException {
-    String result = connection.fillReport(TestDomain.REPORT, "");
+  void report() throws ReportException, DatabaseException {
+    String result = connection.report(TestDomain.REPORT, "");
     assertNotNull(result);
   }
 

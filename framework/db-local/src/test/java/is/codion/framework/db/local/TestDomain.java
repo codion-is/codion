@@ -60,12 +60,12 @@ public final class TestDomain extends DefaultDomain {
     Report.REPORT_PATH.set("path/to/reports");
     add(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path", false) {
       @Override
-      public String fillReport(Connection connection, Map<String, Object> parameters) {
+      public String fill(Connection connection, Map<String, Object> parameters) {
         return "result";
       }
 
       @Override
-      public Object loadReport() {
+      public Object load() {
         return null;
       }
     });
