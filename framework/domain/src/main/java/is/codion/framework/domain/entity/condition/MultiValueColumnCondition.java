@@ -15,8 +15,8 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
   private static final long serialVersionUID = 1;
 
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
-  private static final String IN_PREFIX = " in (";
-  private static final String NOT_IN_PREFIX = " not in (";
+  private static final String IN_PREFIX = " IN (";
+  private static final String NOT_IN_PREFIX = " NOT IN (";
 
   MultiValueColumnCondition(Column<T> column, Collection<? extends T> values, Operator operator) {
     this(column, values, operator, true);

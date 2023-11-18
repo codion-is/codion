@@ -27,14 +27,14 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractDatabase implements Database {
 
-  protected static final String FOR_UPDATE = "for update";
-  protected static final String FOR_UPDATE_NOWAIT = "for update nowait";
+  protected static final String FOR_UPDATE = "FOR UPDATE";
+  protected static final String FOR_UPDATE_NOWAIT = "FOR UPDATE NOWAIT";
 
-  private static final String FETCH_NEXT = "fetch next ";
-  private static final String ROWS = " rows";
-  private static final String ONLY = " only";
-  private static final String OFFSET = "offset ";
-  private static final String LIMIT = "limit ";
+  private static final String FETCH_NEXT = "FETCH NEXT ";
+  private static final String ROWS = " ROWS";
+  private static final String ONLY = " ONLY";
+  private static final String OFFSET = "OFFSET ";
+  private static final String LIMIT = "LIMIT ";
 
   private static Database instance;
 

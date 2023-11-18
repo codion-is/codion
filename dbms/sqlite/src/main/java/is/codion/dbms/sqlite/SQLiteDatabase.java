@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 final class SQLiteDatabase extends AbstractDatabase {
 
-  private static final String AUTO_INCREMENT_QUERY = "select last_insert_rowid()";
+  private static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ROWID()";
   private static final int FOREIGN_KEY_ERROR = 787;
 
   private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
@@ -33,7 +33,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 
   @Override
   public String selectForUpdateClause() {
-    return "for update";
+    return FOR_UPDATE;
   }
 
   @Override

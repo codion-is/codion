@@ -23,7 +23,7 @@ public class Db2DatabaseTest {
   @Test
   void autoIncrementQuery() {
     Db2Database database = new Db2Database("test");
-    assertEquals("select previous value for seq", database.autoIncrementQuery("seq"));
+    assertEquals("SELECT PREVIOUS VALUE FOR seq", database.autoIncrementQuery("seq"));
   }
 
   @Test

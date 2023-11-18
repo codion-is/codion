@@ -9,7 +9,7 @@ import java.util.List;
 
 final class Queries {
 
-  private static final String WHERE_SPACE_POSTFIX = "where ";
+  private static final String WHERE_SPACE_POSTFIX = "WHERE ";
   private static final String NEWLINE = "\n";
 
   private Queries() {}
@@ -20,8 +20,8 @@ final class Queries {
    * @return a query for inserting
    */
   static String insertQuery(String tableName, List<ColumnDefinition<?>> columnDefinitions) {
-    StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
-    StringBuilder columnValues = new StringBuilder(")").append(NEWLINE).append("values(");
+    StringBuilder queryBuilder = new StringBuilder("INSERT ").append("INTO ").append(tableName).append("(");
+    StringBuilder columnValues = new StringBuilder(")").append(NEWLINE).append("VALUES(");
     for (int i = 0; i < columnDefinitions.size(); i++) {
       queryBuilder.append(columnDefinitions.get(i).columnName());
       columnValues.append("?");
@@ -42,7 +42,7 @@ final class Queries {
    */
   static String updateQuery(String tableName, List<ColumnDefinition<?>> columnDefinitions,
                             String conditionString) {
-    StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(NEWLINE).append("set ");
+    StringBuilder queryBuilder = new StringBuilder("UPDATE ").append(tableName).append(NEWLINE).append("SET ");
     for (int i = 0; i < columnDefinitions.size(); i++) {
       queryBuilder.append(columnDefinitions.get(i).columnName()).append(" = ?");
       if (i < columnDefinitions.size() - 1) {
@@ -59,6 +59,6 @@ final class Queries {
    * @return a query for deleting the entities specified by the given condition
    */
   static String deleteQuery(String tableName, String conditionString) {
-    return "delete from " + tableName + (conditionString.isEmpty() ? "" : NEWLINE + WHERE_SPACE_POSTFIX + conditionString);
+    return "DELETE FROM " + tableName + (conditionString.isEmpty() ? "" : NEWLINE + WHERE_SPACE_POSTFIX + conditionString);
   }
 }

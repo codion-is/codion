@@ -78,12 +78,12 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public String autoIncrementQuery(String idSource) {
-    return "select currval('" + requireNonNull(idSource, "idSource") + "')";
+    return "SELECT CURRVAL('" + requireNonNull(idSource, "idSource") + "')";
   }
 
   @Override
   public String sequenceQuery(String sequenceName) {
-    return "select nextval('" + requireNonNull(sequenceName, "sequenceName") + "')";
+    return "SELECT NEXTVAL('" + requireNonNull(sequenceName, "sequenceName") + "')";
   }
 
   @Override

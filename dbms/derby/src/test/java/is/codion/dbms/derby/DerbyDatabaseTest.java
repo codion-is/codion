@@ -32,7 +32,7 @@ public class DerbyDatabaseTest {
   @Test
   void supportsNoWait() {
     DerbyDatabase db = new DerbyDatabase(URL);
-    assertEquals("for update", db.selectForUpdateClause());
+    assertEquals("FOR UPDATE", db.selectForUpdateClause());
   }
 
   @Test

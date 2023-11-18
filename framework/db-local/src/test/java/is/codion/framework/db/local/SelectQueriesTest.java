@@ -23,31 +23,31 @@ public final class SelectQueriesTest {
   void builder() {
     SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(Query.TYPE))
             .entitySelectQuery();
-    assertEquals("select empno, ename\nfrom scott.emp e\norder by ename", builder.build());
+    assertEquals("SELECT empno, ename\nFROM scott.emp e\nORDER BY ename", builder.build());
 
     builder.columns("empno");
-    assertEquals("select empno\nfrom scott.emp e\norder by ename", builder.build());
+    assertEquals("SELECT empno\nFROM scott.emp e\nORDER BY ename", builder.build());
 
     builder.forUpdate(true);
-    assertEquals("select empno\nfrom scott.emp\norder by ename\nfor update nowait", builder.build());
+    assertEquals("SELECT empno\nFROM scott.emp\nORDER BY ename\nFOR UPDATE NOWAIT", builder.build());
 
     builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
+    assertEquals("SELECT e.empno, e.ename\nFROM scott.emp e\nWHERE e.deptno > 10", builder.build());
 
     builder.orderBy("ename");
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename", builder.build());
+    assertEquals("SELECT e.empno, e.ename\nFROM scott.emp e\nWHERE e.deptno > 10\nORDER BY ename", builder.build());
 
     builder = queries.builder(testDomain.entities().definition(QueryFromClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select empno, ename\nfrom scott.emp\norder by ename", builder.build());
+    assertEquals("SELECT empno, ename\nFROM scott.emp\nORDER BY ename", builder.build());
   }
 
   @Test
   void select() {
     SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
+    assertEquals("SELECT e.empno, e.ename\nFROM scott.emp e\nWHERE e.deptno > 10", builder.build());
 
     Select select = Select.where(QueryColumnsWhereClause.ENAME.equalTo("SCOTT"))
             .attributes(QueryColumnsWhereClause.ENAME)
@@ -58,6 +58,6 @@ public final class SelectQueriesTest {
             .select(select);
 
     //select should not affect columns when the columns are hardcoded in the entity query
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\nand ename = ?\nhaving empno = ?\norder by empno desc", builder.build());
+    assertEquals("SELECT e.empno, e.ename\nFROM scott.emp e\nWHERE e.deptno > 10\nAND ename = ?\nHAVING empno = ?\nORDER BY empno DESC", builder.build());
   }
 }

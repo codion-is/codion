@@ -18,7 +18,7 @@ final class MySQLDatabase extends AbstractDatabase {
 
   private static final String JDBC_URL_PREFIX = "jdbc:mysql://";
 
-  static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
+  static final String AUTO_INCREMENT_QUERY = "SELECT LAST_INSERT_ID() FROM DUAL";
 
   MySQLDatabase(String url) {
     super(url);
@@ -41,7 +41,7 @@ final class MySQLDatabase extends AbstractDatabase {
 
   @Override
   public String selectForUpdateClause() {
-    return "for update";
+    return FOR_UPDATE;
   }
 
   @Override

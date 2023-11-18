@@ -478,7 +478,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public int count(Count count) throws DatabaseException {
     EntityDefinition entityDefinition = definition(requireNonNull(count, "count").where().entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
-            .columns("count(*)")
+            .columns("COUNT(*)")
             .subquery(selectQueries.builder(entityDefinition)
                     .select(where(count.where())
                             .having(count.having())

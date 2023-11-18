@@ -20,7 +20,7 @@ final class DerbyDatabase extends AbstractDatabase {
   private static final String JDBC_URL_PREFIX_TCP = "jdbc:derby://";
   private static final String JDBC_URL_PREFIX_FILE = "jdbc:derby:";
 
-  static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
+  static final String AUTO_INCREMENT_QUERY = "SELECT IDENTITY_VAL_LOCAL() FROM ";
 
   DerbyDatabase(String url) {
     super(url);
@@ -40,7 +40,7 @@ final class DerbyDatabase extends AbstractDatabase {
 
   @Override
   public String selectForUpdateClause() {
-    return "for update";
+    return FOR_UPDATE;
   }
 
   @Override
