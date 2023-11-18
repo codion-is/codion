@@ -550,7 +550,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(functionType, "functionType");
     DatabaseException exception = null;
     try {
-      logEntry("executeFunction: " + functionType, argument);
+      logEntry("execute", functionType, argument);
       synchronized (connection) {
         return functionType.execute((C) this, domain.function(functionType), argument);
       }
@@ -561,7 +561,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeFunction: " + functionType, exception);
+      logExit("execute", exception);
     }
   }
 
@@ -575,7 +575,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(procedureType, "procedureType");
     DatabaseException exception = null;
     try {
-      logEntry("executeProcedure: " + procedureType, argument);
+      logEntry("execute", procedureType, argument);
       synchronized (connection) {
         procedureType.execute((C) this, domain.procedure(procedureType), argument);
       }
@@ -586,7 +586,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeProcedure: " + procedureType, exception);
+      logExit("execute", exception);
     }
   }
 
@@ -596,7 +596,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Exception exception = null;
     synchronized (connection) {
       try {
-        logEntry("report: " + reportType, reportParameters);
+        logEntry("report", reportType, reportParameters);
         R result = reportType.fill(domain.report(reportType), connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 
@@ -615,7 +615,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        logExit("report: " + reportType, exception);
+        logExit("report", exception);
       }
     }
   }
@@ -989,7 +989,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (withinFetchDepthLimit(currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit)
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
-          logEntry("setForeignKeys", foreignKeyDefinition);
+          logEntry("populateForeignKeys", foreignKeyDefinition);
           Collection<Key> referencedKeys = referencedKeys(foreignKey, entities);
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
@@ -1007,7 +1007,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
         }
         finally {
-          logExit("setForeignKeys");
+          logExit("populateForeignKeys");
         }
       }
     }
@@ -1310,6 +1310,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.enter(method, argument);
+    }
+  }
+
+  private void logEntry(String method, Object... arguments) {
+    MethodLogger methodLogger = connection.getMethodLogger();
+    if (methodLogger != null && methodLogger.isEnabled()) {
+      methodLogger.enter(method, arguments);
     }
   }
 

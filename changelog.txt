@@ -9928,3 +9928,4 @@
   DefaultLoadTestModel.DefaultApplication bug fixed, tried to assign null duration to an int
   LoadTestPanel, no longer refreshes application table model on the EDT, now displays refresh exceptions and no longer crashes on null duration
   EntityConnection.fillReport() renamed report(), Report.fillReport() and loadReport() renamed fill() and load() respectively, ReportType.fillReport() renamed fill()
+  DefaultLocalEntityConnection, minor logging improvements
