@@ -28,7 +28,7 @@ public final class HttpEntityConnectionJdkTest extends AbstractHttpEntityConnect
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public HttpEntityConnectionJdkTest() {
-    super(new HttpEntityConnectionJdk(TestDomain.DOMAIN.name(),
+    super(new HttpEntityConnectionJdk(TestDomain.DOMAIN,
           HttpEntityConnection.HOSTNAME.get(),
           HttpEntityConnection.PORT.get(),
           HttpEntityConnection.SECURE_PORT.get(),

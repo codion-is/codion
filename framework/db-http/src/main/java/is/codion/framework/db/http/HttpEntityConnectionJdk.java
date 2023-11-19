@@ -28,6 +28,7 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -96,7 +97,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   /**
    * Instantiates a new {@link HttpEntityConnectionJdk} instance
-   * @param domain the entities entities
+   * @param domainType the domain type
    * @param serverHostName the http server host name
    * @param port the http server port
    * @param securePort the https server port
@@ -105,13 +106,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnectionJdk(String domainName, String serverHostName, int port, int securePort,
+  HttpEntityConnectionJdk(DomainType domainType, String serverHostName, int port, int securePort,
                           boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
     this.user = Objects.requireNonNull(user, "user");
     this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + (httpsEnabled ? securePort : port) + "/entities/ser/";
     this.httpClient = createHttpClient();
     this.headers = new String[] {
-            DOMAIN_TYPE_NAME, Objects.requireNonNull(domainName, DOMAIN_TYPE_NAME),
+            DOMAIN_TYPE_NAME, Objects.requireNonNull(domainType.name(), DOMAIN_TYPE_NAME),
             CLIENT_TYPE_ID, Objects.requireNonNull(clientTypeId, CLIENT_TYPE_ID),
             CLIENT_ID, Objects.requireNonNull(clientId, CLIENT_ID).toString(),
             CONTENT_TYPE, APPLICATION_OCTET_STREAM,

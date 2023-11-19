@@ -9972,3 +9972,4 @@
   DefaultLocalEntityConnection, minor logging improvements
   Database, SQL keywords now in uppercase
   DefaultLocalEntityConnection.select(column) now logs result packing
+  HttpEntityConnectionJdk, domainName constructor parameter replaced with domainType
