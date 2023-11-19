@@ -63,6 +63,7 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService using the JDK HTTP client
@@ -108,13 +109,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
    */
   HttpEntityConnectionJdk(DomainType domainType, String serverHostName, int port, int securePort,
                           boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
-    this.user = Objects.requireNonNull(user, "user");
-    this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + (httpsEnabled ? securePort : port) + "/entities/ser/";
+    this.user = requireNonNull(user, "user");
+    this.baseurl = (httpsEnabled ? HTTPS : HTTP) + requireNonNull(serverHostName, "serverHostName") + ":" + (httpsEnabled ? securePort : port) + "/entities/ser/";
     this.httpClient = createHttpClient();
     this.headers = new String[] {
-            DOMAIN_TYPE_NAME, Objects.requireNonNull(domainType.name(), DOMAIN_TYPE_NAME),
-            CLIENT_TYPE_ID, Objects.requireNonNull(clientTypeId, CLIENT_TYPE_ID),
-            CLIENT_ID, Objects.requireNonNull(clientId, CLIENT_ID).toString(),
+            DOMAIN_TYPE_NAME, requireNonNull(domainType.name(), DOMAIN_TYPE_NAME),
+            CLIENT_TYPE_ID, requireNonNull(clientTypeId, CLIENT_TYPE_ID),
+            CLIENT_ID, requireNonNull(clientId, CLIENT_ID).toString(),
             CONTENT_TYPE, APPLICATION_OCTET_STREAM,
             AUTHORIZATION, BASIC + Base64.getEncoder().encodeToString((user.username() + ":" + String.valueOf(user.password())).getBytes())
     };
@@ -147,8 +148,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       }
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -160,8 +160,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       }
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -176,8 +175,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -192,8 +190,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -208,8 +205,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -217,15 +213,14 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public void setQueryCacheEnabled(boolean queryCacheEnabled) {
     try {
       synchronized (this.entities) {
-        handleResponse(execute(createRequest("setQueryCacheEnabled", queryCacheEnabled)));
+        handleResponse(execute(createRequest("setQueryCacheEnabled", Serializer.serialize(queryCacheEnabled))));
       }
     }
     catch (RuntimeException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -237,8 +232,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       }
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -249,18 +243,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
-    Objects.requireNonNull(functionType);
+    requireNonNull(functionType);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("function", asList(functionType, argument))));
+        return handleResponse(execute(createRequest("function", Serializer.serialize(asList(functionType, argument)))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -271,18 +264,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
-    Objects.requireNonNull(procedureType);
+    requireNonNull(procedureType);
     try {
       synchronized (this.entities) {
-        handleResponse(execute(createRequest("procedure", asList(procedureType, argument))));
+        handleResponse(execute(createRequest("procedure", Serializer.serialize(asList(procedureType, argument)))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -298,41 +290,39 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(entities);
+    requireNonNull(entities);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("insert", entities)));
+        return handleResponse(execute(createRequest("insert", Serializer.serialize(entities))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(entities);
+    requireNonNull(entities);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("insertSelect", entities)));
+        return handleResponse(execute(createRequest("insertSelect", Serializer.serialize(entities))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public void update(Entity entity) throws DatabaseException {
-    update(singletonList(Objects.requireNonNull(entity, "entity")));
+    update(singletonList(requireNonNull(entity, "entity")));
   }
 
   @Override
@@ -342,52 +332,49 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public void update(Collection<? extends Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(entities);
+    requireNonNull(entities);
     try {
       synchronized (this.entities) {
-        handleResponse(execute(createRequest("update", entities)));
+        handleResponse(execute(createRequest("update", Serializer.serialize(entities))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(entities);
+    requireNonNull(entities);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("updateSelect", entities)));
+        return handleResponse(execute(createRequest("updateSelect", Serializer.serialize(entities))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public int update(Update update) throws DatabaseException {
-    Objects.requireNonNull(update);
+    requireNonNull(update);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("updateByCondition", update)));
+        return handleResponse(execute(createRequest("updateByCondition", Serializer.serialize(update))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -398,41 +385,39 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public void delete(Collection<Entity.Key> keys) throws DatabaseException {
-    Objects.requireNonNull(keys);
+    requireNonNull(keys);
     try {
       synchronized (this.entities) {
-        handleResponse(execute(createRequest("deleteByKey", keys)));
+        handleResponse(execute(createRequest("deleteByKey", Serializer.serialize(keys))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
-  public int delete(Condition criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria);
+  public int delete(Condition condition) throws DatabaseException {
+    requireNonNull(condition);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("delete", criteria)));
+        return handleResponse(execute(createRequest("delete", Serializer.serialize(condition))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public <T> List<T> select(Column<T> column) throws DatabaseException {
-    return select(Objects.requireNonNull(column), Select.all(column.entityType())
+    return select(requireNonNull(column), Select.all(column.entityType())
             .orderBy(ascending(column))
             .build());
   }
@@ -446,18 +431,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
-    Objects.requireNonNull(column);
+    requireNonNull(column);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("values", asList(column, select))));
+        return handleResponse(execute(createRequest("values", Serializer.serialize(asList(column, select)))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -486,18 +470,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
-    Objects.requireNonNull(keys, "keys");
+    requireNonNull(keys, "keys");
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("selectByKey", keys)));
+        return handleResponse(execute(createRequest("selectByKey", Serializer.serialize(keys))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -508,107 +491,101 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public List<Entity> select(Select select) throws DatabaseException {
-    Objects.requireNonNull(select, "select");
+    requireNonNull(select, "select");
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("select", select)));
+        return handleResponse(execute(createRequest("select", Serializer.serialize(select))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(entities, "entities");
+    requireNonNull(entities, "entities");
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("dependencies", entities)));
+        return handleResponse(execute(createRequest("dependencies", Serializer.serialize(entities))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public int count(Count count) throws DatabaseException {
-    Objects.requireNonNull(count);
+    requireNonNull(count);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("count", count)));
+        return handleResponse(execute(createRequest("count", Serializer.serialize(count))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
-    Objects.requireNonNull(reportType, "reportType");
+    requireNonNull(reportType, "reportType");
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("report", Arrays.asList(reportType, reportParameters))));
+        return handleResponse(execute(createRequest("report", Serializer.serialize(asList(reportType, reportParameters)))));
       }
     }
     catch (ReportException | DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
           throws DatabaseException {
-    Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobColumn, "blobColumn");
-    Objects.requireNonNull(blobData, "blobData");
+    requireNonNull(primaryKey, "primaryKey");
+    requireNonNull(blobColumn, "blobColumn");
+    requireNonNull(blobData, "blobData");
     try {
       synchronized (this.entities) {
-        handleResponse(execute(createRequest("writeBlob", Arrays.asList(primaryKey, blobColumn, blobData))));
+        handleResponse(execute(createRequest("writeBlob", Serializer.serialize(asList(primaryKey, blobColumn, blobData)))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
   @Override
   public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobColumn, "blobColumn");
+    requireNonNull(primaryKey, "primaryKey");
+    requireNonNull(blobColumn, "blobColumn");
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("readBlob", Arrays.asList(primaryKey, blobColumn))));
+        return handleResponse(execute(createRequest("readBlob", Serializer.serialize(asList(primaryKey, blobColumn)))));
       }
     }
     catch (DatabaseException e) {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -620,8 +597,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       throw e;
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      throw logAndWrap(e);
     }
   }
 
@@ -635,10 +611,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     return createRequest(path, null);
   }
 
-  private HttpRequest createRequest(String path, Object data) throws IOException {
+  private HttpRequest createRequest(String path, byte[] data) throws IOException {
     return HttpRequest.newBuilder()
             .uri(URI.create(baseurl + path))
-            .POST(data == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(data)))
+            .POST(data == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofByteArray(data))
             .headers(headers).build();
   }
 
@@ -654,6 +630,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
 
     return Serializer.deserialize((byte[]) response.body());
+  }
+
+  private static RuntimeException logAndWrap(Exception e) {
+    LOG.error(e.getMessage(), e);
+
+    return new RuntimeException(e);
   }
 
   private static class DaemonThreadFactory implements ThreadFactory {
