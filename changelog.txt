@@ -9932,3 +9932,4 @@
   Database, SQL keywords now in uppercase
   DefaultLocalEntityConnection.select(column) now logs result packing
   EntityObjectMapper.module() added, DatabaseObjectMapper and EntityService refactored accordingly
+  DefaultEntitySearchModel, minor refactoring
