@@ -30,10 +30,10 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
-import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import io.javalin.http.ContentType;
@@ -61,6 +61,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
+import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.util.Objects.requireNonNull;
 
 public final class EntityService implements AuxiliaryServer {
@@ -128,8 +130,7 @@ public final class EntityService implements AuxiliaryServer {
   private final int securePort;
   private final boolean sslEnabled;
 
-  private final Map<DomainType, EntityObjectMapper> entityObjectMappers = new ConcurrentHashMap<>();
-  private final Map<DomainType, DatabaseObjectMapper> databaseObjectMappers = new ConcurrentHashMap<>();
+  private final Map<DomainType, ObjectMapper> domainObjectMappers = new ConcurrentHashMap<>();
 
   private Javalin javalin;
 
@@ -294,10 +295,10 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(entityObjectMapper.writeValueAsString(connection.transactionOpen()));
+                .result(objectMapper.writeValueAsString(connection.transactionOpen()));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -372,10 +373,10 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(entityObjectMapper.writeValueAsString(connection.isQueryCacheEnabled()));
+                .result(objectMapper.writeValueAsString(connection.isQueryCacheEnabled()));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -490,12 +491,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
-        List<Entity> entities = entityObjectMapper.deserializeEntities(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        List<Entity> entities = objectMapper.readValue(context.req.getInputStream(), ENTITY_LIST_REFERENCE);
         Map<EntityType, Collection<Entity>> dependencies = connection.dependencies(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(entityObjectMapper.writeValueAsString(dependencies));
+                .result(objectMapper.writeValueAsString(dependencies));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -526,11 +527,11 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        DatabaseObjectMapper databaseObjectMapper = databaseObjectMapper(connection.entities());
-        int rowCount = connection.count(databaseObjectMapper.readValue(context.req.getInputStream(), Count.class));
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        int rowCount = connection.count(objectMapper.readValue(context.req.getInputStream(), Count.class));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(databaseObjectMapper.entityObjectMapper().writeValueAsString(rowCount));
+                .result(objectMapper.writeValueAsString(rowCount));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -563,19 +564,19 @@ public final class EntityService implements AuxiliaryServer {
       try {
         RemoteEntityConnection connection = authenticate(context);
         Entities entities = connection.entities();
-        DatabaseObjectMapper mapper = databaseObjectMapper(entities);
-        JsonNode jsonNode = mapper.readTree(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(entities);
+        JsonNode jsonNode = objectMapper.readTree(context.req.getInputStream());
         EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
         Column<?> column = (Column<?>) entities.definition(entityType).attributes().get(jsonNode.get("column").textValue());
         Select select = null;
         JsonNode conditionNode = jsonNode.get("condition");
         if (conditionNode != null) {
-          select = mapper.readValue(conditionNode.toString(), Select.class);
+          select = objectMapper.readValue(conditionNode.toString(), Select.class);
         }
         List<?> values = connection.select(column, select);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.entityObjectMapper().writeValueAsString(values));
+                .result(objectMapper.writeValueAsString(values));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -607,12 +608,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
-        List<Entity.Key> keysFromJson = entityObjectMapper.deserializeKeys(context.req.getInputStream());
-        Collection<Entity> selected = connection.select(keysFromJson);
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        List<Entity.Key> keys = objectMapper.readValue(context.req.getInputStream(), KEY_LIST_REFERENCE);
+        Collection<Entity> selected = connection.select(keys);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(entityObjectMapper.writeValueAsString(selected));
+                .result(objectMapper.writeValueAsString(selected));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -644,12 +645,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        DatabaseObjectMapper mapper = databaseObjectMapper(connection.entities());
-        Select selectJson = mapper.readValue(context.req.getInputStream(), Select.class);
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        Select selectJson = objectMapper.readValue(context.req.getInputStream(), Select.class);
         List<Entity> selected = connection.select(selectJson);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.entityObjectMapper().writeValueAsString(selected));
+                .result(objectMapper.writeValueAsString(selected));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -697,12 +698,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
-        Collection<Entity> entities = mapper.deserializeEntities(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        Collection<Entity> entities = objectMapper.readValue(context.req.getInputStream(), ENTITY_LIST_REFERENCE);
         Collection<Entity.Key> keys = connection.insert(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.writeValueAsString(keys));
+                .result(objectMapper.writeValueAsString(keys));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -716,12 +717,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
-        Collection<Entity> entities = mapper.deserializeEntities(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        Collection<Entity> entities = objectMapper.readValue(context.req.getInputStream(), ENTITY_LIST_REFERENCE);
         Collection<Entity> inserted = connection.insertSelect(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.writeValueAsString(inserted));
+                .result(objectMapper.writeValueAsString(inserted));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -768,8 +769,8 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
-        List<Entity> entities = mapper.deserializeEntities(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        List<Entity> entities = objectMapper.readValue(context.req.getInputStream(), ENTITY_LIST_REFERENCE);
         connection.update(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON);
@@ -786,12 +787,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
-        List<Entity> entities = mapper.deserializeEntities(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        List<Entity> entities = objectMapper.readValue(context.req.getInputStream(), ENTITY_LIST_REFERENCE);
         Collection<Entity> updated = connection.updateSelect(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.writeValueAsString(updated));
+                .result(objectMapper.writeValueAsString(updated));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -822,12 +823,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        DatabaseObjectMapper mapper = databaseObjectMapper(connection.entities());
-        Update update = mapper.readValue(context.req.getInputStream(), Update.class);
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        Update update = objectMapper.readValue(context.req.getInputStream(), Update.class);
         int updateCount = connection.update(update);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.entityObjectMapper().writeValueAsString(updateCount));
+                .result(objectMapper.writeValueAsString(updateCount));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -859,12 +860,12 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        DatabaseObjectMapper mapper = databaseObjectMapper(connection.entities());
-        Condition deleteCondition = mapper.readValue(context.req.getInputStream(), Condition.class);
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        Condition deleteCondition = objectMapper.readValue(context.req.getInputStream(), Condition.class);
         int deleteCount = connection.delete(deleteCondition);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
-                .result(mapper.entityObjectMapper().writeValueAsString(deleteCount));
+                .result(objectMapper.writeValueAsString(deleteCount));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -894,8 +895,8 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
-        List<Entity.Key> keys = mapper.deserializeKeys(context.req.getInputStream());
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        List<Entity.Key> keys = objectMapper.readValue(context.req.getInputStream(), KEY_LIST_REFERENCE);
         connection.delete(keys);
         context.status(HttpStatus.OK_200);
       }
@@ -983,14 +984,11 @@ public final class EntityService implements AuxiliaryServer {
     }
   }
 */
-  private EntityObjectMapper entityObjectMapper(Entities entities) {
-    return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-            EntityObjectMapperFactory.instance(domainType).entityObjectMapper(entities));
-  }
 
-  private DatabaseObjectMapper databaseObjectMapper(Entities entities) {
-    return databaseObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-            DatabaseObjectMapper.databaseObjectMapper(entityObjectMapper(entities)));
+  private ObjectMapper objectMapper(Entities entities) {
+    return domainObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
+            DatabaseObjectMapper.databaseObjectMapper(EntityObjectMapperFactory.instance(domainType)
+                    .entityObjectMapper(entities)));
   }
 
   private static String remoteHost(HttpServletRequest request) {
