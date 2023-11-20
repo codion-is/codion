@@ -179,7 +179,7 @@ public final class EntityObjectMapperTest {
     jsonString = mapper.writeValueAsString(singletonList(dept20));
     assertTrue(dept20.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
-    String twoDepts = mapper.serializeEntities(asList(dept10, dept20));
+    String twoDepts = mapper.writeValueAsString(asList(dept10, dept20));
     mapper.deserializeEntities(twoDepts);
 
     Entity mgr30 = entities.builder(Employee.TYPE)
@@ -269,7 +269,7 @@ public final class EntityObjectMapperTest {
       assertTrue(parsed.valuesEqual(entity));
     }
 
-    List<Entity> readEntities = mapper.deserializeEntities(mapper.serializeEntities(singletonList(emp1)));
+    List<Entity> readEntities = mapper.deserializeEntities(mapper.writeValueAsString(singletonList(emp1)));
     assertEquals(1, readEntities.size());
     Entity parsedEntity = readEntities.iterator().next();
     assertTrue(emp1.valuesEqual(parsedEntity));
@@ -296,7 +296,7 @@ public final class EntityObjectMapperTest {
     mapper.setIncludeForeignKeyValues(false);
     mapper.setIncludeNullValues(false);
 
-    Entity emp3Parsed = mapper.deserializeEntities(mapper.serializeEntities(singletonList(emp3))).get(0);
+    Entity emp3Parsed = mapper.deserializeEntities(mapper.writeValueAsString(singletonList(emp3))).get(0);
     assertFalse(emp3Parsed.contains(Employee.HIREDATE));
     assertFalse(emp3Parsed.contains(Employee.SALARY));
   }

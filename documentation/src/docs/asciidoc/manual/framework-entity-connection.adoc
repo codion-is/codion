@@ -258,9 +258,9 @@ Executing procedures is the same as executing functions, except without a return
 
 == Reporting
 
-=== fillReport
+=== report
 
-** {url-entity-connection}#fillReport{opar}is.codion.common.db.report.ReportType{comma}P{cpar}[fillReport(ReportType reportType, P reportParameters)]
+** {url-entity-connection}#report{opar}is.codion.common.db.report.ReportType{comma}P{cpar}[report(ReportType reportType, P reportParameters)]
 
 [source,java,indent=0]
 ----

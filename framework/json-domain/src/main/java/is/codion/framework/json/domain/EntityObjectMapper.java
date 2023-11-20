@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -54,7 +55,7 @@ public final class EntityObjectMapper extends ObjectMapper {
   public static final TypeReference<List<Entity.Key>> KEY_LIST_REFERENCE = new TypeReference<List<Entity.Key>>() {};
   public static final TypeReference<List<Entity>> ENTITY_LIST_REFERENCE = new TypeReference<List<Entity>>() {};
 
-  private final SimpleModule module = new SimpleModule();
+  private final SimpleModule module;
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
   private final ConditionSerializer conditionSerializer;
@@ -67,6 +68,7 @@ public final class EntityObjectMapper extends ObjectMapper {
     this.entityDeserializer = new EntityDeserializer(entities, this);
     this.conditionSerializer = new ConditionSerializer(this);
     this.conditionDeserializer = new ConditionDeserializer(this);
+    module = new SimpleModule();
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
@@ -88,17 +90,10 @@ public final class EntityObjectMapper extends ObjectMapper {
   }
 
   /**
-   * @return the serializer for {@link Condition} and sublasses
+   * @return the underlying module
    */
-  public StdSerializer<Condition> conditionSerializer() {
-    return conditionSerializer;
-  }
-
-  /**
-   * @return the deserializer for {@link Condition} and sublasses
-   */
-  public StdDeserializer<Condition> conditionDeserializer() {
-    return conditionDeserializer;
+  public Module module() {
+    return module;
   }
 
   /**
