@@ -329,58 +329,58 @@ public final class ConditionTest {
     EntityDefinition departmentDefinition = ENTITIES.definition(Department.TYPE);
     ColumnDefinition<?> columnDefinition = departmentDefinition.columns().definition(Department.NAME);
     Condition condition = Department.NAME.equalTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " = ?", condition.toString(departmentDefinition));
     condition = Department.NAME.like("upper%");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " LIKE ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " LIKE ?", condition.toString(departmentDefinition));
     condition = Department.NAME.equalTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " = ?", condition.toString(departmentDefinition));
     condition = Department.NAME.isNull();
-    Assertions.assertEquals(columnDefinition.columnExpression() + " IS NULL", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " IS NULL", condition.toString(departmentDefinition));
     condition = Department.NAME.equalTo((String) null);
-    Assertions.assertEquals(columnDefinition.columnExpression() + " IS NULL", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " IS NULL", condition.toString(departmentDefinition));
     condition = Department.NAME.in(emptyList());
-    Assertions.assertEquals(columnDefinition.columnExpression() + " IN ()", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " IN ()", condition.toString(departmentDefinition));
 
     condition = Department.NAME.notEqualTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " <> ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " <> ?", condition.toString(departmentDefinition));
     condition = Department.NAME.notLike("upper%");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " NOT LIKE ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " NOT LIKE ?", condition.toString(departmentDefinition));
     condition = Department.NAME.notEqualTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " <> ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " <> ?", condition.toString(departmentDefinition));
     condition = Department.NAME.isNotNull();
-    Assertions.assertEquals(columnDefinition.columnExpression() + " IS NOT NULL", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " IS NOT NULL", condition.toString(departmentDefinition));
     condition = Department.NAME.notEqualTo(null);
-    Assertions.assertEquals(columnDefinition.columnExpression() + " IS NOT NULL", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " IS NOT NULL", condition.toString(departmentDefinition));
     condition = Department.NAME.notIn(emptyList());
-    Assertions.assertEquals(columnDefinition.columnExpression() + " NOT IN ()", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " NOT IN ()", condition.toString(departmentDefinition));
 
     condition = Department.NAME.greaterThan("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " > ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " > ?", condition.toString(departmentDefinition));
     condition = Department.NAME.greaterThanOrEqualTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " >= ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " >= ?", condition.toString(departmentDefinition));
     condition = Department.NAME.lessThan("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " < ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " < ?", condition.toString(departmentDefinition));
     condition = Department.NAME.lessThanOrEqualTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " <= ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " <= ?", condition.toString(departmentDefinition));
 
     condition = Department.NAME.betweenExclusive("upper", "lower");
-    Assertions.assertEquals("(" + columnDefinition.columnExpression() + " > ? AND " + columnDefinition.columnExpression() + " < ?)", condition.toString(departmentDefinition));
+    Assertions.assertEquals("(" + columnDefinition.expression() + " > ? AND " + columnDefinition.expression() + " < ?)", condition.toString(departmentDefinition));
     condition = Department.NAME.between("upper", "lower");
-    Assertions.assertEquals("(" + columnDefinition.columnExpression() + " >= ? AND " + columnDefinition.columnExpression() + " <= ?)", condition.toString(departmentDefinition));
+    Assertions.assertEquals("(" + columnDefinition.expression() + " >= ? AND " + columnDefinition.expression() + " <= ?)", condition.toString(departmentDefinition));
 
     condition = Department.NAME.notBetweenExclusive("upper", "lower");
-    Assertions.assertEquals("(" + columnDefinition.columnExpression() + " <= ? OR " + columnDefinition.columnExpression() + " >= ?)", condition.toString(departmentDefinition));
+    Assertions.assertEquals("(" + columnDefinition.expression() + " <= ? OR " + columnDefinition.expression() + " >= ?)", condition.toString(departmentDefinition));
     condition = Department.NAME.notBetween("upper", "lower");
-    Assertions.assertEquals("(" + columnDefinition.columnExpression() + " < ? OR " + columnDefinition.columnExpression() + " > ?)", condition.toString(departmentDefinition));
+    Assertions.assertEquals("(" + columnDefinition.expression() + " < ? OR " + columnDefinition.expression() + " > ?)", condition.toString(departmentDefinition));
 
     condition = Department.NAME.equalTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " = ?", condition.toString(departmentDefinition));
     condition = Department.NAME.like("%upper%");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " LIKE ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " LIKE ?", condition.toString(departmentDefinition));
     condition = Department.NAME.notEqualTo("upper");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " <> ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " <> ?", condition.toString(departmentDefinition));
     condition = Department.NAME.notLike("%upper%");
-    Assertions.assertEquals(columnDefinition.columnExpression() + " NOT LIKE ?", condition.toString(departmentDefinition));
+    Assertions.assertEquals(columnDefinition.expression() + " NOT LIKE ?", condition.toString(departmentDefinition));
   }
 
   private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition,

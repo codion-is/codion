@@ -468,9 +468,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Condition combinedCondition = and(select.where(), column.isNotNull());
     String selectQuery = selectQueries.builder(entityDefinition)
             .select(select, false)
-            .columns(columnDefinition.columnExpression())
+            .columns(columnDefinition.expression())
             .where(combinedCondition)
-            .groupBy(columnDefinition.columnExpression())
+            .groupBy(columnDefinition.expression())
             .build();
     List<Object> statementValues = statementValues(combinedCondition, select.having());
     List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, combinedCondition, select.having());
@@ -690,7 +690,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Exception exception = null;
     Condition condition = key(primaryKey);
     String selectQuery = selectQueries.builder(entityDefinition)
-            .columns(columnDefinition.columnExpression())
+            .columns(columnDefinition.expression())
             .where(condition)
             .build();
     logEntry("readBlob", selectQuery);

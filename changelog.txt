@@ -9974,3 +9974,5 @@
   DefaultLocalEntityConnection.select(column) now logs result packing
   HttpEntityConnectionJdk, domainName constructor parameter replaced with domainType
   EntityObjectMapper.module() added, DatabaseObjectMapper and EntityService refactored accordingly
+  DefaultEntitySearchModel, minor refactoring
+  ColumnDefinition and ColumnDefinition.Builder.columnExpression() renamed expression()

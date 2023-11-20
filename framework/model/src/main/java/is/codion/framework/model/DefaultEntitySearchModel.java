@@ -41,7 +41,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static java.util.Collections.unmodifiableCollection;
@@ -85,7 +84,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.singleSelection = builder.singleSelection;
     this.entities.addValidator(new EntityValidator());
     this.limit = Value.value(builder.limit, builder.limit);
-    bindEventsInternal();
+    bindEvents();
   }
 
   @Override
@@ -230,7 +229,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
             ((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     searchString.addListener(() ->
             searchStringModified.set(!searchStringRepresentEntities()));
     separator.addListener(this::reset);
@@ -239,9 +238,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private boolean searchStringRepresentEntities() {
-    String selectedAsString = entitiesToString();
-    return (entities.get().isEmpty() && nullOrEmpty(searchString.get()))
-            || !entities.get().isEmpty() && selectedAsString.equals(searchString.get());
+    return (entities.get().isEmpty() && searchString.get().isEmpty()) ||
+            (!entities.get().isEmpty() && entitiesToString().equals(searchString.get()));
   }
 
   private String createDescription() {

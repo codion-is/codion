@@ -206,7 +206,7 @@ public final class AttributeDefinitionTest {
     assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").readOnly(false));
     assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").updatable(false));
     assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").insertable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").columnExpression("expression"));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").expression("expression"));
   }
 
   @Test
