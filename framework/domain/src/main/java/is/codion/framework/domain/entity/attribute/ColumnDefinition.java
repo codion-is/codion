@@ -25,7 +25,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return the column expression to use when selecting or the column name if no expression has been set
    */
-  String columnExpression();
+  String expression();
 
   /**
    * @return the sql data type of the underlying column ({@link java.sql.Types}.
@@ -133,10 +133,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
     B columnName(String columnName);
 
     /**
-     * @param columnExpression the column expression to use when selecting
+     * @param expression the column expression to use when selecting
      * @return this instance
      */
-    B columnExpression(String columnExpression);
+    B expression(String expression);
 
     /**
      * Specifies whether this column should be included during insert and update operations

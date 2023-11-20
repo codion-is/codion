@@ -9933,3 +9933,4 @@
   DefaultLocalEntityConnection.select(column) now logs result packing
   EntityObjectMapper.module() added, DatabaseObjectMapper and EntityService refactored accordingly
   DefaultEntitySearchModel, minor refactoring
+  ColumnDefinition and ColumnDefinition.Builder.columnExpression() renamed expression()

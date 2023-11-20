@@ -291,7 +291,7 @@ final class SelectQueries {
       return groupByClauseCache.computeIfAbsent(definition.entityType(), type ->
               definition.columns().definitions().stream()
               .filter(ColumnDefinition::groupBy)
-              .map(ColumnDefinition::columnExpression)
+              .map(ColumnDefinition::expression)
               .collect(Collectors.joining(", ")));
     }
 
@@ -300,7 +300,7 @@ final class SelectQueries {
       for (int i = 0; i < columnDefinitions.size(); i++) {
         ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
         String columnName = columnDefinition.columnName();
-        String columnExpression = columnDefinition.columnExpression();
+        String columnExpression = columnDefinition.expression();
         stringBuilder.append(columnExpression);
         if (!columnName.equals(columnExpression)) {
           stringBuilder.append(" AS ").append(columnName);
@@ -339,7 +339,7 @@ final class SelectQueries {
     }
 
     private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
-      return entityDefinition.columns().definition(orderByColumn.column()).columnExpression() +
+      return entityDefinition.columns().definition(orderByColumn.column()).expression() +
               (orderByColumn.ascending() ? "" : " DESC") +
               nullOrderString(orderByColumn.nullOrder());
     }

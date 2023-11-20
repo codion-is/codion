@@ -40,7 +40,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private final boolean searchColumn;
 
   private final transient String columnName;
-  private final transient String columnExpression;
+  private final transient String expression;
   private final transient ValueFetcher<Object> valueFetcher;
   private final transient ValueConverter<T, Object> valueConverter;
   private final transient boolean groupBy;
@@ -56,7 +56,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     this.updatable = builder.updatable;
     this.searchColumn = builder.searchColumn;
     this.columnName = builder.columnName;
-    this.columnExpression = builder.columnExpression;
+    this.expression = builder.expression;
     this.valueFetcher = builder.valueFetcher;
     this.valueConverter = builder.valueConverter;
     this.groupBy = builder.groupBy;
@@ -75,8 +75,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final String columnExpression() {
-    return columnExpression == null ? columnName : columnExpression;
+  public final String expression() {
+    return expression == null ? columnName : expression;
   }
 
   @Override
@@ -211,7 +211,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private boolean updatable;
     private boolean searchColumn;
     private String columnName;
-    private String columnExpression;
+    private String expression;
     private ValueFetcher<Object> valueFetcher;
     private ValueConverter<T, Object> valueConverter;
     private boolean groupBy;
@@ -273,8 +273,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     }
 
     @Override
-    public B columnExpression(String columnExpression) {
-      this.columnExpression = requireNonNull(columnExpression, "columnExpression");
+    public B expression(String expression) {
+      this.expression = requireNonNull(expression, "expression");
       return (B) this;
     }
 
@@ -383,11 +383,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
     DefaultSubqueryColumnDefinitionBuilder(Column<T> column, String subquery) {
       super(column);
-      super.columnExpression("(" + subquery + ")");
+      super.expression("(" + subquery + ")");
     }
 
     @Override
-    public B columnExpression(String columnExpression) {
+    public B expression(String expression) {
       throw new UnsupportedOperationException("Column expression can not be set on a subquery column: " + attribute);
     }
   }

@@ -382,19 +382,19 @@ public final class TestDomain extends DefaultDomain {
                     .groupBy(true),
             Job.MAX_SALARY.define()
                     .column()
-                    .columnExpression("max(sal)")
+                    .expression("max(sal)")
                     .aggregate(true),
             Job.MIN_SALARY.define()
                     .column()
-                    .columnExpression("min(sal)")
+                    .expression("min(sal)")
                     .aggregate(true),
             Job.MAX_COMMISSION.define()
                     .column()
-                    .columnExpression("max(comm)")
+                    .expression("max(comm)")
                     .aggregate(true),
             Job.MIN_COMMISSION.define()
                     .column()
-                    .columnExpression("min(comm)")
+                    .expression("min(comm)")
                     .aggregate(true))
             .tableName("scott.emp")
             .selectQuery(SelectQuery.builder()

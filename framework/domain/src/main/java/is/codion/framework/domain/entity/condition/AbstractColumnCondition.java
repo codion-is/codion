@@ -48,7 +48,7 @@ abstract class AbstractColumnCondition<T> extends AbstractCondition implements C
 
   @Override
   public final String toString(EntityDefinition definition) {
-    return toString(requireNonNull(definition).columns().definition(column).columnExpression());
+    return toString(requireNonNull(definition).columns().definition(column).expression());
   }
 
   @Override
