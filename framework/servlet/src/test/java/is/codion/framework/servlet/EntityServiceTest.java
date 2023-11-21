@@ -39,50 +39,30 @@ import is.codion.framework.servlet.TestDomain.Employee;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.javalin.http.ContentType;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.net.ssl.SSLContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.net.CookieManager;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.framework.domain.entity.condition.Condition.keys;
+import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
+import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,25 +71,28 @@ public class EntityServiceTest {
 
   private static final Entities ENTITIES = new TestDomain().entities();
 
-  private static final EntityObjectMapper ENTITY_OBJECT_MAPPER = EntityObjectMapper.entityObjectMapper(ENTITIES);
-  private static final DatabaseObjectMapper DATABASE_OBJECT_MAPPER = DatabaseObjectMapper.databaseObjectMapper(ENTITY_OBJECT_MAPPER);
+  private static final DatabaseObjectMapper OBJECT_MAPPER = databaseObjectMapper(entityObjectMapper(ENTITIES));
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+  private static final int OK = 200;
+
   private static String HOSTNAME;
-  private static HttpHost TARGET_HOST;
   private static String SERVER_BASEURL;
   private static String SERVER_JSON_BASEURL;
 
+  private static final String CLIENT_ID_STRING = UUID.randomUUID().toString();
+
   private static EntityServer server;
+
+  private static final HttpClient HTTP_CLIENT = createHttpClient();
 
   @BeforeAll
   public static void setUp() throws Exception {
     EntityServerConfiguration configuration = configure();
     HOSTNAME = Clients.SERVER_HOSTNAME.get();
-    TARGET_HOST = new HttpHost(HOSTNAME, EntityService.HTTP_SERVER_SECURE_PORT.get(), "https");
-    SERVER_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_SECURE_PORT.get() + "/entities/ser";
-    SERVER_JSON_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_SECURE_PORT.get() + "/entities/json";
+    SERVER_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/ser/";
+    SERVER_JSON_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/json/";
     server = EntityServer.startServer(configuration);
   }
 
@@ -123,170 +106,135 @@ public class EntityServiceTest {
 
   @Test
   void entities() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("entities")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
-          Entities entities = (Entities) in.readObject();
-          assertNotNull(entities);
-        }
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("entities")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
-          Entities entities = (Entities) in.readObject();
-          assertNotNull(entities);
-        }
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("entities"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    Entities entities = Serializer.deserialize(response.body());
+    assertNotNull(entities);
+
+    response = HTTP_CLIENT.send(createJsonRequest("entities"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    entities = Serializer.deserialize(response.body());
+    assertNotNull(entities);
   }
 
   @Test
   void close() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("close")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("close")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("close"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("close"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
   @Test
   void isTransactionOpen() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("isTransactionOpen")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
-          assertFalse((Boolean) in.readObject());
-        }
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("isTransactionOpen")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertFalse(ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Boolean.class));
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("isTransactionOpen"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    boolean value = Serializer.deserialize(response.body());
+    assertFalse(value);
+
+    response = HTTP_CLIENT.send(createJsonRequest("isTransactionOpen"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    value = OBJECT_MAPPER.readValue(new String((byte[]) response.body(), StandardCharsets.UTF_8), Boolean.class);
+    assertFalse(value);
   }
 
   @Test
   void beginRollbackTransaction() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("beginTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("rollbackTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("beginTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("rollbackTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("beginTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    response = HTTP_CLIENT.send(createRequest("rollbackTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("beginTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    response = HTTP_CLIENT.send(createJsonRequest("rollbackTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
   @Test
   void beginCommitTransaction() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("beginTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("commitTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("beginTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("commitTransaction")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("beginTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    response = HTTP_CLIENT.send(createRequest("commitTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("beginTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    response = HTTP_CLIENT.send(createJsonRequest("commitTransaction"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
   @Test
   void setQueryCacheEnabled() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("setQueryCacheEnabled"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(true)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("isQueryCacheEnabled")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
-          assertTrue((Boolean) in.readObject());
-        }
-      }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("setQueryCacheEnabled",
+            BodyPublishers.ofByteArray(Serializer.serialize(true))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
 
-      post = new HttpPost(createJsonURI("setQueryCacheEnabled"));
-      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(false)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("isQueryCacheEnabled")), context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertFalse(ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Boolean.class));
-      }
-    }
+    response = HTTP_CLIENT.send(createRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    boolean value = Serializer.deserialize(response.body());
+    assertTrue(value);
+
+    response = HTTP_CLIENT.send(createRequest("setQueryCacheEnabled",
+            BodyPublishers.ofByteArray(Serializer.serialize(false))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    value = Serializer.deserialize(response.body());
+    assertFalse(value);
+
+    response = HTTP_CLIENT.send(createJsonRequest("setQueryCacheEnabled",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(true))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    value = OBJECT_MAPPER.readValue(new String(response.body()), Boolean.class);
+    assertTrue(value);
+
+    response = HTTP_CLIENT.send(createJsonRequest("setQueryCacheEnabled",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(false))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    value = OBJECT_MAPPER.readValue(new String(response.body()), Boolean.class);
+    assertFalse(value);
   }
 
   @Test
   void procedure() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("procedure"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      post = new HttpPost(createJsonURI("procedure"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("procedure",
+            BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID)))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("procedure",
+            BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID)))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
   @Test
   void function() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("function"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      post = new HttpPost(createJsonURI("function"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("function",
+            BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID)))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("function",
+            BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID)))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
   @Test
   void report() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("report"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(asList(TestDomain.REPORT_TYPE, "Parameter"))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      post = new HttpPost(createJsonURI("report"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(asList(TestDomain.REPORT_TYPE, "Parameter"))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("report",
+            BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.REPORT_TYPE, "Parameter")))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("report",
+            BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.REPORT_TYPE, "Parameter")))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
   @Test
@@ -294,70 +242,58 @@ public class EntityServiceTest {
     Entity.Key key1 = ENTITIES.primaryKey(Department.TYPE, 10);
     Entity.Key key2 = ENTITIES.primaryKey(Department.TYPE, 20);
     List<Entity> entitiesDep = Arrays.asList(Entity.entity(key1), Entity.entity(key2));
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("dependencies"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(entitiesDep)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        Map<String, Collection<Entity>> dependencies = deserialize(response.getEntity().getContent());
-        assertEquals(1, dependencies.size());
-        assertEquals(12, dependencies.get(Employee.TYPE).size());
-      }
-      post = new HttpPost(createJsonURI("dependencies"));
-      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(entitiesDep)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        Map<EntityType, Collection<Entity>> dependencies = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-                new TypeReference<Map<EntityType, Collection<Entity>>>() {});
-        assertEquals(1, dependencies.size());
-        assertEquals(12, dependencies.get(Employee.TYPE).size());
-      }
-    }
+
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("dependencies",
+            BodyPublishers.ofByteArray(Serializer.serialize(entitiesDep))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    Map<String, Collection<Entity>> dependencies = Serializer.deserialize(response.body());
+    assertEquals(1, dependencies.size());
+    assertEquals(12, dependencies.get(Employee.TYPE).size());
+
+    response = HTTP_CLIENT.send(createJsonRequest("dependencies",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entitiesDep))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    String content = new String(response.body());
+    Map<EntityType, Collection<Entity>> collectionMap = OBJECT_MAPPER.readValue(content,
+            new TypeReference<Map<EntityType, Collection<Entity>>>() {});
+    assertEquals(1, collectionMap.size());
+    assertEquals(12, collectionMap.get(Employee.TYPE).size());
   }
 
   @Test
   void count() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("count"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(Count.where(Department.ID.equalTo(10)))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
-      }
-      post = new HttpPost(createJsonURI("count"));
-      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(Count.where(Department.ID.equalTo(10)))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(1, DATABASE_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class));
-      }
-    }
+    Count where = Count.where(Department.ID.equalTo(10));
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("count",
+            BodyPublishers.ofByteArray(Serializer.serialize(where))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    int count = Serializer.deserialize(response.body());
+    assertEquals(1, count);
+
+    response = HTTP_CLIENT.send(createJsonRequest("count",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(where))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    count = OBJECT_MAPPER.readValue(new String(response.body()), Integer.class);
+    assertEquals(1, count);
   }
 
   @Test
   void values() throws Exception {
     Select select = Select.where(Department.ID.equalTo(10)).build();
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("values"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(asList(Department.ID, select))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(10, EntityServiceTest.<List<Integer>>deserialize(response.getEntity().getContent()).get(0));
-      }
-      ObjectNode node = ENTITY_OBJECT_MAPPER.createObjectNode();
-      node.set("column", DATABASE_OBJECT_MAPPER.valueToTree(Department.ID.name()));
-      node.set("entityType", DATABASE_OBJECT_MAPPER.valueToTree(Department.ID.entityType().name()));
-      node.set("condition", DATABASE_OBJECT_MAPPER.valueToTree(select));
-      post = new HttpPost(createJsonURI("values"));
-      post.setEntity(new StringEntity(node.toString()));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(10, ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-                new TypeReference<List<Integer>>() {}).get(0));
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("values",
+            BodyPublishers.ofByteArray(Serializer.serialize(asList(Department.ID, select)))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    List<Integer> values = Serializer.deserialize(response.body());
+    assertEquals(10, values.get(0));
+
+    ObjectNode node = OBJECT_MAPPER.createObjectNode();
+    node.set("column", OBJECT_MAPPER.valueToTree(Department.ID.name()));
+    node.set("entityType", OBJECT_MAPPER.valueToTree(Department.ID.entityType().name()));
+    node.set("condition", OBJECT_MAPPER.valueToTree(select));
+    response = HTTP_CLIENT.send(createJsonRequest("values",
+            BodyPublishers.ofString(node.toString())), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    values = OBJECT_MAPPER.readValue(new String(response.body()), new TypeReference<List<Integer>>() {});
+    assertEquals(10, values.get(0));
   }
 
   @Test
@@ -366,21 +302,17 @@ public class EntityServiceTest {
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
 
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("selectByKey"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(keys)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, EntityServiceTest.<List<Entity>>deserialize(response.getEntity().getContent()).size());
-      }
-      post = new HttpPost(createJsonURI("selectByKey"));
-      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(keys)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent()).size());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("selectByKey",
+            BodyPublishers.ofByteArray(Serializer.serialize(keys))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    List<Entity> values = Serializer.deserialize(response.body());
+    assertEquals(2, values.size());
+
+    response = HTTP_CLIENT.send(createJsonRequest("selectByKey",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(keys))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    assertEquals(2, values.size());
   }
 
   @Test
@@ -389,21 +321,18 @@ public class EntityServiceTest {
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
     Select select = Select.where(keys(keys)).build();
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("select"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(select)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, EntityServiceTest.<List<Entity>>deserialize(response.getEntity().getContent()).size());
-      }
-      post = new HttpPost(createJsonURI("select"));
-      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(select)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent()).size());
-      }
-    }
+
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("select",
+            BodyPublishers.ofByteArray(Serializer.serialize(select))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    List<Entity> values = Serializer.deserialize(response.body());
+    assertEquals(2, values.size());
+
+    response = HTTP_CLIENT.send(createJsonRequest("select",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(select))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    assertEquals(2, values.size());
   }
 
   @Test
@@ -419,22 +348,19 @@ public class EntityServiceTest {
             .with(Department.NAME, "Another name")
             .with(Department.LOCATION, "locat")
             .build());
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("insert"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(entities)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, EntityServiceTest.<List<Entity.Key>>deserialize(response.getEntity().getContent()).size());
-      }
-      entities.forEach(entity -> entity.put(Department.ID, entity.get(Department.ID) + 1));
-      post = new HttpPost(createJsonURI("insertSelect"));
-      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(entities)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent()).size());
-      }
-    }
+
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("insertSelect",
+            BodyPublishers.ofByteArray(Serializer.serialize(entities))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    List<Entity> values = Serializer.deserialize(response.body());
+    assertEquals(2, values.size());
+
+    entities.forEach(entity -> entity.put(Department.ID, entity.get(Department.ID) + 1));
+    response = HTTP_CLIENT.send(createJsonRequest("insert",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    assertEquals(2, values.size());
   }
 
   @Test
@@ -453,167 +379,120 @@ public class EntityServiceTest {
     entities.get(0).put(Department.LOCATION, "NEW YORK2");
     entities.get(1).put(Department.LOCATION, "DALLAS2");
 
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("updateSelect"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(entities)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        List<Entity> updated = EntityServiceTest.<List<Entity>>deserialize(response.getEntity().getContent());
-        assertEquals(2, updated.size());
-        assertEquals(2, updated.size());
-        assertTrue(updated.containsAll(entities));
-        assertEquals("NEW YORK2", updated.stream().filter(entity -> entity.get(Department.ID).equals(10))
-                .findFirst().orElse(null).get(Department.LOCATION));
-        assertEquals("DALLAS2", updated.stream().filter(entity -> entity.get(Department.ID).equals(20))
-                .findFirst().orElse(null).get(Department.LOCATION));
-      }
-      entities.get(0).save(Department.LOCATION);
-      entities.get(0).put(Department.LOCATION, "NEW YORK");
-      entities.get(1).save(Department.LOCATION);
-      entities.get(1).put(Department.LOCATION, "DALLAS");
-      post = new HttpPost(createJsonURI("updateSelect"));
-      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(entities)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        List<Entity> updated = ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent());
-        assertEquals(2, updated.size());
-        assertEquals(2, updated.size());
-        assertEquals(2, updated.size());
-        assertTrue(updated.containsAll(entities));
-        assertEquals("NEW YORK", updated.stream().filter(entity -> entity.get(Department.ID).equals(10))
-                .findFirst().orElse(null).get(Department.LOCATION));
-        assertEquals("DALLAS", updated.stream().filter(entity -> entity.get(Department.ID).equals(20))
-                .findFirst().orElse(null).get(Department.LOCATION));
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("updateSelect",
+            BodyPublishers.ofByteArray(Serializer.serialize(entities))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    List<Entity> values = Serializer.deserialize(response.body());
+    assertEquals(2, values.size());
+    assertTrue(values.containsAll(entities));
+    assertEquals("NEW YORK2", values.stream().filter(entity -> entity.get(Department.ID).equals(10))
+            .findFirst().orElse(null).get(Department.LOCATION));
+    assertEquals("DALLAS2", values.stream().filter(entity -> entity.get(Department.ID).equals(20))
+            .findFirst().orElse(null).get(Department.LOCATION));
+
+    entities.get(0).save(Department.LOCATION);
+    entities.get(0).put(Department.LOCATION, "NEW YORK");
+    entities.get(1).save(Department.LOCATION);
+    entities.get(1).put(Department.LOCATION, "DALLAS");
+    response = HTTP_CLIENT.send(createJsonRequest("updateSelect",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    assertEquals(2, values.size());
+    assertTrue(values.containsAll(entities));
+    assertEquals("NEW YORK", values.stream().filter(entity -> entity.get(Department.ID).equals(10))
+            .findFirst().orElse(null).get(Department.LOCATION));
+    assertEquals("DALLAS", values.stream().filter(entity -> entity.get(Department.ID).equals(20))
+            .findFirst().orElse(null).get(Department.LOCATION));
   }
 
   @Test
   void updateCondition() throws Exception {
     Update update = Update.where(Department.ID.between(10, 20))
             .set(Department.LOCATION, "aloc").build();
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("updateByCondition"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(update)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(Integer.valueOf(2), deserialize(response.getEntity().getContent()));
-      }
-      post = new HttpPost(createJsonURI("updateByCondition"));
-      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(update)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        Integer updateCount = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class);
-        assertEquals(2, updateCount);
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("updateByCondition",
+            BodyPublishers.ofByteArray(Serializer.serialize(update))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    int count = Serializer.deserialize(response.body());
+    assertEquals(2, count);
+
+    response = HTTP_CLIENT.send(createJsonRequest("updateByCondition",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(update))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    count = OBJECT_MAPPER.readValue(new String(response.body()), Integer.class);
+    assertEquals(2, count);
   }
 
   @Test
   void delete() throws Exception {
     Condition deleteCondition = Department.ID.equalTo(40);
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("delete"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(deleteCondition)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
-      }
-      post = new HttpPost(createJsonURI("delete"));
-      post.setEntity(new StringEntity(DATABASE_OBJECT_MAPPER.writeValueAsString(deleteCondition)));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        Integer deleteCount = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class);
-        assertEquals(0, deleteCount);
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("delete",
+            BodyPublishers.ofByteArray(Serializer.serialize(deleteCondition))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    int count = Serializer.deserialize(response.body());
+    assertEquals(1, count);
+
+    response = HTTP_CLIENT.send(createJsonRequest("delete",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(deleteCondition))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+    count = OBJECT_MAPPER.readValue(new String(response.body()), Integer.class);
+    assertEquals(0, count);
   }
 
   @Test
   void deleteByKey() throws Exception {
-    try (CloseableHttpClient client = createClient()) {
-      HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("deleteByKey"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(ENTITIES.primaryKey(Department.TYPE, 50)))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-      post = new HttpPost(createJsonURI("deleteByKey"));
-      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(singletonList(ENTITIES.primaryKey(Department.TYPE, 60)))));
-      try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      }
-    }
+    HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("deleteByKey",
+            BodyPublishers.ofByteArray(Serializer.serialize(singletonList(ENTITIES.primaryKey(Department.TYPE, 50))))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
+
+    response = HTTP_CLIENT.send(createJsonRequest("deleteByKey",
+            BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(singletonList(ENTITIES.primaryKey(Department.TYPE, 60))))), BodyHandlers.ofByteArray());
+    assertEquals(OK, response.statusCode());
   }
 
-  private static CloseableHttpClient createClient() {
-    String clientIdString = UUID.randomUUID().toString();
+  private static HttpRequest createRequest(String path) {
+    return createRequest(SERVER_BASEURL, path, BodyPublishers.noBody());
+  }
 
-    return HttpClientBuilder.create()
-            .setDefaultRequestConfig(RequestConfig.custom()
-                    .setSocketTimeout(2000)
-                    .setConnectTimeout(2000)
-                    .build())
-            .setConnectionManager(createConnectionManager())
-            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.name());
-              request.setHeader(EntityService.CLIENT_TYPE_ID, "EntityJavalinTest");
-              request.setHeader(EntityService.CLIENT_ID, clientIdString);
-              request.setHeader("Content-Type", ContentType.APPLICATION_JSON.toString());
+  private static HttpRequest createRequest(String path, BodyPublisher bodyPublisher) {
+    return createRequest(SERVER_BASEURL, path, bodyPublisher);
+  }
+
+  private static HttpRequest createJsonRequest(String path) {
+    return createJsonRequest(path, BodyPublishers.noBody());
+  }
+
+  private static HttpRequest createJsonRequest(String path, BodyPublisher bodyPublisher) {
+    return createRequest(SERVER_JSON_BASEURL, path, bodyPublisher);
+  }
+
+  private static HttpRequest createRequest(String baseUrl, String path, BodyPublisher bodyPublisher) {
+    return HttpRequest.newBuilder()
+            .uri(URI.create(baseUrl + path))
+            .POST(bodyPublisher)
+            .headers(new String[] {
+                    EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.name(),
+                    EntityService.CLIENT_TYPE_ID, "EntityJavalinTest",
+                    EntityService.CLIENT_ID, CLIENT_ID_STRING,
+                    "Authorization", createAuthorizationHeader()
             })
             .build();
   }
 
-  private static URI createSerURI(String path) throws URISyntaxException {
-    return new URIBuilder().setScheme("https").setHost(SERVER_BASEURL).setPath(path).build();
+  private static String createAuthorizationHeader() {
+    return "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() + ":" + String.valueOf(UNIT_TEST_USER.password())).getBytes());
   }
 
-  private static URI createJsonURI(String path) throws URISyntaxException {
-    return new URIBuilder().setScheme("https").setHost(SERVER_JSON_BASEURL).setPath(path).build();
-  }
-
-  private static HttpClientContext createHttpContext(User user, HttpHost targetHost) {
-    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(
-            new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-            new UsernamePasswordCredentials(user.username(), String.valueOf(user.password())));
-
-    AuthCache authCache = new BasicAuthCache();
-    authCache.put(targetHost, new BasicScheme());
-
-    HttpClientContext context = HttpClientContext.create();
-    context.setCredentialsProvider(credentialsProvider);
-    context.setAuthCache(authCache);
-
-    return context;
-  }
-
-  private static BasicHttpClientConnectionManager createConnectionManager() {
-    try {
-      SSLContext sslContext = SSLContext.getDefault();
-
-      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
-                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
-              .build());
-    }
-    catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+  private static HttpClient createHttpClient() {
+    return HttpClient.newBuilder()
+            .cookieHandler(new CookieManager())
+            .build();
   }
 
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOSTNAME.set("localhost");
-    Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
-    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();
-    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
-    EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    EntityService.HTTP_SERVER_SECURE.set(true);
-    System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
+    EntityService.HTTP_SERVER_SECURE.set(false);
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
@@ -626,20 +505,9 @@ public class EntityServiceTest {
   }
 
   private static void deconfigure() {
+    System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.FALSE.toString());
     Clients.SERVER_HOSTNAME.set(null);
-    Clients.TRUSTSTORE.set(null);
-    Clients.TRUSTSTORE_PASSWORD.set(null);
-    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
-    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
-    ServerConfiguration.RMI_SERVER_HOSTNAME.set(null);
     ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.set(null);
-    EntityService.HTTP_SERVER_KEYSTORE_PATH.set(null);
-    EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
-    EntityService.HTTP_SERVER_SECURE.set(false);
-    System.clearProperty("java.security.policy");
-  }
-
-  private static <T> T deserialize(InputStream inputStream) throws IOException, ClassNotFoundException {
-    return (T) new ObjectInputStream(inputStream).readObject();
+    EntityService.HTTP_SERVER_SECURE.set(true);
   }
 }
