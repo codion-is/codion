@@ -25,14 +25,9 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import static is.codion.common.Serializer.serialize;
 import static java.util.Arrays.asList;
@@ -42,10 +37,6 @@ import static java.util.Objects.requireNonNull;
  * A Http based {@link EntityConnection} implementation based on EntityService
  */
 final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(), Locale.getDefault());
-
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpEntityConnection.class);
 
   DefaultHttpEntityConnection(DefaultBuilder builder) {
     super(builder, "/entities/ser/");

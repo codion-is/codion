@@ -32,8 +32,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,9 +40,7 @@ import java.net.http.HttpResponse;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
@@ -55,10 +51,6 @@ import static java.util.Objects.requireNonNull;
  * A Http based {@link EntityConnection} implementation based on EntityJsonService
  */
 final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(), Locale.getDefault());
-
-  private static final Logger LOG = LoggerFactory.getLogger(JsonHttpEntityConnection.class);
 
   private final ObjectMapper objectMapper;
 
