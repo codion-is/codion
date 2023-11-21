@@ -35,17 +35,10 @@ import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
 import is.codion.framework.servlet.EntityServiceFactory;
 
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.net.ssl.SSLContext;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -275,19 +268,6 @@ abstract class AbstractHttpEntityConnectionTest {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
 
-  static BasicHttpClientConnectionManager createConnectionManager() {
-    try {
-      SSLContext sslContext = SSLContext.getDefault();
-
-      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
-                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
-              .build());
-    }
-    catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOSTNAME.set("localhost");
     Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
@@ -297,7 +277,6 @@ abstract class AbstractHttpEntityConnectionTest {
     HttpEntityConnection.SECURE.set(true);
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpEntityConnection.SECURE.set(true);
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)

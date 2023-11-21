@@ -90,7 +90,7 @@ public interface HttpEntityConnection extends EntityConnection {
    * @return a new builder instance
    */
   static Builder builder() {
-    return new DefaultHttpEntityConnection.DefaultBuilder();
+    return new AbstractHttpEntityConnection.DefaultBuilder();
   }
 
   /**

@@ -28,14 +28,12 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public JsonHttpEntityConnectionTest() {
-    super(new JsonHttpEntityConnection(TestDomain.DOMAIN,
-            HttpEntityConnection.HOSTNAME.get(),
-            UNIT_TEST_USER, "HttpJsonEntityConnectionTest", UUID.randomUUID(),
-            HttpEntityConnection.PORT.get(),
-            HttpEntityConnection.SECURE_PORT.get(),
-            HttpEntityConnection.SECURE.get(),
-            HttpEntityConnection.SOCKET_TIMEOUT.get(),
-            HttpEntityConnection.CONNECT_TIMEOUT.get(),
-            createConnectionManager()));
+    super(HttpEntityConnection.builder()
+            .json(true)
+            .domainType(TestDomain.DOMAIN)
+            .user(UNIT_TEST_USER)
+            .clientTypeId("JsonHttpEntityConnectionTest")
+            .clientId(UUID.randomUUID())
+            .build());
   }
 }

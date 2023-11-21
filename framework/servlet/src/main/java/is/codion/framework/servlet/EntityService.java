@@ -422,7 +422,8 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        connection.setQueryCacheEnabled(deserialize(context.req()));
+        ObjectMapper objectMapper = objectMapper(connection.entities());
+        connection.setQueryCacheEnabled(objectMapper.readValue(context.req().getInputStream(), Boolean.class));
         context.status(HttpStatus.OK_200);
       }
       catch (Exception e) {

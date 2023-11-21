@@ -10,8 +10,6 @@ dependencies {
 
     implementation(libs.slf4j.api)
 
-    implementation(libs.http.client)
-
     testImplementation project(":codion-common-rmi")
     testImplementation project(":codion-framework-server")
     testImplementation project(":codion-framework-servlet")

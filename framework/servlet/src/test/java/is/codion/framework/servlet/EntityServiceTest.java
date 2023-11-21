@@ -227,7 +227,7 @@ public class EntityServiceTest {
       }
 
       post = new HttpPost(createJsonURI("setQueryCacheEnabled"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(false)));
+      post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(false)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       }
