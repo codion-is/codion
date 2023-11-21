@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +48,7 @@ import java.util.ResourceBundle;
 
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -115,7 +115,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("insert",
-                        objectMapper.writeValueAsString(entities))), objectMapper, KEY_LIST_REFERENCE);
+                objectMapper.writeValueAsString(entities))), objectMapper, KEY_LIST_REFERENCE);
       }
     }
     catch (DatabaseException e) {
@@ -132,7 +132,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("insertSelect",
-                        objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
+                objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
       }
     }
     catch (DatabaseException e) {
@@ -166,7 +166,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("updateSelect",
-                        objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
+                objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
       }
     }
     catch (DatabaseException e) {
@@ -183,7 +183,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("updateByCondition",
-                        objectMapper.writeValueAsString(update))), objectMapper, Integer.class);
+                objectMapper.writeValueAsString(update))), objectMapper, Integer.class);
       }
     }
     catch (DatabaseException e) {
@@ -217,7 +217,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("delete",
-                        objectMapper.writeValueAsString(condition))), objectMapper, Integer.class);
+                objectMapper.writeValueAsString(condition))), objectMapper, Integer.class);
       }
     }
     catch (DatabaseException e) {
@@ -231,6 +231,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
     requireNonNull(column);
+    requireNonNull(select);
     try {
       ObjectNode node = objectMapper.createObjectNode();
       node.set("column", objectMapper.valueToTree(column.name()));
@@ -255,7 +256,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("selectByKey",
-                        objectMapper.writeValueAsString(keys))), objectMapper, ENTITY_LIST_REFERENCE);
+                objectMapper.writeValueAsString(keys))), objectMapper, ENTITY_LIST_REFERENCE);
       }
     }
     catch (DatabaseException e) {
@@ -272,7 +273,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("select",
-                        objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
+                objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
       }
     }
     catch (DatabaseException e) {
@@ -312,7 +313,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       synchronized (httpClient) {
         return handleJsonResponse(executeJson(createJsonRequest("count",
-                        objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
+                objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
       }
     }
     catch (DatabaseException e) {
@@ -350,18 +351,18 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   private static <T> T handleJsonResponse(HttpResponse<?> response, ObjectMapper mapper, TypeReference<T> typeReference) throws Exception {
     throwIfError(response);
 
-    return mapper.readValue(new String((byte[]) response.body(), StandardCharsets.UTF_8), typeReference);
+    return mapper.readValue(new String((byte[]) response.body(), UTF_8), typeReference);
   }
 
   private static <T> T handleJsonResponse(HttpResponse<?> response, ObjectMapper mapper, Class<T> valueClass) throws Exception {
     throwIfError(response);
 
-    return mapper.readValue(new String((byte[]) response.body(), StandardCharsets.UTF_8), valueClass);
+    return mapper.readValue(new String((byte[]) response.body(), UTF_8), valueClass);
   }
 
   private static <T> T handleJsonResponse(HttpResponse<?> response, ObjectMapper mapper, JavaType javaType) throws Exception {
     throwIfError(response);
 
-    return mapper.readValue(new String((byte[]) response.body(), StandardCharsets.UTF_8), javaType);
+    return mapper.readValue(new String((byte[]) response.body(), UTF_8), javaType);
   }
 }

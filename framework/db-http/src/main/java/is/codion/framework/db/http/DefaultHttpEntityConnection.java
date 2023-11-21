@@ -205,6 +205,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
     requireNonNull(column);
+    requireNonNull(select);
     try {
       synchronized (httpClient) {
         return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));

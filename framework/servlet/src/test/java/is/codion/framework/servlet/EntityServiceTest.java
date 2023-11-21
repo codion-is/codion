@@ -51,7 +51,6 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -63,6 +62,7 @@ import java.util.UUID;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -135,7 +135,7 @@ public class EntityServiceTest {
 
     response = HTTP_CLIENT.send(createJsonRequest("isTransactionOpen"), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    value = OBJECT_MAPPER.readValue(new String((byte[]) response.body(), StandardCharsets.UTF_8), Boolean.class);
+    value = OBJECT_MAPPER.readValue(new String((byte[]) response.body(), UTF_8), Boolean.class);
     assertFalse(value);
   }
 
@@ -191,7 +191,7 @@ public class EntityServiceTest {
 
     response = HTTP_CLIENT.send(createJsonRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    value = OBJECT_MAPPER.readValue(new String(response.body()), Boolean.class);
+    value = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Boolean.class);
     assertTrue(value);
 
     response = HTTP_CLIENT.send(createJsonRequest("setQueryCacheEnabled",
@@ -200,7 +200,7 @@ public class EntityServiceTest {
 
     response = HTTP_CLIENT.send(createJsonRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    value = OBJECT_MAPPER.readValue(new String(response.body()), Boolean.class);
+    value = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Boolean.class);
     assertFalse(value);
   }
 
@@ -253,7 +253,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("dependencies",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entitiesDep))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    String content = new String(response.body());
+    String content = new String(response.body(), UTF_8);
     Map<EntityType, Collection<Entity>> collectionMap = OBJECT_MAPPER.readValue(content,
             new TypeReference<Map<EntityType, Collection<Entity>>>() {});
     assertEquals(1, collectionMap.size());
@@ -272,7 +272,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("count",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(where))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    count = OBJECT_MAPPER.readValue(new String(response.body()), Integer.class);
+    count = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Integer.class);
     assertEquals(1, count);
   }
 
@@ -292,7 +292,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("values",
             BodyPublishers.ofString(node.toString())), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    values = OBJECT_MAPPER.readValue(new String(response.body()), new TypeReference<List<Integer>>() {});
+    values = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), new TypeReference<List<Integer>>() {});
     assertEquals(10, values.get(0));
   }
 
@@ -311,7 +311,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("selectByKey",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(keys))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    values = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), EntityObjectMapper.ENTITY_LIST_REFERENCE);
     assertEquals(2, values.size());
   }
 
@@ -331,7 +331,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("select",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(select))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    values = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), EntityObjectMapper.ENTITY_LIST_REFERENCE);
     assertEquals(2, values.size());
   }
 
@@ -359,7 +359,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("insert",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    values = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), EntityObjectMapper.ENTITY_LIST_REFERENCE);
     assertEquals(2, values.size());
   }
 
@@ -397,7 +397,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("updateSelect",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    values = OBJECT_MAPPER.readValue(new String(response.body()), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    values = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), EntityObjectMapper.ENTITY_LIST_REFERENCE);
     assertEquals(2, values.size());
     assertTrue(values.containsAll(entities));
     assertEquals("NEW YORK", values.stream().filter(entity -> entity.get(Department.ID).equals(10))
@@ -419,7 +419,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("updateByCondition",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(update))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    count = OBJECT_MAPPER.readValue(new String(response.body()), Integer.class);
+    count = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Integer.class);
     assertEquals(2, count);
   }
 
@@ -435,7 +435,7 @@ public class EntityServiceTest {
     response = HTTP_CLIENT.send(createJsonRequest("delete",
             BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(deleteCondition))), BodyHandlers.ofByteArray());
     assertEquals(OK, response.statusCode());
-    count = OBJECT_MAPPER.readValue(new String(response.body()), Integer.class);
+    count = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Integer.class);
     assertEquals(0, count);
   }
 
