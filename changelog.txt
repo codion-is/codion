@@ -9934,3 +9934,4 @@
   EntityObjectMapper.module() added, DatabaseObjectMapper and EntityService refactored accordingly
   DefaultEntitySearchModel, minor refactoring
   ColumnDefinition and ColumnDefinition.Builder.columnExpression() renamed expression()
+  DefaultConnectionRequest.DefaultBuilder, no longer instantiates a random UUID
