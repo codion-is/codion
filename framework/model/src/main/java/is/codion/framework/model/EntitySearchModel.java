@@ -43,11 +43,11 @@ import java.util.function.Supplier;
 public interface EntitySearchModel {
 
   /**
-   * Specifies the default search result limit, that is, the maximum number of results, -1 meaning no limit<br>
+   * Specifies the default search result limit, that is, the maximum number of results, null meaning no limit<br>
    * Value type: Integer<br>
-   * Default value: -1
+   * Default value: null
    */
-  PropertyValue<Integer> LIMIT = Configuration.integerValue("is.codion.framework.model.EntitySearchModel.limit", -1);
+  PropertyValue<Integer> LIMIT = Configuration.integerValue("is.codion.framework.model.EntitySearchModel.limit");
 
   /**
    * @return the type of the entity this search model is based on

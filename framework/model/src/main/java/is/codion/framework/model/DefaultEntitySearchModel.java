@@ -83,7 +83,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.description = builder.description == null ? createDescription() : builder.description;
     this.singleSelection = builder.singleSelection;
     this.entities.addValidator(new EntityValidator());
-    this.limit = Value.value(builder.limit, builder.limit);
+    this.limit = Value.value(builder.limit);
     bindEvents();
   }
 
@@ -210,7 +210,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     return Select.where(createCombinedCondition(conditions))
-            .limit(limit.get())
+            .limit(limit.isNull() ? -1 : limit.get())
             .build();
   }
 
@@ -310,7 +310,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private String description;
     private boolean singleSelection = false;
     private String separator = DEFAULT_SEPARATOR;
-    private int limit = LIMIT.get();
+    private Integer limit = LIMIT.get();
 
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);

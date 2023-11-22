@@ -47,7 +47,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
   private DefaultConnectionRequest(DefaultBuilder builder) {
     this.user = requireNonNull(builder.user, "user");
-    this.clientId = requireNonNull(builder.clientId, "clientId");
+    this.clientId = builder.clientId == null ? UUID.randomUUID() : builder.clientId;
     this.clientTypeId = requireNonNull(builder.clientTypeId, "clientTypeId");
     this.clientVersion = builder.clientVersion;
     this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
@@ -125,7 +125,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   static final class DefaultBuilder implements Builder {
 
     private User user;
-    private UUID clientId = UUID.randomUUID();
+    private UUID clientId;
     private String clientTypeId;
     private Version clientVersion;
     private Map<String, Object> parameters;
