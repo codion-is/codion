@@ -51,7 +51,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
@@ -59,9 +58,11 @@ import static is.codion.common.Serializer.deserialize;
 import static is.codion.common.Serializer.serialize;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.key;
+import static java.lang.Runtime.getRuntime;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
@@ -69,7 +70,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(), Locale.getDefault());
 
-  private static final Executor EXECUTOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1, new DaemonThreadFactory());
+  static final Executor DEFAULT_EXECUTOR = newFixedThreadPool(getRuntime().availableProcessors() + 1, new DaemonThreadFactory());
 
   private static final String AUTHORIZATION = "Authorization";
   private static final String BASIC = "Basic ";
@@ -98,7 +99,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     this.user = requireNonNull(builder.user, "user");
     this.baseurl = createBaseUrl(builder, path);
     this.socketTimeout = Duration.ofMillis(builder.socketTimeout);
-    this.httpClient = createHttpClient(builder.connectTimeout);
+    this.httpClient = createHttpClient(builder.connectTimeout, builder.executor);
     this.headers = new String[] {
             DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType").name(),
             CLIENT_TYPE_ID, requireNonNull(builder.clientTypeId, CLIENT_TYPE_ID),
@@ -378,9 +379,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
             .build();
   }
 
-  private static HttpClient createHttpClient(int connectTimeout) {
+  private static HttpClient createHttpClient(int connectTimeout, Executor executor) {
     return HttpClient.newBuilder()
-            .executor(EXECUTOR)
+            .executor(executor)
             .cookieHandler(new CookieManager())
             .connectTimeout(Duration.ofMillis(connectTimeout))
             .build();
@@ -436,6 +437,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     private User user;
     private String clientTypeId;
     private UUID clientId;
+    private Executor executor = DEFAULT_EXECUTOR;
 
     @Override
     public Builder domainType(DomainType domainType) {
@@ -500,6 +502,12 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     @Override
     public Builder clientId(UUID clientId) {
       this.clientId = requireNonNull(clientId);
+      return this;
+    }
+
+    @Override
+    public Builder executor(Executor executor) {
+      this.executor = requireNonNull(executor);
       return this;
     }
 

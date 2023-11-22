@@ -9978,3 +9978,4 @@
   ColumnDefinition and ColumnDefinition.Builder.columnExpression() renamed expression()
   DefaultHttpEntityConnection and JsonHttpEntityConnection now use the JDK http client instead of apache http client, related refactoring
   Servlet tests no longer depend on apache http client
+  HttpEntityConnection.Builder, HttpEntityConnectionProvider.Builder.executor() added

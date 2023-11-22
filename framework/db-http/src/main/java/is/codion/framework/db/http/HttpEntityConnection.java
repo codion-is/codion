@@ -25,6 +25,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 
 import java.util.UUID;
+import java.util.concurrent.Executor;
 
 /**
  * A factory class for http based EntityConnection builder.
@@ -163,6 +164,13 @@ public interface HttpEntityConnection extends EntityConnection {
      * @return this builder instance
      */
     Builder clientId(UUID clientId);
+
+    /**
+     * By default the http client uses a shared thread pool executor.
+     * @param executor the http client executor to use
+     * @return this builder instance
+     */
+    Builder executor(Executor executor);
 
     /**
      * @return a http based EntityConnection
