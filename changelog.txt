@@ -9935,3 +9935,4 @@
   DefaultEntitySearchModel, minor refactoring
   ColumnDefinition and ColumnDefinition.Builder.columnExpression() renamed expression()
   DefaultConnectionRequest.DefaultBuilder, no longer instantiates a random UUID
+  DefaultEntitySearchModel.limit() value now nullable, instead of using -1 for no limit, EntitySearchModel.LIMIT now has a default value of null instead of -1
