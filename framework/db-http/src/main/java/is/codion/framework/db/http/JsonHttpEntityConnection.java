@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -36,12 +35,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -56,7 +58,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   JsonHttpEntityConnection(DefaultBuilder builder) {
     super(builder, "/entities/json/");
-    this.objectMapper = DatabaseObjectMapper.databaseObjectMapper(EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities));
+    this.objectMapper = databaseObjectMapper(EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities));
   }
 
   @Override
@@ -316,26 +318,26 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     }
   }
 
-  private <T> HttpResponse<T> executeJson(HttpRequest operation) throws Exception {
+  private <T> HttpResponse<T> executeJson(HttpRequest operation) throws IOException, InterruptedException {
     synchronized (httpClient) {
-      return (HttpResponse<T>) httpClient.send(operation, HttpResponse.BodyHandlers.ofByteArray());
+      return (HttpResponse<T>) httpClient.send(operation, BodyHandlers.ofByteArray());
     }
   }
 
-  private HttpRequest createJsonRequest(String path) throws IOException {
+  private HttpRequest createJsonRequest(String path) {
     return HttpRequest.newBuilder()
             .timeout(socketTimeout)
             .uri(URI.create(baseurl + path))
-            .POST(HttpRequest.BodyPublishers.noBody())
+            .POST(BodyPublishers.noBody())
             .headers(headers)
             .build();
   }
 
-  private HttpRequest createJsonRequest(String path, String data) throws IOException {
+  private HttpRequest createJsonRequest(String path, String data) {
     return HttpRequest.newBuilder()
             .timeout(socketTimeout)
             .uri(URI.create(baseurl + path))
-            .POST(HttpRequest.BodyPublishers.ofString(data))
+            .POST(BodyPublishers.ofString(data))
             .headers(headers)
             .build();
   }

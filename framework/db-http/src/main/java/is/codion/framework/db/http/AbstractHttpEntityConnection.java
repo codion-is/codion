@@ -357,13 +357,13 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     }
   }
 
-  protected final <T> HttpResponse<T> execute(HttpRequest operation) throws Exception {
+  protected final <T> HttpResponse<T> execute(HttpRequest operation) throws IOException, InterruptedException {
     synchronized (httpClient) {
       return (HttpResponse<T>) httpClient.send(operation, BodyHandlers.ofByteArray());
     }
   }
 
-  protected final HttpRequest createRequest(String path) throws IOException {
+  protected final HttpRequest createRequest(String path) {
     return HttpRequest.newBuilder()
             .uri(URI.create(baseurl + path))
             .POST(BodyPublishers.noBody())
@@ -371,7 +371,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
             .build();
   }
 
-  protected final HttpRequest createRequest(String path, byte[] data) throws IOException {
+  protected final HttpRequest createRequest(String path, byte[] data) {
     return HttpRequest.newBuilder()
             .uri(URI.create(baseurl + path))
             .POST(BodyPublishers.ofByteArray(data))
