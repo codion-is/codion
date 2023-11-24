@@ -714,6 +714,28 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   /**
+   * @param entities the entities to display
+   * @param connectionProvider the connection provider
+   * @return a static {@link SwingEntityTableModel} instance containing the given entities
+   * @throws IllegalArgumentException in case {@code entities} is empty
+   */
+  public static SwingEntityTableModel tableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
+    if (requireNonNull(entities).isEmpty()) {
+      throw new IllegalArgumentException("One or more entities is required for a static table model");
+    }
+
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().entityType(), connectionProvider) {
+      @Override
+      protected Collection<Entity> refreshItems() {
+        return entities;
+      }
+    };
+    tableModel.refresh();
+
+    return tableModel;
+  }
+
+  /**
    * Queries the data used to populate this EntityTableModel when it is refreshed.
    * This method should take into account the where and having conditions
    * ({@link EntityTableConditionModel#where(Conjunction)}, {@link EntityTableConditionModel#having(Conjunction)}),

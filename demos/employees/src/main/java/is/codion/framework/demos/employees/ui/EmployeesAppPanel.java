@@ -8,11 +8,13 @@ import is.codion.framework.demos.employees.domain.Employees;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -66,12 +68,15 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
             .fileFilter(new FileNameExtensionFilter("Text files", "txt"))
             .selectFile();
 
-    EntityTablePanel tablePanel = EntityTablePanel.entityTablePanelReadOnly(
-            entityObjectMapper(applicationModel().entities()).deserializeEntities(
-                    textFileContents(file.getAbsolutePath(), defaultCharset())),
-            applicationModel().connectionProvider());
+    List<Entity> entities = entityObjectMapper(applicationModel().entities())
+            .deserializeEntities(textFileContents(file.getAbsolutePath(), defaultCharset()));
 
-    Dialogs.componentDialog(tablePanel)
+    SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, applicationModel().connectionProvider());
+    tableModel.editModel().readOnly().set(true);
+    EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+    tablePanel.setIncludePopupMenu(false);
+
+    Dialogs.componentDialog(tablePanel.initialize())
             .owner(this)
             .title("Import")
             .show();

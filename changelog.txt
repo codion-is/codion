@@ -9940,3 +9940,5 @@
   SwingEntityTableModel.limit() now nullable, instead of using -1 for no limit
   EntityTablePanel.viewDependencies(), no longer requests table focus when dependencies dialog is closed
   EntityTablePanel.StaticEntityTablePanel minor UI bug fixed, unnecessary popup menu separator removed
+  EntityTablePanel, static factory methods removed
+  SwingEntityTableModel.tableModel() factory method added for a static table model
