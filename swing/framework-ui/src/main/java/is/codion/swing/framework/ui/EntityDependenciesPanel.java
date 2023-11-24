@@ -26,8 +26,10 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -37,6 +39,7 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -62,7 +65,7 @@ public final class EntityDependenciesPanel extends JPanel {
     super(new BorderLayout());
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
-              EntityTablePanel.entityTablePanel(entry.getValue(), connectionProvider));
+              createTablePanel(entry.getValue(), connectionProvider));
     }
     add(tabPane, BorderLayout.CENTER);
     KeyEvents.builder(VK_RIGHT)
@@ -102,6 +105,28 @@ public final class EntityDependenciesPanel extends JPanel {
     requireNonNull(dialogParent);
     Map<EntityType, Collection<Entity>> dependencies = dependencies(entities, connectionProvider, dialogParent);
     displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
+  }
+
+  private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
+    EntityTablePanel tablePanel = new EntityTablePanel(SwingEntityTableModel.tableModel(entities, connectionProvider)) {
+      @Override
+      protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+        Controls popupMenuControls = Controls.controls();
+        control(ControlCode.EDIT_SELECTED).ifPresent(popupMenuControls::add);
+        control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
+        control(ControlCode.VIEW_DEPENDENCIES).ifPresent(viewDependencies -> {
+          if (popupMenuControls.notEmpty()) {
+            popupMenuControls.addSeparator();
+          }
+          popupMenuControls.add(viewDependencies);
+        });
+
+        return popupMenuControls;
+      }
+    };
+    tablePanel.setIncludeConditionPanel(false);
+
+    return tablePanel.initialize();
   }
 
   private static Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities,

@@ -60,6 +60,7 @@ configure(project.frameworkModules) {
     javadoc {
         options.links "https://docs.oracle.com/javase/$jdkVersion/docs/api/"
         options.encoding = "UTF-8"
+        options.addStringOption('Xdoclint:none', '-quiet')
     }
 
     jar {

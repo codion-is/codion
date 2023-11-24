@@ -296,16 +296,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     synchronized (applications) {
       int batchSize = applicationBatchSize.get();
       for (int i = 0; i < batchSize; i++) {
-        int initialDelay = initTime();
-        if (loginDelayFactor.get() > 0) {
-          initialDelay *= loginDelayFactor.get();
-        }
         ApplicationRunner applicationRunner = new ApplicationRunner(user.get(), applicationFactory);
         synchronized (applications) {
           applications.add(applicationRunner);
           applicationCount.set(applications.size());
         }
-        scheduledExecutor.schedule(applicationRunner, initialDelay, TimeUnit.MILLISECONDS);
+        scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
       }
     }
   }
@@ -399,14 +395,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     shutdownEvent.addListener(listener);
   }
 
-  private int initTime() {
+  private int initialDelay() {
     int time = maximumThinkTime.get() - minimumThinkTime.get();
     return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.get()) + minimumThinkTime.get() : minimumThinkTime.get();
-  }
-
-  private int thinkTime() {
-    int time = maximumThinkTime.get() - minimumThinkTime.get();
-    return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.get() : minimumThinkTime.get();
   }
 
   private ItemRandomizer<UsageScenario<T>> createScenarioChooser() {
@@ -451,35 +442,35 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
     return Arrays.asList(
-            FilteredTableColumn.builder(Application.NAME)
+            FilteredTableColumn.builder(Application.NAME_INDEX)
                     .headerValue("Name")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.USERNAME)
+            FilteredTableColumn.builder(Application.USERNAME_INDEX)
                     .headerValue("User")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.SCENARIO)
+            FilteredTableColumn.builder(Application.SCENARIO_INDEX)
                     .headerValue("Scenario")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.SUCCESSFUL)
+            FilteredTableColumn.builder(Application.SUCCESSFUL_INDEX)
                     .headerValue("Success")
                     .columnClass(Boolean.class)
                     .build(),
-            FilteredTableColumn.builder(Application.DURATION)
+            FilteredTableColumn.builder(Application.DURATION_INDEX)
                     .headerValue("Duration (μs)")
                     .columnClass(Integer.class)
                     .build(),
-            FilteredTableColumn.builder(Application.EXCEPTION)
+            FilteredTableColumn.builder(Application.EXCEPTION_INDEX)
                     .headerValue("Exception")
                     .columnClass(Throwable.class)
                     .build(),
-            FilteredTableColumn.builder(Application.MESSAGE)
+            FilteredTableColumn.builder(Application.MESSAGE_INDEX)
                     .headerValue("Message")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.CREATED)
+            FilteredTableColumn.builder(Application.CREATED_INDEX)
                     .headerValue("Created")
                     .columnClass(LocalDateTime.class)
                     .build()
@@ -574,6 +565,11 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
           runResults.remove(0);
         }
       }
+    }
+
+    private int thinkTime() {
+      int time = maximumThinkTime.get() - minimumThinkTime.get();
+      return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.get() : minimumThinkTime.get();
     }
 
     private LocalDateTime created() {
@@ -1007,21 +1003,21 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     @Override
     public Object value(Application application, Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case Application.NAME:
+        case Application.NAME_INDEX:
           return application.name();
-        case Application.USERNAME:
+        case Application.USERNAME_INDEX:
           return application.username();
-        case Application.SCENARIO:
+        case Application.SCENARIO_INDEX:
           return application.scenario();
-        case Application.SUCCESSFUL:
+        case Application.SUCCESSFUL_INDEX:
           return application.successful();
-        case Application.DURATION:
+        case Application.DURATION_INDEX:
           return application.duration();
-        case Application.EXCEPTION:
+        case Application.EXCEPTION_INDEX:
           return application.exception();
-        case Application.MESSAGE:
+        case Application.MESSAGE_INDEX:
           return application.message();
-        case Application.CREATED:
+        case Application.CREATED_INDEX:
           return application.created();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);

@@ -103,6 +103,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String ENTITIES = "entities";
   private static final String ENTITY = "entity";
   private static final String PACK_RESULT = "packResult";
+  private static final String EXECUTE = "execute";
+  private static final String REPORT = "report";
   private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
   private final Domain domain;
@@ -566,7 +568,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(functionType, "functionType");
     DatabaseException exception = null;
     try {
-      logEntry("execute", functionType, argument);
+      logEntry(EXECUTE, functionType, argument);
       synchronized (connection) {
         return functionType.execute((C) this, domain.function(functionType), argument);
       }
@@ -577,7 +579,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("execute", exception);
+      logExit(EXECUTE, exception);
     }
   }
 
@@ -591,7 +593,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(procedureType, "procedureType");
     DatabaseException exception = null;
     try {
-      logEntry("execute", procedureType, argument);
+      logEntry(EXECUTE, procedureType, argument);
       synchronized (connection) {
         procedureType.execute((C) this, domain.procedure(procedureType), argument);
       }
@@ -602,17 +604,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("execute", exception);
+      logExit(EXECUTE, exception);
     }
   }
 
   @Override
   public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
-    requireNonNull(reportType, "report");
+    requireNonNull(reportType, REPORT);
     Exception exception = null;
     synchronized (connection) {
       try {
-        logEntry("report", reportType, reportParameters);
+        logEntry(REPORT, reportType, reportParameters);
         R result = reportType.fill(domain.report(reportType), connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 
@@ -631,7 +633,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        logExit("report", exception);
+        logExit(REPORT, exception);
       }
     }
   }

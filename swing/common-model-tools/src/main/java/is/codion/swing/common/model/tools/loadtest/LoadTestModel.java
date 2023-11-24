@@ -279,14 +279,14 @@ public interface LoadTestModel<T> {
    */
   interface Application {
 
-    int NAME = 0;
-    int USERNAME = 1;
-    int SCENARIO = 2;
-    int SUCCESSFUL = 3;
-    int DURATION = 4;
-    int EXCEPTION = 5;
-    int MESSAGE = 6;
-    int CREATED = 7;
+    int NAME_INDEX = 0;
+    int USERNAME_INDEX = 1;
+    int SCENARIO_INDEX = 2;
+    int SUCCESSFUL_INDEX = 3;
+    int DURATION_INDEX = 4;
+    int EXCEPTION_INDEX = 5;
+    int MESSAGE_INDEX = 6;
+    int CREATED_INDEX = 7;
 
     /**
      * @return the name of the application

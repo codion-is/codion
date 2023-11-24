@@ -115,6 +115,7 @@ tasks.register("combinedJavadoc") {
         options.docTitle("Codion Framework API ${documentationVersion}")
         options.links("https://docs.oracle.com/en/java/javase/$jdkVersion/docs/api/")
         options.encoding("UTF-8")
+        options.addStringOption('Xdoclint:none', '-quiet')
         options.noTimestamp(true)
 
         options.write(optionsFile)

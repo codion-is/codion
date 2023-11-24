@@ -102,7 +102,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final State conditionRequired = State.state();
   private final State respondToEditEvents = State.state();
   private final State editable = State.state();
-  private final Value<Integer> limit = Value.value(-1, -1);
+  private final Value<Integer> limit = Value.value();
   private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
   private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
   private final State removeDeleted = State.state(true);
@@ -729,6 +729,28 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   /**
+   * @param entities the entities to display
+   * @param connectionProvider the connection provider
+   * @return a static {@link SwingEntityTableModel} instance containing the given entities
+   * @throws IllegalArgumentException in case {@code entities} is empty
+   */
+  public static SwingEntityTableModel tableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
+    if (requireNonNull(entities).isEmpty()) {
+      throw new IllegalArgumentException("One or more entities is required for a static table model");
+    }
+
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().entityType(), connectionProvider) {
+      @Override
+      protected Collection<Entity> refreshItems() {
+        return entities;
+      }
+    };
+    tableModel.refresh();
+
+    return tableModel;
+  }
+
+  /**
    * Queries the data used to populate this EntityTableModel when it is refreshed.
    * This method should take into account the where and having conditions
    * ({@link EntityTableConditionModel#where(Conjunction)}, {@link EntityTableConditionModel#having(Conjunction)}),
@@ -868,7 +890,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     List<Entity> items = editModel.connectionProvider().connection().select(where(select.where())
             .having(select.having())
             .attributes(attributes())
-            .limit(limit().get())
+            .limit(limit().optional().orElse(-1))
             .orderBy(orderBy())
             .build());
     updateRefreshSelect(select);

@@ -203,6 +203,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
+
     private final JFormattedTextField inputField;
 
     private InputFocusAdapter(JFormattedTextField inputField) {

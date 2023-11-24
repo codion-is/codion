@@ -9981,3 +9981,9 @@
   HttpEntityConnection.Builder, HttpEntityConnectionProvider.Builder.executor() added
   DefaultConnectionRequest.DefaultBuilder, no longer instantiates a random UUID
   DefaultEntitySearchModel.limit() value now nullable, instead of using -1 for no limit, EntitySearchModel.LIMIT now has a default value of null instead of -1
+  DefaultEntitySearchModel bug fixed, NullPointerException due to limit() being nullable fixed
+  SwingEntityTableModel.limit() now nullable, instead of using -1 for no limit
+  EntityTablePanel.viewDependencies(), no longer requests table focus when dependencies dialog is closed
+  EntityTablePanel.StaticEntityTablePanel minor UI bug fixed, unnecessary popup menu separator removed
+  EntityTablePanel, static factory methods removed
+  SwingEntityTableModel.tableModel() factory method added for a static table model

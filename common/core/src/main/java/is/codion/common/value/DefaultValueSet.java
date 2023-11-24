@@ -59,8 +59,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
     requireNonNull(values);
     Set<T> newValues = new LinkedHashSet<>(this.values);
     boolean added = false;
-    for (T value : values) {
-      added = newValues.add(value) || added;
+    for (T val : values) {
+      added = newValues.add(val) || added;
     }
     set(newValues);
 
@@ -81,8 +81,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
     requireNonNull(values);
     Set<T> newValues = new LinkedHashSet<>(this.values);
     boolean removed = false;
-    for (T value : values) {
-      removed = newValues.remove(value) || removed;
+    for (T val : values) {
+      removed = newValues.remove(val) || removed;
     }
     set(newValues);
 

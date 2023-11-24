@@ -26,7 +26,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -145,9 +144,6 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
  * The condition and summary panels can be hidden
  * Note that {@link #initialize()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
- * @see #entityTablePanel(SwingEntityTableModel)
- * @see #entityTablePanel(Collection, EntityConnectionProvider)
- * @see #entityTablePanelReadOnly(Collection, EntityConnectionProvider)
  */
 public class EntityTablePanel extends JPanel {
 
@@ -667,7 +663,6 @@ public class EntityTablePanel extends JPanel {
   public final void viewDependencies() {
     if (!tableModel.selectionModel().isSelectionEmpty()) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(), this);
-      table.requestFocusInWindow();//otherwise the JRootPane keeps the focus after the popup menu has been closed
     }
   }
 
@@ -706,54 +701,6 @@ public class EntityTablePanel extends JPanel {
    */
   public final void printTable() throws PrinterException {
     table.print();
-  }
-
-  /**
-   * Creates a static read-only entity table panel showing the given entities
-   * @param entities the entities to show in the panel, assumed to be of the same type
-   * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
-   * @return a static EntityTablePanel showing the given entities
-   */
-  public static EntityTablePanel entityTablePanelReadOnly(Collection<Entity> entities,
-                                                          EntityConnectionProvider connectionProvider) {
-    if (nullOrEmpty(entities)) {
-      throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
-    }
-
-    SwingEntityTableModel tableModel = new StaticSwingEntityTableModel(entities, connectionProvider);
-    tableModel.editModel().readOnly().set(true);
-    tableModel.refresh();
-
-    return entityTablePanel(tableModel);
-  }
-
-  /**
-   * Creates a static entity table panel showing the given entities, note that this table panel will
-   * provide a popup menu for updating and deleting the selected entities unless the underlying entities are read-only.
-   * @param entities the entities to show in the panel
-   * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
-   * @return a static EntityTablePanel showing the given entities
-   */
-  public static EntityTablePanel entityTablePanel(Collection<Entity> entities,
-                                                  EntityConnectionProvider connectionProvider) {
-    if (nullOrEmpty(entities)) {
-      throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
-    }
-
-    SwingEntityTableModel tableModel = new StaticSwingEntityTableModel(entities, connectionProvider);
-    tableModel.refresh();
-
-    return entityTablePanel(tableModel);
-  }
-
-  /**
-   * Creates an entity table panel based on the given table model.
-   * If the table model is not read only, a popup menu for updating or deleting the selected entities is provided.
-   * @param tableModel the table model
-   * @return an entity table panel based on the given model
-   */
-  public static EntityTablePanel entityTablePanel(SwingEntityTableModel tableModel) {
-    return new StaticEntityTablePanel(tableModel).initialize();
   }
 
   /**
@@ -1829,42 +1776,6 @@ public class EntityTablePanel extends JPanel {
       throwIfInitialized();
       //validate that the attributes exists
       attributes.forEach(attribute -> tableModel.entityDefinition().attributes().definition(attribute));
-    }
-  }
-
-  private static final class StaticSwingEntityTableModel extends SwingEntityTableModel {
-
-    private final Collection<Entity> entities;
-
-    private StaticSwingEntityTableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-      super(entities.iterator().next().entityType(), connectionProvider);
-      this.entities = entities;
-    }
-
-    @Override
-    protected Collection<Entity> refreshItems() {
-      return entities;
-    }
-  }
-
-  private static final class StaticEntityTablePanel extends EntityTablePanel {
-
-    private StaticEntityTablePanel(SwingEntityTableModel tableModel) {
-      super(tableModel);
-      setIncludeConditionPanel(false);
-    }
-
-    @Override
-    protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-      Controls popupMenuControls = Controls.controls();
-      control(ControlCode.EDIT_SELECTED).ifPresent(popupMenuControls::add);
-      control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
-      if (popupMenuControls.notEmpty()) {
-        popupMenuControls.addSeparator();
-      }
-      control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
-
-      return popupMenuControls;
     }
   }
 
