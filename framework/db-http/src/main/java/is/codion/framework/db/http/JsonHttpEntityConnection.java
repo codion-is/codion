@@ -69,6 +69,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
                 objectMapper, Boolean.class);
       }
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -82,8 +86,9 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
                 objectMapper.writeValueAsString(queryCacheEnabled))));
       }
     }
-    catch (RuntimeException e) {
-      throw e;
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -97,6 +102,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
         return handleJsonResponse(executeJson(createJsonRequest("isQueryCacheEnabled")),
                 objectMapper, Boolean.class);
       }
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -115,6 +124,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -131,6 +144,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     }
     catch (DatabaseException e) {
       throw e;
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -149,6 +166,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -165,6 +186,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     }
     catch (DatabaseException e) {
       throw e;
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -183,6 +208,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -200,6 +229,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -216,6 +249,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     }
     catch (DatabaseException e) {
       throw e;
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -239,6 +276,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -256,6 +297,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -272,6 +317,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     }
     catch (DatabaseException e) {
       throw e;
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -296,6 +345,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -312,6 +365,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
     }
     catch (DatabaseException e) {
       throw e;
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);

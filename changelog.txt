@@ -9987,3 +9987,4 @@
   EntityTablePanel.StaticEntityTablePanel minor UI bug fixed, unnecessary popup menu separator removed
   EntityTablePanel, static factory methods removed
   SwingEntityTableModel.tableModel() factory method added for a static table model
+  AbstractHttpEntityConnection, explicit handling of InterruptedException added

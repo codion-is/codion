@@ -134,6 +134,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
         closed = true;
       }
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -146,8 +150,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
         handleResponse(execute(createRequest("beginTransaction")));
       }
     }
-    catch (RuntimeException e) {
-      throw e;
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -161,8 +166,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
         handleResponse(execute(createRequest("rollbackTransaction")));
       }
     }
-    catch (RuntimeException e) {
-      throw e;
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -176,8 +182,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
         handleResponse(execute(createRequest("commitTransaction")));
       }
     }
-    catch (RuntimeException e) {
-      throw e;
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -267,6 +274,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -288,6 +299,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -303,6 +318,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     }
     catch (ReportException | DatabaseException e) {
       throw e;
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -323,6 +342,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -340,6 +363,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     catch (DatabaseException e) {
       throw e;
     }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
+    }
     catch (Exception e) {
       throw logAndWrap(e);
     }
@@ -349,8 +376,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     try {
       return handleResponse(execute(createRequest("entities")));
     }
-    catch (RuntimeException e) {
-      throw e;
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw logAndWrap(e);
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -401,6 +429,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
   protected static RuntimeException logAndWrap(Exception e) {
     LOG.error(e.getMessage(), e);
+    if (e instanceof RuntimeException) {
+      throw (RuntimeException) e;
+    }
 
     return new RuntimeException(e);
   }
