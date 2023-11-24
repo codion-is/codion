@@ -652,7 +652,6 @@ public class EntityTablePanel extends JPanel {
   public final void viewDependencies() {
     if (!tableModel.selectionModel().isSelectionEmpty()) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(), this);
-      table.requestFocusInWindow();//otherwise the JRootPane keeps the focus after the popup menu has been closed
     }
   }
 
