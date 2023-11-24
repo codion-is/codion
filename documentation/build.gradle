@@ -84,6 +84,7 @@ tasks.register("combinedJavadoc", Javadoc) {
     title "Codion Framework API ${documentationVersion}"
     options.links "https://docs.oracle.com/javase/$jdkVersion/docs/api/"
     options.encoding = "UTF-8"
+    options.addStringOption('Xdoclint:none', '-quiet')
     destinationDir = file(project.layout.buildDirectory.dir("javadoc"))
     frameworkModules.each { module ->
         module.tasks.withType(Javadoc).each { javadocTask ->
