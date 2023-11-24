@@ -673,7 +673,7 @@ public final class EntitySearchField extends HintTextField {
     public void select(JComponent dialogOwner, List<Entity> entities) {
       requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
-      initializeResultLimitMessage(resultLimitLabel, searchModel.limit().get(), entities.size());
+      initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
       Dialogs.okCancelDialog(basePanel)
               .owner(dialogOwner)
@@ -771,7 +771,7 @@ public final class EntitySearchField extends HintTextField {
     public void select(JComponent dialogOwner, List<Entity> entities) {
       table.getModel().addItemsAtSorted(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
-      initializeResultLimitMessage(resultLimitLabel, searchModel.limit().get(), entities.size());
+      initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
       Dialogs.okCancelDialog(basePanel)
               .owner(dialogOwner)
