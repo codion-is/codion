@@ -87,7 +87,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final State conditionRequired = State.state();
   private final State respondToEditEvents = State.state();
   private final State editable = State.state();
-  private final Value<Integer> limit = Value.value(-1, -1);
+  private final Value<Integer> limit = Value.value();
   private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
   private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
   private final State removeDeleted = State.state(true);
@@ -853,7 +853,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     List<Entity> items = editModel.connectionProvider().connection().select(where(select.where())
             .having(select.having())
             .attributes(attributes())
-            .limit(limit().get())
+            .limit(limit().optional().orElse(-1))
             .orderBy(orderBy())
             .build());
     updateRefreshSelect(select);
