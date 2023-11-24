@@ -1843,10 +1843,12 @@ public class EntityTablePanel extends JPanel {
       Controls popupMenuControls = Controls.controls();
       control(ControlCode.EDIT_SELECTED).ifPresent(popupMenuControls::add);
       control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
-      if (popupMenuControls.notEmpty()) {
-        popupMenuControls.addSeparator();
-      }
-      control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
+      control(ControlCode.VIEW_DEPENDENCIES).ifPresent(viewDependencies -> {
+        if (popupMenuControls.notEmpty()) {
+          popupMenuControls.addSeparator();
+        }
+        popupMenuControls.add(viewDependencies);
+      });
 
       return popupMenuControls;
     }
