@@ -141,7 +141,7 @@ public final class ClientInstanceMonitor {
             .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.duration())))
             .append(" μs").append("]");
     if (entry.enterMessage() != null) {
-      builder.append(": ").append(entry.enterMessage());
+      builder.append(": ").append(entry.enterMessage().replace('\n', ' '));
     }
 
     return builder.toString();
