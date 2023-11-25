@@ -13,6 +13,7 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
@@ -40,6 +41,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
   private static final String FETCH_CONNECTION = "fetchConnection";
   private static final String RETURN_CONNECTION = "returnConnection";
+  private static final String ENTITIES = "entities";
 
   static final RequestCounter REQUEST_COUNTER = new RequestCounter();
 
@@ -135,6 +137,9 @@ final class LocalConnectionHandler implements InvocationHandler {
 
   @Override
   public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+    if (method.getName().equals(ENTITIES)) {
+      return entities();
+    }
     active.set(true);
     lastAccessTime = System.currentTimeMillis();
     String methodName = method.getName();
@@ -156,6 +161,20 @@ final class LocalConnectionHandler implements InvocationHandler {
     finally {
       returnConnection();
       logExit(methodName, exception);
+      active.set(false);
+    }
+  }
+
+  private Entities entities() {
+    active.set(true);
+    lastAccessTime = System.currentTimeMillis();
+    try {
+      logEntry(ENTITIES, null);
+
+      return domain.entities();
+    }
+    finally {
+      logExit(ENTITIES, null);
       active.set(false);
     }
   }
@@ -386,6 +405,9 @@ final class LocalConnectionHandler implements InvocationHandler {
 
     @Override
     protected String toString(String methodName, Object object) {
+      if (ENTITIES.equals(methodName)) {
+        return "";
+      }
       if (PREPARE_STATEMENT.equals(methodName)) {
         return (String) object;
       }
