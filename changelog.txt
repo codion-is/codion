@@ -9988,3 +9988,5 @@
   EntityTablePanel, static factory methods removed
   SwingEntityTableModel.tableModel() factory method added for a static table model
   AbstractHttpEntityConnection, explicit handling of InterruptedException added
+  LocalConnectionHandler, special handling added for entities method, no need to fetch connection from pool
+  ClientInstanceMonitor, queries in log tree view presentation improved

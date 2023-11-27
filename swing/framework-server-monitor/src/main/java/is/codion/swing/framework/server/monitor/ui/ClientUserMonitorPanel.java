@@ -88,7 +88,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .add(createMaintenanceIntervalComponent())
             .add(new JLabel("Idle connection timeout (s)"))
             .add(integerSpinner(new SpinnerNumberModel(), model.idleConnectionTimeout())
-                    .columns(7)
+                    .columns(4)
                     .build())
             .add(button(control(model::disconnectTimedOut))
                     .text("Disconnect idle")
