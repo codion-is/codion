@@ -2,7 +2,5 @@ extraJavaModuleInfo {
     automaticModule("net.sf.jasperreports:jasperreports", "jasperreports")
     automaticModule("commons-logging:commons-logging", "commons.logging")
     automaticModule("commons-digester:commons-digester", "commons.digester")
-    automaticModule("org.apache.commons:commons-collections4", "commons.collections")
     automaticModule("commons-beanutils:commons-beanutils", "commons.beanutils")
-    automaticModule("org.eclipse.jdt:ecj", "ecj")
 }
