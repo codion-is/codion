@@ -30,7 +30,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return the sql data type of the underlying column ({@link java.sql.Types}.
    */
-  int columnType();
+  int type();
 
   /**
    * @return the {@link ValueConverter} for this column.

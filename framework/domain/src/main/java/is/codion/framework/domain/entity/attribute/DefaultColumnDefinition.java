@@ -32,7 +32,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private static final Map<Class<?>, Integer> TYPE_MAP = createTypeMap();
   private static final Map<Integer, ValueFetcher<?>> VALUE_FETCHERS = createValueFetchers();
 
-  private final int columnType;
+  private final int type;
   private final int primaryKeyIndex;
   private final boolean columnHasDefaultValue;
   private final boolean insertable;
@@ -49,7 +49,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
   protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
     super(builder);
-    this.columnType = builder.columnType;
+    this.type = builder.type;
     this.primaryKeyIndex = builder.primaryKeyIndex;
     this.columnHasDefaultValue = builder.columnHasDefaultValue;
     this.insertable = builder.insertable;
@@ -80,8 +80,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final int columnType() {
-    return columnType;
+  public final int type() {
+    return type;
   }
 
   @Override
@@ -205,7 +205,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
     private final int primaryKeyIndex;
 
-    private int columnType;
+    private int type;
     private boolean columnHasDefaultValue;
     private boolean insertable;
     private boolean updatable;
@@ -225,14 +225,14 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     DefaultColumnDefinitionBuilder(Column<T> column, int primaryKeyIndex) {
       super(column);
       this.primaryKeyIndex = primaryKeyIndex;
-      this.columnType = sqlType(column.type().valueClass());
+      this.type = sqlType(column.type().valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
       nullable(primaryKeyIndex < 0);
       this.updatable = primaryKeyIndex < 0;
       this.searchColumn = false;
       this.name = column.name();
-      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, column);
+      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.type, column);
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupBy = false;
       this.aggregate = false;
@@ -251,16 +251,16 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
     @Override
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
-      this.columnType = sqlType(columnClass);
+      this.type = sqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      this.valueFetcher = valueFetcher(this.columnType, (Column<Object>) attribute);
+      this.valueFetcher = valueFetcher(this.type, (Column<Object>) attribute);
       return (B) this;
     }
 
     @Override
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
                                    ValueFetcher<C> valueFetcher) {
-      this.columnType = sqlType(columnClass);
+      this.type = sqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       this.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
       return (B) this;

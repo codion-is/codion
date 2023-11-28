@@ -1470,10 +1470,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Object columnValue = columnDefinition.valueConverter().toColumnValue(value, statement);
     try {
       if (columnValue == null) {
-        statement.setNull(parameterIndex, columnDefinition.columnType());
+        statement.setNull(parameterIndex, columnDefinition.type());
       }
       else {
-        statement.setObject(parameterIndex, columnValue, columnDefinition.columnType());
+        statement.setObject(parameterIndex, columnValue, columnDefinition.type());
       }
     }
     catch (SQLException e) {
@@ -1596,7 +1596,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         columnValue = value;
         stringValue = String.valueOf(value);
       }
-      stringValues.add(columnValue == null ? "null" : addSingleQuotes(columnDefinition.columnType(), stringValue));
+      stringValues.add(columnValue == null ? "null" : addSingleQuotes(columnDefinition.type(), stringValue));
     }
 
     return String.join(", ", stringValues);
