@@ -9947,3 +9947,4 @@
   EntityComponentValidators.TextValidator now validates when the value changes in the edit model, instead of when the text changes, so that order of listeners added no longer matters
   ColumnDefinition.columnName renamed name
   ColumnDefinition.columnType renamed type
+  Column.ValueConverter and ValueFetcher renamed to Converter and Fetcher respectively

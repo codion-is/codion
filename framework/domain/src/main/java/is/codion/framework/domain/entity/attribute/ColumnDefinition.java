@@ -3,7 +3,8 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
+import is.codion.framework.domain.entity.attribute.Column.Converter;
+import is.codion.framework.domain.entity.attribute.Column.Fetcher;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,10 +34,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   int type();
 
   /**
-   * @return the {@link ValueConverter} for this column.
+   * @return the {@link Converter} for this column.
    * @param <C> the colum value type
    */
-  <C> ValueConverter<C, T> valueConverter();
+  <C> Converter<C, T> converter();
 
   /**
    * @return this columns zero based index in the primary key, -1 if this column is not part of a primary key
@@ -107,23 +108,23 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
 
     /**
-     * Sets the actual column type, and the required {@link ValueConverter}.
+     * Sets the actual column type, and the required {@link Converter}.
      * @param <C> the column type
      * @param columnClass the underlying column type class
-     * @param valueConverter the converter to use when converting to and from column values
+     * @param converter the converter to use when converting to and from column values
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
+    <C> B columnClass(Class<C> columnClass, Converter<T, C> converter);
 
     /**
-     * Sets the actual column type, and the required {@link ValueConverter}.
+     * Sets the actual column type, and the required {@link Converter}.
      * @param <C> the column type
      * @param columnClass the underlying column type class
-     * @param valueConverter the converter to use when converting to and from column values
-     * @param valueFetcher the value fetcher used to retrieve the value from a ResultSet
+     * @param converter the converter to use when converting to and from column values
+     * @param fetcher the fetcher to use to retrieve the value from a ResultSet
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter, Column.ValueFetcher<C> valueFetcher);
+    <C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Fetcher<C> fetcher);
 
     /**
      * Sets the actual string used as column when querying

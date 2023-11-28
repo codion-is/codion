@@ -10,7 +10,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.world.domain.api.World;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
+import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.sql.Statement;
@@ -393,7 +393,7 @@ public final class WorldImpl extends DefaultDomain implements World {
   }
 
   // tag::converter[]
-  private static final class LocationConverter implements ValueConverter<Location, String> {
+  private static final class LocationConverter implements Converter<Location, String> {
 
     @Override
     public String toColumnValue(Location location,

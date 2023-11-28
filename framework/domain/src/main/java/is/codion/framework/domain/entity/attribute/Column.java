@@ -139,14 +139,14 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
     <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn();
 
     /**
-     * A convenience method for a {@link ValueConverter} for boolean columns
+     * A convenience method for a {@link Converter} for boolean columns
      * @param trueValue the true value
      * @param falseValue the false value
      * @return a boolean value converter
      * @param <C> the actual column type
      */
-    static <C> ValueConverter<Boolean, C> booleanValueConverter(C trueValue, C falseValue) {
-      return new DefaultColumn.BooleanValueConverter<>(trueValue, falseValue);
+    static <C> Converter<Boolean, C> booleanConverter(C trueValue, C falseValue) {
+      return new DefaultColumn.BooleanConverter<>(trueValue, falseValue);
     }
   }
 
@@ -154,7 +154,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
    * Fetches a single value from a result set.
    * @param <C> the type of the column value being fetched
    */
-  interface ValueFetcher<C> {
+  interface Fetcher<C> {
 
     /**
      * Fetches a single value from a ResultSet
@@ -171,7 +171,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
    * @param <T> the type of the value
    * @param <C> the type of the underlying column
    */
-  interface ValueConverter<T, C> {
+  interface Converter<T, C> {
 
     /**
      * Translates the given value into a sql value, usually this is not required
