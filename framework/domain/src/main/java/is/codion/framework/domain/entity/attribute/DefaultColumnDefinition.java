@@ -56,7 +56,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     this.updatable = builder.updatable;
     this.searchColumn = builder.searchColumn;
     this.name = builder.name;
-    this.expression = builder.expression;
+    this.expression = builder.expression == null ? builder.name : builder.expression;
     this.fetcher = builder.fetcher;
     this.converter = builder.converter;
     this.groupBy = builder.groupBy;
@@ -76,7 +76,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
   @Override
   public final String expression() {
-    return expression == null ? name : expression;
+    return expression;
   }
 
   @Override
