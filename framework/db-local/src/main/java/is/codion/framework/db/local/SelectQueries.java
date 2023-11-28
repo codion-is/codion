@@ -314,7 +314,7 @@ final class SelectQueries {
       StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < columnDefinitions.size(); i++) {
         ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
-        String columnName = columnDefinition.columnName();
+        String columnName = columnDefinition.name();
         String columnExpression = columnDefinition.expression();
         stringBuilder.append(columnExpression);
         if (!columnName.equals(columnExpression)) {

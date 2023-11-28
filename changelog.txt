@@ -9990,3 +9990,8 @@
   AbstractHttpEntityConnection, explicit handling of InterruptedException added
   LocalConnectionHandler, special handling added for entities method, no need to fetch connection from pool
   ClientInstanceMonitor, queries in log tree view presentation improved
+  EntityComponentValidators.TextValidator now validates when the value changes in the edit model, instead of when the text changes, so that order of listeners added no longer matters
+  ColumnDefinition.columnName renamed name
+  ColumnDefinition.columnType renamed type
+  Column.ValueConverter and ValueFetcher renamed to Converter and Fetcher respectively
+  DefaultColumnDefinition, expression is now the column name if none is specified, instead of handling it in the expression() function

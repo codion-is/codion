@@ -63,45 +63,45 @@ public final class Petstore extends DefaultDomain {
     add(Address.TYPE.define(
             Address.ID.define()
                     .primaryKey()
-                    .columnName("addressid"),
+                    .name("addressid"),
             Address.STREET_1.define()
                     .column()
                     .caption(Address.STREET_1.name())
-                    .columnName("street1")
+                    .name("street1")
                     .maximumLength(55)
                     .nullable(false),
             Address.STREET_2.define()
                     .column()
                     .caption(Address.STREET_2.name())
-                    .columnName("street2")
+                    .name("street2")
                     .maximumLength(55),
             Address.CITY.define()
                     .column()
                     .caption(Address.CITY.name())
-                    .columnName("city")
+                    .name("city")
                     .maximumLength(55)
                     .nullable(false),
             Address.STATE.define()
                     .column()
                     .caption(Address.STATE.name())
-                    .columnName("state")
+                    .name("state")
                     .maximumLength(25)
                     .nullable(false),
             Address.ZIP.define()
                     .column()
                     .caption(Address.ZIP.name())
-                    .columnName("zip")
+                    .name("zip")
                     .nullable(false),
             Address.LATITUDE.define()
                     .column()
                     .caption(Address.LATITUDE.name())
-                    .columnName("latitude")
+                    .name("latitude")
                     .nullable(false)
                     .maximumFractionDigits(2),
             Address.LONGITUDE.define()
                     .column()
                     .caption(Address.LONGITUDE.name())
-                    .columnName("longitude")
+                    .name("longitude")
                     .nullable(false)
                     .maximumFractionDigits(2))
             .tableName("petstore.address")
@@ -130,23 +130,23 @@ public final class Petstore extends DefaultDomain {
     add(Category.TYPE.define(
             Category.ID.define()
                     .primaryKey()
-                    .columnName("categoryid"),
+                    .name("categoryid"),
             Category.NAME.define()
                     .column()
                     .caption(Category.NAME.name())
-                    .columnName("name")
+                    .name("name")
                     .maximumLength(25)
                     .nullable(false),
             Category.DESCRIPTION.define()
                     .column()
                     .caption(Category.DESCRIPTION.name())
-                    .columnName("description")
+                    .name("description")
                     .maximumLength(255)
                     .nullable(false),
             Category.IMAGE_URL.define()
                     .column()
                     .caption(Category.IMAGE_URL.name())
-                    .columnName("imageurl")
+                    .name("imageurl")
                     .hidden(true))
             .tableName("petstore.category")
             .keyGenerator(sequence("petstore.category_seq"))
@@ -171,10 +171,10 @@ public final class Petstore extends DefaultDomain {
     add(Product.TYPE.define(
             Product.ID.define()
                     .primaryKey()
-                    .columnName("productid"),
+                    .name("productid"),
             Product.CATEGORY_ID.define()
                     .column()
-                    .columnName("categoryid")
+                    .name("categoryid")
                     .nullable(false),
             Product.CATEGORY_FK.define()
                     .foreignKey()
@@ -182,19 +182,19 @@ public final class Petstore extends DefaultDomain {
             Product.NAME.define()
                     .column()
                     .caption(Product.NAME.name())
-                    .columnName("name")
+                    .name("name")
                     .maximumLength(25)
                     .nullable(false),
             Product.DESCRIPTION.define()
                     .column()
                     .caption(Product.DESCRIPTION.name())
-                    .columnName("description")
+                    .name("description")
                     .maximumLength(255)
                     .nullable(false),
             Product.IMAGE_URL.define()
                     .column()
                     .caption(Product.IMAGE_URL.name())
-                    .columnName("imageurl")
+                    .name("imageurl")
                     .maximumLength(55)
                     .hidden(true))
             .tableName("petstore.product")
@@ -221,25 +221,25 @@ public final class Petstore extends DefaultDomain {
     add(SellerContactInfo.TYPE.define(
             SellerContactInfo.ID.define()
                     .primaryKey()
-                    .columnName("contactinfoid"),
+                    .name("contactinfoid"),
             SellerContactInfo.FIRST_NAME.define()
                     .column()
                     .caption(SellerContactInfo.FIRST_NAME.name())
                     .searchColumn(true)
-                    .columnName("firstname")
+                    .name("firstname")
                     .maximumLength(24)
                     .nullable(false),
             SellerContactInfo.LAST_NAME.define()
                     .column()
                     .caption(SellerContactInfo.LAST_NAME.name())
                     .searchColumn(true)
-                    .columnName("lastname")
+                    .name("lastname")
                     .maximumLength(24)
                     .nullable(false),
             SellerContactInfo.EMAIL.define()
                     .column()
                     .caption(SellerContactInfo.EMAIL.name())
-                    .columnName("email")
+                    .name("email")
                     .maximumLength(24)
                     .nullable(false))
             .tableName("petstore.sellercontactinfo")
@@ -276,10 +276,10 @@ public final class Petstore extends DefaultDomain {
     add(Item.TYPE.define(
             Item.ID.define()
                     .primaryKey()
-                    .columnName("itemid"),
+                    .name("itemid"),
             Item.PRODUCT_ID.define()
                     .column()
-                    .columnName("productid")
+                    .name("productid")
                     .nullable(false),
             Item.PRODUCT_FK.define()
                     .foreignKey(2)
@@ -287,43 +287,43 @@ public final class Petstore extends DefaultDomain {
             Item.NAME.define()
                     .column()
                     .caption(Item.NAME.name())
-                    .columnName("name")
+                    .name("name")
                     .maximumLength(30)
                     .nullable(false),
             Item.DESCRIPTION.define()
                     .column()
                     .caption(Item.DESCRIPTION.name())
-                    .columnName("description")
+                    .name("description")
                     .maximumLength(500)
                     .nullable(false),
             Item.IMAGE_URL.define()
                     .column()
                     .caption(Item.IMAGE_URL.name())
-                    .columnName("imageurl")
+                    .name("imageurl")
                     .maximumLength(55)
                     .hidden(true),
             Item.IMAGE_THUMB_URL.define()
                     .column()
                     .caption(Item.IMAGE_THUMB_URL.name())
-                    .columnName("imagethumburl")
+                    .name("imagethumburl")
                     .maximumLength(55)
                     .hidden(true),
             Item.PRICE.define()
                     .column()
                     .caption(Item.PRICE.name())
-                    .columnName("price")
+                    .name("price")
                     .nullable(false)
                     .maximumFractionDigits(2),
             Item.CONTACT_INFO_ID.define()
                     .column()
-                    .columnName("contactinfo_contactinfoid")
+                    .name("contactinfo_contactinfoid")
                     .nullable(false),
             Item.CONTACT_INFO_FK.define()
                     .foreignKey()
                     .caption(Item.CONTACT_INFO_FK.name()),
             Item.ADDRESS_ID.define()
                     .column()
-                    .columnName("address_addressid")
+                    .name("address_addressid")
                     .nullable(false),
             Item.ADDRESS_FK.define()
                     .foreignKey()
@@ -331,7 +331,7 @@ public final class Petstore extends DefaultDomain {
             Item.DISABLED.define()
                     .booleanColumn(Integer.class, 1, 0)
                     .caption(Item.DISABLED.name())
-                    .columnName("disabled")
+                    .name("disabled")
                     .defaultValue(false)
                     .nullable(false))
             .tableName("petstore.item")
@@ -357,17 +357,17 @@ public final class Petstore extends DefaultDomain {
     add(Tag.TYPE.define(
             Tag.ID.define()
                     .primaryKey()
-                    .columnName("tagid"),
+                    .name("tagid"),
             Tag.TAG.define()
                     .column()
                     .caption(Tag.TAG.name())
-                    .columnName("tag")
+                    .name("tag")
                     .maximumLength(30)
                     .nullable(false),
             Tag.REFCOUNT.define()
                     .subquery("SELECT COUNT(*) FROM petstore.tag_item WHERE tagid = tag.tagid")
                     .caption(Tag.REFCOUNT.name())
-                    .columnName("refcount"))
+                    .name("refcount"))
             .tableName("petstore.tag")
             .keyGenerator(sequence("petstore.tag_seq"))
             .orderBy(ascending(Tag.TAG))
@@ -390,13 +390,13 @@ public final class Petstore extends DefaultDomain {
     add(TagItem.TYPE.define(
             TagItem.ITEM_ID.define()
                     .primaryKey(0)
-                    .columnName("itemid"),
+                    .name("itemid"),
             TagItem.ITEM_FK.define()
                     .foreignKey(3)
                     .caption(TagItem.ITEM_FK.name()),
             TagItem.TAG_ID.define()
                     .primaryKey(1)
-                    .columnName("tagid"),
+                    .name("tagid"),
             TagItem.TAG_FK.define()
                     .foreignKey()
                     .caption(TagItem.TAG_FK.name()))

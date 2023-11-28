@@ -21,11 +21,8 @@ package is.codion.swing.framework.ui.component;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.component.text.NumberField;
 
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
@@ -163,16 +160,8 @@ public final class EntityComponentValidators {
     protected TextValidator(Attribute<T> attribute, JTextComponent textComponent, EntityEditModel editModel,
                             String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
+      editModel.value(attribute).addListener(this::validate);
       configureColors();
-      if (textComponent instanceof JFormattedTextField) {
-        editModel.addValueListener(attribute, value -> validate());
-      }
-      else if (textComponent instanceof NumberField) {
-        ((NumberField<?>) textComponent).addListener(value -> validate());
-      }
-      else {
-        textComponent.getDocument().addDocumentListener((DocumentAdapter) event -> validate());
-      }
       textComponent.addPropertyChangeListener("UI", event -> configureColors());
     }
 

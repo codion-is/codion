@@ -479,7 +479,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 == Custom data types
 
 When using a custom data type you must specify the *columnClass* of a ColumnDefinition and
-provide a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.ValueConverter.html[ValueConverter] implementation.
+provide a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.Converter.html[Converter] implementation.
 
 [source,java,indent=0]
 ----

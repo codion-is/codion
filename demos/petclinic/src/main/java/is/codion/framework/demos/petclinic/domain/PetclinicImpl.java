@@ -30,7 +30,7 @@ import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
-import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Converter;
 
 import java.sql.Statement;
 
@@ -164,7 +164,7 @@ public final class PetclinicImpl extends DefaultDomain {
             Owner.PHONE_TYPE.define()
                     .column()
                     .caption("Phone type")
-                    .columnClass(String.class, new PhoneTypeValueConverter()))
+                    .columnClass(String.class, new PhoneTypeConverter()))
             .keyGenerator(identity())
             .caption("Owners")
             .stringFactory(StringFactory.builder()
@@ -175,7 +175,7 @@ public final class PetclinicImpl extends DefaultDomain {
             .orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME)));
   }
 
-  private static final class PhoneTypeValueConverter implements Column.ValueConverter<PhoneType, String> {
+  private static final class PhoneTypeConverter implements Converter<PhoneType, String> {
 
     @Override
     public String toColumnValue(PhoneType value, Statement statement) {

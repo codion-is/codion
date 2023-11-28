@@ -43,7 +43,7 @@ final class IdentityKeyGenerator implements KeyGenerator {
       if (generatedKeys.next()) {
         ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().columnDefinitions().get(0);
         // must fetch value by column name, since some databases (PostgreSQL for example), return all columns, not just generated ones
-        entity.put(column.attribute(), column.prepareValue(generatedKeys.getObject(column.columnName())));
+        entity.put(column.attribute(), column.prepareValue(generatedKeys.getObject(column.name())));
       }
     }
   }

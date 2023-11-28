@@ -215,12 +215,12 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
     return factory(this).isNotNull();
   }
 
-  static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
+  static final class BooleanConverter<T> implements Converter<Boolean, T> {
 
     private final T trueValue;
     private final T falseValue;
 
-    BooleanValueConverter(T trueValue, T falseValue) {
+    BooleanConverter(T trueValue, T falseValue) {
       this.trueValue = requireNonNull(trueValue);
       this.falseValue = requireNonNull(falseValue);
     }
@@ -294,7 +294,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
       }
 
       return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column)
-              .columnClass(columnClass, (ValueConverter<T, C>) new BooleanValueConverter<>(trueValue, falseValue));
+              .columnClass(columnClass, (Converter<T, C>) new BooleanConverter<>(trueValue, falseValue));
     }
 
     @Override
