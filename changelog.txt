@@ -9944,3 +9944,4 @@
   SwingEntityTableModel.tableModel() factory method added for a static table model
   LocalConnectionHandler, special handling added for entities method, no need to fetch connection from pool
   ClientInstanceMonitor, queries in log tree view presentation improved
+  EntityComponentValidators.TextValidator now validates when the value changes in the edit model, instead of when the text changes, so that order of listeners added no longer matters
