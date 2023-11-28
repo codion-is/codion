@@ -39,7 +39,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private final boolean updatable;
   private final boolean searchColumn;
 
-  private final transient String columnName;
+  private final transient String name;
   private final transient String expression;
   private final transient ValueFetcher<Object> valueFetcher;
   private final transient ValueConverter<T, Object> valueConverter;
@@ -55,7 +55,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     this.insertable = builder.insertable;
     this.updatable = builder.updatable;
     this.searchColumn = builder.searchColumn;
-    this.columnName = builder.columnName;
+    this.name = builder.name;
     this.expression = builder.expression;
     this.valueFetcher = builder.valueFetcher;
     this.valueConverter = builder.valueConverter;
@@ -70,13 +70,13 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final String columnName() {
-    return columnName;
+  public final String name() {
+    return name;
   }
 
   @Override
   public final String expression() {
-    return expression == null ? columnName : expression;
+    return expression == null ? name : expression;
   }
 
   @Override
@@ -210,7 +210,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private boolean insertable;
     private boolean updatable;
     private boolean searchColumn;
-    private String columnName;
+    private String name;
     private String expression;
     private ValueFetcher<Object> valueFetcher;
     private ValueConverter<T, Object> valueConverter;
@@ -231,7 +231,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
       nullable(primaryKeyIndex < 0);
       this.updatable = primaryKeyIndex < 0;
       this.searchColumn = false;
-      this.columnName = column.name();
+      this.name = column.name();
       this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, column);
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupBy = false;
@@ -267,8 +267,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     }
 
     @Override
-    public final B columnName(String columnName) {
-      this.columnName = requireNonNull(columnName, "columnName");
+    public final B name(String name) {
+      this.name = requireNonNull(name, "name");
       return (B) this;
     }
 

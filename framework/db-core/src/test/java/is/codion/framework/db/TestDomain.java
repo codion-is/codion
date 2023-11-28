@@ -77,12 +77,13 @@ public final class TestDomain extends DefaultDomain {
     add(Employee.TYPE.define(
             Employee.ID.define()
                     .primaryKey()
-                    .caption(Employee.ID.name()).columnName("empno"),
+                    .caption(Employee.ID.name())
+                    .name("empno"),
             Employee.NAME.define()
                     .column()
                     .caption(Employee.NAME.name())
                     .searchColumn(true)
-                    .columnName("ename")
+                    .name("ename")
                     .maximumLength(10)
                     .nullable(false),
             Employee.DEPARTMENT.define()

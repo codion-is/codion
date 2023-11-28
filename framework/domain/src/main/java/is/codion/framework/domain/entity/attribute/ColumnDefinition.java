@@ -20,7 +20,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return the column name
    */
-  String columnName();
+  String name();
 
   /**
    * @return the column expression to use when selecting or the column name if no expression has been set
@@ -127,10 +127,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 
     /**
      * Sets the actual string used as column when querying
-     * @param columnName the column name
+     * @param name the column name
      * @return this instance
      */
-    B columnName(String columnName);
+    B name(String name);
 
     /**
      * @param expression the column expression to use when selecting

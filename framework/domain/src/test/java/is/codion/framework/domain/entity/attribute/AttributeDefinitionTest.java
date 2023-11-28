@@ -163,12 +163,12 @@ public final class AttributeDefinitionTest {
 
   @Test
   void setColumnName() {
-    assertEquals("hello", ((ColumnDefinition<?>) ENTITY_TYPE.integerColumn("attribute").define().column().columnName("hello").build()).columnName());
+    assertEquals("hello", ((ColumnDefinition<?>) ENTITY_TYPE.integerColumn("attribute").define().column().name("hello").build()).name());
   }
 
   @Test
   void setColumnNameNull() {
-    assertThrows(NullPointerException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().columnName(null));
+    assertThrows(NullPointerException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().name(null));
   }
 
   @Test

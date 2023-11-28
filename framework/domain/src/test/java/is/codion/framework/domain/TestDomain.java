@@ -494,13 +494,15 @@ public final class TestDomain extends DefaultDomain {
             Employee.ID.define()
                     .primaryKey()
                     .caption(Employee.ID.name())
-                    .columnName("empno")
+                    .name("empno")
                     .beanProperty("id"),
             Employee.NAME.define()
                     .column()
                     .caption(Employee.NAME.name())
                     .searchColumn(true)
-                    .columnName("ename").maximumLength(10).nullable(false)
+                    .name("ename")
+                    .maximumLength(10)
+                    .nullable(false)
                     .beanProperty("name"),
             Employee.DEPARTMENT_NO.define()
                     .column()
