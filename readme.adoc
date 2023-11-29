@@ -37,6 +37,19 @@ I figured a CRUD application framework should:
 * Have a clear separation between model and UI for easy unit testing.
 * Limit accidental complexity and be intuitive and enjoyable to use.
 
+== Download
+
+A release has yet to be published to Maven Central, but snapshots of the current development version *{version}-SNAPSHOT* are available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
+
+[source,groovy]
+----
+repositories {
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+----
+
 == Dependencies
 
 The core Codion framework components use a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
