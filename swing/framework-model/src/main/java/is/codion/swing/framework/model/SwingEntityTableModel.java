@@ -469,8 +469,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean contains(Entity item) {
-    return tableModel.contains(item);
+  public final boolean containsItem(Entity item) {
+    return tableModel.containsItem(item);
   }
 
   @Override

@@ -116,7 +116,7 @@ public class SwingEntityEditModelTest {
     comboBoxModel.refresh();
     assertEquals(4, comboBoxModel.getSize());
     for (EnumType enumType : EnumType.values()) {
-      assertTrue(comboBoxModel.contains(enumType));
+      assertTrue(comboBoxModel.containsItem(enumType));
     }
   }
 }
