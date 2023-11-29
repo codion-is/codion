@@ -103,7 +103,7 @@ public abstract class AbstractDatabase implements Database {
                                          User poolUser) throws DatabaseException {
     requireNonNull(connectionPoolFactory, "connectionPoolFactory");
     requireNonNull(poolUser, "poolUser");
-    if (connectionPools.containsKey(poolUser.username())) {
+    if (connectionPools.containsKey(poolUser.username().toLowerCase())) {
       throw new IllegalStateException("Connection pool for user " + poolUser.username() + " has already been created");
     }
     connectionPools.put(poolUser.username().toLowerCase(), connectionPoolFactory.createConnectionPoolWrapper(this, poolUser));
