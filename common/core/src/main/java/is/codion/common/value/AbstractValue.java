@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static is.codion.common.value.Value.Notify.WHEN_CHANGED;
+import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -193,15 +195,12 @@ public abstract class AbstractValue<T> implements Value<T> {
     return validators;
   }
 
-  private boolean notifyListeners(boolean valueChanged) {
-    if (notify == Notify.WHEN_SET) {
-      notifyListeners();
-    }
-    else if (notify == Notify.WHEN_CHANGED && valueChanged) {
+  private boolean notifyListeners(boolean changed) {
+    if (notify == WHEN_SET || (notify == WHEN_CHANGED && changed)){
       notifyListeners();
     }
 
-    return valueChanged;
+    return changed;
   }
 
   private final class OriginalValueListener implements Consumer<T> {
