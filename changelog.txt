@@ -9997,3 +9997,4 @@
   DefaultColumnDefinition, expression is now the column name if none is specified, instead of handling it in the expression() function
   AbstractValue, minor refactoring
   FilteredModel.contains() renamed containsItem() (for JavaFX compatability)
+  AbstractDatabase.createConnectionPool() bug fixed, did not use toLowerCase() when checking if pool already exists
