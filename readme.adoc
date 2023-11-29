@@ -39,7 +39,9 @@ I figured a CRUD application framework should:
 
 == Download
 
-A release has yet to be published to Maven Central, but snapshots of the current development version *{version}-SNAPSHOT* are available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
+Codion framework binaries are available on Maven Central.
+
+Snapshots of the current development version *{version}-SNAPSHOT* are available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
 
 [source,groovy]
 ----
