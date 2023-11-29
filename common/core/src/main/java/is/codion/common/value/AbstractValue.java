@@ -18,8 +18,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * An abstract {@link Value} implementation handling everything except the value itself.<br><br>
  * The constructor parameter {@code notify} specifies whether this {@link Value} instance should automatically call
- * {@link #notifyListeners()} when the value is changed via {@link AbstractValue#set(Object)}.
- * Some implementations may want to do this manually.
+ * {@link #notifyListeners()} when the value is set or changed via {@link AbstractValue#set(Object)}.
+ * Some implementations may want to handle this manually.
  * @param <T> the value type
  */
 public abstract class AbstractValue<T> implements Value<T> {
@@ -64,15 +64,8 @@ public abstract class AbstractValue<T> implements Value<T> {
     }
     T previousValue = get();
     setValue(newValue);
-    if (notify == Notify.WHEN_SET) {
-      notifyListeners();
-    }
-    boolean valueChanged = !Objects.equals(previousValue, newValue);
-    if (notify == Notify.WHEN_CHANGED && valueChanged) {
-      notifyListeners();
-    }
 
-    return valueChanged;
+    return notifyListeners(!Objects.equals(previousValue, newValue));
   }
 
   @Override
@@ -198,6 +191,17 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   final Collection<Validator<T>> validators() {
     return validators;
+  }
+
+  private boolean notifyListeners(boolean valueChanged) {
+    if (notify == Notify.WHEN_SET) {
+      notifyListeners();
+    }
+    else if (notify == Notify.WHEN_CHANGED && valueChanged) {
+      notifyListeners();
+    }
+
+    return valueChanged;
   }
 
   private final class OriginalValueListener implements Consumer<T> {

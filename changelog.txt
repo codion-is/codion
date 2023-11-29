@@ -9949,3 +9949,4 @@
   ColumnDefinition.columnType renamed type
   Column.ValueConverter and ValueFetcher renamed to Converter and Fetcher respectively
   DefaultColumnDefinition, expression is now the column name if none is specified, instead of handling it in the expression() function
+  AbstractValue, minor refactoring
