@@ -14,6 +14,7 @@ ext {
 }
 
 nexusPublishing {
+    packageGroup = "is.codion"
     repositories {
         sonatype {
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
