@@ -96,11 +96,11 @@ public final class SwingEntityModelTest
     connection.beginTransaction();
     try {
       departmentModel.editModel().delete();
-      assertFalse(departmentsComboBoxModel.contains(operations));
+      assertFalse(departmentsComboBoxModel.containsItem(operations));
       departmentModel.editModel().put(Department.ID, 99);
       departmentModel.editModel().put(Department.NAME, "nameit");
       Entity inserted = departmentModel.editModel().insert();
-      assertTrue(departmentsComboBoxModel.contains(inserted));
+      assertTrue(departmentsComboBoxModel.containsItem(inserted));
       departmentModel.tableModel().selectionModel().setSelectedItem(inserted);
       departmentModel.editModel().put(Department.NAME, "nameitagain");
       departmentModel.editModel().update();

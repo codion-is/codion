@@ -159,7 +159,7 @@ public final class EntityComponentsTest {
 
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
-    assertTrue(model.contains(Item.item(null)));
+    assertTrue(model.containsItem(Item.item(null)));
 
     assertNull(editModel.get(Detail.INT_VALUE_LIST));
     comboBox.setSelectedItem(1);
@@ -213,7 +213,7 @@ public final class EntityComponentsTest {
     comboBoxModel.refresh();
     assertEquals(4, comboBoxModel.getSize());
     for (EnumType enumType : EnumType.values()) {
-      assertTrue(comboBoxModel.contains(enumType));
+      assertTrue(comboBoxModel.containsItem(enumType));
     }
   }
 
