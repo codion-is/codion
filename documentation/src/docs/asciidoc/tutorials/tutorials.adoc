@@ -38,7 +38,7 @@ link:https://github.com/codion-is/chinook[Chinook project on Github]
 <<{basedir}/tutorials/chinook-minimal.adoc#_chinook_minimal_tutorial, Chinook Minimal>>
 
 === Employees
-link:{basedir}/tutorials/employees/Employees.html[Employees]
+link:{basedir}/tutorials/employees/employees.html[Employees]
 
 === Petstore
 link:{basedir}/tutorials/petstore/petstore.html[Petstore]
