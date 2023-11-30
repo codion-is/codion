@@ -22,7 +22,6 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.ContinentModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 
@@ -33,7 +32,6 @@ import java.awt.Dimension;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createBarChartPanel;
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
-import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_1;
@@ -56,10 +54,6 @@ final class ContinentPanel extends EntityPanel {
     public void layout(EntityPanel entityPanel) {
       ContinentPanel continentPanel = (ContinentPanel) entityPanel;
       ContinentModel model = entityPanel.model();
-
-      EntityTablePanel tablePanel = entityPanel.tablePanel();
-      tablePanel.initialize();
-      setPreferredHeight(tablePanel, 200);
 
       ChartPanel populationChartPanel = createPieChartPanel(entityPanel, model.populationDataset(), "Population");
       ChartPanel surfaceAreaChartPanel = createPieChartPanel(entityPanel, model.surfaceAreaDataset(), "Surface area");
@@ -97,7 +91,7 @@ final class ContinentPanel extends EntityPanel {
 
       continentPanel.setLayout(borderLayout());
 
-      continentPanel.add(tablePanel, BorderLayout.CENTER);
+      continentPanel.add(continentPanel.editControlTablePanel(), BorderLayout.CENTER);
       continentPanel.add(tabbedPane, BorderLayout.SOUTH);
 
       continentPanel.setupKeyboardActions();
