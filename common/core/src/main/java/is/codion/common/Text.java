@@ -70,15 +70,15 @@ public final class Text {
 
   /**
    * Creates a random string from alphanumeric uppercase characters
-   * @param minLength the minimum length
+   * @param minimumLength the minimum length
    * @param maximumLength the maximum length
    * @return a random string
    */
-  public static String randomString(int minLength, int maximumLength) {
-    if (minLength > maximumLength) {
+  public static String randomString(int minimumLength, int maximumLength) {
+    if (minimumLength > maximumLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }
-    int length = minLength == maximumLength ? minLength : RANDOM.nextInt(maximumLength - minLength) + minLength;
+    int length = minimumLength == maximumLength ? minimumLength : RANDOM.nextInt(maximumLength - minimumLength) + minimumLength;
 
     return IntStream.range(0, length)
             .mapToObj(i -> String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))

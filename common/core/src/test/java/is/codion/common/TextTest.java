@@ -142,6 +142,7 @@ public final class TextTest {
     assertEquals("aBaC", Text.underscoreToCamelCase("a_ba_c"));
     assertEquals("a", Text.underscoreToCamelCase("a__"));
     assertEquals("a", Text.underscoreToCamelCase("__a"));
+    assertEquals("a", Text.underscoreToCamelCase("__A"));
   }
 
   @Test
