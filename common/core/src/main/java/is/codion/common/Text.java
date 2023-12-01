@@ -69,7 +69,9 @@ public final class Text {
 
   /**
    * Left or right alignment
+   * @deprecated for removal
    */
+  @Deprecated
   public enum Alignment {
     LEFT, RIGHT
   }
@@ -83,15 +85,15 @@ public final class Text {
 
   /**
    * Creates a random string from alphanumeric uppercase characters
-   * @param minLength the minimum length
+   * @param minimumLength the minimum length
    * @param maximumLength the maximum length
    * @return a random string
    */
-  public static String randomString(int minLength, int maximumLength) {
-    if (minLength > maximumLength) {
+  public static String randomString(int minimumLength, int maximumLength) {
+    if (minimumLength > maximumLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }
-    int length = minLength == maximumLength ? minLength : RANDOM.nextInt(maximumLength - minLength) + minLength;
+    int length = minimumLength == maximumLength ? minimumLength : RANDOM.nextInt(maximumLength - minimumLength) + minimumLength;
 
     return IntStream.range(0, length)
             .mapToObj(i -> String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
@@ -161,25 +163,40 @@ public final class Text {
    * @param padChar the character to use for padding
    * @param alignment the padding alignment, left or right side
    * @return the padded string
+   * @deprecated for removal, use {@link #leftPad(String, int, char)} or {@link #rightPad(String, int, char)} instead
    */
+  @Deprecated
   public static String padString(String string, int length, char padChar, Alignment alignment) {
-    requireNonNull(string, "string");
-    requireNonNull(alignment, "alignment");
-    if (string.length() >= length) {
-      return string;
+    switch (requireNonNull(alignment, "alignment")) {
+      case LEFT:
+        return leftPad(string, length, padChar);
+      case RIGHT:
+        return rightPad(string, length, padChar);
+      default:
+        throw new IllegalArgumentException();
     }
+  }
 
-    StringBuilder stringBuilder = new StringBuilder(string);
-    while (stringBuilder.length() < length) {
-      if (alignment.equals(Alignment.LEFT)) {
-        stringBuilder.insert(0, padChar);
-      }
-      else {
-        stringBuilder.append(padChar);
-      }
-    }
+  /**
+   * Right pads the given string with the given pad character until a length of {@code length} has been reached
+   * @param string the string to pad
+   * @param length the desired length
+   * @param padChar the character to use for padding
+   * @return the padded string
+   */
+  public static String rightPad(String string, int length, char padChar) {
+    return padString(string, length, padChar, false);
+  }
 
-    return stringBuilder.toString();
+  /**
+   * Left pads the given string with the given pad character until a length of {@code length} has been reached
+   * @param string the string to pad
+   * @param length the desired length
+   * @param padChar the character to use for padding
+   * @return the padded string
+   */
+  public static String leftPad(String string, int length, char padChar) {
+    return padString(string, length, padChar, true);
   }
 
   /**
@@ -335,6 +352,24 @@ public final class Text {
     }
 
     return builder.toString();
+  }
+
+  private static String padString(String string, int length, char padChar, boolean left) {
+    if (requireNonNull(string, "string").length() >= length) {
+      return string;
+    }
+
+    StringBuilder stringBuilder = new StringBuilder(string);
+    while (stringBuilder.length() < length) {
+      if (left) {
+        stringBuilder.insert(0, padChar);
+      }
+      else {
+        stringBuilder.append(padChar);
+      }
+    }
+
+    return stringBuilder.toString();
   }
 
   private static final class ComparatorSansSpace<T> implements Comparator<T>, Serializable {

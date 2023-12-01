@@ -24,14 +24,12 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.general.PieDataset;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_1;
 import static java.awt.event.KeyEvent.VK_2;
 
@@ -46,20 +44,17 @@ abstract class ChartTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected final void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    JPanel tableViewPanel = borderLayoutPanel()
-            .centerComponent(tablePanel)
-            .southComponent(southPanel)
-            .build();
-    JTabbedPane tabbedPane = tabbedPane()
-            .tabBuilder("Table", tableViewPanel)
+  protected final void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+    super.layoutPanel(tabbedPane()
+            .tabBuilder("Table", borderLayoutPanel()
+                    .centerComponent(tableComponent)
+                    .southComponent(southPanel)
+                    .build())
             .mnemonic(VK_1)
             .add()
             .tabBuilder("Chart", chartPanel)
             .mnemonic(VK_2)
             .add()
-            .build();
-    setLayout(borderLayout());
-    add(tabbedPane, BorderLayout.CENTER);
+            .build(), southPanel);
   }
 }

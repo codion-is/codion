@@ -88,11 +88,11 @@ public final class TextTest {
 
   @Test
   void padString() {
-    final String string = "hello";
-    assertEquals("hello", Text.padString(string, 4, '*', Text.Alignment.LEFT));
-    assertEquals("hello", Text.padString(string, 5, '*', Text.Alignment.LEFT));
-    assertEquals("***hello", Text.padString(string, 8, '*', Text.Alignment.LEFT));
-    assertEquals("hello***", Text.padString(string, 8, '*', Text.Alignment.RIGHT));
+    String string = "hello";
+    assertEquals("hello", Text.leftPad(string, 4, '*'));
+    assertEquals("hello", Text.leftPad(string, 5, '*'));
+    assertEquals("***hello", Text.leftPad(string, 8, '*'));
+    assertEquals("hello***", Text.rightPad(string, 8, '*'));
   }
 
   @Test
@@ -157,6 +157,7 @@ public final class TextTest {
     assertEquals("aBaC", Text.underscoreToCamelCase("a_ba_c"));
     assertEquals("a", Text.underscoreToCamelCase("a__"));
     assertEquals("a", Text.underscoreToCamelCase("__a"));
+    assertEquals("a", Text.underscoreToCamelCase("__A"));
   }
 
   @Test

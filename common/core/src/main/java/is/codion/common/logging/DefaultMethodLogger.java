@@ -208,11 +208,11 @@ final class DefaultMethodLogger implements MethodLogger {
     @Override
     public String toString(int indentation) {
       LocalDateTime enterDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(enterTime), TimeZone.getDefault().toZoneId());
-      String indentString = indentation > 0 ? Text.padString("", indentation * INDENTATION_CHARACTERS, ' ', Text.Alignment.RIGHT) : "";
+      String indentString = indentation > 0 ? Text.rightPad("", indentation * INDENTATION_CHARACTERS, ' ') : "";
       StringBuilder stringBuilder = new StringBuilder(indentString).append(TIMESTAMP_FORMATTER.format(enterDateTime)).append(" @ ");
       int timestampLength = stringBuilder.length();
       stringBuilder.append(method);
-      String padString = Text.padString("", timestampLength, ' ', Text.Alignment.RIGHT);
+      String padString = Text.rightPad("", timestampLength, ' ');
       if (!nullOrEmpty(enterMessage)) {
         if (multiLine(enterMessage)) {
           stringBuilder.append(NEWLINE).append(padString).append(enterMessage.replace(NEWLINE, NEWLINE + padString));
