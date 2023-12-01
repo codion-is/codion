@@ -21,6 +21,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.jxmapviewer.JXMapKit;
 import org.kordamp.ikonli.foundation.Foundation;
 
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -101,8 +102,8 @@ final class LookupTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    super.layoutPanel(tablePanel, southPanel);
+  protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+    super.layoutPanel(tableComponent, southPanel);
     add(columnSelectionScrollPane, BorderLayout.EAST);
   }
 

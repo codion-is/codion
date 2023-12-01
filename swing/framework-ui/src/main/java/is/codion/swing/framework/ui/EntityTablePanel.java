@@ -955,14 +955,14 @@ public class EntityTablePanel extends JPanel {
    * This method simply adds {@code tablePanel} at location BorderLayout.CENTER and,
    * if non-null, the given {@code southPanel} to the {@code BorderLayout.SOUTH} location.
    * By overriding this method you can override the default layout.
-   * @param tablePanel the panel containing the table, condition and summary panel
+   * @param tableComponent the component containing the table, condition and summary panel
    * @param southPanel the south toolbar panel, null if not required
    * @see #initializeSouthPanel()
    */
-  protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    requireNonNull(tablePanel, "tablePanel");
+  protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+    requireNonNull(tableComponent, "tableComponent");
     setLayout(new BorderLayout());
-    add(tablePanel, BorderLayout.CENTER);
+    add(tableComponent, BorderLayout.CENTER);
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
