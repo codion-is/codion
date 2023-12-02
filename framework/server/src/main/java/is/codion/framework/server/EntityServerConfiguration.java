@@ -103,9 +103,9 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   int idleConnectionTimeout();
 
   /**
-   * @return the connection pool provider classname
+   * @return the connection pool factory classname
    */
-  String connectionPoolProvider();
+  String connectionPoolFactory();
 
   /**
    * @return the domain model classes to load on startup
@@ -158,10 +158,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     Builder idleConnectionTimeout(int idleConnectionTimeout);
 
     /**
-     * @param connectionPoolProvider the connection pool provider classname
+     * @param connectionPoolFactory the connection pool factory classname
      * @return this builder instance
      */
-    Builder connectionPoolProvider(String connectionPoolProvider);
+    Builder connectionPoolFactory(String connectionPoolFactory);
 
     /**
      * @param domainClassNames the domain model classes to load on startup

@@ -32,7 +32,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private final int connectionLimit;
   private final boolean clientLogging;
   private final int idleConnectionTimeout;
-  private final String connectionPoolProvider;
+  private final String connectionPoolFactory;
   private final Collection<String> domainClassNames;
   private final Collection<User> connectionPoolUsers;
   private final Map<String, Integer> clientTypeIdleConnectionTimeouts;
@@ -44,7 +44,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     this.connectionLimit = builder.connectionLimit;
     this.clientLogging = builder.clientLogging;
     this.idleConnectionTimeout = builder.idleConnectionTimeout;
-    this.connectionPoolProvider = builder.connectionPoolProvider;
+    this.connectionPoolFactory = builder.connectionPoolFactory;
     this.domainClassNames = unmodifiableCollection(builder.domainClassNames);
     this.connectionPoolUsers = unmodifiableCollection(builder.connectionPoolUsers);
     this.clientTypeIdleConnectionTimeouts = unmodifiableMap(builder.clientTypeIdleConnectionTimeouts);
@@ -131,8 +131,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public String connectionPoolProvider() {
-    return connectionPoolProvider;
+  public String connectionPoolFactory() {
+    return connectionPoolFactory;
   }
 
   @Override
@@ -159,7 +159,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private int connectionLimit = DEFAULT_CONNECTION_LIMIT;
     private boolean clientLogging = CLIENT_LOGGING.get();
     private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
-    private String connectionPoolProvider;
+    private String connectionPoolFactory;
     private final Collection<String> domainClassNames = new HashSet<>();
     private final Collection<User> connectionPoolUsers = new HashSet<>();
     private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
@@ -267,8 +267,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder connectionPoolProvider(String connectionPoolProvider) {
-      this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
+    public Builder connectionPoolFactory(String connectionPoolFactory) {
+      this.connectionPoolFactory = requireNonNull(connectionPoolFactory);
       return this;
     }
 

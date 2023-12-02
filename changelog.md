@@ -5,3 +5,4 @@ Codion Change Log
 - Text.padString() deprecated for removal along with Text.ALIGNMENT, Text.leftPad() and rightPad() added.
 - EntityTable.layoutPanel(), tablePanel parameter replaced with tableComponent, no longer restricted to JPanel.
 - Jasper Reports and Apache Commons Logging upgraded.
+- EntityServerConfiguration, connectionPoolProvider renamed connectionPoolFactory
