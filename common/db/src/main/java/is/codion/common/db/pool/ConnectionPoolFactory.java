@@ -24,7 +24,7 @@ public interface ConnectionPoolFactory {
    * @return a connection pool wrapper based on the given user
    * @throws DatabaseException in case of an exception
    */
-  ConnectionPoolWrapper createConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) throws DatabaseException;
+  ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) throws DatabaseException;
 
   /**
    * Returns the {@link ConnectionPoolFactory} implementation found by the {@link ServiceLoader}

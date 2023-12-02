@@ -28,7 +28,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
    * @return a connection pool
    */
   @Override
-  public ConnectionPoolWrapper createConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
+  public ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) {
     return new DataSourceWrapper(connectionFactory, user, createDataSource(user, connectionFactory));
   }
 

@@ -6,3 +6,4 @@ Codion Change Log
 - EntityTable.layoutPanel(), tablePanel parameter replaced with tableComponent, no longer restricted to JPanel.
 - Jasper Reports and Apache Commons Logging upgraded.
 - EntityServerConfiguration, connectionPoolProvider renamed connectionPoolFactory
+- ConnectionPoolFactory.createConnectionPoolWrapper() renamed createConnectionPool()

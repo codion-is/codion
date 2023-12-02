@@ -29,7 +29,7 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
    * @return a connection pool
    */
   @Override
-  public ConnectionPoolWrapper createConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
+  public ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) {
     return new HikariConnectionPoolWrapper(connectionFactory, user);
   }
 

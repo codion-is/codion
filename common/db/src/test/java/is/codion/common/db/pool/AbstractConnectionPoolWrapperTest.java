@@ -28,7 +28,7 @@ public final class AbstractConnectionPoolWrapperTest {
 
     User user = User.parse("scott:tiger");
     long startTime = System.currentTimeMillis();
-    ConnectionPoolWrapper poolWrapper = poolFactory.createConnectionPoolWrapper(database, user);
+    ConnectionPoolWrapper poolWrapper = poolFactory.createConnectionPool(database, user);
     poolWrapper.user();
     poolWrapper.setCollectSnapshotStatistics(true);
     assertTrue(poolWrapper.isCollectSnapshotStatistics());

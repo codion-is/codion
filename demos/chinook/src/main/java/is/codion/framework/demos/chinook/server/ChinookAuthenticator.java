@@ -55,7 +55,7 @@ public final class ChinookAuthenticator implements Authenticator {
   private final ConnectionPoolWrapper connectionPool;
 
   public ChinookAuthenticator() throws DatabaseException {
-    connectionPool = ConnectionPoolFactory.instance().createConnectionPoolWrapper(database, databaseUser);
+    connectionPool = ConnectionPoolFactory.instance().createConnectionPool(database, databaseUser);
   }
 
   /**
