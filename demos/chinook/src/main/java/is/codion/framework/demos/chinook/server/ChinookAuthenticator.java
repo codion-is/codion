@@ -40,7 +40,6 @@ public final class ChinookAuthenticator implements Authenticator {
 
   /**
    * The actual user credentials to return for successfully authenticated users.
-   * Also used for user lookup.
    */
   private final User databaseUser = User.parse("scott:tiger");
 
@@ -54,8 +53,13 @@ public final class ChinookAuthenticator implements Authenticator {
    */
   private final ConnectionPoolWrapper connectionPool;
 
+  /**
+   * The user used for authenticating.
+   */
+  private final User authenticationUser = User.user("sa");
+
   public ChinookAuthenticator() throws DatabaseException {
-    connectionPool = ConnectionPoolFactory.instance().createConnectionPool(database, databaseUser);
+    connectionPool = ConnectionPoolFactory.instance().createConnectionPool(database, authenticationUser);
   }
 
   /**
@@ -97,7 +101,7 @@ public final class ChinookAuthenticator implements Authenticator {
   }
 
   private EntityConnection fetchConnectionFromPool() throws DatabaseException {
-    return localEntityConnection(database, domain, connectionPool.connection(databaseUser));
+    return localEntityConnection(database, domain, connectionPool.connection(authenticationUser));
   }
 
   private static final class Authentication extends DefaultDomain {
