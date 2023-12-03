@@ -277,8 +277,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #beforeInsert()
    */
   public final boolean insert() {
+    beforeInsert();
     try {
-      beforeInsert();
       editModel().insert();
       if (clearAfterInsert.get()) {
         editModel().setDefaults();
@@ -322,8 +322,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #beforeDelete()
    */
   public final boolean delete() {
+    beforeDelete();
     try {
-      beforeDelete();
       editModel().delete();
       requestInitialFocus();
 
@@ -362,8 +362,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #beforeUpdate()
    */
   public final boolean update() {
+    beforeUpdate();
     try {
-      beforeUpdate();
       editModel().update();
       requestAfterUpdateFocus();
 
@@ -392,16 +392,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Called before insert is performed.
    * To cancel the insert throw a {@link is.codion.common.model.CancelException}.
-   * @throws ValidationException in case of a validation failure
    */
-  protected void beforeInsert() throws ValidationException {}
+  protected void beforeInsert() {}
 
   /**
    * Called before update is performed.
    * To cancel the update throw a {@link is.codion.common.model.CancelException}.
-   * @throws ValidationException in case of a validation failure
    */
-  protected void beforeUpdate() throws ValidationException {}
+  protected void beforeUpdate() {}
 
   /**
    * Called before delete is performed.

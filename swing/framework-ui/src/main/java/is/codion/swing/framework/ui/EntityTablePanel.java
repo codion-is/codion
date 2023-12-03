@@ -653,15 +653,30 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Deletes the entities selected in the underlying table model after asking for confirmation using
-   * the {@link Confirmer} associated with the {@link Confirmer.Action#DELETE} action.
+   * the {@link Confirmer} set via {@link #setDeleteConfirmer(Confirmer)}.
+   * @return true if the delete operation was successful
    * @see #setDeleteConfirmer(EntityEditPanel.Confirmer)
+   * @see #beforeDelete()
    */
-  public final void deleteWithConfirmation() {
+  public final boolean deleteWithConfirmation() {
+    if (deleteConfirmer.confirm(this)) {
+      return delete();
+    }
+
+    return false;
+  }
+
+  /**
+   * Deletes the entities selected in the underlying table model without asking for confirmation.
+   * @return true if the delete operation was successful
+   * @see #beforeDelete()
+   */
+  public final boolean delete() {
+    beforeDelete();
     try {
-      if (deleteConfirmer.confirm(this)) {
-        beforeDelete();
-        tableModel.deleteSelected();
-      }
+      tableModel.deleteSelected();
+
+      return true;
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -671,6 +686,8 @@ public class EntityTablePanel extends JPanel {
       LOG.error(e.getMessage(), e);
       onException(e);
     }
+
+    return false;
   }
 
   /**

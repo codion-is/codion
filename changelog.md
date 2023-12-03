@@ -8,3 +8,4 @@ Codion Change Log
 - EntityServerConfiguration, connectionPoolProvider renamed connectionPoolFactory
 - ConnectionPoolFactory.createConnectionPoolWrapper() renamed createConnectionPool()
 - WaitCursor replaced with Cursors utility class, wait cursor usage reduced and simplified throughout.
+- EntityEditPanel.beforeInsert() and beforeUpdate() no longer throw ValidationException, now called outside of try/catch block along with beforeDelete(). EntityTablePanel.beforeDelete() moved outside of try/catch block, delete() added for deleting without confirmation.
