@@ -13,9 +13,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -241,7 +241,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public final EntityEditPanel initialize() {
     if (!initialized) {
-      WaitCursor.show(this);
       try {
         setupControls();
         bindEvents();
@@ -249,7 +248,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       }
       finally {
         initialized = true;
-        WaitCursor.hide(this);
       }
     }
 
@@ -281,21 +279,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final boolean insert() {
     try {
       beforeInsert();
-      WaitCursor.show(this);
-      try {
-        editModel().insert();
-        if (clearAfterInsert.get()) {
-          editModel().setDefaults();
-        }
-        if (requestFocusAfterInsert.get()) {
-          requestAfterInsertFocus();
-        }
+      editModel().insert();
+      if (clearAfterInsert.get()) {
+        editModel().setDefaults();
+      }
+      if (requestFocusAfterInsert.get()) {
+        requestAfterInsertFocus();
+      }
 
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
+      return true;
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -332,16 +324,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final boolean delete() {
     try {
       beforeDelete();
-      WaitCursor.show(this);
-      try {
-        editModel().delete();
-        requestInitialFocus();
+      editModel().delete();
+      requestInitialFocus();
 
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
+      return true;
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -378,16 +364,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final boolean update() {
     try {
       beforeUpdate();
-      WaitCursor.show(this);
-      try {
-        editModel().update();
-        requestAfterUpdateFocus();
+      editModel().update();
+      requestAfterUpdateFocus();
 
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
+      return true;
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -632,10 +612,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void onRefreshingChanged(boolean refreshing) {
     if (refreshing) {
-      WaitCursor.show(EntityEditPanel.this);
+      setCursor(Cursors.WAIT);
     }
     else {
-      WaitCursor.hide(EntityEditPanel.this);
+      setCursor(Cursors.DEFAULT);
     }
   }
 

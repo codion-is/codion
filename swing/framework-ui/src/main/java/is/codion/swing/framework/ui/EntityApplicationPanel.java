@@ -25,7 +25,6 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
@@ -666,28 +665,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final void displayEntityPanelFrame(EntityPanel entityPanel) {
     requireNonNull(entityPanel, "entityPanel");
-    WaitCursor.show(this);
-    try {
-      if (entityPanel.isShowing()) {
-        Window parentWindow = Utilities.parentWindow(entityPanel);
-        if (parentWindow != null) {
-          parentWindow.toFront();
-        }
-      }
-      else {
-        Windows.frame(createEmptyBorderBasePanel(entityPanel))
-                .locationRelativeTo(this)
-                .title(entityPanel.caption().get())
-                .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-                .onClosed(windowEvent -> {
-                  entityPanel.model().savePreferences();
-                  entityPanel.savePreferences();
-                })
-                .show();
+    if (entityPanel.isShowing()) {
+      Window parentWindow = Utilities.parentWindow(entityPanel);
+      if (parentWindow != null) {
+        parentWindow.toFront();
       }
     }
-    finally {
-      WaitCursor.hide(this);
+    else {
+      Windows.frame(createEmptyBorderBasePanel(entityPanel))
+              .locationRelativeTo(this)
+              .title(entityPanel.caption().get())
+              .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+              .onClosed(windowEvent -> {
+                entityPanel.model().savePreferences();
+                entityPanel.savePreferences();
+              })
+              .show();
     }
   }
 
@@ -706,29 +699,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final void displayEntityPanelDialog(EntityPanel entityPanel, boolean modalDialog) {
     requireNonNull(entityPanel, "entityPanel");
-    WaitCursor.show(this);
-    try {
-      if (entityPanel.isShowing()) {
-        Window parentWindow = Utilities.parentWindow(entityPanel);
-        if (parentWindow != null) {
-          parentWindow.toFront();
-        }
-      }
-      else {
-        Dialogs.componentDialog(createEmptyBorderBasePanel(entityPanel))
-                .owner(parentWindow().orElse(null))
-                .title(entityPanel.caption().get())
-                .onClosed(e -> {
-                  entityPanel.model().savePreferences();
-                  entityPanel.savePreferences();
-                })
-                .modal(modalDialog)
-                .resizable(true)
-                .show();
+    if (entityPanel.isShowing()) {
+      Window parentWindow = Utilities.parentWindow(entityPanel);
+      if (parentWindow != null) {
+        parentWindow.toFront();
       }
     }
-    finally {
-      WaitCursor.hide(this);
+    else {
+      Dialogs.componentDialog(createEmptyBorderBasePanel(entityPanel))
+              .owner(parentWindow().orElse(null))
+              .title(entityPanel.caption().get())
+              .onClosed(e -> {
+                entityPanel.model().savePreferences();
+                entityPanel.savePreferences();
+              })
+              .modal(modalDialog)
+              .resizable(true)
+              .show();
     }
   }
 

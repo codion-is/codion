@@ -8,8 +8,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -117,7 +117,7 @@ public final class EntityDependenciesPanel extends JPanel {
   private static Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities,
                                                                   EntityConnectionProvider connectionProvider,
                                                                   JComponent dialogParent) {
-    WaitCursor.show(dialogParent);
+    dialogParent.setCursor(Cursors.WAIT);
     try {
       return connectionProvider.connection().dependencies(entities);
     }
@@ -127,7 +127,7 @@ public final class EntityDependenciesPanel extends JPanel {
       return Collections.emptyMap();
     }
     finally {
-      WaitCursor.hide(dialogParent);
+      dialogParent.setCursor(Cursors.DEFAULT);
     }
   }
 

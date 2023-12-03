@@ -7,3 +7,4 @@ Codion Change Log
 - Jasper Reports and Apache Commons Logging upgraded.
 - EntityServerConfiguration, connectionPoolProvider renamed connectionPoolFactory
 - ConnectionPoolFactory.createConnectionPoolWrapper() renamed createConnectionPool()
+- WaitCursor replaced with Cursors utility class, wait cursor usage reduced and simplified throughout.

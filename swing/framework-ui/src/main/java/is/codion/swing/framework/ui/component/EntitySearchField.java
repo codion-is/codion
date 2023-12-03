@@ -21,11 +21,11 @@ import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -892,10 +892,10 @@ public final class EntitySearchField extends HintTextField {
     @Override
     public void accept(Boolean isSearching) {
       if (isSearching) {
-        WaitCursor.show(EntitySearchField.this);
+        setCursor(Cursors.WAIT);
       }
       else {
-        WaitCursor.hide(EntitySearchField.this);
+        setCursor(Cursors.DEFAULT);
       }
     }
   }

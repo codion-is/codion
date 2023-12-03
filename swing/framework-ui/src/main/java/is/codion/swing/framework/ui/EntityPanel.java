@@ -11,7 +11,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -422,13 +421,11 @@ public class EntityPanel extends JPanel {
    */
   public final <T extends EntityPanel> T initialize() {
     if (!initialized) {
-      WaitCursor.show(this);
       try {
         initializeUI();
       }
       finally {
         initialized = true;
-        WaitCursor.hide(this);
       }
     }
 
