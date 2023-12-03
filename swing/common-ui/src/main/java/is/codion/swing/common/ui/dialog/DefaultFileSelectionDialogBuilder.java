@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.swing.common.ui.WaitCursor;
+import is.codion.swing.common.ui.Cursors;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -121,12 +121,16 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   public File selectFileToSave(String defaultFileName) {
     synchronized (DefaultSelectionDialogBuilder.class) {
       if (fileChooserSave == null) {
+        if (owner != null) {
+          owner.setCursor(Cursors.WAIT);
+        }
         try {
-          WaitCursor.show(owner);
           fileChooserSave = new JFileChooser();
         }
         finally {
-          WaitCursor.hide(owner);
+          if (owner != null) {
+            owner.setCursor(Cursors.DEFAULT);
+          }
         }
       }
       fileChooserSave.setSelectedFiles(new File[]{new File("")});
@@ -208,12 +212,16 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   private List<File> selectFilesOrDirectories(FilesOrDirectories filesOrDirectories, String defaultDialogTitle, boolean singleSelection) {
     synchronized (DefaultSelectionDialogBuilder.class) {
       if (fileChooserOpen == null) {
+        if (owner != null) {
+          owner.setCursor(Cursors.WAIT);
+        }
         try {
-          WaitCursor.show(owner);
           fileChooserOpen = new JFileChooser(new File(startDirectory == null ? System.getProperty("user.home") : startDirectory));
         }
         finally {
-          WaitCursor.hide(owner);
+          if (owner != null) {
+            owner.setCursor(Cursors.DEFAULT);
+          }
         }
       }
       switch (filesOrDirectories) {

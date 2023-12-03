@@ -28,9 +28,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -256,7 +256,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public final EntityEditPanel initialize() {
     if (!initialized) {
-      WaitCursor.show(this);
       try {
         setupControls();
         bindEvents();
@@ -264,7 +263,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       }
       finally {
         initialized = true;
-        WaitCursor.hide(this);
       }
     }
 
@@ -294,23 +292,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #beforeInsert()
    */
   public final boolean insert() {
+    beforeInsert();
     try {
-      beforeInsert();
-      WaitCursor.show(this);
-      try {
-        editModel().insert();
-        if (clearAfterInsert.get()) {
-          editModel().setDefaults();
-        }
-        if (requestFocusAfterInsert.get()) {
-          requestAfterInsertFocus();
-        }
+      editModel().insert();
+      if (clearAfterInsert.get()) {
+        editModel().setDefaults();
+      }
+      if (requestFocusAfterInsert.get()) {
+        requestAfterInsertFocus();
+      }
 
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
+      return true;
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -345,18 +337,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #beforeDelete()
    */
   public final boolean delete() {
+    beforeDelete();
     try {
-      beforeDelete();
-      WaitCursor.show(this);
-      try {
-        editModel().delete();
-        requestInitialFocus();
+      editModel().delete();
+      requestInitialFocus();
 
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
+      return true;
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -391,18 +377,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #beforeUpdate()
    */
   public final boolean update() {
+    beforeUpdate();
     try {
-      beforeUpdate();
-      WaitCursor.show(this);
-      try {
-        editModel().update();
-        requestAfterUpdateFocus();
+      editModel().update();
+      requestAfterUpdateFocus();
 
-        return true;
-      }
-      finally {
-        WaitCursor.hide(this);
-      }
+      return true;
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -427,16 +407,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Called before insert is performed.
    * To cancel the insert throw a {@link is.codion.common.model.CancelException}.
-   * @throws ValidationException in case of a validation failure
    */
-  protected void beforeInsert() throws ValidationException {}
+  protected void beforeInsert() {}
 
   /**
    * Called before update is performed.
    * To cancel the update throw a {@link is.codion.common.model.CancelException}.
-   * @throws ValidationException in case of a validation failure
    */
-  protected void beforeUpdate() throws ValidationException {}
+  protected void beforeUpdate() {}
 
   /**
    * Called before delete is performed.
@@ -647,10 +625,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void onRefreshingChanged(boolean refreshing) {
     if (refreshing) {
-      WaitCursor.show(EntityEditPanel.this);
+      setCursor(Cursors.WAIT);
     }
     else {
-      WaitCursor.hide(EntityEditPanel.this);
+      setCursor(Cursors.DEFAULT);
     }
   }
 

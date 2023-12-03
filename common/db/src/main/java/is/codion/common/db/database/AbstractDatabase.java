@@ -121,7 +121,7 @@ public abstract class AbstractDatabase implements Database {
     if (connectionPools.containsKey(poolUser.username().toLowerCase())) {
       throw new IllegalStateException("Connection pool for user " + poolUser.username() + " has already been created");
     }
-    connectionPools.put(poolUser.username().toLowerCase(), connectionPoolFactory.createConnectionPoolWrapper(this, poolUser));
+    connectionPools.put(poolUser.username().toLowerCase(), connectionPoolFactory.createConnectionPool(this, poolUser));
   }
 
   @Override

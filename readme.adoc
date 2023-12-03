@@ -1,5 +1,6 @@
 = Codion Application Framework
 :version: 0.17.17
+:version-dev: 0.17.18
 :url-help: https://codion.is/doc/{version}/help
 :url-manual: https://codion.is/doc/{version}/manual
 :url-technical: https://codion.is/doc/{version}/technical
@@ -39,9 +40,15 @@ I figured a CRUD application framework should:
 
 == Download
 
-Codion framework binaries are available on Maven Central.
+=== Latest release ({version})
 
-Snapshots of the current development version *{version}-SNAPSHOT* are available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
+Binaries are available on Maven Central.
+
+https://codion.is/doc/{version}/index.html[Codion v{version} documentation]
+
+=== Development version ({version-dev}-SNAPSHOT)
+
+Snapshots are available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
 
 [source,groovy]
 ----
@@ -51,6 +58,8 @@ repositories {
     }
 }
 ----
+
+https://codion.is/doc/{version-dev}/index.html[Codion v{version-dev}-SNAPSHOT documentation]
 
 == Dependencies
 

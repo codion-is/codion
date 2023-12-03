@@ -94,7 +94,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
     put(InvoiceLine.UNITPRICE, track == null ? null : track.get(Track.UNITPRICE));
   }
 
-  private void updateTotals(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
-    totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, entities)));
+  private void updateTotals(Collection<? extends Entity> invoices, EntityConnection connection) throws DatabaseException {
+    totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoices)));
   }
 }

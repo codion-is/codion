@@ -63,7 +63,7 @@ public final class QueryLoadTestModel {
             .applicationBatchSize(DEFAULT_BATCH_SIZE)
             .build();
     ConnectionPoolFactory poolProvider = ConnectionPoolFactory.instance();
-    this.pool = poolProvider.createConnectionPoolWrapper(database, user);
+    this.pool = poolProvider.createConnectionPool(database, user);
     loadTestModel.addShutdownListener(pool::close);
   }
 

@@ -28,7 +28,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -244,15 +243,9 @@ final class EntityControls {
 
     private boolean insert(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
       try {
-        WaitCursor.show(component);
-        try {
-          editModel.insert();
+        editModel.insert();
 
-          return true;
-        }
-        finally {
-          WaitCursor.hide(component);
-        }
+        return true;
       }
       catch (ValidationException e) {
         attributeWithInvalidValue.set(e.attribute());
@@ -371,17 +364,11 @@ final class EntityControls {
 
     private boolean update(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
       try {
-        WaitCursor.show(component);
-        try {
-          if (editModel.modified().get()) {
-            editModel.update();
-          }
+        if (editModel.modified().get()) {
+          editModel.update();
+        }
 
-          return true;
-        }
-        finally {
-          WaitCursor.hide(component);
-        }
+        return true;
       }
       catch (ValidationException e) {
         attributeWithInvalidValue.set(e.attribute());

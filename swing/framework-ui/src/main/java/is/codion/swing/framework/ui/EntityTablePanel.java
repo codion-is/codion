@@ -37,9 +37,9 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -668,21 +668,30 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Deletes the entities selected in the underlying table model after asking for confirmation using
-   * the {@link Confirmer} associated with the {@link Confirmer.Action#DELETE} action.
+   * the {@link Confirmer} set via {@link #setDeleteConfirmer(Confirmer)}.
+   * @return true if the delete operation was successful
    * @see #setDeleteConfirmer(EntityEditPanel.Confirmer)
+   * @see #beforeDelete()
    */
-  public final void deleteWithConfirmation() {
+  public final boolean deleteWithConfirmation() {
+    if (deleteConfirmer.confirm(this)) {
+      return delete();
+    }
+
+    return false;
+  }
+
+  /**
+   * Deletes the entities selected in the underlying table model without asking for confirmation.
+   * @return true if the delete operation was successful
+   * @see #beforeDelete()
+   */
+  public final boolean delete() {
+    beforeDelete();
     try {
-      if (deleteConfirmer.confirm(this)) {
-        beforeDelete();
-        WaitCursor.show(this);
-        try {
-          tableModel.deleteSelected();
-        }
-        finally {
-          WaitCursor.hide(this);
-        }
-      }
+      tableModel.deleteSelected();
+
+      return true;
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -692,6 +701,8 @@ public class EntityTablePanel extends JPanel {
       LOG.error(e.getMessage(), e);
       onException(e);
     }
+
+    return false;
   }
 
   /**
@@ -710,7 +721,6 @@ public class EntityTablePanel extends JPanel {
    */
   public final EntityTablePanel initialize() {
     if (!initialized) {
-      WaitCursor.show(this);
       try {
         setupComponents();
         setupControls();
@@ -724,7 +734,6 @@ public class EntityTablePanel extends JPanel {
       }
       finally {
         initialized = true;
-        WaitCursor.hide(this);
       }
     }
 
@@ -1550,10 +1559,10 @@ public class EntityTablePanel extends JPanel {
 
   private void onRefreshingChanged(boolean refreshing) {
     if (refreshing) {
-      WaitCursor.show(EntityTablePanel.this);
+      setCursor(Cursors.WAIT);
     }
     else {
-      WaitCursor.hide(EntityTablePanel.this);
+      setCursor(Cursors.DEFAULT);
     }
   }
 
