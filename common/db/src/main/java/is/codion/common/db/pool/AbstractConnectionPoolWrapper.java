@@ -197,7 +197,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
     @Override
     public Object invoke(Object connectionProxy, Method connectionMethod,
                          Object[] connectionArgs) throws Throwable {
-      if ("close".equals(connectionMethod.getName())) {
+      if ("close".equals(connectionMethod.getName()) && !connection.isClosed()) {
         counter.incrementConnectionsDestroyedCounter();
       }
 
