@@ -52,15 +52,6 @@ public final class Text {
    */
   public static final PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
 
-  /**
-   * Left or right alignment
-   * @deprecated for removal
-   */
-  @Deprecated
-  public enum Alignment {
-    LEFT, RIGHT
-  }
-
   private static final Random RANDOM = new Random();
   private static final char SPACE = ' ';
   private static final char UNDERSCORE = '_';
@@ -139,27 +130,6 @@ public final class Text {
     requireNonNull(stringTwo, "stringTwo");
 
     return collator.compare(stringOne.replace(SPACE, UNDERSCORE), stringTwo.replace(SPACE, UNDERSCORE));
-  }
-
-  /**
-   * Pads the given string with the given pad character until a length of {@code length} has been reached
-   * @param string the string to pad
-   * @param length the desired length
-   * @param padChar the character to use for padding
-   * @param alignment the padding alignment, left or right side
-   * @return the padded string
-   * @deprecated for removal, use {@link #leftPad(String, int, char)} or {@link #rightPad(String, int, char)} instead
-   */
-  @Deprecated
-  public static String padString(String string, int length, char padChar, Alignment alignment) {
-    switch (requireNonNull(alignment, "alignment")) {
-      case LEFT:
-        return leftPad(string, length, padChar);
-      case RIGHT:
-        return rightPad(string, length, padChar);
-      default:
-        throw new IllegalArgumentException();
-    }
   }
 
   /**
