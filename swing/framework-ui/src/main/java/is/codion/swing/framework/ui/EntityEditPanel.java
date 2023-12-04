@@ -101,7 +101,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
   private final Set<ControlCode> controlCodes;
-  private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
+  private final Map<ControlCode, Control> standardControls = new EnumMap<>(ControlCode.class);
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
   private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
   private final State clearAfterInsert = State.state(true);
@@ -109,6 +109,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling =
           Value.value(ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(), ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
+  private Controls controls;
   private boolean initialized = false;
 
   /**
@@ -214,7 +215,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if this edit panel contains a control assocated with the given {@code controlCode}
    */
   public final boolean containsControl(ControlCode controlCode) {
-    Control control = controls.get(requireNonNull(controlCode));
+    Control control = standardControls.get(requireNonNull(controlCode));
 
     return control != null && control != NULL_CONTROL;
   }
@@ -230,7 +231,25 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
-    return controls.get(controlCode);
+    return standardControls.get(controlCode);
+  }
+
+  /**
+   * Returns a {@link Controls} instance containing all the controls this edit panel provides via {@link #createControls()}.
+   * @return the {@link Controls} provided by this edit panel
+   * @throws IllegalStateException in case the panel has not been initialized
+   * @see #initialized()
+   * @see #createControls()
+   */
+  public final Controls controls() {
+    if (!initialized()) {
+      throw new IllegalStateException("Method must be called after the panel is initialized");
+    }
+    if (controls == null) {
+      controls = createControls();
+    }
+
+    return controls;
   }
 
   /**
@@ -450,23 +469,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (initialized()) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
-    controls.put(controlCode, control == null ? NULL_CONTROL : control);
+    standardControls.put(controlCode, control == null ? NULL_CONTROL : control);
   }
 
   /**
    * Creates a Controls instance containing all the controls available in this edit panel
    * @return the Controls available in this edit panel
-   * @throws IllegalStateException in case the panel has not been initialized
-   * @see #initialized()
    */
   protected Controls createControls() {
-    if (!initialized()) {
-      throw new IllegalStateException("Method must be called after the panel is initialized");
-    }
-
     return Controls.controls(controlCodes.stream()
             .filter(this::containsControl)
-            .map(controls::get)
+            .map(standardControls::get)
             .toArray(Control[]::new));
   }
 
@@ -502,22 +515,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       setupEditControls();
     }
     if (controlCodes.contains(ControlCode.CLEAR)) {
-      controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
+      standardControls.putIfAbsent(ControlCode.CLEAR, createClearControl());
     }
     if (controlCodes.contains(ControlCode.REFRESH)) {
-      controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
+      standardControls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
     }
   }
 
   private void setupEditControls() {
     if (editModel().insertEnabled().get() && controlCodes.contains(ControlCode.INSERT)) {
-      controls.putIfAbsent(ControlCode.INSERT, createInsertControl());
+      standardControls.putIfAbsent(ControlCode.INSERT, createInsertControl());
     }
     if (editModel().updateEnabled().get() && controlCodes.contains(ControlCode.UPDATE)) {
-      controls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
+      standardControls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
     }
     if (editModel().deleteEnabled().get() && controlCodes.contains(ControlCode.DELETE)) {
-      controls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
+      standardControls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
     }
   }
 
