@@ -778,13 +778,13 @@ public class EntityPanel extends JPanel {
    * containing the edit controls, such as insert, update and delete.
    * Only called if {@link #isIncludeControlPanel()} returns true.
    * @return the panel containing the edit panel controls
-   * @see EntityEditPanel#createControls()
+   * @see EntityEditPanel#controls()
    * @see EntityPanel#TOOLBAR_CONTROLS
    * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
    * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
    */
   protected JComponent createEditControlPanel() {
-    Controls controls = editPanel.createControls();
+    Controls controls = editPanel.controls();
     if (controls == null || controls.empty()) {
       return null;
     }
@@ -803,13 +803,13 @@ public class EntityPanel extends JPanel {
               .build();
     }
 
-    return panel(borderLayout())
-            .add(buttonPanel(controls)
+    return borderLayoutPanel()
+            .northComponent(buttonPanel(controls)
                     .orientation(VERTICAL)
                     .buttonBuilder(ButtonBuilder.builder()
                             .horizontalAlignment(SwingConstants.LEADING))
                     .toggleButtonType(CHECKBOX)
-                    .build(), BorderLayout.NORTH)
+                    .build())
             .build();
   }
 
