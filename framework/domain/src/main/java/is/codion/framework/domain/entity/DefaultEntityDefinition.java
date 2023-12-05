@@ -865,11 +865,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private boolean basedOnEagerlyLoadedColumns(ForeignKey foreignKey) {
-      Set<Column<?>> foreignKeyColumns = foreignKey.references().stream()
+      return Collections.disjoint(foreignKey.references().stream()
               .map(Reference::column)
-              .collect(toSet());
-
-      return Collections.disjoint(foreignKeyColumns, columnDefinitions.stream()
+              .collect(toSet()), columnDefinitions.stream()
               .filter(ColumnDefinition::lazy)
               .map(ColumnDefinition::attribute)
               .collect(toSet()));
