@@ -6,6 +6,7 @@ Codion Change Log
 - AbstractConnectionPoolWrapper, prevent destroyed connection counter being called twice for each closed connection, see https://github.com/brettwooldridge/HikariCP/issues/2152.
 ### is.codion.framework.domain
 - Condition.customCondition() renamed custom().
+- BlobColumnDefinition removed, ColumnDefinition.lazy() added. Default behaviour for byte array columns being lazy and hidden removed. Related changes.
 
 ## 0.17.18
 - Text.padString() deprecated for removal along with Text.ALIGNMENT, Text.leftPad() and rightPad() added.

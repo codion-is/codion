@@ -46,6 +46,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private final transient boolean groupBy;
   private final transient boolean aggregate;
   private final transient boolean selectable;
+  private final transient boolean lazy;
 
   protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
     super(builder);
@@ -62,6 +63,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     this.groupBy = builder.groupBy;
     this.aggregate = builder.aggregate;
     this.selectable = builder.selectable;
+    this.lazy = builder.lazy;
   }
 
   @Override
@@ -127,6 +129,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   @Override
   public final boolean selectable() {
     return selectable;
+  }
+
+  @Override
+  public final boolean lazy() {
+    return lazy;
   }
 
   @Override
@@ -217,6 +224,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private boolean groupBy;
     private boolean aggregate;
     private boolean selectable;
+    private boolean lazy;
 
     DefaultColumnDefinitionBuilder(Column<T> column) {
       this(column, -1);
@@ -237,6 +245,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
       this.groupBy = false;
       this.aggregate = false;
       this.selectable = true;
+      this.lazy = false;
     }
 
     @Override
@@ -320,6 +329,12 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     @Override
     public final B selectable(boolean selectable) {
       this.selectable = selectable;
+      return (B) this;
+    }
+
+    @Override
+    public final B lazy(boolean lazy) {
+      this.lazy = lazy;
       return (B) this;
     }
 

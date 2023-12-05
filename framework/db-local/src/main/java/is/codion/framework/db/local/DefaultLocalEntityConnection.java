@@ -31,7 +31,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -1485,22 +1484,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /**
    * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-   * Note that only eagerly loaded blob values are included in this comparison.
+   * Note that only eagerly loaded values are included in this comparison.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable columns which values differ from the ones in the comparison entity
-   * @see BlobColumnDefinition#eagerlyLoaded()
+   * @see ColumnDefinition#lazy()
    */
   static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
     return comparison.entrySet().stream()
             .map(entry -> entity.definition().attributes().definition(entry.getKey()))
             .filter(ColumnDefinition.class::isInstance)
             .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
-            .filter(columnDefinition -> {
-              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).eagerlyLoaded();
-
-              return columnDefinition.updatable() && !lazilyLoadedBlobColumn && valueMissingOrModified(entity, comparison, columnDefinition.attribute());
-            })
+            .filter(columnDefinition -> columnDefinition.updatable() && !columnDefinition.lazy() &&
+                    valueMissingOrModified(entity, comparison, columnDefinition.attribute()))
             .map(ColumnDefinition::attribute)
             .collect(toList());
   }

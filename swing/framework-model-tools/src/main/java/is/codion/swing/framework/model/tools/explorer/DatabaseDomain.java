@@ -99,10 +99,7 @@ final class DatabaseDomain extends DefaultDomain {
     String caption = caption(metadataColumn.columnName());
     Column<?> column = column(entityType, metadataColumn);
     ColumnDefinition.Builder<?, ?> builder;
-    if (column.type().isByteArray()) {
-      builder = column.define().blobColumn().caption(caption);
-    }
-    else if (metadataColumn.primaryKeyColumn()) {
+    if (metadataColumn.primaryKeyColumn()) {
       builder = column.define().primaryKey(metadataColumn.primaryKeyIndex() - 1);
     }
     else {

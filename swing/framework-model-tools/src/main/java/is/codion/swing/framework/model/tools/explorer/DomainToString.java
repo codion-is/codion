@@ -6,7 +6,6 @@ package is.codion.swing.framework.model.tools.explorer;
 import is.codion.common.Text;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
@@ -120,14 +119,14 @@ final class DomainToString {
     if (!isForeignKey && !column.primaryKey()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
     }
-    if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).eagerlyLoaded()) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".eagerlyLoaded()");
-    }
     if (column.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
     }
     if (!column.nullable() && !column.primaryKey()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
+    }
+    if (column.lazy()) {
+      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".lazy(true)");
     }
     if (String.class.equals(column.attribute().type().valueClass())) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")

@@ -282,15 +282,6 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
               .columnClass(columnClass, (Converter<T, C>) new BooleanConverter<>(trueValue, falseValue));
     }
 
-    @Override
-    public BlobColumnDefinition.Builder blobColumn() {
-      if (!type().isByteArray()) {
-        throw new IllegalStateException(column + " is not a byte array column");
-      }
-
-      return new DefaultBlobColumnDefinition.DefaultBlobColumnDefinitionBuilder((Column<byte[]>) column);
-    }
-
     /**
      * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
      * @param column the column

@@ -104,13 +104,6 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
                                                                                                            C trueValue, C falseValue);
 
     /**
-     * Creates a new {@link BlobColumnDefinition.Builder} instance.
-     * @return a new {@link BlobColumnDefinition.Builder}
-     * @throws IllegalStateException in case this columnn is note a byte array column
-     */
-    BlobColumnDefinition.Builder blobColumn();
-
-    /**
      * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
      * @param <B> the builder type
      * @return a new {@link ColumnDefinition.Builder}

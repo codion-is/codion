@@ -7,7 +7,6 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
@@ -27,10 +26,10 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
   private static final Function<EntityDefinition, List<TransientAttributeDefinition<?>>> INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES =
           EntityResultPacker::initializeNonDerivedTransientAttributes;
-  private static final Function<EntityDefinition, List<ColumnDefinition<byte[]>>> INIT_LAZY_LOADED_BLOB_COLUMNS =
-          EntityResultPacker::initializeLazyLoadedBlobColumns;
+  private static final Function<EntityDefinition, List<ColumnDefinition<?>>> INIT_LAZY_LOADED_COLUMNS =
+          EntityResultPacker::initializeLazyLoadedColumns;
   private static final Map<EntityDefinition, List<TransientAttributeDefinition<?>>> NON_DERIVED_TRANSIENT_ATTRIBUTES = new ConcurrentHashMap<>();
-  private static final Map<EntityDefinition, List<ColumnDefinition<byte[]>>> LAZY_LOADED_BLOB_COLUMNS = new ConcurrentHashMap<>();
+  private static final Map<EntityDefinition, List<ColumnDefinition<?>>> LAZY_LOADED_COLUMNS = new ConcurrentHashMap<>();
 
   private final EntityDefinition entityDefinition;
   private final List<ColumnDefinition<?>> columnDefinitions;
@@ -49,7 +48,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     Map<Attribute<?>, Object> values = new HashMap<>(columnDefinitions.size());
     addResultSetValues(resultSet, values);
     addTransientNullValues(values);
-    addLazyLoadedBlobNullValues(values);
+    addLazyLoadedNullValues(values);
 
     return entityDefinition.entity(values);
   }
@@ -77,11 +76,10 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     }
   }
 
-  private void addLazyLoadedBlobNullValues(Map<Attribute<?>, Object> values) {
-    List<ColumnDefinition<byte[]>> lazyLoadedBlobColumns =
-            LAZY_LOADED_BLOB_COLUMNS.computeIfAbsent(entityDefinition, INIT_LAZY_LOADED_BLOB_COLUMNS);
-    if (!lazyLoadedBlobColumns.isEmpty()) {
-      for (ColumnDefinition<byte[]> column : lazyLoadedBlobColumns) {
+  private void addLazyLoadedNullValues(Map<Attribute<?>, Object> values) {
+    List<ColumnDefinition<?>> lazyLoadedColumns = LAZY_LOADED_COLUMNS.computeIfAbsent(entityDefinition, INIT_LAZY_LOADED_COLUMNS);
+    if (!lazyLoadedColumns.isEmpty()) {
+      for (ColumnDefinition<?> column : lazyLoadedColumns) {
         values.putIfAbsent(column.attribute(), null);
       }
     }
@@ -95,11 +93,9 @@ final class EntityResultPacker implements ResultPacker<Entity> {
             .collect(Collectors.toList());
   }
 
-  private static List<ColumnDefinition<byte[]>> initializeLazyLoadedBlobColumns(EntityDefinition entityDefinition) {
+  private static List<ColumnDefinition<?>> initializeLazyLoadedColumns(EntityDefinition entityDefinition) {
     return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.attribute().type().isByteArray())
-            .map(column -> (ColumnDefinition<byte[]>) column)
-            .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).eagerlyLoaded())
+            .filter(ColumnDefinition::lazy)
             .collect(Collectors.toList());
   }
 }

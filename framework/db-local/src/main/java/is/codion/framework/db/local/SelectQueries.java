@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -33,10 +32,9 @@ import static java.util.stream.Collectors.toList;
 final class SelectQueries {
 
   private final Database database;
-  private final Map<EntityType, List<ColumnDefinition<?>>> selectableColumnsCache = new ConcurrentHashMap<>();
-  private final Map<EntityType, String> allColumnsClauseCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, List<ColumnDefinition<?>>> defaultSelectColumnsCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, String> defaultColumnsClauseCache = new ConcurrentHashMap<>();
   private final Map<EntityType, String> groupByClauseCache = new ConcurrentHashMap<>();
-  private final Map<EntityType, Set<ColumnDefinition<?>>> lazyLoadedBlobColumnDefinitions = new ConcurrentHashMap<>();
 
   SelectQueries(Database database) {
     this.database = database;
@@ -118,11 +116,11 @@ final class SelectQueries {
       if (selectQuery != null) {
         if (selectQuery.columns() != null) {
           columns(selectQuery.columns());
-          selectedColums = selectableColumns();
+          selectedColums = defaultSelectColumns();
           columnsClauseFromSelectQuery = true;
         }
         else {
-          columns(allColumnsClause());
+          columns(defaultColumnsClause());
         }
         from(selectQuery.from());
         where(selectQuery.where());
@@ -231,8 +229,8 @@ final class SelectQueries {
     private void setColumns(Select select) {
       Collection<Attribute<?>> attributes = select.attributes();
       if (attributes.isEmpty()) {
-        this.selectedColums = selectableColumns();
-        columns(allColumnsClause());
+        this.selectedColums = defaultSelectColumns();
+        columns(defaultColumnsClause());
       }
       else {
         this.selectedColums = columnsToSelect(attributes);
@@ -263,28 +261,16 @@ final class SelectQueries {
       return new ArrayList<>(columnsToSelect);
     }
 
-    private List<ColumnDefinition<?>> selectableColumns() {
-      Set<ColumnDefinition<?>> lazyLoadedBlobColumns =
-              lazyLoadedBlobColumnDefinitions.computeIfAbsent(definition.entityType(), entityType ->
-                      initializeLazyLoadedBlobColumnDefinitions());
-
-      return selectableColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
+    private List<ColumnDefinition<?>> defaultSelectColumns() {
+      return defaultSelectColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columns().definitions().stream()
-                      .filter(columnDefinition -> !lazyLoadedBlobColumns.contains(columnDefinition))
                       .filter(ColumnDefinition::selectable)
+                      .filter(columnDefinition -> !columnDefinition.lazy())
                       .collect(toList()));
     }
 
-    private Set<ColumnDefinition<?>> initializeLazyLoadedBlobColumnDefinitions() {
-      return definition.columns().definitions().stream()
-              .filter(column -> column.attribute().type().isByteArray())
-              .map(column -> (ColumnDefinition<byte[]>) column)
-              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).eagerlyLoaded())
-              .collect(Collectors.toSet());
-    }
-
-    private String allColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(selectableColumns()));
+    private String defaultColumnsClause() {
+      return defaultColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(defaultSelectColumns()));
     }
 
     private String groupByClause() {

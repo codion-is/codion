@@ -7,11 +7,11 @@ import is.codion.common.Primitives;
 import is.codion.common.Text;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
@@ -26,6 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -579,7 +580,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public Collection<Attribute<?>> selected() {
-      return entityAttributes.selectAttributes;
+      return entityAttributes.defaultSelectAttributes;
     }
 
     @Override
@@ -753,7 +754,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Map<Column<?>, Collection<ForeignKeyDefinition>> columnForeignKeyDefinitions;
     private final Set<Column<?>> foreignKeyColumns = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
-    private final List<Attribute<?>> selectAttributes;
+    private final List<Attribute<?>> defaultSelectAttributes;
 
     private EntityAttributes(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
       this.entityType = requireNonNull(entityType);
@@ -783,7 +784,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.foreignKeyDefinitionMap = unmodifiableMap(foreignKeyDefinitionMap());
       this.columnForeignKeyDefinitions = unmodifiableMap(columnForeignKeyDefinitions());
       this.derivedAttributes = unmodifiableMap(derivedAttributes());
-      this.selectAttributes = unmodifiableList(selectAttributes());
+      this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
     }
 
     private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<AttributeDefinition.Builder<?, ?>> builders) {
@@ -849,22 +850,29 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .collect(toList());
     }
 
-    private List<Attribute<?>> selectAttributes() {
-      Set<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions = columnDefinitions.stream()
-              .filter(column -> column.attribute().type().isByteArray())
-              .map(column -> (ColumnDefinition<byte[]>) column)
-              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).eagerlyLoaded())
-              .collect(toSet());
+    private List<Attribute<?>> defaultSelectAttributes() {
       List<Attribute<?>> selectableAttributes = columnDefinitions.stream()
               .filter(ColumnDefinition::selectable)
-              .filter(column -> !lazyLoadedBlobColumnDefinitions.contains(column))
+              .filter(column -> !column.lazy())
               .map(AttributeDefinition::attribute)
               .collect(toList());
       selectableAttributes.addAll(foreignKeyDefinitions.stream()
               .map(ForeignKeyDefinition::attribute)
+              .filter(this::basedOnEagerlyLoadedColumns)
               .collect(toList()));
 
       return selectableAttributes;
+    }
+
+    private boolean basedOnEagerlyLoadedColumns(ForeignKey foreignKey) {
+      Set<Column<?>> foreignKeyColumns = foreignKey.references().stream()
+              .map(Reference::column)
+              .collect(toSet());
+
+      return Collections.disjoint(foreignKeyColumns, columnDefinitions.stream()
+              .filter(ColumnDefinition::lazy)
+              .map(ColumnDefinition::attribute)
+              .collect(toSet()));
     }
 
     private Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes() {
@@ -962,7 +970,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .collect(toList());
     }
 
-    private static ColumnDefinition<?> foreignKeyColumnDefinition(ForeignKey.Reference<?> reference, Map<Attribute<?>, AttributeDefinition<?>> attributeMap) {
+    private static ColumnDefinition<?> foreignKeyColumnDefinition(Reference<?> reference, Map<Attribute<?>, AttributeDefinition<?>> attributeMap) {
       ColumnDefinition<?> definition = (ColumnDefinition<?>) attributeMap.get(reference.column());
       if (definition == null) {
         throw new IllegalArgumentException("Column definition based on column: " + reference.column()

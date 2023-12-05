@@ -17,7 +17,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -300,7 +299,7 @@ public class EntityTestUnit {
       assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
               && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
     }
-    else if (columnDefinition.attribute().type().isByteArray() && columnDefinition instanceof BlobColumnDefinition && ((BlobColumnDefinition) columnDefinition).eagerlyLoaded()) {
+    else if (columnDefinition.attribute().type().isByteArray() && !columnDefinition.lazy()) {
       assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
     }
     else {
