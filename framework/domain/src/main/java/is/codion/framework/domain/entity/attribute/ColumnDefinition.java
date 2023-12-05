@@ -80,6 +80,11 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   boolean selectable();
 
   /**
+   * @return true if this column should not be selected by default
+   */
+  boolean lazy();
+
+  /**
    * Specifies whether this column is insertable
    * @return true if this column is insertable
    */
@@ -202,6 +207,12 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
      * @return this instance
      */
     B selectable(boolean selectable);
+
+    /**
+     * @param lazy true if this column should be lazily loaded
+     * @return this instance
+     */
+    B lazy(boolean lazy);
 
     /**
      * Specifies whether this column should be included when searching for an entity by a string value.

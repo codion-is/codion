@@ -43,7 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static is.codion.framework.domain.entity.condition.Condition.*;
+import static is.codion.framework.domain.entity.condition.Condition.and;
+import static is.codion.framework.domain.entity.condition.Condition.or;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -364,7 +365,7 @@ public final class EntityObjectMapperTest {
 
   @Test
   void custom() throws JsonProcessingException {
-    CustomCondition customedCondition = customCondition(TestEntity.CONDITION_TYPE,
+    CustomCondition customedCondition = Condition.custom(TestEntity.CONDITION_TYPE,
             asList(TestEntity.DECIMAL, TestEntity.DATE_TIME),
             asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
 

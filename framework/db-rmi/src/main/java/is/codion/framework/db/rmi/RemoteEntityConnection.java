@@ -421,27 +421,4 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @see Report#fill(java.sql.Connection, Object)
    */
   <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException, DatabaseException, ReportException;
-
-  /**
-   * Writes {@code blobData} into the blob field specified by {@code attribute} for the given entity
-   * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobColumn the blob column
-   * @param blobData the blob data
-   * @throws is.codion.common.db.exception.UpdateException in case zero or multiple rows were affected
-   * @throws DatabaseException in case of a db exception
-   * @throws RemoteException in case of a remote exception
-   */
-  void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws RemoteException, DatabaseException;
-
-  /**
-   * Reads the blob value associated with {@code attribute} from the given entity,
-   * returns null if no blob data is found.
-   * @param primaryKey the primary key of the entity
-   * @param blobColumn the blob column
-   * @return a byte array containing the blob data
-   * @throws is.codion.common.db.exception.RecordNotFoundException in case the row was not found
-   * @throws DatabaseException in case of a db exception
-   * @throws RemoteException in case of a remote exception
-   */
-  byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws RemoteException, DatabaseException;
 }

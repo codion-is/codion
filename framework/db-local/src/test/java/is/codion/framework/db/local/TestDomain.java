@@ -223,10 +223,10 @@ public final class TestDomain extends DefaultDomain {
                     .denormalized(Employee.DEPARTMENT_FK, Department.LOC)
                     .caption(Department.LOC.name()),
             Employee.DATA_LAZY.define()
-                    .column(),
+                    .column()
+                    .lazy(true),
             Employee.DATA.define()
-                    .blobColumn()
-                    .eagerlyLoaded(true))
+                    .column())
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")

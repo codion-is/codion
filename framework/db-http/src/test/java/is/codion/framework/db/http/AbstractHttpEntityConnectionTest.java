@@ -232,8 +232,9 @@ abstract class AbstractHttpEntityConnectionTest {
     new Random().nextBytes(bytes);
 
     Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
-    connection.writeBlob(scott.primaryKey(), Employee.DATA, bytes);
-    assertArrayEquals(bytes, connection.readBlob(scott.primaryKey(), Employee.DATA));
+    scott.put(Employee.DATA, bytes);
+    connection.update(scott);
+    assertArrayEquals(bytes, connection.select(Employee.DATA, key(scott.primaryKey())).get(0));
   }
 
   @Test

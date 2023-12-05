@@ -44,7 +44,7 @@ public final class ConditionTest {
 
   @Test
   void customConditionTest() {
-    Condition condition = Condition.customCondition(Department.NAME_NOT_NULL_CONDITION);
+    Condition condition = Condition.custom(Department.NAME_NOT_NULL_CONDITION);
     Assertions.assertTrue(condition.values().isEmpty());
     Assertions.assertTrue(condition.columns().isEmpty());
   }
@@ -495,9 +495,9 @@ public final class ConditionTest {
     condition2 = Employee.ID.notBetweenExclusive(1, 0);
     Assertions.assertNotEquals(condition1, condition2);
 
-    condition1 = Condition.customCondition(Department.CONDITION,
+    condition1 = Condition.custom(Department.CONDITION,
             Collections.singletonList(Department.NAME), Collections.singletonList("Test"));
-    condition2 = Condition.customCondition(Department.CONDITION,
+    condition2 = Condition.custom(Department.CONDITION,
             Collections.singletonList(Department.NAME), Collections.singletonList("Test"));
     Assertions.assertEquals(condition1, condition2);
 

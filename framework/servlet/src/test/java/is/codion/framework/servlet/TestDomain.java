@@ -147,7 +147,8 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Department.LOCATION.name()),
             Employee.DATA.define()
                     .column()
-                    .caption("Data"))
+                    .caption("Data")
+                    .lazy(true))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

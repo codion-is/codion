@@ -25,6 +25,7 @@ import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
+import is.codion.framework.domain.TestDomain.ForeignKeyLazyColumn;
 import is.codion.framework.domain.TestDomain.InvalidDerived;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.TestDomain.NoPk;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -984,6 +986,12 @@ public class DefaultEntityTest {
     assertTrue(emp.exists());
     emp.save();
     assertFalse(emp.exists());
+  }
+
+  @Test
+  void foreignKeyLazyColumn() {
+    Collection<Attribute<?>> selectedAttributes = ENTITIES.definition(ForeignKeyLazyColumn.TYPE).attributes().selected();
+    assertFalse(selectedAttributes.contains(ForeignKeyLazyColumn.DEPARTMENT_FK));//based on a lazy loaded column
   }
 
   @Test

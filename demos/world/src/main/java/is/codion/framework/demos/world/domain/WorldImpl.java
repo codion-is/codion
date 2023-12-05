@@ -214,12 +214,12 @@ public final class WorldImpl extends DefaultDomain implements World {
                             "SELECT COUNT(*) FROM world.countrylanguage " +
                             "WHERE countrylanguage.countrycode = country.code")
                     .caption("No. of languages"),
-            // tag::blobColumn[]
+            // tag::lazy[]
             Country.FLAG.define()
-                    .blobColumn()
+                    .column()
                     .caption("Flag")
-                    .eagerlyLoaded(true),
-            // end::blobColumn[]
+                    .lazy(true),
+            // end::lazy[]
             Country.CODE_2.define()
                     .column()
                     .caption("Code 2")
@@ -322,8 +322,9 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .column()
                     .caption("Head of state"),
             Lookup.COUNTRY_FLAG.define()
-                    .blobColumn()
-                    .caption("Flag"),
+                    .column()
+                    .caption("Flag")
+                    .lazy(true),
             Lookup.COUNTRY_CODE2.define()
                     .column()
                     .caption("Code2"),

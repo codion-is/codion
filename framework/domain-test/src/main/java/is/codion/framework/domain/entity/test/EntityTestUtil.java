@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
@@ -208,7 +207,9 @@ public final class EntityTestUtil {
   }
 
   private static byte[] randomBlob(AttributeDefinition<?> attributeDefinition) {
-    if ((attributeDefinition instanceof BlobColumnDefinition) && ((BlobColumnDefinition) attributeDefinition).eagerlyLoaded()) {
+    if (attributeDefinition.attribute().type().isByteArray() &&
+            attributeDefinition instanceof ColumnDefinition &&
+            !((ColumnDefinition<?>) attributeDefinition).lazy()) {
       return randomBlob(1024);
     }
 

@@ -60,6 +60,6 @@ final class CustomConditionDeserializer implements Serializable {
       values.add(entityObjectMapper.readValue(valueNode.toString(), attributeDefinition.attribute().type().valueClass()));
     }
 
-    return Condition.customCondition(definition.entityType().conditionType(conditionTypeName), columns, values);
+    return Condition.custom(definition.entityType().conditionType(conditionTypeName), columns, values);
   }
 }

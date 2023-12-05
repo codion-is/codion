@@ -46,7 +46,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -57,7 +56,6 @@ import is.codion.framework.domain.entity.query.SelectQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -634,95 +632,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       finally {
         logExit(REPORT, exception);
-      }
-    }
-  }
-
-  @Override
-  public void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException {
-    requireNonNull(blobData, "blobData");
-    EntityDefinition entityDefinition = definition(requireNonNull(primaryKey, "primaryKey").entityType());
-    checkIfReadOnly(entityDefinition.entityType());
-    ColumnDefinition<byte[]> columnDefinition = entityDefinition.columns().definition(blobColumn);
-    Condition condition = key(primaryKey);
-    String updateQuery = updateQuery(entityDefinition.tableName(), singletonList(columnDefinition), condition.toString(entityDefinition));
-    logEntry("writeBlob", updateQuery);
-    List<Object> statementValues = new ArrayList<>();
-    statementValues.add(null);//the blob value, binary stream set explicitly later
-    statementValues.addAll(condition.values());
-    List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-    statementColumns.add(columnDefinition);
-    statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
-    synchronized (connection) {
-      Exception exception = null;
-      try (PreparedStatement statement = setParameterValues(prepareStatement(updateQuery), statementColumns, statementValues)) {
-        statement.setBinaryStream(1, new ByteArrayInputStream(blobData));//no need to close ByteArrayInputStream
-        int rowsUpdated = statement.executeUpdate();
-        if (rowsUpdated == 0) {
-          throw new UpdateException("Blob write updated no rows, key: " + primaryKey);
-        }
-        if (rowsUpdated > 1) {
-          throw new UpdateException("Blob write updated more than one row, key: " + primaryKey);
-        }
-        commitIfTransactionIsNotOpen();
-      }
-      catch (SQLException e) {
-        exception = e;
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), e);
-        throw translateSQLException(e, UPDATE);
-      }
-      catch (UpdateException e) {
-        exception = e;
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-        throw e;
-      }
-      finally {
-        logExit("writeBlob", exception);
-        countQuery(UPDATE);
-      }
-    }
-  }
-
-  @Override
-  public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    EntityDefinition entityDefinition = definition(requireNonNull(primaryKey, "primaryKey").entityType());
-    ColumnDefinition<byte[]> columnDefinition = entityDefinition.columns().definition(blobColumn);
-    Exception exception = null;
-    Condition condition = key(primaryKey);
-    String selectQuery = selectQueries.builder(entityDefinition)
-            .columns(columnDefinition.expression())
-            .where(condition)
-            .build();
-    logEntry("readBlob", selectQuery);
-    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
-    synchronized (connection) {
-      try (PreparedStatement statement = setParameterValues(prepareStatement(selectQuery), statementColumns, condition.values());
-           ResultSet resultSet = statement.executeQuery()) {
-        if (!resultSet.next()) {
-          throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
-        }
-        byte[] byteResult = resultSet.getBytes(1);
-        commitIfTransactionIsNotOpen();
-
-        return byteResult;
-      }
-      catch (SQLException e) {
-        exception = e;
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, condition.values(), statementColumns, exception), e);
-        throw translateSQLException(e, SELECT);
-      }
-      catch (RecordNotFoundException e) {
-        exception = e;
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, condition.values(), statementColumns, exception), e);
-        throw e;
-      }
-      finally {
-        logExit("readBlob", exception);
-        countQuery(SELECT);
       }
     }
   }
@@ -1500,22 +1409,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /**
    * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-   * Note that only eagerly loaded blob values are included in this comparison.
+   * Note that only eagerly loaded values are included in this comparison.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable columns which values differ from the ones in the comparison entity
-   * @see BlobColumnDefinition#eagerlyLoaded()
+   * @see ColumnDefinition#lazy()
    */
   static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
     return comparison.entrySet().stream()
             .map(entry -> entity.definition().attributes().definition(entry.getKey()))
             .filter(ColumnDefinition.class::isInstance)
             .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
-            .filter(columnDefinition -> {
-              boolean lazilyLoadedBlobColumn = columnDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) columnDefinition).eagerlyLoaded();
-
-              return columnDefinition.updatable() && !lazilyLoadedBlobColumn && valueMissingOrModified(entity, comparison, columnDefinition.attribute());
-            })
+            .filter(columnDefinition -> columnDefinition.updatable() && !columnDefinition.lazy() &&
+                    valueMissingOrModified(entity, comparison, columnDefinition.attribute()))
             .map(ColumnDefinition::attribute)
             .collect(toList());
   }

@@ -66,6 +66,7 @@ public final class TestDomain extends DefaultDomain {
     transientModifiesNot();
     nullString();
     invalidDerived();
+    foreignKeyLazyColumn();
   }
 
   public interface CompositeMaster {
@@ -395,7 +396,8 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Detail.INT_DERIVED.name()),
             Detail.BYTES.define()
                     .column()
-                    .updatable(false))
+                    .updatable(false)
+                    .lazy(true))
             .keyGenerator(queried("select id from dual"))
             .orderBy(ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME.name())
@@ -451,7 +453,8 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true)
                     .beanProperty("active"),
             Department.DATA.define()
-                    .blobColumn())
+                    .column()
+                    .lazy(true))
             .tableName("scott.dept")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
@@ -567,9 +570,8 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT_NAME.define()
                     .derived(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             Employee.DATA.define()
-                    .blobColumn()
-                    .caption("Data")
-                    .eagerlyLoaded(true))
+                    .column()
+                    .caption("Data"))
             .tableName("scott.emp")
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
@@ -696,5 +698,25 @@ public final class TestDomain extends DefaultDomain {
                     .derived(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
             .caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
             .stringFactory(entity -> null));
+  }
+
+  public interface ForeignKeyLazyColumn {
+    EntityType TYPE = DOMAIN.entityType("foreign_key_lazy_column");
+
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<Integer> DEPARTMENT_ID = TYPE.integerColumn("department_id");
+    
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
+  }
+
+  void foreignKeyLazyColumn() {
+    add(ForeignKeyLazyColumn.TYPE.define(
+            ForeignKeyLazyColumn.ID.define()
+                    .primaryKey(),
+            ForeignKeyLazyColumn.DEPARTMENT_ID.define()
+                    .column()
+                    .lazy(true),
+            ForeignKeyLazyColumn.DEPARTMENT_FK.define()
+                    .foreignKey()));
   }
 }

@@ -242,6 +242,16 @@ Column is used to represent attributes that are based on table columns.
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=column]
 ----
 
+==== Lazy loading
+
+A column can be specified as being lazy, which means its value is not selected by default.
+Note that the selected entity contains a null value by default for lazy loaded values.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=lazy]
+----
+
 === Primary key
 
 It is recommended that entities have a primary key defined, that is, one or more columns representing a unique combination.
@@ -269,15 +279,6 @@ A Column can represent a subquery returning a single value.
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryColumn]
-----
-
-=== Blob
-
-A column can be specified as being a blob column, which provides lazy loading. Using a standard Column with a byte array type works fine, but for lazy loading you have to use a blob column.
-
-[source,java,indent=0]
-----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=blobColumn]
 ----
 
 === Boolean
