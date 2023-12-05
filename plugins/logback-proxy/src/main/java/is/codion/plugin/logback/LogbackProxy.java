@@ -49,8 +49,7 @@ public final class LogbackProxy implements LoggerProxy {
   public Collection<String> files() {
     LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    return context.getLoggerList()
-            .stream()
+    return context.getLoggerList().stream()
             .flatMap(LogbackProxy::appenders)
             .filter(FileAppender.class::isInstance)
             .map(FileAppender.class::cast)
