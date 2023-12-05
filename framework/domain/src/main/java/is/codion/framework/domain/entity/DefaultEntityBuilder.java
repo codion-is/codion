@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,8 +31,8 @@ final class DefaultEntityBuilder implements Entity.Builder {
   DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
                        Map<Attribute<?>, Object> originalValues) {
     this.definition = definition;
-    this.values = values;
-    this.originalValues = originalValues;
+    this.values = values == null ? null : new HashMap<>(values);
+    this.originalValues = originalValues == null ? null : new HashMap<>(originalValues);
   }
 
   @Override
