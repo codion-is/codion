@@ -2,6 +2,7 @@ Codion Change Log
 ==================
 
 ## 0.17.19-SNAPSHOT
+### is.codion.common.db
 - AbstractConnectionPoolWrapper, prevent destroyed connection counter being called twice for each closed connection, see https://github.com/brettwooldridge/HikariCP/issues/2152.
 
 ## 0.17.18
