@@ -310,18 +310,4 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
       return connectionProxy.dependencies(entities);
     }
   }
-
-  @Override
-  public void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException {
-    synchronized (connectionProxy) {
-      connectionProxy.writeBlob(primaryKey, blobColumn, blobData);
-    }
-  }
-
-  @Override
-  public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.readBlob(primaryKey, blobColumn);
-    }
-  }
 }

@@ -471,42 +471,6 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     }
   }
 
-  @Override
-  public void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
-          throws DatabaseException {
-    Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobColumn, "blobAttribute");
-    Objects.requireNonNull(blobData, "blobData");
-    try {
-      synchronized (this.entities) {
-        onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobColumn, blobData)))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
-
-  @Override
-  public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobColumn, "blobAttribute");
-    try {
-      synchronized (this.entities) {
-        return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobColumn)))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
-
   private static HttpEntity byteArrayEntity(Object data) throws IOException {
     return new ByteArrayEntity(Serializer.serialize(data));
   }

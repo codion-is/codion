@@ -236,12 +236,6 @@ public final class EntityService implements AuxiliaryServer {
     javalin.post(URL_JSON_SERIALIZATION + "delete", new DeleteJsonHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "deleteByKey", new DeleteByKeyHandler());
     javalin.post(URL_JSON_SERIALIZATION + "deleteByKey", new DeleteByKeyJsonHandler());
-    WriteBlobHandler writeBlobHandler = new WriteBlobHandler();
-    javalin.post(URL_JAVA_SERIALIZATION + "writeBlob", writeBlobHandler);
-    javalin.post(URL_JSON_SERIALIZATION + "writeBlob", writeBlobHandler);
-    ReadBlobHandler readBlobHandler = new ReadBlobHandler();
-    javalin.post(URL_JAVA_SERIALIZATION + "readBlob", readBlobHandler);
-    javalin.post(URL_JSON_SERIALIZATION + "readBlob", readBlobHandler);
   }
 
   private final class EntitiesHandler implements Handler {
@@ -899,45 +893,6 @@ public final class EntityService implements AuxiliaryServer {
         List<Entity.Key> keys = objectMapper.readValue(context.req.getInputStream(), KEY_LIST_REFERENCE);
         connection.delete(keys);
         context.status(HttpStatus.OK_200);
-      }
-      catch (Exception e) {
-        handleException(context, e);
-      }
-    }
-  }
-
-  private final class WriteBlobHandler implements Handler {
-
-    @Override
-    public void handle(Context context) {
-      try {
-        RemoteEntityConnection connection = authenticate(context);
-        List<Object> parameters = deserialize(context.req);
-        Entity.Key key = (Entity.Key) parameters.get(0);
-        Column<byte[]> column = (Column<byte[]>) parameters.get(1);
-        byte[] data = (byte[]) parameters.get(2);
-        connection.writeBlob(key, column, data);
-        context.status(HttpStatus.OK_200);
-      }
-      catch (Exception e) {
-        handleException(context, e);
-      }
-    }
-  }
-
-  private final class ReadBlobHandler implements Handler {
-
-    @Override
-    public void handle(Context context) {
-      try {
-        RemoteEntityConnection connection = authenticate(context);
-        List<Object> parameters = deserialize(context.req);
-        Entity.Key key = (Entity.Key) parameters.get(0);
-        Column<byte[]> column = (Column<byte[]>) parameters.get(1);
-        byte[] data = connection.readBlob(key, column);
-        context.status(HttpStatus.OK_200)
-                .contentType(ContentType.APPLICATION_OCTET_STREAM)
-                .result(Serializer.serialize(data));
       }
       catch (Exception e) {
         handleException(context, e);

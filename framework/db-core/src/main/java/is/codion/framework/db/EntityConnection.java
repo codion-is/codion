@@ -391,27 +391,6 @@ public interface EntityConnection extends AutoCloseable {
   <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
   /**
-   * Writes {@code blobData} into the blob field specified by {@code blobColumn} for the given entity
-   * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobColumn the blob column
-   * @param blobData the blob data
-   * @throws is.codion.common.db.exception.UpdateException in case zero or multiple rows were affected
-   * @throws DatabaseException in case of a database exception
-   */
-  void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException;
-
-  /**
-   * Reads the blob value associated with {@code blobColumn} from the given entity,
-   * returns null if no blob data is found.
-   * @param primaryKey the primary key of the entity
-   * @param blobColumn the blob attribute
-   * @return a byte array containing the blob data
-   * @throws is.codion.common.db.exception.RecordNotFoundException in case the row was not found
-   * @throws DatabaseException in case of a database exception
-   */
-  byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
-
-  /**
    * Creates a new {@link Copy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
    * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
    * Call {@link Copy.Builder#execute()} to perform the copy operation.

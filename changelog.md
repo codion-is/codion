@@ -7,6 +7,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - Condition.customCondition() renamed custom().
 - BlobColumnDefinition removed, ColumnDefinition.lazy() added. Default behaviour for byte array columns being lazy and hidden removed. Related changes.
+### is.codion.framework.db
+- EntityConnection.readBlob() and writeBlob() removed.
 
 ## 0.17.18
 - Text.padString() deprecated for removal along with Text.ALIGNMENT, Text.leftPad() and rightPad() added.

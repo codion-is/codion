@@ -1027,42 +1027,13 @@ public class DefaultLocalEntityConnectionTest {
     random.nextBytes(bytes);
 
     Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
-    connection.writeBlob(scott.primaryKey(), Employee.DATA_LAZY, lazyBytes);
-    connection.writeBlob(scott.primaryKey(), Employee.DATA, bytes);
-    assertArrayEquals(lazyBytes, connection.readBlob(scott.primaryKey(), Employee.DATA_LAZY));
-    assertArrayEquals(bytes, connection.readBlob(scott.primaryKey(), Employee.DATA));
-
-    Entity scottFromDb = connection.select(scott.primaryKey());
-    //lazy loaded
-    assertNull(scottFromDb.get(Employee.DATA_LAZY));
-    assertNotNull(scottFromDb.get(Employee.DATA));
-
-    //overrides lazy loading
-    scottFromDb = connection.selectSingle(Select.where(key(scott.primaryKey()))
-            .attributes(Employee.DATA_LAZY)
-            .build());
-    assertNotNull(scottFromDb.get(Employee.DATA_LAZY));
-
-    assertThrows(RecordNotFoundException.class, () -> connection.readBlob(ENTITIES.primaryKey(Employee.TYPE, -1), Employee.DATA));
-    assertThrows(UpdateException.class, () -> connection.writeBlob(ENTITIES.primaryKey(Employee.TYPE, -1), Employee.DATA, bytes));
-  }
-
-  @Test
-  void readWriteBlobViaEntity() throws DatabaseException {
-    byte[] lazyBytes = new byte[1024];
-    byte[] bytes = new byte[1024];
-    Random random = new Random();
-    random.nextBytes(lazyBytes);
-    random.nextBytes(bytes);
-
-    Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
     scott.put(Employee.DATA_LAZY, lazyBytes);
     scott.put(Employee.DATA, bytes);
     connection.update(scott);
     scott.save();
 
-    byte[] lazyFromDb = connection.readBlob(scott.primaryKey(), Employee.DATA_LAZY);
-    byte[] fromDb = connection.readBlob(scott.primaryKey(), Employee.DATA);
+    byte[] lazyFromDb = connection.select(Employee.DATA_LAZY, key(scott.primaryKey())).get(0);
+    byte[] fromDb = connection.select(Employee.DATA, key(scott.primaryKey())).get(0);
     assertArrayEquals(lazyBytes, lazyFromDb);
     assertArrayEquals(bytes, fromDb);
 
@@ -1082,7 +1053,7 @@ public class DefaultLocalEntityConnectionTest {
 
     connection.update(scott);
 
-    lazyFromDb = connection.readBlob(scott.primaryKey(), Employee.DATA_LAZY);
+    lazyFromDb = connection.select(Employee.DATA_LAZY, key(scott.primaryKey())).get(0);
     assertArrayEquals(newLazyBytes, lazyFromDb);
 
     scottFromDb = connection.select(scott.primaryKey());
