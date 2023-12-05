@@ -14,6 +14,7 @@ import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -55,12 +56,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
@@ -84,6 +85,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final FilteredTableModel<Entity, Attribute<?>> tableModel;
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
+  private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
   private final State conditionRequired = State.state();
   private final State respondToEditEvents = State.state();
   private final State editable = State.state();
@@ -185,6 +187,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = createSelect(conditionModel);
+    this.attributes.addValidator(new AttributeValidator());
     bindEvents();
     applyPreferences();
     respondToEditEvents.set(true);
@@ -203,6 +206,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + editModel.entityType();
+  }
+
+  @Override
+  public final ValueSet<Attribute<?>> attributes() {
+    return attributes;
   }
 
   @Override
@@ -813,22 +821,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   /**
-   * Specifies the attributes to select when querying data. Return an empty list if all should be included.
-   * This method should take the {@link #queryHiddenColumns()} setting into account.
-   * @return the attributes to select when querying data, an empty Collection if all should be selected.
-   * @see #queryHiddenColumns()
-   */
-  protected Collection<Attribute<?>> attributes() {
-    if (queryHiddenColumns.get() || columnModel().hidden().isEmpty()) {
-      return emptyList();
-    }
-
-    return entityDefinition().attributes().selected().stream()
-            .filter(attribute -> columnModel().visible(attribute).get())
-            .collect(toList());
-  }
-
-  /**
    * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
    * The default implementation is:
    * <pre>
@@ -872,12 +864,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
       return emptyList();
     }
-    List<Entity> items = editModel.connectionProvider().connection().select(where(select.where())
-            .having(select.having())
-            .attributes(attributes())
-            .limit(limit().optional().orElse(-1))
-            .orderBy(orderBy())
-            .build());
+    List<Entity> items = editModel.connectionProvider().connection().select(select);
     updateRefreshSelect(select);
 
     return items;
@@ -1070,10 +1057,36 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private static Select createSelect(EntityTableConditionModel<Attribute<?>> conditionModel) {
+  private Select createSelect(EntityTableConditionModel<Attribute<?>> conditionModel) {
     return Select.where(conditionModel.where(Conjunction.AND))
             .having(conditionModel.having(Conjunction.AND))
+            .attributes(selectAttributes())
+            .limit(limit().optional().orElse(-1))
+            .orderBy(orderBy())
             .build();
+  }
+
+  private Collection<Attribute<?>> selectAttributes() {
+    FilteredTableColumnModel<Attribute<?>> columnModel = columnModel();
+    if (queryHiddenColumns.get() || columnModel.hidden().isEmpty()) {
+      return attributes.get();
+    }
+
+    return attributes.get().stream()
+            .filter(attribute -> columnModel.visible(attribute).get())
+            .collect(toList());
+  }
+
+  private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
+
+    @Override
+    public void validate(Set<Attribute<?>> attributes) {
+      for (Attribute<?> attribute : attributes) {
+        if (!attribute.entityType().equals(entityType())) {
+          throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityType());
+        }
+      }
+    }
   }
 
   private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {

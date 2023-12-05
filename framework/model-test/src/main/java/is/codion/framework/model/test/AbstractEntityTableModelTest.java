@@ -226,6 +226,22 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
+  public void attributes() {
+    TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
+    assertTrue(tableModel.attributes().get().isEmpty());
+    tableModel.attributes().addAll(Employee.NAME, Employee.HIREDATE);
+    tableModel.refresh();
+    assertTrue(tableModel.getRowCount() > 0);
+    tableModel.items().forEach(employee -> {
+      assertFalse(employee.contains(Employee.COMMISSION));
+      assertFalse(employee.contains(Employee.DEPARTMENT));
+      assertTrue(employee.contains(Employee.NAME));
+      assertTrue(employee.contains(Employee.HIREDATE));
+    });
+    assertThrows(IllegalArgumentException.class, () -> tableModel.attributes().add(Department.NAME));
+  }
+
+  @Test
   public void limit() {
     TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
     tableModel.limit().set(6);

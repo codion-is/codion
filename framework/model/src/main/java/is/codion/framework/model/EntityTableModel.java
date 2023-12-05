@@ -13,6 +13,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -166,6 +167,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see EntityDefinition.Builder#foregroundColorProvider(ColorProvider)
    */
   Object foregroundColor(int row, Attribute<?> attribute);
+
+  /**
+   * Returns the ValueSet controlling which attributes are included when selecting entities to populate this model.
+   * Note that an empty ValueSet indicates that the default select attributes should be used.
+   * @return the ValueSet controlling the selected attributes
+   * @see #queryHiddenColumns()
+   */
+  ValueSet<Attribute<?>> attributes();
 
   /**
    * Returns the Value controlling the maximum number of rows to fetch via the underlying query the next time
