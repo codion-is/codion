@@ -11,6 +11,8 @@ Codion Change Log
 - EntityConnection.readBlob() and writeBlob() removed.
 ### is.codion.framework.model
 - EntityTableModel.attributes() added, specifying the attributes to include when selecting. Implemented in SwingEntityTableModel, replacing overridable attributes() method. Related refactoring.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.getColor() renamed toColor().
 
 ## 0.17.18
 - Text.padString() deprecated for removal along with Text.ALIGNMENT, Text.leftPad() and rightPad() added.

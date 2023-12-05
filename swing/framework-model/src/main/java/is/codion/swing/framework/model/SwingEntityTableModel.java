@@ -96,7 +96,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Value<OnInsert> onInsert = Value.value(EntityTableModel.ON_INSERT.get(), EntityTableModel.ON_INSERT.get());
 
   /**
-   * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
+   * Caches java.awt.Color instances parsed from hex strings via {@link #toColor(Object)}
    */
   private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
   private final State conditionChanged = State.state();
@@ -322,7 +322,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     requireNonNull(attribute);
     Object color = entityDefinition().backgroundColorProvider().color(itemAt(row), attribute);
 
-    return color == null ? null : getColor(color);
+    return color == null ? null : toColor(color);
   }
 
   @Override
@@ -330,7 +330,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     requireNonNull(attribute);
     Object color = entityDefinition().foregroundColorProvider().color(itemAt(row), attribute);
 
-    return color == null ? null : getColor(color);
+    return color == null ? null : toColor(color);
   }
 
   @Override
@@ -788,7 +788,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @throws IllegalArgumentException in case the representation is not supported
    * @throws NullPointerException in case color is null
    */
-  protected Color getColor(Object color) {
+  protected Color toColor(Object color) {
     requireNonNull(color);
     if (color instanceof Color) {
       return (Color) color;
