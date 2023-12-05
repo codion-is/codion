@@ -328,50 +328,6 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     }
   }
 
-  @Override
-  public final void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
-          throws DatabaseException {
-    requireNonNull(primaryKey, "primaryKey");
-    requireNonNull(blobColumn, "blobColumn");
-    requireNonNull(blobData, "blobData");
-    try {
-      synchronized (httpClient) {
-        handleResponse(execute(createRequest("writeBlob", serialize(asList(primaryKey, blobColumn, blobData)))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
-
-  @Override
-  public final byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    requireNonNull(primaryKey, "primaryKey");
-    requireNonNull(blobColumn, "blobColumn");
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("readBlob", serialize(asList(primaryKey, blobColumn)))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
-
   private Entities initializeEntities() {
     try {
       return handleResponse(execute(createRequest("entities")));
