@@ -7,8 +7,13 @@ Codion Change Log
 ### is.codion.framework.domain
 - Condition.customCondition() renamed custom().
 - BlobColumnDefinition removed, ColumnDefinition.lazy() added. Default behaviour for byte array columns being lazy and hidden removed. Related changes.
+- DefaultEntityBuilder, defensive copying of value sets added.
 ### is.codion.framework.db
 - EntityConnection.readBlob() and writeBlob() removed.
+### is.codion.framework.model
+- EntityTableModel.attributes() added, specifying the attributes to include when selecting. Implemented in SwingEntityTableModel, replacing overridable attributes() method. Related refactoring.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.getColor() renamed toColor().
 
 ## 0.17.18
 - Text.padString() deprecated for removal along with Text.ALIGNMENT, Text.leftPad() and rightPad() added.
