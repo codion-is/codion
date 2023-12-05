@@ -355,13 +355,13 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.select(primaryKeys(result));
     assertEquals(2, result.size());
-    result = connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
+    result = connection.select(Condition.custom(Department.DEPARTMENT_CONDITION_TYPE,
             asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
     assertEquals(2, result.size());
-    result = connection.select(Condition.customCondition(EmpnoDeptno.CONDITION));
+    result = connection.select(Condition.custom(EmpnoDeptno.CONDITION));
     assertEquals(7, result.size());
 
-    Select select = Select.where(Condition.customCondition(Employee.NAME_IS_BLAKE_CONDITION)).build();
+    Select select = Select.where(Condition.custom(Employee.NAME_IS_BLAKE_CONDITION)).build();
     result = connection.select(select);
     Entity emp = result.iterator().next();
     assertTrue(emp.loaded(Employee.DEPARTMENT_FK));
@@ -501,7 +501,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectInvalidColumn() {
-    assertThrows(DatabaseException.class, () -> connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
+    assertThrows(DatabaseException.class, () -> connection.select(Condition.custom(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
   }
 
   @Test
@@ -528,7 +528,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.select(sales.primaryKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
-    sales = connection.selectSingle(Condition.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE));
+    sales = connection.selectSingle(Condition.custom(Department.DEPARTMENT_CONDITION_SALES_TYPE));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
@@ -541,7 +541,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void customCondition() throws DatabaseException {
-    assertEquals(4, connection.select(Condition.customCondition(Employee.MGR_GREATER_THAN_CONDITION,
+    assertEquals(4, connection.select(Condition.custom(Employee.MGR_GREATER_THAN_CONDITION,
             singletonList(Employee.MGR), singletonList(5))).size());
   }
 

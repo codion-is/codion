@@ -104,7 +104,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");
-    conditionModel.additionalWhere().set(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
+    conditionModel.additionalWhere().set(() -> Condition.custom(Employee.CONDITION_2_TYPE));
     assertNotNull(conditionModel.additionalWhere().get());
   }
 }

@@ -206,8 +206,7 @@ public final class DefaultEntitySearchModelTest {
     List<Entity> result = searchModel.search();
     assertEquals(1, result.size());
     searchModel.entities().set(result);
-    searchModel.condition().set(() ->
-            Condition.customCondition(Employee.CONDITION_1_TYPE));
+    searchModel.condition().set(() -> Condition.custom(Employee.CONDITION_1_TYPE));
     assertEquals(1, searchModel.entities().get().size());
     result = searchModel.search();
     assertTrue(result.isEmpty());

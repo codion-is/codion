@@ -34,8 +34,8 @@ import static java.util.Objects.requireNonNull;
  * @see #or(Collection)
  * @see #combination(Conjunction, Condition...)
  * @see #combination(Conjunction, Condition...)
- * @see #customCondition(ConditionType)
- * @see #customCondition(ConditionType, List, List)
+ * @see #custom(ConditionType)
+ * @see #custom(ConditionType, List, List)
  */
 public interface Condition {
 
@@ -210,8 +210,8 @@ public interface Condition {
    * @throws NullPointerException in case the condition type is null
    * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
-  static CustomCondition customCondition(ConditionType conditionType) {
-    return customCondition(conditionType, emptyList(), emptyList());
+  static CustomCondition custom(ConditionType conditionType) {
+    return custom(conditionType, emptyList(), emptyList());
   }
 
   /**
@@ -223,8 +223,8 @@ public interface Condition {
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
-  static CustomCondition customCondition(ConditionType conditionType, List<Column<?>> columns,
-                                         List<Object> values) {
+  static CustomCondition custom(ConditionType conditionType, List<Column<?>> columns,
+                                List<Object> values) {
     return new DefaultCustomCondition(conditionType, columns, values);
   }
 }
