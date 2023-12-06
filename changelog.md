@@ -14,6 +14,8 @@ Codion Change Log
 - EntityTableModel.attributes() added, specifying the attributes to include when selecting. Implemented in SwingEntityTableModel, replacing overridable attributes() method. Related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.getColor() renamed toColor().
+### is.codion.swing.framework.ui
+- EntityPanel.createEditControlPanel() renamed createEditControls().
 
 ## 0.17.18
 - Text.padString() deprecated for removal along with Text.ALIGNMENT, Text.leftPad() and rightPad() added.
