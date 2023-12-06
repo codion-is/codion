@@ -8,6 +8,7 @@ Codion Change Log
 - Condition.customCondition() renamed custom().
 - BlobColumnDefinition removed, ColumnDefinition.lazy() added. Default behaviour for byte array columns being lazy and hidden removed. Related changes.
 - DefaultEntityBuilder, defensive copying of value sets added.
+- Entity.loaded(ForeignKey) removed, only used in tests.
 ### is.codion.framework.db
 - EntityConnection.readBlob() and writeBlob() removed.
 ### is.codion.framework.model
