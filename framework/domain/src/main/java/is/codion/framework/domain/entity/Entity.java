@@ -149,15 +149,15 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns true if a null value is mapped to the given attribute or if no mapping is found.
-   * In case of foreign key attributes the value of the underlying reference attribute is checked.
+   * In case of foreign keys the value of the underlying reference attribute(s) is checked.
    * @param attribute the attribute
    * @return true if the value mapped to the given attribute is null or no value is mapped
    */
   boolean isNull(Attribute<?> attribute);
 
   /**
-   * Returns true if this Entity contains a non-null value mapped to the given attribute
-   * In case of foreign key attributes the value of the underlying reference attribute is checked.
+   * Returns true if this Entity contains a non-null value mapped to the given attribute.
+   * In case of foreign keys the value of the underlying reference attribute(s) is checked.
    * @param attribute the attribute
    * @return true if a non-null value is mapped to the given attribute
    */
@@ -178,7 +178,6 @@ public interface Entity extends Comparable<Entity> {
    * key value(s). Null is returned only if the actual foreign key is null.
    * @param foreignKey the foreign key for which to retrieve the value
    * @return the entity associated with {@code foreignKey}
-   * @see #loaded(ForeignKey)
    */
   Entity referencedEntity(ForeignKey foreignKey);
 
@@ -288,13 +287,6 @@ public interface Entity extends Comparable<Entity> {
    * @throws IllegalArgumentException in case the given entity class has not been associated with the underlying {@link EntityType}.
    */
   <T extends Entity> T castTo(Class<T> entityClass);
-
-  /**
-   * Returns true if the given foreign key references a non-null entity and that entity instance has been loaded
-   * @param foreignKey the attribute
-   * @return true if the referenced entity has been loaded
-   */
-  boolean loaded(ForeignKey foreignKey);
 
   /**
    * Returns the primary key of this entity.

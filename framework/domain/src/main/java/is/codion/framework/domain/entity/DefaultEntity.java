@@ -212,12 +212,6 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final boolean loaded(ForeignKey foreignKey) {
-    definition.foreignKeys().definition(foreignKey);
-    return values.get(foreignKey) != null;
-  }
-
-  @Override
   public final <T> String string(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
     if (attribute instanceof ForeignKey && values.get(attribute) == null) {

@@ -191,7 +191,7 @@ public class EntityPanel extends JPanel {
   private EntityPanel nextSiblingPanel;
   private boolean toolbarControls = TOOLBAR_CONTROLS.get();
   private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
-  private boolean includeControlPanel = true;
+  private boolean includeEditControls = true;
   private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
   private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
   private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
@@ -478,7 +478,7 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns the panel containing the edit panel and the edit controls panel.
+   * Returns the panel containing the edit panel and the edit controls.
    * @return the edit control panel
    */
   public final JPanel editControlPanel() {
@@ -619,19 +619,19 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return true if the control panel should be included
+   * @return true if the edit panel controls should be included
    */
-  public final boolean isIncludeControlPanel() {
-    return includeControlPanel;
+  public final boolean isIncludeEditControls() {
+    return includeEditControls;
   }
 
   /**
-   * @param includeControlPanel true if the control panel should be included
+   * @param includeEditControls true if the edit panel controls should be included
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setIncludeControlPanel(boolean includeControlPanel) {
+  public final void setIncludeEditControls(boolean includeEditControls) {
     checkIfInitialized();
-    this.includeControlPanel = includeControlPanel;
+    this.includeEditControls = includeEditControls;
   }
 
   /**
@@ -758,7 +758,7 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Creates a base panel for the edit panel.
+   * Creates a base panel containing the given edit panel.
    * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #getControlPanelConstraints()}.
    * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
    * @param editPanel the initialized edit panel
@@ -774,16 +774,15 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Creates the control panel or component to place next to the edit panel,
-   * containing the edit controls, such as insert, update and delete.
-   * Only called if {@link #isIncludeControlPanel()} returns true.
-   * @return the panel containing the edit panel controls
+   * Creates the component to place next to the edit panel, containing the edit controls, such as insert, update and delete.
+   * Only called if {@link #isIncludeEditControls()} returns true.
+   * @return the component containing the edit panel controls
    * @see EntityEditPanel#controls()
    * @see EntityPanel#TOOLBAR_CONTROLS
    * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
    * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
    */
-  protected JComponent createEditControlPanel() {
+  protected JComponent createEditControls() {
     Controls controls = editPanel.controls();
     if (controls == null || controls.empty()) {
       return null;
@@ -985,8 +984,8 @@ public class EntityPanel extends JPanel {
     int gap = Layouts.GAP.get();
     editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
-    if (includeControlPanel) {
-      JComponent controlPanel = createEditControlPanel();
+    if (includeEditControls) {
+      JComponent controlPanel = createEditControls();
       if (controlPanel != null) {
         editControlPanel.add(controlPanel, controlPanelConstraints);
       }

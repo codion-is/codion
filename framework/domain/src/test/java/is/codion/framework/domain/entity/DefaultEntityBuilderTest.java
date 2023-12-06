@@ -60,7 +60,6 @@ public final class DefaultEntityBuilderTest {
 
     assertEquals(2, employee.get(Employee.DEPARTMENT_NO));
     assertNull(employee.get(Employee.DEPARTMENT_FK));
-    assertFalse(employee.loaded(Employee.DEPARTMENT_FK));
   }
 
   @Test
