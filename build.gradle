@@ -220,7 +220,8 @@ tasks.register("tagRelease") {
             throw new GradleException("Thou shalt not tag a snapshot release")
         }
         def tagName = "v" + project.version
-        exec { commandLine "git", "push" }
+        exec { commandLine "git", "push", "dev" }
+        exec { commandLine "git", "push", "origin" }
         exec { commandLine "git", "tag", "-a", tagName, "-m", "\"" + tagName + " release\"" }
         exec { commandLine "git", "push", "dev", tagName }
         exec { commandLine "git", "push", "origin", tagName }
