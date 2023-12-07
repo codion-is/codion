@@ -1803,7 +1803,11 @@ public class EntityTablePanel extends JPanel {
       }
       int filteredCount = tableModel.filteredCount();
       int selectionCount = tableModel.selectionModel().selectionCount();
-      StringBuilder builder = new StringBuilder(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
+      StringBuilder builder = new StringBuilder();
+      if (tableModel.limit().equalTo(tableModel.getRowCount())) {
+        builder.append(MESSAGES.getString("limited_to")).append(" ");
+      }
+      builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
       if (selectionCount > 0 || filteredCount > 0) {
         builder.append(" (");
         if (selectionCount > 0) {

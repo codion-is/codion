@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.20-SNAPSHOT
+### is.codion.swing.framework.ui
+- EntityTablePanel, table status message now indicates whether the result is limited.
 
 ## 0.17.19
 ### is.codion.common.db
