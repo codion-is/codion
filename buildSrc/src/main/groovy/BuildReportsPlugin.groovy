@@ -13,29 +13,30 @@ class BuildReportsPlugin implements Plugin<Project> {
 
     @Override
     void apply(final Project project) {
-        def config = project.extensions.create('buildReports', BuildReportsExtension)
-        def buildReports = project.tasks.register('buildReports') {
-            group = 'build'
+        def config = project.extensions.create("buildReports", BuildReportsExtension)
+        def buildReports = project.tasks.register("buildReports") {
+            group = "build"
             inputs.dir config.sourceDir
             outputs.dir config.targetDir
+            def mainSourceSet = project.getExtensions()
+                    .getByType(JavaPluginExtension.class).getSourceSets().named("main").get()
+            dependsOn mainSourceSet.getRuntimeClasspath()
             doLast {
-                def javaPlugin = project.getExtensions().getByType(JavaPluginExtension.class)
-                def main = javaPlugin.getSourceSets().named('main').get()
-                ant.lifecycleLogLevel = 'INFO'
-                ant.taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask',
-                        classpath: main.getRuntimeClasspath().asPath)
+                ant.lifecycleLogLevel = "INFO"
+                ant.taskdef(name: "jrc", classname: "net.sf.jasperreports.ant.JRAntCompileTask",
+                        classpath: mainSourceSet.getRuntimeClasspath().asPath)
                 config.targetDir.get().mkdirs()
                 ant.jrc(srcdir: config.sourceDir.get(), destdir: config.targetDir.get()) {
-                    include(name: '**/*.jrxml')
+                    include(name: "**/*.jrxml")
                 }
             }
         }
         project.configure(project) {
             project.afterEvaluate {
-                project.getTasks().named('classes').get().finalizedBy(buildReports)
-                project.getTasks().named('jar').get().dependsOn(buildReports)
-                project.getTasks().named('compileTestJava').get().dependsOn(buildReports)
-                project.getTasks().named('javadoc').get().dependsOn(buildReports)
+                project.getTasks().named("classes").get().finalizedBy(buildReports)
+                project.getTasks().named("jar").get().dependsOn(buildReports)
+                project.getTasks().named("compileTestJava").get().dependsOn(buildReports)
+                project.getTasks().named("javadoc").get().dependsOn(buildReports)
                 project.getTasks().stream()
                         .filter { it.getName().startsWith("run") }
                         .each { it.dependsOn(buildReports) }
