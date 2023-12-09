@@ -18,12 +18,13 @@ class BuildReportsPlugin implements Plugin<Project> {
             group = 'build'
             inputs.dir config.sourceDir
             outputs.dir config.targetDir
+            def mainSourceSet = project.getExtensions()
+                    .getByType(JavaPluginExtension.class).getSourceSets().named('main').get()
+            dependsOn mainSourceSet.getRuntimeClasspath()
             doLast {
-                def javaPlugin = project.getExtensions().getByType(JavaPluginExtension.class)
-                def main = javaPlugin.getSourceSets().named('main').get()
                 ant.lifecycleLogLevel = 'INFO'
                 ant.taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask',
-                        classpath: main.getRuntimeClasspath().asPath)
+                        classpath: mainSourceSet.getRuntimeClasspath().asPath)
                 config.targetDir.get().mkdirs()
                 ant.jrc(srcdir: config.sourceDir.get(), destdir: config.targetDir.get()) {
                     include(name: '**/*.jrxml')
