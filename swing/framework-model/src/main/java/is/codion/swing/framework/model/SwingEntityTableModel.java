@@ -1190,7 +1190,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
       if (requireNonNull(attribute).type().isEntity()) {
-        return Optional.empty();
+        return Optional.of(ColumnConditionModel.builder(attribute, String.class)
+                .operators(operators(String.class))
+                .build());
       }
       if (!Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
         return Optional.empty();
@@ -1201,7 +1203,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         return Optional.empty();
       }
 
-      return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+      return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
               .operators(operators(attribute.type().valueClass()))
               .format(attributeDefinition.format())
               .dateTimePattern(attributeDefinition.dateTimePattern())

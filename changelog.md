@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.model
 - ColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
 - ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity based columns.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, table status message now indicates whether the result is limited.
 
