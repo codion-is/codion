@@ -559,19 +559,18 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilters) {
       this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
-      includeCondition.addListener(DefaultFilteredTableModel.this::filterItems);
+      this.includeCondition.addListener(DefaultFilteredTableModel.this::filterItems);
     }
 
     @Override
     public boolean test(R item) {
-      for (int i = 0; i < columnFilters.size(); i++) {
-        ColumnConditionModel<? extends C, ?> conditionModel = columnFilters.get(i);
-        if (conditionModel.enabled().get() && !conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier()))) {
-          return false;
-        }
+      if (includeCondition.isNotNull() && !includeCondition.get().test(item)) {
+        return false;
       }
 
-      return includeCondition.isNull() || includeCondition.get().test(item);
+      return columnFilters.stream()
+              .filter(conditionModel -> conditionModel.enabled().get())
+              .allMatch(conditionModel -> conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier())));
     }
   }
 
