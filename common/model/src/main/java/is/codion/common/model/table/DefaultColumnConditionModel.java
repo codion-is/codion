@@ -35,7 +35,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   private final State caseSensitive;
   private final Value<AutomaticWildcard> automaticWildcard;
-  private final char wildcard;
+  private final String wildcard;
 
   private final State autoEnable;
   private final State enabled = State.state();
@@ -51,7 +51,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     this.columnIdentifier = builder.columnIdentifier;
     this.operators = unmodifiableList(builder.operators);
     this.columnClass = builder.columnClass;
-    this.wildcard = builder.wildcard;
+    this.wildcard = String.valueOf(builder.wildcard);
     this.format = builder.format;
     this.dateTimePattern = builder.dateTimePattern;
     this.automaticWildcard = Value.value(builder.automaticWildcard, AutomaticWildcard.NONE);
@@ -150,7 +150,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public char wildcard() {
-    return wildcard;
+    return wildcard.charAt(0);
   }
 
   @Override
@@ -208,6 +208,9 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   private boolean valueAccepted(Comparable<T> comparable) {
+    if (!caseSensitive.get()) {
+      comparable = stringToLowerCase(comparable);
+    }
     switch (operator.get()) {
       case EQUAL:
         return isEqual(comparable);
@@ -230,20 +233,22 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       case NOT_BETWEEN:
         return isNotBetween(comparable);
       default:
-        throw new IllegalArgumentException("Undefined operator: " + operator.get());
+        throw new IllegalArgumentException("Unknown operator: " + operator.get());
     }
   }
 
   private boolean isEqual(Comparable<T> comparable) {
     T equalValue = getEqualValue();
+    if (!caseSensitive.get()) {
+      equalValue = stringToLowerCase(equalValue);
+    }
     if (comparable == null) {
       return equalValue == null;
     }
     if (equalValue == null) {
       return comparable == null;
     }
-
-    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcard))) {
+    if (comparable instanceof String && ((String) equalValue).contains(wildcard)) {
       return isEqualWildcard((String) comparable);
     }
 
@@ -252,14 +257,16 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   private boolean isNotEqual(Comparable<T> comparable) {
     T equalValue = getEqualValue();
+    if (!caseSensitive.get()) {
+      equalValue = stringToLowerCase(equalValue);
+    }
     if (comparable == null) {
       return equalValue != null;
     }
     if (equalValue == null) {
       return comparable != null;
     }
-
-    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcard))) {
+    if (comparable instanceof String && ((String) equalValue).contains(wildcard)) {
       return !isEqualWildcard((String) comparable);
     }
 
@@ -271,26 +278,22 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     if (equalValue == null) {
       equalValue = "";
     }
-    if (equalValue.equals(String.valueOf(wildcard))) {
+    if (equalValue.equals(wildcard)) {
       return true;
     }
-
-    String valueToTest = value;
     if (!caseSensitive.get()) {
-      equalValue = equalValue.toUpperCase();
-      valueToTest = valueToTest.toUpperCase();
+      equalValue = equalValue.toLowerCase();
+    }
+    if (!equalValue.contains(wildcard)) {
+      return value.compareTo(equalValue) == 0;
     }
 
-    if (!equalValue.contains(String.valueOf(wildcard))) {
-      return valueToTest.compareTo(equalValue) == 0;
-    }
-
-    return Pattern.matches(prepareForRegex(equalValue), valueToTest);
+    return Pattern.matches(prepareForRegex(equalValue), value);
   }
 
   private String prepareForRegex(String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replace(String.valueOf(wildcard), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
+    return string.replace(wildcard, ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
   }
 
   private boolean isLessThan(Comparable<T> comparable) {
@@ -470,6 +473,22 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     if (!operators.contains(requireNonNull(operator, "operator"))) {
       throw new IllegalArgumentException("Operator " + operator + " not available in this condition model");
     }
+  }
+
+  private static <T> T stringToLowerCase(T value) {
+    if (value instanceof String) {
+      return (T) ((String) value).toLowerCase();
+    }
+
+    return value;
+  }
+
+  private static <T> Comparable<T> stringToLowerCase(Comparable<T> comparable) {
+    if (comparable instanceof String) {
+      return (Comparable<T>) ((String) comparable).toLowerCase();
+    }
+
+    return comparable;
   }
 
   private final class AutoEnableListener implements Runnable {

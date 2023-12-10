@@ -454,7 +454,7 @@ public class DefaultColumnConditionModelTest {
   }
 
   @Test
-  void includeString() {
+  void acceptsString() {
     ColumnConditionModel<String, String> conditionModel = ColumnConditionModel.builder("test", String.class).build();
     conditionModel.autoEnable().set(false);
     conditionModel.enabled().set(true);
@@ -497,5 +497,14 @@ public class DefaultColumnConditionModelTest {
     conditionModel.setEqualValue("%");
     assertFalse(conditionModel.accepts("hello"));
     assertFalse(conditionModel.accepts("helo"));
+
+    conditionModel.setEqualValue("hell");
+    conditionModel.operator().set(Operator.EQUAL);
+    conditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
+    assertTrue(conditionModel.accepts("HELl"));
+    assertTrue(conditionModel.accepts("hElL"));
+    conditionModel.operator().set(Operator.NOT_EQUAL);
+    assertFalse(conditionModel.accepts("HELl"));
+    assertFalse(conditionModel.accepts("hElL"));
   }
 }

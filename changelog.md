@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.20-SNAPSHOT
 ### is.codion.common.model
 - ColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
+- ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, table status message now indicates whether the result is limited.
 
