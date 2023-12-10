@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -486,15 +487,13 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
-    Collection<ColumnConditionModel<C, ?>> filterModels = new ArrayList<>();
-    columnModel.columns().stream()
+    return columnModel.columns().stream()
             .map(FilteredTableColumn::getIdentifier)
             .map(filterModelFactory::createConditionModel)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .forEach(conditionModel -> filterModels.add((ColumnConditionModel<C, ?>) conditionModel));
-
-    return filterModels;
+            .map(filterModel -> (ColumnConditionModel<C, ?>) filterModel)
+            .collect(Collectors.toList());
   }
 
   private final class DefaultRefresher extends AbstractFilteredModelRefresher<R> {
@@ -547,7 +546,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     public Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier) {
       Class<?> columnClass = getColumnClass(columnIdentifier);
       if (Comparable.class.isAssignableFrom(columnClass)) {
-        return Optional.ofNullable(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
+        return Optional.of(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
       }
 
       return Optional.empty();
@@ -575,19 +574,18 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilters) {
       this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
-      includeCondition.addListener(DefaultFilteredTableModel.this::filterItems);
+      this.includeCondition.addListener(DefaultFilteredTableModel.this::filterItems);
     }
 
     @Override
     public boolean test(R item) {
-      for (int i = 0; i < columnFilters.size(); i++) {
-        ColumnConditionModel<? extends C, ?> conditionModel = columnFilters.get(i);
-        if (conditionModel.enabled().get() && !conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier()))) {
-          return false;
-        }
+      if (includeCondition.isNotNull() && !includeCondition.get().test(item)) {
+        return false;
       }
 
-      return includeCondition.isNull() || includeCondition.get().test(item);
+      return columnFilters.stream()
+              .filter(conditionModel -> conditionModel.enabled().get())
+              .allMatch(conditionModel -> conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier())));
     }
   }
 
