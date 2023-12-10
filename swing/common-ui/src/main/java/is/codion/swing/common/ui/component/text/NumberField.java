@@ -304,9 +304,9 @@ public final class NumberField<T extends Number> extends HintTextField {
      * Specifies whether the number field should convert a grouping separator symbol
      * to a decimal separator symbol when typed. This solves the problem of locale
      * controlling whether the numpad comma acts as a decimal symbol, which is usually what we want.
-     * True by default.
      * @param convertGroupingToDecimalSeparator true if grouping separators should be converted to decimal separators when typed
      * @return this builder instance
+     * @see #CONVERT_GROUPING_TO_DECIMAL_SEPARATOR
      */
     Builder<T> convertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator);
   }
