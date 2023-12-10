@@ -169,12 +169,20 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
+   * Specifies whether to include a condition panel.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeConditionPanel", true);
+
+  /**
    * Specifies whether to include a filter panel.<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
   public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", true);
 
   /**
    * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
@@ -297,7 +305,7 @@ public class EntityTablePanel extends JPanel {
   private JToolBar southToolBar;
   private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
   private boolean includeSouthPanel = true;
-  private boolean includeConditionPanel = true;
+  private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
   private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
   private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
   private boolean includeSelectionModeControl = false;
