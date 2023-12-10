@@ -47,14 +47,14 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
     SwingEntityModel departmentModel = applicationModel().entityModel(Department.TYPE);
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
-    EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
+    EntityPanel employeePanel = new EntityPanel(employeeModel,
             new EmployeeEditPanel(employeeModel.editModel()));
 
     EntityPanel departmentPanel = new EntityPanel(departmentModel,
             new DepartmentEditPanel(departmentModel.editModel()),
             new DepartmentTablePanel(departmentModel.tableModel()),
             splitPaneResizeWeight(0.4));
-    departmentPanel.addDetailPanel(employeePanelBuilder);
+    departmentPanel.addDetailPanel(employeePanel);
 
     return singletonList(departmentPanel);
   }
