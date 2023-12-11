@@ -477,7 +477,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
             .map(filterModelFactory::createConditionModel)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .map(filterModel -> (ColumnConditionModel<C, ?>) filterModel)
+            .map(conditionModel -> (ColumnConditionModel<C, ?>) conditionModel)
             .collect(Collectors.toList());
   }
 
