@@ -49,7 +49,10 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
-    Control populateSchemaControl = Control.control(this::populateSchema);
+    Control populateSchemaControl = Control.builder(this::populateSchema)
+            .name("Populate")
+            .enabled(model.schemaModel().selectionModel().selectionNotEmpty())
+            .build();
     FilteredTable<Schema, Integer> schemaTable =
             FilteredTable.builder(model.schemaModel())
                     .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
@@ -57,6 +60,7 @@ public final class DatabaseExplorerPanel extends JPanel {
                     .keyEvent(KeyEvents.builder(VK_ENTER)
                             .modifiers(InputEvent.CTRL_DOWN_MASK)
                             .action(populateSchemaControl))
+                    .popupMenuControl(table -> populateSchemaControl)
                     .build();
 
     FilteredTable<DefinitionRow, Integer> domainTable =
