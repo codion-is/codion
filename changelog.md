@@ -7,9 +7,13 @@ Codion Change Log
 - ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity based columns.
+### is.codion.swing.framework.model.tools
+- DatabaseDomain, DomainToString, no longer sets the maximum column size for TEXT columns.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, table status message now indicates whether the result is limited.
 - EntityTablePanel.INCLUDE_FILTER_PANEL now true by default, INCLUDE_CONDITION_PANEL added.
+### is.codion.swing.framework.ui.tools
+- DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 
 ## 0.17.19
 ### is.codion.common.db
