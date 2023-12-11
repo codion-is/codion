@@ -30,6 +30,8 @@ import static java.util.stream.Collectors.toList;
 
 final class DatabaseDomain extends DefaultDomain {
 
+  private static final int MAXIMUM_COLUMN_SIZE = 2_147_483_647;
+
   private final Map<Table, EntityType> tableEntityTypes = new HashMap<>();
 
   DatabaseDomain(DomainType domainType, Collection<Table> tables) {
@@ -108,7 +110,7 @@ final class DatabaseDomain extends DefaultDomain {
     if (!metadataColumn.primaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
-    if (column.type().isString() && metadataColumn.columnSize() > 0) {
+    if (column.type().isString() && metadataColumn.columnSize() > 0 && metadataColumn.columnSize() < MAXIMUM_COLUMN_SIZE) {
       builder.maximumLength(metadataColumn.columnSize());
     }
     if (column.type().isDecimal() && metadataColumn.decimalDigits() >= 1) {

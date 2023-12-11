@@ -128,11 +128,11 @@ final class DomainToString {
     if (column.lazy()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".lazy(true)");
     }
-    if (String.class.equals(column.attribute().type().valueClass())) {
+    if (column.attribute().type().isString() && column.maximumLength() != -1) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
               .append(column.maximumLength()).append(")");
     }
-    if (Double.class.equals(column.attribute().type().valueClass()) && column.maximumFractionDigits() >= 1) {
+    if (column.attribute().type().isDecimal() && column.maximumFractionDigits() >= 1) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
               .append(column.maximumFractionDigits()).append(")");
     }
