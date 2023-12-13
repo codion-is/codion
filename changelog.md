@@ -6,7 +6,7 @@ Codion Change Log
 - ColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
 - ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
 ### is.codion.swing.framework.model
-- SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity based columns.
+- SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 ### is.codion.swing.framework.model.tools
 - DatabaseDomain, DomainToString, no longer sets the maximum column size for TEXT columns.
 ### is.codion.swing.framework.ui

@@ -1189,18 +1189,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
-      if (requireNonNull(attribute).type().isEntity()) {
+      AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
+      if (attributeDefinition.hidden() || !Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
+        return Optional.empty();
+      }
+      if (requireNonNull(attribute).type().isEntity() || !attributeDefinition.items().isEmpty()) {
         return Optional.of(ColumnConditionModel.builder(attribute, String.class)
                 .operators(operators(String.class))
                 .build());
-      }
-      if (!Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
-        return Optional.empty();
-      }
-
-      AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-      if (attributeDefinition.hidden()) {
-        return Optional.empty();
       }
 
       return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
