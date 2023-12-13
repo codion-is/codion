@@ -80,6 +80,8 @@ public final class EntityComboBoxModelTest {
 
     EntityEditEvents.notifyInserted(singletonList(temp));
     assertFalse(comboBoxModel.visible(temp));
+
+    comboBoxModel.refresh();
   }
 
   @Test
