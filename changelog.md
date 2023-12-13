@@ -9,6 +9,7 @@ Codion Change Log
 - SingleValueColumnCondition bug fixed, useLikeOperator now included in equals() and hashCode().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
+- SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.
 ### is.codion.swing.framework.model.tools
 - DatabaseDomain, DomainToString, no longer sets the maximum column size for TEXT columns.
 ### is.codion.swing.framework.ui

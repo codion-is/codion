@@ -1072,9 +1072,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       return attributes.get();
     }
 
-    return attributes.get().stream()
-            .filter(attribute -> columnModel.visible(attribute).get())
+    return entityDefinition().attributes().selected().stream()
+            .filter(this::columnNotHidden)
             .collect(toList());
+  }
+
+  private boolean columnNotHidden(Attribute<?> attribute) {
+    return !columnModel().containsColumn(attribute) || columnModel().visible(attribute).get();
   }
 
   private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
