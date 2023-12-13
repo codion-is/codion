@@ -42,12 +42,13 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
       return false;
     }
     SingleValueColumnCondition<?> that = (SingleValueColumnCondition<?>) object;
-    return Objects.equals(value, that.value);
+    return Objects.equals(value, that.value)
+            && useLikeOperator == that.useLikeOperator;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), value);
+    return Objects.hash(super.hashCode(), value, useLikeOperator);
   }
 
   @Override

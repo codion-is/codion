@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.model
 - ColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
 - ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
+### is.codion.framework.domain
+- SingleValueColumnCondition bug fixed, useLikeOperator now included in equals() and hashCode().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 ### is.codion.swing.framework.model.tools
