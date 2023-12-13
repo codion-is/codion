@@ -47,6 +47,13 @@ final class DefaultCount implements Count, Serializable {
     return having;
   }
 
+  @Override
+  public String toString() {
+    return "DefaultCount{" +
+            "where=" + where +
+            ", having=" + having + "}";
+  }
+
   static final class DefaultBuilder implements Count.Builder {
 
     private final Condition where;

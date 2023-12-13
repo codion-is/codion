@@ -64,6 +64,15 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
   }
 
   @Override
+  public String toString() {
+    return "MultiValueColumnCondition{" +
+            "column=" + column() +
+            ", operator=" + operator() +
+            ", values=" + values() +
+            ", caseSensitive=" + caseSensitive() + "}";
+  }
+
+  @Override
   protected String toString(String columnExpression) {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;

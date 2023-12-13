@@ -95,6 +95,13 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
     return Objects.hash(super.hashCode(), conditions, conjunction);
   }
 
+  @Override
+  public String toString() {
+    return "DefaultConditionCombination{" +
+            "conditions=" + conditions +
+            ", conjunction=" + conjunction + "}";
+  }
+
   private static String toString(Conjunction conjunction) {
     switch (conjunction) {
       case AND:

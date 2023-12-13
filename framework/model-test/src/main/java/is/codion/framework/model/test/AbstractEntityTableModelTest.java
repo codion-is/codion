@@ -316,6 +316,31 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertFalse(empModel.conditionChanged().get());
   }
 
+  @Test
+  void queryHiddenColumns() {
+    TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
+    empModel.refresh();
+    empModel.items().forEach(employee -> {
+      assertTrue(employee.contains(Employee.ID));
+      assertTrue(employee.contains(Employee.NAME));
+      assertTrue(employee.contains(Employee.COMMISSION));
+      assertTrue(employee.contains(Employee.DEPARTMENT));
+      assertTrue(employee.contains(Employee.HIREDATE));
+      assertTrue(employee.contains(Employee.JOB));
+    });
+    empModel.setVisibleColumns(Employee.ID, Employee.NAME, Employee.COMMISSION);
+    empModel.queryHiddenColumns().set(false);
+    empModel.refresh();
+    empModel.items().forEach(employee -> {
+      assertTrue(employee.contains(Employee.ID));
+      assertTrue(employee.contains(Employee.NAME));
+      assertTrue(employee.contains(Employee.COMMISSION));
+      assertFalse(employee.contains(Employee.DEPARTMENT_FK));
+      assertFalse(employee.contains(Employee.HIREDATE));
+      assertFalse(employee.contains(Employee.JOB));
+    });
+  }
+
   protected final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }

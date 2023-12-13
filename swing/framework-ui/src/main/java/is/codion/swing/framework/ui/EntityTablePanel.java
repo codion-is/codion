@@ -197,7 +197,7 @@ public class EntityTablePanel extends JPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", true);
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
 
   /**
    * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
