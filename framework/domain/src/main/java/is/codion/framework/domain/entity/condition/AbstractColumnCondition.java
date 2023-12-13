@@ -52,11 +52,6 @@ abstract class AbstractColumnCondition<T> extends AbstractCondition implements C
   }
 
   @Override
-  public final String toString() {
-    return getClass().getSimpleName() + ": " + column;
-  }
-
-  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;

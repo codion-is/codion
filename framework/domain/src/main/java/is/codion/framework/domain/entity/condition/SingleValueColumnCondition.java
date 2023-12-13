@@ -52,6 +52,16 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
   }
 
   @Override
+  public String toString() {
+    return "SingleValueColumnCondition{" +
+            "column=" + column() +
+            ", operator=" + operator() +
+            ", value=" + value +
+            ", caseSensitive=" + caseSensitive() +
+            ", useLikeOperator=" + useLikeOperator + "}";
+  }
+
+  @Override
   protected String toString(String columnExpression) {
     switch (operator()) {
       case EQUAL:

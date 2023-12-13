@@ -42,4 +42,9 @@ final class DefaultAllCondition extends AbstractCondition implements Condition.A
   public int hashCode() {
     return entityType().hashCode();
   }
+
+  @Override
+  public String toString() {
+    return "DefaultAllCondition{entityType=" + entityType() + "}";
+  }
 }

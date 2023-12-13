@@ -139,15 +139,16 @@ final class DefaultSelect implements Select, Serializable {
   @Override
   public String toString() {
     return "Select{" +
-            "foreignKeyFetchDepths=" + foreignKeyFetchDepths +
+            "where=" + where +
+            ", having=" + having +
+            ", foreignKeyFetchDepths=" + foreignKeyFetchDepths +
             ", attributes=" + attributes +
             ", orderBy=" + orderBy +
             ", fetchDepth=" + fetchDepth +
             ", forUpdate=" + forUpdate +
             ", limit=" + limit +
             ", offset=" + offset +
-            ", queryTimeout=" + queryTimeout +
-            '}';
+            ", queryTimeout=" + queryTimeout + "}";
   }
 
   static final class DefaultBuilder implements Select.Builder {

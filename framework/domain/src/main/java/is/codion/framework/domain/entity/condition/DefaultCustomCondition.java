@@ -51,4 +51,12 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   public int hashCode() {
     return Objects.hash(super.hashCode(), conditionType);
   }
+
+  @Override
+  public String toString() {
+    return "DefaultCustomCondition{" +
+            "conditionType=" + conditionType +
+            ", columns=" + columns() +
+            ", values=" + values() + "}";
+  }
 }

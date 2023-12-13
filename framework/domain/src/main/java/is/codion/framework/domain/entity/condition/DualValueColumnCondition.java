@@ -37,6 +37,15 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
   }
 
   @Override
+  public String toString() {
+    return "DualValueColumnCondition{" +
+            "column=" + column() +
+            ", operator=" + operator() +
+            ", values=" + values() +
+            ", caseSensitive=" + caseSensitive() + "}";
+  }
+
+  @Override
   protected String toString(String columnExpression) {
     switch (operator()) {
       case BETWEEN:

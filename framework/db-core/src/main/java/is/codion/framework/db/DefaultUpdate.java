@@ -58,8 +58,8 @@ final class DefaultUpdate implements Update, Serializable {
   @Override
   public String toString() {
     return "Update{" +
-            "columnValues=" + columnValues +
-            '}';
+            "where=" + where +
+            ", columnValues=" + columnValues + "}";
   }
 
   static final class DefaultBuilder implements Update.Builder {
