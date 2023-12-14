@@ -80,6 +80,7 @@ import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -904,13 +905,15 @@ public final class EntitySearchField extends HintTextField {
 
   private final class WaitCursorWhileSearching implements Consumer<Boolean> {
 
+    private final Cursor defaultCursor = getCursor();
+
     @Override
     public void accept(Boolean isSearching) {
       if (isSearching) {
         setCursor(Cursors.WAIT);
       }
       else {
-        setCursor(Cursors.DEFAULT);
+        setCursor(defaultCursor);
       }
     }
   }

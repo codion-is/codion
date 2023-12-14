@@ -7,6 +7,8 @@ Codion Change Log
 - ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
 ### is.codion.framework.domain
 - SingleValueColumnCondition bug fixed, useLikeOperator now included in equals() and hashCode().
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection, optimistic locking now only compares values which are available in the entity being updated, otherwise excluding attributes when selecting entities prevents those entities from being updated, since optimistic locking would always fail due to the missing values.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 - SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.
@@ -15,6 +17,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel, table status message now indicates whether the result is limited.
 - EntityTablePanel.INCLUDE_CONDITION_PANEL added.
+- EntitySearchField bug fixed, now uses the default text input cursor when replacing the wait cursor, instead of Cursors.DEFAULT_CURSOR (arrow).
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 

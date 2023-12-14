@@ -1328,7 +1328,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, id);
     current.save();
     assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
-    assertEquals(Department.DEPTNO, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+    assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
     current.put(Department.DEPTNO, 1);
     current.save();
     assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.DEPTNO));
@@ -1341,7 +1341,7 @@ public class DefaultLocalEntityConnectionTest {
     current.remove(Department.LOC);
     current.save();
     assertTrue(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
-    assertEquals(Department.LOC, DefaultLocalEntityConnection.modifiedColumns(current, entity).iterator().next());
+    assertTrue(DefaultLocalEntityConnection.modifiedColumns(current, entity).isEmpty());
     current.put(Department.LOC, "Location");
     current.save();
     assertFalse(DefaultLocalEntityConnection.valueMissingOrModified(current, entity, Department.LOC));
