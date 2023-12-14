@@ -1392,16 +1392,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   /**
-   * Returns all updatable {@link Column}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-   * Note that only eagerly loaded values are included in this comparison.
+   * Returns all updatable {@link Column}s which original value differs from the one in the comparison entity,
+   * returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
+   * Note that only populated values are included in this comparison.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable columns which values differ from the ones in the comparison entity
    * @see ColumnDefinition#lazy()
    */
   static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
-    return comparison.entrySet().stream()
+    return entity.entrySet().stream()
             .map(entry -> entity.definition().attributes().definition(entry.getKey()))
             .filter(ColumnDefinition.class::isInstance)
             .map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
@@ -1456,9 +1456,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static String createModifiedExceptionMessage(Entity entity, Entity modified,
                                                        Collection<Column<?>> modifiedColumns) {
-    return modifiedColumns.stream()
-            .map(column -> " \n" + column + ": " + entity.original(column) + " -> " + modified.get(column))
-            .collect(joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.entityType(), ""));
+    StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED)).append(": ").append(entity.entityType());
+    for (Column<?> column : modifiedColumns) {
+      builder.append("\n").append(column.toString())
+              .append(": ").append(entity.original(column))
+              .append(" -> ").append(modified.get(column));
+    }
+
+    return builder.toString();
   }
 
   private static boolean containsReferenceAttributes(Entity entity, List<ForeignKey.Reference<?>> references) {

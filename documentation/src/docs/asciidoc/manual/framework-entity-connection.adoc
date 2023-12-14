@@ -185,7 +185,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 ==== Optimistic locking
 
-The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system-wide using a system property:
+The framework performs optimistic locking during updates using the methods above. This is done by selecting the entities being updated *FOR UPDATE* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if one or more values differ or the row is missing.
+
+NOTE: Excluding attributes when selecting entities results in those attributes (lazy loaded ones for example) not being included when optimistic locking is performed on subsequent updates, since optimistic locking relies on the original attribute value being available for making a comparison.
+
+Optimistic locking can be turned off system-wide using a system property:
 
 [source]
 ----
