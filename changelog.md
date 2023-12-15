@@ -13,6 +13,7 @@ Codion Change Log
 - DefaultLocalEntityConnection, optimistic locking now only compares values which are available in the entity being updated, otherwise excluding attributes when selecting entities prevents those entities from being updated, since optimistic locking would always fail due to the missing values.
 ### is.codion.swing.common.ui
 - ColumnConditionPanel bug fixed, case sensitivity control now available for Character based condition panels.
+- Components.textField() and textField(Value<String> linkedValue) renamed stringField().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 - SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.

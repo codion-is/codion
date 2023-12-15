@@ -561,9 +561,9 @@ public final class ComponentsTest {
   }
 
   @Test
-  void textField() {
+  void stringField() {
     Value<String> value = Value.value();
-    ComponentValue<String, JTextField> componentValue = Components.textField()
+    ComponentValue<String, JTextField> componentValue = Components.stringField()
             .columns(10)
             .upperCase(true)
             .selectAllOnFocusGained(true)
@@ -781,9 +781,9 @@ public final class ComponentsTest {
 
   @Test
   void valueLocked() {
-    assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
+    assertThrows(IllegalStateException.class, () -> Components.stringField(Value.value())
             .linkedValue(Value.value()));
-    assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
+    assertThrows(IllegalStateException.class, () -> Components.stringField(Value.value())
             .linkedValue(Value.value()));
   }
 

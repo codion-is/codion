@@ -501,7 +501,7 @@ public final class FilteredTable<R, C> extends JTable {
     Control selectPreviousResult = control(() -> selectSearchResult(true, false));
     Control requestTableFocus = control(this::requestFocusInWindow);
 
-    return Components.textField(tableModel.searchModel().searchString())
+    return Components.stringField(tableModel.searchModel().searchString())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
             .keyEvent(KeyEvents.builder(VK_ENTER)

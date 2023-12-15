@@ -40,7 +40,7 @@ public final class ColumnSummaryPanel extends JPanel {
 
   private static JTextField createSummaryField(ColumnSummaryModel model) {
     JPopupMenu popupMenu = createPopupMenu(model);
-    return Components.textField()
+    return Components.stringField()
             .linkedValue(model.summaryText())
             .horizontalAlignment(SwingConstants.RIGHT)
             .editable(false)

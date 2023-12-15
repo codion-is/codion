@@ -66,26 +66,26 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private ChartPanel checkOutTimePanel;
 
-  private final JTextField resetTimeField = textField()
+  private final JTextField resetTimeField = stringField()
           .columns(RESET_FIELD_COLUMNS)
           .build();
-  private final JTextField poolSizeField = textField()
+  private final JTextField poolSizeField = stringField()
           .editable(false)
           .horizontalAlignment(CENTER)
           .build();
-  private final JTextField createdField = textField()
+  private final JTextField createdField = stringField()
           .editable(false)
           .horizontalAlignment(CENTER)
           .build();
-  private final JTextField destroyedField = textField()
+  private final JTextField destroyedField = stringField()
           .editable(false)
           .horizontalAlignment(CENTER)
           .build();
-  private final JTextField requestedField = textField()
+  private final JTextField requestedField = stringField()
           .editable(false)
           .horizontalAlignment(CENTER)
           .build();
-  private final JTextField failedField = textField()
+  private final JTextField failedField = stringField()
           .editable(false)
           .horizontalAlignment(CENTER)
           .build();

@@ -186,16 +186,16 @@ public final class InputControls {
     // end::booleanComboBox[]
   }
 
-  static void textField() {
-    // tag::textField[]
+  static void stringField() {
+    // tag::stringField[]
     Value<String> stringValue = Value.value();
 
     JTextField textField =
-            Components.textField(stringValue)
+            Components.stringField(stringValue)
                     .preferredWidth(120)
                     .transferFocusOnEnter(true)
                     .build();
-    // end::textField[]
+    // end::stringField[]
   }
 
   static void textArea() {

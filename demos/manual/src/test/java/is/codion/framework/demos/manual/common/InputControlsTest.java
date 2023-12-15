@@ -13,7 +13,7 @@ public final class InputControlsTest {
     InputControls.checkBox();
     InputControls.nullableCheckBox();
     InputControls.booleanComboBox();
-    InputControls.textField();
+    InputControls.stringField();
     InputControls.textArea();
     InputControls.integerField();
     InputControls.longField();
