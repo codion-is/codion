@@ -553,14 +553,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void addStringConfigurationPopupMenu() {
-    if (conditionModel.columnClass().equals(String.class)) {
-      JPopupMenu popupMenu = menu(Controls.builder()
-              .control(ToggleControl.builder(conditionModel.caseSensitive())
-                      .name(MESSAGES.getString("case_sensitive"))
-                      .build())
-              .controls(createAutomaticWildcardControls())
-              .build())
-              .createPopupMenu();
+    if (isStringOrCharacter()) {
+      Controls.Builder controlsBuilder = Controls.builder();
+      controlsBuilder.control(ToggleControl.builder(conditionModel.caseSensitive())
+              .name(MESSAGES.getString("case_sensitive"))
+              .build());
+      if (conditionModel.columnClass().equals(String.class)) {
+        controlsBuilder.controls(createAutomaticWildcardControls());
+      }
+      JPopupMenu popupMenu = menu(controlsBuilder).createPopupMenu();
       equalField.setComponentPopupMenu(popupMenu);
       if (lowerBoundField != null) {
         lowerBoundField.setComponentPopupMenu(popupMenu);
@@ -569,6 +570,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
         upperBoundField.setComponentPopupMenu(popupMenu);
       }
     }
+  }
+
+  private boolean isStringOrCharacter() {
+    return conditionModel.columnClass().equals(String.class) || conditionModel.columnClass().equals(Character.class);
   }
 
   private Controls createAutomaticWildcardControls() {
