@@ -397,6 +397,7 @@ public final class TestDomain extends DefaultDomain {
     Column<String> LOCATION = TYPE.stringColumn("loc");
     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
     Column<byte[]> DATA = TYPE.byteArrayColumn("data");
+    Column<Character> CODE = TYPE.characterColumn("code");
 
     int deptNo();
 
@@ -439,7 +440,9 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("active"),
             Department.DATA.define()
                     .column()
-                    .lazy(true))
+                    .lazy(true),
+            Department.CODE.define()
+                    .column())
             .tableName("scott.dept")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))

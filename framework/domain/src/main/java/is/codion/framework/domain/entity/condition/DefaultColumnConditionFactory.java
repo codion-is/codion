@@ -49,12 +49,30 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
   }
 
   @Override
+  public ColumnCondition<Character> equalToIgnoreCase(Character value) {
+    if (value == null) {
+      return (ColumnCondition<Character>) isNull();
+    }
+
+    return new SingleValueColumnCondition<>((Column<Character>) column, value, EQUAL, false, false);
+  }
+
+  @Override
   public ColumnCondition<String> notEqualToIgnoreCase(String value) {
     if (value == null) {
       return (ColumnCondition<String>) isNotNull();
     }
 
     return new SingleValueColumnCondition<>((Column<String>) column, value, NOT_EQUAL, false, false);
+  }
+
+  @Override
+  public ColumnCondition<Character> notEqualToIgnoreCase(Character value) {
+    if (value == null) {
+      return (ColumnCondition<Character>) isNotNull();
+    }
+
+    return new SingleValueColumnCondition<>((Column<Character>) column, value, NOT_EQUAL, false, false);
   }
 
   @Override

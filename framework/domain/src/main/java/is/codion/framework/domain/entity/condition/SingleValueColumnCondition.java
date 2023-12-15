@@ -87,13 +87,13 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
       return identifier + (notEqual ? " IS NOT NULL" : " IS NULL");
     }
 
-    boolean isString = column().type().isString();
-    boolean caseInsensitiveString = isString && !caseSensitive();
-    if (caseInsensitiveString) {
+    boolean stringOrCharacter = column().type().isString() || column().type().isCharacter();
+    boolean caseInsensitiveStringOrCharacter = stringOrCharacter && !caseSensitive();
+    if (caseInsensitiveStringOrCharacter) {
       identifier = "UPPER(" + identifier + ")";
     }
-    String valuePlaceholder = caseInsensitiveString ? "UPPER(?)" : "?";
-    if (isString && useLikeOperator) {
+    String valuePlaceholder = caseInsensitiveStringOrCharacter ? "UPPER(?)" : "?";
+    if (column().type().isString() && useLikeOperator) {
       return identifier + (notEqual ? " NOT LIKE " : " LIKE ") + valuePlaceholder;
     }
 

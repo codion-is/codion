@@ -57,11 +57,25 @@ public interface ColumnCondition<T> extends Condition {
     ColumnCondition<String> equalToIgnoreCase(String value);
 
     /**
+     * Returns a case-insensitive 'equalTo' {@link ColumnCondition} or 'isNull' in case the value is null.
+     * @param value the value to use in the condition
+     * @return a {@link ColumnCondition}
+     */
+    ColumnCondition<Character> equalToIgnoreCase(Character value);
+
+    /**
      * Returns a case-insensitive 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case the value is null.
      * @param value the value to use in the condition
      * @return a {@link ColumnCondition}
      */
     ColumnCondition<String> notEqualToIgnoreCase(String value);
+
+    /**
+     * Returns a case-insensitive 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case the value is null.
+     * @param value the value to use in the condition
+     * @return a {@link ColumnCondition}
+     */
+    ColumnCondition<Character> notEqualToIgnoreCase(Character value);
 
     /**
      * Returns a 'like' {@link ColumnCondition} or 'isNull' in case the value is null.

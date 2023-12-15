@@ -1,12 +1,14 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.condition.Condition;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -366,6 +368,16 @@ public final class ConditionTest {
     Assertions.assertEquals(columnDefinition.expression() + " <> ?", condition.toString(departmentDefinition));
     condition = Department.NAME.notLike("%upper%");
     Assertions.assertEquals(columnDefinition.expression() + " NOT LIKE ?", condition.toString(departmentDefinition));
+
+    columnDefinition = departmentDefinition.columns().definition(Department.CODE);
+    condition = Department.CODE.equalTo('h');
+    Assertions.assertEquals(columnDefinition.expression() + " = ?", condition.toString(departmentDefinition));
+    condition = Department.CODE.equalToIgnoreCase('h');
+    Assertions.assertEquals("UPPER(" + columnDefinition.expression() + ") = UPPER(?)", condition.toString(departmentDefinition));
+    condition = Department.CODE.notEqualTo('h');
+    Assertions.assertEquals(columnDefinition.expression() + " <> ?", condition.toString(departmentDefinition));
+    condition = Department.CODE.notEqualToIgnoreCase('h');
+    Assertions.assertEquals("UPPER(" + columnDefinition.expression() + ") <> UPPER(?)", condition.toString(departmentDefinition));
   }
 
   private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition,

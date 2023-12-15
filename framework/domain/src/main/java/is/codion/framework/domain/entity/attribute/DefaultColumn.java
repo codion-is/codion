@@ -86,7 +86,17 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
   }
 
   @Override
+  public ColumnCondition<Character> equalToIgnoreCase(Character value) {
+    return factory(this).equalToIgnoreCase(value);
+  }
+
+  @Override
   public ColumnCondition<String> notEqualToIgnoreCase(String value) {
+    return factory(this).notEqualToIgnoreCase(value);
+  }
+
+  @Override
+  public ColumnCondition<Character> notEqualToIgnoreCase(Character value) {
     return factory(this).notEqualToIgnoreCase(value);
   }
 
