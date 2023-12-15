@@ -261,7 +261,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private static final class DefaultBoundFieldFactory implements BoundFieldFactory {
 
     private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
-            String.class, Boolean.class, Short.class, Integer.class, Double.class,
+            Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
             BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
             LocalDateTime.class, OffsetDateTime.class);
 
@@ -349,6 +349,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       }
       else if (columnClass.equals(String.class)) {
         return stringField((Value<String>) linkedValue)
+                .build();
+      }
+      else if (columnClass.equals(Character.class)) {
+        return characterField((Value<Character>) linkedValue)
                 .build();
       }
 

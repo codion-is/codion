@@ -15,6 +15,7 @@ Codion Change Log
 - ColumnConditionPanel bug fixed, case sensitivity control now available for Character based condition panels.
 - Components.textField() and textField(Value<String> linkedValue) renamed stringField().
 - Components.characterField() and characterField(Value<Character> linkedValue) added.
+- ColumnConditionPanel bug fixed, Character added to supported types.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 - SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.
