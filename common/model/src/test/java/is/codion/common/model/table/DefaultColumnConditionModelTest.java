@@ -507,4 +507,20 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.accepts("HELl"));
     assertFalse(conditionModel.accepts("hElL"));
   }
+
+  @Test
+  void acceptCharacter() {
+    ColumnConditionModel<String, Character> conditionModel = ColumnConditionModel.builder("test", Character.class).build();
+    conditionModel.autoEnable().set(false);
+    conditionModel.enabled().set(true);
+
+    conditionModel.caseSensitive().set(true);
+    conditionModel.operator().set(Operator.EQUAL);
+    conditionModel.setEqualValue('h');
+    assertTrue(conditionModel.accepts('h'));
+    assertFalse(conditionModel.accepts('H'));
+
+    conditionModel.caseSensitive().set(false);
+    assertTrue(conditionModel.accepts('H'));
+  }
 }

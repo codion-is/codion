@@ -3,8 +3,9 @@ Codion Change Log
 
 ## 0.17.20-SNAPSHOT
 ### is.codion.common.model
-- ColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
-- ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
+- DefaultColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
+- DefaultColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
+- DefaultColumnConditionModel bug fixed, case insensitivity now applies to Character as well as String values.
 ### is.codion.framework.domain
 - SingleValueColumnCondition bug fixed, useLikeOperator now included in equals() and hashCode().
 ### is.codion.framework.db.local
