@@ -19,6 +19,7 @@ Codion Change Log
 - EntityTablePanel, table status message now indicates whether the result is limited.
 - EntityTablePanel.INCLUDE_CONDITION_PANEL added.
 - EntitySearchField bug fixed, now uses the default text input cursor when replacing the wait cursor, instead of Cursors.DEFAULT_CURSOR (arrow).
+- EntityConditionPanelFactory bug fixed, Character added to supported types.
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 

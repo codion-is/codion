@@ -133,7 +133,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
   private static final class AttributeBoundFieldFactory<T> implements BoundFieldFactory {
 
     private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
-            String.class, Boolean.class, Short.class, Integer.class, Double.class,
+            Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
             BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
             LocalDateTime.class, OffsetDateTime.class);
 
