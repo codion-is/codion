@@ -500,7 +500,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
       captionResourceKey = attribute.name();
       hidden = resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
       nullable = true;
-      maximumLength = -1;
+      maximumLength = attribute.type().isCharacter() ? 1 : -1;
       defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
       decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
       minimumValue = defaultMinimumValue();

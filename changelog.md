@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - SingleValueColumnCondition bug fixed, useLikeOperator now included in equals() and hashCode().
 - ColumnCondition.equalToIgnoreCase(Character value) and notEqualToIgnoreCase(String value) added, related refactoring.
+- AbstractAttributeDefinition, Character based attributes now with default maximum length of 1.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection, optimistic locking now only compares values which are available in the entity being updated, otherwise excluding attributes when selecting entities prevents those entities from being updated, since optimistic locking would always fail due to the missing values.
 ### is.codion.swing.common.ui
