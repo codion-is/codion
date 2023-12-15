@@ -458,6 +458,23 @@ public final class Components {
   }
 
   /**
+   * @param <B> the builder type
+   * @return a JTextField builder
+   */
+  public static <B extends TextFieldBuilder<Character, JTextField, B>> TextFieldBuilder<Character, JTextField, B> characterField() {
+    return TextFieldBuilder.builder(Character.class);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @param <B> the builder type
+   * @return a JTextField builder
+   */
+  public static <B extends TextFieldBuilder<Character, JTextField, B>> TextFieldBuilder<Character, JTextField, B> characterField(Value<Character> linkedValue) {
+    return TextFieldBuilder.builder(Character.class, linkedValue);
+  }
+
+  /**
    * @param <T> the value type
    * @param <C> the text field type
    * @param <B> the builder type

@@ -198,6 +198,18 @@ public final class InputControls {
     // end::stringField[]
   }
 
+  static void characterField() {
+    // tag::characterField[]
+    Value<Character> characterValue = Value.value();
+
+    JTextField textField =
+            Components.characterField(characterValue)
+                    .preferredWidth(120)
+                    .transferFocusOnEnter(true)
+                    .build();
+    // end::characterField[]
+  }
+
   static void textArea() {
     // tag::textArea[]
     Value<String> stringValue = Value.value();
