@@ -261,7 +261,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel createUserPanel() {
     User user = loadTestModel.user().get();
-    JTextField usernameField = textField()
+    JTextField usernameField = stringField()
             .initialValue(user == null ? null : user.username())
             .columns(USER_COLUMNS)
             .editable(false)

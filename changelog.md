@@ -3,12 +3,20 @@ Codion Change Log
 
 ## 0.17.20-SNAPSHOT
 ### is.codion.common.model
-- ColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
-- ColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
+- DefaultColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
+- DefaultColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
+- DefaultColumnConditionModel bug fixed, case insensitivity now applies to Character as well as String values.
 ### is.codion.framework.domain
 - SingleValueColumnCondition bug fixed, useLikeOperator now included in equals() and hashCode().
+- ColumnCondition.equalToIgnoreCase(Character value) and notEqualToIgnoreCase(String value) added, related refactoring.
+- AbstractAttributeDefinition, Character based attributes now with default maximum length of 1.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection, optimistic locking now only compares values which are available in the entity being updated, otherwise excluding attributes when selecting entities prevents those entities from being updated, since optimistic locking would always fail due to the missing values.
+### is.codion.swing.common.ui
+- ColumnConditionPanel bug fixed, case sensitivity control now available for Character based condition panels.
+- Components.textField() and textField(Value<String> linkedValue) renamed stringField().
+- Components.characterField() and characterField(Value<Character> linkedValue) added.
+- ColumnConditionPanel bug fixed, Character added to supported types.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 - SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.
@@ -18,6 +26,7 @@ Codion Change Log
 - EntityTablePanel, table status message now indicates whether the result is limited.
 - EntityTablePanel.INCLUDE_CONDITION_PANEL added.
 - EntitySearchField bug fixed, now uses the default text input cursor when replacing the wait cursor, instead of Cursors.DEFAULT_CURSOR (arrow).
+- EntityConditionPanelFactory bug fixed, Character added to supported types.
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 

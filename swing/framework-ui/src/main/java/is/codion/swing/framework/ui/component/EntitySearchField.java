@@ -555,7 +555,7 @@ public final class EntitySearchField extends HintTextField {
     private static JPanel createSeparatorPanel(EntitySearchModel searchModel) {
       return Components.borderLayoutPanel()
               .westComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
-              .centerComponent(Components.textField(searchModel.separator())
+              .centerComponent(Components.stringField(searchModel.separator())
                       .columns(1)
                       .maximumLength(1)
                       .build())

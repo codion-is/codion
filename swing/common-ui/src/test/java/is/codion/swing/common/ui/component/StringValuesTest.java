@@ -37,7 +37,7 @@ public class StringValuesTest {
         throw new IllegalArgumentException();
       }
     });
-    ComponentValue<String, JTextField> textFieldValue = Components.textField(textValue)
+    ComponentValue<String, JTextField> textFieldValue = Components.stringField(textValue)
             .buildValue();
 
     assertEquals("start", textFieldValue.get());
@@ -57,7 +57,7 @@ public class StringValuesTest {
   @Test
   void nullInitialValue() {
     Value<String> stringPropertyValue = Value.value();
-    JTextField textField = Components.textField(stringPropertyValue)
+    JTextField textField = Components.stringField(stringPropertyValue)
             .build();
     assertNull(stringPropertyValue.get());
     assertEquals("", textField.getText());
@@ -69,7 +69,7 @@ public class StringValuesTest {
     assertNull(stringPropertyValue.get());
 
     stringPropertyValue.set("test");
-    JTextField textField2 = Components.textField(stringPropertyValue)
+    JTextField textField2 = Components.stringField(stringPropertyValue)
             .build();
     assertEquals("test", textField2.getText());
   }
@@ -77,7 +77,7 @@ public class StringValuesTest {
   @Test
   void nonNullInitialValue() {
     Value<String> value = Value.value("name");
-    JTextField textField = Components.textField(value)
+    JTextField textField = Components.stringField(value)
             .build();
     assertEquals("name", textField.getText());
     textField.setText("darri");
@@ -91,7 +91,7 @@ public class StringValuesTest {
 
   @Test
   void textValue() {
-    ComponentValue<String, JTextField> value = Components.textField()
+    ComponentValue<String, JTextField> value = Components.stringField()
             .buildValue();
     JTextField textField = value.component();
 

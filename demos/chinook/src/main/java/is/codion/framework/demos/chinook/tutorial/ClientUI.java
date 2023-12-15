@@ -71,7 +71,7 @@ public final class ClientUI {
     // create a textfield for entering an artist name
     JTextField artistNameTextField =
             // link the text field to the edit model value
-            Components.textField(artistNameEditModelValue)
+            Components.stringField(artistNameEditModelValue)
                     .columns(10)
                     // trigger the insert action on pressing Enter
                     .action(insertControl)
@@ -137,7 +137,7 @@ public final class ClientUI {
     // create a text field based on the title value
     JTextField titleTextField =
             // link the text field to the edit model value
-            Components.textField(editModelTitleValue)
+            Components.stringField(editModelTitleValue)
                     .columns(10)
                     // add an insert action to the title field
                     // so that we can insert by pressing Enter

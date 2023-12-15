@@ -69,7 +69,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private final SearchHighlighter searchHighlighter;
   private final JTextField searchField;
 
-  private final JTextField creationDateField = textField()
+  private final JTextField creationDateField = stringField()
           .editable(false)
           .build();
 

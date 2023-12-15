@@ -459,7 +459,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a JTextField builder
    */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
+  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringField() {
     return TextFieldBuilder.builder(String.class);
   }
 
@@ -468,8 +468,25 @@ public final class Components {
    * @param <B> the builder type
    * @return a JTextField builder
    */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
+  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringField(Value<String> linkedValue) {
     return TextFieldBuilder.builder(String.class, linkedValue);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a JTextField builder
+   */
+  public static <B extends TextFieldBuilder<Character, JTextField, B>> TextFieldBuilder<Character, JTextField, B> characterField() {
+    return TextFieldBuilder.builder(Character.class);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @param <B> the builder type
+   * @return a JTextField builder
+   */
+  public static <B extends TextFieldBuilder<Character, JTextField, B>> TextFieldBuilder<Character, JTextField, B> characterField(Value<Character> linkedValue) {
+    return TextFieldBuilder.builder(Character.class, linkedValue);
   }
 
   /**
@@ -945,7 +962,7 @@ public final class Components {
    * @return a {@link FileInputPanel} builder
    */
   public static FileInputPanel.Builder fileInputPanel() {
-    return fileInputPanel(textField()
+    return fileInputPanel(stringField()
             .editable(false)
             .focusable(false)
             .build());

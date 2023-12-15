@@ -224,7 +224,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   private boolean valueAccepted(Comparable<T> comparable) {
     if (!caseSensitive.get()) {
-      comparable = stringToLowerCase(comparable);
+      comparable = stringOrCharacterToLowerCase(comparable);
     }
     switch (operator.get()) {
       case EQUAL:
@@ -255,7 +255,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private boolean isEqual(Comparable<T> comparable) {
     T equalValue = getEqualValue();
     if (!caseSensitive.get()) {
-      equalValue = stringToLowerCase(equalValue);
+      equalValue = stringOrCharacterToLowerCase(equalValue);
     }
     if (comparable == null) {
       return equalValue == null;
@@ -273,7 +273,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private boolean isNotEqual(Comparable<T> comparable) {
     T equalValue = getEqualValue();
     if (!caseSensitive.get()) {
-      equalValue = stringToLowerCase(equalValue);
+      equalValue = stringOrCharacterToLowerCase(equalValue);
     }
     if (comparable == null) {
       return equalValue != null;
@@ -490,17 +490,23 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     }
   }
 
-  private static <T> T stringToLowerCase(T value) {
+  private static <T> T stringOrCharacterToLowerCase(T value) {
     if (value instanceof String) {
       return (T) ((String) value).toLowerCase();
+    }
+    if (value instanceof Character) {
+      return (T) Character.valueOf(Character.toLowerCase((Character) value));
     }
 
     return value;
   }
 
-  private static <T> Comparable<T> stringToLowerCase(Comparable<T> comparable) {
+  private static <T> Comparable<T> stringOrCharacterToLowerCase(Comparable<T> comparable) {
     if (comparable instanceof String) {
       return (Comparable<T>) ((String) comparable).toLowerCase();
+    }
+    if (comparable instanceof Character) {
+      return (Comparable<T>) Character.valueOf(Character.toLowerCase((Character) comparable));
     }
 
     return comparable;

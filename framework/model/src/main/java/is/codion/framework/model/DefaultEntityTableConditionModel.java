@@ -248,6 +248,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     if (column.type().isString() && equalToValues.size() == 1) {
       return singleStringEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
     }
+    if (column.type().isCharacter() && equalToValues.size() == 1) {
+      return singleCharacterEqualCondition(conditionModel, column, (Character) equalToValues.iterator().next());
+    }
 
     return column.in(equalToValues);
   }
@@ -260,6 +263,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     }
     if (column.type().isString() && equalToValues.size() == 1) {
       return singleStringNotEqualCondition(conditionModel, column, (String) equalToValues.iterator().next());
+    }
+    if (column.type().isCharacter() && equalToValues.size() == 1) {
+      return singleCharacterNotEqualCondition(conditionModel, column, (Character) equalToValues.iterator().next());
     }
 
     return column.notIn(equalToValues);
@@ -275,6 +281,11 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     return caseSensitive ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
   }
 
+  private static <T> ColumnCondition<T> singleCharacterEqualCondition(ColumnConditionModel<?, T> conditionModel,
+                                                                      Column<T> column, Character value) {
+    return conditionModel.caseSensitive().get() ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
+  }
+
   private static <T> ColumnCondition<T> singleStringNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
                                                                       Column<T> column, String value) {
     boolean caseSensitive = conditionModel.caseSensitive().get();
@@ -283,6 +294,11 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     }
 
     return caseSensitive ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
+  }
+
+  private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
+                                                                         Column<T> column, Character value) {
+    return conditionModel.caseSensitive().get() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
   }
 
   private static boolean containsWildcards(String value) {

@@ -300,7 +300,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField createMemoryField() {
-    return textField()
+    return stringField()
             .columns(8)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)

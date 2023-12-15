@@ -58,7 +58,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
   RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
     super(borderLayout());
-    this.playlistNameField = textField(model.playlistName)
+    this.playlistNameField = stringField(model.playlistName)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .maximumLength(120)

@@ -97,7 +97,7 @@ public final class ApplicationPanel extends JPanel {
 
     JPanel inputPanel = flexibleGridLayoutPanel(0, 2).build();
 
-    textField(model.shortStringValue())
+    Components.stringField(model.shortStringValue())
             .columns(20)
             .lowerCase(true)
             .maximumLength(20)
@@ -318,7 +318,7 @@ public final class ApplicationPanel extends JPanel {
     add(inputPanel, BorderLayout.CENTER);
 
     flexibleGridLayoutPanel(2, 1)
-            .add(textField()
+            .add(stringField()
                     .columns(20)
                     .editable(false)
                     .focusable(false)

@@ -15,7 +15,12 @@ include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=textField]
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=stringField]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=characterField]
 ----
 
 === TextArea

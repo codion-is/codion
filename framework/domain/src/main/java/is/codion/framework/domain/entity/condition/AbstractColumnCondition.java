@@ -39,8 +39,8 @@ abstract class AbstractColumnCondition<T> extends AbstractCondition implements C
   protected AbstractColumnCondition(Column<T> column, Operator operator, Collection<? extends T> values,
                                     boolean caseSensitive) {
     super(requireNonNull(column).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
-    if (!caseSensitive && !column.type().isString()) {
-      throw new IllegalStateException("Case insensitivity only applies to String based columns: " + column);
+    if (!caseSensitive && !(column.type().isString() || column.type().isCharacter())) {
+      throw new IllegalStateException("Case insensitivity only applies to String and Character based columns: " + column);
     }
     this.column = column;
     this.operator = requireNonNull(operator);

@@ -276,7 +276,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private static final class DefaultBoundFieldFactory implements BoundFieldFactory {
 
     private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
-            String.class, Boolean.class, Short.class, Integer.class, Double.class,
+            Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
             BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
             LocalDateTime.class, OffsetDateTime.class);
 
@@ -363,7 +363,11 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
                 .build();
       }
       else if (columnClass.equals(String.class)) {
-        return textField((Value<String>) linkedValue)
+        return stringField((Value<String>) linkedValue)
+                .build();
+      }
+      else if (columnClass.equals(Character.class)) {
+        return characterField((Value<Character>) linkedValue)
                 .build();
       }
 
@@ -568,14 +572,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void addStringConfigurationPopupMenu() {
-    if (conditionModel.columnClass().equals(String.class)) {
-      JPopupMenu popupMenu = menu(Controls.builder()
-              .control(ToggleControl.builder(conditionModel.caseSensitive())
-                      .name(MESSAGES.getString("case_sensitive"))
-                      .build())
-              .controls(createAutomaticWildcardControls())
-              .build())
-              .createPopupMenu();
+    if (isStringOrCharacter()) {
+      Controls.Builder controlsBuilder = Controls.builder();
+      controlsBuilder.control(ToggleControl.builder(conditionModel.caseSensitive())
+              .name(MESSAGES.getString("case_sensitive"))
+              .build());
+      if (conditionModel.columnClass().equals(String.class)) {
+        controlsBuilder.controls(createAutomaticWildcardControls());
+      }
+      JPopupMenu popupMenu = menu(controlsBuilder).createPopupMenu();
       equalField.setComponentPopupMenu(popupMenu);
       if (lowerBoundField != null) {
         lowerBoundField.setComponentPopupMenu(popupMenu);
@@ -584,6 +589,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
         upperBoundField.setComponentPopupMenu(popupMenu);
       }
     }
+  }
+
+  private boolean isStringOrCharacter() {
+    return conditionModel.columnClass().equals(String.class) || conditionModel.columnClass().equals(Character.class);
   }
 
   private Controls createAutomaticWildcardControls() {

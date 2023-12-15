@@ -28,7 +28,8 @@ public final class InputControlsTest {
     InputControls.checkBox();
     InputControls.nullableCheckBox();
     InputControls.booleanComboBox();
-    InputControls.textField();
+    InputControls.stringField();
+    InputControls.characterField();
     InputControls.textArea();
     InputControls.integerField();
     InputControls.longField();
