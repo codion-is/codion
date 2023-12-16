@@ -15,6 +15,19 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
   private static final long serialVersionUID = 1;
 
+  private static final String IS_NULL = " IS NULL";
+  private static final String IS_NOT_NULL = " IS NOT NULL";
+  private static final String EQUAL = " = ";
+  private static final String NOT_EQUAL = " <> ";
+  private static final String LIKE = " LIKE ";
+  private static final String NOT_LIKE = " NOT LIKE ";
+  private static final String LESS_THAN = " < ?";
+  private static final String LESS_THAN_OR_EQUAL = " <= ?";
+  private static final String GREATER_THAN = " > ?";
+  private static final String GREATER_THAN_OR_EQUAL = " >= ?";
+  private static final String PLACEHOLDER = "?";
+  private static final String PLACEHOLDER_UPPER = "UPPER(?)";
+
   private final T value;
   private final boolean useLikeOperator;
 
@@ -65,39 +78,54 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
   protected String toString(String columnExpression) {
     switch (operator()) {
       case EQUAL:
-      case NOT_EQUAL:
         return toStringEqual(columnExpression);
+      case NOT_EQUAL:
+        return toStringNotEqual(columnExpression);
       case LESS_THAN:
-        return columnExpression + " < ?";
+        return columnExpression + LESS_THAN;
       case LESS_THAN_OR_EQUAL:
-        return columnExpression + " <= ?";
+        return columnExpression + LESS_THAN_OR_EQUAL;
       case GREATER_THAN:
-        return columnExpression + " > ?";
+        return columnExpression + GREATER_THAN;
       case GREATER_THAN_OR_EQUAL:
-        return columnExpression + " >= ?";
+        return columnExpression + GREATER_THAN_OR_EQUAL;
       default:
         throw new IllegalStateException("Unsupported single value operator: " + operator());
     }
   }
 
   private String toStringEqual(String columnExpression) {
-    boolean notEqual = operator() == Operator.NOT_EQUAL;
-    String identifier = columnExpression;
     if (value == null) {
-      return identifier + (notEqual ? " IS NOT NULL" : " IS NULL");
+      return columnExpression + IS_NULL;
+    }
+    if (useLikeOperator) {
+      return identifier(columnExpression) + LIKE + placeholder();
     }
 
-    boolean stringOrCharacter = column().type().isString() || column().type().isCharacter();
-    boolean caseInsensitiveStringOrCharacter = stringOrCharacter && !caseSensitive();
-    if (caseInsensitiveStringOrCharacter) {
-      identifier = "UPPER(" + identifier + ")";
+    return identifier(columnExpression) + EQUAL + placeholder();
+  }
+
+  private String toStringNotEqual(String columnExpression) {
+    if (value == null) {
+      return columnExpression + IS_NOT_NULL;
     }
-    String valuePlaceholder = caseInsensitiveStringOrCharacter ? "UPPER(?)" : "?";
-    if (column().type().isString() && useLikeOperator) {
-      return identifier + (notEqual ? " NOT LIKE " : " LIKE ") + valuePlaceholder;
+    if (useLikeOperator) {
+      return identifier(columnExpression) + NOT_LIKE + placeholder();
     }
 
-    return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
+    return identifier(columnExpression) + NOT_EQUAL + placeholder();
+  }
+
+  private String identifier(String columnExpression) {
+    return caseInsensitiveStringOrCharacter() ? "UPPER(" + columnExpression + ")" : columnExpression;
+  }
+
+  private String placeholder() {
+    return caseInsensitiveStringOrCharacter() ? PLACEHOLDER_UPPER : PLACEHOLDER;
+  }
+
+  private boolean caseInsensitiveStringOrCharacter() {
+    return !caseSensitive() && (column().type().isString() || column().type().isCharacter());
   }
 
   protected void validateOperator(Operator operator) {
