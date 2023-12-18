@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.21-SNAPSHOT
+
 ## 0.17.20
 ### is.codion.common.model
 - DefaultColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
