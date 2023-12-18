@@ -96,7 +96,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .addAll(new JLabel(MESSAGES.getString("update")), new JLabel(ALT + FrameworkMessages.updateMnemonic()))
             .addAll(new JLabel(MESSAGES.getString("delete")), new JLabel(ALT + FrameworkMessages.deleteMnemonic()))
             .addAll(new JLabel(Messages.clear()), new JLabel(ALT + Messages.clearMnemonic()))
-            .addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + FrameworkMessages.refreshMnemonic()))
+            .addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + Messages.refreshMnemonic()))
             .border(createTitledBorder(MESSAGES.getString("edit_panel")))
             .build();
   }

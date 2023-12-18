@@ -20,6 +20,7 @@ Codion Change Log
 - Components.textField() and textField(Value<String> linkedValue) renamed stringField().
 - Components.characterField() and characterField(Value<Character> linkedValue) added.
 - ColumnConditionPanel bug fixed, Character added to supported types.
+- DefaultComboBoxBuilder now adds a Refresh control to the popup menu by default if the underlying model is a FilteredComboBoxModel, related refactoring.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 - SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.

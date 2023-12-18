@@ -7,7 +7,6 @@ import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
@@ -194,10 +193,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
 
     private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
-      super(comboBoxModel, linkedValue);
-      popupMenuControl(comboBox -> Control.builder(new ForceRefreshCommand(comboBoxModel))
-              .name(FrameworkMessages.refresh())
-              .build());
+      super(comboBoxModel, linkedValue, new ForceRefreshCommand(comboBoxModel));
     }
 
     @Override

@@ -3,11 +3,13 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
+import is.codion.common.i18n.Messages;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
@@ -38,9 +40,20 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   private int popupWidth = 0;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
+    this(comboBoxModel, linkedValue, comboBoxModel instanceof FilteredComboBoxModel ?
+            new RefreshCommand((FilteredComboBoxModel<?>) comboBoxModel) : null);
+  }
+
+  protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue,
+                                   Control.Command refreshCommand) {
     super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(preferredTextFieldHeight());
+    if (refreshCommand != null) {
+      popupMenuControl(comboBox -> Control.builder(refreshCommand)
+              .name(Messages.refresh())
+              .build());
+    }
   }
 
   @Override
@@ -157,5 +170,19 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
   protected C createComboBox() {
     return (C) new FocusableComboBox<>(comboBoxModel);
+  }
+
+  private static final class RefreshCommand implements Control.Command {
+
+    private final FilteredComboBoxModel<?> comboBoxModel;
+
+    private RefreshCommand(FilteredComboBoxModel<?> comboBoxModel) {
+      this.comboBoxModel = comboBoxModel;
+    }
+
+    @Override
+    public void perform() {
+      comboBoxModel.refresh();
+    }
   }
 }
