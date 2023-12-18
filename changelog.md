@@ -28,6 +28,7 @@ Codion Change Log
 - EntityTablePanel.INCLUDE_CONDITION_PANEL added.
 - EntitySearchField bug fixed, now uses the default text input cursor when replacing the wait cursor, instead of Cursors.DEFAULT_CURSOR (arrow).
 - EntityConditionPanelFactory bug fixed, Character added to supported types.
+- EntityPanel.setIncludeEditControls() renamed setIncludeControls(), setControlPanelConstraints() renamed setControlsComponentConstraints() and createEditControls() renamed createControlsComponent().
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 

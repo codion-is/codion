@@ -192,7 +192,7 @@ public final class NotesDemo {
               new NoteTablePanel(noteModel.tableModel()));
       // No need to include the default control buttons since
       // we added the CLEAR control button to the edit panel
-      setIncludeEditControls(false);
+      setIncludeControls(false);
     }
 
     @Override
