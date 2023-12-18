@@ -28,7 +28,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
@@ -99,11 +98,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * The standard controls available to the EditPanel
    */
   public enum ControlCode {
-    INSERT, UPDATE, DELETE, REFRESH, CLEAR
+    INSERT, UPDATE, DELETE, CLEAR
   }
 
   private static final ControlCode[] DEFAULT_CONTROL_CODES = {
-          ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH
+          ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR
   };
 
   private static final Control NULL_CONTROL = Control.control(() -> {});
@@ -532,9 +531,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (controlCodes.contains(ControlCode.CLEAR)) {
       standardControls.putIfAbsent(ControlCode.CLEAR, createClearControl());
     }
-    if (controlCodes.contains(ControlCode.REFRESH)) {
-      standardControls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
-    }
   }
 
   private void setupEditControls() {
@@ -547,16 +543,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (editModel().deleteEnabled().get() && controlCodes.contains(ControlCode.DELETE)) {
       standardControls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
     }
-  }
-
-  private Control createRefreshControl() {
-    return Control.builder(editModel()::refresh)
-            .name(FrameworkMessages.refresh())
-            .enabled(active)
-            .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
-            .mnemonic(FrameworkMessages.refreshMnemonic())
-            .smallIcon(FrameworkIcons.instance().refresh())
-            .build();
   }
 
   private Control createDeleteControl() {
@@ -615,7 +601,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
               .action(Control.control(this::showEntityMenu))
               .enable(this);
     }
-    editModel().refreshing().addDataListener(this::onRefreshingChanged);
     editModel().addConfirmOverwriteListener(confirmationState -> {
       int result = showConfirmDialog(Utilities.parentWindow(EntityEditPanel.this),
               FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
@@ -634,15 +619,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private boolean confirmUpdate() {
     return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
-  }
-
-  private void onRefreshingChanged(boolean refreshing) {
-    if (refreshing) {
-      setCursor(Cursors.WAIT);
-    }
-    else {
-      setCursor(Cursors.DEFAULT);
-    }
   }
 
   private void showEntityMenu() {

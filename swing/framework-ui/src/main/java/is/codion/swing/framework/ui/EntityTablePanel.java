@@ -1143,9 +1143,9 @@ public class EntityTablePanel extends JPanel {
    */
   private Control createRefreshControl() {
     return Control.builder(tableModel::refresh)
-            .name(FrameworkMessages.refresh())
-            .description(FrameworkMessages.refreshTip())
-            .mnemonic(FrameworkMessages.refreshMnemonic())
+            .name(Messages.refresh())
+            .description(Messages.refreshTip())
+            .mnemonic(Messages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
             .enabled(tableModel.refresher().observer().not())
             .build();

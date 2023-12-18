@@ -67,19 +67,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
   private final State respondToEditEvents = State.state();
+  private final State strictForeignKeyFiltering = State.state(true);
   private final Value<OrderBy> orderBy;
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
   private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
-
-  /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
-  private final State staticData = State.state();
-  private final State strictForeignKeyFiltering = State.state(true);
-
-  /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
-  private boolean forceRefresh = false;
 
   /**
    * @param entityType the type of the entity this combo box model should represent
@@ -93,12 +87,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     DefaultConditionSupplier defaultConditionSupplier = new DefaultConditionSupplier();
     this.conditionSupplier = Value.value(defaultConditionSupplier, defaultConditionSupplier);
     selectedItemTranslator().set(new SelectedItemTranslator());
-    refresher().itemSupplier().set(new ItemSupplier());
+    refresher().itemSupplier().set(this::performQuery);
     itemValidator().set(new ItemValidator());
-    staticData.set(this.entities.definition(entityType).staticData());
     includeCondition().set(foreignKeyIncludeCondition);
-    refresher().addRefreshListener(() -> forceRefresh = false);
-    refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
     attributes.addValidator(attributes -> {
       for (Attribute<?> attribute : requireNonNull(attributes)) {
         if (!attribute.entityType().equals(entityType)) {
@@ -127,24 +118,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    */
   public final EntityType entityType() {
     return entityType;
-  }
-
-  /**
-   * Forces a refresh of this model, disregarding the staticData directive
-   * @see #staticData()
-   */
-  public final void forceRefresh() {
-    forceRefresh = true;
-    refresh();
-  }
-
-  /**
-   * Specifies whether this models data should be considered static, that is, only fetched once.
-   * Note that {@link #forceRefresh()} disregards this directive.
-   * @return the State controlling whether the data is regarded as static
-   */
-  public final State staticData() {
-    return staticData;
   }
 
   /**
@@ -400,7 +373,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
         foreignKeyModel.select(selected.referencedKey(foreignKey));
       }
     });
-    refresher().addRefreshListener(foreignKeyModel::forceRefresh);
+    refresher().addRefreshListener(foreignKeyModel::refresh);
   }
 
   private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
@@ -426,18 +399,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     foreignKeyModel.addSelectionListener(listener);
     //initialize
     listener.accept(selectedValue());
-  }
-
-  private final class ItemSupplier implements Supplier<Collection<Entity>> {
-
-    @Override
-    public Collection<Entity> get() {
-      if (staticData.get() && !cleared() && !forceRefresh) {
-        return items();
-      }
-
-      return performQuery();
-    }
   }
 
   private final class ItemValidator implements Predicate<Entity> {

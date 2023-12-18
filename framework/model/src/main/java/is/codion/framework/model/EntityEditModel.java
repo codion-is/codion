@@ -342,11 +342,6 @@ public interface EntityEditModel {
   void delete(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Refreshes all data models used by this edit model, combo box models f.ex.
-   */
-  void refresh();
-
-  /**
    * Adds the given entities to all foreign key models based on that entity type
    * @param foreignKey the foreign key
    * @param entities the values
@@ -450,11 +445,6 @@ public interface EntityEditModel {
    * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
    */
   StateObserver primaryKeyNull();
-
-  /**
-   * @return a {@link StateObserver} active while data models (such as combo box models) are being refreshed
-   */
-  StateObserver refreshing();
 
   /**
    * Adds a listener notified each time the value associated with the given attribute is edited via
@@ -583,18 +573,6 @@ public interface EntityEditModel {
    * @param listener a listener to remove
    */
   void removeAfterDeleteListener(Consumer<Collection<Entity>> listener);
-
-  /**
-   * @param listener a listener to be notified each time a refresh has been performed
-   * @see #refresh()
-   */
-  void addRefreshListener(Runnable listener);
-
-  /**
-   * Removes the given listener.
-   * @param listener a listener to remove
-   */
-  void removeRefreshListener(Runnable listener);
 
   /**
    * @param listener a listener notified each time one or more entities are updated, inserted or deleted via this model

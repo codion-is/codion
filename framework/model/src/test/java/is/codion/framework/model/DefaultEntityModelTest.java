@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -60,10 +59,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
     @Override
     public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
-    @Override
-    public StateObserver refreshing() {
-      return null;
-    }
   }
 
   public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {

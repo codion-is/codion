@@ -43,5 +43,8 @@ public class MessagesTest {
     Messages.clearMnemonic();
     Messages.advanced();
     Messages.find();
+    Messages.refresh();
+    Messages.refreshMnemonic();
+    Messages.refreshTip();
   }
 }

@@ -131,12 +131,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final boolean smallDataset;
 
   /**
-   * Another somewhat subjective indicator, indicating if the data in the underlying table can be regarded as static,
-   * this is useful in deciding how often to refresh, say, a combo box based on the entity
-   */
-  private final boolean staticData;
-
-  /**
    * True if a key generator has been set for this entity type
    */
   private final boolean keyGenerated;
@@ -225,7 +219,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.orderBy = builder.orderBy;
     this.readOnly = builder.readOnly;
     this.smallDataset = builder.smallDataset;
-    this.staticData = builder.staticData;
     this.keyGenerator = builder.keyGenerator;
     this.keyGenerated = builder.keyGenerated;
     this.optimisticLocking = builder.optimisticLocking;
@@ -306,11 +299,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public boolean smallDataset() {
     return smallDataset;
-  }
-
-  @Override
-  public boolean staticData() {
-    return staticData;
   }
 
   @Override
@@ -1012,7 +1000,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private String captionResourceKey;
     private String description;
     private boolean smallDataset;
-    private boolean staticData;
     private boolean readOnly;
     private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
     private boolean keyGenerated;
@@ -1080,12 +1067,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     @Override
     public Builder smallDataset(boolean smallDataset) {
       this.smallDataset = smallDataset;
-      return this;
-    }
-
-    @Override
-    public Builder staticData(boolean staticData) {
-      this.staticData = staticData;
       return this;
     }
 

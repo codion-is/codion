@@ -46,6 +46,9 @@ public final class Messages {
   private static final String CLEAR_MNEMONIC = "clear_mnemonic";
   private static final String CLEAR_TIP = "clear_tip";
   private static final String ADVANCED = "advanced";
+  private static final String REFRESH = "refresh";
+  private static final String REFRESH_MNEMONIC = "refresh_mnemonic";
+  private static final String REFRESH_TIP = "refresh_tip";
 
   private Messages() {}
 
@@ -180,6 +183,27 @@ public final class Messages {
    */
   public static String find() {
     return get(FIND);
+  }
+
+  /**
+   * @return refresh
+   */
+  public static String refresh() {
+    return get(REFRESH);
+  }
+
+  /**
+   * @return refresh mnemonic
+   */
+  public static char refreshMnemonic() {
+    return get(REFRESH_MNEMONIC).charAt(0);
+  }
+
+  /**
+   * @return refresh tip
+   */
+  public static String refreshTip() {
+    return get(REFRESH_TIP);
   }
 
   private static String get(String key) {
