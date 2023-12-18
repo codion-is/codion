@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.20-SNAPSHOT
+## 0.17.20
 ### is.codion.common.model
 - DefaultColumnConditionModel.accept() no longer returns true in case the condition model is disabled.
 - DefaultColumnConditionModel.accept() bug fixed, case insensitivity only worked if a wildcard was present, related refactoring.
