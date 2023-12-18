@@ -193,26 +193,12 @@ public final class EntityComboBox extends JComboBox<Entity> {
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
 
     private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
-      super(comboBoxModel, linkedValue, new ForceRefreshCommand(comboBoxModel));
+      super(comboBoxModel, linkedValue);
     }
 
     @Override
     protected EntityComboBox createComboBox() {
       return new EntityComboBox((EntityComboBoxModel) comboBoxModel);
-    }
-  }
-
-  private static final class ForceRefreshCommand implements Control.Command {
-
-    private final EntityComboBoxModel comboBoxModel;
-
-    private ForceRefreshCommand(EntityComboBoxModel comboBoxModel) {
-      this.comboBoxModel = comboBoxModel;
-    }
-
-    @Override
-    public void perform() {
-      comboBoxModel.forceRefresh();
     }
   }
 }

@@ -40,17 +40,11 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   private int popupWidth = 0;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
-    this(comboBoxModel, linkedValue, comboBoxModel instanceof FilteredComboBoxModel ?
-            new RefreshCommand((FilteredComboBoxModel<?>) comboBoxModel) : null);
-  }
-
-  protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue,
-                                   Control.Command refreshCommand) {
     super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(preferredTextFieldHeight());
-    if (refreshCommand != null) {
-      popupMenuControl(comboBox -> Control.builder(refreshCommand)
+    if (comboBoxModel instanceof FilteredComboBoxModel) {
+      popupMenuControl(comboBox -> Control.builder(new RefreshCommand((FilteredComboBoxModel<?>) comboBoxModel))
               .name(Messages.refresh())
               .build());
     }

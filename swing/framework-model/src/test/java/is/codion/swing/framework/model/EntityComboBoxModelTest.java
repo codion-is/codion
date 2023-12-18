@@ -21,10 +21,8 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -264,7 +262,6 @@ public final class EntityComboBoxModelTest {
     Runnable refreshListener = refreshed::incrementAndGet;
     comboBoxModel.refresher().addRefreshListener(refreshListener);
     assertEquals(Employee.TYPE, comboBoxModel.entityType());
-    comboBoxModel.staticData().set(false);
     comboBoxModel.toString();
     assertEquals(0, comboBoxModel.getSize());
     assertNull(comboBoxModel.getSelectedItem());
@@ -282,11 +279,11 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.condition().set(() -> Condition.custom(Employee.CONDITION_3_TYPE));
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
 
-    comboBoxModel.forceRefresh();
+    comboBoxModel.refresh();
     assertEquals(1, comboBoxModel.getSize());
     assertEquals(2, refreshed.get());
     comboBoxModel.condition().set(null);
-    comboBoxModel.forceRefresh();
+    comboBoxModel.refresh();
     assertEquals(16, comboBoxModel.getSize());
     assertEquals(3, refreshed.get());
     comboBoxModel.refresher().removeRefreshListener(refreshListener);
@@ -315,40 +312,6 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.orderBy().set(OrderBy.descending(Employee.NAME));
     comboBoxModel.refresh();
     assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
-  }
-
-  @Test
-  void staticData() {
-    comboBoxModel.refresh();
-    List<Entity> items = new ArrayList<>(comboBoxModel.visibleItems());
-    comboBoxModel.refresh();
-    List<Entity> refreshedItems = comboBoxModel.visibleItems();
-
-    Iterator<Entity> itemIterator = items.iterator();
-    Iterator<Entity> refreshedIterator = refreshedItems.iterator();
-    while (itemIterator.hasNext()) {
-      Entity item = itemIterator.next();
-      Entity refreshedItem = refreshedIterator.next();
-      assertEquals(item, refreshedItem);
-      assertNotSame(item, refreshedItem);
-    }
-
-    comboBoxModel.clear();
-    comboBoxModel.staticData().set(true);
-
-    comboBoxModel.refresh();
-    items = new ArrayList<>(comboBoxModel.visibleItems());
-    comboBoxModel.refresh();
-    refreshedItems = comboBoxModel.visibleItems();
-
-    itemIterator = items.iterator();
-    refreshedIterator = refreshedItems.iterator();
-    while (itemIterator.hasNext()) {
-      Entity item = itemIterator.next();
-      Entity refreshedItem = refreshedIterator.next();
-      assertEquals(item, refreshedItem);
-      assertSame(item, refreshedItem);
-    }
   }
 
   @Test

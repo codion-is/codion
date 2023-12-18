@@ -90,11 +90,6 @@ public interface EntityDefinition {
   boolean smallDataset();
 
   /**
-   * @return true if the data in the underlying table can be regarded as static
-   */
-  boolean staticData();
-
-  /**
    * @return true if this entity type is read only
    */
   boolean readOnly();
@@ -287,14 +282,6 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      */
     Builder smallDataset(boolean smallDataset);
-
-    /**
-     * Specifies whether this entity should be regarded as based on a static dataset, that is, one that rarely changes.
-     * This is useful in deciding how often to refresh, say, a combo box based on the entity.
-     * @param staticData true if the underlying data should be regarded as static
-     * @return this {@link Builder} instance
-     */
-    Builder staticData(boolean staticData);
 
     /**
      * Specifies whether this entity should be read-only, that it should not be possible to

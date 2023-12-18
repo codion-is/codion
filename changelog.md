@@ -11,6 +11,7 @@ Codion Change Log
 - ColumnCondition.equalToIgnoreCase(Character value) and notEqualToIgnoreCase(Character value) added, related refactoring.
 - AbstractAttributeDefinition, Character based attributes now with default maximum length of 1.
 - SingleValueColumnCondition refactored to reduce complexity.
+- EntityDefinition.staticData() removed.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection, optimistic locking now only compares values which are available in the entity being updated, otherwise excluding attributes when selecting entities prevents those entities from being updated, since optimistic locking would always fail due to the missing values.
 ### is.codion.framework.model
@@ -24,6 +25,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based filter condition models for Entity and Item based columns.
 - SwingEntityTableModel.selectAttributes() bug fixed, always returned an empty collection.
+- EntityComboBoxModel.staticData() removed along with forceRefresh().
 ### is.codion.swing.framework.model.tools
 - DatabaseDomain, DomainToString, no longer sets the maximum column size for TEXT columns.
 ### is.codion.swing.framework.ui
@@ -33,6 +35,7 @@ Codion Change Log
 - EntityConditionPanelFactory bug fixed, Character added to supported types.
 - EntityPanel.setIncludeEditControls() renamed setIncludeControls(), setControlPanelConstraints() renamed setControlsComponentConstraints() and createEditControls() renamed createControlsComponent().
 - EntityEditPanel.ControlCode.REFRESH removed, EntityPanel.createControlsComponent() now responsible for including the table panel refresh control.
+- EntityComboBox.forceRefresh() removed.
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 
