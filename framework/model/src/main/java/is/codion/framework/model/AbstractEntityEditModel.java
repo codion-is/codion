@@ -66,7 +66,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<State> confirmOverwriteEvent = Event.event();
   private final Event<Entity> entityEvent = Event.event();
   private final Event<Attribute<?>> valueChangeEvent = Event.event();
-  private final Event<?> refreshEvent = Event.event();
 
   private final State entityValid = State.state();
   private final State entityExists = State.state(false);
@@ -453,12 +452,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void refresh() {
-    refreshDataModels();
-    refreshEvent.run();
-  }
-
-  @Override
   public final void refreshEntity() {
     try {
       if (entityExists.get()) {
@@ -641,16 +634,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     confirmOverwriteEvent.removeDataListener(listener);
   }
 
-  @Override
-  public final void addRefreshListener(Runnable listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(Runnable listener) {
-    refreshEvent.removeListener(listener);
-  }
-
   /**
    * Inserts the given entities into the database using the given connection
    * @param entities the entities to insert
@@ -698,11 +681,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
             .filter(Entity::modified)
             .collect(toList());
   }
-
-  /**
-   * Refresh all data-models used by this edit model, combo box models and such.
-   */
-  protected void refreshDataModels() {}
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with

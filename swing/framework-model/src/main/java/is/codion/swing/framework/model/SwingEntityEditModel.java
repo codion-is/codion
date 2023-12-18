@@ -5,8 +5,6 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
-import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -35,7 +33,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingEntityEditModel extends AbstractEntityEditModel {
 
-  private final State.Combination refreshingObserver = State.or();
   private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
   /**
@@ -127,7 +124,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
       // see javadoc: must not attempt to update any other mappings of this map
       EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKey);
       if (comboBoxModel == null) {
-        comboBoxModel = createAndInitializeForeignKeyComboBoxModel(foreignKey);
+        comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
         comboBoxModels.put(foreignKey, comboBoxModel);
       }
 
@@ -148,7 +145,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
       // can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
       FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(column);
       if (comboBoxModel == null) {
-        comboBoxModel = createAndInitializeColumnComboBoxModel(column);
+        comboBoxModel = createComboBoxModel(column);
         comboBoxModels.put(column, comboBoxModel);
       }
 
@@ -250,16 +247,6 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   @Override
-  public final StateObserver refreshing() {
-    return refreshingObserver;
-  }
-
-  @Override
-  protected void refreshDataModels() {
-    refreshComboBoxModels();
-  }
-
-  @Override
   protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> entities) {
     super.replaceForeignKey(foreignKey, entities);
     if (containsComboBoxModel(foreignKey)) {
@@ -274,20 +261,6 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
         put(foreignKey, null);
       }
     });
-  }
-
-  private EntityComboBoxModel createAndInitializeForeignKeyComboBoxModel(ForeignKey foreignKey) {
-    EntityComboBoxModel comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
-    refreshingObserver.add(comboBoxModel.refresher().observer());
-
-    return comboBoxModel;
-  }
-
-  private <T> FilteredComboBoxModel<T> createAndInitializeColumnComboBoxModel(Column<T> column) {
-    FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(column);
-    refreshingObserver.add(comboBoxModel.refresher().observer());
-
-    return comboBoxModel;
   }
 
   private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {

@@ -220,7 +220,6 @@ public final class AbstractEntityEditModelTest {
 
     assertEquals(Employee.TYPE, employeeEditModel.entityType());
 
-    employeeEditModel.refresh();
     assertFalse(employeeEditModel.exists().get());
     assertFalse(employeeEditModel.modified().get());
 
@@ -711,11 +710,6 @@ public final class AbstractEntityEditModelTest {
 
     @Override
     public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-    @Override
-    public StateObserver refreshing() {
-      return null;
-    }
   }
 
   private static final class DetailEditModel extends AbstractEntityEditModel {
@@ -729,10 +723,5 @@ public final class AbstractEntityEditModelTest {
 
     @Override
     public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-    @Override
-    public StateObserver refreshing() {
-      return null;
-    }
   }
 }

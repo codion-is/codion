@@ -851,7 +851,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
-    editModel.addRefreshListener(this::refresh);
     editModel.addEntityListener(this::onEntitySet);
     selectionModel().addSelectedItemListener(editModel::set);
     addTableModelListener(this::onTableModelEvent);

@@ -13,6 +13,8 @@ Codion Change Log
 - SingleValueColumnCondition refactored to reduce complexity.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection, optimistic locking now only compares values which are available in the entity being updated, otherwise excluding attributes when selecting entities prevents those entities from being updated, since optimistic locking would always fail due to the missing values.
+### is.codion.framework.model
+- EntityEditModel.refreshing() removed() along with related functionality in AbstractEntityEditModel.
 ### is.codion.swing.common.ui
 - ColumnConditionPanel bug fixed, case sensitivity control now available for Character based condition panels.
 - Components.textField() and textField(Value<String> linkedValue) renamed stringField().
@@ -29,6 +31,7 @@ Codion Change Log
 - EntitySearchField bug fixed, now uses the default text input cursor when replacing the wait cursor, instead of Cursors.DEFAULT_CURSOR (arrow).
 - EntityConditionPanelFactory bug fixed, Character added to supported types.
 - EntityPanel.setIncludeEditControls() renamed setIncludeControls(), setControlPanelConstraints() renamed setControlsComponentConstraints() and createEditControls() renamed createControlsComponent().
+- EntityEditPanel.ControlCode.REFRESH removed, EntityPanel.createControlsComponent() now responsible for including the table panel refresh control.
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
 

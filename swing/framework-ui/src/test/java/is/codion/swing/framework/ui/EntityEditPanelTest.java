@@ -53,7 +53,6 @@ public final class EntityEditPanelTest {
     assertNotNull(editPanel.control(EntityEditPanel.ControlCode.INSERT));
     assertNotNull(editPanel.control(EntityEditPanel.ControlCode.UPDATE));
     assertNotNull(editPanel.control(EntityEditPanel.ControlCode.DELETE));
-    assertNotNull(editPanel.control(EntityEditPanel.ControlCode.REFRESH));
     assertNotNull(editPanel.control(EntityEditPanel.ControlCode.CLEAR));
   }
 

@@ -733,12 +733,12 @@ public class EntityPanel extends JPanel {
   protected void initializeUI() {
     setupToggleEditPanelControl();
     panelLayout.layout(this);
+    if (containsTablePanel()) {
+      initializeTablePanel();
+    }
     if (containsEditPanel()) {
       initializeEditPanel();
       updateEditPanelState();
-    }
-    if (containsTablePanel()) {
-      initializeTablePanel();
     }
     setupKeyboardActions();
   }
@@ -771,7 +771,9 @@ public class EntityPanel extends JPanel {
    */
   protected JComponent createControlsComponent() {
     Controls controls = editPanel.controls();
-    if (controls == null || controls.empty()) {
+    tablePanel.control(EntityTablePanel.ControlCode.REFRESH)
+            .ifPresent(controls::add);
+    if (controls.empty()) {
       return null;
     }
     boolean horizontalLayout = controlsComponentConstraints.equals(BorderLayout.SOUTH) || controlsComponentConstraints.equals(BorderLayout.NORTH);
