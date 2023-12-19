@@ -51,8 +51,8 @@ public final class CityTableModel extends SwingEntityTableModel {
     return citiesWithoutLocationSelected.observer();
   }
 
-  public void fetchLocationForSelected(ProgressReporter<String> progressReporter,
-                                       StateObserver cancelFetchLocation)
+  public void populateLocationForSelected(ProgressReporter<String> progressReporter,
+                                          StateObserver cancelPopulateLocation)
           throws IOException, DatabaseException, ValidationException {
     Collection<Entity> updatedCities = new ArrayList<>();
     Collection<City> selectedCitiesWithoutLocation = selectionModel().getSelectedItems().stream()
@@ -61,10 +61,10 @@ public final class CityTableModel extends SwingEntityTableModel {
             .collect(toList());
     CityEditModel editModel = editModel();
     Iterator<City> citiesWithoutLocation = selectedCitiesWithoutLocation.iterator();
-    while (citiesWithoutLocation.hasNext() && !cancelFetchLocation.get()) {
+    while (citiesWithoutLocation.hasNext() && !cancelPopulateLocation.get()) {
       City city = citiesWithoutLocation.next();
       progressReporter.publish(city.country().name() + " - " + city.name());
-      editModel.setLocation(city);
+      editModel.populateLocation(city);
       updatedCities.add(city);
       progressReporter.report(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
       displayLocationEvent.accept(singletonList(city));
