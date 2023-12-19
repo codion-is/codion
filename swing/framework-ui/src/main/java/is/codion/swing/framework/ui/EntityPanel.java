@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
+import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -760,20 +761,19 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Creates the component to place next to the edit panel, containing the edit and table controls,
+   * Creates the component to place next to the edit panel, containing the available controls,
    * such as insert, update, delete, clear and refresh.
    * Only called if {@link #isIncludeControls()} returns true.
+   * @param controls the controls to display on the component
    * @return the component containing the edit and table panel controls
    * @see EntityEditPanel#controls()
+   * @see #createControls()
    * @see EntityPanel#TOOLBAR_CONTROLS
    * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
    * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
    */
-  protected JComponent createControlsComponent() {
-    Controls controls = editPanel.controls();
-    tablePanel.control(EntityTablePanel.ControlCode.REFRESH)
-            .ifPresent(controls::add);
-    if (controls.empty()) {
+  protected JComponent createControlsComponent(Controls controls) {
+    if (requireNonNull(controls).empty()) {
       return null;
     }
     boolean horizontalLayout = controlsComponentConstraints.equals(BorderLayout.SOUTH) || controlsComponentConstraints.equals(BorderLayout.NORTH);
@@ -799,6 +799,25 @@ public class EntityPanel extends JPanel {
                     .toggleButtonType(CHECKBOX)
                     .build())
             .build();
+  }
+
+  /**
+   * Creates the {@link Controls} instance on which to base the controls component.
+   * By default all controls from {@link EntityEditPanel#controls} are included and if a
+   * table panel is available a table refresh controls is included as well.
+   * @return the control component controls, an empty {@link Controls} instance in case of no controls.
+   * @see #createControlsComponent(Controls)
+   */
+  protected Controls createControls() {
+    Controls controls = Controls.controls();
+    if (containsEditPanel()) {
+      editPanel.controls().actions().forEach(controls::add);
+    }
+    if (containsTablePanel()) {
+      controls.add(createRefreshControl());
+    }
+
+    return controls;
   }
 
   /**
@@ -974,7 +993,7 @@ public class EntityPanel extends JPanel {
     editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControls) {
-      JComponent controlsComponent = createControlsComponent();
+      JComponent controlsComponent = createControlsComponent(createControls());
       if (controlsComponent != null) {
         editControlPanel.add(controlsComponent, controlsComponentConstraints);
       }
@@ -1033,6 +1052,16 @@ public class EntityPanel extends JPanel {
     return Control.builder(this::toggleEditPanelState)
             .smallIcon(FrameworkIcons.instance().editPanel())
             .description(MESSAGES.getString("toggle_edit"))
+            .build();
+  }
+
+  private Control createRefreshControl() {
+    return Control.builder(tableModel()::refresh)
+            .name(Messages.refresh())
+            .enabled(editPanel == null ? null : editPanel.active())
+            .description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
+            .mnemonic(Messages.refreshMnemonic())
+            .smallIcon(FrameworkIcons.instance().refresh())
             .build();
   }
 
