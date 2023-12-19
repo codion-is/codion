@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.Document;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -87,7 +88,19 @@ public class HintTextField extends JTextField {
     ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     Insets insets = getInsets();
     graphics.setColor(hintColor);
-    graphics.drawString(hintText.get(), insets.left, getHeight() - graphics.getFontMetrics().getDescent() - insets.bottom);
+    graphics.drawString(adjustHintTextLength(graphics.getFontMetrics(), insets.left * 2),
+            insets.left, getHeight() - graphics.getFontMetrics().getDescent() - insets.bottom);
+  }
+
+  private String adjustHintTextLength(FontMetrics fontMetrics, int insets) {
+    String adjustedText = hintText.get();
+    int hintWidth = fontMetrics.stringWidth(adjustedText) + insets;
+    while (hintWidth > getWidth() && !adjustedText.isEmpty()) {
+      adjustedText = adjustedText.substring(0, adjustedText.length() - 1);
+      hintWidth = fontMetrics.stringWidth(adjustedText) + insets;
+    }
+
+    return adjustedText;
   }
 
   private void updateHintTextColor() {
