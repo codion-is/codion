@@ -744,7 +744,6 @@ public class EntityTablePanel extends JPanel {
             .build();
     southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
-            .resizeWeight(0.35)
             .leftComponent(searchFieldPanel)
             .rightComponent(statusPanel)
             .build();
