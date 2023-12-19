@@ -27,6 +27,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
@@ -752,10 +753,7 @@ public class EntityPanel extends JPanel {
    * @return a base panel for the edit panel
    */
   protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
-    int alignment = controlComponentConstraints.equals(BorderLayout.SOUTH) ||
-            controlComponentConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-
-    return panel(new FlowLayout(alignment, 0, 0))
+    return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
             .add(editPanel)
             .build();
   }
@@ -776,29 +774,8 @@ public class EntityPanel extends JPanel {
     if (requireNonNull(controls).empty()) {
       return null;
     }
-    boolean horizontalLayout = controlComponentConstraints.equals(BorderLayout.SOUTH) || controlComponentConstraints.equals(BorderLayout.NORTH);
-    if (toolbarControls) {
-      return toolBar(controls)
-              .orientation(horizontalLayout ? HORIZONTAL : VERTICAL)
-              .build();
-    }
 
-    if (horizontalLayout) {
-      return flowLayoutPanel(FlowLayout.CENTER)
-              .add(buttonPanel(controls)
-                      .toggleButtonType(CHECKBOX)
-                      .build())
-              .build();
-    }
-
-    return borderLayoutPanel()
-            .northComponent(buttonPanel(controls)
-                    .orientation(VERTICAL)
-                    .buttonBuilder(ButtonBuilder.builder()
-                            .horizontalAlignment(SwingConstants.LEADING))
-                    .toggleButtonType(CHECKBOX)
-                    .build())
-            .build();
+    return isToolbarControls() ? createControlToolbar(controls) : createControlPanel(controls);
   }
 
   /**
@@ -1038,6 +1015,35 @@ public class EntityPanel extends JPanel {
       firstPanel.setPreviousSiblingPanel(detailPanel);
     }
     entityPanels.add(detailPanel);
+  }
+
+  private JToolBar createControlToolbar(Controls controls) {
+    return toolBar(controls)
+            .orientation(horizontalControlLayout() ? HORIZONTAL : VERTICAL)
+            .build();
+  }
+
+  private JPanel createControlPanel(Controls controls) {
+    if (horizontalControlLayout()) {
+      return flowLayoutPanel(FlowLayout.CENTER)
+              .add(buttonPanel(controls)
+                      .toggleButtonType(CHECKBOX)
+                      .build())
+              .build();
+    }
+
+    return borderLayoutPanel()
+            .northComponent(buttonPanel(controls)
+                    .orientation(VERTICAL)
+                    .buttonBuilder(ButtonBuilder.builder()
+                            .horizontalAlignment(SwingConstants.LEADING))
+                    .toggleButtonType(CHECKBOX)
+                    .build())
+            .build();
+  }
+
+  private boolean horizontalControlLayout() {
+    return controlComponentConstraints.equals(BorderLayout.SOUTH) || controlComponentConstraints.equals(BorderLayout.NORTH);
   }
 
   private void setupToggleEditPanelControl() {
