@@ -47,7 +47,7 @@ public class DefaultControlsTest {
     list2.addSeparatorAt(1);
 
     assertEquals(one, list2.get(0));
-    assertNull(list2.get(1));
+    assertSame(Controls.SEPARATOR, list2.get(1));
     assertEquals(two, list2.get(2));
 
     assertTrue(list2.actions().contains(one));

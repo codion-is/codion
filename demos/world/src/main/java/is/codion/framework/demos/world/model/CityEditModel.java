@@ -48,7 +48,7 @@ public final class CityEditModel extends SwingEntityEditModel {
     initializeComboBoxModels(City.COUNTRY_FK);
   }
 
-  public void setLocation() throws IOException, DatabaseException, ValidationException {
+  public void populateLocation() throws IOException, DatabaseException, ValidationException {
     Location location = lookupLocation(entity().castTo(City.class))
             .orElseThrow(() -> new RuntimeException("Location not found for city: " + entity()));
     put(City.LOCATION, location);
@@ -57,7 +57,7 @@ public final class CityEditModel extends SwingEntityEditModel {
     }
   }
 
-  void setLocation(City city) throws IOException, DatabaseException, ValidationException {
+  void populateLocation(City city) throws IOException, DatabaseException, ValidationException {
     lookupLocation(city).ifPresent(city::location);
     if (city.modified()) {
       update(singletonList(city));

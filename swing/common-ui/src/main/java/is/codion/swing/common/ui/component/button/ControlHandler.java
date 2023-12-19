@@ -29,7 +29,7 @@ abstract class ControlHandler implements Consumer<Action> {
 
   @Override
   public final void accept(Action action) {
-    if (action == null) {
+    if (action == Controls.SEPARATOR) {
       onSeparator();
     }
     else if (action instanceof Controls) {

@@ -43,55 +43,55 @@ final class CityTablePanel extends ChartTablePanel {
   @Override
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     return super.createPopupMenuControls(additionalPopupMenuControls)
-            .addAt(0, createFetchLocationControl())
+            .addAt(0, createPopulateLocationControl())
             .addSeparatorAt(1);
   }
 
-  private Control createFetchLocationControl() {
+  private Control createPopulateLocationControl() {
     CityTableModel cityTableModel = tableModel();
 
-    return Control.builder(this::fetchLocation)
-            .name("Fetch location")
+    return Control.builder(this::populateLocation)
+            .name("Populate location")
             .enabled(cityTableModel.citiesWithoutLocationSelected())
             .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
             .build();
   }
 
-  private void fetchLocation() {
-    FetchLocationTask fetchLocationTask = new FetchLocationTask(tableModel());
+  private void populateLocation() {
+    PopulateLocationTask populateLocationTask = new PopulateLocationTask(tableModel());
 
-    Dialogs.progressWorkerDialog(fetchLocationTask)
+    Dialogs.progressWorkerDialog(populateLocationTask)
             .owner(this)
-            .title("Fetching locations")
+            .title("Populating locations")
             .stringPainted(true)
             .controls(Controls.builder()
-                    .control(Control.builder(fetchLocationTask::cancel)
+                    .control(Control.builder(populateLocationTask::cancel)
                             .name("Cancel")
-                            .enabled(fetchLocationTask.isWorking()))
+                            .enabled(populateLocationTask.isWorking()))
                     .build())
-            .onException(this::displayFetchException)
+            .onException(this::displayPopulateException)
             .execute();
   }
 
-  private void displayFetchException(Throwable exception) {
+  private void displayPopulateException(Throwable exception) {
     Dialogs.exceptionDialog()
             .owner(this)
-            .title("Unable to fetch location")
+            .title("Unable to populate location")
             .show(exception);
   }
 
-  private static final class FetchLocationTask implements ProgressTask<Void, String> {
+  private static final class PopulateLocationTask implements ProgressTask<Void, String> {
 
     private final CityTableModel tableModel;
     private final State cancelled = State.state();
 
-    private FetchLocationTask(CityTableModel tableModel) {
+    private PopulateLocationTask(CityTableModel tableModel) {
       this.tableModel = tableModel;
     }
 
     @Override
     public Void perform(ProgressReporter<String> progressReporter) throws Exception {
-      tableModel.fetchLocationForSelected(progressReporter, cancelled);
+      tableModel.populateLocationForSelected(progressReporter, cancelled);
       return null;
     }
 
