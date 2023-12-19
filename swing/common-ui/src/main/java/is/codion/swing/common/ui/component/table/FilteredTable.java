@@ -151,7 +151,7 @@ public final class FilteredTable<R, C> extends JTable {
   private static final String RESIZE_SUBSEQUENT_COLUMNS = "resize_subsequent_columns";
   private static final String RESIZE_LAST_COLUMN = "resize_last_column";
   private static final String RESIZE_ALL_COLUMNS = "resize_all_columns";
-  private static final int SEARCH_FIELD_COLUMNS = 8;
+  private static final int SEARCH_FIELD_MINIMUM_WIDTH = 80;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
   private static final List<Integer> RESIZE_KEYS = asList(VK_PLUS, VK_ADD, VK_MINUS, VK_SUBTRACT);
 
@@ -517,7 +517,7 @@ public final class FilteredTable<R, C> extends JTable {
     Control requestTableFocus = control(this::requestFocusInWindow);
 
     return Components.stringField(tableModel.searchModel().searchString())
-            .columns(SEARCH_FIELD_COLUMNS)
+            .minimumWidth(SEARCH_FIELD_MINIMUM_WIDTH)
             .selectAllOnFocusGained(true)
             .keyEvent(KeyEvents.builder(VK_ENTER)
                     .action(nextResult))
