@@ -438,8 +438,14 @@ public class EntityPanel extends JPanel {
   /**
    * @param <T> the edit panel type
    * @return the edit panel
+   * @throws IllegalStateException in case no edit panel is avilable
+   * @see #containsEditPanel()
    */
   public final <T extends EntityEditPanel> T editPanel() {
+    if (editPanel == null) {
+      throw new IllegalStateException("No edit panel available");
+    }
+
     return (T) editPanel;
   }
 
@@ -452,9 +458,15 @@ public class EntityPanel extends JPanel {
 
   /**
    * @param <T> the table panel type
-   * @return the EntityTablePanel used by this EntityPanel
+   * @return the table panel
+   * @throws IllegalStateException in case no table panel is avilable
+   * @see #containsTablePanel()
    */
   public final <T extends EntityTablePanel> T tablePanel() {
+    if (tablePanel == null) {
+      throw new IllegalStateException("No table panel available");
+    }
+
     return (T) tablePanel;
   }
 
@@ -734,7 +746,7 @@ public class EntityPanel extends JPanel {
    */
   protected void initializeUI() {
     setupToggleEditPanelControl();
-    panelLayout.layout(this);
+    panelLayout().layout(this);
     if (containsTablePanel()) {
       initializeTablePanel();
     }
@@ -1229,7 +1241,7 @@ public class EntityPanel extends JPanel {
       Component focusedComponent = (Component) changeEvent.getNewValue();
       EntityPanel entityPanelParent = parentOfType(EntityPanel.class, focusedComponent);
       if (entityPanelParent != null) {
-        if (entityPanelParent.editPanel() != null) {
+        if (entityPanelParent.containsEditPanel()) {
           entityPanelParent.editPanel().active().set(true);
         }
       }

@@ -8,6 +8,7 @@ Codion Change Log
 - EntityPanel bug fixed, table refresh control was always enabled, instead of only when the panel was active.
 - EntityPanel.createControls() added, related refactoring.
 - EntityPanel.createControlsComponent() renamed createControlComponent().
+- EntityPanel.editPanel() and tablePanel() now throw IllegalStateException in case no edit panel or table panel is available.
 
 ## 0.17.20
 ### is.codion.common.model
