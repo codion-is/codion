@@ -788,7 +788,7 @@ public class EntityPanel extends JPanel {
   protected Controls createControls() {
     Controls controls = Controls.controls();
     if (containsEditPanel()) {
-      editPanel.controls().actions().forEach(controls::add);
+      controls.addAll(editPanel().controls());
     }
     if (containsTablePanel()) {
       controls.add(createRefreshControl());
