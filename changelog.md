@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Controls.SEPARATOR added, used instead of null to represent separators in Controls instances.
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
+- FilteredTable search field now has a minimum size instead of columns.
 ### is.codion.swing.framework.ui
 - EntityPanel bug fixed, table refresh control was always enabled, instead of only when the panel was active.
 - EntityPanel.createControls() added, related refactoring.
