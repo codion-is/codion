@@ -17,36 +17,31 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
-import org.jxmapviewer.JXMapViewer;
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
 
 public final class CityEditPanel extends EntityEditPanel {
 
   private final JXMapKit mapKit;
-  private final Consumer<Collection<Entity>> displayLocationListener;
 
   public CityEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     this.mapKit = null;
-    this.displayLocationListener = null;
   }
 
   CityEditPanel(CityTableModel tableModel) {
     super(tableModel.editModel());
     this.mapKit = Maps.createMapKit();
-    this.displayLocationListener = new DisplayLocationListener(mapKit.getMainMap());
-    tableModel.addDisplayLocationListener(displayLocationListener);
+    tableModel.addDisplayLocationListener(this::displayLocation);
   }
 
   @Override
@@ -79,7 +74,7 @@ public final class CityEditPanel extends EntityEditPanel {
   @Override
   protected Controls createControls() {
     return super.createControls()
-            .addAt(4, Control.builder(this::setLocation)
+            .addAt(4, Control.builder(this::populateLocation)
                     .enabled(State.and(active(),
                             editModel().isNull(City.LOCATION),
                             editModel().exists()))
@@ -87,26 +82,16 @@ public final class CityEditPanel extends EntityEditPanel {
                     .build());
   }
 
-  private void setLocation() throws ValidationException, IOException, DatabaseException {
+  private void populateLocation() throws ValidationException, IOException, DatabaseException {
     CityEditModel editModel = editModel();
     editModel.setLocation();
-    displayLocationListener.accept(singletonList(editModel.entity()));
+    displayLocation(singleton(editModel.entity()));
   }
 
-  private static final class DisplayLocationListener implements Consumer<Collection<Entity>> {
-
-    private final JXMapViewer mapViewer;
-
-    private DisplayLocationListener(JXMapViewer mapViewer) {
-      this.mapViewer = mapViewer;
-    }
-
-    @Override
-    public void accept(Collection<Entity> cities) {
-      Maps.paintWaypoints(cities.stream()
-              .filter(city -> city.isNotNull(City.LOCATION))
-              .map(city -> city.get(City.LOCATION))
-              .collect(toSet()), mapViewer);
-    }
+  private void displayLocation(Collection<Entity> cities) {
+    Maps.paintWaypoints(cities.stream()
+            .filter(city -> city.isNotNull(City.LOCATION))
+            .map(city -> city.get(City.LOCATION))
+            .collect(toSet()), mapKit.getMainMap());
   }
 }
