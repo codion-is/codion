@@ -7,6 +7,7 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +23,11 @@ final class DefaultControls extends AbstractControl implements Controls {
   DefaultControls(String name, StateObserver enabledState, List<Action> controls) {
     super(name, enabledState);
     for (Action control : controls) {
-      if (control != null) {
-        add(control);
+      if (control == SEPARATOR) {
+        addSeparator();
       }
       else {
-        addSeparator();
+        add(control);
       }
     }
   }
@@ -50,9 +51,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public Controls remove(Action action) {
-    if (action != null) {
-      actions.remove(action);
-    }
+    actions.remove(action);
     return this;
   }
 
@@ -96,13 +95,13 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public Controls addSeparator() {
-    actions.add(null);
+    actions.add(SEPARATOR);
     return this;
   }
 
   @Override
   public Controls addSeparatorAt(int index) {
-    actions.add(index, null);
+    actions.add(index, SEPARATOR);
     return this;
   }
 
@@ -114,4 +113,46 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public void actionPerformed(ActionEvent e) {/*Not required*/}
+
+  static final class DefaultSeparator implements Action {
+
+    private static final String CONTROLS_SEPARATOR = "Separator";
+
+    DefaultSeparator() {}
+
+    @Override
+    public Object getValue(String key) {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+
+    @Override
+    public void putValue(String key, Object value) {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+
+    @Override
+    public void setEnabled(boolean b) {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+
+    @Override
+    public boolean isEnabled() {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+    }
+  }
 }

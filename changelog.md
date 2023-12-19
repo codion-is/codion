@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.21-SNAPSHOT
+### is.codion.swing.common.ui
+- Controls.SEPARATOR added, used instead of null to represent separators in Controls instances.
 ### is.codion.swing.framework.ui
 - EntityPanel bug fixed, table refresh control was always enabled, instead of only when the panel was active.
 - EntityPanel.createControls() added, related refactoring.

@@ -16,6 +16,12 @@ import java.util.List;
 public interface Controls extends Control {
 
   /**
+   * A placeholder representing a separator in a Controls instance.
+   * All methods throw {@link UnsupportedOperationException}.
+   */
+  Action SEPARATOR = new DefaultControls.DefaultSeparator();
+
+  /**
    * @return an unmodifiable view of the actions in this set
    */
   List<Action> actions();

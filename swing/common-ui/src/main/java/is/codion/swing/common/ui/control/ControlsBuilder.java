@@ -110,7 +110,7 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls.Builder separator() {
-    this.controls.add(null);
+    this.controls.add(Controls.SEPARATOR);
     return this;
   }
 
