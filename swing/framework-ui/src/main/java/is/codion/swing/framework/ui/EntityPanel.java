@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
+import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -190,7 +191,7 @@ public class EntityPanel extends JPanel {
   private EntityPanel previousSiblingPanel;
   private EntityPanel nextSiblingPanel;
   private boolean toolbarControls = TOOLBAR_CONTROLS.get();
-  private String controlsComponentConstraints = TOOLBAR_CONTROLS.get() ?
+  private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
           CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
   private boolean includeControls = true;
   private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
@@ -363,8 +364,8 @@ public class EntityPanel extends JPanel {
   /**
    * @return the controls component layout constraints (BorderLayout constraints)
    */
-  public final String getControlsComponentConstraints() {
-    return controlsComponentConstraints;
+  public final String getControlComponentConstraints() {
+    return controlComponentConstraints;
   }
 
   /**
@@ -386,22 +387,22 @@ public class EntityPanel extends JPanel {
    *
    * etc.
    * </pre>
-   * @param controlsComponentConstraints the controls component layout constraints (BorderLayout constraints)
+   * @param controlComponentConstraints the controls component layout constraints (BorderLayout constraints)
    * @throws IllegalStateException if the panel has been initialized
    * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
    */
-  public final void setControlsComponentConstraints(String controlsComponentConstraints) {
+  public final void setControlComponentConstraints(String controlComponentConstraints) {
     checkIfInitialized();
-    switch (requireNonNull(controlsComponentConstraints)) {
+    switch (requireNonNull(controlComponentConstraints)) {
       case BorderLayout.SOUTH:
       case BorderLayout.NORTH:
       case BorderLayout.EAST:
       case BorderLayout.WEST:
         break;
       default:
-        throw new IllegalArgumentException("Controls component constraint must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
+        throw new IllegalArgumentException("Control component constraints must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
     }
-    this.controlsComponentConstraints = controlsComponentConstraints;
+    this.controlComponentConstraints = controlComponentConstraints;
   }
 
   /**
@@ -760,14 +761,14 @@ public class EntityPanel extends JPanel {
 
   /**
    * Creates a base panel containing the given edit panel.
-   * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #getControlsComponentConstraints()}.
+   * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #getControlComponentConstraints()}.
    * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
    * @param editPanel the initialized edit panel
    * @return a base panel for the edit panel
    */
   protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
-    int alignment = controlsComponentConstraints.equals(BorderLayout.SOUTH) ||
-            controlsComponentConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
+    int alignment = controlComponentConstraints.equals(BorderLayout.SOUTH) ||
+            controlComponentConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
 
     return panel(new FlowLayout(alignment, 0, 0))
             .add(editPanel)
@@ -775,23 +776,22 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Creates the component to place next to the edit panel, containing the edit and table controls,
+   * Creates the component to place next to the edit panel, containing the available controls,
    * such as insert, update, delete, clear and refresh.
    * Only called if {@link #isIncludeControls()} returns true.
-   * @return the component containing the edit and table panel controls
+   * @param controls the controls to display on the component
+   * @return the component containing the edit and table panel controls, null if no controls are available
    * @see EntityEditPanel#controls()
+   * @see #createControls()
    * @see EntityPanel#TOOLBAR_CONTROLS
    * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
    * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
    */
-  protected JComponent createControlsComponent() {
-    Controls controls = editPanel.controls();
-    tablePanel.control(EntityTablePanel.ControlCode.REFRESH)
-            .ifPresent(controls::add);
-    if (controls.empty()) {
+  protected JComponent createControlComponent(Controls controls) {
+    if (requireNonNull(controls).empty()) {
       return null;
     }
-    boolean horizontalLayout = controlsComponentConstraints.equals(BorderLayout.SOUTH) || controlsComponentConstraints.equals(BorderLayout.NORTH);
+    boolean horizontalLayout = controlComponentConstraints.equals(BorderLayout.SOUTH) || controlComponentConstraints.equals(BorderLayout.NORTH);
     if (toolbarControls) {
       return toolBar(controls)
               .orientation(horizontalLayout ? HORIZONTAL : VERTICAL)
@@ -814,6 +814,25 @@ public class EntityPanel extends JPanel {
                     .toggleButtonType(CHECKBOX)
                     .build())
             .build();
+  }
+
+  /**
+   * Creates the {@link Controls} instance on which to base the controls component.
+   * By default all controls from {@link EntityEditPanel#controls} are included and if a
+   * table panel is available a table refresh controls is included as well.
+   * @return the control component controls, an empty {@link Controls} instance in case of no controls.
+   * @see #createControlComponent(Controls)
+   */
+  protected Controls createControls() {
+    Controls controls = Controls.controls();
+    if (containsEditPanel()) {
+      editPanel.controls().actions().forEach(controls::add);
+    }
+    if (containsTablePanel()) {
+      controls.add(createRefreshControl());
+    }
+
+    return controls;
   }
 
   /**
@@ -989,9 +1008,9 @@ public class EntityPanel extends JPanel {
     editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControls) {
-      JComponent controlsComponent = createControlsComponent();
-      if (controlsComponent != null) {
-        editControlPanel.add(controlsComponent, controlsComponentConstraints);
+      JComponent controlComponent = createControlComponent(createControls());
+      if (controlComponent != null) {
+        editControlPanel.add(controlComponent, controlComponentConstraints);
       }
     }
   }
@@ -1048,6 +1067,16 @@ public class EntityPanel extends JPanel {
     return Control.builder(this::toggleEditPanelState)
             .smallIcon(FrameworkIcons.instance().editPanel())
             .description(MESSAGES.getString("toggle_edit"))
+            .build();
+  }
+
+  private Control createRefreshControl() {
+    return Control.builder(tableModel()::refresh)
+            .name(Messages.refresh())
+            .enabled(editPanel == null ? null : editPanel.active())
+            .description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
+            .mnemonic(Messages.refreshMnemonic())
+            .smallIcon(FrameworkIcons.instance().refresh())
             .build();
   }
 
