@@ -12,6 +12,7 @@ Codion Change Log
 - EntityPanel.createControlsComponent() renamed createControlComponent().
 - EntityPanel.editPanel() and tablePanel() now throw IllegalStateException in case no edit panel or table panel is available.
 - EntityTablePanel south panel split pane resize weight no longer specified, for a more consistent initial search field size.
+- EntityPanel.INCLUDE_CONTROLS configuration value added.
 
 ## 0.17.20
 ### is.codion.common.model
