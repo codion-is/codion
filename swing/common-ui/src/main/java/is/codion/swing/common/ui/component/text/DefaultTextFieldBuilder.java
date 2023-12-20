@@ -55,10 +55,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     this.valueClass = requireNonNull(valueClass);
     if (valueClass.equals(Character.class)) {
       maximumLength(1);
-      columns(1);
-    }
-    else {
-      columns(DEFAULT_TEXT_FIELD_COLUMNS.get());
     }
   }
 

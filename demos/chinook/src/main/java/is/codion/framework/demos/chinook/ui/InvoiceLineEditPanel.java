@@ -61,14 +61,14 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
             .preferredHeight(preferredTextFieldHeight())
             .build();
 
-    JPanel eastPanel = flexibleGridLayoutPanel(1, 2)
+    JPanel centerPanel = flexibleGridLayoutPanel(1, 0)
+            .add(createInputPanel(InvoiceLine.TRACK_FK))
+            .add(createInputPanel(InvoiceLine.QUANTITY))
             .add(createInputPanel(new JLabel(" "), updateToolBar))
             .add(createInputPanel(new JLabel(" "), tableSearchField))
             .build();
 
     setLayout(borderLayout());
-    addInputPanel(InvoiceLine.TRACK_FK, BorderLayout.WEST);
-    addInputPanel(InvoiceLine.QUANTITY, BorderLayout.CENTER);
-    add(eastPanel, BorderLayout.EAST);
+    add(centerPanel, BorderLayout.CENTER);
   }
 }

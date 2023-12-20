@@ -162,6 +162,14 @@ public class EntityPanel extends JPanel {
           Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlToolbarConstraints", BorderLayout.WEST);
 
   /**
+   * Specifies whether entity panels should include controls by default<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeControls", true);
+
+  /**
    * The possible states of a detail or edit panel.
    */
   public enum PanelState {
@@ -194,7 +202,7 @@ public class EntityPanel extends JPanel {
   private boolean toolbarControls = TOOLBAR_CONTROLS.get();
   private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
           CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
-  private boolean includeControls = true;
+  private boolean includeControls = INCLUDE_CONTROLS.get();
   private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
   private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
   private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
