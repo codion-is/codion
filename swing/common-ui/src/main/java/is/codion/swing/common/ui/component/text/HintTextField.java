@@ -87,9 +87,10 @@ public class HintTextField extends JTextField {
   private void paintHintText(Graphics graphics) {
     ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     Insets insets = getInsets();
+    FontMetrics fontMetrics = graphics.getFontMetrics();
     graphics.setColor(hintColor);
-    graphics.drawString(adjustHintTextLength(graphics.getFontMetrics(), insets.left * 2),
-            insets.left, getHeight() - graphics.getFontMetrics().getDescent() - insets.bottom);
+    graphics.drawString(adjustHintTextLength(fontMetrics, insets.left + insets.right),
+            insets.left, getHeight() - fontMetrics.getDescent() - insets.bottom);
   }
 
   private String adjustHintTextLength(FontMetrics fontMetrics, int insets) {
