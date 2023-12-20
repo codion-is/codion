@@ -51,7 +51,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;
-  private final State respondToEditEvents = State.state();
+  private final State handleEditEvents = State.state();
   private final State strictForeignKeyFiltering = State.state(true);
   private final Value<OrderBy> orderBy;
 
@@ -82,8 +82,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
         }
       }
     });
-    respondToEditEvents.addDataListener(new EditEventListener());
-    respondToEditEvents.set(true);
+    handleEditEvents.addDataListener(new EditEventListener());
+    handleEditEvents.set(true);
   }
 
   @Override
@@ -132,12 +132,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * @return the state controlling whether this combo box model should respond to entity edit events, by adding inserted items,
+   * @return the state controlling whether this combo box model should handle entity edit events, by adding inserted items,
    * updating any updated items and removing deleted ones
    * @see EntityEditEvents
    */
-  public final State respondToEditEvents() {
-    return respondToEditEvents;
+  public final State handleEditEvents() {
+    return handleEditEvents;
   }
 
   /**

@@ -11,6 +11,7 @@ Codion Change Log
 - TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS configuration value removed.
 ### is.codion.framework.model
 - EntitySearchModel.LIMIT renamed DEFAULT_LIMIT.
+- EntityTableModel and EntityComboBoxModel.respondToEditEvents() renamed handleEditEvents().
 ### is.codion.swing.framework.model.tools
 - ColumnPacker now creates an Object based column for columns with unknown types, instead of ignoring them.
 - MetaDataModel bug fixed, now prevents schemas from being populated more than once.

@@ -74,7 +74,7 @@ public final class EntityComboBoxModelTest {
     EntityEditEvents.notifyDeleted(singletonList(temp));
     assertFalse(comboBoxModel.visible(temp));
 
-    comboBoxModel.respondToEditEvents().set(false);
+    comboBoxModel.handleEditEvents().set(false);
 
     EntityEditEvents.notifyInserted(singletonList(temp));
     assertFalse(comboBoxModel.visible(temp));
