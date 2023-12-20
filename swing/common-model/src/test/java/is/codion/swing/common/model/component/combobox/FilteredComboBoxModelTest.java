@@ -352,13 +352,13 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  void allowSelectionPredicate() {
+  void validSelectionPredicate() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
     model.setItems(asList(0, 1, 2));
     model.setSelectedItem(0);
-    assertThrows(IllegalArgumentException.class, () -> model.allowSelectionPredicate().set(item -> item > 0));
+    assertThrows(IllegalArgumentException.class, () -> model.validSelectionPredicate().set(item -> item > 0));
     model.setSelectedItem(1);
-    model.allowSelectionPredicate().set(item -> item > 0);
+    model.validSelectionPredicate().set(item -> item > 0);
     model.setSelectedItem(0);
     assertEquals(1, model.getSelectedItem());
   }

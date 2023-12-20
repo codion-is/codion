@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.17.21-SNAPSHOT
 ### is.codion.common.core
 - Text.underscoreToCamelCase(), now handles the case when no underscores are present by simply calling toLowerCase().
+### is.codion.swing.common.model
+- FilteredComboBoxModel.allowSelectionPredicate() renamed validSelectionPredicate().
 ### is.codion.swing.common.ui
 - Controls.SEPARATOR added, used instead of null to represent separators in Controls instances.
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
@@ -11,6 +13,7 @@ Codion Change Log
 - TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS configuration value removed.
 ### is.codion.framework.model
 - EntitySearchModel.LIMIT renamed DEFAULT_LIMIT.
+- EntityTableModel and EntityComboBoxModel.respondToEditEvents() renamed handleEditEvents().
 ### is.codion.swing.framework.model.tools
 - ColumnPacker now creates an Object based column for columns with unknown types, instead of ignoring them.
 - MetaDataModel bug fixed, now prevents schemas from being populated more than once.
