@@ -13,6 +13,6 @@
  * {@link is.codion.framework.model.ForeignKeyDetailModelLink#SEARCH_BY_INSERTED_ENTITY}<br>
  * {@link is.codion.framework.model.ForeignKeyDetailModelLink#REFRESH_ON_SELECTION}<br>
  * {@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION}<br>
- * {@link is.codion.framework.model.EntitySearchModel#LIMIT}<br>
+ * {@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}<br>
  */
 package is.codion.framework.model;

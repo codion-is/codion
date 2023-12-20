@@ -9,6 +9,8 @@ Codion Change Log
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
 - FilteredTable search field now has a minimum size instead of columns.
 - TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS configuration value removed.
+### is.codion.framework.model
+- EntitySearchModel.LIMIT renamed DEFAULT_LIMIT.
 ### is.codion.swing.framework.model.tools
 - ColumnPacker now creates an Object based column for columns with unknown types, instead of ignoring them.
 - MetaDataModel bug fixed, now prevents schemas from being populated more than once.

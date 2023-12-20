@@ -32,7 +32,7 @@ public interface EntitySearchModel {
    * Value type: Integer<br>
    * Default value: null
    */
-  PropertyValue<Integer> LIMIT = Configuration.integerValue("is.codion.framework.model.EntitySearchModel.limit");
+  PropertyValue<Integer> DEFAULT_LIMIT = Configuration.integerValue("is.codion.framework.model.EntitySearchModel.defaultLimit");
 
   /**
    * @return the type of the entity this search model is based on
