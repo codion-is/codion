@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.17.21-SNAPSHOT
 ### is.codion.common.core
 - Text.underscoreToCamelCase(), now handles the case when no underscores are present by simply calling toLowerCase().
+### is.codion.swing.common.model
+- FilteredComboBoxModel.allowSelectionPredicate() renamed validSelectionPredicate().
 ### is.codion.swing.common.ui
 - Controls.SEPARATOR added, used instead of null to represent separators in Controls instances.
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
