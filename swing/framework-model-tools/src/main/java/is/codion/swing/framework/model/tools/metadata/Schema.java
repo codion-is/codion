@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -35,21 +36,24 @@ public final class Schema {
   }
 
   public void populate(DatabaseMetaData metaData, Map<String, Schema> schemas,
-                       Consumer<String> schemaNotifier) {
-    schemaNotifier.accept(name);
-    tables.clear();
-    try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
-      tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
-              .collect(toMap(Table::tableName, Function.identity())));
-      tables.values().stream()
-              .flatMap(table -> table.referencedSchemaNames().stream())
-              .map(schemas::get)
-              .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier));
-      tables.values().forEach(table -> table.resolveForeignKeys(schemas));
-      populated = true;
-    }
-    catch (SQLException e) {
-      throw new RuntimeException(e);
+                       Consumer<String> schemaNotifier, Set<String> populatedSchemas) {
+    if (!populatedSchemas.contains(name)) {
+      schemaNotifier.accept(name);
+      tables.clear();
+      try (ResultSet resultSet = metaData.getTables(null, name, null, new String[]{"TABLE", "VIEW"})) {
+        tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
+                .collect(toMap(Table::tableName, Function.identity())));
+        tables.values().stream()
+                .flatMap(table -> table.referencedSchemaNames().stream())
+                .map(schemas::get)
+                .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier, populatedSchemas));
+        tables.values().forEach(table -> table.resolveForeignKeys(schemas));
+        populated = true;
+        populatedSchemas.add(name);
+      }
+      catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

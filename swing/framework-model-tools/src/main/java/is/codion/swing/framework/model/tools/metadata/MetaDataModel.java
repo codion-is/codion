@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -42,7 +43,7 @@ public final class MetaDataModel {
     if (schema == null) {
       throw new IllegalArgumentException("Schema not found: " + schemaName);
     }
-    schema.populate(metaData, schemas, schemaNotifier);
+    schema.populate(metaData, schemas, schemaNotifier, new HashSet<>());
   }
 
   private static Map<String, Schema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
