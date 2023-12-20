@@ -1,6 +1,6 @@
 create schema petstore;
 
-create table petstore.category(
+create table petstore.category (
  categoryid integer not null,
  name varchar(25) not null,
  description varchar(255) not null,
@@ -30,6 +30,7 @@ create table petstore.address (
  zip integer not null,
  latitude decimal(14,2) not null,
  longitude decimal(14,2) not null,
+ location geometry,
  image blob,
  primary key (addressid)
 );

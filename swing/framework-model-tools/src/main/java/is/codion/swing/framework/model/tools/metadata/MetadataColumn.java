@@ -26,6 +26,8 @@ import static java.util.Objects.requireNonNull;
 public final class MetadataColumn {
 
   private final String columnName;
+  private final int dataType;
+  private final String typeName;
   private final Class<?> columnClass;
   private final int position;
   private final int columnSize;
@@ -38,11 +40,13 @@ public final class MetadataColumn {
   private final boolean autoIncrement;
   private final boolean generated;
 
-  MetadataColumn(String columnName, Class<?> columnClass, int position, int columnSize,
+  MetadataColumn(String columnName, int dataType, String typeName, Class<?> columnClass, int position, int columnSize,
                  int decimalDigits, int nullable, String defaultValue, String comment,
                  int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
     this.columnName = requireNonNull(columnName);
     this.columnClass = requireNonNull(columnClass);
+    this.dataType = dataType;
+    this.typeName = typeName;
     this.position = position;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
@@ -57,6 +61,14 @@ public final class MetadataColumn {
 
   public String columnName() {
     return columnName;
+  }
+
+  public int dataType() {
+    return dataType;
+  }
+
+  public String typeName() {
+    return typeName;
   }
 
   public int position() {

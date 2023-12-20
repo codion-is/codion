@@ -418,18 +418,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     return null;
   }
 
-  private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
-    if (resourceBundleName == null) {
-      return true;
-    }
-    try {
-      return !ResourceBundle.getBundle(resourceBundleName).containsKey(captionResourceKey);
-    }
-    catch (MissingResourceException e) {
-      return true;
-    }
-  }
-
   static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
@@ -713,6 +701,18 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     public final B items(List<Item<T>> items) {
       this.items = unmodifiableList(validateItems(items));
       return (B) this;
+    }
+
+    private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
+      if (resourceBundleName == null) {
+        return true;
+      }
+      try {
+        return !ResourceBundle.getBundle(resourceBundleName).containsKey(captionResourceKey);
+      }
+      catch (MissingResourceException e) {
+        return true;
+      }
     }
 
     private static <T> List<Item<T>> validateItems(List<Item<T>> items) {

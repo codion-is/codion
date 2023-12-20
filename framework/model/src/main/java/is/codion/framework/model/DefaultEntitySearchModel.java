@@ -310,7 +310,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private String description;
     private boolean singleSelection = false;
     private String separator = DEFAULT_SEPARATOR;
-    private Integer limit = LIMIT.get();
+    private Integer limit = DEFAULT_LIMIT.get();
 
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);
