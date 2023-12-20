@@ -105,6 +105,14 @@ public class EntityEditComponentPanel extends JPanel {
   public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
           Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
+  /**
+   * Specifies the default number of columns in text fields created by this component panel<br>
+   * Value type: Integer<br>
+   * Default value: 12
+   */
+  public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
+          Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.defaultTextFieldColumns", 12);
+
   private final SwingEntityEditModel editModel;
   private final EntityComponents entityComponents;
   private final Map<Attribute<?>, JComponent> components = new HashMap<>();
@@ -118,7 +126,7 @@ public class EntityEditComponentPanel extends JPanel {
   private final Value<Attribute<?>> afterInsertFocusAttribute = Value.value();
 
   private boolean transferFocusOnEnter = true;
-  private int defaultTextFieldColumns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
+  private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.get();
   private boolean useModifiedIndicator = USE_MODIFIED_INDICATOR.get();
 
   /**
@@ -349,8 +357,9 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Sets the default number of text field columns
+   * Sets the default number of text field columns, -1 for not settings the columns
    * @param defaultTextFieldColumns the default text field columns
+   * @see #DEFAULT_TEXT_FIELD_COLUMNS
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
    * @see #createTextFieldPanel(Attribute)

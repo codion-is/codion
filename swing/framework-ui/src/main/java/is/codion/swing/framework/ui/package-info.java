@@ -4,6 +4,9 @@
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#USE_MODIFIED_INDICATOR}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#MODIFIED_INDICATOR_UNDERLINE_STYLE}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#DEFAULT_TEXT_FIELD_COLUMNS}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_SAVE_CAPTION}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_FOCUS_ACTIVATION}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#INCLUDE_ENTITY_MENU}<br>

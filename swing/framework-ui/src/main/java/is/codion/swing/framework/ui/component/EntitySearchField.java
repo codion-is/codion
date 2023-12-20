@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
 import is.codion.swing.common.ui.component.text.TextComponents;
-import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -157,7 +156,9 @@ public final class EntitySearchField extends HintTextField {
   private EntitySearchField(DefaultEntitySearchFieldBuilder builder) {
     super(builder.searchHintEnabled ? Messages.search() + "..." : null);
     model = requireNonNull(builder.searchModel);
-    setColumns(builder.columns);
+    if (builder.columns != -1) {
+      setColumns(builder.columns);
+    }
     if (builder.upperCase) {
       TextComponents.upperCase(getDocument());
     }
@@ -930,7 +931,7 @@ public final class EntitySearchField extends HintTextField {
 
     private final EntitySearchModel searchModel;
 
-    private int columns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
+    private int columns = -1;
     private boolean upperCase;
     private boolean lowerCase;
     private boolean searchHintEnabled = true;

@@ -6,6 +6,7 @@ Codion Change Log
 - Controls.SEPARATOR added, used instead of null to represent separators in Controls instances.
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
 - FilteredTable search field now has a minimum size instead of columns.
+- TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS configuration value removed.
 ### is.codion.swing.framework.ui
 - EntityPanel bug fixed, table refresh control was always enabled, instead of only when the panel was active.
 - EntityPanel.createControls() added, related refactoring.
@@ -13,6 +14,7 @@ Codion Change Log
 - EntityPanel.editPanel() and tablePanel() now throw IllegalStateException in case no edit panel or table panel is available.
 - EntityTablePanel south panel split pane resize weight no longer specified, for a more consistent initial search field size.
 - EntityPanel.INCLUDE_CONTROLS configuration value added.
+- EntityEditComponentPanel.DEFAULT_TEXT_FIELD_COLUMNS configuration value added.
 
 ## 0.17.20
 ### is.codion.common.model
