@@ -180,13 +180,13 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    */
   public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeys().definition(foreignKey);
-    EntityComboBoxModel model = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-    model.attributes().set(foreignKeyDefinition.attributes());
+    EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
+    comboBoxModel.attributes().set(foreignKeyDefinition.attributes());
     if (nullable(foreignKey)) {
-      model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+      comboBoxModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }
 
-    return model;
+    return comboBoxModel;
   }
 
   /**
@@ -199,18 +199,18 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    */
   public <T> FilteredComboBoxModel<T> createComboBoxModel(Column<T> column) {
     requireNonNull(column, "column");
-    FilteredComboBoxModel<T> model = createColumnComboBoxModel(column);
+    FilteredComboBoxModel<T> comboBoxModel = createColumnComboBoxModel(column);
     if (nullable(column)) {
-      model.includeNull().set(true);
+      comboBoxModel.includeNull().set(true);
       if (column.type().valueClass().isInterface()) {
-        model.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
+        comboBoxModel.nullItem().set(ProxyBuilder.builder(column.type().valueClass())
                 .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
                 .build());
       }
     }
-    addInsertUpdateOrDeleteListener(model::refresh);
+    addInsertUpdateOrDeleteListener(comboBoxModel::refresh);
 
-    return model;
+    return comboBoxModel;
   }
 
   @Override
@@ -264,12 +264,12 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
-    FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
-    model.refresher().itemSupplier().set(column.type().isEnum() ?
+    FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
+    comboBoxModel.refresher().itemSupplier().set(column.type().isEnum() ?
             new EnumAttributeItemSupplier<>(column) :
             new ColumnItemSupplier<>(connectionProvider(), column));
 
-    return model;
+    return comboBoxModel;
   }
 
   private static final class EnumAttributeItemSupplier<T> implements Supplier<Collection<T>> {
