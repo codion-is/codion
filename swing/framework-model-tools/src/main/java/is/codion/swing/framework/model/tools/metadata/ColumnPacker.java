@@ -36,27 +36,24 @@ final class ColumnPacker implements ResultPacker<MetadataColumn> {
       decimalDigits = -1;
     }
     Class<?> columnClass = columnClass(dataType, decimalDigits);
-    if (columnClass != null) {
-      String columnName = resultSet.getString("COLUMN_NAME");
-      try {
-        return new MetadataColumn(columnName, columnClass,
-                resultSet.getInt("ORDINAL_POSITION"),
-                resultSet.getInt("COLUMN_SIZE"), decimalDigits,
-                resultSet.getInt("NULLABLE"),
-                resultSet.getString("COLUMN_DEF"),
-                resultSet.getString("REMARKS"),
-                primaryKeyColumnIndex(columnName),
-                foreignKeyColumn(columnName),
-                YES.equals(resultSet.getString("IS_AUTOINCREMENT")),
-                YES.equals(resultSet.getString("IS_GENERATEDCOLUMN")));
-      }
-      catch (SQLException e) {
-        System.err.println("Exception fetching column: " + columnName + ", " + e.getMessage());
-        return null;
-      }
+    String columnName = resultSet.getString("COLUMN_NAME");
+    String typeName = resultSet.getString("TYPE_NAME");
+    try {
+      return new MetadataColumn(columnName, dataType, typeName, columnClass,
+              resultSet.getInt("ORDINAL_POSITION"),
+              resultSet.getInt("COLUMN_SIZE"), decimalDigits,
+              resultSet.getInt("NULLABLE"),
+              resultSet.getString("COLUMN_DEF"),
+              resultSet.getString("REMARKS"),
+              primaryKeyColumnIndex(columnName),
+              foreignKeyColumn(columnName),
+              YES.equals(resultSet.getString("IS_AUTOINCREMENT")),
+              YES.equals(resultSet.getString("IS_GENERATEDCOLUMN")));
     }
-
-    return null;
+    catch (SQLException e) {
+      System.err.println("Exception fetching column: " + columnName + ", " + e.getMessage());
+      throw e;
+    }
   }
 
   private int primaryKeyColumnIndex(String columnName) {
@@ -107,8 +104,8 @@ final class ColumnPacker implements ResultPacker<MetadataColumn> {
       case Types.BIT:
       case Types.BOOLEAN:
         return Boolean.class;
-      default://unsupported data type
-        return null;
+      default:
+        return Object.class;
     }
   }
 }

@@ -9,6 +9,7 @@ public interface Address {
 	Column<Integer> ZIP = TYPE.integerColumn("zip");
 	Column<Double> LATITUDE = TYPE.doubleColumn("latitude");
 	Column<Double> LONGITUDE = TYPE.doubleColumn("longitude");
+	Column<Object> LOCATION = TYPE.objectColumn("location");
 	Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
 }
 
@@ -49,6 +50,9 @@ void address() {
 			.caption("Longitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
+		Address.LOCATION.define()
+			.column()
+			.caption("Location"),
 		Address.IMAGE.define()
 			.blobColumn()
 			.caption("Image")));
