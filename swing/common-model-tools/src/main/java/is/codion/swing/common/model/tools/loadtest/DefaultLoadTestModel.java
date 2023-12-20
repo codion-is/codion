@@ -524,12 +524,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private T initializeApplication() {
       try {
         long startTime = System.nanoTime();
-        T application = applicationFactory.apply(user);
+        T app = applicationFactory.apply(user);
         int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
         addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", duration, null));
-        LOG.debug("LoadTestModel initialized application: {}", application);
+        LOG.debug("LoadTestModel initialized application: {}", app);
 
-        return application;
+        return app;
       }
       catch (Exception e) {
         addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", -1, e));

@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.Conjunction;
 import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -33,8 +32,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   private final State singleSelectionMode = State.state(false);
   private final State selectionEmpty = State.state(true);
   private final State singleSelection = State.state(false);
-  private final StateObserver multipleSelection = State.combination(Conjunction.AND,
-          selectionEmpty.not(), singleSelection.not());
+  private final StateObserver multipleSelection = State.and(selectionEmpty.not(), singleSelection.not());
 
   /**
    * Holds the topmost (minimum) selected index
