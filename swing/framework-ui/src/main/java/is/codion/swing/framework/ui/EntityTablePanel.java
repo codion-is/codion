@@ -299,9 +299,6 @@ public class EntityTablePanel extends JPanel {
   private JPanel tablePanel;
   private JToolBar refreshButtonToolBar;
   private Control conditionRefreshControl;
-  private JPanel searchFieldPanel;
-  private JSplitPane southPanelSplitPane;
-  private JToolBar southToolBar;
   private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
   private boolean includeSouthPanel = true;
   private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
@@ -727,17 +724,17 @@ public class EntityTablePanel extends JPanel {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    searchFieldPanel = Components.panel(new GridBagLayout())
+    JPanel searchFieldPanel = Components.panel(new GridBagLayout())
             .add(table.searchField(), createHorizontalFillConstraints())
             .build();
-    southPanelSplitPane = Components.splitPane()
+    JSplitPane southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
             .leftComponent(searchFieldPanel)
             .rightComponent(statusPanel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshButtonToolBar, BorderLayout.WEST);
-    southToolBar = createSouthToolBar();
+    JToolBar southToolBar = createSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }
