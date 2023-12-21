@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.22-SNAPSHOT
+
 ## 0.17.21
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.allowSelectionPredicate() renamed validSelectionPredicate().
