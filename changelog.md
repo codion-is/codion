@@ -11,6 +11,7 @@ Codion Change Log
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
 - FilteredTable search field now has a minimum size instead of columns.
 - TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS configuration value removed.
+- Utilities.updateComponentTreeUI() added.
 ### is.codion.framework.model
 - EntitySearchModel.LIMIT renamed DEFAULT_LIMIT.
 - EntityTableModel and EntityComboBoxModel.respondToEditEvents() renamed handleEditEvents().

@@ -72,6 +72,30 @@ public final class Utilities {
   }
 
   /**
+   * Calls {@link SwingUtilities#updateComponentTreeUI(Component)} for the given components, ignores null components.
+   * @param components the components to update the UI for
+   */
+  public static void updateComponentTreeUI(JComponent... components) {
+    if (components != null) {
+      updateComponentTreeUI(Arrays.asList(components));
+    }
+  }
+
+  /**
+   * Calls {@link SwingUtilities#updateComponentTreeUI(Component)} for the given components, ignores null components.
+   * @param components the components to update the UI for
+   */
+  public static void updateComponentTreeUI(Collection<? extends JComponent> components) {
+    if (components != null) {
+      for (JComponent component : components) {
+        if (component != null) {
+          SwingUtilities.updateComponentTreeUI(component);
+        }
+      }
+    }
+  }
+
+  /**
    * Links the given actions to the given StateObserver, so that the actions are enabled
    * only when the observed state is active
    * @param enabledState the StateObserver with which to link the action
