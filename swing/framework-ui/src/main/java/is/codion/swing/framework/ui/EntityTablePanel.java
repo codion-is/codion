@@ -24,7 +24,6 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -341,18 +340,6 @@ public class EntityTablePanel extends JPanel {
     this.editableAttributes.addValidator(new EditMenuAttributeValidator());
     this.table = createTable();
     this.statusPanel = new StatusPanel();
-  }
-
-  @Override
-  public void updateUI() {
-    super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionPanelScrollPane,
-            filterPanel, filterPanelScrollPane, summaryPanelScrollPane, summaryPanel, southPanel,
-            refreshButtonToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
-    if (tableScrollPane != null) {
-      Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
-              tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
-    }
   }
 
   /**
@@ -724,6 +711,7 @@ public class EntityTablePanel extends JPanel {
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
         setupKeyboardActions();
+        updateComponentTreeUI(this);
       }
       finally {
         initialized = true;

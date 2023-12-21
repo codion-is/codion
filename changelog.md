@@ -26,6 +26,7 @@ Codion Change Log
 - EntityTablePanel south panel split pane resize weight no longer specified, for a more consistent initial search field size.
 - EntityPanel.INCLUDE_CONTROLS configuration value added.
 - EntityEditComponentPanel.DEFAULT_TEXT_FIELD_COLUMNS configuration value added.
+- EntityTablePanel no longer overrides updateUI(), calls updateComponentTreeUI() after initialization instead, in case the look and feel has changed since instantiation.
 
 ## 0.17.20
 ### is.codion.common.model
