@@ -8,7 +8,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -45,12 +44,6 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
     setLayout(new BorderLayout());
     add(componentPanel, BorderLayout.CENTER);
     advanced.addDataListener(this::onAdvancedChanged);
-  }
-
-  @Override
-  public void updateUI() {
-    super.updateUI();
-    Utilities.updateUI(componentPanel);
   }
 
   /**
