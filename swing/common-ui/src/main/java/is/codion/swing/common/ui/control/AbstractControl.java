@@ -18,6 +18,8 @@ import java.awt.Font;
  */
 abstract class AbstractControl extends AbstractAction implements Control {
 
+  private static final String ENABLED = "enabled";
+
   private final StateObserver enabledObserver;
 
   /**
@@ -40,6 +42,23 @@ abstract class AbstractControl extends AbstractAction implements Control {
   @Override
   public final void setEnabled(boolean newValue) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public final void putValue(String key, Object newValue) {
+    if (ENABLED.equals(key)) {
+      throw new IllegalArgumentException("Can not set the enabled state of a Control");
+    }
+    super.putValue(key, newValue);
+  }
+
+  @Override
+  public final Object getValue(String key) {
+    if (ENABLED.equals(key)) {
+      return enabledObserver.get();
+    }
+
+    return super.getValue(key);
   }
 
   @Override
