@@ -1,9 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.21-SNAPSHOT
-### is.codion.common.core
-- Text.underscoreToCamelCase(), now handles the case when no underscores are present by simply calling toLowerCase().
+## 0.17.21
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.allowSelectionPredicate() renamed validSelectionPredicate().
 ### is.codion.swing.common.ui
@@ -11,6 +9,8 @@ Codion Change Log
 - HintTextField bug fixed, now adjusts the hint text length to prevent painting outside of bounds.
 - FilteredTable search field now has a minimum size instead of columns.
 - TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS configuration value removed.
+- Utilities.updateComponentTreeUI() added.
+- FilteredTableConditionPanel no longer overrides updateUI(), seems unnecessary.
 ### is.codion.framework.model
 - EntitySearchModel.LIMIT renamed DEFAULT_LIMIT.
 - EntityTableModel and EntityComboBoxModel.respondToEditEvents() renamed handleEditEvents().
@@ -25,6 +25,7 @@ Codion Change Log
 - EntityTablePanel south panel split pane resize weight no longer specified, for a more consistent initial search field size.
 - EntityPanel.INCLUDE_CONTROLS configuration value added.
 - EntityEditComponentPanel.DEFAULT_TEXT_FIELD_COLUMNS configuration value added.
+- EntityTablePanel no longer overrides updateUI(), calls updateComponentTreeUI() after initialization instead, in case the look and feel has changed since instantiation.
 
 ## 0.17.20
 ### is.codion.common.model

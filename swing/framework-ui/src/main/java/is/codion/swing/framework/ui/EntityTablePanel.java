@@ -39,7 +39,6 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -315,9 +314,6 @@ public class EntityTablePanel extends JPanel {
   private JPanel tablePanel;
   private JToolBar refreshButtonToolBar;
   private Control conditionRefreshControl;
-  private JPanel searchFieldPanel;
-  private JSplitPane southPanelSplitPane;
-  private JToolBar southToolBar;
   private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
   private boolean includeSouthPanel = true;
   private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
@@ -356,18 +352,6 @@ public class EntityTablePanel extends JPanel {
     this.editableAttributes.addValidator(new EditMenuAttributeValidator());
     this.table = createTable();
     this.statusPanel = new StatusPanel();
-  }
-
-  @Override
-  public void updateUI() {
-    super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionPanelScrollPane,
-            filterPanel, filterPanelScrollPane, summaryPanelScrollPane, summaryPanel, southPanel,
-            refreshButtonToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
-    if (tableScrollPane != null) {
-      Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
-              tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
-    }
   }
 
   /**
@@ -739,6 +723,7 @@ public class EntityTablePanel extends JPanel {
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
         setupKeyboardActions();
+        updateComponentTreeUI(this);
       }
       finally {
         initialized = true;
@@ -754,17 +739,17 @@ public class EntityTablePanel extends JPanel {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    searchFieldPanel = Components.panel(new GridBagLayout())
+    JPanel searchFieldPanel = Components.panel(new GridBagLayout())
             .add(table.searchField(), createHorizontalFillConstraints())
             .build();
-    southPanelSplitPane = Components.splitPane()
+    JSplitPane southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
             .leftComponent(searchFieldPanel)
             .rightComponent(statusPanel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshButtonToolBar, BorderLayout.WEST);
-    southToolBar = createSouthToolBar();
+    JToolBar southToolBar = createSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }

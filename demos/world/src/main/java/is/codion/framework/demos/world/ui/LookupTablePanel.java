@@ -23,6 +23,7 @@ import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.framework.demos.world.model.LookupTableModel.ExportFormat;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
@@ -84,6 +85,12 @@ final class LookupTablePanel extends EntityTablePanel {
     showRefreshProgressBar().set(true);
     setupControls();
     bindEvents();
+  }
+
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    Utilities.updateComponentTreeUI(mapKit);
   }
 
   @Override
