@@ -7,6 +7,8 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -14,6 +16,7 @@ final class ControlBuilder implements Control.Builder {
 
   private final Control.Command command;
   private final Control.ActionCommand actionCommand;
+  private final Map<String, Object> values = new HashMap<>();
 
   private String name;
   private StateObserver enabled;
@@ -76,6 +79,15 @@ final class ControlBuilder implements Control.Builder {
   }
 
   @Override
+  public Control.Builder value(String key, Object value) {
+    if ("enabled".equals(key)) {
+      throw new IllegalArgumentException("Can not set the enabled property of a Control");
+    }
+    values.put(key, value);
+    return this;
+  }
+
+  @Override
   public Control build() {
     Control control;
     if (command != null) {
@@ -90,6 +102,7 @@ final class ControlBuilder implements Control.Builder {
     control.setLargeIcon(largeIcon);
     control.setDescription(description);
     control.setKeyStroke(keyStroke);
+    values.forEach(control::putValue);
 
     return control;
   }

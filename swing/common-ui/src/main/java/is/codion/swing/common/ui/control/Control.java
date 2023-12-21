@@ -267,6 +267,17 @@ public interface Control extends Action {
     Builder keyStroke(KeyStroke keyStroke);
 
     /**
+     * Note that any values added will overwrite the property, if already present,
+     * i.e. setting the 'SmallIcon' value via this method will overwrite the one set
+     * via {@link #smallIcon(Icon)}.
+     * @param key the key
+     * @param value the value
+     * @return this builder
+     * @see Action#putValue(String, Object)
+     */
+    Builder value(String key, Object value);
+
+    /**
      * @return a new Control instance
      * @throws IllegalStateException in case no command has been set
      */

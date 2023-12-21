@@ -8,12 +8,15 @@ import is.codion.common.value.Value;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 final class ToggleControlBuilder implements ToggleControl.Builder {
 
   private final Value<Boolean> value;
+  private final Map<String, Object> values = new HashMap<>();
 
   private String name;
   private StateObserver enabled;
@@ -70,6 +73,15 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   }
 
   @Override
+  public Control.Builder value(String key, Object value) {
+    if ("enabled".equals(key)) {
+      throw new IllegalArgumentException("Can not set the enabled property of a Control");
+    }
+    values.put(key, value);
+    return this;
+  }
+
+  @Override
   public ToggleControl build() {
     DefaultToggleControl toggleControl = new DefaultToggleControl(value, name, enabled);
     toggleControl.setMnemonic(mnemonic);
@@ -77,6 +89,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
     toggleControl.setLargeIcon(largeIcon);
     toggleControl.setDescription(description);
     toggleControl.setKeyStroke(keyStroke);
+    values.forEach(toggleControl::putValue);
 
     return toggleControl;
   }

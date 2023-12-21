@@ -10,7 +10,9 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 final class ControlsBuilder implements Controls.Builder {
 
   private final List<Action> controls = new ArrayList<>();
+  private final Map<String, Object> values = new HashMap<>();
 
   private String name;
   private String description;
@@ -115,6 +118,15 @@ final class ControlsBuilder implements Controls.Builder {
   }
 
   @Override
+  public Control.Builder value(String key, Object value) {
+    if ("enabled".equals(key)) {
+      throw new IllegalArgumentException("Can not set the enabled property of a Control");
+    }
+    values.put(key, value);
+    return this;
+  }
+
+  @Override
   public Controls build() {
     Controls defaultControls = new DefaultControls(name, enabled, controls);
     defaultControls.setMnemonic(mnemonic);
@@ -122,6 +134,7 @@ final class ControlsBuilder implements Controls.Builder {
     defaultControls.setLargeIcon(largeIcon);
     defaultControls.setDescription(description);
     defaultControls.setKeyStroke(keyStroke);
+    values.forEach(defaultControls::putValue);
 
     return defaultControls;
   }
