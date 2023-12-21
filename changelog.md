@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.22-SNAPSHOT
+### is.codion.swing.common.ui
+- AbstractButtonBuilder now sets the initial background, foreground and font specified by the action.
 
 ## 0.17.21
 ### is.codion.swing.common.model
