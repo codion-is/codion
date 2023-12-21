@@ -131,7 +131,7 @@ public final class TextTest {
   @Test
   void underscoreToCamelCase() {
     assertEquals("", Text.underscoreToCamelCase(""));
-    assertEquals("test", Text.underscoreToCamelCase("TEST"));
+    assertEquals("noOfSpeakers", Text.underscoreToCamelCase("noOfSpeakers"));
     assertEquals("noOfSpeakers", Text.underscoreToCamelCase("no_of_speakers"));
     assertEquals("noOfSpeakers", Text.underscoreToCamelCase("No_OF_speakeRS"));
     assertEquals("helloWorld", Text.underscoreToCamelCase("hello_World"));

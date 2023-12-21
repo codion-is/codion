@@ -283,6 +283,9 @@ public final class Text {
    * @return a camelCase version of the given text
    */
   public static String underscoreToCamelCase(String text) {
+    if (!requireNonNull(text, "text").contains("_")) {
+      return text;
+    }
     StringBuilder builder = new StringBuilder();
     boolean firstDone = false;
     List<String> strings = Arrays.stream(text.toLowerCase().split("_"))
