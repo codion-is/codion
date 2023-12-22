@@ -7,6 +7,7 @@ Codion Change Log
 - AbstractControl now overrides putValue() and getValue() in order to prevent modification of the 'enabled' property.
 - Control.Builder.value() added.
 - AbstractControlBuilder added, related refactoring.
+- Control and ToggleControl.copyBuilder() added.
 
 ## 0.17.21
 ### is.codion.swing.common.model

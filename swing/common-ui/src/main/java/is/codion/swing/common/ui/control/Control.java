@@ -140,6 +140,30 @@ public interface Control extends Action {
   void setEnabled(boolean enabled);
 
   /**
+   * Returns a {@link Control.Builder} instance, with initial values from this Control, based on the given command.
+   * @param command the command for the resulting control
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(Command command);
+
+  /**
+   * Returns a {@link Control.Builder} instance, with initial values from this Control, based on the given command.
+   * @param actionCommand the command for the resulting control
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(ActionCommand actionCommand);
+
+  /**
+   * Returns a {@link Control.Builder} instance, with initial values from this Control, based on the given command.
+   * @param event the event for the resulting control to trigger
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(Event<ActionEvent> event);
+
+  /**
    * A command interface, allowing Controls based on method references
    */
   interface Command {

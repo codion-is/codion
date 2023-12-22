@@ -17,6 +17,22 @@ public interface ToggleControl extends Control {
   Value<Boolean> value();
 
   /**
+   * Returns a {@link Control.Builder} instance, with initial values from this Control, based on the given value.
+   * @param value the value for the resulting toggle control
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copyBuilder(Value<Boolean> value);
+
+  /**
+   * Returns a {@link Control.Builder} instance, with initial values from this Control, based on the given state.
+   * @param state the state for the resulting toggle control
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copyBuilder(State state);
+
+  /**
    * Creates a new ToggleControl based on the given value
    * @param value the value
    * @return a new ToggleControl

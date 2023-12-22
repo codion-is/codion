@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -12,6 +13,13 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstrct Control implementation, implementing everything except actionPerformed().
@@ -20,7 +28,12 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   private static final String ENABLED = "enabled";
 
-  private final StateObserver enabledObserver;
+  protected static final List<String> STANDARD_KEYS = unmodifiableList(asList(
+          Action.NAME, Action.SHORT_DESCRIPTION, Action.MNEMONIC_KEY,
+          Action.ACCELERATOR_KEY, Action.SMALL_ICON, Action.LARGE_ICON_KEY
+  ));
+
+  protected final StateObserver enabledObserver;
 
   /**
    * Constructs a new Control.
@@ -157,5 +170,39 @@ abstract class AbstractControl extends AbstractAction implements Control {
   @Override
   public final Font getFont() {
     return (Font) getValue(FONT);
+  }
+
+  @Override
+  public final <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(Command command) {
+    return createBuilder(command, null);
+  }
+
+  @Override
+  public final <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(ActionCommand actionCommand) {
+    return createBuilder(null, actionCommand);
+  }
+
+  @Override
+  public final <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(Event<ActionEvent> event) {
+    requireNonNull(event);
+
+    return copyBuilder(event::accept);
+  }
+
+  private <B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
+    B builder = (B) (command == null ? new ControlBuilder<Control, B>(actionCommand) : new ControlBuilder<Control, B>(command));
+    builder.enabled(enabledObserver)
+            .description(getDescription())
+            .name(getName())
+            .mnemonic((char) getMnemonic())
+            .keyStroke(getKeyStroke())
+            .smallIcon(getSmallIcon())
+            .largeIcon(getLargeIcon());
+    Arrays.stream(getKeys())
+            .filter(key -> !STANDARD_KEYS.contains(key))
+            .map(String.class::cast)
+            .forEach(key -> builder.value(key, getValue(key)));
+
+    return builder;
   }
 }

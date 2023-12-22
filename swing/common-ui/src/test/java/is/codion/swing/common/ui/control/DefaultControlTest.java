@@ -89,7 +89,7 @@ public final class DefaultControlTest {
       assertEquals(actionEvent.getActionCommand(), "test");
       assertEquals(actionEvent.getID(), ActionEvent.ACTION_PERFORMED);
     });
-    assertTrue(test instanceof DefaultActionControl);
+    assertInstanceOf(DefaultActionControl.class, test);
     test.actionPerformed(event);
   }
 
@@ -128,6 +128,36 @@ public final class DefaultControlTest {
   void cancelOnExecute() {
     Control control = Control.control(this::cancelMethod);
     control.actionPerformed(null);
+  }
+
+  @Test
+  void copy() {
+    State enabled = State.state();
+    Control control = Control.builder(() -> {})
+            .enabled(enabled)
+            .name("name")
+            .description("desc")
+            .mnemonic('n')
+            .value("key", "value")
+            .build();
+    Control copy = control.copyBuilder(() -> {})
+            .name("new name")
+            .description("new desc")
+            .value("key", "newvalue")
+            .build();
+
+    assertFalse(control.isEnabled());
+    assertFalse(copy.isEnabled());
+
+    enabled.set(true);
+
+    assertTrue(control.isEnabled());
+    assertTrue(copy.isEnabled());
+
+    assertNotEquals(control.getName(), copy.getName());
+    assertNotEquals(control.getDescription(), copy.getDescription());
+    assertEquals(control.getMnemonic(), copy.getMnemonic());
+    assertNotEquals(control.getValue("key"), copy.getValue("key"));
   }
 
   private void doNothing() {}

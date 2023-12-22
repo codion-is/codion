@@ -3,10 +3,12 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,4 +36,27 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public void actionPerformed(ActionEvent e) {/*Not required*/}
+
+  @Override
+  public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copyBuilder(Value<Boolean> value) {
+    B builder = (B) new ToggleControlBuilder<>(value)
+            .enabled(enabledObserver)
+            .description(getDescription())
+            .name(getName())
+            .mnemonic((char) getMnemonic())
+            .keyStroke(getKeyStroke())
+            .smallIcon(getSmallIcon())
+            .largeIcon(getLargeIcon());
+    Arrays.stream(getKeys())
+            .filter(key -> !STANDARD_KEYS.contains(key))
+            .map(String.class::cast)
+            .forEach(key -> builder.value(key, getValue(key)));
+
+    return builder;
+  }
+
+  @Override
+  public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copyBuilder(State state) {
+    return copyBuilder((Value<Boolean>) state);
+  }
 }
