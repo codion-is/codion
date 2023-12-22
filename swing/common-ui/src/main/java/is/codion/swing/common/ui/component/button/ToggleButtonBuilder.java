@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JToggleButton;
@@ -12,6 +13,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a JToggleButton.
+ * @param <C> the component type
+ * @param <B> the builder type
  */
 public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> extends ButtonBuilder<Boolean, C, B> {
 
@@ -25,7 +28,7 @@ public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleBu
    * @param toggleControlBuilder the builder for the toggle control to base this toggle button on
    * @return this builder instance
    */
-  B toggleControl(ToggleControl.Builder toggleControlBuilder);
+  B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder);
 
   /**
    * @param <C> the component type

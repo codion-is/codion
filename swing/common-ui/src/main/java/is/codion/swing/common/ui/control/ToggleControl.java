@@ -4,11 +4,7 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-
-import javax.swing.Icon;
-import javax.swing.KeyStroke;
 
 /**
  * A Control for toggling a boolean value.
@@ -40,64 +36,19 @@ public interface ToggleControl extends Control {
 
   /**
    * @param value the value to toggle
+   * @param <B> the builder type
    * @return a new ToggleControl.Builder
    */
-  static Builder builder(Value<Boolean> value) {
-    return new ToggleControlBuilder(value);
+  static <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> builder(Value<Boolean> value) {
+    return new ToggleControlBuilder<>(value);
   }
 
   /**
    * @param state the state to toggle
+   * @param <B> the builder type
    * @return a new ToggleControl.Builder
    */
-  static Builder builder(State state) {
-    return new ToggleControlBuilder(state);
-  }
-
-  /**
-   * A builder for ToggleControl
-   */
-  interface Builder extends Control.Builder {
-
-    /**
-     * @param name the name of the control
-     * @return this Builder instance
-     */
-    Builder name(String name);
-
-    /**
-     * @param enabled the state observer which controls the enabled state of the control
-     * @return this Builder instance
-     */
-    Builder enabled(StateObserver enabled);
-
-    /**
-     * @param mnemonic the control mnemonic
-     * @return this Builder instance
-     */
-    Builder mnemonic(char mnemonic);
-
-    /**
-     * @param smallIcon the small control icon
-     * @return this Builder instance
-     */
-    Builder smallIcon(Icon smallIcon);
-
-    /**
-     * @param description a string describing the control
-     * @return this Builder instance
-     */
-    Builder description(String description);
-
-    /**
-     * @param keyStroke the keystroke to associate with the control
-     * @return this Builder instance
-     */
-    Builder keyStroke(KeyStroke keyStroke);
-
-    /**
-     * @return a new ToggleControl
-     */
-    ToggleControl build();
+  static <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> builder(State state) {
+    return new ToggleControlBuilder<>(state);
   }
 }

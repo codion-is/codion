@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JMenuItem;
@@ -51,7 +52,7 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
    * @param toggleControlBuilder the builder for the toggle control to base this toggle menu on
    * @return this builder instance
    */
-  B toggleControl(ToggleControl.Builder toggleControlBuilder);
+  B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder);
 
   /**
    * @param persistMenu specifies when a menu persists after a toggle button click

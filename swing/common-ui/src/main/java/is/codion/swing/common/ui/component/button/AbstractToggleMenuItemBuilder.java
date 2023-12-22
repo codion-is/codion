@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JMenuItem;
@@ -34,7 +35,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   }
 
   @Override
-  public final B toggleControl(ToggleControl.Builder toggleControlBuilder) {
+  public final B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
     return toggleControl(requireNonNull(toggleControlBuilder).build());
   }
 

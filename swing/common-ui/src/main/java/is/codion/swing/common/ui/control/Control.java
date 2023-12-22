@@ -194,77 +194,82 @@ public interface Control extends Action {
   /**
    * Creates a new Builder.
    * @param command the command to base the control on
+   * @param <B> the builder type
    * @return a new Control.Builder
    */
-  static Builder builder(Command command) {
-    return new ControlBuilder(command);
+  static <B extends Builder<Control, B>> Builder<Control, B> builder(Command command) {
+    return new ControlBuilder<>(command);
   }
 
   /**
    * Creates a new Builder.
    * @param actionCommand the action command to base the control on
+   * @param <B> the builder type
    * @return a new Control.Builder
    */
-  static Builder actionControlBuilder(ActionCommand actionCommand) {
-    return new ControlBuilder(actionCommand);
+  static <B extends Builder<Control, B>> Builder<Control, B> actionControlBuilder(ActionCommand actionCommand) {
+    return new ControlBuilder<>(actionCommand);
   }
 
   /**
    * Creates a Builder for a control which triggers the given event on action performed
    * @param event the event
+   * @param <B> the builder type
    * @return a new Control.Builder
    */
-  static Builder eventControlBuilder(Event<ActionEvent> event) {
+  static <B extends Builder<Control, B>> Builder<Control, B> eventControlBuilder(Event<ActionEvent> event) {
     requireNonNull(event, "event");
-    return new ControlBuilder(event::accept);
+    return new ControlBuilder<>(event::accept);
   }
 
   /**
    * A builder for Control
+   * @param <C> the Control type
+   * @param <B> the builder type
    */
-  interface Builder {
+  interface Builder<C extends Control, B extends Builder<C, B>> {
 
     /**
      * @param name the name of the control
      * @return this Builder instance
      */
-    Builder name(String name);
+    B name(String name);
 
     /**
      * @param enabled the state observer which controls the enabled state of the control
      * @return this Builder instance
      */
-    Builder enabled(StateObserver enabled);
+    B enabled(StateObserver enabled);
 
     /**
      * @param mnemonic the control mnemonic
      * @return this Builder instance
      */
-    Builder mnemonic(char mnemonic);
+    B mnemonic(char mnemonic);
 
     /**
      * @param smallIcon the small control icon
      * @return this Builder instance
      */
-    Builder smallIcon(Icon smallIcon);
+    B smallIcon(Icon smallIcon);
 
     /**
      * @param largeIcon the large control icon
      * @return this Builder instance
      */
-    Builder largeIcon(Icon largeIcon);
+    B largeIcon(Icon largeIcon);
 
     /**
      * @param description a string describing the control
      * @return this Builder instance
      */
-    Builder description(String description);
+    B description(String description);
 
     /**
      * @param keyStroke the keystroke to associate with the control
      * @return this Builder instance
      */
-    Builder keyStroke(KeyStroke keyStroke);
+    B keyStroke(KeyStroke keyStroke);
 
     /**
      * Note that any values added will overwrite the property, if already present,
@@ -275,12 +280,12 @@ public interface Control extends Action {
      * @return this builder
      * @see Action#putValue(String, Object)
      */
-    Builder value(String key, Object value);
+    B value(String key, Object value);
 
     /**
      * @return a new Control instance
      * @throws IllegalStateException in case no command has been set
      */
-    Control build();
+    C build();
   }
 }
