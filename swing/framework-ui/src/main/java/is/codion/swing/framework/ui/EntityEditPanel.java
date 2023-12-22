@@ -309,7 +309,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
-      onValidationException(e);
+      onException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -349,7 +349,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e);
+      onException(e);
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -389,7 +389,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
-      onValidationException(e);
+      onException(e);
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -426,6 +426,25 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   protected void beforeDelete() {}
 
   /**
+   * Propagates the exception to {@link #onValidationException(ValidationException)} or
+   * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
+   * otherwise forwards to the super implementation.
+   * @param exception the exception to handle
+   */
+  @Override
+  protected void onException(Throwable exception) {
+    if (exception instanceof ValidationException) {
+      onValidationException((ValidationException) exception);
+    }
+    else if (exception instanceof ReferentialIntegrityException) {
+      onReferentialIntegrityException((ReferentialIntegrityException) exception);
+    }
+    else {
+      super.onException(exception);
+    }
+  }
+
+  /**
    * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
    * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
@@ -439,7 +458,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
-      onException(exception);
+      super.onException(exception);
     }
   }
 

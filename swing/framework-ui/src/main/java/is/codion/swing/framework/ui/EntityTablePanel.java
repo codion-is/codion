@@ -672,7 +672,7 @@ public class EntityTablePanel extends JPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e);
+      onException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -996,6 +996,25 @@ public class EntityTablePanel extends JPanel {
   protected void beforeDelete() {}
 
   /**
+   * Propagates the exception to {@link #onValidationException(ValidationException)} or
+   * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
+   * otherwise displays the exception.
+   * @param exception the exception to handle
+   * @see #displayException(Throwable)
+   */
+  protected void onException(Throwable exception) {
+    if (exception instanceof ValidationException) {
+      onValidationException((ValidationException) exception);
+    }
+    else if (exception instanceof ReferentialIntegrityException) {
+      onReferentialIntegrityException((ReferentialIntegrityException) exception);
+    }
+    else {
+      displayException(exception);
+    }
+  }
+
+  /**
    * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
    * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
@@ -1009,7 +1028,7 @@ public class EntityTablePanel extends JPanel {
               this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
-      onException(exception);
+      displayException(exception);
     }
   }
 
@@ -1024,15 +1043,6 @@ public class EntityTablePanel extends JPanel {
             .attributes().definition(exception.attribute())
             .caption();
     JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-  }
-
-  /**
-   * Handles the given exception, simply displays the error message to the user by default.
-   * @param exception the exception to handle
-   * @see #displayException(Throwable)
-   */
-  protected void onException(Throwable exception) {
-    displayException(exception);
   }
 
   /**
