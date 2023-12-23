@@ -3,9 +3,11 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -13,6 +15,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,7 +26,7 @@ public final class SwingEntityTreeModelTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  void test() {
+  void test() throws DatabaseException {
     EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
             .domain(new TestDomain())
             .user(UNIT_TEST_USER)
@@ -44,5 +47,9 @@ public final class SwingEntityTreeModelTest {
 
     SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.treeSelectionModel().getSelectionPath().getLastPathComponent();
     assertEquals("JONES", node.entity().get(Employee.NAME));
+
+    List<Entity> king = connectionProvider.connection().select(Employee.ID.equalTo(8));
+    treeModel.refreshSelect(king);//King
+    assertEquals(king, tableModel.selectionModel().getSelectedItems());
   }
 }

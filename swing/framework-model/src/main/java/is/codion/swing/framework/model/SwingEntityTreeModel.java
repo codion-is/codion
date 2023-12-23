@@ -94,9 +94,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
   public void refreshSelect(Collection<Entity> entities) {
     requireNonNull(entities);
     refreshRoot();
-    select(entities.stream()
-            .filter(entity -> entity.isNotNull(parentForeignKey))
-            .collect(toList()));
+    select(entities);
   }
 
   /**
