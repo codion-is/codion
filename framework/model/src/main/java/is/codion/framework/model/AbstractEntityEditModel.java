@@ -746,9 +746,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
     afterInsertEvent.accept(insertedEntities);
-    if (editEvents.get()) {
-      EntityEditEvents.notifyInserted(insertedEntities);
-    }
   }
 
   /**
@@ -767,9 +764,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
     afterUpdateEvent.accept(updatedEntities);
-    if (editEvents.get()) {
-      EntityEditEvents.notifyUpdated(updatedEntities);
-    }
   }
 
   /**
@@ -788,9 +782,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
     afterDeleteEvent.accept(deletedEntities);
-    if (editEvents.get()) {
-      EntityEditEvents.notifyDeleted(deletedEntities);
-    }
   }
 
   private Collection<Entity> insertEntities(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
@@ -901,9 +892,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void bindEventsInternal() {
-    afterDeleteEvent.addListener(insertUpdateOrDeleteEvent);
     afterInsertEvent.addListener(insertUpdateOrDeleteEvent);
     afterUpdateEvent.addListener(insertUpdateOrDeleteEvent);
+    afterDeleteEvent.addListener(insertUpdateOrDeleteEvent);
+    afterInsertEvent.addDataListener(new NotifyInserted());
+    afterUpdateEvent.addDataListener(new NotifyUpdated());
+    afterDeleteEvent.addDataListener(new NotifyDeleted());
   }
 
   private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
@@ -1047,6 +1041,36 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private interface ValueSupplier {
     <T> T get(AttributeDefinition<T> attributeDefinition);
+  }
+
+  private final class NotifyInserted implements Consumer<Collection<Entity>> {
+
+    @Override
+    public void accept(Collection<Entity> insertedEntities) {
+      if (editEvents.get()) {
+        EntityEditEvents.notifyInserted(insertedEntities);
+      }
+    }
+  }
+
+  private final class NotifyUpdated implements Consumer<Map<Entity.Key, Entity>> {
+
+    @Override
+    public void accept(Map<Entity.Key, Entity> updatedEntities) {
+      if (editEvents.get()) {
+        EntityEditEvents.notifyUpdated(updatedEntities);
+      }
+    }
+  }
+
+  private final class NotifyDeleted implements Consumer<Collection<Entity>> {
+
+    @Override
+    public void accept(Collection<Entity> deletedEntities) {
+      if (editEvents.get()) {
+        EntityEditEvents.notifyDeleted(deletedEntities);
+      }
+    }
   }
 
   private static final class EditModelValue<T> extends AbstractValue<T> {
