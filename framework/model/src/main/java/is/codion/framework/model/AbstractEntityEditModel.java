@@ -348,7 +348,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (entityDefinition().primaryKey().generated()) {
       toInsert.clearPrimaryKey();
     }
-    toInsert.save();
     Collection<Entity> insertedEntities = insertEntities(singletonList(toInsert));
     if (insertedEntities.isEmpty()) {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");

@@ -10,6 +10,7 @@ Codion Change Log
 - Control and ToggleControl.copyBuilder() added.
 ### is.codion.framework.model
 - AbstractEntityEditModel, edit event notifications now handled by afterInsert/afterUpdate/afterDelete events.
+- AbstractEntityEditModel.insert() no longer calls save() on the entity being inserted, since exists() relies on the original primary key value and is used during validation.
 ### is.codion.swing.framework.ui
 - EntityEditPanel now overrides EntityEditComponentPanel.onException() and propagates the exception to the correct exception handler.
 - EntityTablePanel.onException() now propagates the exception to the correct exception handler.
