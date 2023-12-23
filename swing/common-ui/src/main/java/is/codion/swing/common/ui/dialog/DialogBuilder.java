@@ -18,6 +18,8 @@ import java.awt.Window;
 public interface DialogBuilder<B extends DialogBuilder<B>> {
 
   /**
+   * Sets the dialog owner as the given window.
+   * Also sets the {@link #locationRelativeTo(Component)} to the given window in case one has not been specified.
    * @param owner the dialog owner
    * @return this DialogBuilder instance
    */
@@ -25,7 +27,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 
   /**
    * Sets the dialog owner as the parent window of the given component.
-   * Also sets the {@link #locationRelativeTo(Component)} using the given component.
+   * Also sets the {@link #locationRelativeTo(Component)} using the given component in case one has not been specified.
    * @param owner the dialog parent component
    * @return this builder instance
    */

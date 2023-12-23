@@ -137,6 +137,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   public ProgressWorker<T, V> build() {
     ProgressDialog progressDialog = progressDialogBuilder
             .owner(owner)
+            .locationRelativeTo(locationRelativeTo)
             .titleProvider(titleProvider)
             .icon(icon)
             .build();

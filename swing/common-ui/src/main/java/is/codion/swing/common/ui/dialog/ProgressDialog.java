@@ -17,7 +17,6 @@ import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Window;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
@@ -32,8 +31,8 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  private ProgressDialog(DefaultBuilder builder, Window dialogOwner) {
-    super(dialogOwner, dialogOwner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
+  private ProgressDialog(DefaultBuilder builder) {
+    super(builder.owner, builder.owner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
     if (builder.titleProvider != null) {
       setTitle(builder.titleProvider.get());
       builder.titleProvider.addDataListener(this::setTitle);
@@ -44,7 +43,7 @@ public final class ProgressDialog extends JDialog {
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     progressBar = createProgressBar(builder);
     initializeUI(builder);
-    setLocationRelativeTo(dialogOwner);
+    setLocationRelativeTo(builder.locationRelativeTo == null ? builder.owner : builder.locationRelativeTo);
   }
 
   /**
@@ -250,7 +249,7 @@ public final class ProgressDialog extends JDialog {
 
     @Override
     public ProgressDialog build() {
-      return new ProgressDialog(this, owner);
+      return new ProgressDialog(this);
     }
   }
 }
