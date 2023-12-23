@@ -18,6 +18,7 @@ Codion Change Log
 - EntityEditPanel now overrides EntityEditComponentPanel.onException() and propagates the exception to the correct exception handler.
 - EntityTablePanel.onException() now propagates the exception to the correct exception handler.
 - EntityEditPanel.beforeInsert(), beforeUpdate() and beforeDelete() removed.
+- EntityTablePanel bug fixed, no longer creates a condition panel if one should not be included.
 
 ## 0.17.21
 ### is.codion.swing.common.model
