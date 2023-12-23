@@ -402,6 +402,30 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
+   * @return true if confirmed
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   */
+  protected final boolean confirmInsert() {
+    return confirmers.getOrDefault(Confirmer.Action.INSERT, DEFAULT_INSERT_CONFIRMER).confirm(this);
+  }
+
+  /**
+   * @return true if confirmed
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   */
+  protected final boolean confirmUpdate() {
+    return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
+  }
+
+  /**
+   * @return true if confirmed
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   */
+  protected final boolean confirmDelete() {
+    return confirmers.getOrDefault(Confirmer.Action.DELETE, DEFAULT_DELETE_CONFIRMER).confirm(this);
+  }
+
+  /**
    * Propagates the exception to {@link #onValidationException(ValidationException)} or
    * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
    * otherwise forwards to the super implementation.
@@ -587,18 +611,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
     });
-  }
-
-  private boolean confirmInsert() {
-    return confirmers.getOrDefault(Confirmer.Action.INSERT, DEFAULT_INSERT_CONFIRMER).confirm(this);
-  }
-
-  private boolean confirmDelete() {
-    return confirmers.getOrDefault(Confirmer.Action.DELETE, DEFAULT_DELETE_CONFIRMER).confirm(this);
-  }
-
-  private boolean confirmUpdate() {
-    return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
   }
 
   private void showEntityMenu() {
