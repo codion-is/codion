@@ -8,6 +8,8 @@ Codion Change Log
 - Control.Builder.value() added.
 - AbstractControlBuilder added, related refactoring.
 - Control and ToggleControl.copyBuilder() added.
+### is.codion.framework.domain
+- IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
 ### is.codion.framework.model
 - AbstractEntityEditModel, edit event notifications now handled by afterInsert/afterUpdate/afterDelete events.
 - AbstractEntityEditModel.insert() no longer calls save() on the entity being inserted, since exists() relies on the original primary key value and is used during validation.
