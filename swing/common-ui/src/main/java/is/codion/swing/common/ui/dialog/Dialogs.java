@@ -65,7 +65,7 @@ public final class Dialogs {
   public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ProgressWorker.Task<T> task) {
     requireNonNull(task);
 
-    return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.perform()).indeterminate(true);
+    return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.execute()).indeterminate(true);
   }
 
   /**

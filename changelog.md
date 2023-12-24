@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.22-SNAPSHOT
+### is.codion.swing.common.model
+- ProgressWorker.Task and ProgressTask.perform() renamed execute().
 ### is.codion.swing.common.ui
 - AbstractButtonBuilder now sets the initial background, foreground and font specified by the action.
 - AbstractControl now overrides putValue() and getValue() in order to prevent modification of the 'enabled' property.

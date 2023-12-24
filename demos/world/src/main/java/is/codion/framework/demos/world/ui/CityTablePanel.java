@@ -75,7 +75,7 @@ final class CityTablePanel extends ChartTablePanel {
     }
 
     @Override
-    public Void perform(ProgressReporter<String> progressReporter) throws Exception {
+    public Void execute(ProgressReporter<String> progressReporter) throws Exception {
       tableModel.populateLocationForSelected(progressReporter, cancelled);
       return null;
     }
