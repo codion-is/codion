@@ -163,7 +163,7 @@ public class DefaultToggleControlTest {
             .mnemonic('n')
             .value("key", "value")
             .build();
-    ToggleControl copy = control.copyBuilder(state)
+    ToggleControl copy = control.copy(state)
             .name("new name")
             .description("new desc")
             .value("key", "newvalue")

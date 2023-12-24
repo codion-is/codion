@@ -140,7 +140,7 @@ public final class DefaultControlTest {
             .mnemonic('n')
             .value("key", "value")
             .build();
-    Control copy = control.copyBuilder(() -> {})
+    Control copy = control.copy(() -> {})
             .name("new name")
             .description("new desc")
             .value("key", "newvalue")

@@ -173,20 +173,20 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(Command command) {
+  public final <B extends Builder<Control, B>> Builder<Control, B> copy(Command command) {
     return createBuilder(command, null);
   }
 
   @Override
-  public final <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(ActionCommand actionCommand) {
+  public final <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand) {
     return createBuilder(null, actionCommand);
   }
 
   @Override
-  public final <B extends Builder<Control, B>> Builder<Control, B> copyBuilder(Event<ActionEvent> event) {
+  public final <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event) {
     requireNonNull(event);
 
-    return copyBuilder(event::accept);
+    return copy(event::accept);
   }
 
   private <B extends Builder<Control, B>> Builder<Control, B> createBuilder(Command command, ActionCommand actionCommand) {
