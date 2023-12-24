@@ -651,7 +651,7 @@ public class EntityTablePanel extends JPanel {
    * @see #beforeDelete()
    */
   public final boolean deleteWithConfirmation() {
-    if (deleteConfirmer.confirm(this)) {
+    if (confirmDelete()) {
       return delete();
     }
 
@@ -1056,6 +1056,14 @@ public class EntityTablePanel extends JPanel {
       focusOwner = EntityTablePanel.this;
     }
     Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
+  }
+
+  /**
+   * @return true if confirmed
+   * @see #setDeleteConfirmer(Confirmer)
+   */
+  protected final boolean confirmDelete() {
+    return deleteConfirmer.confirm(this);
   }
 
   /**
