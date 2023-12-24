@@ -702,7 +702,7 @@ public final class EntitySearchField extends HintTextField {
       }
 
       @Override
-      public void perform() {
+      public void execute() {
         searchModel.entities().set(list.getSelectedValuesList());
         Utilities.disposeParentWindow(list);
       }

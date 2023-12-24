@@ -1185,7 +1185,7 @@ public class EntityPanel extends JPanel {
   private final class ShowHiddenEditPanel implements Control.Command {
 
     @Override
-    public void perform() {
+    public void execute() {
       if (containsEditPanel() && editPanelState.equalTo(HIDDEN)) {
         editPanelState.set(WINDOW);
       }

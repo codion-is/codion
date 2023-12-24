@@ -188,7 +188,7 @@ final class EntityControls {
     }
 
     @Override
-    public void perform() {
+    public void execute() {
       EntityEditPanel editPanel = initializeEditPanel();
       editPanel.editModel().setDefaults();
       State cancelled = State.state();
@@ -298,7 +298,7 @@ final class EntityControls {
     }
 
     @Override
-    public void perform() throws Exception {
+    public void execute() throws Exception {
       if (component instanceof EntityComboBox) {
         if (((EntityComboBox) component).isPopupVisible()) {
           ((EntityComboBox) component).hidePopup();

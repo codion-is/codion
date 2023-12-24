@@ -138,7 +138,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
     }
 
     @Override
-    public void perform() {
+    public void execute() {
       command.run();
       Utilities.disposeParentWindow(component);
     }
@@ -153,7 +153,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
     }
 
     @Override
-    public void perform() {
+    public void execute() {
       Utilities.disposeParentWindow(component);
     }
   }
@@ -167,7 +167,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
     }
 
     @Override
-    public void perform() {
+    public void execute() {
       Utilities.disposeParentWindow(component);
     }
   }

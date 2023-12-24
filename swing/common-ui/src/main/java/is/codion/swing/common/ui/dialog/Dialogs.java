@@ -52,7 +52,7 @@ public final class Dialogs {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
-      task.perform();
+      task.execute();
       return null;
     }).indeterminate(true);
   }

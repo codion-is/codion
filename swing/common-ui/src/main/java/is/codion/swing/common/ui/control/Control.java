@@ -169,10 +169,10 @@ public interface Control extends Action {
   interface Command {
 
     /**
-     * Performs the work
+     * Executes the command task.
      * @throws Exception in case of an exception
      */
-    void perform() throws Exception;
+    void execute() throws Exception;
   }
 
   /**
@@ -181,11 +181,11 @@ public interface Control extends Action {
   interface ActionCommand {
 
     /**
-     * Performes the work.
+     * Executes the command task.
      * @param actionEvent the action event
      * @throws Exception in case of an exception
      */
-    void perform(ActionEvent actionEvent) throws Exception;
+    void execute(ActionEvent actionEvent) throws Exception;
   }
 
   /**
