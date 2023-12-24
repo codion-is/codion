@@ -703,9 +703,9 @@ public class EntityTablePanel extends JPanel {
         setupControls();
         setupTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
-        setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
-        setFilterPanelVisibleInternal(filterPanelVisibleState.get());
-        setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
+        setConditionPanelVisible(conditionPanelVisibleState.get());
+        setFilterPanelVisible(filterPanelVisibleState.get());
+        setSummaryPanelVisible(summaryPanelVisibleState.get());
         bindEvents();
         setupKeyboardActions();
         updateComponentTreeUI(this);
@@ -1342,9 +1342,9 @@ public class EntityTablePanel extends JPanel {
             KeyEvents.builder(VK_DELETE)
                     .action(control)
                     .enable(table));
-    conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
-    filterPanelVisibleState.addDataListener(this::setFilterPanelVisibleInternal);
-    summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
+    conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
+    filterPanelVisibleState.addDataListener(this::setFilterPanelVisible);
+    summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisible);
     tableModel.conditionModel().addChangeListener(this::onConditionChanged);
     tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
     tableModel.refresher().addRefreshFailedListener(this::onException);
@@ -1372,7 +1372,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private void setConditionPanelVisibleInternal(boolean visible) {
+  private void setConditionPanelVisible(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
       refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
@@ -1380,14 +1380,14 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private void setFilterPanelVisibleInternal(boolean visible) {
+  private void setFilterPanelVisible(boolean visible) {
     if (filterPanelScrollPane != null) {
       filterPanelScrollPane.setVisible(visible);
       revalidate();
     }
   }
 
-  private void setSummaryPanelVisibleInternal(boolean visible) {
+  private void setSummaryPanelVisible(boolean visible) {
     if (summaryPanelScrollPane != null) {
       summaryPanelScrollPane.setVisible(visible);
       revalidate();
