@@ -90,8 +90,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR
   };
 
-  private static final Control NULL_CONTROL = Control.control(() -> {});
-
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
@@ -214,9 +212,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if this edit panel contains a control assocated with the given {@code controlCode}
    */
   public final boolean containsControl(ControlCode controlCode) {
-    Control control = standardControls.get(requireNonNull(controlCode));
-
-    return control != null && control != NULL_CONTROL;
+    return standardControls.get(requireNonNull(controlCode)) != null;
   }
 
   /**
@@ -260,6 +256,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final EntityEditPanel initialize() {
     if (!initialized) {
       try {
+        setupStandardControls();
         setupControls();
         bindEvents();
         initializeUI();
@@ -487,7 +484,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (initialized()) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
-    standardControls.put(controlCode, control == null ? NULL_CONTROL : control);
+    standardControls.put(controlCode, control);
   }
 
   /**
@@ -500,6 +497,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .map(standardControls::get)
             .toArray(Control[]::new));
   }
+
+  /**
+   * Override to setup any custom controls. This default implementation is empty.
+   * This method is called after all standard controls have been initialized.
+   * @see #setControl(ControlCode, Control)
+   * @see #control(ControlCode)
+   */
+  protected void setupControls() {}
 
   /**
    * Initializes this EntityEditPanel UI, that is, creates and lays out the components
@@ -528,7 +533,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #setControl(ControlCode, Control)
    * @see #control(ControlCode)
    */
-  private void setupControls() {
+  private void setupStandardControls() {
     if (!editModel().readOnly().get()) {
       setupEditControls();
     }

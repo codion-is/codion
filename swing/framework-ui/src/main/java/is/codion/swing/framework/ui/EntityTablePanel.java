@@ -711,6 +711,7 @@ public class EntityTablePanel extends JPanel {
     if (!initialized) {
       try {
         setupComponents();
+        setupStandardControls();
         setupControls();
         setupTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
@@ -728,6 +729,14 @@ public class EntityTablePanel extends JPanel {
 
     return this;
   }
+
+  /**
+   * Override to setup any custom controls. This default implementation is empty.
+   * This method is called after all standard controls have been initialized.
+   * @see #setControl(ControlCode, Control)
+   * @see #control(ControlCode)
+   */
+  protected void setupControls() {}
 
   /**
    * Initializes the south panel, override and return null for no south panel.
@@ -1429,7 +1438,7 @@ public class EntityTablePanel extends JPanel {
     summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
   }
 
-  private void setupControls() {
+  private void setupStandardControls() {
     if (includeDeleteSelectedControl()) {
       controls.putIfAbsent(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
     }

@@ -25,6 +25,7 @@ Codion Change Log
 - EntityEditPanel.confirmInsert(), confirmUpdate() and confirmDelete() now protected, useful when doing custom crud operations.
 - EntityTablePanel.confirmDelete() added.
 - EntityTablePanel.control() no longer Optional based, containsControl() added.
+- EntityEditPanel, EntityTablePanel.setupControls() added for setting up custom controls, called after standard controls have been initialized.
 
 ## 0.17.21
 ### is.codion.swing.common.model
