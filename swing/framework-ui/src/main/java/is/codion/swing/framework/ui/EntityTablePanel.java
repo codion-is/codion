@@ -638,9 +638,7 @@ public class EntityTablePanel extends JPanel {
   public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
     requireNonNull(attributeToEdit);
     if (!tableModel.selectionModel().isSelectionEmpty()) {
-      EntityDialogs.editDialog(tableModel.editModel(), attributeToEdit)
-              .owner(this)
-              .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attributeToEdit))
+      editDialogBuilder(attributeToEdit)
               .edit(tableModel.selectionModel().getSelectedItems());
     }
   }
@@ -1063,6 +1061,18 @@ public class EntityTablePanel extends JPanel {
             .attributes().definition(exception.attribute())
             .caption();
     JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+  }
+
+  /**
+   * Override to customize the edit dialog used when multiple entities are edited.
+   * @param attribute the attribute to edit
+   * @return a edit dialog builder
+   * @param <T> the attribute type
+   */
+  protected <T> EntityDialogs.EditDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
+    return EntityDialogs.editDialog(tableModel.editModel(), attribute)
+              .owner(this)
+              .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attribute));
   }
 
   /**
