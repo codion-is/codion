@@ -273,6 +273,7 @@ public interface EntityEditModel {
   State persist(Attribute<?> attribute);
 
   /**
+   * Note: This method must be called on the UI thread in case a panel has been based on this model.
    * Performs an insert on the active entity, sets the primary key values of the active entity
    * according to the primary key of the inserted entity
    * @return the inserted entity
@@ -284,6 +285,7 @@ public interface EntityEditModel {
   Entity insert() throws DatabaseException, ValidationException;
 
   /**
+   * Note: This method must be called on the UI thread in case a panel has been based on this model.
    * Performs an insert on the given entities, returns silently on receiving an empty collection.
    * @param entities the entities to insert
    * @return a list containing the inserted entities
@@ -297,6 +299,7 @@ public interface EntityEditModel {
   Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
+   * Note: This method must be called on the UI thread in case a panel has been based on this model.
    * Performs an update on the active entity
    * @return the updated entity
    * @throws DatabaseException in case of a database exception
@@ -309,6 +312,7 @@ public interface EntityEditModel {
   Entity update() throws DatabaseException, ValidationException;
 
   /**
+   * Note: This method must be called on the UI thread in case a panel has been based on this model.
    * Updates the given entities. If the entities are unmodified or the collection is empty this method returns silently.
    * @param entities the entities to update
    * @return the updated entities
@@ -323,7 +327,7 @@ public interface EntityEditModel {
   Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
-   * Deletes the active entity
+   * Note: This method must be called on the UI thread in case a panel has been based on this model.
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled
    * @see #addBeforeDeleteListener(Consumer)
@@ -332,7 +336,7 @@ public interface EntityEditModel {
   void delete() throws DatabaseException;
 
   /**
-   * Deletes the given entities, returns silently on receiving an empty collection
+   * Note: This method must be called on the UI thread in case a panel has been based on this model.
    * @param entities the entities to delete
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled

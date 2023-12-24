@@ -176,7 +176,7 @@ public final class EntityDependenciesPanel extends JPanel {
   private final class NavigateRightCommand implements Control.Command {
 
     @Override
-    public void perform() {
+    public void execute() {
       int selectedIndex = tabPane.getSelectedIndex();
       tabPane.setSelectedIndex(selectedIndex == tabPane.getTabCount() - 1 ? 0 : selectedIndex + 1);
       requestSelectedTableFocus();
@@ -186,7 +186,7 @@ public final class EntityDependenciesPanel extends JPanel {
   private final class NavigateLeftCommand implements Control.Command {
 
     @Override
-    public void perform() {
+    public void execute() {
       int selectedIndex = tabPane.getSelectedIndex();
       tabPane.setSelectedIndex(selectedIndex == 0 ? tabPane.getTabCount() - 1 : selectedIndex - 1);
       requestSelectedTableFocus();

@@ -561,7 +561,7 @@ public final class TabbedPanelLayout implements PanelLayout {
       }
 
       @Override
-      public void perform() {
+      public void execute() {
         if (panelState.equalTo(HIDDEN)) {
           panelState.set(EMBEDDED);
         }

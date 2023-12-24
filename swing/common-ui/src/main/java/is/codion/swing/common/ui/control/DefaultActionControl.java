@@ -37,7 +37,7 @@ final class DefaultActionControl extends AbstractControl {
   @Override
   public void actionPerformed(ActionEvent e) {
     try {
-      command.perform(e);
+      command.execute(e);
     }
     catch (CancelException ce) {/*Operation cancelled*/}
     catch (RuntimeException re) {

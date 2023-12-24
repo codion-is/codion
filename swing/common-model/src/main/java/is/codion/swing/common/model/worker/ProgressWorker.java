@@ -89,7 +89,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public static <T> Builder<T, ?> builder(Task<T> task) {
     requireNonNull(task);
 
-    return builder(progressReporter -> task.perform());
+    return builder(progressReporter -> task.execute());
   }
 
   /**
@@ -104,7 +104,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected T doInBackground() throws Exception {
-    return task.perform(new TaskProgressReporter());
+    return task.execute(new TaskProgressReporter());
   }
 
   @Override
@@ -153,11 +153,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Task<T> {
 
     /**
-     * Performs the task.
+     * Executes the task.
      * @return the task result
      * @throws Exception in case of an exception
      */
-    T perform() throws Exception;
+    T execute() throws Exception;
   }
 
   /**
@@ -168,12 +168,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface ProgressTask<T, V> {
 
     /**
-     * Performs the task.
+     * Executes the task.
      * @param progressReporter the progress reporter to report a message or progress (0 - maximumProgress).
      * @return the task result
      * @throws Exception in case of an exception
      */
-    T perform(ProgressReporter<V> progressReporter) throws Exception;
+    T execute(ProgressReporter<V> progressReporter) throws Exception;
   }
 
   /**

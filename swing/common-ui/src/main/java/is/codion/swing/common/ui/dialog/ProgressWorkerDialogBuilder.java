@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 to 100.
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result this {@link ProgressWorker} produces.
- * @see ProgressWorker.ProgressTask#perform(ProgressWorker.ProgressReporter) to indicate work progress
+ * @see ProgressWorker.ProgressTask#execute(ProgressWorker.ProgressReporter) to indicate work progress
  */
 public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
 

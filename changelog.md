@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.22-SNAPSHOT
+### is.codion.swing.common.model
+- ProgressWorker.Task and ProgressTask.perform() renamed execute().
 ### is.codion.swing.common.ui
 - AbstractButtonBuilder now sets the initial background, foreground and font specified by the action.
 - AbstractControl now overrides putValue() and getValue() in order to prevent modification of the 'enabled' property.
@@ -10,6 +12,7 @@ Codion Change Log
 - Control and ToggleControl.copyBuilder() added.
 - DefaultProgressWorkerDialogBuilder, bug fixed, did not set the locationRelativeTo for the progress dialog, it was always centered on application window. ProgressDialog bug fixed, didn't use the locationRelativeTo value provided by the builder.
 - Control and ToggleControl.copyBuilder() renamed copy().
+- Control.Command and ActionCommand.perform() renamed execute().
 ### is.codion.framework.domain
 - IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
 ### is.codion.framework.model
@@ -26,6 +29,8 @@ Codion Change Log
 - EntityTablePanel.confirmDelete() added.
 - EntityTablePanel.control() no longer Optional based, containsControl() added.
 - EntityEditPanel, EntityTablePanel.setupControls() added for setting up custom controls, called after standard controls have been initialized.
+- EntityDialogs.EditDialogBuilder.Updater added for customizing how the actual update is performed when multiple entities are edited, related refactoring.
+- EntityTablePanel.editDialogBuilder() added.
 
 ## 0.17.21
 ### is.codion.swing.common.model

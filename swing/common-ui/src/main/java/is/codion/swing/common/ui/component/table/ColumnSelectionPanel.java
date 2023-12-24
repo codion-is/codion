@@ -229,7 +229,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
     }
 
     @Override
-    public void perform() {
+    public void execute() {
       checkBoxes.stream()
               .filter(Component::isFocusOwner)
               .findAny()

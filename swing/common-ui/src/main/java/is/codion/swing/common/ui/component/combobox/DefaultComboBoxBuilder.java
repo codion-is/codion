@@ -190,7 +190,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     }
 
     @Override
-    public void perform() {
+    public void execute() {
       comboBoxModel.refresh();
     }
   }

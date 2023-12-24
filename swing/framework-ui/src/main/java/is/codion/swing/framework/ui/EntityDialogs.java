@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.value.ValueObserver;
@@ -127,6 +128,12 @@ public final class EntityDialogs {
     EditDialogBuilder<T> onException(Consumer<Exception> onException);
 
     /**
+     * @param updater the updater to use
+     * @return this builder
+     */
+    EditDialogBuilder<T> updater(Updater updater);
+
+    /**
      * Displays a dialog for editing the given entity
      * @param entity the entity to edit
      */
@@ -137,6 +144,21 @@ public final class EntityDialogs {
      * @param entities the entities to edit
      */
     void edit(Collection<? extends Entity> entities);
+
+    /**
+     * Handles performing the actual update when entities are edited.
+     */
+    interface Updater {
+
+      /**
+       * Updates the given entities, assuming they are all modified.
+       * @param editModel the underlying edit model
+       * @param entities the modified entities
+       * @throws ValidationException in case of a validation failure
+       * @throws DatabaseException in case of a database exception
+       */
+      void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException, DatabaseException;
+    }
   }
 
   /**
@@ -174,6 +196,7 @@ public final class EntityDialogs {
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
     private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
     private Consumer<Exception> onException = new DefaultExceptionHandler();
+    private Updater updater = new DefaultUpdater();
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -195,6 +218,12 @@ public final class EntityDialogs {
     @Override
     public EditDialogBuilder<T> onException(Consumer<Exception> onException) {
       this.onException = requireNonNull(onException);
+      return this;
+    }
+
+    @Override
+    public EditDialogBuilder<T> updater(Updater updater) {
+      this.updater = requireNonNull(updater);
       return this;
     }
 
@@ -232,7 +261,9 @@ public final class EntityDialogs {
                 .inputValidator(inputValidator)
                 .show();
         selectedEntities.forEach(entity -> entity.put(attribute, newValue));
-        updatePerformed = update(selectedEntities);
+        updatePerformed = update(selectedEntities.stream()
+                .filter(Entity::modified)
+                .collect(toList()));
       }
     }
 
@@ -248,7 +279,7 @@ public final class EntityDialogs {
 
     private boolean update(Collection<Entity> entities) {
       try {
-        editModel.update(entities);
+        updater.update(editModel, entities);
 
         return true;
       }
@@ -285,6 +316,14 @@ public final class EntityDialogs {
                 .definition(exception.attribute())
                 .caption();
         JOptionPane.showMessageDialog(owner, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+      }
+    }
+
+    private static final class DefaultUpdater implements Updater {
+
+      @Override
+      public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException, DatabaseException {
+        editModel.update(entities);
       }
     }
 
