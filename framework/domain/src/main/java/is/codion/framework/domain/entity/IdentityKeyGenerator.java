@@ -40,11 +40,12 @@ final class IdentityKeyGenerator implements KeyGenerator {
   @Override
   public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
     try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
-      if (generatedKeys.next()) {
-        ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().columnDefinitions().get(0);
-        // must fetch value by column name, since some databases (PostgreSQL for example), return all columns, not just generated ones
-        entity.put(column.attribute(), column.prepareValue(generatedKeys.getObject(column.name())));
+      if (!generatedKeys.next()) {
+        throw new SQLException("Identity key generator returned no generated keys", DatabaseConnection.SQL_STATE_NO_DATA);
       }
+      ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().columnDefinitions().get(0);
+      // must fetch value by column name, since some databases (PostgreSQL for example), return all columns, not just generated ones
+      entity.put(column.attribute(), column.prepareValue(generatedKeys.getObject(column.name())));
     }
   }
 }

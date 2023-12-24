@@ -18,11 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.StateObserver;
-
 import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.KeyStroke;
 import java.util.List;
 
 /**
@@ -162,43 +158,7 @@ public interface Controls extends Control {
    * @see Controls#builder(Command)
    * @see Controls#actionControlBuilder(ActionCommand)
    */
-  interface Builder extends Control.Builder {
-
-    /**
-     * @param name the name for this controls instance
-     * @return this Builder instance
-     */
-    Builder name(String name);
-
-    /**
-     * @param description a description for this controls instance
-     * @return this Builder instance
-     */
-    Builder description(String description);
-
-    /**
-     * @param mnenomic the mnemonic to assign to this controls instance
-     * @return this Builder instance
-     */
-    Builder mnemonic(char mnenomic);
-
-    /**
-     * @param keyStroke the keystroke to associate with this controls instance
-     * @return this Builder instance
-     */
-    Builder keyStroke(KeyStroke keyStroke);
-
-    /**
-     * @param enabled the state observer dictating the enabled state of this controls instance
-     * @return this Builder instance
-     */
-    Builder enabled(StateObserver enabled);
-
-    /**
-     * @param smallIcon the icon
-     * @return this Builder instance
-     */
-    Builder smallIcon(Icon smallIcon);
+  interface Builder extends Control.Builder<Controls, Controls.Builder> {
 
     /**
      * @param control the control to add to this controls instance
@@ -210,7 +170,7 @@ public interface Controls extends Control {
      * @param controlBuilder the control builder to add to this controls instance
      * @return this Builder instance
      */
-    Builder control(Control.Builder controlBuilder);
+    Builder control(Control.Builder<?, ?> controlBuilder);
 
     /**
      * @param controls the controls to add
@@ -222,7 +182,7 @@ public interface Controls extends Control {
      * @param controlBuilders the control builder to add
      * @return this Builder instance
      */
-    Builder controls(Control.Builder... controlBuilders);
+    Builder controls(Control.Builder<?, ?>... controlBuilders);
 
     /**
      * @param action the Action to add to this controls instance
@@ -241,11 +201,5 @@ public interface Controls extends Control {
      * @return this Builder instance
      */
     Builder separator();
-
-    /**
-     * Builds the Controls
-     * @return a new Controls instance
-     */
-    Controls build();
   }
 }

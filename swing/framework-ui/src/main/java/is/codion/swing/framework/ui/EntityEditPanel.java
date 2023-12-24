@@ -105,8 +105,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR
   };
 
-  private static final Control NULL_CONTROL = Control.control(() -> {});
-
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
@@ -229,9 +227,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if this edit panel contains a control assocated with the given {@code controlCode}
    */
   public final boolean containsControl(ControlCode controlCode) {
-    Control control = standardControls.get(requireNonNull(controlCode));
-
-    return control != null && control != NULL_CONTROL;
+    return standardControls.get(requireNonNull(controlCode)) != null;
   }
 
   /**
@@ -275,6 +271,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final EntityEditPanel initialize() {
     if (!initialized) {
       try {
+        setupStandardControls();
         setupControls();
         bindEvents();
         initializeUI();
@@ -307,10 +304,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
-   * @see #beforeInsert()
    */
   public final boolean insert() {
-    beforeInsert();
     try {
       editModel().insert();
       if (clearAfterInsert.get()) {
@@ -324,7 +319,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
-      onValidationException(e);
+      onException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -352,10 +347,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
-   * @see #beforeDelete()
    */
   public final boolean delete() {
-    beforeDelete();
     try {
       editModel().delete();
       requestInitialFocus();
@@ -364,7 +357,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e);
+      onException(e);
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -392,10 +385,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs update on the active entity without asking for confirmation.
    * @return true if the update operation was successful
-   * @see #beforeUpdate()
    */
   public final boolean update() {
-    beforeUpdate();
     try {
       editModel().update();
       requestAfterUpdateFocus();
@@ -404,7 +395,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ValidationException e) {
       LOG.debug(e.getMessage(), e);
-      onValidationException(e);
+      onException(e);
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -423,22 +414,47 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Called before insert is performed.
-   * To cancel the insert throw a {@link is.codion.common.model.CancelException}.
+   * @return true if confirmed
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
-  protected void beforeInsert() {}
+  protected final boolean confirmInsert() {
+    return confirmers.getOrDefault(Confirmer.Action.INSERT, DEFAULT_INSERT_CONFIRMER).confirm(this);
+  }
 
   /**
-   * Called before update is performed.
-   * To cancel the update throw a {@link is.codion.common.model.CancelException}.
+   * @return true if confirmed
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
-  protected void beforeUpdate() {}
+  protected final boolean confirmUpdate() {
+    return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
+  }
 
   /**
-   * Called before delete is performed.
-   * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
+   * @return true if confirmed
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
-  protected void beforeDelete() {}
+  protected final boolean confirmDelete() {
+    return confirmers.getOrDefault(Confirmer.Action.DELETE, DEFAULT_DELETE_CONFIRMER).confirm(this);
+  }
+
+  /**
+   * Propagates the exception to {@link #onValidationException(ValidationException)} or
+   * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
+   * otherwise forwards to the super implementation.
+   * @param exception the exception to handle
+   */
+  @Override
+  protected void onException(Throwable exception) {
+    if (exception instanceof ValidationException) {
+      onValidationException((ValidationException) exception);
+    }
+    else if (exception instanceof ReferentialIntegrityException) {
+      onReferentialIntegrityException((ReferentialIntegrityException) exception);
+    }
+    else {
+      super.onException(exception);
+    }
+  }
 
   /**
    * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
@@ -454,7 +470,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
-      onException(exception);
+      super.onException(exception);
     }
   }
 
@@ -483,7 +499,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (initialized()) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
-    standardControls.put(controlCode, control == null ? NULL_CONTROL : control);
+    standardControls.put(controlCode, control);
   }
 
   /**
@@ -496,6 +512,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .map(standardControls::get)
             .toArray(Control[]::new));
   }
+
+  /**
+   * Override to setup any custom controls. This default implementation is empty.
+   * This method is called after all standard controls have been initialized.
+   * @see #setControl(ControlCode, Control)
+   * @see #control(ControlCode)
+   */
+  protected void setupControls() {}
 
   /**
    * Initializes this EntityEditPanel UI, that is, creates and lays out the components
@@ -524,7 +548,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #setControl(ControlCode, Control)
    * @see #control(ControlCode)
    */
-  private void setupControls() {
+  private void setupStandardControls() {
     if (!editModel().readOnly().get()) {
       setupEditControls();
     }
@@ -607,18 +631,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
     });
-  }
-
-  private boolean confirmInsert() {
-    return confirmers.getOrDefault(Confirmer.Action.INSERT, DEFAULT_INSERT_CONFIRMER).confirm(this);
-  }
-
-  private boolean confirmDelete() {
-    return confirmers.getOrDefault(Confirmer.Action.DELETE, DEFAULT_DELETE_CONFIRMER).confirm(this);
-  }
-
-  private boolean confirmUpdate() {
-    return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
   }
 
   private void showEntityMenu() {

@@ -63,5 +63,9 @@ public class DefaultControlsTest {
     assertFalse(list2.actions().contains(one));
     assertTrue(list2.empty());
     assertFalse(list2.notEmpty());
+
+    assertThrows(UnsupportedOperationException.class, () -> list.setEnabled(false));
+    assertThrows(IllegalArgumentException.class, () -> list.putValue("enabled", false));
+    assertThrows(IllegalArgumentException.class, () -> Control.builder(() -> {}).value("enabled", false));
   }
 }

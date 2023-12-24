@@ -164,6 +164,8 @@ public final class PetclinicImpl extends DefaultDomain {
             Owner.PHONE_TYPE.define()
                     .column()
                     .caption("Phone type")
+                    .nullable(false)
+                    .defaultValue(PhoneType.MOBILE)
                     .columnClass(String.class, new PhoneTypeConverter()))
             .keyGenerator(identity())
             .caption("Owners")

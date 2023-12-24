@@ -1,6 +1,32 @@
 Codion Change Log
 ==================
 
+## 0.17.22-SNAPSHOT
+### is.codion.swing.common.ui
+- AbstractButtonBuilder now sets the initial background, foreground and font specified by the action.
+- AbstractControl now overrides putValue() and getValue() in order to prevent modification of the 'enabled' property.
+- Control.Builder.value() added.
+- AbstractControlBuilder added, related refactoring.
+- Control and ToggleControl.copyBuilder() added.
+- DefaultProgressWorkerDialogBuilder, bug fixed, did not set the locationRelativeTo for the progress dialog, it was always centered on application window. ProgressDialog bug fixed, didn't use the locationRelativeTo value provided by the builder.
+- Control and ToggleControl.copyBuilder() renamed copy().
+### is.codion.framework.domain
+- IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
+### is.codion.framework.model
+- AbstractEntityEditModel, edit event notifications now handled by afterInsert/afterUpdate/afterDelete events.
+- AbstractEntityEditModel.insert() no longer calls save() on the entity being inserted, since exists() relies on the original primary key value and is used during validation.
+### is.codion.swing.framework.model
+- SwingEntityTreeModel.refreshSelect() bug fixed, now handles root nodes correctly.  
+### is.codion.swing.framework.ui
+- EntityEditPanel now overrides EntityEditComponentPanel.onException() and propagates the exception to the correct exception handler.
+- EntityTablePanel.onException() now propagates the exception to the correct exception handler.
+- EntityEditPanel.beforeInsert(), beforeUpdate() and beforeDelete() removed.
+- EntityTablePanel bug fixed, no longer creates a condition panel if one should not be included.
+- EntityEditPanel.confirmInsert(), confirmUpdate() and confirmDelete() now protected, useful when doing custom crud operations.
+- EntityTablePanel.confirmDelete() added.
+- EntityTablePanel.control() no longer Optional based, containsControl() added.
+- EntityEditPanel, EntityTablePanel.setupControls() added for setting up custom controls, called after standard controls have been initialized.
+
 ## 0.17.21
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.allowSelectionPredicate() renamed validSelectionPredicate().

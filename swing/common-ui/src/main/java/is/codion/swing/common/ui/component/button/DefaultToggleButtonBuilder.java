@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JToggleButton;
@@ -46,7 +47,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
   }
 
   @Override
-  public final B toggleControl(ToggleControl.Builder toggleControlBuilder) {
+  public final B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
     return toggleControl(requireNonNull(toggleControlBuilder).build());
   }
 

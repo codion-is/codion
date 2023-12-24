@@ -850,72 +850,82 @@ public class EntityPanel extends JPanel {
    */
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
-      tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
-              KeyEvents.builder(VK_T)
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS)) {
+        KeyEvents.builder(VK_T)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                      .action(control)
-                      .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-              KeyEvents.builder(VK_S)
-                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                      .action(control)
-                      .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
-              KeyEvents.builder(VK_S)
-                      .modifiers(CTRL_DOWN_MASK)
-                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                      .action(control)
-                      .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
-              KeyEvents.builder(VK_F)
-                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                      .action(control)
-                      .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL).ifPresent(control ->
-              KeyEvents.builder(VK_F)
-                      .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
-                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                      .action(control)
-                      .enable(this));
+                      .action(tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS))
+                      .enable(this);
+      }
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL)) {
+        KeyEvents.builder(VK_S)
+                .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL))
+                .enable(this);
+      }
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL)) {
+        KeyEvents.builder(VK_S)
+                .modifiers(CTRL_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL))
+                .enable(this);
+      }
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL)) {
+        KeyEvents.builder(VK_F)
+                .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL))
+                .enable(this);
+      }
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL)) {
+        KeyEvents.builder(VK_F)
+                .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL))
+                .enable(this);
+      }
       KeyEvents.builder(VK_F)
               .modifiers(CTRL_DOWN_MASK)
               .action(Control.control(tablePanel.table().searchField()::requestFocusInWindow))
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       if (containsEditPanel()) {
-        tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
-                KeyEvents.builder(VK_T)
-                        .modifiers(CTRL_DOWN_MASK)
-                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                        .action(control)
-                        .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-                KeyEvents.builder(VK_S)
-                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                        .action(control)
-                        .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
-                KeyEvents.builder(VK_S)
-                        .modifiers(CTRL_DOWN_MASK)
-                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                        .action(control)
-                        .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
-                KeyEvents.builder(VK_F)
-                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                        .action(control)
-                        .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL).ifPresent(control ->
-                KeyEvents.builder(VK_F)
-                        .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
-                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                        .action(control)
-                        .enable(editControlPanel));
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS)) {
+          KeyEvents.builder(VK_T)
+                  .modifiers(CTRL_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS))
+                  .enable(editControlPanel);
+        }
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL)) {
+          KeyEvents.builder(VK_S)
+                  .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL))
+                  .enable(editControlPanel);
+        }
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL)) {
+          KeyEvents.builder(VK_S)
+                  .modifiers(CTRL_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL))
+                  .enable(editControlPanel);
+        }
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL)) {
+          KeyEvents.builder(VK_F)
+                  .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL))
+                  .enable(editControlPanel);
+        }
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL)) {
+          KeyEvents.builder(VK_F)
+                  .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL))
+                  .enable(editControlPanel);
+        }
       }
     }
     if (containsEditPanel()) {

@@ -49,14 +49,14 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   @Override
   public final B owner(Window owner) {
     this.owner = owner;
+    if (locationRelativeTo == null) {
+      locationRelativeTo = owner;
+    }
     return (B) this;
   }
 
   @Override
   public final B owner(Component owner) {
-    if (this.owner != null) {
-      throw new IllegalStateException("owner has alrady been set");
-    }
     this.owner = owner == null ? null : Utilities.parentWindow(owner);
     if (locationRelativeTo == null) {
       locationRelativeTo = owner;

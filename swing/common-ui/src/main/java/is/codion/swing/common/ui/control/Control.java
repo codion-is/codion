@@ -155,6 +155,30 @@ public interface Control extends Action {
   void setEnabled(boolean enabled);
 
   /**
+   * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
+   * @param command the command for the resulting control
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<Control, B>> Builder<Control, B> copy(Command command);
+
+  /**
+   * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
+   * @param actionCommand the command for the resulting control
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<Control, B>> Builder<Control, B> copy(ActionCommand actionCommand);
+
+  /**
+   * Returns a {@link Control.Builder} instance, based on a copy of this control, using the given command.
+   * @param event the event for the resulting control to trigger
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  <B extends Builder<Control, B>> Builder<Control, B> copy(Event<ActionEvent> event);
+
+  /**
    * A command interface, allowing Controls based on method references
    */
   interface Command {
@@ -209,82 +233,98 @@ public interface Control extends Action {
   /**
    * Creates a new Builder.
    * @param command the command to base the control on
+   * @param <B> the builder type
    * @return a new Control.Builder
    */
-  static Builder builder(Command command) {
-    return new ControlBuilder(command);
+  static <B extends Builder<Control, B>> Builder<Control, B> builder(Command command) {
+    return new ControlBuilder<>(command);
   }
 
   /**
    * Creates a new Builder.
    * @param actionCommand the action command to base the control on
+   * @param <B> the builder type
    * @return a new Control.Builder
    */
-  static Builder actionControlBuilder(ActionCommand actionCommand) {
-    return new ControlBuilder(actionCommand);
+  static <B extends Builder<Control, B>> Builder<Control, B> actionControlBuilder(ActionCommand actionCommand) {
+    return new ControlBuilder<>(actionCommand);
   }
 
   /**
    * Creates a Builder for a control which triggers the given event on action performed
    * @param event the event
+   * @param <B> the builder type
    * @return a new Control.Builder
    */
-  static Builder eventControlBuilder(Event<ActionEvent> event) {
+  static <B extends Builder<Control, B>> Builder<Control, B> eventControlBuilder(Event<ActionEvent> event) {
     requireNonNull(event, "event");
-    return new ControlBuilder(event::accept);
+    return new ControlBuilder<>(event::accept);
   }
 
   /**
    * A builder for Control
+   * @param <C> the Control type
+   * @param <B> the builder type
    */
-  interface Builder {
+  interface Builder<C extends Control, B extends Builder<C, B>> {
 
     /**
      * @param name the name of the control
      * @return this Builder instance
      */
-    Builder name(String name);
+    B name(String name);
 
     /**
      * @param enabled the state observer which controls the enabled state of the control
      * @return this Builder instance
      */
-    Builder enabled(StateObserver enabled);
+    B enabled(StateObserver enabled);
 
     /**
      * @param mnemonic the control mnemonic
      * @return this Builder instance
      */
-    Builder mnemonic(char mnemonic);
+    B mnemonic(char mnemonic);
 
     /**
      * @param smallIcon the small control icon
      * @return this Builder instance
      */
-    Builder smallIcon(Icon smallIcon);
+    B smallIcon(Icon smallIcon);
 
     /**
      * @param largeIcon the large control icon
      * @return this Builder instance
      */
-    Builder largeIcon(Icon largeIcon);
+    B largeIcon(Icon largeIcon);
 
     /**
      * @param description a string describing the control
      * @return this Builder instance
      */
-    Builder description(String description);
+    B description(String description);
 
     /**
      * @param keyStroke the keystroke to associate with the control
      * @return this Builder instance
      */
-    Builder keyStroke(KeyStroke keyStroke);
+    B keyStroke(KeyStroke keyStroke);
+
+    /**
+     * Note that any values added will overwrite the property, if already present,
+     * i.e. setting the 'SmallIcon' value via this method will overwrite the one set
+     * via {@link #smallIcon(Icon)}.
+     * @param key the key
+     * @param value the value
+     * @return this builder
+     * @see Action#putValue(String, Object)
+     */
+    B value(String key, Object value);
 
     /**
      * @return a new Control instance
      * @throws IllegalStateException in case no command has been set
      */
-    Control build();
+    C build();
   }
 }

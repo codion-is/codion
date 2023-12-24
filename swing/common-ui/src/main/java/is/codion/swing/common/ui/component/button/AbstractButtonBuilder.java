@@ -244,6 +244,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     C button = createButton();
     if (action != null) {
       button.setAction(action);
+      button.setBackground((Color) action.getValue(Control.BACKGROUND));
+      button.setForeground((Color) action.getValue(Control.FOREGROUND));
+      Font actionFont = (Font) action.getValue(Control.FONT);
+      if (actionFont != null) {
+        button.setFont(actionFont);
+      }
       action.addPropertyChangeListener(new ActionPropertyChangeListener(button));
     }
     actionListeners.forEach(button::addActionListener);
@@ -408,7 +414,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
           button.setForeground((Color) evt.getNewValue());
           break;
         case Control.FONT:
-          button.setFont((Font) evt.getNewValue());
+          if (evt.getNewValue() != null) {
+            button.setFont((Font) evt.getNewValue());
+          }
           break;
         case Action.MNEMONIC_KEY:
           button.setMnemonic((Integer) evt.getNewValue());

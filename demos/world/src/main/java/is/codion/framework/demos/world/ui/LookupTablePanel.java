@@ -94,6 +94,18 @@ final class LookupTablePanel extends EntityTablePanel {
   }
 
   @Override
+  protected void setupControls() {
+    setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
+            .name("Clear")
+            .mnemonic('C')
+            .smallIcon(FrameworkIcons.instance().clear())
+            .build());
+    setControl(ControlCode.SELECT_COLUMNS, ToggleControl.builder(columnSelectionPanelVisible)
+            .name("Select")
+            .build());
+  }
+
+  @Override
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     FrameworkIcons icons = FrameworkIcons.instance();
 
@@ -209,17 +221,6 @@ final class LookupTablePanel extends EntityTablePanel {
   private void setColumnSelectionPanelVisible(boolean visible) {
     columnSelectionScrollPane.setVisible(visible);
     revalidate();
-  }
-
-  private void setupControls() {
-    setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
-            .name("Clear")
-            .mnemonic('C')
-            .smallIcon(FrameworkIcons.instance().clear())
-            .build());
-    setControl(ControlCode.SELECT_COLUMNS, ToggleControl.builder(columnSelectionPanelVisible)
-            .name("Select")
-            .build());
   }
 
   private void clearTableAndConditions() {

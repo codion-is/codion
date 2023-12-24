@@ -166,4 +166,35 @@ public class DefaultToggleControlTest {
             .build();
     assertEquals("Test", item.getText());
   }
+
+  @Test
+  void copy() {
+    State state = State.state();
+    State enabled = State.state();
+    ToggleControl control = ToggleControl.builder(state)
+            .enabled(enabled)
+            .name("name")
+            .description("desc")
+            .mnemonic('n')
+            .value("key", "value")
+            .build();
+    ToggleControl copy = control.copy(state)
+            .name("new name")
+            .description("new desc")
+            .value("key", "newvalue")
+            .build();
+
+    assertFalse(control.isEnabled());
+    assertFalse(copy.isEnabled());
+
+    enabled.set(true);
+
+    assertTrue(control.isEnabled());
+    assertTrue(copy.isEnabled());
+
+    assertNotEquals(control.getName(), copy.getName());
+    assertNotEquals(control.getDescription(), copy.getDescription());
+    assertEquals(control.getMnemonic(), copy.getMnemonic());
+    assertNotEquals(control.getValue("key"), copy.getValue("key"));
+  }
 }
