@@ -97,14 +97,18 @@ public final class EntityDependenciesPanel extends JPanel {
       @Override
       protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
         Controls popupMenuControls = Controls.controls();
-        control(ControlCode.EDIT_SELECTED).ifPresent(popupMenuControls::add);
-        control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
-        control(ControlCode.VIEW_DEPENDENCIES).ifPresent(viewDependencies -> {
+        if (containsControl(ControlCode.EDIT_SELECTED)) {
+          popupMenuControls.add(control(ControlCode.EDIT_SELECTED));
+        }
+        if (containsControl(ControlCode.DELETE_SELECTED)) {
+          popupMenuControls.add(control(ControlCode.DELETE_SELECTED));
+        }
+        if (containsControl(ControlCode.VIEW_DEPENDENCIES)) {
           if (popupMenuControls.notEmpty()) {
             popupMenuControls.addSeparator();
           }
-          popupMenuControls.add(viewDependencies);
-        });
+          popupMenuControls.add(control(ControlCode.VIEW_DEPENDENCIES));
+        }
 
         return popupMenuControls;
       }
