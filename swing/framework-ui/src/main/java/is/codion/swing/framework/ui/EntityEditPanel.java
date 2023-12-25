@@ -28,7 +28,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -102,7 +101,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
   private final Set<EditControl> editControls;
-  private final Map<EditControl, Value<Control>> standardControls;
+  private final Map<EditControl, Value<Control>> controls;
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
   private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
   private final State clearAfterInsert = State.state(true);
@@ -110,7 +109,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling =
           Value.value(ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(), ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
-  private Controls controls;
   private boolean initialized = false;
 
   /**
@@ -153,7 +151,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       ACTIVE_STATE_GROUP.add(active);
     }
     this.editControls = validateControlCodes(editControls);
-    this.standardControls = createStandardControls();
+    this.controls = createControlsMap();
     if (editModel.exists().not().get()) {
       editModel.setDefaults();
     }
@@ -213,21 +211,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * @param editControl the control code
-   * @return true if this edit panel contains a control assocated with the given {@code controlCode}
-   */
-  public final boolean containsControl(EditControl editControl) {
-    return standardControls.get(requireNonNull(editControl)) != null;
-  }
-
-  /**
    * Returns a {@link Value} containing the control associated with {@code controlCode},
    * an empty {@link Value} if no such control is available.
    * @param editControl the control code
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */
   public final Value<Control> control(EditControl editControl) {
-    return standardControls.get(editControl);
+    return controls.get(editControl);
   }
 
   /**
@@ -241,11 +231,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (!initialized()) {
       throw new IllegalStateException("Method must be called after the panel is initialized");
     }
-    if (controls == null) {
-      controls = createControls();
-    }
 
-    return controls;
+    return createControls();
   }
 
   /**
@@ -476,7 +463,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return the Controls available in this edit panel
    */
   protected Controls createControls() {
-    return Controls.controls(standardControls.values().stream()
+    return Controls.controls(Stream.of(EditControl.values())
+            .map(controls::get)
             .map(Value::optional)
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -514,19 +502,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       setupEditControls();
     }
     if (editControls.contains(EditControl.CLEAR)) {
-      standardControls.get(EditControl.CLEAR).set(createClearControl());
+      controls.get(EditControl.CLEAR).set(createClearControl());
     }
   }
 
   private void setupEditControls() {
     if (editModel().insertEnabled().get() && editControls.contains(EditControl.INSERT)) {
-      standardControls.get(EditControl.INSERT).set(createInsertControl());
+      controls.get(EditControl.INSERT).set(createInsertControl());
     }
     if (editModel().updateEnabled().get() && editControls.contains(EditControl.UPDATE)) {
-      standardControls.get(EditControl.UPDATE).set(createUpdateControl());
+      controls.get(EditControl.UPDATE).set(createUpdateControl());
     }
     if (editModel().deleteEnabled().get() && editControls.contains(EditControl.DELETE)) {
-      standardControls.get(EditControl.DELETE).set(createDeleteControl());
+      controls.get(EditControl.DELETE).set(createDeleteControl());
     }
   }
 
@@ -598,7 +586,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     new EntityPopupMenu(editModel().entity(), editModel().connectionProvider().connection()).show(this, 0, 0);
   }
 
-  private Map<EditControl, Value<Control>> createStandardControls() {
+  private Map<EditControl, Value<Control>> createControlsMap() {
     Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
 
     return unmodifiableMap(Stream.of(EditControl.values())
@@ -607,8 +595,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
                       value.addValidator(controlValueValidator);
 
                       return value;
-                    },
-                    (value, value2) -> value, LinkedHashMap::new)));
+                    })));
   }
 
   private void throwIfInitialized() {

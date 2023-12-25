@@ -33,6 +33,7 @@ Codion Change Log
 - EntityTablePanel.editDialogBuilder() added.
 - EntityEditPanel, EntityTablePanel.control() now returns a Value containing the control.
 - EntityEditPanel.ControlCode and EntityTablePanel.ControlCode renamed EditControl and TableControl respectively.
+- EntityEditPanel no longer caches the result of createControls().
 
 ## 0.17.21
 ### is.codion.swing.common.model

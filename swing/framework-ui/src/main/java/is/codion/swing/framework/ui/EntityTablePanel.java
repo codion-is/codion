@@ -335,7 +335,7 @@ public class EntityTablePanel extends JPanel {
     this.editableAttributes.addValidator(new EditMenuAttributeValidator());
     this.table = createTable();
     this.statusPanel = new StatusPanel();
-    this.controls = createControls();
+    this.controls = createControlsMap();
   }
 
   /**
@@ -1610,7 +1610,7 @@ public class EntityTablePanel extends JPanel {
     return tableConditionPanel;
   }
 
-  private Map<TableControl, Value<Control>> createControls() {
+  private Map<TableControl, Value<Control>> createControlsMap() {
     Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
 
     return Stream.of(TableControl.values())
