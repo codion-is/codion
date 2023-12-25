@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -357,5 +358,17 @@ public class ValueTest {
     });
     value.set(test2);
     assertSame(test2, value.get());
+  }
+
+  @Test
+  void map() {
+    Value<Integer> value = Value.value(0);
+    Function<Integer, Integer> increment = currentValue -> currentValue + 1;
+    value.map(increment);
+    assertEquals(1, value.get());
+    value.map(currentValue -> null);
+    assertTrue(value.isNull());
+    value.map(currentValue -> 42);
+    assertTrue(value.isNotNull());
   }
 }

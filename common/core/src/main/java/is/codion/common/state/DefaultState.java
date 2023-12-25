@@ -7,6 +7,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 final class DefaultState implements State {
 
@@ -35,6 +36,13 @@ final class DefaultState implements State {
   public boolean set(Boolean value) {
     synchronized (this.value) {
       return this.value.set(value);
+    }
+  }
+
+  @Override
+  public boolean map(Function<Boolean, Boolean> mapper) {
+    synchronized (this.value) {
+      return this.value.map(mapper);
     }
   }
 

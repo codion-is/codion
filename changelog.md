@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.22-SNAPSHOT
+### is.codion.swing.common.core
+- Value.map() added.
 ### is.codion.swing.common.model
 - ProgressWorker.Task and ProgressTask.perform() renamed execute().
 ### is.codion.swing.common.ui

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static is.codion.common.value.Value.Notify.WHEN_CHANGED;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
@@ -68,6 +69,11 @@ public abstract class AbstractValue<T> implements Value<T> {
     setValue(newValue);
 
     return notifyListeners(!Objects.equals(previousValue, newValue));
+  }
+
+  @Override
+  public final boolean map(Function<T, T> mapper) {
+    return set(requireNonNull(mapper).apply(get()));
   }
 
   @Override

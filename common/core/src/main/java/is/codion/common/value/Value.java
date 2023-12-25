@@ -4,6 +4,7 @@
 package is.codion.common.value;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,6 +50,21 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * @see #addValidator(Validator)
    */
   boolean set(T value);
+
+  /**
+   * Sets a new value mapped from the current value.
+   * <pre>
+   * {@code
+   * Value<Integer> value = Value.value(0);
+   *
+   * //increment the value by one
+   * value.map(currentValue -> currentValue + 1);
+   * }
+   * </pre>
+   * @param mapper maps from the current value to a new value
+   * @return true if the underlying value changed
+   */
+  boolean map(Function<T, T> mapper);
 
   /**
    * Returns a {@link ValueObserver} notified each time this value changes.
