@@ -28,18 +28,22 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_V;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
@@ -98,7 +102,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
   private final Set<ControlCode> controlCodes;
-  private final Map<ControlCode, Control> standardControls = new EnumMap<>(ControlCode.class);
+  private final Map<ControlCode, Value<Control>> standardControls;
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
   private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
   private final State clearAfterInsert = State.state(true);
@@ -149,6 +153,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       ACTIVE_STATE_GROUP.add(active);
     }
     this.controlCodes = validateControlCodes(controlCodes);
+    this.standardControls = createStandardControls();
     if (editModel.exists().not().get()) {
       editModel.setDefaults();
     }
@@ -216,16 +221,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
+   * Returns a {@link Value} containing the control associated with {@code controlCode},
+   * an empty {@link Value} if no such control is available.
    * @param controlCode the control code
-   * @return the control associated with {@code controlCode}
-   * @throws IllegalArgumentException in case no control is associated with the given {@code controlCode}
-   * @see #containsControl(EntityEditPanel.ControlCode)
+   * @return the {@link Value} containing the control associated with {@code controlCode}
    */
-  public final Control control(ControlCode controlCode) {
-    if (!containsControl(controlCode)) {
-      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
-    }
-
+  public final Value<Control> control(ControlCode controlCode) {
     return standardControls.get(controlCode);
   }
 
@@ -471,27 +472,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Associates {@code control} with {@code controlCode}
-   * @param controlCode the control code
-   * @param control the control to associate with {@code controlCode}, null for none
-   * @throws IllegalStateException in case the panel has already been initialized
-   */
-  protected final void setControl(ControlCode controlCode, Control control) {
-    requireNonNull(controlCode);
-    if (initialized()) {
-      throw new IllegalStateException("Method must be called before the panel is initialized");
-    }
-    standardControls.put(controlCode, control);
-  }
-
-  /**
    * Creates a Controls instance containing all the controls available in this edit panel
    * @return the Controls available in this edit panel
    */
   protected Controls createControls() {
-    return Controls.controls(controlCodes.stream()
-            .filter(this::containsControl)
-            .map(standardControls::get)
+    return Controls.controls(standardControls.values().stream()
+            .map(Value::optional)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .toArray(Control[]::new));
   }
 
@@ -522,32 +510,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected abstract void initializeUI();
 
-  /**
-   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
-   * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc.)
-   * via the {@link #setControl(ControlCode, Control)}) method, these can then be retrieved via the {@link #control(ControlCode)} method.
-   * @see Control
-   * @see #setControl(ControlCode, Control)
-   * @see #control(ControlCode)
-   */
   private void setupStandardControls() {
     if (!editModel().readOnly().get()) {
       setupEditControls();
     }
     if (controlCodes.contains(ControlCode.CLEAR)) {
-      standardControls.putIfAbsent(ControlCode.CLEAR, createClearControl());
+      standardControls.get(ControlCode.CLEAR).set(createClearControl());
     }
   }
 
   private void setupEditControls() {
     if (editModel().insertEnabled().get() && controlCodes.contains(ControlCode.INSERT)) {
-      standardControls.putIfAbsent(ControlCode.INSERT, createInsertControl());
+      standardControls.get(ControlCode.INSERT).set(createInsertControl());
     }
     if (editModel().updateEnabled().get() && controlCodes.contains(ControlCode.UPDATE)) {
-      standardControls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
+      standardControls.get(ControlCode.UPDATE).set(createUpdateControl());
     }
     if (editModel().deleteEnabled().get() && controlCodes.contains(ControlCode.DELETE)) {
-      standardControls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
+      standardControls.get(ControlCode.DELETE).set(createDeleteControl());
     }
   }
 
@@ -617,6 +597,25 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void showEntityMenu() {
     new EntityPopupMenu(editModel().entity(), editModel().connectionProvider().connection()).show(this, 0, 0);
+  }
+
+  private Map<ControlCode, Value<Control>> createStandardControls() {
+    Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
+
+    return unmodifiableMap(Stream.of(ControlCode.values())
+            .collect(toMap(Function.identity(), controlCode -> {
+                      Value<Control> value = Value.value();
+                      value.addValidator(controlValueValidator);
+
+                      return value;
+                    },
+                    (value, value2) -> value, LinkedHashMap::new)));
+  }
+
+  private void throwIfInitialized() {
+    if (initialized) {
+      throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
   }
 
   private static Set<ControlCode> validateControlCodes(ControlCode[] controlCodes) {

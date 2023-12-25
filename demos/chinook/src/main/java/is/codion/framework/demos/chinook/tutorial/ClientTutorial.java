@@ -131,7 +131,7 @@ public final class ClientTutorial {
       createForeignKeySearchField(Album.ARTIST_FK)
               .columns(15);
       createTextField(Album.TITLE)
-              .action(control(ControlCode.INSERT))
+              .action(control(ControlCode.INSERT).get())
               .columns(15);
       setLayout(gridLayout(2, 1));
       addInputPanel(Album.ARTIST_FK);

@@ -131,7 +131,7 @@ public final class NotesDemo {
       setLayout(Layouts.borderLayout());
       add(component(Note.NOTE), BorderLayout.CENTER);
       // Add a button based on the CLEAR control, which clears the UI
-      add(new JButton(control(ControlCode.CLEAR)), BorderLayout.EAST);
+      add(new JButton(control(ControlCode.CLEAR).get()), BorderLayout.EAST);
     }
 
     private void insertDeleteOrUpdate() {
