@@ -3,21 +3,41 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.framework.demos.chinook.model.EmployeeEditModel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.model.worker.ProgressWorker.Task;
+import is.codion.swing.common.ui.control.Control.Command;
+import is.codion.swing.common.ui.dialog.ProgressWorkerDialogBuilder;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
+import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Employee;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 public final class EmployeeEditPanel extends EntityEditPanel {
 
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(EmployeeEditPanel.class.getName());
+
+  static final String INSERTING = BUNDLE.getString("inserting");
+  static final String DELETING = BUNDLE.getString("deleting");
+  static final String UPDATING = BUNDLE.getString("updating");
+
   public EmployeeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setDefaultTextFieldColumns(12);
+  }
+
+  @Override
+  protected void setupControls() {
+    control(EditControl.INSERT).map(insert -> insert.copy(new InsertCommand()).build());
+    control(EditControl.UPDATE).map(update -> update.copy(new UpdateCommand()).build());
+    control(EditControl.DELETE).map(delete -> delete.copy(new DeleteCommand()).build());
   }
 
   @Override
@@ -81,5 +101,61 @@ public final class EmployeeEditPanel extends EntityEditPanel {
     addInputPanel(Employee.FAX);
     addInputPanel(Employee.EMAIL);
     addInputPanel(Employee.REPORTSTO_FK);
+  }
+
+  private final class InsertCommand implements Command{
+
+    @Override
+    public void execute() {
+      EmployeeEditModel editModel = editModel();
+      EmployeeEditModel.Insert insert = editModel.createInsert();
+      createWorker(insert::execute, INSERTING)
+              .onResult(entity -> {
+                insert.onResult(entity);
+                requestAfterInsertFocus();
+              })
+              .execute();
+    }
+  }
+
+  private final class UpdateCommand implements Command{
+
+    @Override
+    public void execute() {
+      if (confirmUpdate()) {
+        EmployeeEditModel editModel = editModel();
+        EmployeeEditModel.Update update = editModel.createUpdate();
+        createWorker(update::execute, UPDATING)
+                .onResult(entity -> {
+                  update.onResult(entity);
+                  requestAfterUpdateFocus();
+                })
+                .execute();
+      }
+    }
+  }
+
+  private final class DeleteCommand implements Command {
+
+    @Override
+    public void execute() {
+      if (confirmDelete()) {
+        EmployeeEditModel editModel = editModel();
+        EmployeeEditModel.Delete delete = editModel.createDelete();
+        createWorker(delete::execute, DELETING)
+                .onResult(entity -> {
+                  delete.onResult(entity);
+                  requestInitialFocus();
+                })
+                .execute();
+      }
+    }
+  }
+
+  private ProgressWorkerDialogBuilder<Entity, ?> createWorker(Task<Entity> task, String dialogTitle) {
+    return progressWorkerDialog(task)
+            .title(dialogTitle)
+            .owner(EmployeeEditPanel.this)
+            .onException(this::onException);
   }
 }

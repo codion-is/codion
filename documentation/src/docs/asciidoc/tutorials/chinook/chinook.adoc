@@ -51,6 +51,11 @@ include::{dir-test-source}/is/codion/framework/demos/chinook/domain/ChinookTest.
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/chinook/model/EmployeeEditModel.java[lines=4..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/chinook/model/EmployeeTableModel.java[lines=4..-1]
 ----
 
