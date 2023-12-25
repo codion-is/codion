@@ -130,7 +130,7 @@ public final class NotesDemo {
 
     private NoteEditPanel(NoteEditModel editModel) {
       // CLEAR is the only standard control we require, for clearing the UI
-      super(editModel, ControlCode.CLEAR);
+      super(editModel, EditControl.CLEAR);
     }
 
     @Override
@@ -145,8 +145,8 @@ public final class NotesDemo {
 
       setLayout(Layouts.borderLayout());
       add(component(Note.NOTE), BorderLayout.CENTER);
-      // Add a button based on the CLEAR control, which clears the UI
-      add(new JButton(control(ControlCode.CLEAR)), BorderLayout.EAST);
+      // Add a button based on the CLEAR control
+      add(new JButton(control(EditControl.CLEAR).get()), BorderLayout.EAST);
     }
 
     private void insertDeleteOrUpdate() {

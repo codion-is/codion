@@ -53,11 +53,11 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
     createTextField(InvoiceLine.QUANTITY)
             .selectAllOnFocusGained(true)
             .columns(2)
-            .action(control(ControlCode.INSERT));
+            .action(control(EditControl.INSERT).get());
 
     JToolBar updateToolBar = toolBar()
             .floatable(false)
-            .action(control(ControlCode.UPDATE))
+            .action(control(EditControl.UPDATE).get())
             .preferredHeight(preferredTextFieldHeight())
             .build();
 

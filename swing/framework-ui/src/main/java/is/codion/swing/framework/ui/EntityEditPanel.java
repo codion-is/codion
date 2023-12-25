@@ -45,16 +45,19 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_V;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
@@ -95,14 +98,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.includeEntityMenu", true);
 
   /**
-   * The standard controls available to the EditPanel
+   * The standard controls available in a edit panel
    */
-  public enum ControlCode {
+  public enum EditControl {
     INSERT, UPDATE, DELETE, CLEAR
   }
 
-  private static final ControlCode[] DEFAULT_CONTROL_CODES = {
-          ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR
+  private static final EditControl[] DEFAULT_EDIT_CONTROLS = {
+          EditControl.INSERT, EditControl.UPDATE, EditControl.DELETE, EditControl.CLEAR
   };
 
   private static final String ALT_PREFIX = " (ALT-";
@@ -112,8 +115,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
-  private final Set<ControlCode> controlCodes;
-  private final Map<ControlCode, Control> standardControls = new EnumMap<>(ControlCode.class);
+  private final Set<EditControl> editControls;
+  private final Map<EditControl, Value<Control>> controls;
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
   private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
   private final State clearAfterInsert = State.state(true);
@@ -121,7 +124,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling =
           Value.value(ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(), ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
-  private Controls controls;
   private boolean initialized = false;
 
   /**
@@ -129,7 +131,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(SwingEntityEditModel editModel) {
-    this(editModel, DEFAULT_CONTROL_CODES);
+    this(editModel, DEFAULT_EDIT_CONTROLS);
   }
 
   /**
@@ -138,32 +140,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param entityComponents the entity components instance to use when creating components
    */
   public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
-    this(editModel, entityComponents, DEFAULT_CONTROL_CODES);
+    this(editModel, entityComponents, DEFAULT_EDIT_CONTROLS);
   }
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
-   * @param controlCodes if specified only controls with those keys are initialized,
+   * @param editControls if specified only controls with those keys are initialized,
    * null or an empty array will result in no controls being initialized
    */
-  public EntityEditPanel(SwingEntityEditModel editModel, ControlCode... controlCodes) {
-    this(editModel, new EntityComponents(editModel.entityDefinition()), controlCodes);
+  public EntityEditPanel(SwingEntityEditModel editModel, EditControl... editControls) {
+    this(editModel, new EntityComponents(editModel.entityDefinition()), editControls);
   }
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    * @param entityComponents the entity components instance to use when creating components
-   * @param controlCodes if specified only controls with those keys are initialized,
+   * @param editControls if specified only controls with those keys are initialized,
    * null or an empty array will result in no controls being initialized
    */
-  public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, ControlCode... controlCodes) {
+  public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, EditControl... editControls) {
     super(editModel, entityComponents);
     if (USE_FOCUS_ACTIVATION.get()) {
       ACTIVE_STATE_GROUP.add(active);
     }
-    this.controlCodes = validateControlCodes(controlCodes);
+    this.editControls = validateControlCodes(editControls);
+    this.controls = createControlsMap();
     if (editModel.exists().not().get()) {
       editModel.setDefaults();
     }
@@ -223,25 +226,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * @param controlCode the control code
-   * @return true if this edit panel contains a control assocated with the given {@code controlCode}
+   * Returns a {@link Value} containing the control associated with {@code controlCode},
+   * an empty {@link Value} if no such control is available.
+   * @param editControl the control code
+   * @return the {@link Value} containing the control associated with {@code controlCode}
    */
-  public final boolean containsControl(ControlCode controlCode) {
-    return standardControls.get(requireNonNull(controlCode)) != null;
-  }
-
-  /**
-   * @param controlCode the control code
-   * @return the control associated with {@code controlCode}
-   * @throws IllegalArgumentException in case no control is associated with the given {@code controlCode}
-   * @see #containsControl(EntityEditPanel.ControlCode)
-   */
-  public final Control control(ControlCode controlCode) {
-    if (!containsControl(controlCode)) {
-      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
-    }
-
-    return standardControls.get(controlCode);
+  public final Value<Control> control(EditControl editControl) {
+    return controls.get(editControl);
   }
 
   /**
@@ -255,11 +246,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (!initialized()) {
       throw new IllegalStateException("Method must be called after the panel is initialized");
     }
-    if (controls == null) {
-      controls = createControls();
-    }
 
-    return controls;
+    return createControls();
   }
 
   /**
@@ -486,35 +474,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Associates {@code control} with {@code controlCode}
-   * @param controlCode the control code
-   * @param control the control to associate with {@code controlCode}, null for none
-   * @throws IllegalStateException in case the panel has already been initialized
-   */
-  protected final void setControl(ControlCode controlCode, Control control) {
-    requireNonNull(controlCode);
-    if (initialized()) {
-      throw new IllegalStateException("Method must be called before the panel is initialized");
-    }
-    standardControls.put(controlCode, control);
-  }
-
-  /**
    * Creates a Controls instance containing all the controls available in this edit panel
    * @return the Controls available in this edit panel
    */
   protected Controls createControls() {
-    return Controls.controls(controlCodes.stream()
-            .filter(this::containsControl)
-            .map(standardControls::get)
+    return Controls.controls(Stream.of(EditControl.values())
+            .map(controls::get)
+            .map(Value::optional)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .toArray(Control[]::new));
   }
 
   /**
    * Override to setup any custom controls. This default implementation is empty.
    * This method is called after all standard controls have been initialized.
-   * @see #setControl(ControlCode, Control)
-   * @see #control(ControlCode)
+   * @see #control(EditControl)
    */
   protected void setupControls() {}
 
@@ -537,32 +512,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected abstract void initializeUI();
 
-  /**
-   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
-   * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc.)
-   * via the {@link #setControl(ControlCode, Control)}) method, these can then be retrieved via the {@link #control(ControlCode)} method.
-   * @see Control
-   * @see #setControl(ControlCode, Control)
-   * @see #control(ControlCode)
-   */
   private void setupStandardControls() {
     if (!editModel().readOnly().get()) {
       setupEditControls();
     }
-    if (controlCodes.contains(ControlCode.CLEAR)) {
-      standardControls.putIfAbsent(ControlCode.CLEAR, createClearControl());
+    if (editControls.contains(EditControl.CLEAR)) {
+      controls.get(EditControl.CLEAR).set(createClearControl());
     }
   }
 
   private void setupEditControls() {
-    if (editModel().insertEnabled().get() && controlCodes.contains(ControlCode.INSERT)) {
-      standardControls.putIfAbsent(ControlCode.INSERT, createInsertControl());
+    if (editModel().insertEnabled().get() && editControls.contains(EditControl.INSERT)) {
+      controls.get(EditControl.INSERT).set(createInsertControl());
     }
-    if (editModel().updateEnabled().get() && controlCodes.contains(ControlCode.UPDATE)) {
-      standardControls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
+    if (editModel().updateEnabled().get() && editControls.contains(EditControl.UPDATE)) {
+      controls.get(EditControl.UPDATE).set(createUpdateControl());
     }
-    if (editModel().deleteEnabled().get() && controlCodes.contains(ControlCode.DELETE)) {
-      standardControls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
+    if (editModel().deleteEnabled().get() && editControls.contains(EditControl.DELETE)) {
+      controls.get(EditControl.DELETE).set(createDeleteControl());
     }
   }
 
@@ -634,15 +601,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     new EntityPopupMenu(editModel().entity(), editModel().connectionProvider().connection()).show(this, 0, 0);
   }
 
-  private static Set<ControlCode> validateControlCodes(ControlCode[] controlCodes) {
-    if (controlCodes == null) {
+  private Map<EditControl, Value<Control>> createControlsMap() {
+    Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
+
+    return unmodifiableMap(Stream.of(EditControl.values())
+            .collect(toMap(Function.identity(), controlCode -> {
+                      Value<Control> value = Value.value();
+                      value.addValidator(controlValueValidator);
+
+                      return value;
+                    })));
+  }
+
+  private void throwIfInitialized() {
+    if (initialized) {
+      throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
+  }
+
+  private static Set<EditControl> validateControlCodes(EditControl[] editControls) {
+    if (editControls == null) {
       return emptySet();
     }
-    for (ControlCode controlCode : controlCodes) {
-      requireNonNull(controlCode, "controlCode");
+    for (EditControl editControl : editControls) {
+      requireNonNull(editControl, "controlCode");
     }
 
-    return new LinkedHashSet<>(Arrays.asList(controlCodes));
+    return new LinkedHashSet<>(Arrays.asList(editControls));
   }
 
   /**

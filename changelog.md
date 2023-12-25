@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.22-SNAPSHOT
+### is.codion.swing.common.core
+- Value.map() added.
 ### is.codion.swing.common.model
 - ProgressWorker.Task and ProgressTask.perform() renamed execute().
 ### is.codion.swing.common.ui
@@ -31,6 +33,9 @@ Codion Change Log
 - EntityEditPanel, EntityTablePanel.setupControls() added for setting up custom controls, called after standard controls have been initialized.
 - EntityDialogs.EditDialogBuilder.Updater added for customizing how the actual update is performed when multiple entities are edited, related refactoring.
 - EntityTablePanel.editDialogBuilder() added.
+- EntityEditPanel, EntityTablePanel.control() now returns a Value containing the control.
+- EntityEditPanel.ControlCode and EntityTablePanel.ControlCode renamed EditControl and TableControl respectively.
+- EntityEditPanel no longer caches the result of createControls().
 
 ## 0.17.21
 ### is.codion.swing.common.model

@@ -89,7 +89,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +96,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.value.ValueSet.valueSet;
@@ -112,8 +112,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -224,9 +223,9 @@ public class EntityTablePanel extends JPanel {
           Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
   /**
-   * The standard controls available
+   * The standard controls available in a table panel
    */
-  public enum ControlCode {
+  public enum TableControl {
     PRINT,
     DELETE_SELECTED,
     VIEW_DEPENDENCIES,
@@ -287,7 +286,7 @@ public class EntityTablePanel extends JPanel {
   private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
 
-  private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
+  private final Map<TableControl, Value<Control>> controls;
 
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
@@ -351,6 +350,7 @@ public class EntityTablePanel extends JPanel {
     this.editableAttributes.addValidator(new EditMenuAttributeValidator());
     this.table = createTable();
     this.statusPanel = new StatusPanel();
+    this.controls = createControlsMap();
   }
 
   /**
@@ -622,25 +622,13 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param controlCode the control code
-   * @return true if this table panel contains a control assocated with the given {@code controlCode}
+   * Returns a {@link Value} containing the control associated with {@code controlCode},
+   * an empty {@link Value} if no such control is available.
+   * @param tableControl the table control code
+   * @return the {@link Value} containing the control associated with {@code controlCode}
    */
-  public final boolean containsControl(ControlCode controlCode) {
-    return controls.get(requireNonNull(controlCode)) != null;
-  }
-
-  /**
-   * @param controlCode the control code
-   * @return the control associated with {@code controlCode}
-   * @throws IllegalArgumentException in case no control is associated with the given {@code controlCode}
-   * @see #containsControl(EntityTablePanel.ControlCode)
-   */
-  public final Control control(ControlCode controlCode) {
-    if (!containsControl(controlCode)) {
-      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
-    }
-
-    return controls.get(controlCode);
+  public final Value<Control> control(TableControl tableControl) {
+    return controls.get(tableControl);
   }
 
   /**
@@ -746,8 +734,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * Override to setup any custom controls. This default implementation is empty.
    * This method is called after all standard controls have been initialized.
-   * @see #setControl(ControlCode, Control)
-   * @see #control(ControlCode)
+   * @see #control(TableControl)
    */
   protected void setupControls() {}
 
@@ -779,37 +766,37 @@ public class EntityTablePanel extends JPanel {
    * Sets up the default keyboard actions.
    */
   protected void setupKeyboardActions() {
-    getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+    control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
             KeyEvents.builder(VK_T)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+    control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
             KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+    control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
             KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
+    control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
             KeyEvents.builder(VK_F)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.SELECT_FILTER_PANEL).ifPresent(control ->
+    control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
             KeyEvents.builder(VK_F)
                     .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(EntityTablePanel.ControlCode.PRINT).ifPresent(control ->
+    control(TableControl.PRINT).optional().ifPresent(control ->
             KeyEvents.builder(VK_P)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -817,23 +804,12 @@ public class EntityTablePanel extends JPanel {
                     .enable(this));
   }
 
-  /**
-   * Associates {@code control} with {@code controlCode}
-   * @param controlCode the control code
-   * @param control the control to associate with {@code controlCode}, null for none
-   * @throws IllegalStateException in case the panel has already been initialized
-   */
-  protected final void setControl(ControlCode controlCode, Control control) {
-    throwIfInitialized();
-    controls.put(requireNonNull(controlCode), control);
-  }
-
   protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
-    getControl(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
-    Control toggleConditionPanelControl = getControl(ControlCode.TOGGLE_CONDITION_PANEL).orElse(null);
-    Control toggleFilterPanelControl = getControl(ControlCode.TOGGLE_FILTER_PANEL).orElse(null);
+    control(TableControl.TOGGLE_SUMMARY_PANEL).optional().ifPresent(toolbarControls::add);
+    Control toggleConditionPanelControl = control(TableControl.TOGGLE_CONDITION_PANEL).optional().orElse(null);
+    Control toggleFilterPanelControl = control(TableControl.TOGGLE_FILTER_PANEL).optional().orElse(null);
     if (toggleConditionPanelControl != null || toggleFilterPanelControl != null) {
       if (toggleConditionPanelControl != null) {
         toolbarControls.add(toggleConditionPanelControl);
@@ -843,14 +819,14 @@ public class EntityTablePanel extends JPanel {
       }
       toolbarControls.addSeparator();
     }
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
-    getControl(ControlCode.PRINT).ifPresent(toolbarControls::add);
-    getControl(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
+    control(TableControl.DELETE_SELECTED).optional().ifPresent(toolbarControls::add);
+    control(TableControl.PRINT).optional().ifPresent(toolbarControls::add);
+    control(TableControl.CLEAR_SELECTION).optional().ifPresent(control -> {
       toolbarControls.add(control);
       toolbarControls.addSeparator();
     });
-    getControl(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
-    getControl(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
+    control(TableControl.MOVE_SELECTION_UP).optional().ifPresent(toolbarControls::add);
+    control(TableControl.MOVE_SELECTION_DOWN).optional().ifPresent(toolbarControls::add);
     additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
       additionalControls.actions().forEach(toolbarControls::add);
@@ -869,18 +845,18 @@ public class EntityTablePanel extends JPanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     requireNonNull(additionalPopupMenuControls);
     Controls popupControls = Controls.controls();
-    getControl(ControlCode.REFRESH).ifPresent(popupControls::add);
-    getControl(ControlCode.CLEAR).ifPresent(popupControls::add);
+    control(TableControl.REFRESH).optional().ifPresent(popupControls::add);
+    control(TableControl.CLEAR).optional().ifPresent(popupControls::add);
     if (popupControls.notEmpty()) {
       popupControls.addSeparator();
     }
     addAdditionalControls(popupControls, additionalPopupMenuControls);
     State separatorRequired = State.state();
-    getControl(ControlCode.EDIT_SELECTED).ifPresent(control -> {
+    control(TableControl.EDIT_SELECTED).optional().ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(control -> {
+    control(TableControl.DELETE_SELECTED).optional().ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -888,7 +864,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.addSeparator();
       separatorRequired.set(false);
     }
-    getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
+    control(TableControl.VIEW_DEPENDENCIES).optional().ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -909,7 +885,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.add(columnControls);
       separatorRequired.set(true);
     }
-    getControl(ControlCode.SELECTION_MODE).ifPresent(control -> {
+    control(TableControl.SELECTION_MODE).optional().ifPresent(control -> {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -930,7 +906,7 @@ public class EntityTablePanel extends JPanel {
       addFilterControls(popupControls);
       separatorRequired.set(true);
     }
-    getControl(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
+    control(TableControl.COPY_TABLE_DATA).optional().ifPresent(control -> {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -942,7 +918,7 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * By default this method returns a {@link Controls} instance containing
-   * the {@link Control} associated with {@link ControlCode#PRINT}.
+   * the {@link Control} associated with {@link TableControl#PRINT}.
    * If no {@link Control} has been assigned to that control key,
    * an empty {@link Controls} instance is returned.
    * Override to add print actions, which will then appear in the table popup menu.
@@ -953,7 +929,7 @@ public class EntityTablePanel extends JPanel {
             .name(Messages.print())
             .mnemonic(Messages.printMnemonic())
             .smallIcon(FrameworkIcons.instance().print());
-    getControl(ControlCode.PRINT).ifPresent(builder::control);
+    control(TableControl.PRINT).optional().ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1241,9 +1217,9 @@ public class EntityTablePanel extends JPanel {
   private Controls createColumnControls() {
     Controls.Builder builder = Controls.builder()
             .name(MESSAGES.getString("columns"));
-    getControl(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
-    getControl(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
-    getControl(ControlCode.COLUMN_AUTO_RESIZE_MODE).ifPresent(builder::control);
+    control(TableControl.SELECT_COLUMNS).optional().ifPresent(builder::control);
+    control(TableControl.RESET_COLUMNS).optional().ifPresent(builder::control);
+    control(TableControl.COLUMN_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1383,7 +1359,7 @@ public class EntityTablePanel extends JPanel {
               .action(Control.control(this::showEntityMenu))
               .enable(table);
     }
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(control ->
+    control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
             KeyEvents.builder(VK_DELETE)
                     .action(control)
                     .enable(table));
@@ -1465,44 +1441,44 @@ public class EntityTablePanel extends JPanel {
 
   private void setupStandardControls() {
     if (includeDeleteSelectedControl()) {
-      controls.putIfAbsent(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
+      controls.get(TableControl.DELETE_SELECTED).set(createDeleteSelectedControl());
     }
     if (includeEditSelectedControls()) {
-      controls.putIfAbsent(ControlCode.EDIT_SELECTED, createEditSelectedControls());
+      controls.get(TableControl.EDIT_SELECTED).set(createEditSelectedControls());
     }
     if (includeClearControl) {
-      controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
+      controls.get(TableControl.CLEAR).set(createClearControl());
     }
-    controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
-    controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
+    controls.get(TableControl.REFRESH).set(createRefreshControl());
+    controls.get(TableControl.SELECT_COLUMNS).set(columnSelection == ColumnSelection.DIALOG ?
             table.createSelectColumnsControl() : table.createToggleColumnsControls());
-    controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
-    controls.putIfAbsent(ControlCode.COLUMN_AUTO_RESIZE_MODE, table.createAutoResizeModeControl());
+    controls.get(TableControl.RESET_COLUMNS).set(table.createResetColumnsControl());
+    controls.get(TableControl.COLUMN_AUTO_RESIZE_MODE).set(table.createAutoResizeModeControl());
     if (includeViewDependenciesControl()) {
-      controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
+      controls.get(TableControl.VIEW_DEPENDENCIES).set(createViewDependenciesControl());
     }
     if (summaryPanelScrollPane != null) {
-      controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
+      controls.get(TableControl.TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
     }
     if (includeConditionPanel && conditionPanel != null) {
-      controls.putIfAbsent(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
-      controls.putIfAbsent(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
-      controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
+      controls.get(TableControl.CONDITION_PANEL_VISIBLE).set(createConditionPanelControl());
+      controls.get(TableControl.TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
+      controls.get(TableControl.SELECT_CONDITION_PANEL).set(Control.control(this::selectConditionPanel));
     }
     if (includeFilterPanel && filterPanel != null) {
-      controls.putIfAbsent(ControlCode.FILTER_PANEL_VISIBLE, createFilterPanelControl());
-      controls.putIfAbsent(ControlCode.TOGGLE_FILTER_PANEL, createToggleFilterPanelControl());
-      controls.put(ControlCode.SELECT_FILTER_PANEL, Control.control(this::selectFilterPanel));
+      controls.get(TableControl.FILTER_PANEL_VISIBLE).set(createFilterPanelControl());
+      controls.get(TableControl.TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
+      controls.get(TableControl.SELECT_FILTER_PANEL).set(Control.control(this::selectFilterPanel));
     }
-    controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
-    controls.putIfAbsent(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
-    controls.putIfAbsent(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
-    controls.putIfAbsent(ControlCode.COPY_TABLE_DATA, createCopyControls());
+    controls.get(TableControl.CLEAR_SELECTION).set(createClearSelectionControl());
+    controls.get(TableControl.MOVE_SELECTION_UP).set(createMoveSelectionDownControl());
+    controls.get(TableControl.MOVE_SELECTION_DOWN).set(createMoveSelectionUpControl());
+    controls.get(TableControl.COPY_TABLE_DATA).set(createCopyControls());
     if (includeSelectionModeControl) {
-      controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+      controls.get(TableControl.SELECTION_MODE).set(table.createSingleSelectionModeControl());
     }
-    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
-    controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
+    controls.get(TableControl.REQUEST_TABLE_FOCUS).set(Control.control(table()::requestFocus));
+    controls.get(TableControl.CONFIGURE_COLUMNS).set(createColumnControls());
   }
 
   private boolean includeViewDependenciesControl() {
@@ -1556,7 +1532,7 @@ public class EntityTablePanel extends JPanel {
             .name(FrameworkMessages.search())
             .smallIcon(FrameworkIcons.instance().search())
             .build();
-    getControl(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
+    control(TableControl.CONDITION_PANEL_VISIBLE).optional().ifPresent(conditionControls::add);
     Controls conditionPanelControls = conditionPanel.controls();
     if (conditionPanelControls.notEmpty()) {
       conditionControls.addAll(conditionPanelControls);
@@ -1576,7 +1552,7 @@ public class EntityTablePanel extends JPanel {
             .name(FrameworkMessages.filter())
             .smallIcon(FrameworkIcons.instance().filter())
             .build();
-    getControl(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
+    control(TableControl.FILTER_PANEL_VISIBLE).optional().ifPresent(filterControls::add);
     Controls filterPanelControls = filterPanel.controls();
     if (filterPanelControls.notEmpty()) {
       filterControls.addAll(filterPanelControls);
@@ -1649,8 +1625,16 @@ public class EntityTablePanel extends JPanel {
     return tableConditionPanel;
   }
 
-  private Optional<Control> getControl(ControlCode controlCode) {
-    return Optional.ofNullable(controls.get(controlCode));
+  private Map<TableControl, Value<Control>> createControlsMap() {
+    Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
+
+    return Stream.of(TableControl.values())
+            .collect(toMap(Function.identity(), controlCode -> {
+              Value<Control> value = Value.value();
+              value.addValidator(controlValueValidator);
+
+              return value;
+            }));
   }
 
   private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {

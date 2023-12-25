@@ -38,7 +38,7 @@ final class CountryTablePanel extends EntityTablePanel {
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     editableAttributes().remove(Country.CAPITAL_FK);
-    setControl(ControlCode.PRINT, Control.builder(this::viewCountryReport)
+    control(TableControl.PRINT).set(Control.builder(this::viewCountryReport)
             .name("Country report")
             .enabled(tableModel.selectionModel().selectionNotEmpty())
             .smallIcon(FrameworkIcons.instance().print())
