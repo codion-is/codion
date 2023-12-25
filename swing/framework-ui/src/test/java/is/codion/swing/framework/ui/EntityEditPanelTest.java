@@ -10,6 +10,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel.EditControl;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
@@ -50,10 +51,10 @@ public final class EntityEditPanelTest {
     editPanel.clearAfterInsert().set(true);
     editPanel.requestFocusAfterInsert().set(true);
 
-    assertNotNull(editPanel.control(EntityEditPanel.ControlCode.INSERT));
-    assertNotNull(editPanel.control(EntityEditPanel.ControlCode.UPDATE));
-    assertNotNull(editPanel.control(EntityEditPanel.ControlCode.DELETE));
-    assertNotNull(editPanel.control(EntityEditPanel.ControlCode.CLEAR));
+    assertNotNull(editPanel.control(EditControl.INSERT));
+    assertNotNull(editPanel.control(EditControl.UPDATE));
+    assertNotNull(editPanel.control(EditControl.DELETE));
+    assertNotNull(editPanel.control(EditControl.CLEAR));
   }
 
   private static final class TestEditPanel extends EntityEditPanel {

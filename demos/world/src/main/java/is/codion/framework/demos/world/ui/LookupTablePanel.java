@@ -80,12 +80,12 @@ final class LookupTablePanel extends EntityTablePanel {
 
   @Override
   protected void setupControls() {
-    control(ControlCode.CLEAR).set(Control.builder(this::clearTableAndConditions)
+    control(TableControl.CLEAR).set(Control.builder(this::clearTableAndConditions)
             .name("Clear")
             .mnemonic('C')
             .smallIcon(FrameworkIcons.instance().clear())
             .build());
-    control(ControlCode.SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
+    control(TableControl.SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
             .name("Select")
             .build());
   }

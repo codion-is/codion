@@ -32,6 +32,7 @@ Codion Change Log
 - EntityDialogs.EditDialogBuilder.Updater added for customizing how the actual update is performed when multiple entities are edited, related refactoring.
 - EntityTablePanel.editDialogBuilder() added.
 - EntityEditPanel, EntityTablePanel.control() now returns a Value containing the control.
+- EntityEditPanel.ControlCode and EntityTablePanel.ControlCode renamed EditControl and TableControl respectively.
 
 ## 0.17.21
 ### is.codion.swing.common.model

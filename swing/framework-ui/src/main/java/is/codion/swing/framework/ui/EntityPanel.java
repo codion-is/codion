@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityTablePanel.TableControl;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
@@ -835,31 +836,31 @@ public class EntityPanel extends JPanel {
    */
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
-      tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
+      tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
               KeyEvents.builder(VK_T)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
+      tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
               KeyEvents.builder(VK_S)
                       .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
+      tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
               KeyEvents.builder(VK_S)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
+      tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
               KeyEvents.builder(VK_F)
                       .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL).optional().ifPresent(control ->
+      tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
               KeyEvents.builder(VK_F)
                       .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -871,31 +872,31 @@ public class EntityPanel extends JPanel {
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       if (containsEditPanel()) {
-        tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
+        tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
                 KeyEvents.builder(VK_T)
                         .modifiers(CTRL_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
+        tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
                 KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
+        tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
                 KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
+        tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
                 KeyEvents.builder(VK_F)
                         .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
-        tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL).optional().ifPresent(control ->
+        tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
                 KeyEvents.builder(VK_F)
                         .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
