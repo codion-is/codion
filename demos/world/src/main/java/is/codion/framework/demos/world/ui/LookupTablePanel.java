@@ -68,7 +68,6 @@ final class LookupTablePanel extends EntityTablePanel {
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     conditionPanelVisible().set(true);
     showRefreshProgressBar().set(true);
-    setupControls();
     bindEvents();
   }
 
