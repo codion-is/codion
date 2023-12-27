@@ -29,7 +29,7 @@ final class ContinentTablePanel extends EntityTablePanel {
 
   ContinentTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
-    setIncludeSouthPanel(false);
+    configure().includeSouthPanel(false);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
 

@@ -188,7 +188,7 @@ public final class NotesDemo {
       // Exclude the Note.UPDATED attribute from the Edit popup menu since
       // the value is set automatically and shouldn't be editable via the UI.
       // Note.CREATED is excluded by default since it is not updatable.
-      editableAttributes().remove(Note.UPDATED);
+      configure().editableAttributes().remove(Note.UPDATED);
     }
   }
 
@@ -207,7 +207,7 @@ public final class NotesDemo {
               new NoteTablePanel(noteModel.tableModel()));
       // No need to include the default control buttons since
       // we added the CLEAR control button to the edit panel
-      setIncludeControls(false);
+      configure().includeControls(false);
     }
 
     @Override

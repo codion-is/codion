@@ -36,7 +36,7 @@ public final class CustomerPanel extends EntityPanel {
             invoiceLineTablePanel.table().searchField());
 
     EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, invoiceLineEditPanel, invoiceLineTablePanel);
-    invoiceLinePanel.setIncludeControls(false);
+    invoiceLinePanel.configure().includeControls(false);
 
     addDetailPanel(new InvoicePanel(invoiceModel, invoiceLinePanel));
   }

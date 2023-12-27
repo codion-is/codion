@@ -37,7 +37,7 @@ final class CityTablePanel extends ChartTablePanel {
 
   CityTablePanel(CityTableModel tableModel) {
     super(tableModel, tableModel.chartDataset(), "Cities");
-    editableAttributes().remove(City.LOCATION);
+    configure().editableAttributes().remove(City.LOCATION);
   }
 
   @Override

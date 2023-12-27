@@ -386,4 +386,14 @@ public class ValueTest {
     value.map(currentValue -> 42);
     assertTrue(value.isNotNull());
   }
+
+  @Test
+  void mapNull() {
+    Value<Integer> value = Value.value(1);
+    assertFalse(value.mapNull(() -> 2));
+    assertEquals(1, value.get());
+    value.set(null);
+    assertTrue(value.mapNull(() -> 2));
+    assertEquals(2, value.get());
+  }
 }
