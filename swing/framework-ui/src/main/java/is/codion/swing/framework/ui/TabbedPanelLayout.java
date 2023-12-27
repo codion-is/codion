@@ -35,6 +35,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
@@ -85,7 +86,6 @@ public final class TabbedPanelLayout implements PanelLayout {
   private static final double DEFAULT_SPLIT_PANE_RESIZE_WEIGHT = 0.5;
   private static final int DETAIL_WINDOW_OFFSET = 38;//titlebar height
   private static final double DETAIL_WINDOW_SIZE_RATIO = 0.66;
-
   private final TabbedDetailController detailController;
 
   private EntityPanel entityPanel;
@@ -324,12 +324,11 @@ public final class TabbedPanelLayout implements PanelLayout {
     @Override
     public void mouseReleased(MouseEvent e) {
       EntityPanel detailPanel = selectedDetailPanel();
-      PanelState panelState = detailController.panelState(detailPanel).get();
       if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-        detailController.panelState(detailPanel).set(panelState == WINDOW ? EMBEDDED : WINDOW);
+        detailController.panelState(detailPanel).map(panelState -> panelState == WINDOW ? EMBEDDED : WINDOW);
       }
       else if (e.getButton() == MouseEvent.BUTTON2) {
-        detailController.panelState(detailPanel).set(panelState == EMBEDDED ? HIDDEN : EMBEDDED);
+        detailController.panelState(detailPanel).map(panelState -> panelState == EMBEDDED ? HIDDEN : EMBEDDED);
       }
     }
   }
@@ -340,6 +339,7 @@ public final class TabbedPanelLayout implements PanelLayout {
      * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
      */
     private final Value<PanelState> panelState = Value.value(EMBEDDED, EMBEDDED);
+    private final PanelStateMapper stateMapper = new PanelStateMapper();
 
     private TabbedDetailController() {
       panelState.addListener(this::updateDetailState);
@@ -404,18 +404,6 @@ public final class TabbedPanelLayout implements PanelLayout {
       entityPanel.revalidate();
     }
 
-    private void toggleDetailState() {
-      if (panelState.equalTo(WINDOW)) {
-        panelState.set(HIDDEN);
-      }
-      else if (panelState.equalTo(EMBEDDED)) {
-        panelState.set(WINDOW);
-      }
-      else {
-        panelState.set(EMBEDDED);
-      }
-    }
-
     private PanelState previousPanelState() {
       if (detailPanelWindow != null) {
         return WINDOW;
@@ -459,6 +447,10 @@ public final class TabbedPanelLayout implements PanelLayout {
               .smallIcon(FrameworkIcons.instance().detail())
               .description(MESSAGES.getString("toggle_detail"))
               .build();
+    }
+
+    private void toggleDetailState() {
+      panelState.map(stateMapper);
     }
 
     private Controls createDetailControls() {
@@ -551,6 +543,23 @@ public final class TabbedPanelLayout implements PanelLayout {
           panelState.set(EMBEDDED);
         }
         detailPanel.activate();
+      }
+    }
+
+    private final class PanelStateMapper implements Function<PanelState, PanelState> {
+
+      @Override
+      public PanelState apply(PanelState state) {
+        switch (state) {
+          case HIDDEN:
+            return EMBEDDED;
+          case EMBEDDED:
+            return WINDOW;
+          case WINDOW:
+            return HIDDEN;
+          default:
+            throw new IllegalArgumentException("Unknown panel state: " + state);
+        }
       }
     }
   }

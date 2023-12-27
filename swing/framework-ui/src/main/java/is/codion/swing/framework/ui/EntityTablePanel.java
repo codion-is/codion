@@ -1426,44 +1426,44 @@ public class EntityTablePanel extends JPanel {
 
   private void setupStandardControls() {
     if (includeDeleteSelectedControl()) {
-      controls.get(TableControl.DELETE_SELECTED).set(createDeleteSelectedControl());
+      controls.get(TableControl.DELETE_SELECTED).mapNull(this::createDeleteSelectedControl);
     }
     if (includeEditSelectedControls()) {
-      controls.get(TableControl.EDIT_SELECTED).set(createEditSelectedControls());
+      controls.get(TableControl.EDIT_SELECTED).mapNull(this::createEditSelectedControls);
     }
     if (includeClearControl) {
-      controls.get(TableControl.CLEAR).set(createClearControl());
+      controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
     }
-    controls.get(TableControl.REFRESH).set(createRefreshControl());
-    controls.get(TableControl.SELECT_COLUMNS).set(columnSelection == ColumnSelection.DIALOG ?
-            table.createSelectColumnsControl() : table.createToggleColumnsControls());
-    controls.get(TableControl.RESET_COLUMNS).set(table.createResetColumnsControl());
-    controls.get(TableControl.COLUMN_AUTO_RESIZE_MODE).set(table.createAutoResizeModeControl());
+    controls.get(TableControl.REFRESH).mapNull(this::createRefreshControl);
+    controls.get(TableControl.SELECT_COLUMNS).mapNull(columnSelection == ColumnSelection.DIALOG ?
+            table::createSelectColumnsControl : table::createToggleColumnsControls);
+    controls.get(TableControl.RESET_COLUMNS).mapNull(table::createResetColumnsControl);
+    controls.get(TableControl.COLUMN_AUTO_RESIZE_MODE).mapNull(table::createAutoResizeModeControl);
     if (includeViewDependenciesControl()) {
-      controls.get(TableControl.VIEW_DEPENDENCIES).set(createViewDependenciesControl());
+      controls.get(TableControl.VIEW_DEPENDENCIES).mapNull(this::createViewDependenciesControl);
     }
     if (summaryPanelScrollPane != null) {
-      controls.get(TableControl.TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
+      controls.get(TableControl.TOGGLE_SUMMARY_PANEL).mapNull(this::createToggleSummaryPanelControl);
     }
     if (includeConditionPanel && conditionPanel != null) {
-      controls.get(TableControl.CONDITION_PANEL_VISIBLE).set(createConditionPanelControl());
-      controls.get(TableControl.TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
-      controls.get(TableControl.SELECT_CONDITION_PANEL).set(Control.control(this::selectConditionPanel));
+      controls.get(TableControl.CONDITION_PANEL_VISIBLE).mapNull(this::createConditionPanelControl);
+      controls.get(TableControl.TOGGLE_CONDITION_PANEL).mapNull(this::createToggleConditionPanelControl);
+      controls.get(TableControl.SELECT_CONDITION_PANEL).mapNull(() -> Control.control(this::selectConditionPanel));
     }
     if (includeFilterPanel && filterPanel != null) {
-      controls.get(TableControl.FILTER_PANEL_VISIBLE).set(createFilterPanelControl());
-      controls.get(TableControl.TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
-      controls.get(TableControl.SELECT_FILTER_PANEL).set(Control.control(this::selectFilterPanel));
+      controls.get(TableControl.FILTER_PANEL_VISIBLE).mapNull(this::createFilterPanelControl);
+      controls.get(TableControl.TOGGLE_FILTER_PANEL).mapNull(this::createToggleFilterPanelControl);
+      controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(() -> Control.control(this::selectFilterPanel));
     }
-    controls.get(TableControl.CLEAR_SELECTION).set(createClearSelectionControl());
-    controls.get(TableControl.MOVE_SELECTION_UP).set(createMoveSelectionDownControl());
-    controls.get(TableControl.MOVE_SELECTION_DOWN).set(createMoveSelectionUpControl());
-    controls.get(TableControl.COPY_TABLE_DATA).set(createCopyControls());
+    controls.get(TableControl.CLEAR_SELECTION).mapNull(this::createClearSelectionControl);
+    controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
+    controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
+    controls.get(TableControl.COPY_TABLE_DATA).mapNull(this::createCopyControls);
     if (includeSelectionModeControl) {
-      controls.get(TableControl.SELECTION_MODE).set(table.createSingleSelectionModeControl());
+      controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
     }
-    controls.get(TableControl.REQUEST_TABLE_FOCUS).set(Control.control(table()::requestFocus));
-    controls.get(TableControl.CONFIGURE_COLUMNS).set(createColumnControls());
+    controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(() -> Control.control(table::requestFocus));
+    controls.get(TableControl.CONFIGURE_COLUMNS).mapNull(this::createColumnControls);
   }
 
   private boolean includeViewDependenciesControl() {

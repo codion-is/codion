@@ -5,6 +5,7 @@ package is.codion.common.value;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -65,6 +66,29 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * @return true if the underlying value changed
    */
   boolean map(Function<T, T> mapper);
+
+  /**
+   * Sets a new value in case the current value is null.
+   * <pre>
+   * {@code
+   * Value<Integer> value = Value.value(null);
+   *
+   * //replace null with 1
+   * value.mapNull(() -> 1);
+   *
+   * value.mapNull(() -> 2);//has no effect since the value is non-null
+   * }
+   * </pre>
+   * @param supplier supplies the value to use as replacement for null
+   * @return true if the underlying value changed
+   */
+  default boolean mapNull(Supplier<T> supplier) {
+    if (isNull()) {
+      return set(supplier.get());
+    }
+
+    return false;
+  }
 
   /**
    * Returns a {@link ValueObserver} notified each time this value changes.

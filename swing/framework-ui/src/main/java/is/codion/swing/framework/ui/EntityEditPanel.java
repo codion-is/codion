@@ -502,19 +502,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       setupEditControls();
     }
     if (editControls.contains(EditControl.CLEAR)) {
-      controls.get(EditControl.CLEAR).set(createClearControl());
+      controls.get(EditControl.CLEAR).mapNull(this::createClearControl);
     }
   }
 
   private void setupEditControls() {
     if (editModel().insertEnabled().get() && editControls.contains(EditControl.INSERT)) {
-      controls.get(EditControl.INSERT).set(createInsertControl());
+      controls.get(EditControl.INSERT).mapNull(this::createInsertControl);
     }
     if (editModel().updateEnabled().get() && editControls.contains(EditControl.UPDATE)) {
-      controls.get(EditControl.UPDATE).set(createUpdateControl());
+      controls.get(EditControl.UPDATE).mapNull(this::createUpdateControl);
     }
     if (editModel().deleteEnabled().get() && editControls.contains(EditControl.DELETE)) {
-      controls.get(EditControl.DELETE).set(createDeleteControl());
+      controls.get(EditControl.DELETE).mapNull(this::createDeleteControl);
     }
   }
 
