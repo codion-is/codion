@@ -181,17 +181,14 @@ public class EntityPanel extends JPanel {
   private final Value<String> caption;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
 
+  private final Settings settings = new Settings();
+
   private String description;
   private EntityPanel parentPanel;
   private EntityPanel previousSiblingPanel;
   private EntityPanel nextSiblingPanel;
-  private boolean toolbarControls = TOOLBAR_CONTROLS.get();
-  private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
-          CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
-  private boolean includeControls = INCLUDE_CONTROLS.get();
-  private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
   private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
-  private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+
   private boolean initialized = false;
 
   static {
@@ -332,72 +329,22 @@ public class EntityPanel extends JPanel {
   }
 
   /**
+   * Provides a way to configure settings before the panel is initialized.
+   * @return the {@link Settings} instance
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final Settings configure() {
+    throwIfInitialized();
+
+    return settings;
+  }
+
+  /**
    * @return the detail panel controller
    * @param <T> the detail panel controller type
    */
   public final <T extends DetailController> T detailController() {
     return (T) detailController;
-  }
-
-  /**
-   * @return true if the edit controls should be on a toolbar instead of a button panel
-   */
-  public final boolean isToolbarControls() {
-    return toolbarControls;
-  }
-
-  /**
-   * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
-   * @throws IllegalStateException if the panel has been initialized
-   * @see #TOOLBAR_CONTROLS
-   */
-  public final void setToolbarControls(boolean toolbarControls) {
-    checkIfInitialized();
-    this.toolbarControls = toolbarControls;
-  }
-
-  /**
-   * @return the controls component layout constraints (BorderLayout constraints)
-   */
-  public final String getControlComponentConstraints() {
-    return controlComponentConstraints;
-  }
-
-  /**
-   * Sets the layout constraints to use for the control panel
-   * <pre>
-   * The default layout is as follows (BorderLayout.WEST):
-   * __________________________________
-   * |   edit panel           |control|
-   * |  (EntityEditPanel)     | panel | } editControlPanel
-   * |________________________|_______|
-   *
-   * With (BorderLayout.SOUTH):
-   * __________________________
-   * |         edit           |
-   * |        panel           |
-   * |________________________| } editControlPanel
-   * |     control panel      |
-   * |________________________|
-   *
-   * etc.
-   * </pre>
-   * @param controlComponentConstraints the controls component layout constraints (BorderLayout constraints)
-   * @throws IllegalStateException if the panel has been initialized
-   * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
-   */
-  public final void setControlComponentConstraints(String controlComponentConstraints) {
-    checkIfInitialized();
-    switch (requireNonNull(controlComponentConstraints)) {
-      case BorderLayout.SOUTH:
-      case BorderLayout.NORTH:
-      case BorderLayout.EAST:
-      case BorderLayout.WEST:
-        break;
-      default:
-        throw new IllegalArgumentException("Control component constraints must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
-    }
-    this.controlComponentConstraints = controlComponentConstraints;
   }
 
   /**
@@ -416,7 +363,7 @@ public class EntityPanel extends JPanel {
    * @throws IllegalStateException if the panel has been initialized or if it already contains the given detail panel
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
-    checkIfInitialized();
+    throwIfInitialized();
     if (detailPanels.contains(requireNonNull(detailPanel))) {
       throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
     }
@@ -611,39 +558,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return true if the edit panel control should be shown
-   * @see EntityPanel#INCLUDE_TOGGLE_EDIT_PANEL_CONTROL
-   */
-  public final boolean isIncludeToggleEditPanelControl() {
-    return includeToggleEditPanelControl;
-  }
-
-  /**
-   * @param includeToggleEditPanelControl true if a control for toggling the edit panel should be included
-   * @throws IllegalStateException if the panel has been initialized
-   */
-  public final void setIncludeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
-    checkIfInitialized();
-    this.includeToggleEditPanelControl = includeToggleEditPanelControl;
-  }
-
-  /**
-   * @return true if the edit and table panel controls should be included
-   */
-  public final boolean isIncludeControls() {
-    return includeControls;
-  }
-
-  /**
-   * @param includeControls true if the edit an table panel controls should be included
-   * @throws IllegalStateException if the panel has been initialized
-   */
-  public final void setIncludeControls(boolean includeControls) {
-    checkIfInitialized();
-    this.includeControls = includeControls;
-  }
-
-  /**
    * @return true if the edit dialog is disposed of on ESC
    * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
    */
@@ -657,21 +571,6 @@ public class EntityPanel extends JPanel {
    */
   public final void setDisposeEditDialogOnEscape(boolean disposeEditDialogOnEscape) {
     this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
-  }
-
-  /**
-   * @return true if keyboard navigation is enabled
-   */
-  public final boolean isUseKeyboardNavigation() {
-    return useKeyboardNavigation;
-  }
-
-  /**
-   * @param useKeyboardNavigation true if keyboard navigation should be enabled
-   */
-  public final void setUseKeyboardNavigation(boolean useKeyboardNavigation) {
-    checkIfInitialized();
-    this.useKeyboardNavigation = useKeyboardNavigation;
   }
 
   /**
@@ -768,10 +667,11 @@ public class EntityPanel extends JPanel {
 
   /**
    * Creates a base panel containing the given edit panel.
-   * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #getControlComponentConstraints()}.
+   * The default layout is a {@link FlowLayout} with the alignment depending on {@link Settings#controlComponentConstraints(String)}.
    * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
    * @param editPanel the initialized edit panel
    * @return a base panel for the edit panel
+   * @see Settings#controlComponentConstraints(String)
    */
   protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
     return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
@@ -782,7 +682,6 @@ public class EntityPanel extends JPanel {
   /**
    * Creates the component to place next to the edit panel, containing the available controls,
    * such as insert, update, delete, clear and refresh.
-   * Only called if {@link #isIncludeControls()} returns true.
    * @param controls the controls to display on the component
    * @return the component containing the edit and table panel controls, null if no controls are available
    * @see EntityEditPanel#controls()
@@ -790,13 +689,14 @@ public class EntityPanel extends JPanel {
    * @see EntityPanel#TOOLBAR_CONTROLS
    * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
    * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
+   * @see Settings#includeControls(boolean)
    */
   protected JComponent createControlComponent(Controls controls) {
     if (requireNonNull(controls).empty()) {
       return null;
     }
 
-    return isToolbarControls() ? createControlToolbar(controls) : createControlPanel(controls);
+    return settings.toolbarControls ? createControlToolbar(controls) : createControlPanel(controls);
   }
 
   /**
@@ -934,7 +834,7 @@ public class EntityPanel extends JPanel {
               .action(toggleEditPanel)
               .enable(editControlPanel);
     }
-    if (useKeyboardNavigation) {
+    if (settings.useKeyboardNavigation) {
       setupNavigation();
     }
   }
@@ -990,10 +890,10 @@ public class EntityPanel extends JPanel {
     int gap = Layouts.GAP.get();
     editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
-    if (includeControls) {
+    if (settings.includeControls) {
       JComponent controlComponent = createControlComponent(createControls());
       if (controlComponent != null) {
-        editControlPanel.add(controlComponent, controlComponentConstraints);
+        editControlPanel.add(controlComponent, settings.controlComponentConstraints);
       }
     }
   }
@@ -1064,12 +964,13 @@ public class EntityPanel extends JPanel {
   }
 
   private boolean horizontalControlLayout() {
-    return controlComponentConstraints.equals(BorderLayout.SOUTH) || controlComponentConstraints.equals(BorderLayout.NORTH);
+    return settings.controlComponentConstraints.equals(BorderLayout.SOUTH) ||
+            settings.controlComponentConstraints.equals(BorderLayout.NORTH);
   }
 
   private void setupToggleEditPanelControl() {
-    if (containsTablePanel() && containsEditPanel() && includeToggleEditPanelControl ) {
-      tablePanel.addToolBarControls(Controls.builder()
+    if (containsTablePanel() && containsEditPanel() && settings.includeToggleEditPanelControl ) {
+      tablePanel.configure().addToolBarControls(Controls.builder()
               .control(createToggleEditPanelControl())
               .build());
     }
@@ -1167,7 +1068,7 @@ public class EntityPanel extends JPanel {
             .build();
   }
 
-  private void checkIfInitialized() {
+  private void throwIfInitialized() {
     if (initialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
@@ -1260,6 +1161,102 @@ public class EntityPanel extends JPanel {
           editPanelParent.active().set(true);
         }
       }
+    }
+  }
+
+  /**
+   * Contains configuration settings for a {@link EntityPanel} which must be set before the panel is initialized.
+   */
+  public final class Settings {
+
+    private boolean toolbarControls = TOOLBAR_CONTROLS.get();
+    private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
+    private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
+            CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
+    private boolean includeControls = INCLUDE_CONTROLS.get();
+    private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+
+    /**
+     * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
+     * @return this Settings instance
+     * @throws IllegalStateException if the panel has been initialized
+     * @see #TOOLBAR_CONTROLS
+     */
+    public Settings toolbarControls(boolean toolbarControls) {
+      throwIfInitialized();
+      this.toolbarControls = toolbarControls;
+      return this;
+    }
+
+    /**
+     * Sets the layout constraints to use for the control panel
+     * <pre>
+     * The default layout is as follows (BorderLayout.WEST):
+     * __________________________________
+     * |   edit panel           |control|
+     * |  (EntityEditPanel)     | panel | } editControlPanel
+     * |________________________|_______|
+     *
+     * With (BorderLayout.SOUTH):
+     * __________________________
+     * |         edit           |
+     * |        panel           |
+     * |________________________| } editControlPanel
+     * |     control panel      |
+     * |________________________|
+     *
+     * etc.
+     * </pre>
+     * @param controlComponentConstraints the controls component layout constraints (BorderLayout constraints)
+     * @return this Settings instance
+     * @throws IllegalStateException if the panel has been initialized
+     * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
+     */
+    public Settings controlComponentConstraints(String controlComponentConstraints) {
+      throwIfInitialized();
+      switch (requireNonNull(controlComponentConstraints)) {
+        case BorderLayout.SOUTH:
+        case BorderLayout.NORTH:
+        case BorderLayout.EAST:
+        case BorderLayout.WEST:
+          break;
+        default:
+          throw new IllegalArgumentException("Control component constraints must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
+      }
+      this.controlComponentConstraints = controlComponentConstraints;
+      return this;
+    }
+
+    /**
+     * @param includeToggleEditPanelControl true if a control for toggling the edit panel should be included
+     * @return this Settings instance
+     * @throws IllegalStateException if the panel has been initialized
+     */
+    public Settings includeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
+      throwIfInitialized();
+      this.includeToggleEditPanelControl = includeToggleEditPanelControl;
+      return this;
+    }
+
+    /**
+     * @param includeControls true if the edit an table panel controls should be included
+     * @return this Settings instance
+     * @throws IllegalStateException if the panel has been initialized
+     */
+    public Settings includeControls(boolean includeControls) {
+      throwIfInitialized();
+      this.includeControls = includeControls;
+      return this;
+    }
+
+    /**
+     * @param useKeyboardNavigation true if keyboard navigation should be enabled
+     * @return this Settings instance
+     */
+    public Settings useKeyboardNavigation(boolean useKeyboardNavigation) {
+      throwIfInitialized();
+      this.useKeyboardNavigation = useKeyboardNavigation;
+      return this;
     }
   }
 

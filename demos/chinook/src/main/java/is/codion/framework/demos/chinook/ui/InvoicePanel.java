@@ -16,7 +16,7 @@ public final class InvoicePanel extends EntityPanel {
                     .includeDetailTabPane(false)
                     .includeDetailControls(false)
                     .build());
-    tablePanel().editableAttributes().remove(Invoice.TOTAL);
+    tablePanel().configure().editableAttributes().remove(Invoice.TOTAL);
     addDetailPanel(invoiceLinePanel);
   }
 }

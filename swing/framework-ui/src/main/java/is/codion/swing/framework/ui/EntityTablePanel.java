@@ -276,9 +276,7 @@ public class EntityTablePanel extends JPanel {
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
 
-  private final List<Controls> additionalPopupControls = new ArrayList<>();
-  private final List<Controls> additionalToolBarControls = new ArrayList<>();
-  private final ValueSet<Attribute<?>> editableAttributes;
+  private final Settings settings;
 
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
@@ -298,13 +296,7 @@ public class EntityTablePanel extends JPanel {
   private JToolBar refreshButtonToolBar;
   private Control conditionRefreshControl;
   private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
-  private boolean includeSouthPanel = true;
-  private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
-  private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
-  private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
-  private boolean includeSelectionModeControl = false;
-  private ColumnSelection columnSelection = COLUMN_SELECTION.get();
-  private boolean includePopupMenu = true;
+
   private boolean initialized = false;
 
   /**
@@ -329,13 +321,10 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
-    this.editableAttributes = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
-            .map(AttributeDefinition::attribute)
-            .collect(toSet()));
-    this.editableAttributes.addValidator(new EditMenuAttributeValidator());
     this.table = createTable();
     this.statusPanel = new StatusPanel();
     this.controls = createControlsMap();
+    this.settings = new Settings();
   }
 
   /**
@@ -369,101 +358,14 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Specifies the attributes that should be editable in this table panel, such as via the edit selected entities menu.
-   * Modifying this {@link ValueSet} after the panel has been initialized will result in a {@link IllegalStateException} being thrown
-   * @return the attributes that should be editable via this table panel
-   */
-  public final ValueSet<Attribute<?>> editableAttributes() {
-    return editableAttributes;
-  }
-
-  /**
-   * @param additionalPopupMenuControls a set of controls to add to the table popup menu
+   * Provides a way to configure settings before the panel is initialized.
+   * @return the {@link Settings} instance
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
    */
-  public final void addPopupMenuControls(Controls additionalPopupMenuControls) {
+  public final Settings configure() {
     throwIfInitialized();
-    this.additionalPopupControls.add(requireNonNull(additionalPopupMenuControls));
-  }
 
-  /**
-   * @param additionalToolBarControls a set of controls to add to the table toolbar menu
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
-   */
-  public final void addToolBarControls(Controls additionalToolBarControls) {
-    throwIfInitialized();
-    this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
-  }
-
-  /**
-   * @param includeSouthPanel true if the south panel should be included
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializeSouthPanel()
-   * @see #initialize()
-   */
-  public final void setIncludeSouthPanel(boolean includeSouthPanel) {
-    throwIfInitialized();
-    this.includeSouthPanel = includeSouthPanel;
-  }
-
-  /**
-   * @param includeConditionPanel true if the condition panel should be included
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
-   */
-  public final void setIncludeConditionPanel(boolean includeConditionPanel) {
-    throwIfInitialized();
-    this.includeConditionPanel = includeConditionPanel;
-  }
-
-  /**
-   * @param includeFilterPanel true if the filter panel should be included
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
-   */
-  public final void setIncludeFilterPanel(boolean includeFilterPanel) {
-    throwIfInitialized();
-    this.includeFilterPanel = includeFilterPanel;
-  }
-
-  /**
-   * @param includePopupMenu true if a popup menu should be included
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
-   */
-  public final void setIncludePopupMenu(boolean includePopupMenu) {
-    throwIfInitialized();
-    this.includePopupMenu = includePopupMenu;
-  }
-
-  /**
-   * @param includeClearControl true if a 'Clear' control should be included in the popup menu
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
-   */
-  public final void setIncludeClearControl(boolean includeClearControl) {
-    throwIfInitialized();
-    this.includeClearControl = includeClearControl;
-  }
-
-  /**
-   * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
-   * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initialize()
-   */
-  public final void setIncludeSelectionModeControl(boolean includeSelectionModeControl) {
-    throwIfInitialized();
-    this.includeSelectionModeControl = includeSelectionModeControl;
-  }
-
-  /**
-   * @param columnSelection specifies how columns are selected
-   */
-  public final void setColumnSelection(ColumnSelection columnSelection) {
-    throwIfInitialized();
-    this.columnSelection = requireNonNull(columnSelection);
+    return settings;
   }
 
   /**
@@ -571,7 +473,7 @@ public class EntityTablePanel extends JPanel {
    * Allows the user to select one of the available search condition panels
    */
   public final void selectConditionPanel() {
-    if (includeConditionPanel) {
+    if (settings.includeConditionPanel) {
       selectConditionPanel(conditionPanel, conditionPanelScrollPane, conditionPanelVisibleState,
               tableModel, this, FrameworkMessages.selectSearchField());
     }
@@ -581,7 +483,7 @@ public class EntityTablePanel extends JPanel {
    * Allows the user to select one of the available filter condition panels
    */
   public final void selectFilterPanel() {
-    if (includeFilterPanel) {
+    if (settings.includeFilterPanel) {
       selectConditionPanel(filterPanel, filterPanelScrollPane, filterPanelVisibleState,
               tableModel, this, FrameworkMessages.selectFilterField());
     }
@@ -700,7 +602,7 @@ public class EntityTablePanel extends JPanel {
         setupStandardControls();
         setupControls();
         setupTable();
-        layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
+        layoutPanel(tablePanel, settings.includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisible(conditionPanelVisibleState.get());
         setFilterPanelVisible(filterPanelVisibleState.get());
         setSummaryPanelVisible(summaryPanelVisibleState.get());
@@ -725,8 +627,9 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
-   * Not called if the south panel has been disabled via {@link #setIncludeSouthPanel(boolean)}.
+   * Not called if the south panel has been disabled via {@link Settings#includeSouthPanel(boolean)}.
    * @return the south panel, or null if no south panel should be included
+   * @see Settings#includeSouthPanel(boolean)
    */
   protected JPanel initializeSouthPanel() {
     JPanel searchFieldPanel = Components.panel(new GridBagLayout())
@@ -877,14 +780,14 @@ public class EntityTablePanel extends JPanel {
       popupControls.add(control);
       separatorRequired.set(true);
     });
-    if (includeConditionPanel && conditionPanel != null) {
+    if (settings.includeConditionPanel && conditionPanel != null) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
       addConditionControls(popupControls);
       separatorRequired.set(true);
     }
-    if (includeFilterPanel && filterPanel != null) {
+    if (settings.includeFilterPanel && filterPanel != null) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -968,7 +871,7 @@ public class EntityTablePanel extends JPanel {
    * @return the toolbar to add to the south panel, null if none should be included
    */
   protected JToolBar createSouthToolBar() {
-    Controls toolbarControls = createToolBarControls(additionalToolBarControls);
+    Controls toolbarControls = createToolBarControls(settings.additionalToolBarControls);
     if (toolbarControls == null || toolbarControls.empty()) {
       return null;
     }
@@ -1047,8 +950,8 @@ public class EntityTablePanel extends JPanel {
    */
   protected <T> EntityDialogs.EditDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
     return EntityDialogs.editDialog(tableModel.editModel(), attribute)
-              .owner(this)
-              .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attribute));
+            .owner(this)
+            .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attribute));
   }
 
   /**
@@ -1093,7 +996,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
-    editableAttributes.get().stream()
+    settings.editableAttributes.get().stream()
             .map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
             .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
@@ -1145,7 +1048,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createColumnSelectionControl() {
-    return columnSelection == ColumnSelection.DIALOG ?
+    return settings.columnSelection == ColumnSelection.DIALOG ?
             table.createSelectColumnsControl() : table.createToggleColumnsControls();
   }
 
@@ -1167,7 +1070,7 @@ public class EntityTablePanel extends JPanel {
             .description(MESSAGES.getString("show_condition_panel"))
             .build();
   }
-  
+
   private Control createSelectConditionPanelControl() {
     return Control.control(this::selectConditionPanel);
   }
@@ -1260,7 +1163,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeEditSelectedControls() {
-    return !editableAttributes.empty() &&
+    return !settings.editableAttributes.empty() &&
             !tableModel.editModel().readOnly().get() &&
             tableModel.editModel().updateEnabled().get();
   }
@@ -1308,7 +1211,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
-    return conditionPanelFactory == null || !includeConditionPanel ? null : filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
+    return conditionPanelFactory == null || !settings.includeConditionPanel ?
+            null :
+            filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
   }
 
   private JScrollPane createConditionPanelScrollPane() {
@@ -1426,7 +1331,7 @@ public class EntityTablePanel extends JPanel {
     }
     tableScrollPane = new JScrollPane(table);
     conditionPanelScrollPane = createConditionPanelScrollPane();
-    if (includeFilterPanel) {
+    if (settings.includeFilterPanel) {
       filterPanel = configureHorizontalAlignment(table.filterPanel());
       filterPanelScrollPane = createFilterPanelScrollPane();
     }
@@ -1448,7 +1353,7 @@ public class EntityTablePanel extends JPanel {
     if (includeEditSelectedControls()) {
       controls.get(TableControl.EDIT_SELECTED).mapNull(this::createEditSelectedControls);
     }
-    if (includeClearControl) {
+    if (settings.includeClearControl) {
       controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
     }
     controls.get(TableControl.REFRESH).mapNull(this::createRefreshControl);
@@ -1461,12 +1366,12 @@ public class EntityTablePanel extends JPanel {
     if (summaryPanelScrollPane != null) {
       controls.get(TableControl.TOGGLE_SUMMARY_PANEL).mapNull(this::createToggleSummaryPanelControl);
     }
-    if (includeConditionPanel && conditionPanel != null) {
+    if (settings.includeConditionPanel && conditionPanel != null) {
       controls.get(TableControl.CONDITION_PANEL_VISIBLE).mapNull(this::createConditionPanelControl);
       controls.get(TableControl.TOGGLE_CONDITION_PANEL).mapNull(this::createToggleConditionPanelControl);
       controls.get(TableControl.SELECT_CONDITION_PANEL).mapNull(this::createSelectConditionPanelControl);
     }
-    if (includeFilterPanel && filterPanel != null) {
+    if (settings.includeFilterPanel && filterPanel != null) {
       controls.get(TableControl.FILTER_PANEL_VISIBLE).mapNull(this::createFilterPanelControl);
       controls.get(TableControl.TOGGLE_FILTER_PANEL).mapNull(this::createToggleFilterPanelControl);
       controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(this::createSelectFilterPanelControl);
@@ -1475,7 +1380,7 @@ public class EntityTablePanel extends JPanel {
     controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
     controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
     controls.get(TableControl.COPY_TABLE_DATA).mapNull(this::createCopyControls);
-    if (includeSelectionModeControl) {
+    if (settings.includeSelectionModeControl) {
       controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
     }
     controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
@@ -1491,7 +1396,7 @@ public class EntityTablePanel extends JPanel {
 
   private void setupTable() {
     tableModel.columnModel().columns().forEach(this::configureColumn);
-    if (includePopupMenu) {
+    if (settings.includePopupMenu) {
       addTablePopupMenu();
     }
   }
@@ -1505,7 +1410,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void addTablePopupMenu() {
-    Controls popupControls = createPopupMenuControls(additionalPopupControls);
+    Controls popupControls = createPopupMenuControls(settings.additionalPopupControls);
     if (popupControls == null || popupControls.empty()) {
       return;
     }
@@ -1524,7 +1429,7 @@ public class EntityTablePanel extends JPanel {
 
   private void throwIfInitialized() {
     if (initialized) {
-      throw new IllegalStateException("Method must be called before the panel is initialized");
+      throw new IllegalStateException("TablePanel has already been initialized");
     }
   }
 
@@ -1807,13 +1712,144 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
+  /**
+   * Contains configuration settings for a {@link EntityTablePanel} which must be set before the panel is initialized.
+   */
+  public final class Settings {
 
-    @Override
-    public void validate(Set<Attribute<?>> attributes) {
+    private final List<Controls> additionalPopupControls = new ArrayList<>();
+    private final List<Controls> additionalToolBarControls = new ArrayList<>();
+    private final ValueSet<Attribute<?>> editableAttributes;
+
+    private boolean includeSouthPanel = true;
+    private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
+    private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
+    private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
+    private boolean includeSelectionModeControl = false;
+    private ColumnSelection columnSelection = COLUMN_SELECTION.get();
+    private boolean includePopupMenu = true;
+
+    private Settings() {
+      this.editableAttributes = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
+              .map(AttributeDefinition::attribute)
+              .collect(toSet()));
+      this.editableAttributes.addValidator(new EditMenuAttributeValidator());
+    }
+
+    /**
+     * @param includeSouthPanel true if the south panel should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeSouthPanel(boolean includeSouthPanel) {
       throwIfInitialized();
-      //validate that the attributes exists
-      attributes.forEach(attribute -> tableModel.entityDefinition().attributes().definition(attribute));
+      this.includeSouthPanel = includeSouthPanel;
+      return this;
+    }
+
+    /**
+     * @param includeConditionPanel true if the condition panel should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeConditionPanel(boolean includeConditionPanel) {
+      throwIfInitialized();
+      this.includeConditionPanel = includeConditionPanel;
+      return this;
+    }
+
+    /**
+     * @param includeFilterPanel true if the filter panel should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeFilterPanel(boolean includeFilterPanel) {
+      throwIfInitialized();
+      this.includeFilterPanel = includeFilterPanel;
+      return this;
+    }
+
+    /**
+     * @param includePopupMenu true if a popup menu should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includePopupMenu(boolean includePopupMenu) {
+      throwIfInitialized();
+      this.includePopupMenu = includePopupMenu;
+      return this;
+    }
+
+    /**
+     * @param includeClearControl true if a 'Clear' control should be included in the popup menu
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeClearControl(boolean includeClearControl) {
+      throwIfInitialized();
+      this.includeClearControl = includeClearControl;
+      return this;
+    }
+
+    /**
+     * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeSelectionModeControl(boolean includeSelectionModeControl) {
+      throwIfInitialized();
+      this.includeSelectionModeControl = includeSelectionModeControl;
+      return this;
+    }
+
+    /**
+     * @param columnSelection specifies how columns are selected
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings columnSelection(ColumnSelection columnSelection) {
+      throwIfInitialized();
+      this.columnSelection = requireNonNull(columnSelection);
+      return this;
+    }
+
+    /**
+     * @param additionalPopupMenuControls a set of controls to add to the table popup menu
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings addPopupMenuControls(Controls additionalPopupMenuControls) {
+      throwIfInitialized();
+      this.additionalPopupControls.add(requireNonNull(additionalPopupMenuControls));
+      return this;
+    }
+
+    /**
+     * @param additionalToolBarControls a set of controls to add to the table toolbar menu
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings addToolBarControls(Controls additionalToolBarControls) {
+      throwIfInitialized();
+      this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
+      return this;
+    }
+
+    /**
+     * Specifies the attributes that should be editable in this table panel, such as via the edit selected entities menu.
+     * @return the attributes that should be editable via this table panel
+     */
+    public ValueSet<Attribute<?>> editableAttributes() {
+      return editableAttributes;
+    }
+
+    private final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
+
+      @Override
+      public void validate(Set<Attribute<?>> attributes) {
+        //validate that the attributes exists
+        attributes.forEach(attribute -> tableModel.entityDefinition().attributes().definition(attribute));
+      }
     }
   }
 

@@ -109,7 +109,7 @@ public final class EntityDependenciesPanel extends JPanel {
         return popupMenuControls;
       }
     };
-    tablePanel.setIncludeConditionPanel(false);
+    tablePanel.configure().includeConditionPanel(false);
 
     return tablePanel.initialize();
   }
