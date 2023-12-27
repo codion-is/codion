@@ -1144,6 +1144,11 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
+  private Control createColumnSelectionControl() {
+    return columnSelection == ColumnSelection.DIALOG ?
+            table.createSelectColumnsControl() : table.createToggleColumnsControls();
+  }
+
   /**
    * @return a Control for clearing the underlying table model, that is, removing all rows
    */
@@ -1162,12 +1167,20 @@ public class EntityTablePanel extends JPanel {
             .description(MESSAGES.getString("show_condition_panel"))
             .build();
   }
+  
+  private Control createSelectConditionPanelControl() {
+    return Control.control(this::selectConditionPanel);
+  }
 
   private Control createToggleFilterPanelControl() {
     return Control.builder(this::toggleFilterPanel)
             .smallIcon(FrameworkIcons.instance().filter())
             .description(MESSAGES.getString("show_filter_panel"))
             .build();
+  }
+
+  private Control createSelectFilterPanelControl() {
+    return Control.control(this::selectFilterPanel);
   }
 
   private Control createToggleSummaryPanelControl() {
@@ -1197,6 +1210,10 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().up())
             .description(MESSAGES.getString("selection_up_tip"))
             .build();
+  }
+
+  private Control createRequestTableFocusControl() {
+    return Control.control(table::requestFocus);
   }
 
   private Controls createColumnControls() {
@@ -1435,8 +1452,7 @@ public class EntityTablePanel extends JPanel {
       controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
     }
     controls.get(TableControl.REFRESH).mapNull(this::createRefreshControl);
-    controls.get(TableControl.SELECT_COLUMNS).mapNull(columnSelection == ColumnSelection.DIALOG ?
-            table::createSelectColumnsControl : table::createToggleColumnsControls);
+    controls.get(TableControl.SELECT_COLUMNS).mapNull(this::createColumnSelectionControl);
     controls.get(TableControl.RESET_COLUMNS).mapNull(table::createResetColumnsControl);
     controls.get(TableControl.COLUMN_AUTO_RESIZE_MODE).mapNull(table::createAutoResizeModeControl);
     if (includeViewDependenciesControl()) {
@@ -1448,12 +1464,12 @@ public class EntityTablePanel extends JPanel {
     if (includeConditionPanel && conditionPanel != null) {
       controls.get(TableControl.CONDITION_PANEL_VISIBLE).mapNull(this::createConditionPanelControl);
       controls.get(TableControl.TOGGLE_CONDITION_PANEL).mapNull(this::createToggleConditionPanelControl);
-      controls.get(TableControl.SELECT_CONDITION_PANEL).mapNull(() -> Control.control(this::selectConditionPanel));
+      controls.get(TableControl.SELECT_CONDITION_PANEL).mapNull(this::createSelectConditionPanelControl);
     }
     if (includeFilterPanel && filterPanel != null) {
       controls.get(TableControl.FILTER_PANEL_VISIBLE).mapNull(this::createFilterPanelControl);
       controls.get(TableControl.TOGGLE_FILTER_PANEL).mapNull(this::createToggleFilterPanelControl);
-      controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(() -> Control.control(this::selectFilterPanel));
+      controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(this::createSelectFilterPanelControl);
     }
     controls.get(TableControl.CLEAR_SELECTION).mapNull(this::createClearSelectionControl);
     controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
@@ -1462,7 +1478,7 @@ public class EntityTablePanel extends JPanel {
     if (includeSelectionModeControl) {
       controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
     }
-    controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(() -> Control.control(table::requestFocus));
+    controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
     controls.get(TableControl.CONFIGURE_COLUMNS).mapNull(this::createColumnControls);
   }
 
