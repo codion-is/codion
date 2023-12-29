@@ -7,8 +7,9 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 
 import javax.swing.FocusManager;
 import javax.swing.InputMap;
@@ -37,7 +38,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -45,14 +45,16 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.calendar.CalendarPanel.KeyboardShortcuts.*;
+import static is.codion.swing.common.ui.component.calendar.CalendarPanel.KeyboardShortcut.*;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.InputEvent.*;
@@ -78,10 +80,12 @@ public final class CalendarPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(CalendarPanel.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
+  public enum KeyboardShortcut implements Shortcut {
     PREVIOUS_YEAR,
     NEXT_YEAR,
     PREVIOUS_MONTH,
@@ -93,14 +97,7 @@ public final class CalendarPanel extends JPanel {
     PREVIOUS_HOUR,
     NEXT_HOUR,
     PREVIOUS_MINUTE,
-    NEXT_MINUTE;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+    NEXT_MINUTE
   }
 
   private static final Set<Class<? extends Temporal>> SUPPORTED_TYPES =
@@ -488,41 +485,41 @@ public final class CalendarPanel extends JPanel {
   private void addKeyEvents() {
     KeyEvents.Builder keyEvent = KeyEvents.builder()
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    keyEvent.keyStroke(PREVIOUS_YEAR.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_YEAR).get())
             .action(control(this::previousYear))
             .enable(this);
-    keyEvent.keyStroke(NEXT_YEAR.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_YEAR).get())
             .action(control(this::nextYear))
             .enable(this);
-    keyEvent.keyStroke(PREVIOUS_MONTH.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_MONTH).get())
             .action(control(this::previousMonth))
             .enable(this);
-    keyEvent.keyStroke(NEXT_MONTH.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_MONTH).get())
             .action(control(this::nextMonth))
             .enable(this);
-    keyEvent.keyStroke(PREVIOUS_WEEK.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_WEEK).get())
             .action(control(this::previousWeek))
             .enable(this);
-    keyEvent.keyStroke(NEXT_WEEK.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_WEEK).get())
             .action(control(this::nextWeek))
             .enable(this);
-    keyEvent.keyStroke(PREVIOUS_DAY.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_DAY).get())
             .action(control(this::previousDay))
             .enable(this);
-    keyEvent.keyStroke(NEXT_DAY.keyStroke().get())
+    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_DAY).get())
             .action(control(this::nextDay))
             .enable(this);
     if (includeTime) {
-      keyEvent.keyStroke(PREVIOUS_HOUR.keyStroke().get())
+      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_HOUR).get())
               .action(control(this::previousHour))
               .enable(this);
-      keyEvent.keyStroke(NEXT_HOUR.keyStroke().get())
+      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_HOUR).get())
               .action(control(this::nextHour))
               .enable(this);
-      keyEvent.keyStroke(PREVIOUS_MINUTE.keyStroke().get())
+      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_MINUTE).get())
               .action(control(this::previousMinute))
               .enable(this);
-      keyEvent.keyStroke(NEXT_MINUTE.keyStroke().get())
+      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_MINUTE).get())
               .action(control(this::nextMinute))
               .enable(this);
     }
@@ -622,22 +619,26 @@ public final class CalendarPanel extends JPanel {
             .collect(Collectors.toList());
   }
 
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(PREVIOUS_YEAR, keyStrokeValue(VK_DOWN, CTRL_DOWN_MASK));
-    keyStrokes.put(NEXT_YEAR, keyStrokeValue(VK_UP, CTRL_DOWN_MASK));
-    keyStrokes.put(PREVIOUS_MONTH, keyStrokeValue(VK_DOWN, SHIFT_DOWN_MASK));
-    keyStrokes.put(NEXT_MONTH, keyStrokeValue(VK_UP, SHIFT_DOWN_MASK));
-    keyStrokes.put(PREVIOUS_WEEK, keyStrokeValue(VK_UP, ALT_DOWN_MASK));
-    keyStrokes.put(NEXT_WEEK, keyStrokeValue(VK_DOWN, ALT_DOWN_MASK));
-    keyStrokes.put(PREVIOUS_DAY, keyStrokeValue(VK_LEFT, ALT_DOWN_MASK));
-    keyStrokes.put(NEXT_DAY, keyStrokeValue(VK_RIGHT, ALT_DOWN_MASK));
-    keyStrokes.put(PREVIOUS_HOUR, keyStrokeValue(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
-    keyStrokes.put(NEXT_HOUR, keyStrokeValue(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
-    keyStrokes.put(PREVIOUS_MINUTE, keyStrokeValue(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-    keyStrokes.put(NEXT_MINUTE, keyStrokeValue(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
 
-    return keyStrokes;
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case PREVIOUS_YEAR: return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
+        case NEXT_YEAR: return keyStroke(VK_UP, CTRL_DOWN_MASK);
+        case PREVIOUS_MONTH: return keyStroke(VK_DOWN, SHIFT_DOWN_MASK);
+        case NEXT_MONTH: return keyStroke(VK_UP, SHIFT_DOWN_MASK);
+        case PREVIOUS_WEEK: return keyStroke(VK_UP, ALT_DOWN_MASK);
+        case NEXT_WEEK: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
+        case PREVIOUS_DAY: return keyStroke(VK_LEFT, ALT_DOWN_MASK);
+        case NEXT_DAY: return keyStroke(VK_RIGHT, ALT_DOWN_MASK);
+        case PREVIOUS_HOUR: return keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
+        case NEXT_HOUR: return keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
+        case PREVIOUS_MINUTE: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NEXT_MINUTE: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
+    }
   }
 
   private final class LayoutDayPanelListener implements Runnable {

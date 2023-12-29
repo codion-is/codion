@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -15,6 +14,8 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
@@ -35,27 +36,26 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.LEFT;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.RIGHT;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcuts.RESIZE_LEFT;
-import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcuts.RESIZE_RIGHT;
+import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcut.RESIZE_LEFT;
+import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcut.RESIZE_RIGHT;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_R;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -88,19 +88,14 @@ public final class TabbedPanelLayout implements PanelLayout {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedPanelLayout.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
+  public enum KeyboardShortcut implements Shortcut {
     RESIZE_RIGHT,
-    RESIZE_LEFT;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+    RESIZE_LEFT
   }
 
   private static final int RESIZE_AMOUNT = 30;
@@ -210,10 +205,10 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void setupResizing() {
-    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(RESIZE_RIGHT.keyStroke().get())
+    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(RESIZE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeHorizontally(entityPanel, RIGHT));
-    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(RESIZE_LEFT.keyStroke().get())
+    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(RESIZE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeHorizontally(entityPanel, LEFT));
     resizeRightKeyEvent.enable(entityPanel);
@@ -290,12 +285,16 @@ public final class TabbedPanelLayout implements PanelLayout {
     return builder.build();
   }
 
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(RESIZE_LEFT, keyStrokeValue(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
-    keyStrokes.put(RESIZE_RIGHT, keyStrokeValue(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
 
-    return keyStrokes;
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case RESIZE_LEFT: return keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+        case RESIZE_RIGHT: return keyStroke(VK_R, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
+    }
   }
 
   private static final class ResizeHorizontally extends AbstractAction {

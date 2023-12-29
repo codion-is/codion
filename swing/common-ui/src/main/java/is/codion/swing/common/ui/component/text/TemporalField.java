@@ -8,11 +8,12 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
@@ -31,14 +32,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
-import static is.codion.swing.common.ui.component.text.TemporalField.KeyboardShortcuts.*;
+import static is.codion.swing.common.ui.component.text.TemporalField.KeyboardShortcut.*;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
@@ -52,20 +53,15 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalField.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
+  public enum KeyboardShortcut implements Shortcut {
     DISPLAY_CALENDAR,
     INCREMENT_FIELD,
-    DECREMENT_FIELD;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+    DECREMENT_FIELD
   }
 
   private static final char DAY = 'd';
@@ -94,19 +90,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.calendarIcon = builder.calendarIcon;
     setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener(new TemporalDocumentListener());
-    KeyEvents.builder(INCREMENT_FIELD.keyStroke().get())
+    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(INCREMENT_FIELD).get())
             .action(Control.builder(this::increment)
                     .enabled(valueNull.not())
                     .build())
             .enable(this);
-    KeyEvents.builder(DECREMENT_FIELD.keyStroke().get())
+    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DECREMENT_FIELD).get())
             .action(Control.builder(this::decrement)
                     .enabled(valueNull.not())
                     .build())
             .enable(this);
     calendarControl = createCalendarControl();
     if (calendarControl != null) {
-      KeyEvents.builder(DISPLAY_CALENDAR.keyStroke().get())
+      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DISPLAY_CALENDAR).get())
               .action(calendarControl)
               .enable(this);
     }
@@ -454,13 +450,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(DISPLAY_CALENDAR, keyStrokeValue(VK_INSERT));
-    keyStrokes.put(INCREMENT_FIELD, keyStrokeValue(VK_UP));
-    keyStrokes.put(DECREMENT_FIELD, keyStrokeValue(VK_DOWN));
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
 
-    return keyStrokes;
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case DISPLAY_CALENDAR: return keyStroke(VK_INSERT);
+        case INCREMENT_FIELD: return keyStroke(VK_UP);
+        case DECREMENT_FIELD: return keyStroke(VK_DOWN);
+        default: throw new IllegalArgumentException();
+      }
+    }
   }
 
   private static final class LocalTimeParser implements DateTimeParser<LocalTime> {

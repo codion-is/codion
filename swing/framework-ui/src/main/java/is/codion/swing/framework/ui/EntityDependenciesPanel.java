@@ -4,17 +4,17 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -27,15 +27,16 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.KeyboardShortcuts.NAVIGATE_LEFT;
-import static is.codion.swing.framework.ui.EntityDependenciesPanel.KeyboardShortcuts.NAVIGATE_RIGHT;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.KeyboardShortcut.NAVIGATE_LEFT;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.KeyboardShortcut.NAVIGATE_RIGHT;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -51,19 +52,14 @@ public final class EntityDependenciesPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityDependenciesPanel.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
+  public enum KeyboardShortcut implements Shortcut {
     NAVIGATE_LEFT,
-    NAVIGATE_RIGHT;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+    NAVIGATE_RIGHT
   }
 
   private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
@@ -75,11 +71,11 @@ public final class EntityDependenciesPanel extends JPanel {
               createTablePanel(entry.getValue(), connectionProvider));
     }
     add(tabPane, BorderLayout.CENTER);
-    KeyEvents.builder(NAVIGATE_RIGHT.keyStroke().get())
+    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NAVIGATE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(new NavigateRightCommand()))
             .enable(tabPane);
-    KeyEvents.builder(NAVIGATE_LEFT.keyStroke().get())
+    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NAVIGATE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(new NavigateLeftCommand()))
             .enable(tabPane);
@@ -170,12 +166,16 @@ public final class EntityDependenciesPanel extends JPanel {
     }
   }
 
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(NAVIGATE_LEFT, keyStrokeValue(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-    keyStrokes.put(NAVIGATE_RIGHT, keyStrokeValue(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
 
-    return keyStrokes;
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
+    }
   }
 
   void requestSelectedTableFocus() {

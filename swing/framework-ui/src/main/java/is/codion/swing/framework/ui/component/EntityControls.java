@@ -59,7 +59,7 @@ final class EntityControls {
    */
   static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
     return createAddControl(new AddEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox,
-            EntityComboBox.KeyboardShortcuts.ADD.keyStroke().get());
+            EntityComboBox.KEYBOARD_SHORTCUTS.keyStroke(EntityComboBox.KeyboardShortcut.ADD).get());
   }
 
   /**
@@ -72,7 +72,7 @@ final class EntityControls {
    */
   static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
     return createAddControl(new AddEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField,
-            EntitySearchField.KeyboardShortcuts.ADD.keyStroke().get());
+            EntitySearchField.KEYBOARD_SHORTCUTS.keyStroke(EntitySearchField.KeyboardShortcut.ADD).get());
   }
 
   /**
@@ -85,7 +85,8 @@ final class EntityControls {
    */
   static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
     return createEditControl(new EditEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)),
-            comboBox, comboBox.getModel().selectionEmpty().not(), EntityComboBox.KeyboardShortcuts.EDIT.keyStroke().get());
+            comboBox, comboBox.getModel().selectionEmpty().not(),
+            EntityComboBox.KEYBOARD_SHORTCUTS.keyStroke(EntityComboBox.KeyboardShortcut.EDIT).get());
   }
 
   /**
@@ -98,7 +99,8 @@ final class EntityControls {
    */
   static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
     return createEditControl(new EditEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)),
-            searchField, searchField.model().selectionEmpty().not(), EntitySearchField.KeyboardShortcuts.EDIT.keyStroke().get());
+            searchField, searchField.model().selectionEmpty().not(),
+            EntitySearchField.KEYBOARD_SHORTCUTS.keyStroke(EntitySearchField.KeyboardShortcut.EDIT).get());
   }
 
   static String validateButtonLocation(String buttonLocation) {

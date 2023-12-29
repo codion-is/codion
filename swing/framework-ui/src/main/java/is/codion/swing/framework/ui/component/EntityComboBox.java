@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -17,6 +16,8 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -25,15 +26,14 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import java.awt.event.FocusListener;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
-import static is.codion.swing.framework.ui.component.EntityComboBox.KeyboardShortcuts.ADD;
-import static is.codion.swing.framework.ui.component.EntityComboBox.KeyboardShortcuts.EDIT;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
+import static java.awt.event.KeyEvent.VK_UP;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -44,18 +44,13 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
-    ADD, EDIT;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+  public enum KeyboardShortcut implements Shortcut {
+    ADD, EDIT
   }
 
   /**
@@ -213,12 +208,16 @@ public final class EntityComboBox extends JComboBox<Entity> {
     };
   }
 
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(ADD, keyStrokeValue(VK_INSERT));
-    keyStrokes.put(EDIT, keyStrokeValue(VK_INSERT, CTRL_DOWN_MASK));
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
 
-    return keyStrokes;
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case ADD: return keyStroke(VK_INSERT);
+        case EDIT: return keyStroke(VK_UP, CTRL_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
+    }
   }
 
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
