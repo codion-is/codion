@@ -16,6 +16,7 @@ Codion Change Log
 - DefaultProgressWorkerDialogBuilder, bug fixed, did not set the locationRelativeTo for the progress dialog, it was always centered on application window. ProgressDialog bug fixed, didn't use the locationRelativeTo value provided by the builder.
 - Control and ToggleControl.copyBuilder() renamed copy().
 - Control.Command and ActionCommand.perform() renamed execute().
+- KeyEvents.builder(KeyStroke) added.
 ### is.codion.framework.domain
 - IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
 ### is.codion.framework.model

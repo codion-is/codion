@@ -52,6 +52,16 @@ public final class KeyEvents {
   }
 
   /**
+   * Instantiates a new {@link KeyEvents.Builder} instance.
+   * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
+   * @param keyStroke the key stroke
+   * @return a {@link Builder} instance.
+   */
+  public static Builder builder(KeyStroke keyStroke) {
+    return new DefaultBuilder(keyStroke);
+  }
+
+  /**
    * A Builder for adding a key event to a component, with a default onKeyRelease trigger
    * and condition {@link JComponent#WHEN_FOCUSED}.
    * @see KeyEvents#builder(int)
@@ -121,9 +131,17 @@ public final class KeyEvents {
 
   private static final class DefaultBuilder implements Builder {
 
-    private KeyStroke keyStroke = getKeyStroke(VK_UNDEFINED, 0, false);
+    private KeyStroke keyStroke;
     private int condition = WHEN_FOCUSED;
     private Action action;
+
+    private DefaultBuilder() {
+      this(getKeyStroke(VK_UNDEFINED, 0, false));
+    }
+
+    private DefaultBuilder(KeyStroke keyStroke) {
+      this.keyStroke = requireNonNull(keyStroke);
+    }
 
     @Override
     public Builder keyCode(int keyCode) {
