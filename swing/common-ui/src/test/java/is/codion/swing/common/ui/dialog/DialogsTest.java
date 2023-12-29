@@ -22,10 +22,10 @@ import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;
 

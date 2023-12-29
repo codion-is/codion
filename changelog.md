@@ -19,6 +19,8 @@ Codion Change Log
 - KeyEvents.builder(KeyStroke) added.
 - KeyEvents.Builder.enable() and disable() now with varargs.
 - KeyboardShortcut added, first attempt at configurable keyboard shortcuts.
+- KeyboardShortcut replaced with KeyboardShortcuts, second iteration of configurable keyboard shortcuts.
+- KeyEvents and TransferFocusOnEnter moved to key package.
 ### is.codion.framework.domain
 - IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
 ### is.codion.framework.model

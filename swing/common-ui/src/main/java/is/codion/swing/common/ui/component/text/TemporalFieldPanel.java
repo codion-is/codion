@@ -19,13 +19,13 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

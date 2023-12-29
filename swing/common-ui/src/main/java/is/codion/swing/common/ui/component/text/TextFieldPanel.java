@@ -20,15 +20,15 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -42,13 +42,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
+import static is.codion.swing.common.ui.component.text.TextFieldPanel.KeyboardShortcut.DISPLAY_TEXT_AREA;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.KeyEvent.VK_INSERT;
-import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -60,18 +61,13 @@ public final class TextFieldPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TextFieldPanel.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
-    DISPLAY_TEXT_AREA;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+  public enum KeyboardShortcut {
+    DISPLAY_TEXT_AREA
   }
 
   private final JTextField textField;
@@ -261,7 +257,7 @@ public final class TextFieldPanel extends JPanel {
             .name(buttonIcon == null ? "..." : "")
             .smallIcon(buttonIcon)
             .build();
-    KeyEvents.builder(KeyboardShortcuts.DISPLAY_TEXT_AREA.keyStroke().get())
+    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DISPLAY_TEXT_AREA).get())
             .action(buttonControl)
             .enable(textField);
     JButton actionButton = new JButton(buttonControl);
@@ -287,10 +283,6 @@ public final class TextFieldPanel extends JPanel {
             .title(dialogTitle == null ? caption : dialogTitle)
             .onOk(() -> textField.setText(textArea.getText()))
             .show();
-  }
-
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    return singletonMap(KeyboardShortcuts.DISPLAY_TEXT_AREA, keyStrokeValue(VK_INSERT));
   }
 
   private static final class DefaultBuilder extends AbstractComponentBuilder<String, TextFieldPanel, Builder> implements Builder {
@@ -413,6 +405,18 @@ public final class TextFieldPanel extends JPanel {
     @Override
     protected void setComponentValue(String value) {
       component().setText(value);
+    }
+  }
+
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
+
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      if (shortcut == DISPLAY_TEXT_AREA) {
+        return keyStroke(VK_INSERT, 0);
+      }
+
+      throw new IllegalArgumentException();
     }
   }
 }

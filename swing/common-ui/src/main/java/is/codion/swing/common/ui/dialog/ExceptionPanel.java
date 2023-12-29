@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyStore;
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
@@ -31,6 +30,7 @@ import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;

@@ -24,7 +24,6 @@ import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -38,10 +37,7 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
-import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.SwingMessages;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
@@ -55,6 +51,9 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
@@ -90,7 +89,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -99,15 +97,14 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.component.EntitySearchField.KeyboardShortcuts.ADD;
-import static is.codion.swing.framework.ui.component.EntitySearchField.KeyboardShortcuts.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -143,6 +140,8 @@ public final class EntitySearchField extends HintTextField {
   public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR = Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator",
           SearchIndicator.class, SearchIndicator.WAIT_CURSOR);
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The ways which a search field can indicate that a search is in progress.
    */
@@ -160,15 +159,8 @@ public final class EntitySearchField extends HintTextField {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
-    ADD, EDIT;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+  public enum KeyboardShortcut {
+    ADD, EDIT
   }
 
   private final EntitySearchModel model;
@@ -316,14 +308,6 @@ public final class EntitySearchField extends HintTextField {
    */
   public static Builder builder(EntitySearchModel searchModel) {
     return new DefaultEntitySearchFieldBuilder(requireNonNull(searchModel));
-  }
-
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(ADD, keyStrokeValue(VK_INSERT));
-    keyStrokes.put(EDIT, keyStrokeValue(VK_INSERT, CTRL_DOWN_MASK));
-
-    return keyStrokes;
   }
 
   /**
@@ -612,6 +596,18 @@ public final class EntitySearchField extends HintTextField {
                       .text(MESSAGES.getString("postfix_wildcard"))
                       .build())
               .build();
+    }
+  }
+
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
+
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case ADD: return keyStroke(VK_INSERT);
+        case EDIT: return keyStroke(VK_UP, CTRL_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
     }
   }
 

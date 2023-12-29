@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.spinner;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;

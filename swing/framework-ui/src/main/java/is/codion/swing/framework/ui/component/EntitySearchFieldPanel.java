@@ -21,11 +21,11 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.Action;

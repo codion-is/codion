@@ -24,7 +24,6 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -33,6 +32,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
 import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;

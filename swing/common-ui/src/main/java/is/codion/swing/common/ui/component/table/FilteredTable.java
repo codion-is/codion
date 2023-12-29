@@ -34,8 +34,6 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
-import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
@@ -46,6 +44,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -72,25 +72,25 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.model.component.table.FilteredTableSortModel.nextSortOrder;
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
-import static is.codion.swing.common.ui.component.table.FilteredTable.KeyboardShortcuts.*;
+import static is.codion.swing.common.ui.component.table.FilteredTable.KeyboardShortcut.*;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -124,20 +124,15 @@ public final class FilteredTable<R, C> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> DEFAULT_KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
+  public enum KeyboardShortcut {
     COPY_CELL,
     TOGGLE_SORT_COLUMN,
-    TOGGLE_SORT_COLUMN_ADD;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+    TOGGLE_SORT_COLUMN_ADD
   }
 
   /**
@@ -694,13 +689,13 @@ public final class FilteredTable<R, C> extends JTable {
     tableModel.sortModel().addSortingChangedListener(columnIdentifier -> getTableHeader().repaint());
     addMouseListener(new FilteredTableMouseListener());
     addKeyListener(new MoveResizeColumnKeyListener());
-    KeyEvents.builder(COPY_CELL.keyStroke().get())
+    KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(COPY_CELL).get())
             .action(control(this::copySelectedCell))
             .enable(this);
-    KeyEvents.builder(TOGGLE_SORT_COLUMN_ADD.keyStroke().get())
+    KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_SORT_COLUMN_ADD).get())
             .action(control(() -> toggleColumnSorting(getSelectedColumn(), true)))
             .enable(this);
-    KeyEvents.builder(TOGGLE_SORT_COLUMN.keyStroke().get())
+    KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_SORT_COLUMN).get())
             .action(control(() -> toggleColumnSorting(getSelectedColumn(), false)))
             .enable(this);
   }
@@ -718,15 +713,6 @@ public final class FilteredTable<R, C> extends JTable {
     if (object instanceof JComponent) {
       components.add((JComponent) object);
     }
-  }
-
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(COPY_CELL, keyStrokeValue(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
-    keyStrokes.put(TOGGLE_SORT_COLUMN, keyStrokeValue(VK_DOWN, ALT_DOWN_MASK));
-    keyStrokes.put(TOGGLE_SORT_COLUMN_ADD, keyStrokeValue(VK_UP, ALT_DOWN_MASK));
-
-    return keyStrokes;
   }
 
   /**
@@ -1066,6 +1052,19 @@ public final class FilteredTable<R, C> extends JTable {
     @Override
     public TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column) {
       return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.columnClass()).build();
+    }
+  }
+
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
+
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case COPY_CELL: return keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case TOGGLE_SORT_COLUMN: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
+        case TOGGLE_SORT_COLUMN_ADD: return keyStroke(VK_UP, ALT_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
     }
   }
 }

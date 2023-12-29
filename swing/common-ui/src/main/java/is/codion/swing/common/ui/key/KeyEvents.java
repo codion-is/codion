@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.key;
 
 import javax.swing.Action;
 import javax.swing.JComboBox;

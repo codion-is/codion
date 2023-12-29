@@ -26,13 +26,13 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -55,19 +55,19 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.KeyboardShortcuts.*;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.KeyboardShortcut.*;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -86,20 +86,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcuts implements KeyboardShortcut {
+  public enum KeyboardShortcut {
     TOGGLE_ENABLED,
     PREVIOUS_OPERATOR,
-    NEXT_OPERATOR;
-
-    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
-
-    @Override
-    public Value<KeyStroke> keyStroke() {
-      return KEYSTROKES.get(this);
-    }
+    NEXT_OPERATOR
   }
 
   private final ColumnConditionModel<? extends C, T> conditionModel;
@@ -404,11 +399,11 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     conditionModel.operator().addDataListener(this::onOperatorChanged);
     FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
-    KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(TOGGLE_ENABLED.keyStroke().get())
+    KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
             .action(Control.control(this::toggleEnabled));
-    KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(PREVIOUS_OPERATOR.keyStroke().get())
+    KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_OPERATOR).get())
             .action(Control.control(this::selectPreviousOperator));
-    KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(NEXT_OPERATOR.keyStroke().get())
+    KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NEXT_OPERATOR).get())
             .action(Control.control(this::selectNextOperator));
     enableOnEnterKeyEvent.enable(operatorCombo);
     if (equalField != null) {
@@ -676,21 +671,25 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     return false;
   }
 
-  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
-    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
-    keyStrokes.put(TOGGLE_ENABLED, keyStrokeValue(VK_ENTER, CTRL_DOWN_MASK));
-    keyStrokes.put(PREVIOUS_OPERATOR, keyStrokeValue(VK_UP, CTRL_DOWN_MASK));
-    keyStrokes.put(NEXT_OPERATOR, keyStrokeValue(VK_DOWN, CTRL_DOWN_MASK));
-
-    return keyStrokes;
-  }
-
   private final class FocusGainedListener extends FocusAdapter {
 
     @Override
     public void focusGained(FocusEvent e) {
       if (!e.isTemporary()) {
         focusGainedEvent.accept(conditionModel.columnIdentifier());
+      }
+    }
+  }
+
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
+
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case TOGGLE_ENABLED: return keyStroke(VK_ENTER, CTRL_DOWN_MASK);
+        case PREVIOUS_OPERATOR: return keyStroke(VK_UP, CTRL_DOWN_MASK);
+        case NEXT_OPERATOR: return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
+        default: throw new IllegalArgumentException();
       }
     }
   }

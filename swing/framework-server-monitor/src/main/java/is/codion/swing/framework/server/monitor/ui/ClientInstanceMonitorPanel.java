@@ -21,11 +21,11 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.JLabel;

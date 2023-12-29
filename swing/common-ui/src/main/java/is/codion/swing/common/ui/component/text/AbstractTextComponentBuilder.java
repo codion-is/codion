@@ -19,9 +19,9 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
