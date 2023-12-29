@@ -17,6 +17,7 @@ Codion Change Log
 - Control and ToggleControl.copyBuilder() renamed copy().
 - Control.Command and ActionCommand.perform() renamed execute().
 - KeyEvents.builder(KeyStroke) added.
+- KeyEvents.Builder.enable() and disable() now with varargs.
 ### is.codion.framework.domain
 - IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
 ### is.codion.framework.model
