@@ -23,6 +23,7 @@ Codion Change Log
 - AbstractEntityEditModel.insert() no longer calls save() on the entity being inserted, since exists() relies on the original primary key value and is used during validation.
 ### is.codion.swing.framework.model
 - SwingEntityTreeModel.refreshSelect() bug fixed, now handles root nodes correctly.  
+- SwingEntityTreeModel removed, unused and buggy, may revisit at some point.
 ### is.codion.swing.framework.ui
 - EntityEditPanel now overrides EntityEditComponentPanel.onException() and propagates the exception to the correct exception handler.
 - EntityTablePanel.onException() now propagates the exception to the correct exception handler.
@@ -39,6 +40,7 @@ Codion Change Log
 - EntityEditPanel no longer caches the result of createControls().
 - EntityEditPanel, EntityTablePanel no longer overwrite custom controls set before the panel is initialized.
 - EntityPanel, EntityTablePanel.Settings added for settings that must be configured before initialization, accessed via configure(), which throws if the panel is initialized.
+- EntityTree removed.
 
 ## 0.17.21
 ### is.codion.swing.common.model

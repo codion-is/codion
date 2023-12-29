@@ -8,7 +8,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
-import is.codion.framework.demos.chinook.model.EmployeeTableModel;
+import is.codion.framework.demos.chinook.model.EmployeeEditModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -110,7 +110,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     SwingEntityModel.Builder employeeModelBuilder =
             SwingEntityModel.builder(Employee.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
-                    .tableModelClass(EmployeeTableModel.class);
+                    .editModelClass(EmployeeEditModel.class);
 
     EntityPanel.Builder employeePanelBuilder =
             EntityPanel.builder(employeeModelBuilder)
