@@ -24,13 +24,13 @@ public interface KeyboardShortcuts<T extends Enum<T>> {
   Value<KeyStroke> keyStroke(T keyboardShortcut);
 
   /**
-   * @param shortcutClass the shortcut key class
+   * @param shortcutKeyClass the shortcut key class
    * @param defaults provides the default keystroke for each shortcut key
    * @return a new {@link KeyboardShortcuts} instance
    * @param <T> the shortcut key type
    */
-  static <T extends Enum<T>> KeyboardShortcuts<T> keyboardShortcuts(Class<T> shortcutClass, Function<T, KeyStroke> defaults) {
-    return new DefaultKeyboardShortcuts<>(shortcutClass, defaults);
+  static <T extends Enum<T>> KeyboardShortcuts<T> keyboardShortcuts(Class<T> shortcutKeyClass, Function<T, KeyStroke> defaults) {
+    return new DefaultKeyboardShortcuts<>(shortcutKeyClass, defaults);
   }
 
   /**
