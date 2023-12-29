@@ -9,6 +9,7 @@ import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -23,6 +24,7 @@ import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
@@ -73,6 +75,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -81,12 +84,15 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.component.EntitySearchField.KeyboardShortcuts.ADD;
+import static is.codion.swing.framework.ui.component.EntitySearchField.KeyboardShortcuts.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -134,6 +140,20 @@ public final class EntitySearchField extends HintTextField {
      * Display an indeterminate progress bar while searching
      */
     PROGRESS_BAR
+  }
+
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    ADD, EDIT;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
   }
 
   private final EntitySearchModel model;
@@ -281,6 +301,14 @@ public final class EntitySearchField extends HintTextField {
    */
   public static Builder builder(EntitySearchModel searchModel) {
     return new DefaultEntitySearchFieldBuilder(requireNonNull(searchModel));
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(ADD, keyStrokeValue(VK_INSERT));
+    keyStrokes.put(EDIT, keyStrokeValue(VK_INSERT, CTRL_DOWN_MASK));
+
+    return keyStrokes;
   }
 
   /**

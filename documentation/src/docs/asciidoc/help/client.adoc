@@ -176,12 +176,12 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |===
 2+|Calendar
 
-|kbd:[Ctrl + &#x2190;/&#x2192;] or kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next year
-|kbd:[Shift + &#x2190;/&#x2192;] or kbd:[Shift + &#x2193;/&#x2191;]|Previous/next month
+|kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next year
+|kbd:[Shift + &#x2193;/&#x2191;]|Previous/next month
 |kbd:[Alt + &#x2190;/&#x2192;]|Previous/next day
 |kbd:[Alt + &#x2191;/&#x2193;]|Previous/next week
-|kbd:[Shift + Alt + &#x2190;/&#x2192;] or kbd:[Shift + Alt + &#x2193;/&#x2191;]|Previous/next hour
-|kbd:[Ctrl + Alt + &#x2190;/&#x2192;] or kbd:[Ctrl + Alt + &#x2193;/&#x2191;]|Previous/next minute
+|kbd:[Shift + Alt + &#x2193;/&#x2191;]|Previous/next hour
+|kbd:[Ctrl + Alt + &#x2193;/&#x2191;]|Previous/next minute
 |===
 
 [cols="1,3"]

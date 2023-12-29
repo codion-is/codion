@@ -8,6 +8,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -15,6 +16,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.text.MaskFormatter;
@@ -29,10 +31,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
+import static is.codion.swing.common.ui.component.text.TemporalField.KeyboardShortcuts.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
@@ -45,6 +51,22 @@ import static java.util.Objects.requireNonNull;
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalField.class.getName());
+
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    DISPLAY_CALENDAR,
+    INCREMENT_FIELD,
+    DECREMENT_FIELD;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
+  }
 
   private static final char DAY = 'd';
   private static final char MONTH = 'M';
@@ -72,19 +94,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.calendarIcon = builder.calendarIcon;
     setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener(new TemporalDocumentListener());
-    KeyEvents.builder(VK_UP)
+    KeyEvents.builder(INCREMENT_FIELD.keyStroke().get())
             .action(Control.builder(this::increment)
                     .enabled(valueNull.not())
                     .build())
             .enable(this);
-    KeyEvents.builder(VK_DOWN)
+    KeyEvents.builder(DECREMENT_FIELD.keyStroke().get())
             .action(Control.builder(this::decrement)
                     .enabled(valueNull.not())
                     .build())
             .enable(this);
     calendarControl = createCalendarControl();
     if (calendarControl != null) {
-      KeyEvents.builder(VK_INSERT)
+      KeyEvents.builder(DISPLAY_CALENDAR.keyStroke().get())
               .action(calendarControl)
               .enable(this);
     }
@@ -430,6 +452,15 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     catch (ParseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(DISPLAY_CALENDAR, keyStrokeValue(VK_INSERT));
+    keyStrokes.put(INCREMENT_FIELD, keyStrokeValue(VK_UP));
+    keyStrokes.put(DECREMENT_FIELD, keyStrokeValue(VK_DOWN));
+
+    return keyStrokes;
   }
 
   private static final class LocalTimeParser implements DateTimeParser<LocalTime> {

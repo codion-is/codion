@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -25,6 +26,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -33,10 +35,13 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
@@ -45,6 +50,8 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.LEFT;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.RIGHT;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
+import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcuts.RESIZE_LEFT;
+import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcuts.RESIZE_RIGHT;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -80,6 +87,21 @@ public final class TabbedPanelLayout implements PanelLayout {
           Configuration.booleanValue("is.codion.swing.framework.ui.TabbedPanelLayout.includeDetailControls", true);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedPanelLayout.class.getName());
+
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    RESIZE_RIGHT,
+    RESIZE_LEFT;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
+  }
 
   private static final int RESIZE_AMOUNT = 30;
   private static final String DETAIL_TABLES = "detail_tables";
@@ -188,30 +210,17 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void setupResizing() {
-    ResizeHorizontally resizeRight = new ResizeHorizontally(entityPanel, RIGHT);
-    ResizeHorizontally resizeLeft = new ResizeHorizontally(entityPanel, LEFT);
-
-    KeyEvents.builder(VK_RIGHT)
-            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(RESIZE_RIGHT.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeRight)
-            .enable(entityPanel);
-    KeyEvents.builder(VK_LEFT)
-            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+            .action(new ResizeHorizontally(entityPanel, RIGHT));
+    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(RESIZE_LEFT.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeLeft)
-            .enable(entityPanel);
+            .action(new ResizeHorizontally(entityPanel, LEFT));
+    resizeRightKeyEvent.enable(entityPanel);
+    resizeLeftKeyEvent.enable(entityPanel);
     if (entityPanel.containsEditPanel()) {
-      KeyEvents.builder(VK_RIGHT)
-              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeRight)
-              .enable(entityPanel.editControlPanel());
-      KeyEvents.builder(VK_LEFT)
-              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeLeft)
-              .enable(entityPanel.editControlPanel());
+      resizeRightKeyEvent.enable(entityPanel.editControlPanel());
+      resizeLeftKeyEvent.enable(entityPanel.editControlPanel());
     }
   }
 
@@ -279,6 +288,14 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     return builder.build();
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(RESIZE_LEFT, keyStrokeValue(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+    keyStrokes.put(RESIZE_RIGHT, keyStrokeValue(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+
+    return keyStrokes;
   }
 
   private static final class ResizeHorizontally extends AbstractAction {

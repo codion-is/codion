@@ -25,7 +25,9 @@ import static javax.swing.KeyStroke.getKeyStroke;
  *          .action(new FindNextAction())
  *          .enable(textField);
  * </pre>
+ * @see #builder()
  * @see #builder(int)
+ * @see #builder(KeyStroke)
  */
 public final class KeyEvents {
 
