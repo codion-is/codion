@@ -712,7 +712,7 @@ public class EntityPanel extends JPanel {
       controls.addAll(editPanel().controls());
     }
     if (containsTablePanel()) {
-      controls.add(createRefreshControl());
+      controls.add(createRefreshTableControl());
     }
 
     return controls;
@@ -768,7 +768,7 @@ public class EntityPanel extends JPanel {
                       .enable(this));
       KeyEvents.builder(VK_F)
               .modifiers(CTRL_DOWN_MASK)
-              .action(Control.control(tablePanel.table().searchField()::requestFocusInWindow))
+              .action(createRequestTableSearchFieldControl())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       if (containsEditPanel()) {
@@ -805,12 +805,12 @@ public class EntityPanel extends JPanel {
       }
     }
     if (containsEditPanel()) {
-      Control selectEditPanel = Control.control(this::selectEditPanel);
-      Control selectInputComponent = Control.control(this::selectInputComponent);
+      Control requestEditPanelFocus = createRequestEditPanelFocusControl();
+      Control selectInputComponent = createSelectInputComponentControl();
       KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectEditPanel)
+              .action(requestEditPanelFocus)
               .enable(this);
       KeyEvents.builder(VK_I)
               .modifiers(CTRL_DOWN_MASK)
@@ -822,7 +822,7 @@ public class EntityPanel extends JPanel {
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectInputComponent)
               .enable(editControlPanel);
-      ToggleEditPanel toggleEditPanel = new ToggleEditPanel(this);
+      Control toggleEditPanel = createToggleEditPanelControl();
       KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -837,6 +837,50 @@ public class EntityPanel extends JPanel {
     if (settings.useKeyboardNavigation) {
       setupNavigation();
     }
+  }
+
+  /**
+   * @return a Control instance for selecting a input component
+   */
+  protected final Control createSelectInputComponentControl() {
+    return Control.control(this::selectInputComponent);
+  }
+
+  /**
+   * @return a Control instance for requesting edit panel focus
+   */
+  protected final Control createRequestEditPanelFocusControl() {
+    return Control.control(this::requestEditPanelFocus);
+  }
+
+  /**
+   * @return a Control instance for requesting table search field focus
+   */
+  protected final Control createRequestTableSearchFieldControl() {
+    return Control.control(tablePanel.table().searchField()::requestFocusInWindow);
+  }
+
+  /**
+   * @return a Control instance for toggling the edit panel state
+   */
+  protected final Control createToggleEditPanelControl() {
+    return Control.builder(this::toggleEditPanelState)
+            .smallIcon(FrameworkIcons.instance().editPanel())
+            .description(MESSAGES.getString("toggle_edit"))
+            .build();
+  }
+
+  /**
+   * @return a Control instance for refreshing the table model
+   */
+  protected final Control createRefreshTableControl() {
+    return Control.builder(tableModel()::refresh)
+            .name(Messages.refresh())
+            .enabled(editPanel == null ? null : editPanel.active())
+            .description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
+            .mnemonic(Messages.refreshMnemonic())
+            .smallIcon(FrameworkIcons.instance().refresh())
+            .build();
   }
 
   protected final void setupNavigation() {
@@ -976,28 +1020,11 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private Control createToggleEditPanelControl() {
-    return Control.builder(this::toggleEditPanelState)
-            .smallIcon(FrameworkIcons.instance().editPanel())
-            .description(MESSAGES.getString("toggle_edit"))
-            .build();
-  }
-
-  private Control createRefreshControl() {
-    return Control.builder(tableModel()::refresh)
-            .name(Messages.refresh())
-            .enabled(editPanel == null ? null : editPanel.active())
-            .description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
-            .mnemonic(Messages.refreshMnemonic())
-            .smallIcon(FrameworkIcons.instance().refresh())
-            .build();
-  }
-
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
 
-  private void selectEditPanel() {
+  private void requestEditPanelFocus() {
     if (editPanelState.equalTo(HIDDEN)) {
       editPanelState.set(EMBEDDED);
     }
@@ -1127,21 +1154,6 @@ public class EntityPanel extends JPanel {
       }
 
       return Optional.empty();
-    }
-  }
-
-  private static final class ToggleEditPanel extends AbstractAction {
-
-    private final EntityPanel panel;
-
-    private ToggleEditPanel(EntityPanel panel) {
-      super("ToggleEditPanelState");
-      this.panel = panel;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      panel.toggleEditPanelState();
     }
   }
 

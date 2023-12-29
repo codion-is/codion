@@ -42,6 +42,7 @@ Codion Change Log
 - EntityEditPanel, EntityTablePanel no longer overwrite custom controls set before the panel is initialized.
 - EntityPanel, EntityTablePanel.Settings added for settings that must be configured before initialization, accessed via configure(), which throws if the panel is initialized.
 - EntityTree removed.
+- EntityPanel, methods for creating standard controls (refresh, select input field etc.) made protected final.
 
 ## 0.17.21
 ### is.codion.swing.common.model
