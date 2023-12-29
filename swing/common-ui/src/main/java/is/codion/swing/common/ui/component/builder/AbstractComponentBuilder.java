@@ -7,13 +7,13 @@ import is.codion.common.event.Event;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;

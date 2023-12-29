@@ -5,16 +5,15 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -52,7 +51,7 @@ public final class TextFieldPanel extends JPanel {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     DISPLAY_TEXT_AREA
   }
 

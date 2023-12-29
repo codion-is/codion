@@ -6,10 +6,9 @@ package is.codion.swing.common.ui.component.calendar;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 
 import javax.swing.FocusManager;
 import javax.swing.InputMap;
@@ -85,7 +84,7 @@ public final class CalendarPanel extends JPanel {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     PREVIOUS_YEAR,
     NEXT_YEAR,
     PREVIOUS_MONTH,

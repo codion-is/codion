@@ -17,7 +17,6 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -49,7 +48,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     ADD, EDIT
   }
 

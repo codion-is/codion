@@ -9,12 +9,11 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Cursors;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -57,7 +56,7 @@ public final class EntityDependenciesPanel extends JPanel {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     NAVIGATE_LEFT,
     NAVIGATE_RIGHT
   }

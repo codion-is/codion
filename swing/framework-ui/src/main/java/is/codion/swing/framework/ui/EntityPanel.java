@@ -10,7 +10,6 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -18,8 +17,8 @@ import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -183,7 +182,7 @@ public class EntityPanel extends JPanel {
    * Note that changing the shortcut keystroke after the panel
    * has been initialized has no effect.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     REQUEST_TABLE_FOCUS,
     TOGGLE_CONDITION_PANEL,
     SELECT_CONDITION_PANEL,

@@ -3,11 +3,11 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;

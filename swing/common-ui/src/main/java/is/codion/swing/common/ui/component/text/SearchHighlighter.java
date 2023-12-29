@@ -7,9 +7,9 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;

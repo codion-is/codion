@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;

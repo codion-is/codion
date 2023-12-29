@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -14,8 +13,8 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
@@ -93,7 +92,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     RESIZE_RIGHT,
     RESIZE_LEFT
   }

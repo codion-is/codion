@@ -23,7 +23,6 @@ import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Cursors;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -37,8 +36,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
@@ -220,7 +219,7 @@ public class EntityTablePanel extends JPanel {
    * Note that changing the shortcut keystroke after the panel
    * has been initialized has no effect.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     REQUEST_TABLE_FOCUS,
     SELECT_CONDITION_PANEL,
     TOGGLE_CONDITION_PANEL,

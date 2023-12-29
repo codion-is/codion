@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
-import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;

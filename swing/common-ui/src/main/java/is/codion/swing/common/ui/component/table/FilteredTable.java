@@ -19,7 +19,6 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
@@ -30,8 +29,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -115,7 +114,7 @@ public final class FilteredTable<R, C> extends JTable {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     COPY_CELL,
     TOGGLE_SORT_COLUMN,
     TOGGLE_SORT_COLUMN_ADD

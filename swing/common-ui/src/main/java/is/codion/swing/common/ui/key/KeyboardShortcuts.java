@@ -51,9 +51,4 @@ public interface KeyboardShortcuts<T extends Enum<T>> {
   static KeyStroke keyStroke(int keyCode, int modifiers) {
     return getKeyStroke(keyCode, modifiers);
   }
-
-  /**
-   * Specifies a keystroke used for a action shortcut in a UI.
-   */
-  interface Shortcut {}
 }

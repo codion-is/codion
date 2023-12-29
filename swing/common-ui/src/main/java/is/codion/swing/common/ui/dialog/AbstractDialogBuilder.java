@@ -5,8 +5,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.ImageIcon;
 import java.awt.Component;

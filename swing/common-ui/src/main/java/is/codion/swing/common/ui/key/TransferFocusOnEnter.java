@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.key;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

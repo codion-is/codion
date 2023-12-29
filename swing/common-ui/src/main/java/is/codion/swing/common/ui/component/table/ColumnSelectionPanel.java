@@ -6,9 +6,9 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;

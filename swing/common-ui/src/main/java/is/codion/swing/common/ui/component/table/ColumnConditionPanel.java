@@ -11,14 +11,13 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
-import is.codion.swing.common.ui.key.KeyboardShortcuts.Shortcut;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -77,7 +76,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * The available keyboard shortcuts.
    */
-  public enum KeyboardShortcut implements Shortcut {
+  public enum KeyboardShortcut {
     TOGGLE_ENABLED,
     PREVIOUS_OPERATOR,
     NEXT_OPERATOR
