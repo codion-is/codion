@@ -26,6 +26,7 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -44,6 +45,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
@@ -57,17 +59,21 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
+import static is.codion.swing.framework.ui.EntityPanel.KeyboardShortcuts.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
@@ -182,6 +188,34 @@ public class EntityPanel extends JPanel {
    */
   public enum Direction {
     UP, DOWN, RIGHT, LEFT
+  }
+
+  /**
+   * The keyboard shortcuts available for {@link EntityPanel}s.
+   * Note that changing the shortcut keystroke after the panel
+   * has been initialized has no effect.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    REQUEST_TABLE_FOCUS,
+    TOGGLE_CONDITION_PANEL,
+    SELECT_CONDITION_PANEL,
+    TOGGLE_FILTER_PANEL,
+    SELECT_FILTER_PANEL,
+    REQUEST_SEARCH_FIELD_FOCUS,
+    REQUEST_EDIT_PANEL_FOCUS,
+    SELECT_INPUT_FIELD,
+    TOGGLE_EDIT_PANEL,
+    NAVIGATE_UP,
+    NAVIGATE_DOWN,
+    NAVIGATE_RIGHT,
+    NAVIGATE_LEFT;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
   }
 
   private final SwingEntityModel entityModel;
@@ -727,7 +761,7 @@ public class EntityPanel extends JPanel {
       controls.addAll(editPanel().controls());
     }
     if (containsTablePanel()) {
-      controls.add(createRefreshControl());
+      controls.add(createRefreshTableControl());
     }
 
     return controls;
@@ -752,102 +786,75 @@ public class EntityPanel extends JPanel {
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
       tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-              KeyEvents.builder(VK_T)
-                      .modifiers(CTRL_DOWN_MASK)
+              KeyEvents.builder(REQUEST_TABLE_FOCUS.keyStroke().get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(VK_S)
-                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+              KeyEvents.builder(TOGGLE_CONDITION_PANEL.keyStroke().get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(VK_S)
-                      .modifiers(CTRL_DOWN_MASK)
+              KeyEvents.builder(SELECT_CONDITION_PANEL.keyStroke().get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(VK_F)
-                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+              KeyEvents.builder(TOGGLE_FILTER_PANEL.keyStroke().get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(VK_F)
-                      .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
+              KeyEvents.builder(SELECT_FILTER_PANEL.keyStroke().get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      KeyEvents.builder(VK_F)
-              .modifiers(CTRL_DOWN_MASK)
-              .action(Control.control(tablePanel.table().searchField()::requestFocusInWindow))
+      KeyEvents.builder(REQUEST_SEARCH_FIELD_FOCUS.keyStroke().get())
+              .action(createRequestTableSearchFieldControl())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       if (containsEditPanel()) {
         tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-                KeyEvents.builder(VK_T)
-                        .modifiers(CTRL_DOWN_MASK)
+                KeyEvents.builder(REQUEST_TABLE_FOCUS.keyStroke().get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(VK_S)
-                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                KeyEvents.builder(TOGGLE_CONDITION_PANEL.keyStroke().get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(VK_S)
-                        .modifiers(CTRL_DOWN_MASK)
+                KeyEvents.builder(SELECT_CONDITION_PANEL.keyStroke().get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(VK_F)
-                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                KeyEvents.builder(TOGGLE_FILTER_PANEL.keyStroke().get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(VK_F)
-                        .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
+                KeyEvents.builder(SELECT_FILTER_PANEL.keyStroke().get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
       }
     }
     if (containsEditPanel()) {
-      Control selectEditPanel = Control.control(this::selectEditPanel);
-      Control selectInputComponent = Control.control(this::selectInputComponent);
-      KeyEvents.builder(VK_E)
-              .modifiers(CTRL_DOWN_MASK)
+      KeyEvents.builder(REQUEST_EDIT_PANEL_FOCUS.keyStroke().get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectEditPanel)
+              .action(createRequestEditPanelFocusControl())
               .enable(this);
-      KeyEvents.builder(VK_I)
-              .modifiers(CTRL_DOWN_MASK)
+      KeyEvents.builder(SELECT_INPUT_FIELD.keyStroke().get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectInputComponent)
-              .enable(this);
-      KeyEvents.builder(VK_I)
-              .modifiers(CTRL_DOWN_MASK)
+              .action(createSelectInputComponentControl())
+              .enable(this, editControlPanel);
+      KeyEvents.builder(TOGGLE_EDIT_PANEL.keyStroke().get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(selectInputComponent)
-              .enable(editControlPanel);
-      ToggleEditPanel toggleEditPanel = new ToggleEditPanel(this);
-      KeyEvents.builder(VK_E)
-              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(toggleEditPanel)
-              .enable(this);
-      KeyEvents.builder(VK_E)
-              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(toggleEditPanel)
-              .enable(editControlPanel);
+              .action(createToggleEditPanelControl())
+              .enable(this, editControlPanel);
     }
     if (settings.useKeyboardNavigation) {
       setupNavigation();
@@ -855,48 +862,72 @@ public class EntityPanel extends JPanel {
   }
 
   protected final void setupNavigation() {
-    KeyEvents.builder(VK_UP)
-            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+    KeyEvents.Builder navigateUp = KeyEvents.builder(NAVIGATE_UP.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new Navigate(UP))
-            .enable(this);
-    KeyEvents.builder(VK_DOWN)
-            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .action(new Navigate(UP));
+    KeyEvents.Builder navigateDown = KeyEvents.builder(NAVIGATE_DOWN.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new Navigate(DOWN))
-            .enable(this);
-    KeyEvents.builder(VK_RIGHT)
-            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .action(new Navigate(DOWN));
+    KeyEvents.Builder navigateRight = KeyEvents.builder(NAVIGATE_RIGHT.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new Navigate(RIGHT))
-            .enable(this);
-    KeyEvents.builder(VK_LEFT)
-            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .action(new Navigate(RIGHT));
+    KeyEvents.Builder navigateLeft = KeyEvents.builder(NAVIGATE_LEFT.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new Navigate(LEFT))
-            .enable(this);
+            .action(new Navigate(LEFT));
+    navigateUp.enable(this);
+    navigateDown.enable(this);
+    navigateRight.enable(this);
+    navigateLeft.enable(this);
     if (containsEditPanel()) {
-      KeyEvents.builder(VK_UP)
-              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new Navigate(UP))
-              .enable(editControlPanel);
-      KeyEvents.builder(VK_DOWN)
-              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new Navigate(DOWN))
-              .enable(editControlPanel);
-      KeyEvents.builder(VK_RIGHT)
-              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new Navigate(RIGHT))
-              .enable(editControlPanel);
-      KeyEvents.builder(VK_LEFT)
-              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new Navigate(LEFT))
-              .enable(editControlPanel);
+      navigateUp.enable(editControlPanel);
+      navigateDown.enable(editControlPanel);
+      navigateRight.enable(editControlPanel);
+      navigateLeft.enable(editControlPanel);
     }
+  }
+
+  /**
+   * @return a Control instance for selecting a input component
+   */
+  protected final Control createSelectInputComponentControl() {
+    return Control.control(this::selectInputComponent);
+  }
+
+  /**
+   * @return a Control instance for requesting edit panel focus
+   */
+  protected final Control createRequestEditPanelFocusControl() {
+    return Control.control(this::requestEditPanelFocus);
+  }
+
+  /**
+   * @return a Control instance for requesting table search field focus
+   */
+  protected final Control createRequestTableSearchFieldControl() {
+    return Control.control(tablePanel.table().searchField()::requestFocusInWindow);
+  }
+
+  /**
+   * @return a Control instance for toggling the edit panel state
+   */
+  protected final Control createToggleEditPanelControl() {
+    return Control.builder(this::toggleEditPanelState)
+            .smallIcon(FrameworkIcons.instance().editPanel())
+            .description(MESSAGES.getString("toggle_edit"))
+            .build();
+  }
+
+  /**
+   * @return a Control instance for refreshing the table model
+   */
+  protected final Control createRefreshTableControl() {
+    return Control.builder(tableModel()::refresh)
+            .name(Messages.refresh())
+            .enabled(editPanel == null ? null : editPanel.active())
+            .description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
+            .mnemonic(Messages.refreshMnemonic())
+            .smallIcon(FrameworkIcons.instance().refresh())
+            .build();
   }
 
   protected final void initializeEditPanel() {
@@ -991,28 +1022,11 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private Control createToggleEditPanelControl() {
-    return Control.builder(this::toggleEditPanelState)
-            .smallIcon(FrameworkIcons.instance().editPanel())
-            .description(MESSAGES.getString("toggle_edit"))
-            .build();
-  }
-
-  private Control createRefreshControl() {
-    return Control.builder(tableModel()::refresh)
-            .name(Messages.refresh())
-            .enabled(editPanel == null ? null : editPanel.active())
-            .description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
-            .mnemonic(Messages.refreshMnemonic())
-            .smallIcon(FrameworkIcons.instance().refresh())
-            .build();
-  }
-
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
 
-  private void selectEditPanel() {
+  private void requestEditPanelFocus() {
     if (editPanelState.equalTo(HIDDEN)) {
       editPanelState.set(EMBEDDED);
     }
@@ -1089,6 +1103,25 @@ public class EntityPanel extends JPanel {
     }
   }
 
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(REQUEST_TABLE_FOCUS, keyStrokeValue(VK_T, CTRL_DOWN_MASK));
+    keyStrokes.put(TOGGLE_CONDITION_PANEL, keyStrokeValue(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(SELECT_CONDITION_PANEL, keyStrokeValue(VK_S, CTRL_DOWN_MASK));
+    keyStrokes.put(TOGGLE_FILTER_PANEL, keyStrokeValue(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(SELECT_FILTER_PANEL, keyStrokeValue(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+    keyStrokes.put(REQUEST_SEARCH_FIELD_FOCUS, keyStrokeValue(VK_F, CTRL_DOWN_MASK));
+    keyStrokes.put(REQUEST_EDIT_PANEL_FOCUS, keyStrokeValue(VK_E, CTRL_DOWN_MASK));
+    keyStrokes.put(SELECT_INPUT_FIELD, keyStrokeValue(VK_I, CTRL_DOWN_MASK));
+    keyStrokes.put(TOGGLE_EDIT_PANEL, keyStrokeValue(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(NAVIGATE_UP, keyStrokeValue(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(NAVIGATE_DOWN, keyStrokeValue(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(NAVIGATE_RIGHT, keyStrokeValue(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(NAVIGATE_LEFT, keyStrokeValue(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+    return keyStrokes;
+  }
+
   private final class ShowHiddenEditPanel implements Control.Command {
 
     @Override
@@ -1142,21 +1175,6 @@ public class EntityPanel extends JPanel {
       }
 
       return Optional.empty();
-    }
-  }
-
-  private static final class ToggleEditPanel extends AbstractAction {
-
-    private final EntityPanel panel;
-
-    private ToggleEditPanel(EntityPanel panel) {
-      super("ToggleEditPanelState");
-      this.panel = panel;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      panel.toggleEditPanelState();
     }
   }
 

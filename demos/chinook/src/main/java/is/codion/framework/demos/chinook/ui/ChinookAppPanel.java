@@ -23,7 +23,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
-import is.codion.framework.demos.chinook.model.EmployeeTableModel;
+import is.codion.framework.demos.chinook.model.EmployeeEditModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -57,7 +57,9 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.framework.ui.TabbedPanelLayout.detailPanelState;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.KeyStroke.getKeyStroke;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppModel> {
 
@@ -125,7 +127,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     SwingEntityModel.Builder employeeModelBuilder =
             SwingEntityModel.builder(Employee.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
-                    .tableModelClass(EmployeeTableModel.class);
+                    .editModelClass(EmployeeEditModel.class);
 
     EntityPanel.Builder employeePanelBuilder =
             EntityPanel.builder(employeeModelBuilder)
@@ -177,6 +179,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     EntityPanel.USE_FRAME_PANEL_DISPLAY.set(true);
+    // Add a CTRL modifier to the DELETE key shortcut for table panels
+    EntityTablePanel.KeyboardShortcuts.DELETE_SELECTED.keyStroke()
+            .map(keyStroke -> getKeyStroke(keyStroke.getKeyCode(), CTRL_DOWN_MASK));
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.COLUMN_SELECTION.set(EntityTablePanel.ColumnSelection.MENU);
     FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);

@@ -19,12 +19,14 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -35,15 +37,20 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.KeyboardShortcuts.NAVIGATE_LEFT;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.KeyboardShortcuts.NAVIGATE_RIGHT;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -59,6 +66,21 @@ public final class EntityDependenciesPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityDependenciesPanel.class.getName());
 
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    NAVIGATE_LEFT,
+    NAVIGATE_RIGHT;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
+  }
+
   private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
 
   EntityDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies, EntityConnectionProvider connectionProvider) {
@@ -68,13 +90,11 @@ public final class EntityDependenciesPanel extends JPanel {
               createTablePanel(entry.getValue(), connectionProvider));
     }
     add(tabPane, BorderLayout.CENTER);
-    KeyEvents.builder(VK_RIGHT)
-            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+    KeyEvents.builder(NAVIGATE_RIGHT.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(new NavigateRightCommand()))
             .enable(tabPane);
-    KeyEvents.builder(VK_LEFT)
-            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+    KeyEvents.builder(NAVIGATE_LEFT.keyStroke().get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(new NavigateLeftCommand()))
             .enable(tabPane);
@@ -163,6 +183,14 @@ public final class EntityDependenciesPanel extends JPanel {
               .onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
               .show();
     }
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(NAVIGATE_LEFT, keyStrokeValue(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(NAVIGATE_RIGHT, keyStrokeValue(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+    return keyStrokes;
   }
 
   void requestSelectedTableFocus() {

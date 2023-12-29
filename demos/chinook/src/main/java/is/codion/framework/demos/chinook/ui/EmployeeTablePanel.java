@@ -19,7 +19,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.model.EmployeeEditModel;
-import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.worker.ProgressWorker.Task;
@@ -30,17 +29,11 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityDialogs.EditDialogBuilder;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import java.util.Collection;
 
 import static is.codion.framework.demos.chinook.ui.EmployeeEditPanel.DELETING;
 import static is.codion.framework.demos.chinook.ui.EmployeeEditPanel.UPDATING;
-import static is.codion.swing.common.ui.component.Components.scrollPane;
-import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
-import static is.codion.swing.framework.ui.EntityTree.entityTree;
 
 public final class EmployeeTablePanel extends EntityTablePanel {
 
@@ -51,19 +44,6 @@ public final class EmployeeTablePanel extends EntityTablePanel {
   @Override
   protected void setupControls() {
     control(TableControl.DELETE_SELECTED).map(delete -> delete.copy(new DeleteCommand()).build());
-  }
-
-  @Override
-  protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
-    EmployeeTableModel tableModel = tableModel();
-    super.layoutPanel(splitPane()
-            .orientation(JSplitPane.HORIZONTAL_SPLIT)
-            .continuousLayout(true)
-            .oneTouchExpandable(true)
-            .resizeWeight(0.65)
-            .leftComponent(tableComponent)
-            .rightComponent(scrollPane(entityTree(tableModel.treeModel())).build())
-            .build(), southPanel);
   }
 
   @Override

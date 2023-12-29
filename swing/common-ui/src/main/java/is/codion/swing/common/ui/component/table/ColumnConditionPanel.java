@@ -27,6 +27,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
@@ -40,6 +41,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -47,24 +49,27 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.KeyboardShortcuts.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -80,6 +85,22 @@ import static javax.swing.SwingConstants.CENTER;
 public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
+
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    TOGGLE_ENABLED,
+    PREVIOUS_OPERATOR,
+    NEXT_OPERATOR;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
+  }
 
   private final ColumnConditionModel<? extends C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
@@ -383,14 +404,11 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     conditionModel.operator().addDataListener(this::onOperatorChanged);
     FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
-    KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KeyEvent.VK_ENTER)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .action(Control.control(() -> conditionModel.enabled().set(!conditionModel.enabled().get())));
-    KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KeyEvent.VK_UP)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+    KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(TOGGLE_ENABLED.keyStroke().get())
+            .action(Control.control(this::toggleEnabled));
+    KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(PREVIOUS_OPERATOR.keyStroke().get())
             .action(Control.control(this::selectPreviousOperator));
-    KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KeyEvent.VK_DOWN)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+    KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(NEXT_OPERATOR.keyStroke().get())
             .action(Control.control(this::selectNextOperator));
     enableOnEnterKeyEvent.enable(operatorCombo);
     if (equalField != null) {
@@ -505,6 +523,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     if (index < itemComboBoxModel.visibleCount() - 1) {
       itemComboBoxModel.setSelectedItem(visibleItems.get(index + 1));
     }
+  }
+
+  private void toggleEnabled() {
+    conditionModel.enabled().set(!conditionModel.enabled().get());
   }
 
   private void selectPreviousOperator() {
@@ -652,6 +674,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     return false;
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(TOGGLE_ENABLED, keyStrokeValue(VK_ENTER, CTRL_DOWN_MASK));
+    keyStrokes.put(PREVIOUS_OPERATOR, keyStrokeValue(VK_UP, CTRL_DOWN_MASK));
+    keyStrokes.put(NEXT_OPERATOR, keyStrokeValue(VK_DOWN, CTRL_DOWN_MASK));
+
+    return keyStrokes;
   }
 
   private final class FocusGainedListener extends FocusAdapter {

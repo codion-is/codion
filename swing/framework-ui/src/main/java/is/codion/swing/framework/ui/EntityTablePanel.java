@@ -39,6 +39,7 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -71,6 +72,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
@@ -100,6 +102,7 @@ import java.util.stream.Stream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.value.ValueSet.valueSet;
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.Components.toolBar;
@@ -107,6 +110,7 @@ import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.colum
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
+import static is.codion.swing.framework.ui.EntityTablePanel.KeyboardShortcuts.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -221,6 +225,29 @@ public class EntityTablePanel extends JPanel {
    */
   public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
           Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+
+  /**
+   * The keyboard shortcuts available for {@link EntityTablePanel}s.
+   * Note that changing the shortcut keystroke after the panel
+   * has been initialized has no effect.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    REQUEST_TABLE_FOCUS,
+    SELECT_CONDITION_PANEL,
+    TOGGLE_CONDITION_PANEL,
+    SELECT_FILTER_PANEL,
+    TOGGLE_FILTER_PANEL,
+    PRINT,
+    DELETE_SELECTED,
+    DISPLAY_POPUP_MENU;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
+  }
 
   /**
    * The standard controls available in a table panel
@@ -670,38 +697,32 @@ public class EntityTablePanel extends JPanel {
    */
   protected void setupKeyboardActions() {
     control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-            KeyEvents.builder(VK_T)
-                    .modifiers(CTRL_DOWN_MASK)
+            KeyEvents.builder(REQUEST_TABLE_FOCUS.keyStroke().get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(VK_S)
-                    .modifiers(CTRL_DOWN_MASK)
+            KeyEvents.builder(SELECT_CONDITION_PANEL.keyStroke().get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(VK_S)
-                    .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+            KeyEvents.builder(TOGGLE_CONDITION_PANEL.keyStroke().get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(VK_F)
-                    .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+            KeyEvents.builder(TOGGLE_FILTER_PANEL.keyStroke().get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(VK_F)
-                    .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
+            KeyEvents.builder(SELECT_FILTER_PANEL.keyStroke().get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.PRINT).optional().ifPresent(control ->
-            KeyEvents.builder(VK_P)
-                    .modifiers(CTRL_DOWN_MASK)
+            KeyEvents.builder(PRINT.keyStroke().get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
@@ -1282,7 +1303,7 @@ public class EntityTablePanel extends JPanel {
               .enable(table);
     }
     control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
-            KeyEvents.builder(VK_DELETE)
+            KeyEvents.builder(DELETE_SELECTED.keyStroke().get())
                     .action(control)
                     .enable(table));
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
@@ -1433,8 +1454,7 @@ public class EntityTablePanel extends JPanel {
     JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     tableScrollPane.setComponentPopupMenu(popupMenu);
-    KeyEvents.builder(VK_G)
-            .modifiers(CTRL_DOWN_MASK)
+    KeyEvents.builder(DISPLAY_POPUP_MENU.keyStroke().get())
             .action(Control.control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
@@ -1682,6 +1702,20 @@ public class EntityTablePanel extends JPanel {
             table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true).y;
 
     return new Point(x, y + table.getRowHeight() / 2);
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    Map<KeyboardShortcut, Value<KeyStroke>> keyStrokes = new HashMap<>();
+    keyStrokes.put(REQUEST_TABLE_FOCUS, keyStrokeValue(VK_T, CTRL_DOWN_MASK));
+    keyStrokes.put(SELECT_CONDITION_PANEL, keyStrokeValue(VK_S, CTRL_DOWN_MASK));
+    keyStrokes.put(TOGGLE_CONDITION_PANEL, keyStrokeValue(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(SELECT_FILTER_PANEL, keyStrokeValue(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+    keyStrokes.put(TOGGLE_FILTER_PANEL, keyStrokeValue(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+    keyStrokes.put(PRINT, keyStrokeValue(VK_P, CTRL_DOWN_MASK));
+    keyStrokes.put(DELETE_SELECTED, keyStrokeValue(VK_DELETE));
+    keyStrokes.put(DISPLAY_POPUP_MENU, keyStrokeValue(VK_G, CTRL_DOWN_MASK));
+
+    return keyStrokes;
   }
 
   private final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {

@@ -40,7 +40,9 @@ import static javax.swing.KeyStroke.getKeyStroke;
  *          .action(new FindNextAction())
  *          .enable(textField);
  * </pre>
+ * @see #builder()
  * @see #builder(int)
+ * @see #builder(KeyStroke)
  */
 public final class KeyEvents {
 
@@ -64,6 +66,16 @@ public final class KeyEvents {
   public static Builder builder(int keyCode) {
     return new DefaultBuilder()
             .keyCode(keyCode);
+  }
+
+  /**
+   * Instantiates a new {@link KeyEvents.Builder} instance.
+   * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
+   * @param keyStroke the key stroke
+   * @return a {@link Builder} instance.
+   */
+  public static Builder builder(KeyStroke keyStroke) {
+    return new DefaultBuilder(keyStroke);
   }
 
   /**
@@ -118,27 +130,35 @@ public final class KeyEvents {
     Builder action(Action action);
 
     /**
-     * Builds the key event and enables it on the given component
-     * @param component the component
+     * Builds the key event and enables it on the given components
+     * @param components the components
      * @return this builder instance
      * @throws IllegalStateException in case no action has been set
      */
-    Builder enable(JComponent component);
+    Builder enable(JComponent... components);
 
     /**
-     * Disables this key event on the given component
-     * @param component the component
+     * Disables this key event on the given components
+     * @param components the components
      * @return this builder instance
      * @throws IllegalStateException in case no action has been set
      */
-    Builder disable(JComponent component);
+    Builder disable(JComponent... components);
   }
 
   private static final class DefaultBuilder implements Builder {
 
-    private KeyStroke keyStroke = getKeyStroke(VK_UNDEFINED, 0, false);
+    private KeyStroke keyStroke;
     private int condition = WHEN_FOCUSED;
     private Action action;
+
+    private DefaultBuilder() {
+      this(getKeyStroke(VK_UNDEFINED, 0, false));
+    }
+
+    private DefaultBuilder(KeyStroke keyStroke) {
+      this.keyStroke = requireNonNull(keyStroke);
+    }
 
     @Override
     public Builder keyCode(int keyCode) {
@@ -183,13 +203,21 @@ public final class KeyEvents {
     }
 
     @Override
-    public Builder enable(JComponent component) {
-      return enable(requireNonNull(component), actionMapKey(component));
+    public Builder enable(JComponent... components) {
+      for (JComponent component : requireNonNull(components)) {
+        enable(requireNonNull(component), actionMapKey(component));
+      }
+
+      return this;
     }
 
     @Override
-    public Builder disable(JComponent component) {
-      return disable(requireNonNull(component), actionMapKey(component));
+    public Builder disable(JComponent... components) {
+      for (JComponent component : requireNonNull(components)) {
+        disable(requireNonNull(component), actionMapKey(component));
+      }
+
+      return this;
     }
 
     private Object actionMapKey(JComponent component) {
@@ -211,24 +239,20 @@ public final class KeyEvents {
               .toString();
     }
 
-    private Builder enable(JComponent component, Object actionMapKey) {
+    private void enable(JComponent component, Object actionMapKey) {
       component.getActionMap().put(actionMapKey, action);
       component.getInputMap(condition).put(keyStroke, actionMapKey);
       if (component instanceof JComboBox<?>) {
         enable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), actionMapKey);
       }
-
-      return this;
     }
 
-    private Builder disable(JComponent component, Object actionMapKey) {
+    private void disable(JComponent component, Object actionMapKey) {
       component.getActionMap().put(actionMapKey, null);
       component.getInputMap(condition).put(keyStroke, null);
       if (component instanceof JComboBox<?>) {
         disable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), actionMapKey);
       }
-
-      return this;
     }
   }
 }

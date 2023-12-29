@@ -123,13 +123,11 @@ final class ColumnSelectionPanel<C> extends JPanel {
     KeyEvents.builder(VK_UP)
             .condition(WHEN_FOCUSED)
             .action(control(new TransferFocusCommand(selectCheckBoxes, false)))
-            .enable(selectAllBox)
-            .enable(selectNoneBox);
+            .enable(selectAllBox, selectNoneBox);
     KeyEvents.builder(VK_DOWN)
             .condition(WHEN_FOCUSED)
             .action(control(new TransferFocusCommand(selectCheckBoxes, true)))
-            .enable(selectAllBox)
-            .enable(selectNoneBox);
+            .enable(selectAllBox, selectNoneBox);
 
     return Components.gridLayoutPanel(2, 1)
             .addAll(selectAllBox, selectNoneBox)

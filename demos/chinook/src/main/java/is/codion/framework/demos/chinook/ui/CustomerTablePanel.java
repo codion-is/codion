@@ -44,6 +44,10 @@ public final class CustomerTablePanel extends EntityTablePanel {
   public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setRefreshButtonVisible(RefreshButtonVisible.ALWAYS);
+  }
+
+  @Override
+  protected void setupControls() {
     control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
             .name(BUNDLE.getString("customer_report"))
             .smallIcon(FrameworkIcons.instance().print())

@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.KeyboardShortcut;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -36,14 +37,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.KeyboardShortcut.keyStrokeValue;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.awt.event.KeyEvent.VK_INSERT;
+import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -54,6 +59,20 @@ import static java.util.Objects.requireNonNull;
 public final class TextFieldPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TextFieldPanel.class.getName());
+
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcuts implements KeyboardShortcut {
+    DISPLAY_TEXT_AREA;
+
+    private static final Map<KeyboardShortcut, Value<KeyStroke>> KEYSTROKES = createDefaultKeystrokes();
+
+    @Override
+    public Value<KeyStroke> keyStroke() {
+      return KEYSTROKES.get(this);
+    }
+  }
 
   private final JTextField textField;
   private final JButton button;
@@ -242,7 +261,7 @@ public final class TextFieldPanel extends JPanel {
             .name(buttonIcon == null ? "..." : "")
             .smallIcon(buttonIcon)
             .build();
-    KeyEvents.builder(VK_INSERT)
+    KeyEvents.builder(KeyboardShortcuts.DISPLAY_TEXT_AREA.keyStroke().get())
             .action(buttonControl)
             .enable(textField);
     JButton actionButton = new JButton(buttonControl);
@@ -268,6 +287,10 @@ public final class TextFieldPanel extends JPanel {
             .title(dialogTitle == null ? caption : dialogTitle)
             .onOk(() -> textField.setText(textArea.getText()))
             .show();
+  }
+
+  private static Map<KeyboardShortcut, Value<KeyStroke>> createDefaultKeystrokes() {
+    return singletonMap(KeyboardShortcuts.DISPLAY_TEXT_AREA, keyStrokeValue(VK_INSERT));
   }
 
   private static final class DefaultBuilder extends AbstractComponentBuilder<String, TextFieldPanel, Builder> implements Builder {

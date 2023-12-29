@@ -41,6 +41,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -55,8 +56,6 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static java.awt.ComponentOrientation.getOrientation;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 final class EntityControls {
@@ -74,7 +73,8 @@ final class EntityControls {
    * @return the add Control
    */
   static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
-    return createAddControl(new AddEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox);
+    return createAddControl(new AddEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox,
+            EntityComboBox.KeyboardShortcuts.ADD.keyStroke().get());
   }
 
   /**
@@ -86,7 +86,8 @@ final class EntityControls {
    * @return the add Control
    */
   static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
-    return createAddControl(new AddEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField);
+    return createAddControl(new AddEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField,
+            EntitySearchField.KeyboardShortcuts.ADD.keyStroke().get());
   }
 
   /**
@@ -99,7 +100,7 @@ final class EntityControls {
    */
   static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
     return createEditControl(new EditEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)),
-            comboBox, comboBox.getModel().selectionEmpty().not());
+            comboBox, comboBox.getModel().selectionEmpty().not(), EntityComboBox.KeyboardShortcuts.EDIT.keyStroke().get());
   }
 
   /**
@@ -112,7 +113,7 @@ final class EntityControls {
    */
   static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
     return createEditControl(new EditEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)),
-            searchField, searchField.model().selectionEmpty().not());
+            searchField, searchField.model().selectionEmpty().not(), EntitySearchField.KeyboardShortcuts.EDIT.keyStroke().get());
   }
 
   static String validateButtonLocation(String buttonLocation) {
@@ -141,14 +142,14 @@ final class EntityControls {
     return getOrientation(Locale.getDefault()) == ComponentOrientation.LEFT_TO_RIGHT ? BorderLayout.EAST : BorderLayout.WEST;
   }
 
-  private static Control createAddControl(AddEntityCommand addEntityCommand, JComponent component) {
+  private static Control createAddControl(AddEntityCommand addEntityCommand, JComponent component, KeyStroke keyStroke) {
     Control control = Control.builder(addEntityCommand)
             .smallIcon(FrameworkIcons.instance().add())
             .description(MESSAGES.getString("add_new"))
             .enabled(createComponentEnabledState(component))
             .build();
 
-    KeyEvents.builder(VK_INSERT)
+    KeyEvents.builder(keyStroke)
             .action(control)
             .enable(component);
 
@@ -156,15 +157,14 @@ final class EntityControls {
   }
 
   private static Control createEditControl(EditEntityCommand editEntityCommand, JComponent component,
-                                           StateObserver selectionNonEmptyState) {
+                                           StateObserver selectionNonEmptyState, KeyStroke keyStroke) {
     Control control = Control.builder(editEntityCommand)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(MESSAGES.getString("edit_selected"))
             .enabled(State.and(createComponentEnabledState(component), selectionNonEmptyState))
             .build();
 
-    KeyEvents.builder(VK_INSERT)
-            .modifiers(CTRL_DOWN_MASK)
+    KeyEvents.builder(keyStroke)
             .action(control)
             .enable(component);
 

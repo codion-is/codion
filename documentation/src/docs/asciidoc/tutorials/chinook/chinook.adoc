@@ -56,11 +56,6 @@ include::{dir-source}/is/codion/framework/demos/chinook/model/EmployeeEditModel.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/EmployeeTableModel.java[lines=19..-1]
-----
-
-[source,java]
-----
 include::{dir-source}/is/codion/framework/demos/chinook/model/InvoiceModel.java[lines=19..-1]
 ----
 

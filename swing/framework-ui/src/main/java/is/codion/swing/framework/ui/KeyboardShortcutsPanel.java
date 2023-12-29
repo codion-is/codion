@@ -166,12 +166,12 @@ final class KeyboardShortcutsPanel extends JPanel {
 
   private static JPanel calendar() {
     return gridLayoutPanel(0, 2)
-            .addAll(new JLabel(MESSAGES.getString("previous_next_year")), new JLabel(CTRL + LEFT_RIGHT + OR + DOWN_UP))
-            .addAll(new JLabel(MESSAGES.getString("previous_next_month")), new JLabel(SHIFT + LEFT_RIGHT + OR + DOWN_UP))
+            .addAll(new JLabel(MESSAGES.getString("previous_next_year")), new JLabel(CTRL + DOWN_UP))
+            .addAll(new JLabel(MESSAGES.getString("previous_next_month")), new JLabel(SHIFT + DOWN_UP))
             .addAll(new JLabel(MESSAGES.getString("previous_next_day")), new JLabel(ALT + LEFT_RIGHT))
             .addAll(new JLabel(MESSAGES.getString("previous_next_week")), new JLabel(ALT + UP_DOWN))
-            .addAll(new JLabel(MESSAGES.getString("previous_next_hour")), new JLabel(SHIFT + ALT + LEFT_RIGHT + OR + DOWN_UP))
-            .addAll(new JLabel(MESSAGES.getString("previous_next_minute")), new JLabel(CTRL + ALT + LEFT_RIGHT + OR + DOWN_UP))
+            .addAll(new JLabel(MESSAGES.getString("previous_next_hour")), new JLabel(SHIFT + ALT + DOWN_UP))
+            .addAll(new JLabel(MESSAGES.getString("previous_next_minute")), new JLabel(CTRL + ALT + DOWN_UP))
             .border(createTitledBorder(MESSAGES.getString("calendar")))
             .build();
   }
