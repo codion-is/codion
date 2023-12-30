@@ -19,13 +19,13 @@
 /**
  * Common Swing UI classes, such as:<br>
  * <br>
- * {@link is.codion.swing.common.ui.KeyEvents}<br>
  * {@link is.codion.swing.common.ui.component.Components}<br>
  * {@link is.codion.swing.common.ui.component.builder.ComponentBuilder}<br>
  * {@link is.codion.swing.common.ui.component.builder.AbstractComponentBuilder}<br>
  * {@link is.codion.swing.common.ui.component.value.ComponentValue}<br>
  * {@link is.codion.swing.common.ui.component.value.AbstractComponentValue}<br>
  * {@link is.codion.swing.common.ui.dialog.Dialogs}<br>
+ * {@link is.codion.swing.common.ui.key.KeyEvents}<br>
  * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider}<br>
  * {@link is.codion.swing.common.ui.layout.Layouts}<br>
  */
