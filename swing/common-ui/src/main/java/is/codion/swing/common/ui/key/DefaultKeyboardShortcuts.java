@@ -6,21 +6,22 @@ package is.codion.swing.common.ui.key;
 import is.codion.common.value.Value;
 
 import javax.swing.KeyStroke;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultKeyboardShortcuts<T extends Enum<T>> implements KeyboardShortcuts<T> {
 
-  private final Map<T, Value<KeyStroke>> keystrokes = new HashMap<>();
+  private final Map<T, Value<KeyStroke>> keyStrokes;
 
   DefaultKeyboardShortcuts(Class<T> shortcutsClass, Function<T, KeyStroke> defaultKeystrokes) {
+    requireNonNull(shortcutsClass);
     requireNonNull(defaultKeystrokes);
-    Stream.of(requireNonNull(shortcutsClass).getEnumConstants()).forEach(shortcutKey ->
-            keystrokes.put(shortcutKey, keyStrokeValue(defaultKeystrokes.apply(shortcutKey))));
+    keyStrokes = Stream.of(shortcutsClass.getEnumConstants())
+            .collect(toMap(Function.identity(), shortcutKey -> keyStrokeValue(defaultKeystrokes, shortcutKey)));
   }
 
   /**
@@ -28,10 +29,15 @@ final class DefaultKeyboardShortcuts<T extends Enum<T>> implements KeyboardShort
    * @return the Value controlling the key stroke for the given shortcut key
    */
   public Value<KeyStroke> keyStroke(T keyboardShortcut) {
-    return keystrokes.get(keyboardShortcut);
+    return keyStrokes.get(requireNonNull(keyboardShortcut));
   }
 
-  private static Value<KeyStroke> keyStrokeValue(KeyStroke keyStroke) {
+  private Value<KeyStroke> keyStrokeValue(Function<T, KeyStroke> defaultKeystrokes, T shortcutKey) {
+    KeyStroke keyStroke = defaultKeystrokes.apply(shortcutKey);
+    if (keyStroke == null) {
+      throw new IllegalStateException("No default keystroke provided for shortcut key: " + shortcutKey);
+    }
+
     return Value.value(keyStroke, keyStroke);
   }
 }
