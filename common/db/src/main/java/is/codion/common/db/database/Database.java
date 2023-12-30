@@ -50,24 +50,6 @@ public interface Database extends ConnectionFactory {
   }
 
   /**
-   * The possible select for update support values.
-   */
-  enum SelectForUpdateSupport {
-    /**
-     * No support for select for update.
-     */
-    NONE,
-    /**
-     * Supports basic for update.
-     */
-    FOR_UPDATE,
-    /**
-     * Supports for update with the 'nowait' option.
-     */
-    FOR_UPDATE_NOWAIT
-  }
-
-  /**
    * Specifies the jdbc url of the database.
    */
   PropertyValue<String> DATABASE_URL = Configuration.stringValue("codion.db.url");
@@ -172,11 +154,6 @@ public interface Database extends ConnectionFactory {
    * @return the maximum number of prepared statement parameters, supported by this database.
    */
   int maximumNumberOfParameters();
-
-  /**
-   * @return the timeout in seconds to use when checking connection validity
-   */
-  int validityCheckTimeout();
 
   /**
    * Returns a user-friendly error message for the given exception,

@@ -150,11 +150,6 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public int validityCheckTimeout() {
-    return validityCheckTimeout;
-  }
-
-  @Override
   public String sequenceQuery(String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
   }
