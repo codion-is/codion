@@ -20,6 +20,9 @@ package is.codion.common.db.database;
 
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.QueryTimeoutException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
@@ -165,17 +168,15 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public int validityCheckTimeout() {
-    return validityCheckTimeout;
-  }
-
-  @Override
   public String sequenceQuery(String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
   }
 
   @Override
   public String errorMessage(SQLException exception, Operation operation) {
+    requireNonNull(exception);
+    requireNonNull(operation);
+
     return exception.getMessage();
   }
 
@@ -207,6 +208,23 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public boolean isTimeoutException(SQLException exception) {
     return false;
+  }
+
+  @Override
+  public DatabaseException databaseException(SQLException exception, Operation operation) {
+    requireNonNull(exception);
+    requireNonNull(operation);
+    if (isUniqueConstraintException(exception)) {
+      return new UniqueConstraintException(exception, errorMessage(exception, operation));
+    }
+    else if (isReferentialIntegrityException(exception)) {
+      return new ReferentialIntegrityException(exception, errorMessage(exception, operation));
+    }
+    else if (isTimeoutException(exception)) {
+      return new QueryTimeoutException(exception, errorMessage(exception, operation));
+    }
+
+    return new DatabaseException(exception, errorMessage(exception, operation));
   }
 
   static Database instance() {

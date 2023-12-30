@@ -65,24 +65,6 @@ public interface Database extends ConnectionFactory {
   }
 
   /**
-   * The possible select for update support values.
-   */
-  enum SelectForUpdateSupport {
-    /**
-     * No support for select for update.
-     */
-    NONE,
-    /**
-     * Supports basic for update.
-     */
-    FOR_UPDATE,
-    /**
-     * Supports for update with the 'nowait' option.
-     */
-    FOR_UPDATE_NOWAIT
-  }
-
-  /**
    * Specifies the jdbc url of the database.
    */
   PropertyValue<String> DATABASE_URL = Configuration.stringValue("codion.db.url");
@@ -189,11 +171,6 @@ public interface Database extends ConnectionFactory {
   int maximumNumberOfParameters();
 
   /**
-   * @return the timeout in seconds to use when checking connection validity
-   */
-  int validityCheckTimeout();
-
-  /**
    * Returns a user-friendly error message for the given exception,
    * otherwise simply return the message from {@code exception}
    * @param exception the underlying SQLException
@@ -201,6 +178,15 @@ public interface Database extends ConnectionFactory {
    * @return the message assigned to the given exception
    */
   String errorMessage(SQLException exception, Operation operation);
+
+  /**
+   * Maps the given SQLException to a DatabaseException.
+   * @param exception the SQL exception
+   * @param operation the current operation
+   * @return a DatabaseException
+   * @see #errorMessage(SQLException, Operation)
+   */
+  DatabaseException databaseException(SQLException exception, Operation operation);
 
   /**
    * Returns true if this exception represents a login credentials failure
