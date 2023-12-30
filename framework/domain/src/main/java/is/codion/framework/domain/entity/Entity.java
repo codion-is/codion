@@ -529,10 +529,10 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns true if all attribute values are equal in the given entities.
+   * Returns true if all attribute values available in the first entity are available and equal in the second entity.
    * @param entityOne the first entity
    * @param entityTwo the second entity
-   * @return true if the values of the given attributes are equal in the given entities
+   * @return true if the values of the second entity are equal to all values in the first entity
    */
   static boolean valuesEqual(Entity entityOne, Entity entityTwo) {
     if (requireNonNull(entityOne).entrySet().size() != requireNonNull(entityTwo).entrySet().size()) {

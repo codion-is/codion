@@ -165,6 +165,15 @@ public interface Database extends ConnectionFactory {
   String errorMessage(SQLException exception, Operation operation);
 
   /**
+   * Maps the given SQLException to a DatabaseException.
+   * @param exception the SQL exception
+   * @param operation the current operation
+   * @return a DatabaseException
+   * @see #errorMessage(SQLException, Operation)
+   */
+  DatabaseException databaseException(SQLException exception, Operation operation);
+
+  /**
    * Returns true if this exception represents a login credentials failure
    * @param exception the exception
    * @return true if this exception represents a login credentials failure

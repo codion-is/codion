@@ -24,6 +24,8 @@ Codion Change Log
 - KeyboardShortcuts factory method now throws exception in case of a missing default shortcut keyStroke.
 ### is.codion.framework.domain
 - IdentityKeyGenerator now throws exception in case the generated keys result set is empty.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.translateSQLException() renamed databaseException() and moved to Database.
 ### is.codion.framework.model
 - AbstractEntityEditModel, edit event notifications now handled by afterInsert/afterUpdate/afterDelete events.
 - AbstractEntityEditModel.insert() no longer calls save() on the entity being inserted, since exists() relies on the original primary key value and is used during validation.
