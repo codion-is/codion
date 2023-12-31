@@ -92,6 +92,7 @@ public interface Database extends ConnectionFactory {
    * Specifies the transaction isolation to set for created connections.<br>
    * Value type: Integer<br>
    * Default value: null
+   * @see java.sql.Connection#setTransactionIsolation(int)
    */
   PropertyValue<Integer> TRANSACTION_ISOLATION = Configuration.integerValue("codion.db.transactionIsolation");
 

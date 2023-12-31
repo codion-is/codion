@@ -39,10 +39,15 @@ public abstract class AbstractDatabase implements Database {
   private static final String OFFSET = "OFFSET ";
   private static final String LIMIT = "LIMIT ";
 
+  static {
+    DriverManager.setLoginTimeout(Database.LOGIN_TIMEOUT.getOrThrow());
+  }
+
   private static Database instance;
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
+  private final Integer transactionIsolation = TRANSACTION_ISOLATION.get();
   private final DefaultQueryCounter queryCounter = new DefaultQueryCounter();
   private final String url;
 
@@ -63,11 +68,10 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final Connection createConnection(User user) throws DatabaseException {
-    DriverManager.setLoginTimeout(loginTimeout());
     try {
       Connection connection = connectionProvider.connection(user, url);
-      if (Database.TRANSACTION_ISOLATION.isNotNull()) {
-        connection.setTransactionIsolation(Database.TRANSACTION_ISOLATION.get());
+      if (transactionIsolation != null) {
+        connection.setTransactionIsolation(transactionIsolation);
       }
 
       return connection;
@@ -235,14 +239,6 @@ public abstract class AbstractDatabase implements Database {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * @return the connection timeout in seconds
-   * @see Database#LOGIN_TIMEOUT
-   */
-  protected int loginTimeout() {
-    return Database.LOGIN_TIMEOUT.getOrThrow();
   }
 
   protected static String createLimitOffsetClause(Integer limit, Integer offset) {

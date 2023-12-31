@@ -16,24 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractDatabaseTest {
 
-  private final AbstractDatabase database = new AbstractDatabase("jdbc:h2:mem:h2db") {
-    @Override
-    public String name() {
-      return "name";
-    }
-    @Override
-    public String autoIncrementQuery(String idSource) {
-      return null;
-    }
-    @Override
-    public String selectForUpdateClause() {
-      return FOR_UPDATE_NOWAIT;
-    }
-    @Override
-    public String limitOffsetClause(Integer limit, Integer offset) {
-      return createLimitOffsetClause(limit, offset);
-    }
-  };
+  private final AbstractDatabase database = new TestDatabase();
 
   @Test
   void test() {
@@ -74,14 +57,40 @@ public final class AbstractDatabaseTest {
 
   @Test
   void transactionIsolation() throws DatabaseException, SQLException {
+    Database db = new TestDatabase();
     User sa = User.user("sa");
-    Connection connection = database.createConnection(sa);
+    Connection connection = db.createConnection(sa);
     assertEquals(Connection.TRANSACTION_READ_COMMITTED, connection.getTransactionIsolation());
     connection.close();
     Database.TRANSACTION_ISOLATION.set(Connection.TRANSACTION_SERIALIZABLE);
-    connection = database.createConnection(sa);
+    db = new TestDatabase();
+    connection = db.createConnection(sa);
     assertEquals(Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation());
     connection.close();
     Database.TRANSACTION_ISOLATION.set(null);
+  }
+
+  private static final class TestDatabase extends AbstractDatabase {
+
+    private TestDatabase() {
+      super("jdbc:h2:mem:h2db");
+    }
+
+    @Override
+    public String name() {
+      return "name";
+    }
+    @Override
+    public String autoIncrementQuery(String idSource) {
+      return null;
+    }
+    @Override
+    public String selectForUpdateClause() {
+      return FOR_UPDATE_NOWAIT;
+    }
+    @Override
+    public String limitOffsetClause(Integer limit, Integer offset) {
+      return createLimitOffsetClause(limit, offset);
+    }
   }
 }
