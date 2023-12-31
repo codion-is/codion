@@ -7,6 +7,8 @@ Codion Change Log
 - AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
+### is.codion.swing.framework.ui
+- EntityPanel, EntityTablePanel, keyboard shortcuts can now be configured on an instance basis, via configure().keyStroke().
 
 ## 0.17.22
 ### is.codion.swing.common.core
