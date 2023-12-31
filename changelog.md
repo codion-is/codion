@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.23-SNAPSHOT
+
 ## 0.17.22
 ### is.codion.swing.common.core
 - Value.map() added.
