@@ -1,6 +1,24 @@
 Codion Change Log
 ==================
 
+## 0.17.23-SNAPSHOT
+### is.codion.common.db
+- AbstractDatabase, transaction isolation now a final field, instead of using the configuration value directly.
+- AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
+### is.codion.swing.common.ui
+- KeyboardShortcuts.copy() added.
+- CalendarPanel.Builder added, replaces factory methods
+- CalendarPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+- TemporalField.Builder.incrementDecrementEnabled() added, for turning off keyboard based increment/decrement of date component under cursor.
+- TemporalField.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+- TextFieldPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+### is.codion.swing.framework.ui
+- EntityPanel, EntityTablePanel, keyboard shortcuts can now be configured on an instance basis, via configure().keyStroke().
+- TabbedPanelLayout.Builder.keyboardShortcut() added for configuring keyboard shortcuts on an instance basis.
+- EntitySearchField.KeyboardShortcut moved to EntitySearchFieldPanel, EntitySearchFieldPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+- EntityComboBox.KeyboardShortcut moved to EntityComboBoxPanel, EntityComboBoxPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+- TabbedPanelLayout.Builder.keyboardShortcut() renamed keyStroke() for consistency.
+
 ## 0.17.22
 ### is.codion.swing.common.core
 - Value.map() added.

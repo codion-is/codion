@@ -22,8 +22,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -36,8 +34,9 @@ public final class CalendarPanelTest {
     AtomicInteger dateChangedCounter = new AtomicInteger();
     AtomicInteger dateTimeChangedCounter = new AtomicInteger();
     LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
-    CalendarPanel panel = CalendarPanel.dateTimeCalendarPanel();
-    panel.setLocalDateTime(startDate);
+    CalendarPanel panel = CalendarPanel.builder()
+            .initialValue(startDate)
+            .build();
 
     Consumer<LocalDate> dataListener = date -> dateChangedCounter.incrementAndGet();
     Consumer<LocalDateTime> dateTimeListener = dateTime -> dateTimeChangedCounter.incrementAndGet();
@@ -50,16 +49,16 @@ public final class CalendarPanelTest {
     assertEquals(0, dateChangedCounter.get());
     assertEquals(2, dateTimeChangedCounter.get());//time gets truncated, once for hours, again for minutes
 
-    panel.setLocalDateTime(startDate.minus(1, ChronoUnit.MINUTES));
+    panel.setLocalDateTime(startDate.minusMinutes(1));
 
     assertEquals(0, dateChangedCounter.get());
     assertEquals(4, dateTimeChangedCounter.get());//again, once for hours, again for minutes
 
-    panel.setLocalDateTime(startDate.with(ChronoField.MONTH_OF_YEAR, 7));
+    panel.setLocalDateTime(startDate.withMonth(7));
 
     assertEquals(1, dateChangedCounter.get());
 
-    panel.setLocalDateTime(startDate.with(ChronoField.MONTH_OF_YEAR, 7).with(ChronoField.DAY_OF_MONTH, 18));
+    panel.setLocalDateTime(startDate.withMonth(7).withDayOfMonth(18));
 
     assertEquals(2, dateChangedCounter.get());
 
@@ -70,36 +69,37 @@ public final class CalendarPanelTest {
   @Test
   void navigation() {
     LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
-    CalendarPanel panel = CalendarPanel.dateTimeCalendarPanel();
-    panel.setLocalDateTime(startDate);
+    CalendarPanel panel = CalendarPanel.builder()
+            .initialValue(startDate)
+            .build();
 
     panel.previousYear();
-    assertEquals(startDate.with(ChronoField.YEAR, 2020), panel.getLocalDateTime());
+    assertEquals(startDate.withYear(2020), panel.getLocalDateTime());
     panel.nextYear();
     assertEquals(startDate, panel.getLocalDateTime());
 
     panel.previousMonth();
-    assertEquals(startDate.with(ChronoField.MONTH_OF_YEAR, 7), panel.getLocalDateTime());
+    assertEquals(startDate.withMonth(7), panel.getLocalDateTime());
     panel.nextMonth();
     assertEquals(startDate, panel.getLocalDateTime());
 
     panel.previousWeek();
-    assertEquals(startDate.with(ChronoField.DAY_OF_MONTH, 14), panel.getLocalDateTime());
+    assertEquals(startDate.withDayOfMonth(14), panel.getLocalDateTime());
     panel.nextWeek();
     assertEquals(startDate, panel.getLocalDateTime());
 
     panel.previousDay();
-    assertEquals(startDate.with(ChronoField.DAY_OF_MONTH, 20), panel.getLocalDateTime());
+    assertEquals(startDate.withDayOfMonth(20), panel.getLocalDateTime());
     panel.nextDay();
     assertEquals(startDate, panel.getLocalDateTime());
 
     panel.previousHour();
-    assertEquals(startDate.with(ChronoField.HOUR_OF_DAY, 15), panel.getLocalDateTime());
+    assertEquals(startDate.withHour(15), panel.getLocalDateTime());
     panel.nextHour();
     assertEquals(startDate, panel.getLocalDateTime());
 
     panel.previousMinute();
-    assertEquals(startDate.with(ChronoField.MINUTE_OF_HOUR, 29), panel.getLocalDateTime());
+    assertEquals(startDate.withMinute(29), panel.getLocalDateTime());
     panel.nextMinute();
     assertEquals(startDate, panel.getLocalDateTime());
 
@@ -121,7 +121,10 @@ public final class CalendarPanelTest {
   void dateOnly() {
     LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
 
-    CalendarPanel panel = CalendarPanel.dateCalendarPanel();
+    CalendarPanel panel = CalendarPanel.builder()
+            .initialValue(startDate)
+            .includeTime(false)
+            .build();
     panel.setLocalDateTime(startDate);
 
     assertEquals(startDate.withHour(0).withMinute(0), panel.getLocalDateTime());

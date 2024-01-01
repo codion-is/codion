@@ -81,7 +81,7 @@ public final class TextFieldPanel extends JPanel {
     this.textField = builder.textFieldBuilder.build();
     this.dialogTitle = builder.dialogTitle;
     this.textAreaSize = builder.textAreaSize;
-    this.button = createButton(builder.buttonFocusable, builder.buttonIcon);
+    this.button = createButton(builder.buttonFocusable, builder.buttonIcon, builder.keyboardShortcuts);
     this.caption = builder.caption;
     this.maximumLength = builder.maximumLength;
     initializeUI();
@@ -235,6 +235,13 @@ public final class TextFieldPanel extends JPanel {
      * @return this builder instance
      */
     Builder maximumLength(int maximumLength);
+
+    /**
+     * @param keyboardShortcut the keyboard shortcut key
+     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+     * @return this builder instance
+     */
+    Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
   }
 
   private void initializeUI() {
@@ -252,12 +259,12 @@ public final class TextFieldPanel extends JPanel {
     });
   }
 
-  private JButton createButton(boolean buttonFocusable, ImageIcon buttonIcon) {
+  private JButton createButton(boolean buttonFocusable, ImageIcon buttonIcon, KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts) {
     Control buttonControl = Control.builder(this::inputFromUser)
             .name(buttonIcon == null ? "..." : "")
             .smallIcon(buttonIcon)
             .build();
-    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DISPLAY_TEXT_AREA).get())
+    KeyEvents.builder(keyboardShortcuts.keyStroke(DISPLAY_TEXT_AREA).get())
             .action(buttonControl)
             .enable(textField);
     JButton actionButton = new JButton(buttonControl);
@@ -290,6 +297,7 @@ public final class TextFieldPanel extends JPanel {
     private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
     private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
     private boolean buttonFocusable;
     private ImageIcon buttonIcon;
@@ -366,6 +374,12 @@ public final class TextFieldPanel extends JPanel {
     @Override
     public TextFieldPanel.Builder dialogTitle(String dialogTitle) {
       this.dialogTitle = dialogTitle;
+      return this;
+    }
+
+    @Override
+    public TextFieldPanel.Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
       return this;
     }
 

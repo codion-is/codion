@@ -127,6 +127,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   private final boolean includeDetailTabPane;
   private final boolean includeDetailPanelControls;
   private final double splitPaneResizeWeight;
+  private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
 
   private TabbedPanelLayout(DefaultBuilder builder) {
     this.detailPanelState = builder.detailPanelState;
@@ -134,6 +135,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     this.includeDetailPanelControls = builder.includeDetailControls;
     this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
     this.detailController = new TabbedDetailController();
+    this.keyboardShortcuts = builder.keyboardShortcuts;
   }
 
   @Override
@@ -213,16 +215,23 @@ public final class TabbedPanelLayout implements PanelLayout {
     Builder includeDetailControls(boolean includeDetailControls);
 
     /**
+     * @param keyboardShortcut the keyboard shortcut key
+     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+     * @return this builder instance
+     */
+    Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+
+    /**
      * @return a new {@link TabbedPanelLayout} instance based on this builder
      */
     TabbedPanelLayout build();
   }
 
   private void setupResizing() {
-    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(RESIZE_RIGHT).get())
+    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeHorizontally(entityPanel, RIGHT));
-    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(RESIZE_LEFT).get())
+    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeHorizontally(entityPanel, LEFT));
     resizeRightKeyEvent.enable(entityPanel);
@@ -596,6 +605,8 @@ public final class TabbedPanelLayout implements PanelLayout {
 
   private static final class DefaultBuilder implements Builder {
 
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+
     private PanelState detailPanelState = EMBEDDED;
     private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
     private boolean includeDetailTabPane = true;
@@ -622,6 +633,12 @@ public final class TabbedPanelLayout implements PanelLayout {
     @Override
     public Builder includeDetailControls(boolean includeDetailControls) {
       this.includeDetailControls = includeDetailControls;
+      return this;
+    }
+
+    @Override
+    public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
       return this;
     }
 

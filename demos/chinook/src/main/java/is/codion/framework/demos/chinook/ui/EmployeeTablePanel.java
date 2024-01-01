@@ -34,11 +34,15 @@ import java.util.Collection;
 import static is.codion.framework.demos.chinook.ui.EmployeeEditPanel.DELETING;
 import static is.codion.framework.demos.chinook.ui.EmployeeEditPanel.UPDATING;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 
 public final class EmployeeTablePanel extends EntityTablePanel {
 
   public EmployeeTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    // Remove the CTRL modifier from the DELETE key shortcut for this table panel
+    configure().keyStroke(KeyboardShortcut.DELETE_SELECTED)
+            .map(keyStroke -> keyStroke(keyStroke.getKeyCode()));
   }
 
   @Override

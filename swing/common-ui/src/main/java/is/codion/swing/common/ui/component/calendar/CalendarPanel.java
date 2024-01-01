@@ -80,8 +80,6 @@ import static javax.swing.BorderFactory.createTitledBorder;
 
 /**
  * A panel presenting a calendar for date/time selection.<br><br>
- * For a {@link CalendarPanel} without time fields use the {@link #dateCalendarPanel()} factory method.<br>
- * For a {@link CalendarPanel} with time fields use the {@link #dateTimeCalendarPanel()} factory method.<br><br>
  * Keyboard navigation:<br><br>
  * Previous/next year: CTRL + left/right arrow or down/up arrow.<br>
  * Previous/next month: SHIFT + left/right arrow or down/up arrow.<br>
@@ -89,11 +87,15 @@ import static javax.swing.BorderFactory.createTitledBorder;
  * Previous/next day: ALT + left/right arrow.<br>
  * Previous/next hour: SHIFT-ALT + left/right arrow or down/up arrow.<br>
  * Previous/next minute: CTRL-ALT + left/right arrow or down/up arrow.
+ * @see #builder()
  */
 public final class CalendarPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(CalendarPanel.class.getName());
 
+  /**
+   * The default keyboard shortcuts.
+   */
   public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
 
   /**
@@ -143,9 +145,9 @@ public final class CalendarPanel extends JPanel {
   private final JLabel formattedDateLabel;
   private final boolean includeTime;
 
-  CalendarPanel(boolean includeTime) {
-    this.includeTime = includeTime;
-    LocalDateTime dateTime = LocalDateTime.now();
+  CalendarPanel(DefaultBuilder builder) {
+    this.includeTime = builder.includeTime;
+    LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
     monthValue = Value.value(dateTime.getMonth(), dateTime.getMonth());
     dayValue = Value.value(dateTime.getDayOfMonth(), dateTime.getDayOfMonth());
@@ -167,6 +169,7 @@ public final class CalendarPanel extends JPanel {
     formattedDateLabel = new JLabel("", SwingConstants.CENTER);
     formattedDateLabel.setBorder(emptyBorder());
     initializeUI();
+    addKeyEvents(builder.keyboardShortcuts);
     updateFormattedDate();
     bindEvents();
   }
@@ -243,17 +246,10 @@ public final class CalendarPanel extends JPanel {
   }
 
   /**
-   * @return a new {@link CalendarPanel} without time fields.
+   * @return a new {@link Builder} instance
    */
-  public static CalendarPanel dateCalendarPanel() {
-    return new CalendarPanel(false);
-  }
-
-  /**
-   * @return a new {@link CalendarPanel} with time fields.
-   */
-  public static CalendarPanel dateTimeCalendarPanel() {
-    return new CalendarPanel(true);
+  public static Builder builder() {
+    return new DefaultBuilder();
   }
 
   /**
@@ -261,6 +257,81 @@ public final class CalendarPanel extends JPanel {
    */
   public static Collection<Class<? extends Temporal>> supportedTypes() {
     return SUPPORTED_TYPES;
+  }
+
+  /**
+   * Builds a {@link CalendarPanel} instance.
+   */
+  public interface Builder {
+
+    /**
+     * Note that calling this method also sets {@link #includeTime(boolean)} to false
+     * @param initialValue the initial value
+     * @return this builder instance
+     */
+    Builder initialValue(LocalDate initialValue);
+
+    /**
+     * Note that calling this method also sets {@link #includeTime(boolean)} to true
+     * @param initialValue the initial value
+     * @return this builder instance
+     */
+    Builder initialValue(LocalDateTime initialValue);
+
+    /**
+     * @param includeTime if true then time fields are included (hours, minutes)
+     * @return this builder instance
+     */
+    Builder includeTime(boolean includeTime);
+
+    /**
+     * @param keyboardShortcut the keyboard shortcut key
+     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+     * @return this builder instance
+     */
+    Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+
+    /**
+     * @return a new {@link CalendarPanel} based on this builder
+     */
+    CalendarPanel build();
+  }
+
+  private static final class DefaultBuilder implements Builder {
+
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+
+    private LocalDateTime initialValue;
+    private boolean includeTime = false;
+
+    @Override
+    public Builder initialValue(LocalDate initialValue) {
+      this.initialValue = requireNonNull(initialValue).atStartOfDay();
+      return includeTime(false);
+    }
+
+    @Override
+    public Builder initialValue(LocalDateTime initialValue) {
+      this.initialValue = requireNonNull(initialValue);
+      return includeTime(true);
+    }
+
+    @Override
+    public Builder includeTime(boolean includeTime) {
+      this.includeTime = includeTime;
+      return this;
+    }
+
+    @Override
+    public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+      return this;
+    }
+
+    @Override
+    public CalendarPanel build() {
+      return new CalendarPanel(this);
+    }
   }
 
   void previousMonth() {
@@ -368,7 +439,6 @@ public final class CalendarPanel extends JPanel {
     setBorder(emptyBorder());
     add(createNorthPanel(), BorderLayout.NORTH);
     add(createDayPanel(), BorderLayout.CENTER);
-    addKeyEvents();
     layoutDayPanel();
   }
 
@@ -496,44 +566,44 @@ public final class CalendarPanel extends JPanel {
     formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? " " + timeFormatter.format(getLocalDateTime()) : ""));
   }
 
-  private void addKeyEvents() {
+  private void addKeyEvents(KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts) {
     KeyEvents.Builder keyEvent = KeyEvents.builder()
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_YEAR).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_YEAR).get())
             .action(control(this::previousYear))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_YEAR).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_YEAR).get())
             .action(control(this::nextYear))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_MONTH).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_MONTH).get())
             .action(control(this::previousMonth))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_MONTH).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_MONTH).get())
             .action(control(this::nextMonth))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_WEEK).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_WEEK).get())
             .action(control(this::previousWeek))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_WEEK).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_WEEK).get())
             .action(control(this::nextWeek))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_DAY).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_DAY).get())
             .action(control(this::previousDay))
             .enable(this);
-    keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_DAY).get())
+    keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_DAY).get())
             .action(control(this::nextDay))
             .enable(this);
     if (includeTime) {
-      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_HOUR).get())
+      keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_HOUR).get())
               .action(control(this::previousHour))
               .enable(this);
-      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_HOUR).get())
+      keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_HOUR).get())
               .action(control(this::nextHour))
               .enable(this);
-      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(PREVIOUS_MINUTE).get())
+      keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_MINUTE).get())
               .action(control(this::previousMinute))
               .enable(this);
-      keyEvent.keyStroke(KEYBOARD_SHORTCUTS.keyStroke(NEXT_MINUTE).get())
+      keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_MINUTE).get())
               .action(control(this::nextMinute))
               .enable(this);
     }
@@ -600,10 +670,10 @@ public final class CalendarPanel extends JPanel {
   private static JSpinner removeCtrlLeftRightArrowKeyEvents(JSpinner spinner) {
     InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(WHEN_FOCUSED);
     //so it doesn't interfere with keyboard navigation when it has focus
-    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, CTRL_DOWN_MASK, false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, CTRL_DOWN_MASK, false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, SHIFT_DOWN_MASK, false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, SHIFT_DOWN_MASK, false), "none");
+    inputMap.put(keyStroke(VK_LEFT, CTRL_DOWN_MASK), "none");
+    inputMap.put(keyStroke(VK_RIGHT, CTRL_DOWN_MASK), "none");
+    inputMap.put(keyStroke(VK_LEFT, SHIFT_DOWN_MASK), "none");
+    inputMap.put(keyStroke(VK_RIGHT, SHIFT_DOWN_MASK), "none");
 
     return spinner;
   }

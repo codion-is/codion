@@ -64,6 +64,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -781,72 +782,72 @@ public class EntityPanel extends JPanel {
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
       tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-              KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(REQUEST_TABLE_FOCUS).get())
+              KeyEvents.builder(settings.keyboardShortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_CONDITION_PANEL).get())
+              KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(SELECT_CONDITION_PANEL).get())
+              KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_FILTER_PANEL).get())
+              KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(SELECT_FILTER_PANEL).get())
+              KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_FILTER_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(REQUEST_SEARCH_FIELD_FOCUS).get())
+      KeyEvents.builder(settings.keyboardShortcuts.keyStroke(REQUEST_SEARCH_FIELD_FOCUS).get())
               .action(createRequestTableSearchFieldControl())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       if (containsEditPanel()) {
         tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-                KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(REQUEST_TABLE_FOCUS).get())
+                KeyEvents.builder(settings.keyboardShortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_CONDITION_PANEL).get())
+                KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(SELECT_CONDITION_PANEL).get())
+                KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_FILTER_PANEL).get())
+                KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(SELECT_FILTER_PANEL).get())
+                KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_FILTER_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
       }
     }
     if (containsEditPanel()) {
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(REQUEST_EDIT_PANEL_FOCUS).get())
+      KeyEvents.builder(settings.keyboardShortcuts.keyStroke(REQUEST_EDIT_PANEL_FOCUS).get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(createRequestEditPanelFocusControl())
               .enable(this);
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(SELECT_INPUT_FIELD).get())
+      KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_INPUT_FIELD).get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(createSelectInputComponentControl())
               .enable(this, editControlPanel);
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_EDIT_PANEL).get())
+      KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_EDIT_PANEL).get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(createToggleEditPanelControl())
               .enable(this, editControlPanel);
@@ -857,16 +858,16 @@ public class EntityPanel extends JPanel {
   }
 
   protected final void setupNavigation() {
-    KeyEvents.Builder navigateUp = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NAVIGATE_UP).get())
+    KeyEvents.Builder navigateUp = KeyEvents.builder(settings.keyboardShortcuts.keyStroke(NAVIGATE_UP).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(UP));
-    KeyEvents.Builder navigateDown = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NAVIGATE_DOWN).get())
+    KeyEvents.Builder navigateDown = KeyEvents.builder(settings.keyboardShortcuts.keyStroke(NAVIGATE_DOWN).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(DOWN));
-    KeyEvents.Builder navigateRight = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NAVIGATE_RIGHT).get())
+    KeyEvents.Builder navigateRight = KeyEvents.builder(settings.keyboardShortcuts.keyStroke(NAVIGATE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(RIGHT));
-    KeyEvents.Builder navigateLeft = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(NAVIGATE_LEFT).get())
+    KeyEvents.Builder navigateLeft = KeyEvents.builder(settings.keyboardShortcuts.keyStroke(NAVIGATE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(LEFT));
     navigateUp.enable(this);
@@ -1201,12 +1202,20 @@ public class EntityPanel extends JPanel {
    */
   public final class Settings {
 
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+
     private boolean toolbarControls = TOOLBAR_CONTROLS.get();
     private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
     private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
             CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
     private boolean includeControls = INCLUDE_CONTROLS.get();
     private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+
+    private Settings() {
+      Value.Validator<KeyStroke> keyboardShortcutValidator = keystroke -> throwIfInitialized();
+      Stream.of(KeyboardShortcut.values()).forEach(keyboardShortcut ->
+              keyboardShortcuts.keyStroke(keyboardShortcut).addValidator(keyboardShortcutValidator));
+    }
 
     /**
      * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
@@ -1283,12 +1292,21 @@ public class EntityPanel extends JPanel {
 
     /**
      * @param useKeyboardNavigation true if keyboard navigation should be enabled
+     * @throws IllegalStateException if the panel has been initialized
      * @return this Settings instance
      */
     public Settings useKeyboardNavigation(boolean useKeyboardNavigation) {
       throwIfInitialized();
       this.useKeyboardNavigation = useKeyboardNavigation;
       return this;
+    }
+
+    /**
+     * @param shortcut the keyboard shortcut key
+     * @return the Value controlling the keyStroke for the given keyboard shortcut key
+     */
+    public Value<KeyStroke> keyStroke(KeyboardShortcut shortcut) {
+      return keyboardShortcuts.keyStroke(shortcut);
     }
   }
 

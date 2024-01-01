@@ -53,10 +53,11 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 
   @Override
   public Optional<LocalDate> selectLocalDate() {
-    CalendarPanel calendarPanel = CalendarPanel.dateCalendarPanel();
+    CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder();
     if (initialDate != null) {
-      calendarPanel.setLocalDate(initialDate);
+      calendarPanelBuilder.initialValue(initialDate);
     }
+    CalendarPanel calendarPanel = calendarPanelBuilder.build();
     State okPressed = State.state();
     new DefaultOkCancelDialogBuilder(calendarPanel)
             .owner(owner)
@@ -71,10 +72,11 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 
   @Override
   public Optional<LocalDateTime> selectLocalDateTime() {
-    CalendarPanel calendarPanel = CalendarPanel.dateTimeCalendarPanel();
+    CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder();
     if (initialDateTime != null) {
-      calendarPanel.setLocalDateTime(initialDateTime);
+      calendarPanelBuilder.initialValue(initialDateTime);
     }
+    CalendarPanel calendarPanel = calendarPanelBuilder.build();
     State okPressed = State.state();
     new DefaultOkCancelDialogBuilder(calendarPanel)
             .owner(owner)

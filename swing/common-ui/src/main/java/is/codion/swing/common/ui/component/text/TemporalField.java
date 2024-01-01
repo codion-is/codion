@@ -74,8 +74,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public enum KeyboardShortcut {
     DISPLAY_CALENDAR,
-    INCREMENT_FIELD,
-    DECREMENT_FIELD
+    INCREMENT,
+    DECREMENT
   }
 
   private static final char DAY = 'd';
@@ -104,19 +104,21 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.calendarIcon = builder.calendarIcon;
     setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener(new TemporalDocumentListener());
-    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(INCREMENT_FIELD).get())
-            .action(Control.builder(this::increment)
-                    .enabled(valueNull.not())
-                    .build())
-            .enable(this);
-    KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DECREMENT_FIELD).get())
-            .action(Control.builder(this::decrement)
-                    .enabled(valueNull.not())
-                    .build())
-            .enable(this);
+    if (builder.incrementDecrementEnabled) {
+      KeyEvents.builder(builder.keyboardShortcuts.keyStroke(INCREMENT).get())
+              .action(Control.builder(this::increment)
+                      .enabled(valueNull.not())
+                      .build())
+              .enable(this);
+      KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DECREMENT).get())
+              .action(Control.builder(this::decrement)
+                      .enabled(valueNull.not())
+                      .build())
+              .enable(this);
+    }
     calendarControl = createCalendarControl();
     if (calendarControl != null) {
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DISPLAY_CALENDAR).get())
+      KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DISPLAY_CALENDAR).get())
               .action(calendarControl)
               .enable(this);
     }
@@ -334,6 +336,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @return this builder instance
      */
     Builder<T> calendarIcon(ImageIcon calendarIcon);
+
+    /**
+     * @param incrementDecrementEnabled enable increment/decrement of date component under cursor
+     * @return this builder instance
+     */
+    Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled);
+
+    /**
+     * @param keyboardShortcut the keyboard shortcut key
+     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+     * @return this builder instance
+     */
+    Builder<T> keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
   }
 
   /**
@@ -358,11 +373,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private final Class<T> temporalClass;
     private final String dateTimePattern;
     private final String mask;
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
     private DateTimeFormatter dateTimeFormatter;
     private DateTimeParser<T> dateTimeParser;
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
     private ImageIcon calendarIcon;
+    private boolean incrementDecrementEnabled = true;
 
     private DefaultBuilder(Class<T> temporalClass, String dateTimePattern, Value<T> linkedValue) {
       super(temporalClass, linkedValue);
@@ -394,6 +411,18 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     @Override
     public Builder<T> calendarIcon(ImageIcon calendarIcon) {
       this.calendarIcon = calendarIcon;
+      return this;
+    }
+
+    @Override
+    public Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled) {
+      this.incrementDecrementEnabled = incrementDecrementEnabled;
+      return this;
+    }
+
+    @Override
+    public Builder<T> keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
       return this;
     }
 
@@ -470,8 +499,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     public KeyStroke apply(KeyboardShortcut shortcut) {
       switch (shortcut) {
         case DISPLAY_CALENDAR: return keyStroke(VK_INSERT);
-        case INCREMENT_FIELD: return keyStroke(VK_UP);
-        case DECREMENT_FIELD: return keyStroke(VK_DOWN);
+        case INCREMENT: return keyStroke(VK_UP);
+        case DECREMENT: return keyStroke(VK_DOWN);
         default: throw new IllegalArgumentException();
       }
     }
