@@ -9,6 +9,7 @@ Codion Change Log
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods
 - CalendarPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+- TemporalField.Builder.incrementDecrementEnabled() added, for turning off keyboard based increment/decrement of date component under cursor.
 ### is.codion.swing.framework.ui
 - EntityPanel, EntityTablePanel, keyboard shortcuts can now be configured on an instance basis, via configure().keyStroke().
 - TabbedPanelLayout.Builder.keyboardShortcut() added for configuring keyboard shortcuts on an instance basis.
