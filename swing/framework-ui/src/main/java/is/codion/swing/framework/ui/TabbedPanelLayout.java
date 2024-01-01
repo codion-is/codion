@@ -204,7 +204,7 @@ public final class TabbedPanelLayout implements PanelLayout {
      * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
      * @return this builder instance
      */
-    Builder keyboardShortcut(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+    Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
 
     /**
      * @return a new {@link TabbedPanelLayout} instance based on this builder
@@ -622,7 +622,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     @Override
-    public Builder keyboardShortcut(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+    public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
       keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
       return this;
     }

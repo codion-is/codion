@@ -17,6 +17,7 @@ Codion Change Log
 - TabbedPanelLayout.Builder.keyboardShortcut() added for configuring keyboard shortcuts on an instance basis.
 - EntitySearchField.KeyboardShortcut moved to EntitySearchFieldPanel, EntitySearchFieldPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
 - EntityComboBox.KeyboardShortcut moved to EntityComboBoxPanel, EntityComboBoxPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
+- TabbedPanelLayout.Builder.keyboardShortcut() renamed keyStroke() for consistency.
 
 ## 0.17.22
 ### is.codion.swing.common.core
