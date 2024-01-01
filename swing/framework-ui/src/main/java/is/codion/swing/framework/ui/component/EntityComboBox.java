@@ -16,23 +16,15 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import java.awt.event.FocusListener;
 import java.util.Collection;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.KeyEvent.VK_INSERT;
-import static java.awt.event.KeyEvent.VK_UP;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,15 +34,6 @@ import static java.util.Objects.requireNonNull;
 public final class EntityComboBox extends JComboBox<Entity> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName());
-
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
-
-  /**
-   * The available keyboard shortcuts.
-   */
-  public enum KeyboardShortcut {
-    ADD, EDIT
-  }
 
   /**
    * Instantiates a new EntityComboBox
@@ -205,18 +188,6 @@ public final class EntityComboBox extends JComboBox<Entity> {
               .onCancel(() -> getModel().setForeignKeyFilterKeys(foreignKey, currentFilterKeys))
               .show();
     };
-  }
-
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case ADD: return keyStroke(VK_INSERT);
-        case EDIT: return keyStroke(VK_UP, CTRL_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
-    }
   }
 
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {

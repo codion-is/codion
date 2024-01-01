@@ -37,7 +37,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -87,8 +86,6 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
@@ -125,8 +122,6 @@ public final class EntitySearchField extends HintTextField {
   public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR = Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator",
           SearchIndicator.class, SearchIndicator.WAIT_CURSOR);
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
-
   /**
    * The ways which a search field can indicate that a search is in progress.
    */
@@ -139,13 +134,6 @@ public final class EntitySearchField extends HintTextField {
      * Display an indeterminate progress bar while searching
      */
     PROGRESS_BAR
-  }
-
-  /**
-   * The available keyboard shortcuts.
-   */
-  public enum KeyboardShortcut {
-    ADD, EDIT
   }
 
   private final EntitySearchModel model;
@@ -581,18 +569,6 @@ public final class EntitySearchField extends HintTextField {
                       .text(MESSAGES.getString("postfix_wildcard"))
                       .build())
               .build();
-    }
-  }
-
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case ADD: return keyStroke(VK_INSERT);
-        case EDIT: return keyStroke(VK_UP, CTRL_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
     }
   }
 

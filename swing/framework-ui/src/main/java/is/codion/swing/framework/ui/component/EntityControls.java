@@ -55,11 +55,11 @@ final class EntityControls {
    * Creates a INSERT key binding on the given component for triggering the resulting Control.
    * @param comboBox the combo box in which to select the new entity
    * @param editPanelSupplier the edit panel supplier
+   * @param keyStroke the control keyStroke
    * @return the add Control
    */
-  static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
-    return createAddControl(new AddEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox,
-            EntityComboBox.KEYBOARD_SHORTCUTS.keyStroke(EntityComboBox.KeyboardShortcut.ADD).get());
+  static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
+    return createAddControl(new AddEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)), comboBox, keyStroke);
   }
 
   /**
@@ -68,11 +68,11 @@ final class EntityControls {
    * Creates a INSERT key binding on the given component for triggering the resulting Control.
    * @param searchField the search field in which to select the new entity
    * @param editPanelSupplier the edit panel supplier
+   * @param keyStroke the control keyStroke
    * @return the add Control
    */
-  static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
-    return createAddControl(new AddEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField,
-            EntitySearchField.KEYBOARD_SHORTCUTS.keyStroke(EntitySearchField.KeyboardShortcut.ADD).get());
+  static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
+    return createAddControl(new AddEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)), searchField, keyStroke);
   }
 
   /**
@@ -81,12 +81,12 @@ final class EntityControls {
    * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
    * @param comboBox the combo box which selected item to edit
    * @param editPanelSupplier the edit panel supplier
+   * @param keyStroke the control keyStroke
    * @return the edit Control
    */
-  static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
+  static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
     return createEditControl(new EditEntityCommand(requireNonNull(comboBox), requireNonNull(editPanelSupplier)),
-            comboBox, comboBox.getModel().selectionEmpty().not(),
-            EntityComboBox.KEYBOARD_SHORTCUTS.keyStroke(EntityComboBox.KeyboardShortcut.EDIT).get());
+            comboBox, comboBox.getModel().selectionEmpty().not(), keyStroke);
   }
 
   /**
@@ -95,12 +95,12 @@ final class EntityControls {
    * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
    * @param searchField the search field which selected item to edit
    * @param editPanelSupplier the edit panel supplier
+   * @param keyStroke the control keyStroke
    * @return the edit Control
    */
-  static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
+  static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
     return createEditControl(new EditEntityCommand(requireNonNull(searchField), requireNonNull(editPanelSupplier)),
-            searchField, searchField.model().selectionEmpty().not(),
-            EntitySearchField.KEYBOARD_SHORTCUTS.keyStroke(EntitySearchField.KeyboardShortcut.EDIT).get());
+            searchField, searchField.model().selectionEmpty().not(), keyStroke);
   }
 
   static String validateButtonLocation(String buttonLocation) {

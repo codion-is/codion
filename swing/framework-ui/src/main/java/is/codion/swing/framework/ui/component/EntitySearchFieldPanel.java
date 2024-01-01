@@ -10,11 +10,13 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -23,7 +25,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.component.EntityControls.*;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,16 +37,27 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntitySearchFieldPanel extends JPanel {
 
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+
+  /**
+   * The available keyboard shortcuts.
+   */
+  public enum KeyboardShortcut {
+    ADD, EDIT
+  }
+
   private final EntitySearchField searchField;
 
   private EntitySearchFieldPanel(DefaultBuilder builder) {
     searchField = builder.createSearchField();
     List<Action> actions = new ArrayList<>();
     if (builder.add) {
-      actions.add(createAddControl(searchField, builder.editPanelSupplier));
+      actions.add(createAddControl(searchField, builder.editPanelSupplier,
+              builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
     }
     if (builder.edit) {
-      actions.add(createEditControl(searchField, builder.editPanelSupplier));
+      actions.add(createEditControl(searchField, builder.editPanelSupplier,
+              builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
     }
     setLayout(new BorderLayout());
     add(createButtonPanel(searchField, builder.buttonsFocusable, builder.buttonLocation,
@@ -166,6 +183,13 @@ public final class EntitySearchFieldPanel extends JPanel {
     Builder limit(int limit);
 
     /**
+     * @param keyboardShortcut the keyboard shortcut key
+     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+     * @return this builder instance
+     */
+    Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+
+    /**
      * @return a new {@link EntitySearchFieldPanel} based on this builder
      */
     EntitySearchFieldPanel build();
@@ -185,10 +209,23 @@ public final class EntitySearchFieldPanel extends JPanel {
     }
   }
 
+  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
+
+    @Override
+    public KeyStroke apply(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case ADD: return keyStroke(VK_INSERT);
+        case EDIT: return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
+    }
+  }
+
   private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntitySearchFieldPanel, Builder> implements Builder {
 
     private final EntitySearchField.Builder searchFieldBuilder;
     private final Supplier<EntityEditPanel> editPanelSupplier;
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
     private boolean add;
     private boolean edit;
@@ -276,6 +313,12 @@ public final class EntitySearchFieldPanel extends JPanel {
     @Override
     public Builder limit(int limit) {
       searchFieldBuilder.limit(limit);
+      return this;
+    }
+
+    @Override
+    public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
       return this;
     }
 
