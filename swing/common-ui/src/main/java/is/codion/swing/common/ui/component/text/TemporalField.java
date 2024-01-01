@@ -90,12 +90,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener(new TemporalDocumentListener());
     if (builder.incrementDecrementEnabled) {
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(INCREMENT).get())
+      KeyEvents.builder(builder.keyboardShortcuts.keyStroke(INCREMENT).get())
               .action(Control.builder(this::increment)
                       .enabled(valueNull.not())
                       .build())
               .enable(this);
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DECREMENT).get())
+      KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DECREMENT).get())
               .action(Control.builder(this::decrement)
                       .enabled(valueNull.not())
                       .build())
@@ -103,7 +103,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
     calendarControl = createCalendarControl();
     if (calendarControl != null) {
-      KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(DISPLAY_CALENDAR).get())
+      KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DISPLAY_CALENDAR).get())
               .action(calendarControl)
               .enable(this);
     }
@@ -327,6 +327,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @return this builder instance
      */
     Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled);
+
+    /**
+     * @param keyboardShortcut the keyboard shortcut key
+     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+     * @return this builder instance
+     */
+    Builder<T> keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
   }
 
   /**
@@ -351,6 +358,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private final Class<T> temporalClass;
     private final String dateTimePattern;
     private final String mask;
+    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
     private DateTimeFormatter dateTimeFormatter;
     private DateTimeParser<T> dateTimeParser;
@@ -394,6 +402,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     @Override
     public Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled) {
       this.incrementDecrementEnabled = incrementDecrementEnabled;
+      return this;
+    }
+
+    @Override
+    public Builder<T> keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
       return this;
     }
 
