@@ -24,7 +24,7 @@ Codion provides a few classes with miscellanous utility functions.
 
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/Dialogs.html[Dialogs]
 
-{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/KeyEvents.html[KeyEvents]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/key/KeyEvents.html[KeyEvents]
 
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/layout/Layouts.html[Layouts]
 
