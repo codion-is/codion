@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
@@ -176,7 +175,11 @@ public class EntityPanel extends JPanel {
     UP, DOWN, RIGHT, LEFT
   }
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, EntityPanel::defaultKeyStroke);
 
   /**
    * The keyboard shortcuts available for {@link EntityPanel}s.
@@ -1159,26 +1162,22 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
-        case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
-        case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-        case REQUEST_SEARCH_FIELD_FOCUS: return keyStroke(VK_F, CTRL_DOWN_MASK);
-        case REQUEST_EDIT_PANEL_FOCUS: return keyStroke(VK_E, CTRL_DOWN_MASK);
-        case SELECT_INPUT_FIELD: return keyStroke(VK_I, CTRL_DOWN_MASK);
-        case TOGGLE_EDIT_PANEL: return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_UP: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_DOWN: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
+      case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
+      case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
+      case REQUEST_SEARCH_FIELD_FOCUS: return keyStroke(VK_F, CTRL_DOWN_MASK);
+      case REQUEST_EDIT_PANEL_FOCUS: return keyStroke(VK_E, CTRL_DOWN_MASK);
+      case SELECT_INPUT_FIELD: return keyStroke(VK_I, CTRL_DOWN_MASK);
+      case TOGGLE_EDIT_PANEL: return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NAVIGATE_UP: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NAVIGATE_DOWN: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      default: throw new IllegalArgumentException();
     }
   }
 

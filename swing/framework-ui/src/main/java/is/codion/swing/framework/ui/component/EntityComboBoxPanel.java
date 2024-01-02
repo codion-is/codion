@@ -23,7 +23,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
@@ -38,7 +37,11 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityComboBoxPanel extends JPanel {
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, EntityComboBoxPanel::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -154,15 +157,11 @@ public final class EntityComboBoxPanel extends JPanel {
     }
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case ADD: return keyStroke(VK_INSERT);
-        case EDIT: return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case ADD: return keyStroke(VK_INSERT);
+      case EDIT: return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
+      default: throw new IllegalArgumentException();
     }
   }
 
