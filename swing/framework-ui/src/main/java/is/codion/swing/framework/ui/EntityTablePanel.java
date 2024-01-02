@@ -227,7 +227,11 @@ public class EntityTablePanel extends JPanel {
   public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
           Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, EntityTablePanel::defaultKeyStroke);
 
   /**
    * The keyboard shortcuts available for {@link EntityTablePanel}s.
@@ -549,6 +553,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * Returns a {@link Value} containing the control associated with {@code controlCode},
    * an empty {@link Value} if no such control is available.
+   * Note that standard controls are populated during initialization, so until then, these values may be empty.
    * @param tableControl the table control code
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */
@@ -1700,21 +1705,17 @@ public class EntityTablePanel extends JPanel {
     return new Point(x, y + table.getRowHeight() / 2);
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
-        case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
-        case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-        case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case PRINT: return keyStroke(VK_P, CTRL_DOWN_MASK);
-        case DELETE_SELECTED: return keyStroke(VK_DELETE);
-        case DISPLAY_POPUP_MENU: return keyStroke(VK_G, CTRL_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
+      case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
+      case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
+      case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case PRINT: return keyStroke(VK_P, CTRL_DOWN_MASK);
+      case DELETE_SELECTED: return keyStroke(VK_DELETE);
+      case DISPLAY_POPUP_MENU: return keyStroke(VK_G, CTRL_DOWN_MASK);
+      default: throw new IllegalArgumentException();
     }
   }
 

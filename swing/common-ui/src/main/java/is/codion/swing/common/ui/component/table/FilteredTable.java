@@ -76,7 +76,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -106,6 +105,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilteredTable<R, C> extends JTable {
 
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
+
   /**
    * Specifies the default table column resize mode for tables in the application<br>
    * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
@@ -122,9 +123,11 @@ public final class FilteredTable<R, C> extends JTable {
   public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
           Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilteredTable.allowColumnReordering", true);
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
-
-  public static final KeyboardShortcuts<KeyboardShortcut> DEFAULT_KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> DEFAULT_KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, FilteredTable::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -1054,17 +1057,12 @@ public final class FilteredTable<R, C> extends JTable {
       return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.columnClass()).build();
     }
   }
-
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case COPY_CELL: return keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case TOGGLE_SORT_COLUMN: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
-        case TOGGLE_SORT_COLUMN_ADD: return keyStroke(VK_UP, ALT_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case COPY_CELL: return keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case TOGGLE_SORT_COLUMN: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
+      case TOGGLE_SORT_COLUMN_ADD: return keyStroke(VK_UP, ALT_DOWN_MASK);
+      default: throw new IllegalArgumentException();
     }
   }
 }

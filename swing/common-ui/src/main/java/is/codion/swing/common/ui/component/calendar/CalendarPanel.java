@@ -59,7 +59,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -94,9 +93,10 @@ public final class CalendarPanel extends JPanel {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(CalendarPanel.class.getName());
 
   /**
-   * The default keyboard shortcuts.
+   * The default keyboard shortcut keyStrokes.
    */
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, CalendarPanel::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -703,25 +703,21 @@ public final class CalendarPanel extends JPanel {
             .collect(Collectors.toList());
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case PREVIOUS_YEAR: return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
-        case NEXT_YEAR: return keyStroke(VK_UP, CTRL_DOWN_MASK);
-        case PREVIOUS_MONTH: return keyStroke(VK_DOWN, SHIFT_DOWN_MASK);
-        case NEXT_MONTH: return keyStroke(VK_UP, SHIFT_DOWN_MASK);
-        case PREVIOUS_WEEK: return keyStroke(VK_UP, ALT_DOWN_MASK);
-        case NEXT_WEEK: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
-        case PREVIOUS_DAY: return keyStroke(VK_LEFT, ALT_DOWN_MASK);
-        case NEXT_DAY: return keyStroke(VK_RIGHT, ALT_DOWN_MASK);
-        case PREVIOUS_HOUR: return keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
-        case NEXT_HOUR: return keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
-        case PREVIOUS_MINUTE: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NEXT_MINUTE: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case PREVIOUS_YEAR: return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
+      case NEXT_YEAR: return keyStroke(VK_UP, CTRL_DOWN_MASK);
+      case PREVIOUS_MONTH: return keyStroke(VK_DOWN, SHIFT_DOWN_MASK);
+      case NEXT_MONTH: return keyStroke(VK_UP, SHIFT_DOWN_MASK);
+      case PREVIOUS_WEEK: return keyStroke(VK_UP, ALT_DOWN_MASK);
+      case NEXT_WEEK: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
+      case PREVIOUS_DAY: return keyStroke(VK_LEFT, ALT_DOWN_MASK);
+      case NEXT_DAY: return keyStroke(VK_RIGHT, ALT_DOWN_MASK);
+      case PREVIOUS_HOUR: return keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
+      case NEXT_HOUR: return keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
+      case PREVIOUS_MINUTE: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NEXT_MINUTE: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      default: throw new IllegalArgumentException();
     }
   }
 

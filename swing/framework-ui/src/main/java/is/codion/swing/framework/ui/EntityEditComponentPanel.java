@@ -282,8 +282,9 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Displays a dialog allowing the user the select an input component which should receive the keyboard focus,
-   * if only one input component is available then that component is selected automatically.
+   * Displays a dialog allowing the user the select an input component which should receive the keyboard focus.
+   * If only one input component is available then that component is selected automatically.
+   * If no component is available, f.ex. when the panel is not visible, this method does nothing.
    * @see #excludeComponentsFromSelection(Attribute[])
    * @see #requestComponentFocus(Attribute)
    */
@@ -293,12 +294,14 @@ public class EntityEditComponentPanel extends JPanel {
             .map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
             .collect(Collectors.toList());
-    Optional<AttributeDefinition<?>> optionalAttribute = attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
-            Dialogs.selectionDialog(attributeDefinitions)
-                    .owner(this)
-                    .title(FrameworkMessages.selectInputField())
-                    .selectSingle();
-    optionalAttribute.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
+    if (!attributeDefinitions.isEmpty()) {
+      Optional<AttributeDefinition<?>> optionalAttribute = attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
+              Dialogs.selectionDialog(attributeDefinitions)
+                      .owner(this)
+                      .title(FrameworkMessages.selectInputField())
+                      .selectSingle();
+      optionalAttribute.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
+    }
   }
 
   /**

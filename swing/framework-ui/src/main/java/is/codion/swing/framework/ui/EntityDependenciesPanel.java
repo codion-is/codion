@@ -44,7 +44,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
@@ -66,7 +65,11 @@ public final class EntityDependenciesPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityDependenciesPanel.class.getName());
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, EntityDependenciesPanel::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -180,15 +183,11 @@ public final class EntityDependenciesPanel extends JPanel {
     }
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      default: throw new IllegalArgumentException();
     }
   }
 

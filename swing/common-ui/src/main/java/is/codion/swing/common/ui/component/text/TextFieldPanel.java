@@ -43,7 +43,6 @@ import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.KeyboardShortcut.DISPLAY_TEXT_AREA;
@@ -61,7 +60,11 @@ public final class TextFieldPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TextFieldPanel.class.getName());
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, TextFieldPanel::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -422,15 +425,11 @@ public final class TextFieldPanel extends JPanel {
     }
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      if (shortcut == DISPLAY_TEXT_AREA) {
-        return keyStroke(VK_INSERT, 0);
-      }
-
-      throw new IllegalArgumentException();
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    if (shortcut == DISPLAY_TEXT_AREA) {
+      return keyStroke(VK_INSERT, 0);
     }
+
+    throw new IllegalArgumentException();
   }
 }

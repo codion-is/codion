@@ -49,7 +49,6 @@ import java.time.temporal.Temporal;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static is.codion.swing.common.ui.component.text.TemporalField.KeyboardShortcut.*;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
@@ -67,7 +66,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalField.class.getName());
 
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class, new DefaultKeyboardShortcuts());
+  /**
+   * The default keyboard shortcut keyStrokes.
+   */
+  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+          keyboardShortcuts(KeyboardShortcut.class, TemporalField::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -493,16 +496,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
-  private static final class DefaultKeyboardShortcuts implements Function<KeyboardShortcut, KeyStroke> {
-
-    @Override
-    public KeyStroke apply(KeyboardShortcut shortcut) {
-      switch (shortcut) {
-        case DISPLAY_CALENDAR: return keyStroke(VK_INSERT);
-        case INCREMENT: return keyStroke(VK_UP);
-        case DECREMENT: return keyStroke(VK_DOWN);
-        default: throw new IllegalArgumentException();
-      }
+  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+    switch (shortcut) {
+      case DISPLAY_CALENDAR: return keyStroke(VK_INSERT);
+      case INCREMENT: return keyStroke(VK_UP);
+      case DECREMENT: return keyStroke(VK_DOWN);
+      default: throw new IllegalArgumentException();
     }
   }
 
