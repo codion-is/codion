@@ -39,10 +39,6 @@ dependencies {
 
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
-extraJavaModuleInfo {
-    automaticModule("org.jxmapviewer:jxmapviewer2", "jxmapviewer2")
-}
-
 buildReports {
     sourceDir = file("src/main/reports")
     targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/world/model")
