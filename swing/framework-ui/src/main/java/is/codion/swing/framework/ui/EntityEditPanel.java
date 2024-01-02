@@ -213,6 +213,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Returns a {@link Value} containing the control associated with {@code controlCode},
    * an empty {@link Value} if no such control is available.
+   * Note that standard controls are populated during initialization, so until then, these values may be empty.
    * @param editControl the control code
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */

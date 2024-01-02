@@ -538,6 +538,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * Returns a {@link Value} containing the control associated with {@code controlCode},
    * an empty {@link Value} if no such control is available.
+   * Note that standard controls are populated during initialization, so until then, these values may be empty.
    * @param tableControl the table control code
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */
