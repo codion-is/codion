@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
  * {@link is.codion.common.db.database.DatabaseFactory} implementation for MySQL.<br>
