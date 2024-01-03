@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2021 - 2024, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.common.db.pool;
 
