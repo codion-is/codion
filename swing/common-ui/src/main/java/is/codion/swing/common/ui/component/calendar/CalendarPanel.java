@@ -25,6 +25,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,7 +55,6 @@ import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -109,6 +109,7 @@ public final class CalendarPanel extends JPanel {
   private static final int DAYS_IN_WEEK = 7;
   private static final int MAX_DAYS_IN_MONTH = 31;
   private static final int MAX_DAY_FILLERS = 14;
+  private static final int DAY_GRID_ROWS = 6;
 
   private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
   private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -150,7 +151,7 @@ public final class CalendarPanel extends JPanel {
     dayStates = createDayStates();
     dayButtons = createDayButtons();
     dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
-    dayGridPanel = new JPanel(gridLayout(6, DAYS_IN_WEEK));
+    dayGridPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, DAYS_IN_WEEK));
     formattedDateLabel = new JLabel("", SwingConstants.CENTER);
     formattedDateLabel.setBorder(emptyBorder());
     initializeUI();
@@ -664,7 +665,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JPanel createDayHeaderPanel() {
-    return gridLayoutPanel(1, DAYS_IN_WEEK)
+    return panel(new GridLayout(1, DAYS_IN_WEEK))
             .add(createDayLabel(DayOfWeek.MONDAY))
             .add(createDayLabel(DayOfWeek.TUESDAY))
             .add(createDayLabel(DayOfWeek.WEDNESDAY))
