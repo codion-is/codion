@@ -42,6 +42,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
   private void viewCustomerReport() {
     Dialogs.progressWorkerDialog(this::fillCustomerReport)
+            .owner(this)
+            .title(BUNDLE.getString("customer_report"))
             .onResult(this::viewReport)
             .execute();
   }
@@ -52,7 +54,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    return tableModel().connectionProvider().connection().report(Customer.REPORT, reportParameters);
+    return tableModel().connectionProvider().connection()
+            .report(Customer.REPORT, reportParameters);
   }
 
   private void viewReport(JasperPrint customerReport) {
