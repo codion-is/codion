@@ -132,7 +132,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName());
 
-  protected String addSubsetIndicator(String text, boolean subset) {
+  private static String addSubsetIndicator(String text, boolean subset) {
     return text.isEmpty() ? text : text + (subset ? "*" : "");
   }
 }
