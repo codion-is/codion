@@ -33,6 +33,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -228,6 +229,7 @@ public final class NotesDemo {
         notePanel.initialize();// Lazy initialization of UI components
         applicationPanel.setLayout(Layouts.borderLayout());
         applicationPanel.add(notePanel, BorderLayout.CENTER);
+        applicationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
       });
     }
 
