@@ -39,6 +39,7 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -762,7 +763,7 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Creates a Controls instance containing the controls to include in the table popup menu.
-   * Returns null or an empty Controls instance to indicate that no popup menu should be included.
+   * Returning null or an empty Controls instance indicates that no popup menu should be included.
    * @param additionalPopupMenuControls any additional controls to include in the popup menu
    * @return Controls on which to base the table popup menu, null or an empty Controls instance
    * if no popup menu should be included
@@ -1243,14 +1244,14 @@ public class EntityTablePanel extends JPanel {
             .floatable(false)
             .rollover(false)
             .visible(false)//made visible when condition panel is visible
-            .onBuild(toolBar -> toolBar.getComponentAtIndex(0).setFocusable(false))
+            .buttonBuilder(ButtonBuilder.builder()
+                    .focusable(false))
             .build();
   }
 
   private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
     return conditionPanelFactory == null || !settings.includeConditionPanel ?
-            null :
-            filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
+            null : configureHorizontalAlignment(filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory));
   }
 
   private JScrollPane createConditionPanelScrollPane() {
@@ -1364,7 +1365,7 @@ public class EntityTablePanel extends JPanel {
       conditionRefreshControl = createConditionRefreshControl();
     }
     if (conditionPanel == null) {
-      conditionPanel = configureHorizontalAlignment(createConditionPanel(conditionPanelFactory));
+      conditionPanel = createConditionPanel(conditionPanelFactory);
     }
     tableScrollPane = new JScrollPane(table);
     conditionPanelScrollPane = createConditionPanelScrollPane();
@@ -1588,18 +1589,10 @@ public class EntityTablePanel extends JPanel {
                                                    TableCellRenderer cellRenderer) {
     if (cellRenderer instanceof DefaultTableCellRenderer) {
       int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-      JComponent component = columnConditionPanel.equalField();
-      if (component instanceof JTextField) {
-        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-      }
-      component = columnConditionPanel.lowerBoundField();
-      if (component instanceof JTextField) {
-        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-      }
-      component = columnConditionPanel.upperBoundField();
-      if (component instanceof JTextField) {
-        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-      }
+      Stream.of(columnConditionPanel.equalField(), columnConditionPanel.lowerBoundField(), columnConditionPanel.upperBoundField())
+              .filter(JTextField.class::isInstance)
+              .map(JTextField.class::cast)
+              .forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
     }
   }
 
@@ -1645,12 +1638,8 @@ public class EntityTablePanel extends JPanel {
             .map(column -> tableConditionPanel.conditionPanel(column.getIdentifier()))
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .forEach(columnConditionPanel -> {
-              enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
-              enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
-              enableRefreshOnEnterControl(columnConditionPanel.lowerBoundField(), refreshControl);
-              enableRefreshOnEnterControl(columnConditionPanel.upperBoundField(), refreshControl);
-            });
+            .flatMap(panel -> Stream.of(panel.operatorComboBox(), panel.equalField(), panel.lowerBoundField(), panel.upperBoundField()))
+            .forEach(component -> enableRefreshOnEnterControl(component, refreshControl));
   }
 
   private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
