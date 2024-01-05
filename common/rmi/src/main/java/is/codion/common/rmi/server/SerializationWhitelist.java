@@ -5,6 +5,7 @@ package is.codion.common.rmi.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.ObjectInputFilter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,20 +46,19 @@ public final class SerializationWhitelist {
    */
   public static void configure(String whitelistFile) {
     if (!nullOrEmpty(whitelistFile)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
+      ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
       LOG.info("Serialization filter whitelist set: " + whitelistFile);
     }
   }
 
   /**
-   * Configures a serialization whitelist for a dry run, does nothing if {@code dryRunFile} is null or empty.
-   * Note that this will append to an existing file.
-   * @param dryRunFile the dry-run results file to write to, appended to if it exists
+   * Configures a serialization whitelist file for a dry run, does nothing if {@code dryRunFile} is null or empty.
+   * @param dryRunFile the dry-run results file to write to
    * @throws IllegalArgumentException in case of a classpath dry run file
    */
   public static void configureDryRun(String dryRunFile) {
     if (!nullOrEmpty(dryRunFile)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
+      ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
       LOG.info("Serialization filter whitelist set for dry-run: " + dryRunFile);
     }
   }
@@ -67,7 +68,7 @@ public final class SerializationWhitelist {
    * @return true if a dry-run is active.
    */
   public static boolean serializationDryRun() {
-    return sun.misc.ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
+    return ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
   }
 
   /**
@@ -75,13 +76,13 @@ public final class SerializationWhitelist {
    * If dry-run was not active this method has no effect.
    */
   public static void writeDryRunWhitelist() {
-    sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
+    ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       ((SerializationFilterDryRun) serialFilter).writeToFile();
     }
   }
 
-  private static final class SerializationFilterDryRun implements sun.misc.ObjectInputFilter {
+  private static final class SerializationFilterDryRun implements ObjectInputFilter {
 
     private final String whitelistFile;
     private final Set<Class<?>> deserializedClasses = new HashSet<>();
@@ -106,16 +107,12 @@ public final class SerializationWhitelist {
       return Status.ALLOWED;
     }
 
-    private void writeToFile() {
+    private synchronized void writeToFile() {
       try {
-        File file = new File(whitelistFile);
-        if (!file.createNewFile()) {
-          throw new IOException("Whitelist file already exists: " + whitelistFile);
-        }
-        Files.write(file.toPath(), deserializedClasses.stream()
+        Files.write(Paths.get(whitelistFile), deserializedClasses.stream()
                 .map(Class::getName)
                 .sorted()
-                .collect(toList()));
+                .collect(toList()), StandardOpenOption.CREATE);
         LOG.debug("Serialization whitelist written: " + whitelistFile);
       }
       catch (Exception e) {
@@ -124,7 +121,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  static final class SerializationFilter implements sun.misc.ObjectInputFilter {
+  static final class SerializationFilter implements ObjectInputFilter {
 
     private static final String COMMENT = "#";
     private static final String WILDCARD = "*";

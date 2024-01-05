@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.db
 - AbstractDatabase, transaction isolation now a final field, instead of using the configuration value directly.
 - AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
+### is.codion.common.rmi
+- SerializationWhitelist.writeToFile() improved a bit, javadocs fixed.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods
