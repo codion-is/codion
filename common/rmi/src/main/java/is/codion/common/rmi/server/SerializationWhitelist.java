@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import sun.misc.ObjectInputFilter;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -31,7 +29,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Implements a serialization whitelist for Java 8
  */
-public final class SerializationWhitelist {
+final class SerializationWhitelist {
 
   private static final Logger LOG = LoggerFactory.getLogger(SerializationWhitelist.class);
 
@@ -40,62 +38,34 @@ public final class SerializationWhitelist {
   private SerializationWhitelist() {}
 
   /**
-   * Configures a serialization whitelist, does nothing if {@code whitelist} is null or empty.
+   * Creates a serialization filter based on a whitelist.
    * Supports 'classpath:' prefix for a whitelist in the classpath root.
    * @param whitelistFile the path to the file containing the whitelisted class names
    */
-  public static void configure(String whitelistFile) {
-    if (!nullOrEmpty(whitelistFile)) {
-      ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
-      LOG.info("Serialization filter whitelist set: " + whitelistFile);
-    }
+  static WhitelistFilter whitelistFilter(String whitelistFile) {
+    return new WhitelistFilter(whitelistFile);
   }
 
   /**
-   * Configures a serialization whitelist file for a dry run, does nothing if {@code dryRunFile} is null or empty.
-   * @param dryRunFile the dry-run results file to write to
+   * Creates a serialization filter based on a whitelist.
+   * @param classnames the whitelisted class names
+   */
+  static WhitelistFilter whitelistFilter(Collection<String> classnames) {
+    return new WhitelistFilter(classnames);
+  }
+
+  /**
+   * Creates a serialization filter for a whitelist dry run.
+   * @param whitelistFile the file to write the dry-run results to
    * @throws IllegalArgumentException in case of a classpath dry run file
    */
-  public static void configureDryRun(String dryRunFile) {
-    if (!nullOrEmpty(dryRunFile)) {
-      ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
-      LOG.info("Serialization filter whitelist set for dry-run: " + dryRunFile);
-    }
+  static DryRun whitelistDryRun() {
+    return new DryRun();
   }
 
-  /**
-   * Returns true if a serialization dry-run is active.
-   * @return true if a dry-run is active.
-   */
-  public static boolean serializationDryRun() {
-    return ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
-  }
+  static final class DryRun implements ObjectInputFilter {
 
-  /**
-   * Writes the class names collected during a dry-run to file.
-   * If dry-run was not active this method has no effect.
-   */
-  public static void writeDryRunWhitelist() {
-    ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
-    if (serialFilter instanceof SerializationFilterDryRun) {
-      ((SerializationFilterDryRun) serialFilter).writeToFile();
-    }
-  }
-
-  private static final class SerializationFilterDryRun implements ObjectInputFilter {
-
-    private final String whitelistFile;
     private final Set<Class<?>> deserializedClasses = new HashSet<>();
-
-    private SerializationFilterDryRun(String whitelistFile) {
-      if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
-        throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
-      }
-      if (new File(whitelistFile).exists()) {
-        throw new IllegalArgumentException("Whitelist file to write to after dry-run already exists");
-      }
-      this.whitelistFile = requireNonNull(whitelistFile, "whitelistFile");
-    }
 
     @Override
     public Status checkInput(FilterInfo filterInfo) {
@@ -107,7 +77,14 @@ public final class SerializationWhitelist {
       return Status.ALLOWED;
     }
 
-    private synchronized void writeToFile() {
+    /**
+     * Writes all classnames found during the dry-run to the specified file.
+     * @param whitelistFile the file to write to
+     */
+    synchronized void writeToFile(String whitelistFile) {
+      if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+        throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
+      }
       try {
         Files.write(Paths.get(whitelistFile), deserializedClasses.stream()
                 .map(Class::getName)
@@ -121,7 +98,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  static final class SerializationFilter implements ObjectInputFilter {
+  static final class WhitelistFilter implements ObjectInputFilter {
 
     private static final String COMMENT = "#";
     private static final String WILDCARD = "*";
@@ -129,11 +106,11 @@ public final class SerializationWhitelist {
     private final Set<String> allowedClassnames = new HashSet<>();
     private final List<String> allowedWildcardClassnames = new ArrayList<>();
 
-    SerializationFilter(String whitelistFile) {
+    private WhitelistFilter(String whitelistFile) {
       this(readWhitelistItems(whitelistFile));
     }
 
-    SerializationFilter(Collection<String> whitelistItems) {
+    private WhitelistFilter(Collection<String> whitelistItems) {
       addWhitelistItems(whitelistItems);
     }
 

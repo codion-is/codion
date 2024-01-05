@@ -56,11 +56,14 @@ No dynamic class loading is required.
 
 === Serialization whitelist
 
-A {url-javadoc}{common-rmi}/is/codion/common/rmi/server/SerializationWhitelist.html[serialization whitelist] can be used by setting the following system property.
+A serialization whitelist can be used by setting the following system property.
 
 [source]
 ----
 codion.server.serializationFilterWhitelist=config/whitelist.txt
+----
+----
+codion.server.serializationFilterWhitelist=classpath:whitelist.txt
 ----
 
 A whitelist can be created during a server dry-run by adding the following system property. The whitelist containing all classes deserialized during the run is written to disk on server shutdown.
