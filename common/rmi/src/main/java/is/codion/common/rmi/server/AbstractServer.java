@@ -51,6 +51,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
