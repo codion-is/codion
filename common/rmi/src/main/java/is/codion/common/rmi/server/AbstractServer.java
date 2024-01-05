@@ -29,6 +29,7 @@ import is.codion.common.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ObjectInputFilter;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -51,8 +52,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
-import static is.codion.common.rmi.server.SerializationWhitelist.serializationDryRun;
-import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -244,8 +243,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
     authenticators.values().forEach(AbstractServer::closeAuthenticator);
     auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-    if (serializationDryRun()) {
-      writeDryRunWhitelist();
+    ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
+    if (serialFilter instanceof SerializationWhitelist.DryRun) {
+      ((SerializationWhitelist.DryRun) serialFilter).writeToFile(configuration.serializationFilterWhitelist());
     }
     shutdownEvent.run();
   }
@@ -463,11 +463,19 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
-    if (configuration.serializationFilterDryRun()) {
-      SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
+    String whitelistFile = configuration.serializationFilterWhitelist();
+    if (nullOrEmpty(whitelistFile)) {
+      LOG.info("No serialization whitelist file specified");
     }
     else {
-      SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
+      if (configuration.serializationFilterDryRun()) {
+        ObjectInputFilter.Config.setSerialFilter(SerializationWhitelist.whitelistDryRun());
+        LOG.info("Serialization filter dry-run enabled");
+      }
+      else {
+        ObjectInputFilter.Config.setSerialFilter(SerializationWhitelist.whitelistFilter(whitelistFile));
+        LOG.info("Serialization filter whitelist set: " + whitelistFile);
+      }
     }
   }
 

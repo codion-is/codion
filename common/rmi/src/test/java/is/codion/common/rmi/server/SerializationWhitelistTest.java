@@ -19,7 +19,7 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.Serializer;
-import is.codion.common.rmi.server.SerializationWhitelist.SerializationFilter;
+import is.codion.common.rmi.server.SerializationWhitelist.WhitelistFilter;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,28 +31,41 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class SerializationWhitelistTest {
 
   @Test
   void dryRun() throws IOException, ClassNotFoundException {
-    assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.configureDryRun("classpath:dryrun"));
+    assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.whitelistDryRun().writeToFile("classpath:dryrun"));
     File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
-    assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.configureDryRun(tempFile.getAbsolutePath()));
-    tempFile.delete();
-    SerializationWhitelist.configureDryRun(tempFile.getAbsolutePath());
+
+    SerializationWhitelist.DryRun serialFilter = SerializationWhitelist.whitelistDryRun();
+    ObjectInputFilter.Config.setSerialFilter(serialFilter);
+
     Serializer.deserialize(Serializer.serialize(Integer.valueOf(42)));
-    Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
     Serializer.deserialize(Serializer.serialize(Long.valueOf(42)));
-    SerializationWhitelist.writeDryRunWhitelist();
+    serialFilter.writeToFile(tempFile.getAbsolutePath());
+
     List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+
+    assertEquals(3, classNames.size());
+    assertEquals(Integer.class.getName(), classNames.get(0));
+    assertEquals(Long.class.getName(), classNames.get(1));
+    assertEquals(Number.class.getName(), classNames.get(2));
+
+    Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
+    serialFilter.writeToFile(tempFile.getAbsolutePath());
+
+    classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+
     assertEquals(4, classNames.size());
     assertEquals(Double.class.getName(), classNames.get(0));
     assertEquals(Integer.class.getName(), classNames.get(1));
     assertEquals(Long.class.getName(), classNames.get(2));
     assertEquals(Number.class.getName(), classNames.get(3));
-    assertTrue(tempFile.exists());
+
     tempFile.delete();
   }
 
@@ -64,7 +77,7 @@ public final class SerializationWhitelistTest {
             "is.codion.common.state.State",
             "is.codion.common.state.StateObserver"
     );
-    SerializationFilter filter = new SerializationFilter(whitelistItems);
+    WhitelistFilter filter = SerializationWhitelist.whitelistFilter(whitelistItems);
     assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.REJECTED);
@@ -75,18 +88,18 @@ public final class SerializationWhitelistTest {
 
   @Test
   void file() {
-    assertThrows(RuntimeException.class, () -> new SerializationFilter("src/test/resources/whitelist_test_non_existing.txt"));
-    testFilter(new SerializationFilter("src/test/resources/whitelist_test.txt"));
+    assertThrows(RuntimeException.class, () -> SerializationWhitelist.whitelistFilter("src/test/resources/whitelist_test_non_existing.txt"));
+    testFilter(SerializationWhitelist.whitelistFilter("src/test/resources/whitelist_test.txt"));
   }
 
   @Test
   void classpath() {
-    assertThrows(IllegalArgumentException.class, () -> new SerializationFilter("classpath:src/test/resources/whitelist_test.txt"));
-    testFilter(new SerializationFilter("classpath:whitelist_test.txt"));
-    testFilter(new SerializationFilter("classpath:/whitelist_test.txt"));
+    assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.whitelistFilter("classpath:src/test/resources/whitelist_test.txt"));
+    testFilter(SerializationWhitelist.whitelistFilter("classpath:whitelist_test.txt"));
+    testFilter(SerializationWhitelist.whitelistFilter("classpath:/whitelist_test.txt"));
   }
 
-  private static void testFilter(SerializationFilter filter) {
+  private static void testFilter(WhitelistFilter filter) {
     assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.ALLOWED);
