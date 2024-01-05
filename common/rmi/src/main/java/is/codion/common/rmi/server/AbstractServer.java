@@ -36,8 +36,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
-import static is.codion.common.rmi.server.SerializationWhitelist.serializationDryRun;
-import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -52,7 +50,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = onClasspath("sun.misc.ObjectInputFilter");
   private static final String CLIENT_ID = "clientId";
 
   private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
@@ -230,8 +227,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
     authenticators.values().forEach(AbstractServer::closeAuthenticator);
     auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && serializationDryRun()) {
-      writeDryRunWhitelist();
+    if (SerializationWhitelist.serializationDryRun()) {
+      SerializationWhitelist.writeDryRunWhitelist();
     }
     shutdownEvent.run();
   }
@@ -449,13 +446,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      if (configuration.serializationFilterDryRun()) {
-        SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
-      }
-      else {
-        SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
-      }
+    if (configuration.serializationFilterDryRun()) {
+      SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
+    }
+    else {
+      SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
     }
   }
 
