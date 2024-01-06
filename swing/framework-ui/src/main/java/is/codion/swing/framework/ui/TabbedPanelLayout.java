@@ -97,7 +97,13 @@ public final class TabbedPanelLayout implements PanelLayout {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Resizes this panel to the right.
+     */
     RESIZE_RIGHT,
+    /**
+     * Resizes this panel to the left.
+     */
     RESIZE_LEFT
   }
 

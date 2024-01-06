@@ -87,17 +87,53 @@ public final class CalendarPanel extends JPanel {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Select the previous year.
+     */
     PREVIOUS_YEAR,
+    /**
+     * Select the next year.
+     */
     NEXT_YEAR,
+    /**
+     * Select the previous month.
+     */
     PREVIOUS_MONTH,
+    /**
+     * Select the next month.
+     */
     NEXT_MONTH,
+    /**
+     * Select the previous week.
+     */
     PREVIOUS_WEEK,
+    /**
+     * Select the next week.
+     */
     NEXT_WEEK,
+    /**
+     * Select the previous day.
+     */
     PREVIOUS_DAY,
+    /**
+     * Select the next day.
+     */
     NEXT_DAY,
+    /**
+     * Select the previous hour.
+     */
     PREVIOUS_HOUR,
+    /**
+     * Select the next hour.
+     */
     NEXT_HOUR,
+    /**
+     * Select the previous minute.
+     */
     PREVIOUS_MINUTE,
+    /**
+     * Select the next minute.
+     */
     NEXT_MINUTE
   }
 

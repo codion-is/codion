@@ -55,6 +55,9 @@ public final class TextFieldPanel extends JPanel {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Displays a text area for longer text input.
+     */
     DISPLAY_TEXT_AREA
   }
 

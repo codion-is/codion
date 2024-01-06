@@ -60,7 +60,13 @@ public final class EntityDependenciesPanel extends JPanel {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Navigates to the dependencies panel on the left (with wrap-around).
+     */
     NAVIGATE_LEFT,
+    /**
+     * Navigates to the dependencies panel on the right (with wrap-around).
+     */
     NAVIGATE_RIGHT
   }
 

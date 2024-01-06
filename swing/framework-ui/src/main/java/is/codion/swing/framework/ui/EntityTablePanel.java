@@ -224,13 +224,37 @@ public class EntityTablePanel extends JPanel {
    * has been initialized has no effect.
    */
   public enum KeyboardShortcut {
+    /**
+     * Requests focus for the table.
+     */
     REQUEST_TABLE_FOCUS,
-    SELECT_CONDITION_PANEL,
+    /**
+     * Toggles the condition panel between hidden, visible and advanced.
+     */
     TOGGLE_CONDITION_PANEL,
-    SELECT_FILTER_PANEL,
+    /**
+     * Displays a dialog for selecting a column condition panel.
+     */
+    SELECT_CONDITION_PANEL,
+    /**
+     * Toggles the filter panel between hidden, visible and advanced.
+     */
     TOGGLE_FILTER_PANEL,
+    /**
+     * Displays a dialog for selecting a column filter panel.
+     */
+    SELECT_FILTER_PANEL,
+    /**
+     * Triggers the {@link TableControl#PRINT} control.
+     */
     PRINT,
+    /**
+     * Triggers the {@link TableControl#DELETE_SELECTED} control.
+     */
     DELETE_SELECTED,
+    /**
+     * Displays the table popup menu, if one is available.
+     */
     DISPLAY_POPUP_MENU
   }
 

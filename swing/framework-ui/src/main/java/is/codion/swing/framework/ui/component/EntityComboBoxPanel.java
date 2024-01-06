@@ -47,7 +47,14 @@ public final class EntityComboBoxPanel extends JPanel {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
-    ADD, EDIT
+    /**
+     * Displays a dialog for adding a new record.
+     */
+    ADD,
+    /**
+     * Displays a dialog for editing the selected record.
+     */
+    EDIT
   }
 
   private final EntityComboBox comboBox;

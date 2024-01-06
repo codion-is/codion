@@ -61,8 +61,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Display a calendar for date/time input.
+     */
     DISPLAY_CALENDAR,
+    /**
+     * Increments the date component under the cursor.
+     */
     INCREMENT,
+    /**
+     * Decrements the date component under the cursor.
+     */
     DECREMENT
   }
 
