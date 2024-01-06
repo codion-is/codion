@@ -8,6 +8,8 @@ Codion Change Log
 ### is.codion.common.rmi
 - SerializationWhitelist.writeToFile() improved a bit, javadocs fixed.
 - SerializationWhitelist no longer public, refactored.
+### is.codion.framework.domain
+- EntityDefinition.orderBy() and selectQuery() now return Optional.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods

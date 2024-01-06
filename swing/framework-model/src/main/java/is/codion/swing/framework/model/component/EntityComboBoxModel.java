@@ -68,7 +68,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
-    this.orderBy = Value.value(this.entities.definition(entityType).orderBy());
+    this.orderBy = Value.value(this.entities.definition(entityType).orderBy().orElse(null));
     DefaultConditionSupplier defaultConditionSupplier = new DefaultConditionSupplier();
     this.conditionSupplier = Value.value(defaultConditionSupplier, defaultConditionSupplier);
     selectedItemTranslator().set(new SelectedItemTranslator());

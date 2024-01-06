@@ -817,7 +817,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       }
     }
 
-    return entityDefinition().orderBy();
+    return entityDefinition().orderBy().orElse(null);
   }
 
   /**

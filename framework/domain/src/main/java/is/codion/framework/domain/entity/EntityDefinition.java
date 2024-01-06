@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -100,9 +101,9 @@ public interface EntityDefinition {
   boolean optimisticLocking();
 
   /**
-   * @return the default order by clause to use when querying entities of this type, null if none is available
+   * @return the default order by clause to use when querying entities of this type, an empty Optional if none is available
    */
-  OrderBy orderBy();
+  Optional<OrderBy> orderBy();
 
   /**
    * @return the name of the table to use when selecting entities of this type
@@ -110,9 +111,9 @@ public interface EntityDefinition {
   String selectTableName();
 
   /**
-   * @return the select query to use when selecting entities of this type, may be null
+   * @return the select query to use when selecting entities of this type, an empty Optional if none is available
    */
-  SelectQuery selectQuery();
+  Optional<SelectQuery> selectQuery();
 
   /**
    * @return the object responsible for providing toString values for this entity type

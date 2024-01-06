@@ -297,8 +297,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public OrderBy orderBy() {
-    return orderBy;
+  public Optional<OrderBy> orderBy() {
+    return Optional.ofNullable(orderBy);
   }
 
   @Override
@@ -307,8 +307,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public SelectQuery selectQuery() {
-    return selectQuery;
+  public Optional<SelectQuery> selectQuery() {
+    return Optional.ofNullable(selectQuery);
   }
 
   @Override

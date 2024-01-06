@@ -112,23 +112,7 @@ final class SelectQueries {
     }
 
     Builder entitySelectQuery() {
-      SelectQuery selectQuery = definition.selectQuery();
-      if (selectQuery != null) {
-        if (selectQuery.columns() != null) {
-          columns(selectQuery.columns());
-          selectedColums = defaultSelectColumns();
-          columnsClauseFromSelectQuery = true;
-        }
-        else {
-          columns(defaultColumnsClause());
-        }
-        from(selectQuery.from());
-        where(selectQuery.where());
-        orderBy(selectQuery.orderBy());
-        groupBy(selectQuery.groupBy());
-        having(selectQuery.having());
-      }
-
+      definition.selectQuery().ifPresent(this::fromSelectQuery);
       return this;
     }
 
@@ -238,6 +222,22 @@ final class SelectQueries {
       }
     }
 
+    private void fromSelectQuery(SelectQuery selectQuery) {
+      if (selectQuery.columns() != null) {
+        columns(selectQuery.columns());
+        selectedColums = defaultSelectColumns();
+        columnsClauseFromSelectQuery = true;
+      }
+      else {
+        columns(defaultColumnsClause());
+      }
+      from(selectQuery.from());
+      where(selectQuery.where());
+      orderBy(selectQuery.orderBy());
+      groupBy(selectQuery.groupBy());
+      having(selectQuery.having());
+    }
+
     private String from() {
       if (from == null) {
         return forUpdate ? definition.tableName() : definition.selectTableName();
@@ -276,9 +276,9 @@ final class SelectQueries {
     private String groupByClause() {
       return groupByClauseCache.computeIfAbsent(definition.entityType(), type ->
               definition.columns().definitions().stream()
-              .filter(ColumnDefinition::groupBy)
-              .map(ColumnDefinition::expression)
-              .collect(Collectors.joining(", ")));
+                      .filter(ColumnDefinition::groupBy)
+                      .map(ColumnDefinition::expression)
+                      .collect(Collectors.joining(", ")));
     }
 
     private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {

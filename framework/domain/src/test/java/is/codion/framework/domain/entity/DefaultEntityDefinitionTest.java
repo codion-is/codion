@@ -70,9 +70,10 @@ public class DefaultEntityDefinitionTest {
     assertEquals("tableName", definition.tableName());
     assertNotNull(definition.primaryKey().generator());
     assertFalse(definition.primaryKey().generated());
-    assertEquals("*", definition.selectQuery().columns());
-    assertEquals("dual", definition.selectQuery().from());
-    assertEquals("name", definition.selectQuery().groupBy());
+    SelectQuery selectQuery = definition.selectQuery().orElseThrow(IllegalStateException::new);
+    assertEquals("*", selectQuery.columns());
+    assertEquals("dual", selectQuery.from());
+    assertEquals("name", selectQuery.groupBy());
     assertFalse(definition.smallDataset());
     assertTrue(definition.readOnly());
     assertEquals("selectTableName", definition.selectTableName());
@@ -226,7 +227,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertEquals(havingClause, definition.selectQuery().having());
+    assertEquals(havingClause, definition.selectQuery().orElseThrow(IllegalStateException::new).having());
   }
 
   @Test
