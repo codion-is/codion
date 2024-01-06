@@ -23,6 +23,7 @@ Codion Change Log
 - EntityComboBox.KeyboardShortcut moved to EntityComboBoxPanel, EntityComboBoxPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
 - TabbedPanelLayout.Builder.keyboardShortcut() renamed keyStroke() for consistency.
 - EntityEditComponentPanel.selectInputComponent() bug fixed, now does nothing instead of throwing exception when no input components are selectable.
+- TabbedPanelLayout.defaultKeyStroke() bug fixed, incorrect key used for RESIZE_RIGHT.
 
 ## 0.17.22
 ### is.codion.swing.common.core
