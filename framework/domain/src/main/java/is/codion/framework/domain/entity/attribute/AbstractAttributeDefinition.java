@@ -107,9 +107,9 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   private final String description;
 
   /**
-   * A mnemonic to use when creating a label for this attribute
+   * A mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
    */
-  private final Character mnemonic;
+  private final char mnemonic;
 
   /**
    * The Format used when presenting the value of this propertattribute
@@ -247,7 +247,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public final Character mnemonic() {
+  public final char mnemonic() {
     return mnemonic;
   }
 
@@ -471,7 +471,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     private Number maximumValue;
     private Number minimumValue;
     private String description;
-    private Character mnemonic;
+    private char mnemonic;
     private Format format;
     private LocaleDateTimePattern localeDateTimePattern;
     private RoundingMode decimalRoundingMode;
@@ -610,7 +610,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     @Override
-    public final B mnemonic(Character mnemonic) {
+    public final B mnemonic(char mnemonic) {
       this.mnemonic = mnemonic;
       return (B) this;
     }

@@ -212,9 +212,9 @@ public interface AttributeDefinition<T> {
 
   /**
    * Returns the mnemonic associated with this attribute.
-   * @return the mnemonic to use when creating a label for this attribute
+   * @return the mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
    */
-  Character mnemonic();
+  char mnemonic();
 
   /**
    * Returns the Format used when presenting values for this attribute, null if none has been specified.
@@ -403,7 +403,7 @@ public interface AttributeDefinition<T> {
      * @param mnemonic the mnemonic character
      * @return this builder instance
      */
-    B mnemonic(Character mnemonic);
+    B mnemonic(char mnemonic);
 
     /**
      * Sets the description for this attribute, used for tooltips f.ex.

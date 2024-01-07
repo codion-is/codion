@@ -10,6 +10,7 @@ Codion Change Log
 - SerializationWhitelist no longer public, refactored.
 ### is.codion.framework.domain
 - EntityDefinition.orderBy() and selectQuery() now return Optional.
+- AttributeDefinition.mnemonic() now primitive based, with 0 replacing null for no mnemonic.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods
