@@ -22,6 +22,7 @@ Codion Change Log
 - EntityTableConditionModel.setEqualConditionValues() no longer accepts null values.
 ### is.codion.swing.common.model
 - DefaultFilteredTableModel.DefaultSummaryValueProvider format no longer nullable.
+- FilteredComboBoxModel.setItems() no longer accepts null.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods

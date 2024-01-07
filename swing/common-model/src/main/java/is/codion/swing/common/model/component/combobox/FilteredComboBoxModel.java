@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default combo box model implementation based on {@link FilteredModel}.
@@ -128,7 +129,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void clear() {
     setSelectedItem(null);
-    setItems(null);
+    setItems(emptyList());
   }
 
   /**
@@ -139,25 +140,24 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * Resets the items of this model using the values found in {@code items},
-   * if {@code items} is null then the model is cleared.
+   * Resets the items of this model using the values found in {@code items}.
    * @param items the items to display in this combo box model
    * @throws IllegalArgumentException in case an item fails validation
    * @see #cleared()
    * @see #itemValidator()
    */
   public final void setItems(Collection<T> items) {
+    requireNonNull(items);
     filteredItems.clear();
     visibleItems.clear();
-    if (items != null) {
-      items.forEach(this::validate);
-      visibleItems.addAll(items);
-      if (includeNull.get()) {
-        visibleItems.add(0, null);
-      }
+    if (includeNull.get()) {
+      visibleItems.add(0, null);
     }
+    visibleItems.addAll(items.stream()
+            .map(this::validate)
+            .collect(toList()));
     filterItems();
-    cleared = items == null;
+    cleared = items.isEmpty();
   }
 
   @Override
@@ -477,10 +477,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private void validate(T item) {
+  private T validate(T item) {
     if (!itemValidator.get().test(item)) {
       throw new IllegalArgumentException("Invalid item: " + item);
     }
+
+    return item;
   }
 
   /**
