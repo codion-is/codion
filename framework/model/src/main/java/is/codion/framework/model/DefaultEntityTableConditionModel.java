@@ -27,7 +27,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
@@ -64,13 +63,15 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
   @Override
   public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
+    requireNonNull(attribute);
+    requireNonNull(values);
     boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
     Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
     ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
     if (columnConditionModel != null) {
       columnConditionModel.operator().set(Operator.EQUAL);
-      columnConditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);
-      columnConditionModel.enabled().set(!nullOrEmpty(values));
+      columnConditionModel.setEqualValues(values);
+      columnConditionModel.enabled().set(!values.isEmpty());
     }
     return !condition.equals(aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND));
   }

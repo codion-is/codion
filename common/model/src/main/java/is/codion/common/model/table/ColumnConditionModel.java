@@ -133,7 +133,7 @@ public interface ColumnConditionModel<C, T> {
   T getEqualValue();
 
   /**
-   * @param values the values to set
+   * @param values the values to set, an empty Collection for none
    */
   void setEqualValues(Collection<T> values);
 

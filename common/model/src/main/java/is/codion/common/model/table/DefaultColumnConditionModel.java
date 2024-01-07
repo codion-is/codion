@@ -15,11 +15,10 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -108,7 +107,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public void setEqualValues(Collection<T> values) {
-    equalValues.set(values == null ? Collections.emptySet() : new HashSet<>(values));
+    equalValues.set(requireNonNull(values));
   }
 
   @Override
@@ -171,7 +170,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   @Override
   public void clear() {
     enabled.set(false);
-    setEqualValues(null);
+    setEqualValues(emptyList());
     setUpperBound(null);
     setLowerBound(null);
     operator.set(Operator.EQUAL);

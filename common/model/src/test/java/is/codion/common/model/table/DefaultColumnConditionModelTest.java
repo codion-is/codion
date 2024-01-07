@@ -195,6 +195,7 @@ public class DefaultColumnConditionModelTest {
 
     Collection<String> strings = asList("abc", "def");
     conditionModel.setEqualValues(strings);
+    assertThrows(NullPointerException.class, () -> conditionModel.setEqualValues(null));
 
     assertTrue(conditionModel.getEqualValues().containsAll(strings));
   }

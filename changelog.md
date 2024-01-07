@@ -9,6 +9,8 @@ Codion Change Log
 - AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
 - Database.connectionPool(username) now throws IllegalArgumentException in case no connection pool is available for the given username.
 - ResultPacker.get() no longer allowed to return null.
+### is.codion.common.model
+- ColumnConditionModel.setEqualValues() no longer accepts null values.
 ### is.codion.common.rmi
 - SerializationWhitelist.writeToFile() improved a bit, javadocs fixed.
 - SerializationWhitelist no longer public, refactored.
@@ -16,6 +18,8 @@ Codion Change Log
 - EntityDefinition.orderBy() and selectQuery() now return Optional.
 - AttributeDefinition.mnemonic() now primitive based, with 0 replacing null for no mnemonic.
 - AbstractAttributeDefinition.validateItems() now returns an unmodifiable copy of the item list, minor refactoring.
+### is.codion.framework.model
+- EntityTableConditionModel.setEqualConditionValues() no longer accepts null values.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods
