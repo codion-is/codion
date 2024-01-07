@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,8 +41,8 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
   }
 
   @Override
-  public String timePattern() {
-    return timePattern;
+  public Optional<String> timePattern() {
+    return Optional.ofNullable(timePattern);
   }
 
   @Override

@@ -5,6 +5,7 @@ package is.codion.common.format;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Specifies a locale sensitive numerical date format pattern.
@@ -37,7 +38,7 @@ public interface LocaleDateTimePattern {
   /**
    * @return the time part of this format, null if none is available
    */
-  String timePattern();
+  Optional<String> timePattern();
 
   /**
    * @return the date part of this format using the default Locale

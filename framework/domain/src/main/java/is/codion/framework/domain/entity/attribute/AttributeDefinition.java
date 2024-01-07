@@ -51,7 +51,8 @@ public interface AttributeDefinition<T> {
   PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
           .hoursMinutes()
           .build()
-          .timePattern());
+          .timePattern()
+          .orElseThrow(IllegalStateException::new));
 
   /**
    * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields<br>

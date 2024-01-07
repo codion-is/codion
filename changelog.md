@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.23-SNAPSHOT
+### is.codion.common.core
+- LocaleDateTimePattern.timePattern() now returns Optional.
 ### is.codion.common.db
 - AbstractDatabase, transaction isolation now a final field, instead of using the configuration value directly.
 - AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
