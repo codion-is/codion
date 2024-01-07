@@ -612,12 +612,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     DefaultSummaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
       this.columnIdentifier = requireNonNull(columnIdentifier);
       this.tableModel = requireNonNull(tableModel);
-      this.format = format;
+      this.format = requireNonNull(format);
     }
 
     @Override
     public String format(Object value) {
-      return format == null ? value.toString() : format.format(value);
+      return format.format(value);
     }
 
     @Override

@@ -20,6 +20,8 @@ Codion Change Log
 - AbstractAttributeDefinition.validateItems() now returns an unmodifiable copy of the item list, minor refactoring.
 ### is.codion.framework.model
 - EntityTableConditionModel.setEqualConditionValues() no longer accepts null values.
+### is.codion.swing.common.model
+- DefaultFilteredTableModel.DefaultSummaryValueProvider format no longer nullable.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods

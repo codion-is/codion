@@ -296,7 +296,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * Instantiates a new {@link SummaryValueProvider} instance.
    * @param columnIdentifier the column identifier
    * @param tableModel the table model
-   * @param format the format, may be null
+   * @param format the format
    * @return a new {@link SummaryValueProvider} instance
    * @param <T> the column value type
    * @param <C> the column identifier type
