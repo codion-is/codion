@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - EntityDefinition.orderBy() and selectQuery() now return Optional.
 - AttributeDefinition.mnemonic() now primitive based, with 0 replacing null for no mnemonic.
+- AbstractAttributeDefinition.validateItems() now returns an unmodifiable copy of the item list, minor refactoring.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods

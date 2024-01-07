@@ -19,6 +19,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
 
@@ -684,7 +684,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B items(List<Item<T>> items) {
-      this.items = unmodifiableList(validateItems(items));
+      this.items = validateItems(items);
       return (B) this;
     }
 
@@ -702,13 +702,12 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     private static <T> List<Item<T>> validateItems(List<Item<T>> items) {
       if (requireNonNull(items).size() != items.stream()
-              .map(Item::get)
-              .collect(toSet())
-              .size()) {
+              .distinct()
+              .count()) {
         throw new IllegalArgumentException("Item list contains duplicate values: " + items);
       }
 
-      return items;
+      return unmodifiableList(new ArrayList<>(items));
     }
 
     private static Format defaultFormat(Attribute<?> attribute) {
