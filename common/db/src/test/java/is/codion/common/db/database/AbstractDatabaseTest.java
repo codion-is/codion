@@ -5,6 +5,7 @@ package is.codion.common.db.database;
 
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,17 @@ public final class AbstractDatabaseTest {
     assertEquals(Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation());
     connection.close();
     Database.TRANSACTION_ISOLATION.set(null);
+  }
+
+  @Test
+  void connectionPool() throws DatabaseException {
+    Database db = new TestDatabase();
+    db.createConnectionPool(ConnectionPoolFactory.instance(), User.parse("scott:tiger"));
+    assertTrue(db.containsConnectionPool("ScotT"));
+    assertThrows(IllegalArgumentException.class, () -> db.connectionPool("john"));
+    assertNotNull(db.connectionPool("scott"));
+    db.closeConnectionPool("scott");
+    assertFalse(db.containsConnectionPool("ScotT"));
   }
 
   private static final class TestDatabase extends AbstractDatabase {

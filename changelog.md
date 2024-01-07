@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.common.db
 - AbstractDatabase, transaction isolation now a final field, instead of using the configuration value directly.
 - AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
+- Database.connectionPool(username) now throws IllegalArgumentException in case no connection pool is available for the given username.
 ### is.codion.common.rmi
 - SerializationWhitelist.writeToFile() improved a bit, javadocs fixed.
 - SerializationWhitelist no longer public, refactored.

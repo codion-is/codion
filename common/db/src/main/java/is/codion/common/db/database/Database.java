@@ -224,7 +224,14 @@ public interface Database extends ConnectionFactory {
 
   /**
    * @param username the username
+   * @return true if a connection pool exists for the given username
+   */
+  boolean containsConnectionPool(String username);
+
+  /**
+   * @param username the username
    * @return the connection pool for the given user, null if none exists
+   * @throws IllegalArgumentException in case no connection pool exists for the given user
    */
   ConnectionPoolWrapper connectionPool(String username);
 
