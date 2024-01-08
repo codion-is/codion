@@ -1,6 +1,6 @@
 = Codion Application Framework
-:version: 0.17.22
-:version-dev: 0.17.23
+:version: 0.17.23
+:version-dev: 0.17.24
 :url-help: https://codion.is/doc/{version}/help
 :url-manual: https://codion.is/doc/{version}/manual
 :url-technical: https://codion.is/doc/{version}/technical

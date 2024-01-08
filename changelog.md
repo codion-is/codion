@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.23-SNAPSHOT
+## 0.17.23
 ### is.codion.common.core
 - LocaleDateTimePattern.timePattern() now returns Optional.
 ### is.codion.common.db
