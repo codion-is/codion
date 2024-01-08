@@ -54,9 +54,9 @@ public interface ResultPacker<T> {
   }
 
   /**
-   * Fetches a single instance from the given result set, assumes {@link ResultSet#next()} has been called
+   * Fetches a single instance from the given result set, assuming {@link ResultSet#next()} has been called
    * @param resultSet the result set
-   * @return the instance fetched from the ResultSet, null if the item should not be included for some reason
+   * @return the instance fetched from the ResultSet
    * @throws SQLException in case of failure
    */
   T get(ResultSet resultSet) throws SQLException;

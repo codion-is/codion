@@ -35,6 +35,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityTableConditionModelTest {
@@ -95,7 +96,9 @@ public class DefaultEntityTableConditionModelTest {
             conditionModel.attributeModel(Employee.DEPARTMENT_FK);
     assertTrue(deptModel.getEqualValues().contains(sales));
     assertTrue(deptModel.getEqualValues().contains(accounting));
-    searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, null);
+    assertThrows(NullPointerException.class, () -> conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, null));
+    assertThrows(NullPointerException.class, () -> conditionModel.setEqualConditionValues(null, emptyList()));
+    searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, emptyList());
     assertTrue(searchStateChanged);
     assertFalse(conditionModel.enabled(Employee.DEPARTMENT_FK));
   }

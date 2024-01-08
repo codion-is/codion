@@ -34,6 +34,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
 
@@ -122,9 +122,9 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   private final String description;
 
   /**
-   * A mnemonic to use when creating a label for this attribute
+   * A mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
    */
-  private final Character mnemonic;
+  private final char mnemonic;
 
   /**
    * The Format used when presenting the value of this propertattribute
@@ -262,7 +262,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   }
 
   @Override
-  public final Character mnemonic() {
+  public final char mnemonic() {
     return mnemonic;
   }
 
@@ -486,7 +486,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     private Number maximumValue;
     private Number minimumValue;
     private String description;
-    private Character mnemonic;
+    private char mnemonic;
     private Format format;
     private LocaleDateTimePattern localeDateTimePattern;
     private RoundingMode decimalRoundingMode;
@@ -625,7 +625,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     @Override
-    public final B mnemonic(Character mnemonic) {
+    public final B mnemonic(char mnemonic) {
       this.mnemonic = mnemonic;
       return (B) this;
     }
@@ -699,7 +699,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B items(List<Item<T>> items) {
-      this.items = unmodifiableList(validateItems(items));
+      this.items = validateItems(items);
       return (B) this;
     }
 
@@ -717,13 +717,12 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     private static <T> List<Item<T>> validateItems(List<Item<T>> items) {
       if (requireNonNull(items).size() != items.stream()
-              .map(Item::get)
-              .collect(toSet())
-              .size()) {
+              .distinct()
+              .count()) {
         throw new IllegalArgumentException("Item list contains duplicate values: " + items);
       }
 
-      return items;
+      return unmodifiableList(new ArrayList<>(items));
     }
 
     private static Format defaultFormat(Attribute<?> attribute) {

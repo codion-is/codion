@@ -132,8 +132,18 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
+  public final boolean containsConnectionPool(String username) {
+    return connectionPools.containsKey(requireNonNull(username).toLowerCase());
+  }
+
+  @Override
   public final ConnectionPoolWrapper connectionPool(String username) {
-    return connectionPools.get(requireNonNull(username, "username").toLowerCase());
+    ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(requireNonNull(username, "username").toLowerCase());
+    if (connectionPoolWrapper == null) {
+      throw new IllegalArgumentException("No connection pool available for user: " + username);
+    }
+
+    return connectionPoolWrapper;
   }
 
   @Override

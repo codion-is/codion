@@ -48,7 +48,6 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.domain.entity.query.SelectQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1530,10 +1529,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (columnDefinition.aggregate()) {
       throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate function values");
     }
-    SelectQuery selectQuery = entityDefinition.selectQuery();
-    if (selectQuery != null && selectQuery.columns() != null) {
-      throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom column clauses");
-    }
+    entityDefinition.selectQuery().ifPresent(selectQuery -> {
+      if (selectQuery.columns() != null) {
+        throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom column clauses");
+      }
+    });
   }
 
   private static void closeSilently(AutoCloseable closeable) {

@@ -62,7 +62,7 @@ public class FilteredComboBoxModelTest {
     testModel.refresh();
     assertEquals(5, testModel.visibleItems().size());
     testModel.clear();
-    assertEquals(0, testModel.getSize());
+    assertEquals(1, testModel.getSize());//null item
     assertTrue(testModel.cleared());
   }
 
@@ -340,6 +340,7 @@ public class FilteredComboBoxModelTest {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
     model.itemValidator().set(item -> item > 0);
     assertThrows(IllegalArgumentException.class, () -> model.setItems(asList(1, 2, 3, 4, 5, 0)));
+    assertThrows(NullPointerException.class, () -> model.setItems(null));
   }
 
   @Test

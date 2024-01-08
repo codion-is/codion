@@ -69,7 +69,7 @@ import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcut.RE
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_R;
+import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -112,7 +112,13 @@ public final class TabbedPanelLayout implements PanelLayout {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Resizes this panel to the right.
+     */
     RESIZE_RIGHT,
+    /**
+     * Resizes this panel to the left.
+     */
     RESIZE_LEFT
   }
 
@@ -315,7 +321,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
       case RESIZE_LEFT: return keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
-      case RESIZE_RIGHT: return keyStroke(VK_R, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+      case RESIZE_RIGHT: return keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
       default: throw new IllegalArgumentException();
     }
   }

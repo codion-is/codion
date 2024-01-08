@@ -28,11 +28,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
 
 public final class MetaDataModel {
 
@@ -62,14 +60,22 @@ public final class MetaDataModel {
   }
 
   private static Map<String, Schema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
-    Map<String, Schema> schemas;
+    Map<String, Schema> schemas = new HashMap<>();
     try (ResultSet resultSet = metaData.getCatalogs()) {
-      schemas = new HashMap<>(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
-              .collect(toMap(Schema::name, Function.identity())));
+      while (resultSet.next()) {
+        String tableCat = resultSet.getString("TABLE_CAT");
+        if (tableCat != null) {
+          schemas.put(tableCat, new Schema(tableCat));
+        }
+      }
     }
     try (ResultSet resultSet = metaData.getSchemas()) {
-      schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream()
-              .collect(toMap(Schema::name, Function.identity())));
+      while (resultSet.next()) {
+        String tableSchem = resultSet.getString("TABLE_SCHEM");
+        if (tableSchem != null) {
+          schemas.put(tableSchem, new Schema(tableSchem));
+        }
+      }
     }
 
     return schemas;

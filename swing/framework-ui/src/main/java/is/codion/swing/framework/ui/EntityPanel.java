@@ -202,18 +202,57 @@ public class EntityPanel extends JPanel {
    * has been initialized has no effect.
    */
   public enum KeyboardShortcut {
+    /**
+     * Requests focus for the table.
+     */
     REQUEST_TABLE_FOCUS,
+    /**
+     * Toggles the condition panel between hidden, visible and advanced.
+     */
     TOGGLE_CONDITION_PANEL,
+    /**
+     * Displays a dialog for selecting a column condition panel.
+     */
     SELECT_CONDITION_PANEL,
+    /**
+     * Toggles the filter panel between hidden, visible and advanced.
+     */
     TOGGLE_FILTER_PANEL,
+    /**
+     * Displays a dialog for selecting a column filter panel.
+     */
     SELECT_FILTER_PANEL,
+    /**
+     * Requests focus for the table search field.
+     */
     REQUEST_SEARCH_FIELD_FOCUS,
+    /**
+     * Requests focus for the edit panel (intial focus component).
+     */
     REQUEST_EDIT_PANEL_FOCUS,
+    /**
+     * Displays a dialog for selecting an input field.
+     */
     SELECT_INPUT_FIELD,
+    /**
+     * Toggles the edit panel between hidden, embedded and dialog.
+     */
     TOGGLE_EDIT_PANEL,
+    /**
+     * Navigates to the parent panel, if one is available.
+     */
     NAVIGATE_UP,
+    /**
+     * Navigates to the selected child panel, if one is available.
+     */
     NAVIGATE_DOWN,
+    /**
+     * Navigates to the sibling panel on the right, if one is available.
+     */
     NAVIGATE_RIGHT,
+    /**
+     * Navigates to the sibling panel on the left, if one is available.
+     */
     NAVIGATE_LEFT
   }
 

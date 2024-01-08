@@ -832,7 +832,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       }
     }
 
-    return entityDefinition().orderBy();
+    return entityDefinition().orderBy().orElse(null);
   }
 
   /**
@@ -861,7 +861,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    handleEditEvents.addDataListener(new EditEventListener());
+    handleEditEvents.addDataListener(new HandleEditEventsListener());
     conditionModel.addChangeListener(() -> onConditionChanged(createSelect(conditionModel)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
@@ -1119,7 +1119,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private final class EditEventListener implements Consumer<Boolean> {
+  private final class HandleEditEventsListener implements Consumer<Boolean> {
 
     @Override
     public void accept(Boolean listen) {

@@ -38,7 +38,7 @@ public final class LocaleDateTimePatternTest {
     Locale iceland = new Locale("is", "IS");
     Locale us = new Locale("en", "US");
 
-    assertEquals("HH:mm", pattern.timePattern());
+    assertEquals("HH:mm", pattern.timePattern().orElseThrow(IllegalStateException::new));
     assertEquals("dd-MM-yyyy", pattern.datePattern(iceland));
     assertEquals("MM-dd-yyyy", pattern.datePattern(us));
     assertEquals("dd-MM-yyyy HH:mm", pattern.dateTimePattern(iceland));
@@ -49,7 +49,7 @@ public final class LocaleDateTimePatternTest {
             .yearTwoDigits()
             .hoursMinutesSeconds()
             .build();
-    assertEquals("HH:mm:ss", pattern.timePattern());
+    assertEquals("HH:mm:ss", pattern.timePattern().orElseThrow(IllegalStateException::new));
     assertEquals("dd.MM.yy", pattern.datePattern(iceland));
     assertEquals("MM.dd.yy", pattern.datePattern(us));
     assertEquals("dd.MM.yy HH:mm:ss", pattern.dateTimePattern(iceland));
@@ -61,7 +61,7 @@ public final class LocaleDateTimePatternTest {
             .hoursMinutesSecondsMilliseconds()
             .build();
 
-    assertEquals("HH:mm:ss.SSS", pattern.timePattern());
+    assertEquals("HH:mm:ss.SSS", pattern.timePattern().orElseThrow(IllegalStateException::new));
     assertEquals("dd/MM/yyyy", pattern.datePattern(iceland));
     assertEquals("MM/dd/yyyy", pattern.datePattern(us));
     assertEquals("dd/MM/yyyy HH:mm:ss.SSS", pattern.dateTimePattern(iceland));

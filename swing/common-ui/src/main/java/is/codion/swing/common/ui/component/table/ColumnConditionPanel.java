@@ -95,8 +95,17 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Toggle the enabled status on/off.
+     */
     TOGGLE_ENABLED,
+    /**
+     * Select the previous condition operator.
+     */
     PREVIOUS_OPERATOR,
+    /**
+     * Select the next condition operator.
+     */
     NEXT_OPERATOR
   }
 

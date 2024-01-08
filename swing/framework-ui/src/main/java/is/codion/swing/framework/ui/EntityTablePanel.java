@@ -91,7 +91,6 @@ import java.awt.print.PrinterException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,13 +239,37 @@ public class EntityTablePanel extends JPanel {
    * has been initialized has no effect.
    */
   public enum KeyboardShortcut {
+    /**
+     * Requests focus for the table.
+     */
     REQUEST_TABLE_FOCUS,
-    SELECT_CONDITION_PANEL,
+    /**
+     * Toggles the condition panel between hidden, visible and advanced.
+     */
     TOGGLE_CONDITION_PANEL,
-    SELECT_FILTER_PANEL,
+    /**
+     * Displays a dialog for selecting a column condition panel.
+     */
+    SELECT_CONDITION_PANEL,
+    /**
+     * Toggles the filter panel between hidden, visible and advanced.
+     */
     TOGGLE_FILTER_PANEL,
+    /**
+     * Displays a dialog for selecting a column filter panel.
+     */
+    SELECT_FILTER_PANEL,
+    /**
+     * Triggers the {@link TableControl#PRINT} control.
+     */
     PRINT,
+    /**
+     * Triggers the {@link TableControl#DELETE_SELECTED} control.
+     */
     DELETE_SELECTED,
+    /**
+     * Displays the table popup menu, if one is available.
+     */
     DISPLAY_POPUP_MENU
   }
 
@@ -1316,12 +1339,8 @@ public class EntityTablePanel extends JPanel {
     tableModel.refresher().addRefreshFailedListener(this::onException);
     tableModel.editModel().addInsertUpdateOrDeleteListener(table::repaint);
     if (conditionPanel != null) {
-      KeyEvents.builder(VK_ENTER)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(conditionRefreshControl)
-              .enable(conditionPanel);
+      enableConditionPanelRefreshOnEnter();
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
-      addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, conditionRefreshControl);
       conditionPanel.advanced().addDataListener(advanced -> {
         if (conditionPanelVisibleState.get()) {
           revalidate();
@@ -1335,6 +1354,28 @@ public class EntityTablePanel extends JPanel {
           revalidate();
         }
       });
+    }
+  }
+
+  private void enableConditionPanelRefreshOnEnter() {
+    KeyEvents.builder(VK_ENTER)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(conditionRefreshControl)
+            .enable(conditionPanel);
+    tableModel.columnModel().columns().stream()
+            .map(column -> conditionPanel.conditionPanel(column.getIdentifier()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .flatMap(panel -> Stream.of(panel.operatorComboBox(), panel.equalField(), panel.lowerBoundField(), panel.upperBoundField()))
+            .forEach(this::enableConditionPanelRefreshOnEnter);
+  }
+
+  private void enableConditionPanelRefreshOnEnter(JComponent component) {
+    if (component instanceof JComboBox) {
+      new ComboBoxEnterPressedAction((JComboBox<?>) component, conditionRefreshControl);
+    }
+    else if (component instanceof TemporalField) {
+      ((TemporalField<?>) component).addActionListener(conditionRefreshControl);
     }
   }
 
@@ -1629,26 +1670,6 @@ public class EntityTablePanel extends JPanel {
     constraints.weightx = 1.0;
 
     return constraints;
-  }
-
-  private static void addRefreshOnEnterControl(Collection<FilteredTableColumn<Attribute<?>>> columns,
-                                               FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
-                                               Control refreshControl) {
-    columns.stream()
-            .map(column -> tableConditionPanel.conditionPanel(column.getIdentifier()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .flatMap(panel -> Stream.of(panel.operatorComboBox(), panel.equalField(), panel.lowerBoundField(), panel.upperBoundField()))
-            .forEach(component -> enableRefreshOnEnterControl(component, refreshControl));
-  }
-
-  private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
-    if (component instanceof JComboBox) {
-      new ComboBoxEnterPressedAction((JComboBox<?>) component, refreshControl);
-    }
-    else if (component instanceof TemporalField) {
-      ((TemporalField<?>) component).addActionListener(refreshControl);
-    }
   }
 
   private static void addAdditionalControls(Controls popupControls, List<Controls> additionalPopupControls) {

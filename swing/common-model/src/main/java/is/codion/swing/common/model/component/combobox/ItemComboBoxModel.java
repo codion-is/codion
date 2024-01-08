@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -74,7 +75,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> itemComboBoxModel() {
-    return new ItemComboBoxModel<>(null, null);
+    return new ItemComboBoxModel<>(null, emptyList());
   }
 
   /**
@@ -83,7 +84,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> itemComboBoxModel(List<Item<T>> items) {
-    return new ItemComboBoxModel<>(null, requireNonNull(items));
+    return new ItemComboBoxModel<>(null, items);
   }
 
   /**
@@ -91,7 +92,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel() {
-    return sortedItemComboBoxModel((List<Item<T>>) null);
+    return sortedItemComboBoxModel(emptyList());
   }
 
   /**
@@ -109,7 +110,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
-    return new ItemComboBoxModel<>(requireNonNull(comparator), null);
+    return new ItemComboBoxModel<>(requireNonNull(comparator), emptyList());
   }
 
   /**

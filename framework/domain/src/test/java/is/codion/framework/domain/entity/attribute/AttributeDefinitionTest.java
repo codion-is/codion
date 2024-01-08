@@ -200,9 +200,11 @@ public final class AttributeDefinitionTest {
 
   @Test
   void mnemonic() {
-    final Character mnemonic = 'M';
+    final char mnemonic = 'M';
     AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute").define().column().mnemonic(mnemonic).build();
     assertEquals(mnemonic, attributeDefinition.mnemonic());
+    attributeDefinition = ENTITY_TYPE.integerColumn("attribute").define().column().build();
+    assertEquals(0, attributeDefinition.mnemonic());
   }
 
   @Test

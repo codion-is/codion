@@ -1,13 +1,28 @@
 Codion Change Log
 ==================
 
-## 0.17.23-SNAPSHOT
+## 0.17.23
+### is.codion.common.core
+- LocaleDateTimePattern.timePattern() now returns Optional.
 ### is.codion.common.db
 - AbstractDatabase, transaction isolation now a final field, instead of using the configuration value directly.
 - AbstractDatabase, login timeout now set in a static initializer block, instead of during connection creation.
+- Database.connectionPool(username) now throws IllegalArgumentException in case no connection pool is available for the given username.
+- ResultPacker.get() no longer allowed to return null.
+### is.codion.common.model
+- ColumnConditionModel.setEqualValues() no longer accepts null values.
 ### is.codion.common.rmi
 - SerializationWhitelist.writeToFile() improved a bit, javadocs fixed.
 - SerializationWhitelist no longer public, refactored.
+### is.codion.framework.domain
+- EntityDefinition.orderBy() and selectQuery() now return Optional.
+- AttributeDefinition.mnemonic() now primitive based, with 0 replacing null for no mnemonic.
+- AbstractAttributeDefinition.validateItems() now returns an unmodifiable copy of the item list, minor refactoring.
+### is.codion.framework.model
+- EntityTableConditionModel.setEqualConditionValues() no longer accepts null values.
+### is.codion.swing.common.model
+- DefaultFilteredTableModel.DefaultSummaryValueProvider format no longer nullable.
+- FilteredComboBoxModel.setItems() no longer accepts null.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts.copy() added.
 - CalendarPanel.Builder added, replaces factory methods
@@ -23,6 +38,7 @@ Codion Change Log
 - EntityComboBox.KeyboardShortcut moved to EntityComboBoxPanel, EntityComboBoxPanel.Builder.keyStroke() added for configuring keyboard shortcuts on an instance basis.
 - TabbedPanelLayout.Builder.keyboardShortcut() renamed keyStroke() for consistency.
 - EntityEditComponentPanel.selectInputComponent() bug fixed, now does nothing instead of throwing exception when no input components are selectable.
+- TabbedPanelLayout.defaultKeyStroke() bug fixed, incorrect key used for RESIZE_RIGHT.
 
 ## 0.17.22
 ### is.codion.swing.common.core

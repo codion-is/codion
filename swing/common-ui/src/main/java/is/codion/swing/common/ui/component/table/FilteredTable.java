@@ -133,8 +133,17 @@ public final class FilteredTable<R, C> extends JTable {
    * The available keyboard shortcuts.
    */
   public enum KeyboardShortcut {
+    /**
+     * Copy the selected cell contents to the clipboard.
+     */
     COPY_CELL,
+    /**
+     * Toggles the sort on the selected column.
+     */
     TOGGLE_SORT_COLUMN,
+    /**
+     * Toggles the sort on the selected column adding it to any already sorted columns.
+     */
     TOGGLE_SORT_COLUMN_ADD
   }
 

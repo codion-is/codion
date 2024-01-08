@@ -66,7 +66,8 @@ public interface AttributeDefinition<T> {
   PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
           .hoursMinutes()
           .build()
-          .timePattern());
+          .timePattern()
+          .orElseThrow(IllegalStateException::new));
 
   /**
    * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields<br>
@@ -227,9 +228,9 @@ public interface AttributeDefinition<T> {
 
   /**
    * Returns the mnemonic associated with this attribute.
-   * @return the mnemonic to use when creating a label for this attribute
+   * @return the mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
    */
-  Character mnemonic();
+  char mnemonic();
 
   /**
    * Returns the Format used when presenting values for this attribute, null if none has been specified.
@@ -418,7 +419,7 @@ public interface AttributeDefinition<T> {
      * @param mnemonic the mnemonic character
      * @return this builder instance
      */
-    B mnemonic(Character mnemonic);
+    B mnemonic(char mnemonic);
 
     /**
      * Sets the description for this attribute, used for tooltips f.ex.
