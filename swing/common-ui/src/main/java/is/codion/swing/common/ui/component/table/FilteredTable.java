@@ -68,7 +68,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -1037,11 +1036,11 @@ public final class FilteredTable<R, C> extends JTable {
 
   static final class ColumnComparator implements Comparator<TableColumn> {
 
-    private final Collator columnCollator = Collator.getInstance();
+    private final Comparator<String> collator = Text.collator();
 
     @Override
     public int compare(TableColumn col1, TableColumn col2) {
-      return Text.collateSansSpaces(columnCollator, col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
+      return collator.compare(col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
     }
   }
 

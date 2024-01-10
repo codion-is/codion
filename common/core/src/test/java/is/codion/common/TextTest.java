@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,13 +36,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TextTest {
 
   @Test
-  void spaceAwareCollator() {
+  void collator() {
     final String one = "björn";
     final String two = "bjö rn";
     final String three = "björ n";
     List<String> strings = asList(one, two, three);
 
-    Comparator<String> collator = Text.spaceAwareCollator();
+    Comparator<String> collator = Text.collator();
     strings.sort(collator);
     assertEquals(two, strings.get(0));
     assertEquals(three, strings.get(1));
@@ -55,14 +54,14 @@ public final class TextTest {
     final String seven = "aj";
     strings = asList(four, five, six, seven);
 
-    collator = Text.spaceAwareCollator(new Locale("is"));
+    collator = Text.collator(new Locale("is"));
     strings.sort(collator);
     assertEquals(seven, strings.get(0));
     assertEquals(four, strings.get(1));
     assertEquals(five, strings.get(2));
     assertEquals(six, strings.get(3));
 
-    collator = Text.spaceAwareCollator(new Locale("en"));
+    collator = Text.collator(new Locale("en"));
     strings.sort(collator);
     assertEquals(six, strings.get(0));
     assertEquals(seven, strings.get(1));
@@ -117,30 +116,27 @@ public final class TextTest {
 
   @Test
   void collate() {
-    final String one = "Bláskuggi";
-    final String two = "Blá skuggi";
-    final String three = "Blár skuggi";
+    String one = "Bláskuggi";
+    String two = "Blá skuggi";
+    String three = "Blár skuggi";
     List<String> values = asList(one, two, three);
     Text.collate(values);
     assertEquals(0, values.indexOf(two));
     assertEquals(1, values.indexOf(three));
     assertEquals(2, values.indexOf(one));
-  }
 
-  @Test
-  void collateSansSpaces() {
-    final String b = "Björn Darri";
-    final String bNoSpace = "BjörnDarri";
-    final String d = "Davíð Arnar";
-    final String dNoSpace = "DavíðArnar";
-    final String a = "Arnór Jón";
-    List<String> items = asList(b, d, a, bNoSpace, dNoSpace);
-    Text.collateSansSpaces(Collator.getInstance(), items);
-    assertEquals(0, items.indexOf(a));
-    assertEquals(1, items.indexOf(b));
-    assertEquals(2, items.indexOf(bNoSpace));
-    assertEquals(3, items.indexOf(d));
-    assertEquals(4, items.indexOf(dNoSpace));
+    String b = "Björn Darri";
+    String bNoSpace = "BjörnDarri";
+    String d = "Davíð Arnar";
+    String dNoSpace = "DavíðArnar";
+    String a = "Arnór Jón";
+    values = asList(b, d, a, bNoSpace, dNoSpace);
+    Text.collate(values);
+    assertEquals(0, values.indexOf(a));
+    assertEquals(1, values.indexOf(b));
+    assertEquals(2, values.indexOf(bNoSpace));
+    assertEquals(3, values.indexOf(d));
+    assertEquals(4, values.indexOf(dNoSpace));
   }
 
   @Test

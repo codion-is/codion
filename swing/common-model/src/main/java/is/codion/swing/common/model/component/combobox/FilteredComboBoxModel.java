@@ -617,7 +617,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private static final class DefaultComparator<T> implements Comparator<T> {
 
-    private final Comparator<T> comparator = Text.spaceAwareCollator();
+    private final Comparator<T> comparator = Text.collator();
 
     @Override
     public int compare(T o1, T o2) {

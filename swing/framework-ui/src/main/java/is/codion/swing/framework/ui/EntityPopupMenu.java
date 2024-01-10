@@ -24,8 +24,6 @@ import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -43,11 +41,13 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static is.codion.swing.common.ui.Utilities.setClipboard;
+import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -58,28 +58,16 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static final int MAXIMUM_VALUE_LENGTH = 42;
 
-  /**
-   * Note that this has a side effect, as it populates the full foreign key graph of the given entity, so use a copy.
-   * @param entity the entity
-   * @param connection the connection
-   */
   EntityPopupMenu(Entity entity, EntityConnection connection) {
     requireNonNull(entity);
     requireNonNull(connection);
-    populateEntityMenu(this, entity, connection, new HashSet<>());
+    populateEntityMenu(this, populateEntityGraph(entity.copy(), connection, new HashSet<>()), connection);
   }
 
-  /**
-   * Populates the given root menu with the values of the given entity
-   * @param rootMenu the menu to populate
-   * @param entity the entity
-   * @param connection the connection to use when selecting foreign key references
-   * @param visitedKeys used to prevent cyclical dependencies wreaking havoc
-   */
-  private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity.Key> visitedKeys) {
+  private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKey().columnDefinitions()));
-    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.definition().foreignKeys().definitions()), visitedKeys);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.definition().attributes().definitions()));
+    populateForeignKeyMenu(rootMenu, entity, connection);
+    populateValueMenu(rootMenu, entity);
   }
 
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnDefinition<?>> primaryKeyColumns) {
@@ -89,40 +77,25 @@ final class EntityPopupMenu extends JPopupMenu {
               .append(primaryKeyColumn.attribute())
               .append(" [").append(primaryKeyColumn.attribute().type().valueClass().getSimpleName()).append("]: ")
               .append(createValueString(entity, primaryKeyColumn)).toString());
-      menuItem.addActionListener(Control.control(() -> setClipboard(entity.string(primaryKeyColumn.attribute()))));
-      setInvalidModified(menuItem, true, entity.modified(primaryKeyColumn.attribute()));
-      menuItem.setToolTipText(primaryKeyColumn.attribute().name());
+      menuItem.addActionListener(clipboardControl(entity, primaryKeyColumn.attribute()));
+      configureMenuItem(menuItem, entity, primaryKeyColumn.attribute(), primaryKeyColumn.attribute().name());
       rootMenu.add(menuItem);
     }
   }
 
-  private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity, EntityConnection connection,
-                                             List<ForeignKeyDefinition> fkDefinitions, Set<Entity.Key> visitedKeys) {
-    if (!visitedKeys.contains(entity.primaryKey())) {
-      visitedKeys.add(entity.primaryKey());
-      Text.collate(fkDefinitions);
-      EntityDefinition definition = entity.definition();
-      EntityValidator validator = definition.validator();
-      for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
-        ForeignKey foreignKey = fkDefinition.attribute();
-        StringBuilder captionBuilder = new StringBuilder("[FK] ").append(fkDefinition.caption()).append(": ");
-        Entity.Key referencedKey = entity.referencedKey(foreignKey);
-        if (referencedKey == null) {
-          JMenuItem menuItem = new JMenuItem(captionBuilder.append(createValueString(entity, fkDefinition)).toString());
-          setInvalidModified(menuItem, valid(validator, entity, foreignKey), entity.modified(foreignKey));
-          menuItem.setToolTipText(foreignKeyAttributeNames(foreignKey));
-          rootMenu.add(menuItem);
-        }
-        else if (!visitedKeys.contains(referencedKey)) {
-          Entity referencedEntity = selectEntity(referencedKey, connection);
-          entity = entity.mutable() ? entity : entity.deepCopy();
-          entity.put(foreignKey, referencedEntity);
-          JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, fkDefinition)).toString());
-          setInvalidModified(foreignKeyMenu, valid(validator, entity, foreignKey), entity.modified(foreignKey));
-          foreignKeyMenu.setToolTipText(foreignKeyAttributeNames(foreignKey));
-          populateEntityMenu(foreignKeyMenu, referencedEntity, connection, visitedKeys);
-          rootMenu.add(foreignKeyMenu);
-        }
+  private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
+    List<ForeignKeyDefinition> fkDefinitions = new ArrayList<>(entity.definition().foreignKeys().definitions());
+    Text.collate(fkDefinitions);
+    for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
+      StringBuilder captionBuilder = new StringBuilder("[FK] ").append(fkDefinition.caption()).append(": ");
+      ForeignKey foreignKey = fkDefinition.attribute();
+      String caption = captionBuilder.append(createValueString(entity, fkDefinition)).toString();
+      JMenuItem menuItem = entity.isNull(foreignKey) ? new JMenuItem(caption) : new JMenu(caption);
+      configureMenuItem(menuItem, entity, foreignKey, foreignKeyAttributeNames(foreignKey));
+      rootMenu.add(menuItem);
+      Entity referencedEntity = entity.get(foreignKey);
+      if (referencedEntity != null) {
+        populateEntityMenu(menuItem, referencedEntity, connection);
       }
     }
   }
@@ -133,10 +106,8 @@ final class EntityPopupMenu extends JPopupMenu {
             .collect(joining(", "));
   }
 
-  private static void populateValueMenu(JComponent rootMenu, Entity entity, List<AttributeDefinition<?>> attributeDefinitions) {
-    Text.collate(attributeDefinitions);
-    EntityDefinition definition = entity.definition();
-    EntityValidator validator = definition.validator();
+  private static void populateValueMenu(JComponent rootMenu, Entity entity) {
+    List<AttributeDefinition<?>> attributeDefinitions = Text.collate(new ArrayList<>(entity.definition().attributes().definitions()));
     for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
       boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKey();
       if (!primaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
@@ -144,9 +115,8 @@ final class EntityPopupMenu extends JPopupMenu {
                 .append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
                 .append(attributeDefinition.derived() ? "*" : "").append("]: ")
                 .append(createValueString(entity, attributeDefinition)).toString());
-        menuItem.addActionListener(Control.control(() -> setClipboard(entity.string(attributeDefinition.attribute()))));
-        setInvalidModified(menuItem, valid(validator, entity, attributeDefinition.attribute()), entity.modified(attributeDefinition.attribute()));
-        menuItem.setToolTipText(attributeDefinition.attribute().toString());
+        menuItem.addActionListener(clipboardControl(entity, attributeDefinition.attribute()));
+        configureMenuItem(menuItem, entity, attributeDefinition.attribute(), attributeDefinition.attribute().toString());
         rootMenu.add(menuItem);
       }
     }
@@ -172,25 +142,45 @@ final class EntityPopupMenu extends JPopupMenu {
     return valueAsString;
   }
 
-  private static void setInvalidModified(JMenuItem menuItem, boolean valid, boolean modified) {
+  private static void configureMenuItem(JMenuItem menuItem, Entity entity, Attribute<?> attribute, String toolTipText) {
     Font currentFont = menuItem.getFont();
-    if (!valid) {
+    if (!valid(entity, attribute)) {
       menuItem.setForeground(Color.RED);
       menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
     }
-    if (modified) {
+    if (entity.modified(attribute)) {
       menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
     }
+    menuItem.setToolTipText(toolTipText);
   }
 
-  private static boolean valid(EntityValidator validator, Entity entity, Attribute<?> attribute) {
+  private static boolean valid(Entity entity, Attribute<?> attribute) {
     try {
-      validator.validate(entity, attribute);
+      entity.definition().validator().validate(entity, attribute);
       return true;
     }
     catch (ValidationException e) {
       return false;
     }
+  }
+
+  private static Entity populateEntityGraph(Entity entity, EntityConnection connection, Set<ForeignKeyEntity> visited) {
+    for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
+      Entity.Key referencedKey = entity.referencedKey(foreignKey);
+      if (entity.isNotNull(foreignKey)) {
+        ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, selectEntity(referencedKey, connection));
+        if (visited.contains(foreignKeyEntity)) {
+          entity.put(foreignKey, duplicateEntity(foreignKeyEntity.referencedEntity));
+        }
+        else {
+          visited.add(foreignKeyEntity);
+          entity.put(foreignKey, foreignKeyEntity.referencedEntity);
+          populateEntityGraph(foreignKeyEntity.referencedEntity, connection, visited);
+        }
+      }
+    }
+
+    return entity;
   }
 
   private static Entity selectEntity(Entity.Key primaryKey, EntityConnection connection) {
@@ -207,6 +197,62 @@ final class EntityPopupMenu extends JPopupMenu {
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static Entity duplicateEntity(Entity referencedEntity) {
+    return ProxyBuilder.builder(Entity.class)
+                  .delegate(referencedEntity)
+                  .method("toString", parameters -> referencedEntity + " <DUPLICATE>")
+                  .build();
+  }
+
+  private static Control clipboardControl(Entity entity, Attribute<?> attribute) {
+    return control(new ClipboardCommand(entity, attribute));
+  }
+
+  private static final class ClipboardCommand implements Control.Command {
+
+    private final Entity entity;
+    private final Attribute<?> attribute;
+
+    private ClipboardCommand(Entity entity, Attribute<?> attribute) {
+      this.entity = entity;
+      this.attribute = attribute;
+    }
+
+    @Override
+    public void execute() throws Exception {
+      setClipboard(entity.string(attribute));
+    }
+  }
+
+  private static final class ForeignKeyEntity {
+
+    private final ForeignKey foreignKey;
+    private final Entity referencedEntity;
+
+    private ForeignKeyEntity(ForeignKey foreignKey, Entity referencedEntity) {
+      this.foreignKey = foreignKey;
+      this.referencedEntity = referencedEntity;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (this == object) {
+        return true;
+      }
+      if (!(object instanceof ForeignKeyEntity)) {
+        return false;
+      }
+      ForeignKeyEntity that = (ForeignKeyEntity) object;
+
+      return Objects.equals(foreignKey, that.foreignKey) && Objects.equals(referencedEntity, that.referencedEntity);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(foreignKey, referencedEntity);
     }
   }
 }
