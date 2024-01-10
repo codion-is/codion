@@ -939,7 +939,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
 
     private final Entities entities;
-    private final Comparator<String> comparator = Text.spaceAwareCollator();
+    private final Comparator<String> comparator = Text.collator();
 
     private SupportPanelBuilderComparator(Entities entities) {
       this.entities = entities;

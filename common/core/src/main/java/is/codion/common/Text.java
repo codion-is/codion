@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -38,7 +37,7 @@ public final class Text {
    * Specifies the default collator locale language.<br>
    * Value type: String<br>
    * Default value: {@code Locale.getDefault().getLanguage()}.
-   * @see #spaceAwareCollator()
+   * @see #collator()
    * @see #collate(List)
    * @see Locale#toLanguageTag()
    */
@@ -79,10 +78,13 @@ public final class Text {
   /**
    * Sorts the string representations of the list contents, using the space aware collator
    * @param values the list to sort (collate)
-   * @see Text#spaceAwareCollator()
+   * @return the sorted list
+   * @see Text#collator()
    */
-  public static void collate(List<?> values) {
-    requireNonNull(values).sort(spaceAwareCollator());
+  public static <T> List<T> collate(List<T> values) {
+    requireNonNull(values).sort(collator());
+
+    return values;
   }
 
   /**
@@ -92,8 +94,8 @@ public final class Text {
    * @return a space aware collator
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
-  public static <T> Comparator<T> spaceAwareCollator() {
-    return spaceAwareCollator(new Locale(DEFAULT_COLLATOR_LANGUAGE.get()));
+  public static <T> Comparator<T> collator() {
+    return collator(new Locale(DEFAULT_COLLATOR_LANGUAGE.get()));
   }
 
   /**
@@ -104,32 +106,8 @@ public final class Text {
    * @return a space aware collator
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
-  public static <T> Comparator<T> spaceAwareCollator(Locale locale) {
-    return new ComparatorSansSpace<>(requireNonNull(locale));
-  }
-
-  /**
-   * Collates the contents of the list, replacing spaces with underscores before sorting
-   * @param collator the collator
-   * @param list the list
-   */
-  public static void collateSansSpaces(Collator collator, List<?> list) {
-    requireNonNull(list).sort((o1, o2) -> collateSansSpaces(collator, Objects.toString(o1), Objects.toString(o2)));
-  }
-
-  /**
-   * Collates the given strings after replacing spaces with underscores
-   * @param collator the collator to use
-   * @param stringOne the first string
-   * @param stringTwo the second string
-   * @return the collation result
-   */
-  public static int collateSansSpaces(Collator collator, String stringOne, String stringTwo) {
-    requireNonNull(collator, "collator");
-    requireNonNull(stringOne, "stringOne");
-    requireNonNull(stringTwo, "stringTwo");
-
-    return collator.compare(stringOne.replace(SPACE, UNDERSCORE), stringTwo.replace(SPACE, UNDERSCORE));
+  public static <T> Comparator<T> collator(Locale locale) {
+    return new SpaceAwareComparator<>(requireNonNull(locale));
   }
 
   /**
@@ -327,7 +305,7 @@ public final class Text {
     return stringBuilder.toString();
   }
 
-  private static final class ComparatorSansSpace<T> implements Comparator<T>, Serializable {
+  private static final class SpaceAwareComparator<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -335,16 +313,16 @@ public final class Text {
 
     private transient Collator collator;
 
-    private ComparatorSansSpace(Locale locale) {
+    private SpaceAwareComparator(Locale locale) {
       this.locale = locale;
     }
 
     @Override
     public int compare(T o1, T o2) {
-      return collateSansSpaces(getCollator(), o1.toString(), o2.toString());
+      return collator().compare(o1.toString().replace(SPACE, UNDERSCORE), o2.toString().replace(SPACE, UNDERSCORE));
     }
 
-    private Collator getCollator() {
+    private Collator collator() {
       if (collator == null) {
         collator = Collator.getInstance(this.locale);
       }

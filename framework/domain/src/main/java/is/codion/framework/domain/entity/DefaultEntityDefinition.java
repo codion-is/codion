@@ -994,7 +994,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
     private ColorProvider backgroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
     private ColorProvider foregroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
-    private Comparator<Entity> comparator = Text.spaceAwareCollator();
+    private Comparator<Entity> comparator = Text.collator();
     private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
     private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
 

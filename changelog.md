@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.24-SNAPSHOT
+### is.codion.common.core
+- Text.collate() now returns the sorted list, Text.spaceAwareCollator() renamed collator(). Text.collateSansSpaces() removed.
 
 ## 0.17.23
 ### is.codion.common.core

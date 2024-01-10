@@ -42,7 +42,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
   private static final String INVALID_ITEM_SUFFIX = ResourceBundle.getBundle(AbstractAttributeDefinition.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
 
-  private static final Comparator<?> LEXICAL_COMPARATOR = Text.spaceAwareCollator();
+  private static final Comparator<?> LEXICAL_COMPARATOR = Text.collator();
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
   private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
   private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();

@@ -59,7 +59,7 @@ abstract class AbstractItem<T> implements Item<T> {
 
   private Comparator<String> collator() {
     if (collator == null) {
-      collator = Text.spaceAwareCollator();
+      collator = Text.collator();
     }
 
     return collator;
