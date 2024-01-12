@@ -6,6 +6,7 @@ Codion Change Log
 - Text.collate() now returns the sorted list, Text.spaceAwareCollator() renamed collator(). Text.collateSansSpaces() removed.
 ### is.codion.swing.framework.ui
 - EntityPopupMenu bug fixed, cyclic reference detection was a bit too simplistic, each entity appeared only once, even though referenced via different foreign keys.
+- EntityEditComponentPanel.component(attribute) now Value based, setComponent() removed.
 
 ## 0.17.23
 ### is.codion.common.core

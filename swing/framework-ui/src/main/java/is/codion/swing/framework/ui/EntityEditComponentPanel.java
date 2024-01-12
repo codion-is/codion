@@ -115,7 +115,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   private final SwingEntityEditModel editModel;
   private final EntityComponents entityComponents;
-  private final Map<Attribute<?>, JComponent> components = new HashMap<>();
+  private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
   private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
   private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
   private final Value<JComponent> focusedInputComponent = Value.value();
@@ -172,16 +172,15 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * @param attribute the attribute
-   * @return the component associated with the given attribute
-   * @throws IllegalArgumentException in case no component or component builder has been associated with the given attribute
+   * @return the Value containing the component associated with the given attribute
    */
-  public final JComponent component(Attribute<?> attribute) {
-    JComponent component = getComponentInternal(attribute);
-    if (component == null) {
-      throw new IllegalArgumentException("No component associated with attribute: " + attribute);
+  public final Value<JComponent> component(Attribute<?> attribute) {
+    ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
+    if (componentBuilder != null) {
+      componentBuilder.build();
     }
 
-    return component;
+    return components.computeIfAbsent(attribute, k -> Value.value());
   }
 
   /**
@@ -260,10 +259,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute of the component to select
    */
   public final void requestComponentFocus(Attribute<?> attribute) {
-    JComponent component = getComponentInternal(attribute);
-    if (component != null) {
-      focusableComponent(component).requestFocus();
-    }
+    component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocus());
   }
 
   /**
@@ -294,12 +290,12 @@ public class EntityEditComponentPanel extends JPanel {
    * this returns all (non-excluded) attributes that have an associated component in this panel
    * that is enabled, displayable, visible and focusable.
    * @see #excludeComponentsFromSelection(Attribute[])
-   * @see #setComponent(Attribute, JComponent)
+   * @see #component(Attribute)
    */
   public final Collection<Attribute<?>> selectComponentAttributes() {
     return components.keySet().stream()
             .filter(attribute -> !excludeFromSelection.contains(attribute))
-            .filter(attribute -> componentSelectable(getComponentInternal(attribute)))
+            .filter(attribute -> componentSelectable(component(attribute).get()))
             .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
   }
 
@@ -338,7 +334,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * If set to true then component labels will indicate that the value is modified.
    * This applies to all components created by this edit component panel as well as
-   * components set via {@link #setComponent(Attribute, JComponent)} as long
+   * components set via {@link #component(Attribute)} as long
    * as the component has a JLabel associated with its 'labeledBy' client property.
    * Note that this has no effect on components that have already been created.
    * @param useModifiedIndicator the new value
@@ -369,18 +365,6 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final void setDefaultTextFieldColumns(int defaultTextFieldColumns) {
     this.defaultTextFieldColumns = defaultTextFieldColumns;
-  }
-
-  /**
-   * Associates the given input component with the given attribute.
-   * @param attribute the attribute
-   * @param component the input component
-   */
-  protected final void setComponent(Attribute<?> attribute, JComponent component) {
-    components.put(requireNonNull(attribute), requireNonNull(component));
-    if (useModifiedIndicator && attribute.entityType().equals(editModel.entityType())) {
-      editModel.modified(attribute).addDataListener(new ModifiedIndicator(component));
-    }
   }
 
   /**
@@ -432,7 +416,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
   protected final JPanel createInputPanel(Attribute<?> attribute) {
-    return createInputPanel(attribute, component(attribute));
+    return createInputPanel(attribute, getComponentOrThrow(attribute));
   }
 
   /**
@@ -505,7 +489,8 @@ public class EntityEditComponentPanel extends JPanel {
       // component, f.ex. this could be a text area wrapped in a scroll pane or a combobox on a panel with
       // a new instance button, we assume that this input component at least contains the actual component
       components.values().stream()
-              .filter(comp -> sameOrParentOf(inputComponent, comp))
+              .map(Value::get)
+              .filter(component -> sameOrParentOf(inputComponent, component))
               .findAny()
               .ifPresent(component -> setLabelForComponent((JLabel) labelComponent, component));
     }
@@ -840,7 +825,7 @@ public class EntityEditComponentPanel extends JPanel {
             .definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
     return (LabelBuilder<T>) Components.label(attributeDefinition.caption())
             .displayedMnemonic(attributeDefinition.mnemonic())
-            .labelFor(getComponentInternal(attribute));
+            .labelFor(component(attribute).get());
   }
 
   /**
@@ -852,7 +837,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     if (initialFocusAttribute.isNotNull()) {
-      return getComponentInternal(initialFocusAttribute.get());
+      return component(initialFocusAttribute.get()).get();
     }
 
     return null;
@@ -867,7 +852,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     if (afterInsertFocusAttribute.isNotNull()) {
-      return getComponentInternal(afterInsertFocusAttribute.get());
+      return component(afterInsertFocusAttribute.get()).get();
     }
 
     return getInitialFocusComponent();
@@ -904,13 +889,13 @@ public class EntityEditComponentPanel extends JPanel {
     }
   }
 
-  private JComponent getComponentInternal(Attribute<?> attribute) {
-    ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
-    if (componentBuilder != null) {
-      componentBuilder.build();
+  private JComponent getComponentOrThrow(Attribute<?> attribute) {
+    Value<JComponent> component = component(attribute);
+    if (component.isNull()) {
+      throw new IllegalArgumentException("No component associated with attribute: " + attribute);
     }
 
-    return components.get(attribute);
+    return component.get();
   }
 
   private void addFocusedComponentListener() {
@@ -989,6 +974,13 @@ public class EntityEditComponentPanel extends JPanel {
       componentBuilders.remove(attribute);
       setComponent(attribute, component);
     }
+
+    private void setComponent(Attribute<?> attribute, JComponent component) {
+      components.computeIfAbsent(requireNonNull(attribute), k -> Value.value()).set(requireNonNull(component));
+      if (useModifiedIndicator && attribute.entityType().equals(editModel.entityType())) {
+        editModel.modified(attribute).addDataListener(new ModifiedIndicator(component));
+      }
+    }
   }
 
   private final class FocusedInputComponentListener implements PropertyChangeListener {
@@ -1002,13 +994,10 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     private boolean inputComponent(JComponent component) {
-      for (JComponent inputComponent : components.values()) {
-        if (sameOrParentOf(inputComponent, component)) {
-          return true;
-        }
-      }
-
-      return false;
+      return components.values().stream()
+              .filter(Value::isNotNull)
+              .map(Value::get)
+              .anyMatch(comp -> sameOrParentOf(comp, component));
     }
   }
 
