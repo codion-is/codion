@@ -293,6 +293,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             Track.UNITPRICE.define()
                     .column()
                     .nullable(false)
+                    .minimumValue(0)
                     .maximumFractionDigits(2),
             Track.RANDOM.define()
                     .column()
