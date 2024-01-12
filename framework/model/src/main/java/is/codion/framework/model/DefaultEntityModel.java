@@ -146,7 +146,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
     }
     detailModels.put(detailModelLink.detailModel(), detailModelLink);
-    detailModelLink.active().addListener(() -> activeDetailModelChanged(detailModelLink));
+    detailModelLink.active().addDataListener(new ActiveDetailModelListener(detailModelLink));
 
     return detailModelLink;
   }
@@ -228,11 +228,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     detailModels().forEach(EntityModel::savePreferences);
   }
 
-  private void activeDetailModelChanged(DetailModelLink<M, E, T> detailModelLink) {
-    activeDetailModelsEvent.accept(activeDetailModels());
-    detailModelLink.onSelection(activeEntities());
-  }
-
   private void onMasterSelectionChanged() {
     List<Entity> activeEntities = activeEntities();
     for (M detailModel : activeDetailModels()) {
@@ -273,5 +268,22 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private void onDelete(Collection<Entity> deletedEntities) {
     detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onDelete(deletedEntities));
+  }
+
+  private final class ActiveDetailModelListener implements Consumer<Boolean> {
+
+    private final DetailModelLink<?, ?, ?> detailModelLink;
+
+    private ActiveDetailModelListener(DetailModelLink<?, ?, ?> detailModelLink) {
+      this.detailModelLink = detailModelLink;
+    }
+
+    @Override
+    public void accept(Boolean active) {
+      activeDetailModelsEvent.accept(activeDetailModels());
+      if (active) {
+        detailModelLink.onSelection(activeEntities());
+      }
+    }
   }
 }
