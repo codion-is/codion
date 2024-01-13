@@ -75,7 +75,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
             .transferFocusOnEnter(true)
             .build();
 
-    setComponent(Employee.DEPARTMENT_FK, departmentNumberField);
+    component(Employee.DEPARTMENT_FK).set(departmentNumberField);
 
     return Components.borderLayoutPanel()
             .westComponent(departmentNumberField)

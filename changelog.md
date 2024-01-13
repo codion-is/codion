@@ -4,8 +4,19 @@ Codion Change Log
 ## 0.17.24-SNAPSHOT
 ### is.codion.common.core
 - Text.collate() now returns the sorted list, Text.spaceAwareCollator() renamed collator(). Text.collateSansSpaces() removed.
+- AbstractValue, DefaultValueSet and DefaultState fields now initialized lazily.
+### is.codion.swing.common.ui
+- Utilities.printFocusOwner() bug fixed, no longer keeps adding listeners on subsequent calls. Component string now includes identity hash code in order to distinguish between instances of the same class. 
+### is.codion.framework.model
+- DefaultEntityModel.addDetailModel() bug fixed, no longer calls detailModelLink.selectionChanged() on all detail models each time the active detail model changes, only on the detail model being activated.
 ### is.codion.swing.framework.ui
 - EntityPopupMenu bug fixed, cyclic reference detection was a bit too simplistic, each entity appeared only once, even though referenced via different foreign keys.
+- EntityEditComponentPanel.component(attribute) now Value based, setComponent() removed.
+- EntityPanel, TabbedPanelLayout, focus handling when navigating between panels improved, jumps less.
+- EntityEditComponentPanel.transferFocusOnEnter, defaultTextFieldColumns and useModifiedIndicator now Value based.
+- EntityEditComponentPanel.useModifiedIndicator() renamed modifiedIndicator().
+- EntityEditPanel.setConfirmer() removed, confirmers now Value based and configured via confirmer().
+- EntityTablePanel.setDeleteConfirmer() removed, deleteConfirmer now Values based and configured via deleteConfirmer().
 
 ## 0.17.23
 ### is.codion.common.core

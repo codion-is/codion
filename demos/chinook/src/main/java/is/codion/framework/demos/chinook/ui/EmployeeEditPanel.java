@@ -45,7 +45,7 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 
   public EmployeeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    setDefaultTextFieldColumns(12);
+    defaultTextFieldColumns().set(12);
   }
 
   @Override

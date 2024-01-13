@@ -139,7 +139,11 @@ final class DefaultState implements State {
 
   @Override
   public boolean removeListener(Runnable listener) {
-    return observer().removeListener(listener);
+    if (observer != null) {
+      return observer.removeListener(listener);
+    }
+
+    return false;
   }
 
   @Override
@@ -149,7 +153,11 @@ final class DefaultState implements State {
 
   @Override
   public boolean removeDataListener(Consumer<Boolean> listener) {
-    return observer().removeDataListener(listener);
+    if (observer != null) {
+      return observer.removeDataListener(listener);
+    }
+
+    return false;
   }
 
   @Override
@@ -159,7 +167,11 @@ final class DefaultState implements State {
 
   @Override
   public boolean removeWeakListener(Runnable listener) {
-    return observer().removeWeakListener(listener);
+    if (observer != null) {
+      return observer.removeWeakListener(listener);
+    }
+
+    return false;
   }
 
   @Override
@@ -169,7 +181,11 @@ final class DefaultState implements State {
 
   @Override
   public boolean removeWeakDataListener(Consumer<Boolean> listener) {
-    return observer().removeWeakDataListener(listener);
+    if (observer != null) {
+      return observer.removeWeakDataListener(listener);
+    }
+
+    return false;
   }
 
   private final class Notifier implements Consumer<Boolean> {

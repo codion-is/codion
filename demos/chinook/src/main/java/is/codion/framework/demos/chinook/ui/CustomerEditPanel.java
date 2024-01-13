@@ -36,7 +36,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
   public CustomerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    setDefaultTextFieldColumns(12);
+    defaultTextFieldColumns().set(12);
   }
 
   @Override

@@ -93,6 +93,7 @@ public final class Text {
   /**
    * Sorts the string representations of the list contents, using the space aware collator
    * @param values the list to sort (collate)
+   * @param <T> the list element type
    * @return the sorted list
    * @see Text#collator()
    */

@@ -31,6 +31,8 @@ import java.util.function.Function;
 
 import static is.codion.common.value.Value.Notify.WHEN_CHANGED;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,13 +44,13 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractValue<T> implements Value<T> {
 
-  private final Event<T> changeEvent = Event.event();
   private final T nullValue;
   private final Notify notify;
-  private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
-  private final Map<Value<T>, ValueLink<T>> linkedValues = new LinkedHashMap<>(0);
-  private final Consumer<T> originalValueListener = new OriginalValueListener();
 
+  private Event<T> changeEvent;
+  private Set<Validator<T>> validators;
+  private Map<Value<T>, ValueLink<T>> linkedValues;
+  private Consumer<T> originalValueListener;
   private ValueObserver<T> observer;
 
   protected AbstractValue() {
@@ -77,7 +79,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   @Override
   public final boolean set(T value) {
     T newValue = value == null ? nullValue : value;
-    for (Validator<T> validator : validators) {
+    for (Validator<T> validator : validators()) {
       validator.validate(newValue);
     }
     T previousValue = get();
@@ -92,14 +94,12 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final ValueObserver<T> observer() {
-    synchronized (changeEvent) {
-      if (observer == null) {
-        observer = new DefaultValueObserver<>(this);
-      }
-
-      return observer;
+  public synchronized final ValueObserver<T> observer() {
+    if (observer == null) {
+      observer = new DefaultValueObserver<>(this);
     }
+
+    return observer;
   }
 
   @Override
@@ -114,47 +114,67 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final boolean addListener(Runnable listener) {
-    return changeEvent.addListener(listener);
+    return changeEvent().addListener(listener);
   }
 
   @Override
   public final boolean removeListener(Runnable listener) {
-    return changeEvent.removeListener(listener);
+    if (changeEvent != null) {
+      return changeEvent.removeListener(listener);
+    }
+
+    return false;
   }
 
   @Override
   public final boolean addDataListener(Consumer<T> listener) {
-    return changeEvent.addDataListener(listener);
+    return changeEvent().addDataListener(listener);
   }
 
   @Override
   public final boolean removeDataListener(Consumer<T> listener) {
-    return changeEvent.removeDataListener(listener);
+    if (changeEvent != null) {
+      return changeEvent.removeDataListener(listener);
+    }
+
+    return false;
   }
 
   @Override
   public final boolean addWeakListener(Runnable listener) {
-    return changeEvent.addWeakListener(listener);
+    return changeEvent().addWeakListener(listener);
   }
 
   @Override
   public final boolean removeWeakListener(Runnable listener) {
-    return changeEvent.removeWeakListener(listener);
+    if (changeEvent != null) {
+      return changeEvent.removeWeakListener(listener);
+    }
+
+    return false;
   }
 
   @Override
   public final boolean addWeakDataListener(Consumer<T> listener) {
-    return changeEvent.addWeakDataListener(listener);
+    return changeEvent().addWeakDataListener(listener);
   }
 
   @Override
   public final boolean removeWeakDataListener(Consumer<T> listener) {
-    return changeEvent.removeWeakDataListener(listener);
+    if (changeEvent != null) {
+      return changeEvent.removeWeakDataListener(listener);
+    }
+
+    return false;
   }
 
   @Override
   public final void link(Value<T> originalValue) {
-    if (linkedValues.containsKey(requireNonNull(originalValue))) {
+    requireNonNull(originalValue);
+    if (linkedValues == null) {
+      linkedValues = new LinkedHashMap<>(1);
+    }
+    if (linkedValues.containsKey(originalValue)) {
       throw new IllegalStateException("Values are already linked");
     }
     linkedValues.put(originalValue, new ValueLink<>(this, originalValue));
@@ -162,37 +182,56 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final void unlink(Value<T> originalValue) {
-    if (!linkedValues.containsKey(requireNonNull(originalValue))) {
-      throw new IllegalStateException("Values are not linked");
+    requireNonNull(originalValue);
+    if (linkedValues != null) {
+      if (!linkedValues.containsKey(originalValue)) {
+        throw new IllegalStateException("Values are not linked");
+      }
+      linkedValues.remove(originalValue).unlink();
     }
-    linkedValues.remove(originalValue).unlink();
   }
 
   @Override
   public final void link(ValueObserver<T> originalValue) {
-    set(requireNonNull(originalValue).get());
+    requireNonNull(originalValue);
+    if (originalValueListener == null) {
+      originalValueListener = new OriginalValueListener();
+    }
+    set(originalValue.get());
     originalValue.addDataListener(originalValueListener);
   }
 
   @Override
   public final void unlink(ValueObserver<T> originalValue) {
-    requireNonNull(originalValue).removeDataListener(originalValueListener);
+    requireNonNull(originalValue);
+    if (originalValueListener != null) {
+      originalValue.removeDataListener(originalValueListener);
+    }
   }
 
   @Override
   public final boolean addValidator(Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
+    if (validators == null) {
+      validators = new LinkedHashSet<>(1);
+    }
+
     return validators.add(validator);
   }
 
   @Override
   public final boolean removeValidator(Validator<T> validator) {
-    return validators.remove(requireNonNull(validator));
+    requireNonNull(validator, "validator");
+    if (validators != null) {
+      return validators.remove(validator);
+    }
+
+    return false;
   }
 
   @Override
   public final void validate(T value) {
-    validators.forEach(validator -> validator.validate(value));
+    validators().forEach(validator -> validator.validate(value));
   }
 
   /**
@@ -205,15 +244,17 @@ public abstract class AbstractValue<T> implements Value<T> {
    * Notifies listeners that the underlying value has changed or at least that it may have changed
    */
   protected final void notifyListeners() {
-    changeEvent.accept(get());
+    if (changeEvent != null) {
+      changeEvent.accept(get());
+    }
   }
 
   final Set<Value<T>> linkedValues() {
-    return linkedValues.keySet();
+    return linkedValues == null ? emptySet() : linkedValues.keySet();
   }
 
   final Collection<Validator<T>> validators() {
-    return validators;
+    return validators == null ? emptyList() : validators;
   }
 
   private boolean notifyListeners(boolean changed) {
@@ -222,6 +263,14 @@ public abstract class AbstractValue<T> implements Value<T> {
     }
 
     return changed;
+  }
+
+  private synchronized Event<T> changeEvent() {
+    if (changeEvent == null) {
+      changeEvent = Event.event();
+    }
+
+    return changeEvent;
   }
 
   private final class OriginalValueListener implements Consumer<T> {

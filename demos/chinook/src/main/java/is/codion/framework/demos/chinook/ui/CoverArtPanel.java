@@ -44,7 +44,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -63,11 +62,9 @@ final class CoverArtPanel extends JPanel {
 
   private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);
   private static final Dimension DIALOG_SIZE = new Dimension(400, 400);
-  private static final String[] IMAGE_FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "png", "bmp", "gif"};
-
-  private static final String COVER = "cover";
-  private static final String SELECT_IMAGE = "select_image";
-  private static final String IMAGES = "images";
+  private static final FileNameExtensionFilter IMAGE_FILE_FILTER =
+          new FileNameExtensionFilter(BUNDLE.getString("images"),
+                  new String[] {"jpg", "jpeg", "png", "bmp", "gif"});
 
   private final JPanel basePanel;
   private final NavigableImagePanel imagePanel;
@@ -116,8 +113,8 @@ final class CoverArtPanel extends JPanel {
   private void selectCover() throws IOException {
     File coverFile = Dialogs.fileSelectionDialog()
             .owner(this)
-            .title(BUNDLE.getString(SELECT_IMAGE))
-            .fileFilter(new FileNameExtensionFilter(BUNDLE.getString(IMAGES), IMAGE_FILE_EXTENSIONS))
+            .title(BUNDLE.getString("select_image"))
+            .fileFilter(IMAGE_FILE_FILTER)
             .selectFile();
     imageBytes.set(Files.readAllBytes(coverFile.toPath()));
   }
@@ -152,7 +149,7 @@ final class CoverArtPanel extends JPanel {
     Dialogs.componentDialog(basePanel)
             .owner(this)
             .modal(false)
-            .title(BUNDLE.getString(COVER))
+            .title(BUNDLE.getString("cover"))
             .onClosed(windowEvent -> embedded.set(true))
             .onOpened(windowEvent -> imagePanel.resetView())
             .size(DIALOG_SIZE)
@@ -201,17 +198,22 @@ final class CoverArtPanel extends JPanel {
 
     @Override
     protected boolean importFiles(Component component, List<File> files) {
-      File importedFile = files.get(0);
-      boolean isImage = Arrays.stream(IMAGE_FILE_EXTENSIONS)
-              .anyMatch(extension -> importedFile.getName().toLowerCase().endsWith(extension));
       try {
-        imageBytes.set(isImage ? Files.readAllBytes(importedFile.toPath()) : null);
+        if (singleImage(files)) {
+          imageBytes.set(Files.readAllBytes(files.get(0).toPath()));
 
-        return isImage;
+          return true;
+        }
+
+        return false;
       }
       catch (IOException e) {
         throw new RuntimeException(e);
       }
+    }
+
+    private boolean singleImage(List<File> files) {
+      return files.size() == 1 && IMAGE_FILE_FILTER.accept(files.get(0));
     }
   }
 }

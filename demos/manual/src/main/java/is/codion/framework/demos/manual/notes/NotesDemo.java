@@ -145,7 +145,7 @@ public final class NotesDemo {
               .action(Control.control(this::insertDeleteOrUpdate));
 
       setLayout(Layouts.borderLayout());
-      add(component(Note.NOTE), BorderLayout.CENTER);
+      add(component(Note.NOTE).get(), BorderLayout.CENTER);
       // Add a button based on the CLEAR control
       add(new JButton(control(EditControl.CLEAR).get()), BorderLayout.EAST);
     }

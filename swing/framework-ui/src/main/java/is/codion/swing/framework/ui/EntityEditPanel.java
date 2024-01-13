@@ -118,7 +118,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final Set<EditControl> editControls;
   private final Map<EditControl, Value<Control>> controls;
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
-  private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
+  private final EnumMap<Confirmer.Action, Value<Confirmer>> confirmers;
   private final State clearAfterInsert = State.state(true);
   private final State requestFocusAfterInsert = State.state(true);
   private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling =
@@ -167,6 +167,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     this.editControls = validateControlCodes(editControls);
     this.controls = createControlsMap();
+    this.confirmers = createConfirmersMap();
     if (editModel.exists().not().get()) {
       editModel.setDefaults();
     }
@@ -217,12 +218,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Sets the confirmer to use for the given action.
+   * Controls the confirmer to use for the given action, the default confirmer is used if this is set to null.
    * @param action the confirmation action
-   * @param confirmer the confirmer to use for the given action, null for the default one
+   * @return the {@link Value} controlling the given confirmer
    */
-  public final void setConfirmer(Confirmer.Action action, Confirmer confirmer) {
-    confirmers.put(requireNonNull(action), confirmer);
+  public final Value<Confirmer> confirmer(Confirmer.Action action) {
+    return confirmers.get(requireNonNull(action));
   }
 
   /**
@@ -277,9 +278,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs insert on the active entity after asking for confirmation using the {@link Confirmer}
    * associated with the {@link Confirmer.Action#INSERT} action.
    * Note that the default insert {@link Confirmer} simply returns true, so in order to implement
-   * a insert confirmation you must set the {@link Confirmer} via {@link #setConfirmer(Confirmer.Action, Confirmer)}.
+   * a insert confirmation you must set the {@link Confirmer} via {@link #confirmer(Confirmer.Action)}.
    * @return true in case of successful insert, false otherwise
-   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   * @see #confirmer(Confirmer.Action)
    */
   public final boolean insertWithConfirmation() {
     if (confirmInsert()) {
@@ -321,7 +322,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs delete on the active entity after asking for confirmation using the {@link Confirmer}
    * associated with the {@link Confirmer.Action#DELETE} action.
    * @return true if the delete operation was successful
-   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   * @see #confirmer(Confirmer.Action)
    */
   public final boolean deleteWithConfirmation() {
     if (confirmDelete()) {
@@ -358,7 +359,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs update on the active entity after asking for confirmation using the {@link Confirmer}
    * associated with the {@link Confirmer.Action#UPDATE} action.
    * @return true if the update operation was successful
-   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   * @see #confirmer(Confirmer.Action)
    */
   public final boolean updateWithConfirmation() {
     if (confirmUpdate()) {
@@ -401,26 +402,26 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * @return true if confirmed
-   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   * @see #confirmer(Confirmer.Action)
    */
   protected final boolean confirmInsert() {
-    return confirmers.getOrDefault(Confirmer.Action.INSERT, DEFAULT_INSERT_CONFIRMER).confirm(this);
+    return confirmers.get(Confirmer.Action.INSERT).get().confirm(this);
   }
 
   /**
    * @return true if confirmed
-   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   * @see #confirmer(Confirmer.Action)
    */
   protected final boolean confirmUpdate() {
-    return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
+    return confirmers.get(Confirmer.Action.UPDATE).get().confirm(this);
   }
 
   /**
    * @return true if confirmed
-   * @see #setConfirmer(Confirmer.Action, Confirmer)
+   * @see #confirmer(Confirmer.Action)
    */
   protected final boolean confirmDelete() {
-    return confirmers.getOrDefault(Confirmer.Action.DELETE, DEFAULT_DELETE_CONFIRMER).confirm(this);
+    return confirmers.get(Confirmer.Action.DELETE).get().confirm(this);
   }
 
   /**
@@ -618,6 +619,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (initialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
+  }
+
+  private static EnumMap<Confirmer.Action, Value<Confirmer>> createConfirmersMap() {
+    EnumMap<Confirmer.Action, Value<Confirmer>> enumMap = new EnumMap<>(Confirmer.Action.class);
+    enumMap.put(Confirmer.Action.INSERT, Value.value(DEFAULT_INSERT_CONFIRMER, DEFAULT_INSERT_CONFIRMER));
+    enumMap.put(Confirmer.Action.UPDATE, Value.value(DEFAULT_UPDATE_CONFIRMER, DEFAULT_UPDATE_CONFIRMER));
+    enumMap.put(Confirmer.Action.DELETE, Value.value(DEFAULT_DELETE_CONFIRMER, DEFAULT_DELETE_CONFIRMER));
+
+    return enumMap;
   }
 
   private static Set<EditControl> validateControlCodes(EditControl[] editControls) {

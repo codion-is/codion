@@ -44,6 +44,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -614,7 +615,7 @@ public class EntityPanel extends JPanel {
 
   /**
    * Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
-   * It is up the panel or application layout to make sure this panel is visible before activation.
+   * It is up the panel or application layout to make sure this panel is made visible when activated.
    * @see #addActivateListener(Consumer)
    */
   public final void activate() {
@@ -1201,7 +1202,7 @@ public class EntityPanel extends JPanel {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
       Component focusedComponent = (Component) changeEvent.getNewValue();
-      EntityPanel entityPanelParent = parentOfType(EntityPanel.class, focusedComponent);
+      EntityPanel entityPanelParent = entityPanel(focusedComponent);
       if (entityPanelParent != null) {
         if (entityPanelParent.containsEditPanel()) {
           entityPanelParent.editPanel().active().set(true);
@@ -1213,6 +1214,17 @@ public class EntityPanel extends JPanel {
           editPanelParent.active().set(true);
         }
       }
+    }
+
+    private static EntityPanel entityPanel(Component focusedComponent) {
+      if (focusedComponent instanceof JTabbedPane) {
+        Component selectedComponent = ((JTabbedPane) focusedComponent).getSelectedComponent();
+        if (selectedComponent instanceof EntityPanel) {
+          return (EntityPanel) selectedComponent;
+        }
+      }
+
+      return parentOfType(EntityPanel.class, focusedComponent);
     }
   }
 

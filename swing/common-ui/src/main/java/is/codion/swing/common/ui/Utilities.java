@@ -39,6 +39,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
@@ -49,8 +50,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
+import static java.lang.Integer.toHexString;
+import static java.lang.System.identityHashCode;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -358,7 +362,11 @@ public final class Utilities {
    * when the 'focusOwner' value changes in the current keyboard focus manager.
    */
   public static void printFocusOwner() {
-    getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new PrintFocusOwnerPropertyChangeListener());
+    KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
+    if (Stream.of(focusManager.getPropertyChangeListeners())
+            .noneMatch(PrintFocusOwnerPropertyChangeListener.class::isInstance)) {
+      focusManager.addPropertyChangeListener("focusOwner", new PrintFocusOwnerPropertyChangeListener());
+    }
   }
 
   private static final class PrintFocusOwnerPropertyChangeListener implements PropertyChangeListener {
@@ -367,8 +375,15 @@ public final class Utilities {
     public void propertyChange(PropertyChangeEvent changeEvent) {
       Component oldValue = (Component) changeEvent.getOldValue();
       Component newValue = (Component) changeEvent.getNewValue();
-      System.out.println((oldValue == null ? "null" : oldValue.getClass().getSimpleName()) + " -> " +
-              (newValue == null ? "null" : newValue.getClass().getSimpleName()));
+      System.out.println(toString(oldValue) + " -> " + toString(newValue));
+    }
+
+    private static String toString(Component component) {
+      if (component == null) {
+        return "null";
+      }
+
+      return component.getClass().getSimpleName() + "@" + toHexString(identityHashCode(component));
     }
   }
 
