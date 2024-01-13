@@ -93,15 +93,15 @@ public class EntityEditComponentPanel extends JPanel {
    * Default value: true
    * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
    */
-  public static final PropertyValue<Boolean> USE_MODIFIED_INDICATOR =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditComponentPanel.useModifiedIndicator", true);
+  public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicator", true);
 
   /**
    * The type of underline to use to indicate a modified value<br>
    * Value type: Integer<br>
    * Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}<br>
    * Valid values: {@link TextAttribute}.UNDERLINE_*
-   * @see #USE_MODIFIED_INDICATOR
+   * @see #MODIFIED_INDICATOR
    */
   public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
           Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
@@ -128,7 +128,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   private final State transferFocusOnEnter = State.state(true);
   private final Value<Integer> defaultTextFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
-  private final State useModifiedIndicator = State.state(USE_MODIFIED_INDICATOR.get());
+  private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.get());
 
   /**
    * Instantiates a new EntityEditComponentPanel
@@ -339,11 +339,11 @@ public class EntityEditComponentPanel extends JPanel {
    * as the component has a JLabel associated with its 'labeledBy' client property.
    * Note that this has no effect on components that have already been created.
    * @return the State controlling whether components display an indicator if the value is modified
-   * @see #USE_MODIFIED_INDICATOR
+   * @see #MODIFIED_INDICATOR
    * @see JLabel#setLabelFor(Component)
    */
-  protected final State useModifiedIndicator() {
-    return useModifiedIndicator;
+  protected final State modifiedIndicator() {
+    return modifiedIndicator;
   }
 
   /**
@@ -978,7 +978,7 @@ public class EntityEditComponentPanel extends JPanel {
 
     private void setComponent(Attribute<?> attribute, JComponent component) {
       components.computeIfAbsent(requireNonNull(attribute), k -> Value.value()).set(requireNonNull(component));
-      if (useModifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
+      if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
         editModel.modified(attribute).addDataListener(new ModifiedIndicator(component));
       }
     }

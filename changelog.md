@@ -13,6 +13,7 @@ Codion Change Log
 - EntityEditComponentPanel.component(attribute) now Value based, setComponent() removed.
 - EntityPanel, TabbedPanelLayout, focus handling when navigating between panels improved, jumps less.
 - EntityEditComponentPanel.transferFocusOnEnter, defaultTextFieldColumns and useModifiedIndicator now Value based.
+- EntityEditComponentPanel.useModifiedIndicator() renamed modifiedIndicator().
 
 ## 0.17.23
 ### is.codion.common.core
