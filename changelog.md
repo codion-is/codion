@@ -14,6 +14,8 @@ Codion Change Log
 - EntityPanel, TabbedPanelLayout, focus handling when navigating between panels improved, jumps less.
 - EntityEditComponentPanel.transferFocusOnEnter, defaultTextFieldColumns and useModifiedIndicator now Value based.
 - EntityEditComponentPanel.useModifiedIndicator() renamed modifiedIndicator().
+- EntityEditPanel.setConfirmer() removed, confirmers now Value based and configured via confirmer().
+- EntityTablePanel.setDeleteConfirmer() removed, deleteConfirmer now Values based and configured via deleteConfirmer().
 
 ## 0.17.23
 ### is.codion.common.core

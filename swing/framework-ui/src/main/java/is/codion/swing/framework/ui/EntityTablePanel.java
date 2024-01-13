@@ -334,8 +334,8 @@ public class EntityTablePanel extends JPanel {
   private final FilteredTable<Entity, Attribute<?>> table;
   private final StatusPanel statusPanel;
   private final JPanel southPanel = new JPanel(new BorderLayout());
+  private final Value<Confirmer> deleteConfirmer;
 
-  private Confirmer deleteConfirmer = new DeleteConfirmer();
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
   private JScrollPane conditionPanelScrollPane;
@@ -375,6 +375,7 @@ public class EntityTablePanel extends JPanel {
     this.table = createTable();
     this.statusPanel = new StatusPanel();
     this.controls = createControlsMap();
+    this.deleteConfirmer = createDeleteConfirmer();
     this.settings = new Settings();
   }
 
@@ -548,10 +549,11 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param deleteConfirmer the delete confirmer, null for the default one
+   * If set to null the default delete confirmer is used.
+   * @return the {@link Value} controlling the delete confirmer
    */
-  public final void setDeleteConfirmer(Confirmer deleteConfirmer) {
-    this.deleteConfirmer = deleteConfirmer == null ? new DeleteConfirmer() : deleteConfirmer;
+  public final Value<Confirmer> deleteConfirmer() {
+    return deleteConfirmer;
   }
 
   @Override
@@ -596,9 +598,9 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Deletes the entities selected in the underlying table model after asking for confirmation using
-   * the {@link Confirmer} set via {@link #setDeleteConfirmer(Confirmer)}.
+   * the {@link Confirmer} set via {@link #deleteConfirmer()}.
    * @return true if the delete operation was successful
-   * @see #setDeleteConfirmer(EntityEditPanel.Confirmer)
+   * @see #deleteConfirmer()
    * @see #beforeDelete()
    */
   public final boolean deleteWithConfirmation() {
@@ -1015,10 +1017,10 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @return true if confirmed
-   * @see #setDeleteConfirmer(Confirmer)
+   * @see #deleteConfirmer()
    */
   protected final boolean confirmDelete() {
-    return deleteConfirmer.confirm(this);
+    return deleteConfirmer.get().confirm(this);
   }
 
   /**
@@ -1604,6 +1606,12 @@ public class EntityTablePanel extends JPanel {
 
               return value;
             }));
+  }
+
+  private Value<Confirmer> createDeleteConfirmer() {
+    DeleteConfirmer defaultDeleteConfirmer = new DeleteConfirmer();
+
+    return Value.value(defaultDeleteConfirmer, defaultDeleteConfirmer);
   }
 
   private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
