@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.24-SNAPSHOT
 ### is.codion.common.core
 - Text.collate() now returns the sorted list, Text.spaceAwareCollator() renamed collator(). Text.collateSansSpaces() removed.
+- AbstractValue, DefaultValueSet and DefaultState fields now initialized lazily.
 ### is.codion.swing.common.ui
 - Utilities.printFocusOwner() bug fixed, no longer keeps adding listeners on subsequent calls. Component string now includes identity hash code in order to distinguish between instances of the same class. 
 ### is.codion.framework.model
