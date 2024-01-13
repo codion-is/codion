@@ -292,7 +292,8 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     TabbedPaneBuilder builder = tabbedPane()
             .focusable(false)
-            .changeListener(e -> selectedDetailPanel().activate());
+            .changeListener(e -> selectedDetailPanel().activate())
+            .onBuild(tabbedPane -> tabbedPane.setFocusCycleRoot(true));
     entityPanel.detailPanels().forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
             .toolTipText(detailPanel.getDescription())
             .add());
@@ -378,7 +379,9 @@ public final class TabbedPanelLayout implements PanelLayout {
     @Override
     public void select(EntityPanel detailPanel) {
       if (detailPanelTabbedPane != null) {
+        detailPanelTabbedPane.setFocusable(true);
         detailPanelTabbedPane.setSelectedComponent(detailPanel);
+        detailPanelTabbedPane.setFocusable(false);
       }
       activateDetailModelLink(detailPanel.model());
     }

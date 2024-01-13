@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPopupMenu bug fixed, cyclic reference detection was a bit too simplistic, each entity appeared only once, even though referenced via different foreign keys.
 - EntityEditComponentPanel.component(attribute) now Value based, setComponent() removed.
+- EntityPanel, TabbedPanelLayout, focus handling when navigating between panels improved, jumps less.
 
 ## 0.17.23
 ### is.codion.common.core
