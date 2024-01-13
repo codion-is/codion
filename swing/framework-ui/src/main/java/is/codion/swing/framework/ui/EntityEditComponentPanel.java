@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -125,9 +126,9 @@ public class EntityEditComponentPanel extends JPanel {
   private final Value<JComponent> afterInsertFocusComponent = Value.value();
   private final Value<Attribute<?>> afterInsertFocusAttribute = Value.value();
 
-  private boolean transferFocusOnEnter = true;
-  private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.get();
-  private boolean useModifiedIndicator = USE_MODIFIED_INDICATOR.get();
+  private final State transferFocusOnEnter = State.state(true);
+  private final Value<Integer> defaultTextFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
+  private final State useModifiedIndicator = State.state(USE_MODIFIED_INDICATOR.get());
 
   /**
    * Instantiates a new EntityEditComponentPanel
@@ -337,34 +338,34 @@ public class EntityEditComponentPanel extends JPanel {
    * components set via {@link #component(Attribute)} as long
    * as the component has a JLabel associated with its 'labeledBy' client property.
    * Note that this has no effect on components that have already been created.
-   * @param useModifiedIndicator the new value
+   * @return the State controlling whether components display an indicator if the value is modified
    * @see #USE_MODIFIED_INDICATOR
    * @see JLabel#setLabelFor(Component)
    */
-  protected final void setUseModifiedIndicator(boolean useModifiedIndicator) {
-    this.useModifiedIndicator = useModifiedIndicator;
+  protected final State useModifiedIndicator() {
+    return useModifiedIndicator;
   }
 
   /**
    * If set to true then components created subsequently will transfer focus on enter, otherwise not.
    * Note that this has no effect on components that have already been created.
-   * @param transferFocusOnEnter the new value
+   * @return the State controlling whether components transfer focus on enter
    * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
    */
-  protected final void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
-    this.transferFocusOnEnter = transferFocusOnEnter;
+  protected final State transferFocusOnEnter() {
+    return transferFocusOnEnter;
   }
 
   /**
-   * Sets the default number of text field columns, -1 for not settings the columns
-   * @param defaultTextFieldColumns the default text field columns
+   * Controls the default number of text field columns, -1 for not settings the columns
+   * @return the Value controlling the default number of text field columns
    * @see #DEFAULT_TEXT_FIELD_COLUMNS
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
    * @see #createTextFieldPanel(Attribute)
    */
-  protected final void setDefaultTextFieldColumns(int defaultTextFieldColumns) {
-    this.defaultTextFieldColumns = defaultTextFieldColumns;
+  protected final Value<Integer> defaultTextFieldColumns() {
+    return defaultTextFieldColumns;
   }
 
   /**
@@ -517,7 +518,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
-            .columns(defaultTextFieldColumns)
+            .columns(defaultTextFieldColumns.get())
             .onBuild(inputPanel -> addValidator(attribute, inputPanel.textField(), editModel())));
   }
 
@@ -554,7 +555,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
     return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
-            .columns(defaultTextFieldColumns)
+            .columns(defaultTextFieldColumns.get())
             .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
   }
 
@@ -636,7 +637,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
     return setComponentBuilder(attribute, entityComponents.integerField(attribute)
-            .columns(defaultTextFieldColumns)
+            .columns(defaultTextFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -647,7 +648,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
     return setComponentBuilder(attribute, entityComponents.longField(attribute)
-            .columns(defaultTextFieldColumns)
+            .columns(defaultTextFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -658,7 +659,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponents.doubleField(attribute)
-            .columns(defaultTextFieldColumns)
+            .columns(defaultTextFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -669,7 +670,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
     return setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
-            .columns(defaultTextFieldColumns)
+            .columns(defaultTextFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -778,7 +779,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey))
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns.get()));
   }
 
   /**
@@ -791,7 +792,7 @@ public class EntityEditComponentPanel extends JPanel {
                                                                                   Supplier<EntityEditPanel> editPanelSupplier) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey), editPanelSupplier)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns.get()));
   }
 
   /**
@@ -873,7 +874,7 @@ public class EntityEditComponentPanel extends JPanel {
       throw new IllegalStateException("ComponentBuilder has already been set for attribute: " + attribute);
     }
     componentBuilders.put(attribute, componentBuilder
-            .transferFocusOnEnter(transferFocusOnEnter)
+            .transferFocusOnEnter(transferFocusOnEnter.get())
             .linkedValue(editModel().value(attribute))
             .onBuild(new OnComponentBuilt<>(attribute)));
 
@@ -977,7 +978,7 @@ public class EntityEditComponentPanel extends JPanel {
 
     private void setComponent(Attribute<?> attribute, JComponent component) {
       components.computeIfAbsent(requireNonNull(attribute), k -> Value.value()).set(requireNonNull(component));
-      if (useModifiedIndicator && attribute.entityType().equals(editModel.entityType())) {
+      if (useModifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
         editModel.modified(attribute).addDataListener(new ModifiedIndicator(component));
       }
     }

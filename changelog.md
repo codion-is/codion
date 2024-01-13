@@ -12,6 +12,7 @@ Codion Change Log
 - EntityPopupMenu bug fixed, cyclic reference detection was a bit too simplistic, each entity appeared only once, even though referenced via different foreign keys.
 - EntityEditComponentPanel.component(attribute) now Value based, setComponent() removed.
 - EntityPanel, TabbedPanelLayout, focus handling when navigating between panels improved, jumps less.
+- EntityEditComponentPanel.transferFocusOnEnter, defaultTextFieldColumns and useModifiedIndicator now Value based.
 
 ## 0.17.23
 ### is.codion.common.core
