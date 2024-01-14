@@ -6,7 +6,8 @@ Codion Change Log
 - Text.collate() now returns the sorted list, Text.spaceAwareCollator() renamed collator(). Text.collateSansSpaces() removed.
 - AbstractValue, DefaultValueSet and DefaultState fields now initialized lazily.
 ### is.codion.swing.common.ui
-- Utilities.printFocusOwner() bug fixed, no longer keeps adding listeners on subsequent calls. Component string now includes identity hash code in order to distinguish between instances of the same class. 
+- Utilities.printFocusOwner() bug fixed, no longer keeps adding listeners on subsequent calls. Component string now includes identity hash code in order to distinguish between instances of the same class.
+- ControlPanelBuilder, methods for configuring button builders added, related refactoring.
 ### is.codion.framework.model
 - DefaultEntityModel.addDetailModel() bug fixed, no longer calls detailModelLink.selectionChanged() on all detail models each time the active detail model changes, only on the detail model being activated.
 ### is.codion.swing.framework.ui
@@ -17,6 +18,10 @@ Codion Change Log
 - EntityEditComponentPanel.useModifiedIndicator() renamed modifiedIndicator().
 - EntityEditPanel.setConfirmer() removed, confirmers now Value based and configured via confirmer().
 - EntityTablePanel.setDeleteConfirmer() removed, deleteConfirmer now Values based and configured via deleteConfirmer().
+- EntityComboBoxPanel, EntitySearchFieldPanel, add/edit buttons now transfer focus on enter when focusable.
+- EntityEditComponentPanel.Defaults added with textFieldColumns() replacing defaultTextFieldColumns(), accessible via defaults().
+- EntityEditComponentPanel.Defaults.foreignKeySearchFieldColumns(), comboBoxPreferredWidth(), itemComboBoxPreferredWidth() and foreignKeyComboBoxPreferredWidth() added.
+- EntityComboBoxPanel.Builder.comboBoxPreferredWidth() added.
 
 ## 0.17.23
 ### is.codion.common.core

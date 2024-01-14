@@ -23,6 +23,8 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
+import java.awt.Dimension;
+import java.util.function.Consumer;
 
 /**
  * Builds panels with controls.
@@ -56,6 +58,24 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
   B separator();
 
   /**
+   * @param includeButtonText true if buttons should include text
+   * @return this builder instance
+   */
+  B includeButtonText(boolean includeButtonText);
+
+  /**
+   * @param preferredButtonSize the preferred button size
+   * @return this builder instance
+   */
+  B preferredButtonSize(Dimension preferredButtonSize);
+
+  /**
+   * @param buttonsFocusable whether the buttons should be focusable, default is {@code true}
+   * @return this builder instance
+   */
+  B buttonsFocusable(boolean buttonsFocusable);
+
+  /**
    * Specifies how toggle controls are presented on this control panel.
    * The default is {@link ToggleButtonType#BUTTON}.
    * @param toggleButtonType the toggle button type
@@ -64,15 +84,30 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
   B toggleButtonType(ToggleButtonType toggleButtonType);
 
   /**
-   * @param buttonBuilder the button builder to use when creating buttons
+   * Provides a way to configure the {@link ButtonBuilder} used by this {@link ControlPanelBuilder}.
+   * @param buttonBuilder provides the button builder used to create buttons
    * @return this builder instance
    */
-  B buttonBuilder(ButtonBuilder<?, ?, ?> buttonBuilder);
+  B buttonBuilder(Consumer<ButtonBuilder<?, ?, ?>> buttonBuilder);
 
   /**
-   * Overrides {@link #toggleButtonType(ToggleButtonType)}.
-   * @param toggleButtonBuilder the toggle button builder to use when creating toggle buttons
+   * Provides a way to configure the {@link ToggleButtonBuilder} used by this {@link ControlPanelBuilder}.
+   * @param toggleButtonBuilder provides the toggle button builder used to create toggle buttons
    * @return this builder instance
    */
-  B toggleButtonBuilder(ToggleButtonBuilder<?, ?> toggleButtonBuilder);
+  B toggleButtonBuilder(Consumer<ToggleButtonBuilder<?, ?>> toggleButtonBuilder);
+
+  /**
+   * Provides a way to configure the {@link CheckBoxBuilder} used by this {@link ControlPanelBuilder}.
+   * @param checkBoxBuilder provides the toggle button builder used to create check boxes
+   * @return this builder instance
+   */
+  B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder);
+
+  /**
+   * Provides a way to configure the {@link RadioButtonBuilder} used by this {@link ControlPanelBuilder}.
+   * @param radioButtonBuilder provides the toggle button builder used to create radio buttons
+   * @return this builder instance
+   */
+  B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder);
 }

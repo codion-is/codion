@@ -27,16 +27,11 @@ import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-
-import static java.util.Objects.requireNonNull;
 
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
 
-  private boolean buttonsFocusable = true;
-  private Dimension preferredButtonSize;
   private int buttonGap = Layouts.GAP.get();
 
   DefaultButtonPanelBuilder(Action... actions) {
@@ -48,18 +43,6 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   }
 
   @Override
-  public ButtonPanelBuilder buttonsFocusable(boolean buttonsFocusable) {
-    this.buttonsFocusable = buttonsFocusable;
-    return this;
-  }
-
-  @Override
-  public ButtonPanelBuilder preferredButtonSize(Dimension preferredButtonSize) {
-    this.preferredButtonSize = requireNonNull(preferredButtonSize);
-    return this;
-  }
-
-  @Override
   public ButtonPanelBuilder buttonGap(int buttonGap) {
     this.buttonGap = buttonGap;
     return this;
@@ -68,7 +51,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
-    new ButtonControlHandler(panel, controls(), getButtonBuilder(), getToggleButtonBuilder());
+    new ButtonControlHandler(panel, controls(), buttonBuilder(), toggleButtonBuilder());
 
     return panel;
   }
@@ -77,18 +60,6 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
     return new JPanel(orientation() == SwingConstants.HORIZONTAL ?
             new GridLayout(1, 0, buttonGap, 0) :
             new GridLayout(0, 1, 0, buttonGap));
-  }
-
-  private ToggleButtonBuilder<?, ?> getToggleButtonBuilder() {
-    return toggleButtonBuilder().orElse(createToggleButtonBuilder()
-            .focusable(buttonsFocusable)
-            .preferredSize(preferredButtonSize));
-  }
-
-  private ButtonBuilder<?, ?, ?> getButtonBuilder() {
-    return buttonBuilder().orElse(ButtonBuilder.builder()
-            .focusable(buttonsFocusable)
-            .preferredSize(preferredButtonSize));
   }
 
   private final class ButtonControlHandler extends ControlHandler {

@@ -28,7 +28,8 @@ public class ItemEditPanel extends EntityEditPanel {
 
   public ItemEditPanel(SwingEntityEditModel model) {
     super(model);
-    defaultTextFieldColumns().set(14);
+    defaults().textFieldColumns().set(14);
+    defaults().foreignKeyComboBoxPreferredWidth().set(180);
   }
 
   @Override
@@ -41,10 +42,8 @@ public class ItemEditPanel extends EntityEditPanel {
             .buttonFocusable(false);
     createTextField(Item.PRICE);
     createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
-            .preferredWidth(220)
             .add(true);
     createForeignKeyComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
-            .preferredWidth(220)
             .add(true);
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);

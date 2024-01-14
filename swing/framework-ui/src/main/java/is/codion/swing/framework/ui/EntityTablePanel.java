@@ -39,7 +39,6 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -941,7 +940,6 @@ public class EntityTablePanel extends JPanel {
 
     return toolBar()
             .controls(toolbarControls)
-            .focusable(false)
             .floatable(false)
             .rollover(true)
             .build(toolBar -> Arrays.stream(toolBar.getComponents())
@@ -1265,12 +1263,9 @@ public class EntityTablePanel extends JPanel {
 
     return toolBar()
             .action(conditionRefreshControl)
-            .focusable(false)
             .floatable(false)
             .rollover(false)
             .visible(false)//made visible when condition panel is visible
-            .buttonBuilder(ButtonBuilder.builder()
-                    .focusable(false))
             .build();
   }
 

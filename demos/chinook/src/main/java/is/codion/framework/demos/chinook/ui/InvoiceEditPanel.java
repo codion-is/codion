@@ -51,7 +51,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     super(editModel);
     this.invoiceLinePanel = invoiceLinePanel;
     clearAfterInsert().set(false);
-    defaultTextFieldColumns().set(12);
+    defaults().textFieldColumns().set(12);
   }
 
   @Override

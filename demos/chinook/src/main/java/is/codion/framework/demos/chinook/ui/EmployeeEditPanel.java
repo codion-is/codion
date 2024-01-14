@@ -45,7 +45,7 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 
   public EmployeeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    defaultTextFieldColumns().set(12);
+    defaults().textFieldColumns().set(12);
   }
 
   @Override
@@ -118,7 +118,7 @@ public final class EmployeeEditPanel extends EntityEditPanel {
     addInputPanel(Employee.REPORTSTO_FK);
   }
 
-  private final class InsertCommand implements Command{
+  private final class InsertCommand implements Command {
 
     @Override
     public void execute() {
@@ -133,7 +133,7 @@ public final class EmployeeEditPanel extends EntityEditPanel {
     }
   }
 
-  private final class UpdateCommand implements Command{
+  private final class UpdateCommand implements Command {
 
     @Override
     public void execute() {

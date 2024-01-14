@@ -34,7 +34,6 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
   public AlbumEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    defaultTextFieldColumns().set(15);
   }
 
   @Override
@@ -42,9 +41,11 @@ public final class AlbumEditPanel extends EntityEditPanel {
     initialFocusAttribute().set(Album.ARTIST_FK);
 
     createForeignKeySearchFieldPanel(Album.ARTIST_FK, this::createArtistEditPanel)
+            .columns(15)
             .add(true)
             .edit(true);
-    createTextField(Album.TITLE);
+    createTextField(Album.TITLE)
+            .columns(15);
     component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
 
     JPanel centerPanel = borderLayoutPanel()

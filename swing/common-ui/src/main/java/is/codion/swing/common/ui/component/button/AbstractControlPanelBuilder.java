@@ -25,7 +25,8 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
-import java.util.Optional;
+import java.awt.Dimension;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,10 +35,13 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
   private final Controls controls = Controls.controls();
 
+  private final ButtonBuilder<?, ?, ?> buttonBuilder = ButtonBuilder.builder();
+  private final ToggleButtonBuilder<?, ?> toggleButtonBuilder = ToggleButtonBuilder.builder();
+  private final CheckBoxBuilder checkBoxBuilder = CheckBoxBuilder.builder();
+  private final RadioButtonBuilder radioButtonBuilder = RadioButtonBuilder.builder();
+
   private int orientation = SwingConstants.HORIZONTAL;
   private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
-  private ButtonBuilder<?, ?, ?> buttonBuilder;
-  private ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
   protected AbstractControlPanelBuilder(Controls controls) {
     if (controls != null) {
@@ -73,20 +77,59 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
   }
 
   @Override
+  public final B includeButtonText(boolean includeButtonText) {
+    buttonBuilder.includeText(includeButtonText);
+    toggleButtonBuilder.includeText(includeButtonText);
+    checkBoxBuilder.includeText(includeButtonText);
+    radioButtonBuilder.includeText(includeButtonText);
+    return (B) this;
+  }
+
+  @Override
+  public final B preferredButtonSize(Dimension preferredButtonSize) {
+    buttonBuilder.preferredSize(preferredButtonSize);
+    toggleButtonBuilder.preferredSize(preferredButtonSize);
+    checkBoxBuilder.preferredSize(preferredButtonSize);
+    radioButtonBuilder.preferredSize(preferredButtonSize);
+    return (B) this;
+  }
+
+  @Override
+  public final B buttonsFocusable(boolean buttonsFocusable) {
+    buttonBuilder.focusable(buttonsFocusable);
+    toggleButtonBuilder.focusable(buttonsFocusable);
+    checkBoxBuilder.focusable(buttonsFocusable);
+    radioButtonBuilder.focusable(buttonsFocusable);
+    return (B) this;
+  }
+
+  @Override
   public final B toggleButtonType(ToggleButtonType toggleButtonType) {
     this.toggleButtonType = requireNonNull(toggleButtonType);
     return (B) this;
   }
 
   @Override
-  public final B buttonBuilder(ButtonBuilder<?, ?, ?> buttonBuilder) {
-    this.buttonBuilder = requireNonNull(buttonBuilder);
+  public final B buttonBuilder(Consumer<ButtonBuilder<?, ?, ?>> buttonBuilder) {
+    requireNonNull(buttonBuilder).accept(this.buttonBuilder);
     return (B) this;
   }
 
   @Override
-  public final B toggleButtonBuilder(ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
-    this.toggleButtonBuilder = requireNonNull(toggleButtonBuilder);
+  public final B toggleButtonBuilder(Consumer<ToggleButtonBuilder<?, ?>> toggleButtonBuilder) {
+    requireNonNull(toggleButtonBuilder).accept(this.toggleButtonBuilder);
+    return (B) this;
+  }
+
+  @Override
+  public B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder) {
+    requireNonNull(checkBoxBuilder).accept(this.checkBoxBuilder);
+    return (B) this;
+  }
+
+  @Override
+  public B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder) {
+    requireNonNull(radioButtonBuilder).accept(this.radioButtonBuilder);
     return (B) this;
   }
 
@@ -106,22 +149,18 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
     return orientation;
   }
 
-  protected final Optional<ButtonBuilder<?, ?, ?>> buttonBuilder() {
-    return Optional.ofNullable(buttonBuilder);
+  protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
+    return buttonBuilder;
   }
 
-  protected final Optional<ToggleButtonBuilder<?, ?>> toggleButtonBuilder() {
-    return Optional.ofNullable(toggleButtonBuilder);
-  }
-
-  protected final ToggleButtonBuilder<?, ?> createToggleButtonBuilder() {
+  protected final ToggleButtonBuilder<?, ?> toggleButtonBuilder() {
     switch (toggleButtonType) {
       case CHECKBOX:
-        return CheckBoxBuilder.builder();
+        return checkBoxBuilder;
       case BUTTON:
-        return ToggleButtonBuilder.builder();
+        return toggleButtonBuilder;
       case RADIO_BUTTON:
-        return RadioButtonBuilder.builder();
+        return radioButtonBuilder;
       default:
         throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
     }

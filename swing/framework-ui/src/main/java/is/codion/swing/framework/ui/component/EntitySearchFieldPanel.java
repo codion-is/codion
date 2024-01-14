@@ -29,6 +29,7 @@ import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -73,6 +74,7 @@ public final class EntitySearchFieldPanel extends JPanel {
   }
 
   private final EntitySearchField searchField;
+  private final List<AbstractButton> buttons = new ArrayList<>(0);
 
   private EntitySearchFieldPanel(DefaultBuilder builder) {
     searchField = builder.createSearchField();
@@ -87,7 +89,7 @@ public final class EntitySearchFieldPanel extends JPanel {
     }
     setLayout(new BorderLayout());
     add(createButtonPanel(searchField, builder.buttonsFocusable, builder.buttonLocation,
-            actions.toArray(new Action[0])), BorderLayout.CENTER);
+            buttons, actions.toArray(new Action[0])), BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(searchField));
   }
 
@@ -357,6 +359,7 @@ public final class EntitySearchFieldPanel extends JPanel {
     @Override
     protected void enableTransferFocusOnEnter(EntitySearchFieldPanel component) {
       TransferFocusOnEnter.enable(component.searchField());
+      component.buttons.forEach(TransferFocusOnEnter::enable);
     }
 
     @Override
