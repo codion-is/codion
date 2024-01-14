@@ -13,7 +13,7 @@ public class ItemEditPanel extends EntityEditPanel {
 
   public ItemEditPanel(SwingEntityEditModel model) {
     super(model);
-    defaultTextFieldColumns().set(14);
+    defaults().textFieldColumns().set(14);
   }
 
   @Override

@@ -28,7 +28,7 @@ public final class TrackEditPanel extends EntityEditPanel {
   public TrackEditPanel(SwingEntityEditModel editModel, SwingEntityTableModel tableModel) {
     super(editModel);
     this.tableModel = tableModel;
-    defaultTextFieldColumns().set(12);
+    defaults().textFieldColumns().set(12);
     addKeyEvents();
   }
 

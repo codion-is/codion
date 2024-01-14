@@ -19,6 +19,7 @@ Codion Change Log
 - EntityEditPanel.setConfirmer() removed, confirmers now Value based and configured via confirmer().
 - EntityTablePanel.setDeleteConfirmer() removed, deleteConfirmer now Values based and configured via deleteConfirmer().
 - EntityComboBoxPanel, EntitySearchFieldPanel, add/edit buttons now transfer focus on enter when focusable.
+- EntityEditComponentPanel.Defaults added with textFieldColumns() replacing defaultTextFieldColumns(), accessible via defaults().
 
 ## 0.17.23
 ### is.codion.common.core

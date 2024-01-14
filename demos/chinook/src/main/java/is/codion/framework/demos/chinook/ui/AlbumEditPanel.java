@@ -19,7 +19,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
   public AlbumEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    defaultTextFieldColumns().set(15);
+    defaults().textFieldColumns().set(15);
   }
 
   @Override

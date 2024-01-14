@@ -127,8 +127,9 @@ public class EntityEditComponentPanel extends JPanel {
   private final Value<Attribute<?>> afterInsertFocusAttribute = Value.value();
 
   private final State transferFocusOnEnter = State.state(true);
-  private final Value<Integer> defaultTextFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
   private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.get());
+
+  private final Defaults defaults = new Defaults();
 
   /**
    * Instantiates a new EntityEditComponentPanel
@@ -333,6 +334,13 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * @return the {@link Defaults} instance for this edit component panel
+   */
+  protected final Defaults defaults() {
+    return defaults;
+  }
+
+  /**
    * If set to true then component labels will indicate that the value is modified.
    * This applies to all components created by this edit component panel as well as
    * components set via {@link #component(Attribute)} as long
@@ -354,18 +362,6 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final State transferFocusOnEnter() {
     return transferFocusOnEnter;
-  }
-
-  /**
-   * Controls the default number of text field columns, -1 for not settings the columns
-   * @return the Value controlling the default number of text field columns
-   * @see #DEFAULT_TEXT_FIELD_COLUMNS
-   * @see #createTextField(Attribute)
-   * @see #createForeignKeySearchField(ForeignKey)
-   * @see #createTextFieldPanel(Attribute)
-   */
-  protected final Value<Integer> defaultTextFieldColumns() {
-    return defaultTextFieldColumns;
   }
 
   /**
@@ -518,7 +514,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
-            .columns(defaultTextFieldColumns.get())
+            .columns(defaults.textFieldColumns.get())
             .onBuild(inputPanel -> addValidator(attribute, inputPanel.textField(), editModel())));
   }
 
@@ -555,7 +551,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
     return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
-            .columns(defaultTextFieldColumns.get())
+            .columns(defaults.textFieldColumns.get())
             .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
   }
 
@@ -637,7 +633,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
     return setComponentBuilder(attribute, entityComponents.integerField(attribute)
-            .columns(defaultTextFieldColumns.get())
+            .columns(defaults.textFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -648,7 +644,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
     return setComponentBuilder(attribute, entityComponents.longField(attribute)
-            .columns(defaultTextFieldColumns.get())
+            .columns(defaults.textFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -659,7 +655,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponents.doubleField(attribute)
-            .columns(defaultTextFieldColumns.get())
+            .columns(defaults.textFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -670,7 +666,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
     return setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
-            .columns(defaultTextFieldColumns.get())
+            .columns(defaults.textFieldColumns.get())
             .onBuild(field -> addValidator(attribute, field, editModel())));
   }
 
@@ -779,7 +775,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey))
-            .columns(defaultTextFieldColumns.get()));
+            .columns(defaults.textFieldColumns.get()));
   }
 
   /**
@@ -792,7 +788,7 @@ public class EntityEditComponentPanel extends JPanel {
                                                                                   Supplier<EntityEditPanel> editPanelSupplier) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey), editPanelSupplier)
-            .columns(defaultTextFieldColumns.get()));
+            .columns(defaults.textFieldColumns.get()));
   }
 
   /**
@@ -960,6 +956,26 @@ public class EntityEditComponentPanel extends JPanel {
     return Arrays.stream(parent.getComponents()).anyMatch(childComponent ->
             childComponent instanceof JComponent &&
                     sameOrParentOf((JComponent) childComponent, component));
+  }
+
+  /**
+   * Specifies the availible default values for component builders.
+   */
+  protected static final class Defaults {
+
+    private final Value<Integer> textFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
+
+    /**
+     * Controls the default number of text field columns, -1 for not settings the columns
+     * @return the Value controlling the default number of text field columns
+     * @see #DEFAULT_TEXT_FIELD_COLUMNS
+     * @see #createTextField(Attribute)
+     * @see #createForeignKeySearchField(ForeignKey)
+     * @see #createTextFieldPanel(Attribute)
+     */
+    public Value<Integer> textFieldColumns() {
+      return textFieldColumns;
+    }
   }
 
   private final class OnComponentBuilt<C extends JComponent> implements Consumer<C> {
