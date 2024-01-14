@@ -9,7 +9,6 @@ import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.framework.demos.world.model.LookupTableModel.ExportFormat;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -197,7 +196,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .floatable(false)
             .orientation(SwingConstants.VERTICAL)
             .toggleButtonType(ToggleButtonType.CHECKBOX)
-            .buttonBuilder(ButtonBuilder.builder().includeText(true))
+            .includeButtonText(true)
             .border(createTitledBorder("Columns"))
             .build();
   }

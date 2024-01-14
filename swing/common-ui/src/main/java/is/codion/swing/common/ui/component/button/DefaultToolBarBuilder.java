@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
 import javax.swing.JToolBar;
-import java.util.Optional;
 
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
@@ -19,6 +18,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
   DefaultToolBarBuilder(Controls controls) {
     super(controls);
+    includeButtonText(false);
   }
 
   @Override
@@ -46,12 +46,8 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
     toolBar.setOrientation(orientation());
     toolBar.setRollover(rollover);
     toolBar.setBorderPainted(borderPainted);
-    Optional<ButtonBuilder<?, ?, ?>> buttonBuilder = buttonBuilder();
-    Optional<ToggleButtonBuilder<?, ?>> toggleButtonBuilder = toggleButtonBuilder();
 
-    new ToolBarControlHandler(toolBar, controls(),
-            buttonBuilder.orElse(ButtonBuilder.builder()), !buttonBuilder.isPresent(),
-            toggleButtonBuilder.orElse(createToggleButtonBuilder()), !toggleButtonBuilder.isPresent());
+    new ToolBarControlHandler(toolBar, controls(), buttonBuilder(), toggleButtonBuilder());
 
     return toolBar;
   }
@@ -60,20 +56,14 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
     private final JToolBar toolBar;
     private final ButtonBuilder<?, ?, ?> buttonBuilder;
-    private final boolean defaultButtonBuilder;
     private final ToggleButtonBuilder<?, ?> toggleButtonBuilder;
-    private final boolean defaultToggleButtonBuilder;
 
     private ToolBarControlHandler(JToolBar toolBar, Controls controls,
                                   ButtonBuilder<?, ?, ?> buttonBuilder,
-                                  boolean defaultButtonBuilder,
-                                  ToggleButtonBuilder<?, ?> toggleButtonBuilder,
-                                  boolean defaultToggleButtonBuilder) {
+                                  ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
       this.toolBar = toolBar;
       this.buttonBuilder = buttonBuilder.clear();
-      this.defaultButtonBuilder = defaultButtonBuilder;
       this.toggleButtonBuilder = toggleButtonBuilder.clear();
-      this.defaultToggleButtonBuilder = defaultToggleButtonBuilder;
       controls.actions().forEach(this);
     }
 
@@ -89,9 +79,6 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
     @Override
     void onToggleControl(ToggleControl toggleControl) {
-      if (defaultToggleButtonBuilder) {
-        toggleButtonBuilder.includeText(includeButtonText(toggleControl));
-      }
       toolBar.add(toggleButtonBuilder
               .toggleControl(toggleControl)
               .build());
@@ -100,22 +87,15 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
     @Override
     void onControls(Controls controls) {
-      new ToolBarControlHandler(toolBar, controls, buttonBuilder, defaultButtonBuilder, toggleButtonBuilder, defaultToggleButtonBuilder);
+      new ToolBarControlHandler(toolBar, controls, buttonBuilder, toggleButtonBuilder);
     }
 
     @Override
     void onAction(Action action) {
-      if (defaultButtonBuilder) {
-        buttonBuilder.includeText(includeButtonText(action));
-      }
       toolBar.add(buttonBuilder
               .action(action)
               .build());
       buttonBuilder.clear();
-    }
-
-    private static boolean includeButtonText(Action action) {
-      return action.getValue(Action.SMALL_ICON) == null && action.getValue(Action.LARGE_ICON_KEY) == null;
     }
   }
 }

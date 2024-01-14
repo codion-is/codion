@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -1026,8 +1025,8 @@ public class EntityPanel extends JPanel {
     return borderLayoutPanel()
             .northComponent(buttonPanel(controls)
                     .orientation(VERTICAL)
-                    .buttonBuilder(ButtonBuilder.builder()
-                            .horizontalAlignment(SwingConstants.LEADING))
+                    .buttonBuilder(buttonBuilder ->
+                            buttonBuilder.horizontalAlignment(SwingConstants.LEADING))
                     .toggleButtonType(CHECKBOX)
                     .build())
             .build();

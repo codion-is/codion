@@ -21,6 +21,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -112,7 +113,8 @@ final class EntityControls {
   }
 
   static JPanel createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
-                                  String borderLayoutConstraints, Action... buttonActions) {
+                                  String borderLayoutConstraints, List<AbstractButton> buttons,
+                                  Action... buttonActions) {
     Dimension preferredSize = centerComponent.getPreferredSize();
 
     return Components.panel(new BorderLayout())
@@ -121,6 +123,7 @@ final class EntityControls {
                     .buttonsFocusable(buttonFocusable)
                     .preferredButtonSize(new Dimension(preferredSize.height, preferredSize.height))
                     .buttonGap(0)
+                    .buttonBuilder(buttonBuilder -> buttonBuilder.onBuild(buttons::add))
                     .build(), borderLayoutConstraints)
             .build();
   }

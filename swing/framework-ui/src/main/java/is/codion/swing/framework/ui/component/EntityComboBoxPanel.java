@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -58,6 +59,7 @@ public final class EntityComboBoxPanel extends JPanel {
   }
 
   private final EntityComboBox comboBox;
+  private final List<AbstractButton> buttons = new ArrayList<>(0);
 
   private EntityComboBoxPanel(DefaultBuilder builder) {
     comboBox = builder.createComboBox();
@@ -72,7 +74,7 @@ public final class EntityComboBoxPanel extends JPanel {
     }
     setLayout(new BorderLayout());
     add(createButtonPanel(comboBox, builder.buttonsFocusable, builder.buttonLocation,
-            actions.toArray(new Action[0])), BorderLayout.CENTER);
+            buttons, actions.toArray(new Action[0])), BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(comboBox));
   }
 
@@ -232,6 +234,7 @@ public final class EntityComboBoxPanel extends JPanel {
     @Override
     protected void enableTransferFocusOnEnter(EntityComboBoxPanel component) {
       TransferFocusOnEnter.enable(component.comboBox());
+      component.buttons.forEach(TransferFocusOnEnter::enable);
     }
 
     @Override
