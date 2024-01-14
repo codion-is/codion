@@ -79,7 +79,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public synchronized final ValueObserver<T> observer() {
+  public final synchronized ValueObserver<T> observer() {
     if (observer == null) {
       observer = new DefaultValueObserver<>(this);
     }
