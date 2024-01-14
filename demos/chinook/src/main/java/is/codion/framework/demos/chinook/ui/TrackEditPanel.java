@@ -29,6 +29,7 @@ public final class TrackEditPanel extends EntityEditPanel {
     super(editModel);
     this.tableModel = tableModel;
     defaults().textFieldColumns().set(12);
+    defaults().foreignKeyComboBoxPreferredWidth().set(160);
     addKeyEvents();
   }
 
@@ -39,11 +40,9 @@ public final class TrackEditPanel extends EntityEditPanel {
     createForeignKeySearchField(Track.ALBUM_FK);
     createTextField(Track.NAME);
     createForeignKeyComboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
-            .preferredWidth(200)
             .add(true)
             .edit(true);
     createForeignKeyComboBoxPanel(Track.GENRE_FK, this::createGenreEditPanel)
-            .preferredWidth(200)
             .add(true)
             .edit(true);
     createTextFieldPanel(Track.COMPOSER);

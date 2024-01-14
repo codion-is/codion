@@ -147,6 +147,12 @@ public final class EntityComboBoxPanel extends JPanel {
     Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
 
     /**
+     * @param comboBoxPreferredWidth the preferred combo box width
+     * @return this builder instance
+     */
+    Builder comboBoxPreferredWidth(int comboBoxPreferredWidth);
+
+    /**
      * @return a new {@link EntityComboBoxPanel} based on this builder
      */
     EntityComboBoxPanel build();
@@ -218,6 +224,12 @@ public final class EntityComboBoxPanel extends JPanel {
     @Override
     public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
       keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+      return this;
+    }
+
+    @Override
+    public Builder comboBoxPreferredWidth(int comboBoxPreferredWidth) {
+      entityComboBoxBuilder.preferredWidth(comboBoxPreferredWidth);
       return this;
     }
 

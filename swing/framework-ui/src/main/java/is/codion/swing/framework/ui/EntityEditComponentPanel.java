@@ -709,7 +709,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a combo box builder
    */
   protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
-    return setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel));
+    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel)
+            .preferredWidth(defaults.comboBoxPreferredWidth.get()));
   }
 
   /**
@@ -719,7 +720,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a value item list combo box builder
    */
   protected final <T> ItemComboBoxBuilder<T> createItemComboBox(Attribute<T> attribute) {
-    return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute));
+    return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute)
+            .preferredWidth(defaults.itemComboBoxPreferredWidth.get()));
   }
 
   /**
@@ -735,6 +737,7 @@ public class EntityEditComponentPanel extends JPanel {
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
+            .preferredWidth(defaults.comboBoxPreferredWidth.get())
             .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
   }
 
@@ -749,6 +752,7 @@ public class EntityEditComponentPanel extends JPanel {
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
+            .preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
             .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
   }
 
@@ -764,6 +768,7 @@ public class EntityEditComponentPanel extends JPanel {
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanelSupplier))
+            .comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
             .onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
   }
 
@@ -775,7 +780,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey))
-            .columns(defaults.textFieldColumns.get()));
+            .columns(defaults.foreignKeySearchFieldColumns.get()));
   }
 
   /**
@@ -788,7 +793,7 @@ public class EntityEditComponentPanel extends JPanel {
                                                                                   Supplier<EntityEditPanel> editPanelSupplier) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
                     editModel().foreignKeySearchModel(foreignKey), editPanelSupplier)
-            .columns(defaults.textFieldColumns.get()));
+            .columns(defaults.foreignKeySearchFieldColumns.get()));
   }
 
   /**
@@ -964,17 +969,55 @@ public class EntityEditComponentPanel extends JPanel {
   protected static final class Defaults {
 
     private final Value<Integer> textFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
+    private final Value<Integer> foreignKeySearchFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
+    private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.value(0, 0);
+    private final Value<Integer> itemComboBoxPreferredWidth = Value.value(0, 0);
+    private final Value<Integer> comboBoxPreferredWidth = Value.value(0, 0);
 
     /**
      * Controls the default number of text field columns, -1 for not settings the columns
      * @return the Value controlling the default number of text field columns
      * @see #DEFAULT_TEXT_FIELD_COLUMNS
      * @see #createTextField(Attribute)
-     * @see #createForeignKeySearchField(ForeignKey)
      * @see #createTextFieldPanel(Attribute)
      */
     public Value<Integer> textFieldColumns() {
       return textFieldColumns;
+    }
+
+    /**
+     * Controls the default number of text field columns, -1 for not settings the columns
+     * @return the Value controlling the default number of foreign key search field columns
+     * @see #DEFAULT_TEXT_FIELD_COLUMNS
+     * @see #createForeignKeySearchField(ForeignKey)
+     */
+    public Value<Integer> foreignKeySearchFieldColumns() {
+      return foreignKeySearchFieldColumns;
+    }
+
+    /**
+     * @return the Value controlling the default combo box width
+     * @see #createComboBox(Column)
+     */
+    public Value<Integer> comboBoxPreferredWidth() {
+      return comboBoxPreferredWidth;
+    }
+
+    /**
+     * @return the Value controlling the default item combo box width
+     * @see #createItemComboBox(Attribute)
+     */
+    public Value<Integer> itemComboBoxPreferredWidth() {
+      return itemComboBoxPreferredWidth;
+    }
+
+    /**
+     * @return the Value controlling the default foreign key combo box width
+     * @see #createForeignKeyComboBox(ForeignKey)
+     * @see #createForeignKeyComboBoxPanel(ForeignKey, Supplier)
+     */
+    public Value<Integer> foreignKeyComboBoxPreferredWidth() {
+      return foreignKeyComboBoxPreferredWidth;
     }
   }
 
