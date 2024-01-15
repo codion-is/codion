@@ -55,6 +55,8 @@ import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -974,6 +976,7 @@ public class EntityPanel extends JPanel {
     int gap = Layouts.GAP.get();
     editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
+    editControlPanel.addMouseListener(new ActivateOnMouseClickListener());
     if (settings.includeControls) {
       JComponent controlComponent = createControlComponent(createControls());
       if (controlComponent != null) {
@@ -1546,6 +1549,14 @@ public class EntityPanel extends JPanel {
      * @return an EntityTablePanel based on this provider
      */
     EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
+  }
+
+  private final class ActivateOnMouseClickListener extends MouseAdapter {
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      editPanel.requestAfterUpdateFocus();
+    }
   }
 
   private static final class NullDetailController implements DetailController {

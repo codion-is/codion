@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.24-SNAPSHOT
+## 0.17.24
 ### is.codion.common.core
 - Text.collate() now returns the sorted list, Text.spaceAwareCollator() renamed collator(). Text.collateSansSpaces() removed.
 - AbstractValue, DefaultValueSet and DefaultState fields now initialized lazily.
@@ -22,6 +22,7 @@ Codion Change Log
 - EntityEditComponentPanel.Defaults added with textFieldColumns() replacing defaultTextFieldColumns(), accessible via defaults().
 - EntityEditComponentPanel.Defaults.foreignKeySearchFieldColumns(), comboBoxPreferredWidth(), itemComboBoxPreferredWidth() and foreignKeyComboBoxPreferredWidth() added.
 - EntityComboBoxPanel.Builder.comboBoxPreferredWidth() added.
+- EntityPanel, edit panel now activated on mouse click, not only when a subcomponent receives focus.
 
 ## 0.17.23
 ### is.codion.common.core
