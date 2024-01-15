@@ -22,6 +22,7 @@ Codion Change Log
 - EntityEditComponentPanel.Defaults added with textFieldColumns() replacing defaultTextFieldColumns(), accessible via defaults().
 - EntityEditComponentPanel.Defaults.foreignKeySearchFieldColumns(), comboBoxPreferredWidth(), itemComboBoxPreferredWidth() and foreignKeyComboBoxPreferredWidth() added.
 - EntityComboBoxPanel.Builder.comboBoxPreferredWidth() added.
+- EntityPanel, edit panel now activated on mouse click, not only when a subcomponent receives focus.
 
 ## 0.17.23
 ### is.codion.common.core
