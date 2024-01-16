@@ -46,12 +46,11 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   public void layout(EntityApplicationPanel<?> applicationPanel) {
     requireNonNull(applicationPanel);
     applicationPanel.entityPanels().forEach(this::addTab);//InitializeSelectedPanelListener initializes first panel
+    applicationPanel.setBorder(createEmptyBorder(0, Layouts.GAP.get(), 0, Layouts.GAP.get()));
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
-    int gap = Layouts.GAP.get();
     applicationPanel.add(borderLayoutPanel(new BorderLayout())
             .centerComponent(applicationTabPane)
-            .border(createEmptyBorder(0, gap, 0, gap))
             .build(), BorderLayout.CENTER);
   }
 

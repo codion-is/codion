@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.25-SNAPSHOT
+### is.codion.swing.framework.ui
+- TabbedApplicationLayout bug fixed, now applies the border to the application panel, instead of only the tabbed pane.
 
 ## 0.17.24
 ### is.codion.common.core
