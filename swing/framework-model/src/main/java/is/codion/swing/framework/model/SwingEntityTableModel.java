@@ -1173,12 +1173,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
-      Object value = entity.get(attribute);
-      if (value instanceof Entity) {
-        return (Comparable<T>) value.toString();
-      }
-
-      return (Comparable<T>) value;
+      return (Comparable<T>) entity.get(attribute);
     }
   }
 
@@ -1193,10 +1188,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
       AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-      if (attributeDefinition.hidden() || !Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
+      if (attributeDefinition.hidden()) {
         return Optional.empty();
       }
-      if (requireNonNull(attribute).type().isEntity() || !attributeDefinition.items().isEmpty()) {
+      if (useStringCondition(attribute, attributeDefinition)) {
         return Optional.of(ColumnConditionModel.builder(attribute, String.class)
                 .operators(operators(String.class))
                 .build());
@@ -1207,6 +1202,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .format(attributeDefinition.format())
               .dateTimePattern(attributeDefinition.dateTimePattern())
               .build());
+    }
+
+    private static boolean useStringCondition(Attribute<?> attribute, AttributeDefinition<?> attributeDefinition) {
+      return attribute.type().isEntity() || // entities
+              !attributeDefinition.items().isEmpty() || // items
+              !Comparable.class.isAssignableFrom(attribute.type().valueClass()); // non-comparables
     }
 
     private static List<Operator> operators(Class<?> columnClass) {

@@ -17,13 +17,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
+
+  private static final String REGEX_WILDCARD = ".*";
 
   private final ValueSet<T> equalValues = ValueSet.valueSet(Notify.WHEN_SET);
   private final Value<T> equalValue = equalValues.value();
@@ -287,12 +291,9 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       return value.compareTo(equalValue) == 0;
     }
 
-    return Pattern.matches(prepareForRegex(equalValue), value);
-  }
-
-  private String prepareForRegex(String string) {
-    //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replace(wildcard, ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
+    return Pattern.matches(Stream.of(equalValue.split(wildcard))
+            .map(Pattern::quote)
+            .collect(joining(REGEX_WILDCARD, "", equalValue.endsWith(wildcard) ? REGEX_WILDCARD : "")), value);
   }
 
   private boolean isLessThan(Comparable<T> comparable) {
@@ -435,15 +436,37 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   private String addAutomaticWildcard(String value) {
     switch (automaticWildcard.get()) {
-      case PREFIX_AND_POSTFIX:
-        return wildcard + value + wildcard;
       case PREFIX:
-        return wildcard + value;
+        value = addWildcardPrefix(value);
+        break;
       case POSTFIX:
-        return value + wildcard;
+        value = addWildcardPostfix(value);
+        break;
+      case PREFIX_AND_POSTFIX:
+        value = addWildcardPrefix(value);
+        value = addWildcardPostfix(value);
+        break;
       default:
-        return value;
+        break;
     }
+
+    return value;
+  }
+
+  private String addWildcardPrefix(String value) {
+    if (!value.startsWith(wildcard)) {
+      return wildcard + value;
+    }
+
+    return value;
+  }
+
+  private String addWildcardPostfix(String value) {
+    if (!value.endsWith(wildcard)) {
+      return value + wildcard;
+    }
+
+    return value;
   }
 
   private void bindEvents() {
@@ -536,11 +559,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     private char wildcard = Text.WILDCARD_CHARACTER.get();
     private Format format;
     private String dateTimePattern = LocaleDateTimePattern.builder()
-          .delimiterDash()
-          .yearFourDigits()
-          .hoursMinutesSeconds()
-          .build()
-          .dateTimePattern();
+            .delimiterDash()
+            .yearFourDigits()
+            .hoursMinutesSeconds()
+            .build()
+            .dateTimePattern();
     private AutomaticWildcard automaticWildcard = ColumnConditionModel.AUTOMATIC_WILDCARD.get();
     private boolean caseSensitive = CASE_SENSITIVE.get();
     private boolean autoEnable = true;
