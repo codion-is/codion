@@ -10,6 +10,7 @@ Codion Change Log
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based column condition models for entity, item and non-comparable based columns.
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout bug fixed, now applies the border to the application panel, instead of only the tabbed pane.
+- EntityTablePanel.DefaultStatusMessage bug fixed, no longer returns an empty message when all rows are filtered.
 
 ## 0.17.24
 ### is.codion.common.core
