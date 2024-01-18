@@ -1958,7 +1958,7 @@ public class EntityTablePanel extends JPanel {
           if (selectionCount > 0) {
             builder.append(" - ");
           }
-          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("hidden"));
+          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("filtered"));
         }
         builder.append(")");
       }
