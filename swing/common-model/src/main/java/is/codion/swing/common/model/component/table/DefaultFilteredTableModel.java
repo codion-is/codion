@@ -575,7 +575,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private boolean accepts(R item, ColumnConditionModel<? extends C, ?> conditionModel, ColumnValueProvider<R, C> columnValueProvider) {
       if (conditionModel.columnClass().equals(String.class)) {
-        return ((ColumnConditionModel<?, String>) conditionModel).accepts(columnValueProvider.string(item, conditionModel.columnIdentifier()));
+        String stringValue = columnValueProvider.string(item, conditionModel.columnIdentifier());
+
+        return ((ColumnConditionModel<?, String>) conditionModel).accepts(stringValue.isEmpty() ? null : stringValue);
       }
 
       return conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier()));

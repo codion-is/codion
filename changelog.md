@@ -6,6 +6,8 @@ Codion Change Log
 - DefaultColumnConditionModel, wildcard handling with regex improved.
 ### is.codion.swing.common.model
 - DefaultFilteredTableModel.CombinedIncludeCondition now uses ColumnValueProvider.string() in case of String based conditions.
+- DefaultFilteredTableModel.CombinedIncludeCondition bug fixed, now replaces empty string with null before comparing.
+- FilteredTableModel.ColumnValueProvider.comparable() default implementation no longer returns a string for non-comparable values.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based column condition models for entity, item and non-comparable based columns.
 ### is.codion.swing.framework.ui
