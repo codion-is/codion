@@ -2,8 +2,18 @@ Codion Change Log
 ==================
 
 ## 0.17.25-SNAPSHOT
+### is.codion.common.model
+- DefaultColumnConditionModel, wildcard handling with regex improved.
+### is.codion.swing.common.model
+- DefaultFilteredTableModel.CombinedIncludeCondition now uses ColumnValueProvider.string() in case of String based conditions.
+- DefaultFilteredTableModel.CombinedIncludeCondition bug fixed, now replaces empty string with null before comparing.
+- FilteredTableModel.ColumnValueProvider.comparable() default implementation no longer returns a string for non-comparable values.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.EntityFilterModelFactory now creates String based column condition models for entity, item and non-comparable based columns.
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout bug fixed, now applies the border to the application panel, instead of only the tabbed pane.
+- EntityTablePanel.DefaultStatusMessage bug fixed, no longer returns an empty message when all rows are filtered.
+- EntityTablePanel.DefaultStatusMessage, 'hidden' replaced with 'filtered'.
 
 ## 0.17.24
 ### is.codion.common.core

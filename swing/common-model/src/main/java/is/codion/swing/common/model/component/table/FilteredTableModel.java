@@ -398,10 +398,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     Object value(R row, C columnIdentifier);
 
     /**
-     * Returns a String representation of the value for the given row and columnIdentifier
+     * Returns a String representation of the value for the given row and columnIdentifier,
+     * an empty String in case of null.
      * @param row the row
      * @param columnIdentifier the column identifier
-     * @return a String representation of the value for the given row and column
+     * @return a String representation of the value for the given row and column, an empty String in case of null
      */
     default String string(R row, C columnIdentifier) {
       Object columnValue = value(row, columnIdentifier);
@@ -412,7 +413,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     /**
      * Returns a Comparable instance for the given row and columnIdentifier.
      * The default implementation returns the value as is in case it's a {@link Comparable} instance,
-     * otherwise its String representation is returned.
+     * otherwise null is returned.
      * @param <T> the column value type
      * @param row the object representing a given row
      * @param columnIdentifier the column identifier
@@ -422,9 +423,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
       Object value = value(row, columnIdentifier);
       if (value instanceof Comparable) {
         return (Comparable<T>) value;
-      }
-      if (value != null) {
-        return (Comparable<T>) value.toString();
       }
 
       return null;

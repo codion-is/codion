@@ -1954,10 +1954,10 @@ public class EntityTablePanel extends JPanel {
     @Override
     public String apply(SwingEntityTableModel tableModel) {
       int rowCount = tableModel.getRowCount();
-      if (rowCount == 0) {
+      int filteredCount = tableModel.filteredCount();
+      if (rowCount == 0 && filteredCount == 0) {
         return "";
       }
-      int filteredCount = tableModel.filteredCount();
       int selectionCount = tableModel.selectionModel().selectionCount();
       StringBuilder builder = new StringBuilder();
       if (tableModel.limit().equalTo(tableModel.getRowCount())) {
@@ -1973,7 +1973,7 @@ public class EntityTablePanel extends JPanel {
           if (selectionCount > 0) {
             builder.append(" - ");
           }
-          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("hidden"));
+          builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("filtered"));
         }
         builder.append(")");
       }
