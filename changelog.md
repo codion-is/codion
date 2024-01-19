@@ -15,6 +15,7 @@ Codion Change Log
 - EntityTablePanel.DefaultStatusMessage bug fixed, no longer returns an empty message when all rows are filtered.
 - EntityTablePanel.DefaultStatusMessage, 'hidden' replaced with 'filtered'.
 - EntityPanel, minor refactoring.
+- EntityDialogs.EditDialogBuilder.Updater now with generic edit model type parameter.
 
 ## 0.17.24
 ### is.codion.common.core

@@ -132,8 +132,9 @@ public final class EntityDialogs {
 
     /**
      * Handles performing the actual update when entities are edited.
+     * @param <E> the edit model type
      */
-    interface Updater {
+    interface Updater<E extends SwingEntityEditModel> {
 
       /**
        * Updates the given entities, assuming they are all modified.
@@ -142,7 +143,7 @@ public final class EntityDialogs {
        * @throws ValidationException in case of a validation failure
        * @throws DatabaseException in case of a database exception
        */
-      void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException, DatabaseException;
+      void update(E editModel, Collection<Entity> entities) throws ValidationException, DatabaseException;
     }
   }
 
@@ -181,7 +182,7 @@ public final class EntityDialogs {
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
     private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
     private Consumer<Exception> onException = new DefaultExceptionHandler();
-    private Updater updater = new DefaultUpdater();
+    private Updater<SwingEntityEditModel> updater = new DefaultUpdater();
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -304,7 +305,7 @@ public final class EntityDialogs {
       }
     }
 
-    private static final class DefaultUpdater implements Updater {
+    private static final class DefaultUpdater implements Updater<SwingEntityEditModel> {
 
       @Override
       public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException, DatabaseException {
