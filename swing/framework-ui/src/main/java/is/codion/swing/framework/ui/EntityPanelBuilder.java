@@ -71,7 +71,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder detailPanelBuilder(EntityPanel.Builder panelBuilder) {
+  public EntityPanel.Builder detailPanel(EntityPanel.Builder panelBuilder) {
     if (!detailPanelBuilders.contains(panelBuilder)) {
       detailPanelBuilders.add(panelBuilder);
     }
@@ -98,7 +98,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder panelLayout(PanelLayout panelLayout) {
+  public EntityPanel.Builder layout(PanelLayout panelLayout) {
     this.panelLayout = requireNonNull(panelLayout);
     return this;
   }
@@ -110,7 +110,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder panelClass(Class<? extends EntityPanel> panelClass) {
+  public EntityPanel.Builder panel(Class<? extends EntityPanel> panelClass) {
     if (editPanelClass != null || tablePanelClass != null) {
       throw new IllegalStateException("Edit or table panel class has been set");
     }
@@ -119,7 +119,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass) {
+  public EntityPanel.Builder editPanel(Class<? extends EntityEditPanel> editPanelClass) {
     if (panelClass != null) {
       throw new IllegalStateException("Panel class has been set");
     }
@@ -128,7 +128,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass) {
+  public EntityPanel.Builder tablePanel(Class<? extends EntityTablePanel> tablePanelClass) {
     if (panelClass != null) {
       throw new IllegalStateException("Panel class has been set");
     }

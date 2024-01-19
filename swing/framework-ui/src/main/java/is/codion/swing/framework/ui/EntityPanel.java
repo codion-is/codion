@@ -1431,7 +1431,7 @@ public class EntityPanel extends JPanel {
      * @param panelBuilder the detail panel provider
      * @return this builder instance
      */
-    Builder detailPanelBuilder(EntityPanel.Builder panelBuilder);
+    Builder detailPanel(EntityPanel.Builder panelBuilder);
 
     /**
      * Default true.
@@ -1457,7 +1457,7 @@ public class EntityPanel extends JPanel {
      * @param panelLayout the panel layout to use
      * @return this builder instane
      */
-    Builder panelLayout(PanelLayout panelLayout);
+    Builder layout(PanelLayout panelLayout);
 
     /**
      * @param preferredSize the preferred panel size
@@ -1470,19 +1470,19 @@ public class EntityPanel extends JPanel {
      * @param panelClass the EntityPanel class to use when providing this panel
      * @return this builder instance
      */
-    Builder panelClass(Class<? extends EntityPanel> panelClass);
+    Builder panel(Class<? extends EntityPanel> panelClass);
 
     /**
      * @param editPanelClass the EntityEditPanel class to use when providing this panel
      * @return this builder instance
      */
-    Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass);
+    Builder editPanel(Class<? extends EntityEditPanel> editPanelClass);
 
     /**
      * @param tablePanelClass the EntityTablePanel class to use when providing this panel
      * @return this builder instance
      */
-    Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass);
+    Builder tablePanel(Class<? extends EntityTablePanel> tablePanelClass);
 
     /**
      * @param onBuildPanel called after the entity panel has been built

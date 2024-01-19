@@ -55,7 +55,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder modelClass(Class<? extends SwingEntityModel> modelClass) {
+  public SwingEntityModel.Builder model(Class<? extends SwingEntityModel> modelClass) {
     if (editModelClass != null || tableModelClass != null) {
       throw new IllegalStateException("Edit or table model class has been set");
     }
@@ -64,7 +64,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder editModelClass(Class<? extends SwingEntityEditModel> editModelClass) {
+  public SwingEntityModel.Builder editModel(Class<? extends SwingEntityEditModel> editModelClass) {
     if (modelClass != null) {
       throw new IllegalStateException("Model class has been set");
     }
@@ -76,7 +76,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelClass(Class<? extends SwingEntityTableModel> tableModelClass) {
+  public SwingEntityModel.Builder tableModel(Class<? extends SwingEntityTableModel> tableModelClass) {
     if (modelClass != null) {
       throw new IllegalStateException("Model class has been set");
     }
@@ -88,19 +88,19 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder modelFactory(Function<EntityConnectionProvider, SwingEntityModel> modelFactory) {
+  public SwingEntityModel.Builder model(Function<EntityConnectionProvider, SwingEntityModel> modelFactory) {
     this.modelFactory = requireNonNull(modelFactory);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder editModelFactory(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory) {
+  public SwingEntityModel.Builder editModel(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory) {
     this.editModelFactory = requireNonNull(editModelFactory);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelFactory(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory) {
+  public SwingEntityModel.Builder tableModel(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory) {
     this.tableModelFactory = requireNonNull(tableModelFactory);
     return this;
   }
@@ -124,7 +124,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder detailModelBuilder(SwingEntityModel.Builder detailModelBuilder) {
+  public SwingEntityModel.Builder detailModel(SwingEntityModel.Builder detailModelBuilder) {
     requireNonNull(detailModelBuilder, "detailModelBuilder");
     if (!detailModelBuilders.contains(detailModelBuilder)) {
       detailModelBuilders.add(detailModelBuilder);

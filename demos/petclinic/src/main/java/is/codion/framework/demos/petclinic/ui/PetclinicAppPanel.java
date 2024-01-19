@@ -62,28 +62,28 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     EntityPanel.Builder petTypePanelBuilder =
             EntityPanel.builder(PetType.TYPE)
-                    .editPanelClass(PetTypeEditPanel.class)
+                    .editPanel(PetTypeEditPanel.class)
                     .caption("Pet types");
     EntityPanel.Builder specialtyPanelBuilder =
             EntityPanel.builder(Specialty.TYPE)
-                    .editPanelClass(SpecialtyEditPanel.class)
+                    .editPanel(SpecialtyEditPanel.class)
                     .caption("Specialties");
 
     SwingEntityModel.Builder vetSpecialtyModelBuilder =
             SwingEntityModel.builder(VetSpecialty.TYPE)
-                    .editModelClass(VetSpecialtyEditModel.class);
+                    .editModel(VetSpecialtyEditModel.class);
     SwingEntityModel.Builder vetModelBuilder =
             SwingEntityModel.builder(Vet.TYPE)
-                    .detailModelBuilder(vetSpecialtyModelBuilder);
+                    .detailModel(vetSpecialtyModelBuilder);
 
     EntityPanel.Builder vetSpecialtyPanelBuilder =
             EntityPanel.builder(vetSpecialtyModelBuilder)
-                    .editPanelClass(VetSpecialtyEditPanel.class)
+                    .editPanel(VetSpecialtyEditPanel.class)
                     .caption("Specialty");
     EntityPanel.Builder vetPanelBuilder =
             EntityPanel.builder(vetModelBuilder)
-                    .editPanelClass(VetEditPanel.class)
-                    .detailPanelBuilder(vetSpecialtyPanelBuilder)
+                    .editPanel(VetEditPanel.class)
+                    .detailPanel(vetSpecialtyPanelBuilder)
                     .caption("Vets");
 
     return asList(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);

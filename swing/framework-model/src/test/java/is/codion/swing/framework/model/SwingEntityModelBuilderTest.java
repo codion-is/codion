@@ -28,27 +28,27 @@ public final class SwingEntityModelBuilderTest {
   @Test
   void setModelClass() {
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
-            .editModelClass(DepartmentEditModel.class).modelClass(SwingEntityModel.class));
+            .editModel(DepartmentEditModel.class).model(SwingEntityModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
-            .tableModelClass(DepartmentTableModel.class).modelClass(SwingEntityModel.class));
+            .tableModel(DepartmentTableModel.class).model(SwingEntityModel.class));
 
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
-            .modelClass(SwingEntityModel.class).editModelClass(DepartmentEditModel.class));
+            .model(SwingEntityModel.class).editModel(DepartmentEditModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
-            .tableModelClass(DepartmentTableModel.class).editModelClass(DepartmentEditModel.class));
+            .tableModel(DepartmentTableModel.class).editModel(DepartmentEditModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
-            .editModelClass(DepartmentEditModel.class).tableModelClass(DepartmentTableModel.class));
+            .editModel(DepartmentEditModel.class).tableModel(DepartmentTableModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
-            .modelClass(SwingEntityModel.class).tableModelClass(DepartmentTableModel.class));
+            .model(SwingEntityModel.class).tableModel(DepartmentTableModel.class));
   }
 
   @Test
   void testDetailModelBuilder() {
     SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE)
-            .tableModelClass(DepartmentTableModel.class);
+            .tableModel(DepartmentTableModel.class);
     SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(Employee.TYPE);
 
-    departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
+    departmentModelBuilder.detailModel(employeeModelBuilder);
 
     SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.editModel() instanceof DepartmentEditModel);
@@ -59,14 +59,14 @@ public final class SwingEntityModelBuilderTest {
   @Test
   void factories() {
     SwingEntityModel.Builder builder = SwingEntityModel.builder(Department.TYPE)
-            .editModelFactory(DepartmentEditModel::new)
-            .tableModelFactory(DepartmentTableModel::new);
+            .editModel(DepartmentEditModel::new)
+            .tableModel(DepartmentTableModel::new);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.editModel() instanceof DepartmentEditModel);
     assertTrue(model.tableModel() instanceof DepartmentTableModel);
 
     builder = SwingEntityModel.builder(Department.TYPE)
-            .modelFactory(DepartmentModel::new);
+            .model(DepartmentModel::new);
 
     model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model instanceof DepartmentModel);
@@ -77,13 +77,13 @@ public final class SwingEntityModelBuilderTest {
   @Test
   void modelClasses() {
     SwingEntityModel.Builder builder = SwingEntityModel.builder(Department.TYPE)
-            .tableModelClass(DepartmentTableModel.class);
+            .tableModel(DepartmentTableModel.class);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.editModel() instanceof DepartmentEditModel);
     assertTrue(model.tableModel() instanceof DepartmentTableModel);
 
     builder = SwingEntityModel.builder(Department.TYPE)
-            .modelClass(DepartmentModel.class);
+            .model(DepartmentModel.class);
 
     model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model instanceof DepartmentModel);
@@ -98,7 +98,7 @@ public final class SwingEntityModelBuilderTest {
     State tableModelBuilt = State.state();
 
     SwingEntityModel.Builder builder = SwingEntityModel.builder(Department.TYPE)
-            .tableModelClass(DepartmentTableModel.class)
+            .tableModel(DepartmentTableModel.class)
             .onBuildModel(swingEntityModel -> modelBuilt.set(true))
             .onBuildEditModel(swingEntityEditModel -> editModelBuilt.set(true))
             .onBuildTableModel(swingEntityTableModel -> tableModelBuilt.set(true));
@@ -113,7 +113,7 @@ public final class SwingEntityModelBuilderTest {
     tableModelBuilt.set(false);
 
     builder = SwingEntityModel.builder(Department.TYPE)
-            .editModelClass(DepartmentEditModel.class)
+            .editModel(DepartmentEditModel.class)
             .onBuildModel(swingEntityModel -> modelBuilt.set(true))
             .onBuildEditModel(swingEntityEditModel -> editModelBuilt.set(true))
             .onBuildTableModel(swingEntityTableModel -> tableModelBuilt.set(true));

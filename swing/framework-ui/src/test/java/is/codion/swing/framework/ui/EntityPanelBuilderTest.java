@@ -27,14 +27,14 @@ public class EntityPanelBuilderTest {
   @Test
   void setPanelClass() {
     assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .editPanelClass(EntityEditPanel.class).panelClass(EntityPanel.class));
+            .editPanel(EntityEditPanel.class).panel(EntityPanel.class));
     assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .tablePanelClass(EntityTablePanel.class).panelClass(EntityPanel.class));
+            .tablePanel(EntityTablePanel.class).panel(EntityPanel.class));
 
     assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .panelClass(EntityPanel.class).editPanelClass(EntityEditPanel.class));
+            .panel(EntityPanel.class).editPanel(EntityEditPanel.class));
     assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .panelClass(EntityPanel.class).tablePanelClass(EntityTablePanel.class));
+            .panel(EntityPanel.class).tablePanel(EntityTablePanel.class));
   }
 
   @Test
@@ -42,7 +42,7 @@ public class EntityPanelBuilderTest {
     SwingEntityModel.Builder customerModelBuilder = SwingEntityModel.builder(Department.TYPE);
     SwingEntityModel.Builder invoiceModelBuilder = SwingEntityModel.builder(Employee.TYPE);
 
-    customerModelBuilder.detailModelBuilder(invoiceModelBuilder);
+    customerModelBuilder.detailModel(invoiceModelBuilder);
 
     SwingEntityModel customerModel = customerModelBuilder.buildModel(CONNECTION_PROVIDER);
 
@@ -52,7 +52,7 @@ public class EntityPanelBuilderTest {
     EntityPanel.Builder invoicePanelBuilder = EntityPanel.builder(Employee.TYPE)
             .caption("empCaption");
 
-    customerPanelBuilder.detailPanelBuilder(invoicePanelBuilder);
+    customerPanelBuilder.detailPanel(invoicePanelBuilder);
 
     EntityPanel customerPanel = customerPanelBuilder.buildPanel(customerModel);
     assertEquals(customerCaption, customerPanel.caption().get());
