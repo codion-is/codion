@@ -14,6 +14,7 @@ Codion Change Log
 - TabbedApplicationLayout bug fixed, now applies the border to the application panel, instead of only the tabbed pane.
 - EntityTablePanel.DefaultStatusMessage bug fixed, no longer returns an empty message when all rows are filtered.
 - EntityTablePanel.DefaultStatusMessage, 'hidden' replaced with 'filtered'.
+- EntityPanel, minor refactoring.
 
 ## 0.17.24
 ### is.codion.common.core
