@@ -255,7 +255,7 @@ public interface Database extends ConnectionFactory {
    * Sets the {@link ConnectionProvider} instance used when creating connections.
    * @param connectionProvider the connection provider
    */
-  void setConnectionProvider(ConnectionProvider connectionProvider);
+  void connectionProvider(ConnectionProvider connectionProvider);
 
   /**
    * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).

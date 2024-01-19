@@ -110,7 +110,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
       tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
       tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       tableModel.sortModel().addSortOrder(Customer.FIRSTNAME, ASCENDING);
-      selector.setPreferredSize(new Dimension(500, 300));
+      selector.preferredSize(new Dimension(500, 300));
 
       return selector;
     }

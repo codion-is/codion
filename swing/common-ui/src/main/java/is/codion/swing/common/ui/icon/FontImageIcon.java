@@ -26,7 +26,7 @@ public interface FontImageIcon {
    * Sets the icon color
    * @param color the color
    */
-  void setColor(Color color);
+  void color(Color color);
 
   /**
    * Paints a FontIcon onto an Image Icon

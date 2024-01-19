@@ -30,14 +30,14 @@ public final class AbstractDatabaseTest {
   void connectionProvider() throws Exception {
     User sa = User.user("sa");
     Connection connection = database.createConnection(sa);
-    database.setConnectionProvider(new ConnectionProvider() {
+    database.connectionProvider(new ConnectionProvider() {
       @Override
       public Connection connection(User user, String url) {
         return connection;
       }
     });
     assertSame(connection, database.createConnection(sa));
-    database.setConnectionProvider(null);
+    database.connectionProvider(null);
     Connection newConnection = database.createConnection(sa);
     assertNotSame(connection, newConnection);
     connection.close();

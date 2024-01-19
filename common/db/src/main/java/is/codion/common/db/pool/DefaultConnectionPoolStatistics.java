@@ -126,63 +126,63 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
     return resetDate;
   }
 
-  void setSnapshot(List<ConnectionPoolState> snapshot) {
+  void snapshot(List<ConnectionPoolState> snapshot) {
     this.snapshot = snapshot;
   }
 
-  void setAvailableInPool(int availableInPool) {
+  void availableInPool(int availableInPool) {
     this.availableInPool = availableInPool;
   }
 
-  void setConnectionsInUse(int connectionsInUse) {
+  void connectionsInUse(int connectionsInUse) {
     this.connectionsInUse = connectionsInUse;
   }
 
-  void setTimestamp(long timestamp) {
+  void timestamp(long timestamp) {
     this.timestamp = timestamp;
   }
 
-  void setCreationDate(long time) {
+  void creationDate(long time) {
     this.creationDate = time;
   }
 
-  void setConnectionsCreated(int connectionsCreated) {
+  void connectionsCreated(int connectionsCreated) {
     this.connectionsCreated = connectionsCreated;
   }
 
-  void setConnectionsDestroyed(int connectionsDestroyed) {
+  void connectionsDestroyed(int connectionsDestroyed) {
     this.connectionsDestroyed = connectionsDestroyed;
   }
 
-  void setConnectionRequests(int connectionRequests) {
+  void connectionRequests(int connectionRequests) {
     this.connectionRequests = connectionRequests;
   }
 
-  void setRequestsPerSecond(int requestsPerSecond) {
+  void requestsPerSecond(int requestsPerSecond) {
     this.requestsPerSecond = requestsPerSecond;
   }
 
-  void setAverageCheckOutTime(int averageCheckOutTime) {
+  void averageCheckOutTime(int averageCheckOutTime) {
     this.averageCheckOutTime = averageCheckOutTime;
   }
 
-  void setMinimumCheckOutTime(int minimumCheckOutTime) {
+  void minimumCheckOutTime(int minimumCheckOutTime) {
     this.minimumCheckOutTime = minimumCheckOutTime;
   }
 
-  void setMaximumCheckOutTime(int maximumCheckOutTime) {
+  void maximumCheckOutTime(int maximumCheckOutTime) {
     this.maximumCheckOutTime = maximumCheckOutTime;
   }
 
-  void setResetDate(long resetDate) {
+  void resetDate(long resetDate) {
     this.resetDate = resetDate;
   }
 
-  void setConnectionRequestsFailed(int connectionRequestsFailed) {
+  void connectionRequestsFailed(int connectionRequestsFailed) {
     this.connectionRequestsFailed = connectionRequestsFailed;
   }
 
-  void setRequestsFailedPerSecond(int requestsFailedPerSecond) {
+  void requestsFailedPerSecond(int requestsFailedPerSecond) {
     this.requestsFailedPerSecond = requestsFailedPerSecond;
   }
 }

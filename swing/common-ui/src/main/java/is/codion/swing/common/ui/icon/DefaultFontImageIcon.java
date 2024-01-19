@@ -33,7 +33,7 @@ final class DefaultFontImageIcon implements FontImageIcon {
   }
 
   @Override
-  public void setColor(Color color) {
+  public void color(Color color) {
     fontIcon.setIconColor(color);
     iconPainter.paintIcon(fontIcon, imageIcon);
   }

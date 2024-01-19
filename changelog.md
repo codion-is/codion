@@ -2,12 +2,19 @@ Codion Change Log
 ==================
 
 ## 0.17.25-SNAPSHOT
+### is.codion.common.db
+- Database.setConnectionProvider() renamed connectionProvider().
 ### is.codion.common.model
 - DefaultColumnConditionModel, wildcard handling with regex improved.
 ### is.codion.swing.common.model
 - DefaultFilteredTableModel.CombinedIncludeCondition now uses ColumnValueProvider.string() in case of String based conditions.
 - DefaultFilteredTableModel.CombinedIncludeCondition bug fixed, now replaces empty string with null before comparing.
 - FilteredTableModel.ColumnValueProvider.comparable() default implementation no longer returns a string for non-comparable values.
+### is.codion.swing.common.ui
+- Icons.setIconColor() renamed iconColor(), FontImageIcon.setColor() renamed color().
+- FilteredTable.setAutoStartsEdit() renamed autoStartsEdit().
+- SearchHighlighter.setHighlightColor() and setSelectedHighlightColor() renamed highlightColor() and highlightSelectedColor() respectively.
+- TemporalFieldPanel, TextFieldPanel.setTransferFocusOnEnter() renamed transferFocusOnEnter().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based column condition models for entity, item and non-comparable based columns.
 ### is.codion.swing.framework.ui
@@ -16,6 +23,8 @@ Codion Change Log
 - EntityTablePanel.DefaultStatusMessage, 'hidden' replaced with 'filtered'.
 - EntityPanel, minor refactoring.
 - EntityDialogs.EditDialogBuilder.Updater now with generic edit model type parameter.
+- EntitySearchField.Selector.setPreferredSize() renamed preferredSize().
+- EntitySearchField.setSelectorFactory() renamed selectorFactory().
 
 ## 0.17.24
 ### is.codion.common.core

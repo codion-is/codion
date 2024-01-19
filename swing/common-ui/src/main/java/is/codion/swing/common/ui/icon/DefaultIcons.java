@@ -50,9 +50,9 @@ final class DefaultIcons implements Icons {
   }
 
   @Override
-  public void setIconColor(Color color) {
+  public void iconColor(Color color) {
     requireNonNull(color);
-    icons.values().forEach(icon -> icon.setColor(color));
+    icons.values().forEach(icon -> icon.color(color));
   }
 
   @Override
@@ -72,7 +72,7 @@ final class DefaultIcons implements Icons {
     @Override
     public void accept(Color color) {
       if (color != null) {
-        setIconColor(color);
+        iconColor(color);
       }
     }
   }

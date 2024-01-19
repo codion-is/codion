@@ -108,7 +108,7 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(EntitySearchModel)
  * @see #singleSelectionValue()
  * @see #multiSelectionValue()
- * @see #setSelectorFactory(Function)
+ * @see #selectorFactory(Function)
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -166,7 +166,7 @@ public final class EntitySearchField extends HintTextField {
       TextComponents.lowerCase(getDocument());
     }
     searchOnFocusLost.set(builder.searchOnFocusLost);
-    setSearchIndicator(builder.searchIndicator);
+    searchIndicator(builder.searchIndicator);
     selectorFactory = builder.selectorFactory;
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
@@ -198,7 +198,7 @@ public final class EntitySearchField extends HintTextField {
   /**
    * @param transferFocusOnEnter true if this component should transfer focus on Enter
    */
-  public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
+  public void transferFocusOnEnter(boolean transferFocusOnEnter) {
     KeyEvents.Builder transferForward = KeyEvents.builder(VK_ENTER)
             .condition(WHEN_FOCUSED)
             .action(transferFocusAction);
@@ -220,7 +220,7 @@ public final class EntitySearchField extends HintTextField {
    * @param searchIndicator the search indicator type
    * @see #SEARCH_INDICATOR
    */
-  public void setSearchIndicator(SearchIndicator searchIndicator) {
+  public void searchIndicator(SearchIndicator searchIndicator) {
     this.searchIndicator = requireNonNull(searchIndicator);
     updateSearchIndicator();
   }
@@ -231,7 +231,7 @@ public final class EntitySearchField extends HintTextField {
    * a selection dialog to the user
    * @throws NullPointerException in case {@code selectorFactory} is null
    */
-  public void setSelectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
+  public void selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
     this.selectorFactory = requireNonNull(selectorFactory);
   }
 
@@ -590,7 +590,7 @@ public final class EntitySearchField extends HintTextField {
      * Sets the preferred size of the selection component.
      * @param preferredSize the preferred selection component size
      */
-    void setPreferredSize(Dimension preferredSize);
+    void preferredSize(Dimension preferredSize);
   }
 
   /**
@@ -687,7 +687,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public void setPreferredSize(Dimension preferredSize) {
+    public void preferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
@@ -786,7 +786,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public void setPreferredSize(Dimension preferredSize) {
+    public void preferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
@@ -1021,7 +1021,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected void enableTransferFocusOnEnter(EntitySearchField component) {
-      component.setTransferFocusOnEnter(true);
+      component.transferFocusOnEnter(true);
     }
 
     private static final class ListSelectorFactory implements Function<EntitySearchModel, Selector> {
