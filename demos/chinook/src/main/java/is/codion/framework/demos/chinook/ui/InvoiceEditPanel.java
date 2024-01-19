@@ -36,7 +36,6 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     super(editModel);
     this.invoiceLinePanel = invoiceLinePanel;
     clearAfterInsert().set(false);
-    defaults().textFieldColumns().set(12);
   }
 
   @Override
@@ -50,6 +49,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .columns(6);
 
     createTextField(Invoice.BILLINGADDRESS)
+            .columns(12)
             .selectAllOnFocusGained(true);
 
     createTextField(Invoice.BILLINGCITY)
