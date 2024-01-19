@@ -744,13 +744,8 @@ public class EntityPanel extends JPanel {
   protected void initializeUI() {
     setupToggleEditPanelControl();
     panelLayout().layout(this);
-    if (containsTablePanel()) {
-      initializeTablePanel();
-    }
-    if (containsEditPanel()) {
-      initializeEditPanel();
-      updateEditPanelState();
-    }
+    initializeTablePanel();
+    initializeEditPanel();
     setupKeyboardActions();
   }
 
@@ -970,28 +965,38 @@ public class EntityPanel extends JPanel {
             .build();
   }
 
+  /**
+   * Initializes the edit panel, if one is available.
+   */
   protected final void initializeEditPanel() {
-    editPanel.initialize();
-    editControlPanel.setMinimumSize(new Dimension(0, 0));
-    int gap = Layouts.GAP.get();
-    editControlPanel.setBorder(createEmptyBorder(gap, 0, gap, 0));
-    editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
-    editControlPanel.addMouseListener(new ActivateOnMouseClickListener());
-    if (settings.includeControls) {
-      JComponent controlComponent = createControlComponent(createControls());
-      if (controlComponent != null) {
-        editControlPanel.add(controlComponent, settings.controlComponentConstraints);
+    if (editPanel != null) {
+      editPanel.initialize();
+      editControlPanel.setMinimumSize(new Dimension(0, 0));
+      editControlPanel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
+      editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
+      editControlPanel.addMouseListener(new ActivateOnMouseClickListener());
+      if (settings.includeControls) {
+        JComponent controlComponent = createControlComponent(createControls());
+        if (controlComponent != null) {
+          editControlPanel.add(controlComponent, settings.controlComponentConstraints);
+        }
       }
+      updateEditPanelState();
     }
   }
 
+  /**
+   * Initializes the table panel, if one is available.
+   */
   protected final void initializeTablePanel() {
-    editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
-    if (tablePanel.table().doubleClickAction().get() == null) {
-      tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanel()));
+    if (tablePanel != null) {
+      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
+      if (tablePanel.table().doubleClickAction().get() == null) {
+        tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanel()));
+      }
+      tablePanel.initialize();
+      tablePanel.setMinimumSize(new Dimension(0, 0));
     }
-    tablePanel.initialize();
-    tablePanel.setMinimumSize(new Dimension(0, 0));
   }
 
   final void setParentPanel(EntityPanel parentPanel) {
@@ -1056,7 +1061,7 @@ public class EntityPanel extends JPanel {
   }
 
   private void setupToggleEditPanelControl() {
-    if (containsTablePanel() && containsEditPanel() && settings.includeToggleEditPanelControl ) {
+    if (containsTablePanel() && containsEditPanel() && settings.includeToggleEditPanelControl) {
       tablePanel.configure().addToolBarControls(Controls.builder()
               .control(createToggleEditPanelControl())
               .build());
@@ -1115,9 +1120,8 @@ public class EntityPanel extends JPanel {
   }
 
   private Window createEditWindow() {
-    int gap = Layouts.GAP.get();
     JPanel basePanel = Components.borderLayoutPanel()
-            .border(createEmptyBorder(gap, gap, 0, gap))
+            .border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
             .centerComponent(editControlPanel)
             .build();
     if (USE_FRAME_PANEL_DISPLAY.get()) {

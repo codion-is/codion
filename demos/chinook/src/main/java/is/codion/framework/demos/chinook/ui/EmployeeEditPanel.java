@@ -45,7 +45,6 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 
   public EmployeeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    defaults().textFieldColumns().set(12);
   }
 
   @Override
@@ -79,9 +78,12 @@ public final class EmployeeEditPanel extends EntityEditPanel {
             .upperCase(true);
     createTextField(Employee.COUNTRY)
             .columns(8);
-    createTextField(Employee.PHONE);
-    createTextField(Employee.FAX);
-    createTextField(Employee.EMAIL);
+    createTextField(Employee.PHONE)
+            .columns(12);
+    createTextField(Employee.FAX)
+            .columns(12);
+    createTextField(Employee.EMAIL)
+            .columns(12);
     createForeignKeyComboBox(Employee.REPORTSTO_FK)
             .preferredWidth(120);
 

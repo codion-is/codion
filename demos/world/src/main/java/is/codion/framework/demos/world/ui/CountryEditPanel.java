@@ -39,9 +39,6 @@ final class CountryEditPanel extends EntityEditPanel {
 
   CountryEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    defaults().foreignKeyComboBoxPreferredWidth().set(PREFERRED_COMBO_BOX_WIDTH);
-    defaults().itemComboBoxPreferredWidth().set(PREFERRED_COMBO_BOX_WIDTH);
-    defaults().comboBoxPreferredWidth().set(PREFERRED_COMBO_BOX_WIDTH);
   }
 
   @Override
@@ -56,8 +53,10 @@ final class CountryEditPanel extends EntityEditPanel {
             .upperCase(true);
     createTextField(Country.NAME);
     createTextField(Country.LOCALNAME);
-    createItemComboBox(Country.CONTINENT);
-    createComboBox(Country.REGION);
+    createItemComboBox(Country.CONTINENT)
+            .preferredWidth(PREFERRED_COMBO_BOX_WIDTH);
+    createComboBox(Country.REGION)
+            .preferredWidth(PREFERRED_COMBO_BOX_WIDTH);
     createTextField(Country.SURFACEAREA)
             .columns(5);
     createTextField(Country.INDEPYEAR)
@@ -71,10 +70,12 @@ final class CountryEditPanel extends EntityEditPanel {
     createTextField(Country.GNPOLD)
             .columns(6);
     createComboBox(Country.GOVERNMENTFORM)
+            .preferredWidth(PREFERRED_COMBO_BOX_WIDTH)
             .editable(true);
     createTextField(Country.HEADOFSTATE);
     //create a panel with a button for adding a new city
     createForeignKeyComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
+            .comboBoxPreferredWidth(PREFERRED_COMBO_BOX_WIDTH)
             .add(true);
     //add a field displaying the avarage city population for the selected country
     CountryEditModel editModel = editModel();

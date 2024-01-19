@@ -104,7 +104,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
   /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
-  public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
+  public void transferFocusOnEnter(boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
       TransferFocusOnEnter.enable(temporalField);
       if (calendarButton != null) {
@@ -274,7 +274,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
     @Override
     protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component) {
-      component.setTransferFocusOnEnter(true);
+      component.transferFocusOnEnter(true);
     }
 
     @Override

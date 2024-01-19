@@ -24,7 +24,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.dialog.ProgressWorkerDialogBuilder;
-import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityDialogs.EditDialogBuilder;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -70,12 +69,11 @@ public final class EmployeeTablePanel extends EntityTablePanel {
     }
   }
 
-  private final class EmployeeUpdater implements EditDialogBuilder.Updater {
+  private final class EmployeeUpdater implements EditDialogBuilder.Updater<EmployeeEditModel> {
 
     @Override
-    public void update(SwingEntityEditModel editModel, Collection<Entity> entities) {
-      EmployeeEditModel employeeEditModel = (EmployeeEditModel) editModel;
-      EmployeeEditModel.UpdateMany update = employeeEditModel.createUpdate(entities);
+    public void update(EmployeeEditModel editModel, Collection<Entity> entities) {
+      EmployeeEditModel.UpdateMany update = editModel.createUpdate(entities);
       createWorker(update::execute, UPDATING)
               .onResult(update::onResult)
               .execute();

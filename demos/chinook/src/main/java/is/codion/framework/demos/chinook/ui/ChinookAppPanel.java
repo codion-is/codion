@@ -193,7 +193,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             .applicationVersion(ChinookAppModel.VERSION)
             .domainType(Chinook.DOMAIN)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

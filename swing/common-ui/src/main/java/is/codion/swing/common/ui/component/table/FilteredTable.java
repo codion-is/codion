@@ -236,7 +236,7 @@ public final class FilteredTable<R, C> extends JTable {
     this.doubleClickAction = Value.value(builder.doubleClickAction);
     this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
     this.sortingEnabled = State.state(builder.sortingEnabled);
-    setAutoStartsEdit(builder.autoStartsEdit);
+    autoStartsEdit(builder.autoStartsEdit);
     setSelectionMode(builder.selectionMode);
     setAutoResizeMode(builder.autoResizeMode);
     configureColumns(builder.cellRendererFactory);
@@ -504,7 +504,7 @@ public final class FilteredTable<R, C> extends JTable {
    * A convenience method for setting the client property 'JTable.autoStartsEdit'.
    * @param autoStartsEdit the value
    */
-  public void setAutoStartsEdit(boolean autoStartsEdit) {
+  public void autoStartsEdit(boolean autoStartsEdit) {
     putClientProperty("JTable.autoStartsEdit", autoStartsEdit);
   }
 

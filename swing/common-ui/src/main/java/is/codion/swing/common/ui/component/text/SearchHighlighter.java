@@ -60,7 +60,7 @@ public final class SearchHighlighter {
   private final Value<Integer> selectedSearchTextPosition = Value.value();
 
   private Highlighter.HighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
-  private Highlighter.HighlightPainter selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
+  private Highlighter.HighlightPainter highlightSelectedPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
 
   private SearchHighlighter(JTextComponent textComponent) {
     this.textComponent = requireNonNull(textComponent);
@@ -85,7 +85,7 @@ public final class SearchHighlighter {
   /**
    * @param color the color to use when highlighting search results.
    */
-  public void setHighlightColor(Color color) {
+  public void highlightColor(Color color) {
     highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
     searchAndHighlightResults();
   }
@@ -93,8 +93,8 @@ public final class SearchHighlighter {
   /**
    * @param color the color to use when highlighting the selected search result.
    */
-  public void setSelectedHighlightColor(Color color) {
-    selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
+  public void highlightSelectedColor(Color color) {
+    highlightSelectedPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
     searchAndHighlightResults();
   }
 
@@ -193,7 +193,7 @@ public final class SearchHighlighter {
     selectedSearchTextPosition.set(matchPosition.start);
     try {
       highlighter.removeHighlight(matchPosition.highlightTag);
-      matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, selectedHighlightPainter);
+      matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, highlightSelectedPainter);
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);

@@ -36,7 +36,6 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
   public CustomerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
-    defaults().textFieldColumns().set(12);
   }
 
   @Override
@@ -47,9 +46,12 @@ public final class CustomerEditPanel extends EntityEditPanel {
             .columns(6);
     createTextField(Customer.LASTNAME)
             .columns(6);
-    createTextField(Customer.EMAIL);
-    createTextField(Customer.COMPANY);
-    createTextField(Customer.ADDRESS);
+    createTextField(Customer.EMAIL)
+            .columns(12);
+    createTextField(Customer.COMPANY)
+            .columns(12);
+    createTextField(Customer.ADDRESS)
+            .columns(12);
     createTextField(Customer.CITY)
             .columns(8);
     createTextField(Customer.POSTALCODE)
@@ -60,8 +62,10 @@ public final class CustomerEditPanel extends EntityEditPanel {
             .selector(Dialogs.selector(new StateValueSupplier()));
     createTextField(Customer.COUNTRY)
             .columns(8);
-    createTextField(Customer.PHONE);
-    createTextField(Customer.FAX);
+    createTextField(Customer.PHONE)
+            .columns(12);
+    createTextField(Customer.FAX)
+            .columns(12);
     createForeignKeyComboBox(Customer.SUPPORTREP_FK)
             .preferredWidth(120);
 

@@ -1418,7 +1418,7 @@ public class DefaultLocalEntityConnectionTest {
   private static LocalEntityConnection createConnection(boolean setLockTimeout) throws DatabaseException {
     Database database = Database.instance();
     if (setLockTimeout) {
-      database.setConnectionProvider(new ConnectionProvider() {
+      database.connectionProvider(new ConnectionProvider() {
         @Override
         public Connection connection(User user, String url) throws SQLException {
           Connection connection = ConnectionProvider.super.connection(user, url);

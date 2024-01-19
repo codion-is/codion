@@ -205,8 +205,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
   }
 
   @Override
-  public void setIconColor(Color color) {
-    icons.setIconColor(color);
+  public void iconColor(Color color) {
+    icons.iconColor(color);
   }
 
   @Override

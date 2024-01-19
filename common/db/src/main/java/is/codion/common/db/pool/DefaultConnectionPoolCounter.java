@@ -135,27 +135,27 @@ final class DefaultConnectionPoolCounter {
   ConnectionPoolStatistics collectStatistics(long since) {
     DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.user().username());
     long current = System.currentTimeMillis();
-    statistics.setTimestamp(current);
-    statistics.setResetDate(resetDate.get());
-    statistics.setAvailableInPool(connectionPool.available());
-    statistics.setConnectionsInUse(connectionPool.inUse());
-    statistics.setConnectionsCreated(connectionsCreated.get());
-    statistics.setConnectionsDestroyed(connectionsDestroyed.get());
-    statistics.setCreationDate(creationDate);
-    statistics.setConnectionRequests(connectionRequests.get());
-    statistics.setConnectionRequestsFailed(connectionRequestsFailed.get());
+    statistics.timestamp(current);
+    statistics.resetDate(resetDate.get());
+    statistics.availableInPool(connectionPool.available());
+    statistics.connectionsInUse(connectionPool.inUse());
+    statistics.connectionsCreated(connectionsCreated.get());
+    statistics.connectionsDestroyed(connectionsDestroyed.get());
+    statistics.creationDate(creationDate);
+    statistics.connectionRequests(connectionRequests.get());
+    statistics.connectionRequestsFailed(connectionRequestsFailed.get());
     double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
     requestsPerSecondTime.set(current);
-    statistics.setRequestsPerSecond((int) (requestsPerSecondCounter.get() / seconds));
+    statistics.requestsPerSecond((int) (requestsPerSecondCounter.get() / seconds));
     requestsPerSecondCounter.set(0);
-    statistics.setRequestsFailedPerSecond((int) (requestsFailedPerSecondCounter.get() / seconds));
+    statistics.requestsFailedPerSecond((int) (requestsFailedPerSecondCounter.get() / seconds));
     requestsFailedPerSecondCounter.set(0);
     if (!checkOutTimes.isEmpty()) {
       populateCheckOutTime(statistics);
     }
     if (collectSnapshotStatistics && since >= 0) {
       synchronized (snapshotStatistics) {
-        statistics.setSnapshot(snapshotStatistics.stream()
+        statistics.snapshot(snapshotStatistics.stream()
                 .filter(state -> state.timestamp() >= since)
                 .collect(toList()));
       }
@@ -180,9 +180,9 @@ final class DefaultConnectionPoolCounter {
           max = Math.max(max, time);
         }
       }
-      statistics.setAverageCheckOutTime(total / checkOutTimes.size());
-      statistics.setMinimumCheckOutTime(min);
-      statistics.setMaximumCheckOutTime(max);
+      statistics.averageCheckOutTime(total / checkOutTimes.size());
+      statistics.minimumCheckOutTime(min);
+      statistics.maximumCheckOutTime(max);
       checkOutTimes.clear();
     }
   }

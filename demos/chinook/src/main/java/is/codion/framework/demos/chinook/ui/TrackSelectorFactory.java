@@ -42,7 +42,7 @@ final class TrackSelectorFactory implements Function<EntitySearchModel, Selector
     tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
     tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
     tableModel.sortModel().addSortOrder(Track.NAME, ASCENDING);
-    selector.setPreferredSize(new Dimension(500, 300));
+    selector.preferredSize(new Dimension(500, 300));
 
     return selector;
   }

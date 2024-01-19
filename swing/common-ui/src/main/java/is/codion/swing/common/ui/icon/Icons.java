@@ -71,7 +71,7 @@ public interface Icons {
    * Sets the icon color
    * @param color the color
    */
-  void setIconColor(Color color);
+  void iconColor(Color color);
 
   /**
    * Adds a listener to the {@link #ICON_COLOR} property value,
