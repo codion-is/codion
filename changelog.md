@@ -30,6 +30,7 @@ Codion Change Log
 - EntitySearchField.setSelectorFactory() renamed selectorFactory().
 - EntityPanel.Builder.panelClass(), editPanelClass(), tablePanelClass(), detailPanelBuilder() and panelLayout() renamed panel(), editPanel(), tablePanel(), detailPanel() and layout().
 - EntityPanel.Builder.buildEditPanel() and buildTablePanel() removed, buildPanel() renamed build().
+- EntityTablePanel.setRefreshButtonVisible() replaced with Value based refreshButtonVisible().
 
 ## 0.17.24
 ### is.codion.common.core
