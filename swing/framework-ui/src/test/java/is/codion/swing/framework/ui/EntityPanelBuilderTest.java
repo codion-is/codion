@@ -44,7 +44,7 @@ public class EntityPanelBuilderTest {
 
     customerModelBuilder.detailModel(invoiceModelBuilder);
 
-    SwingEntityModel customerModel = customerModelBuilder.buildModel(CONNECTION_PROVIDER);
+    SwingEntityModel customerModel = customerModelBuilder.build(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
     EntityPanel.Builder customerPanelBuilder = EntityPanel.builder(Department.TYPE)
@@ -54,7 +54,7 @@ public class EntityPanelBuilderTest {
 
     customerPanelBuilder.detailPanel(invoicePanelBuilder);
 
-    EntityPanel customerPanel = customerPanelBuilder.buildPanel(customerModel);
+    EntityPanel customerPanel = customerPanelBuilder.build(customerModel);
     assertEquals(customerCaption, customerPanel.caption().get());
     assertTrue(customerPanel.containsDetailPanel(Employee.TYPE));
     EntityPanel invoicePanel = customerPanel.detailPanel(Employee.TYPE);

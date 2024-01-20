@@ -24,8 +24,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityModelBuilder.class);
 
-  private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
-
   private final EntityType entityType;
   private final List<SwingEntityModel.Builder> detailModelBuilders = new ArrayList<>();
 
@@ -134,8 +132,8 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel buildModel(EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
+  public SwingEntityModel build(EntityConnectionProvider connectionProvider) {
+    requireNonNull(connectionProvider, "connectionProvider");
     try {
       SwingEntityModel model;
       if (modelFactory != null) {
@@ -144,14 +142,14 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
       }
       else if (modelClass().equals(SwingEntityModel.class)) {
         LOG.debug("{} initializing a default entity model", this);
-        model = buildDefaultModel(connectionProvider);
+        model = new SwingEntityModel(buildTableModel(connectionProvider));
       }
       else {
         LOG.debug("{} initializing a custom entity model: {}", this, modelClass());
         model = modelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       for (SwingEntityModel.Builder detailProvider : detailModelBuilders) {
-        model.addDetailModel(detailProvider.buildModel(connectionProvider));
+        model.addDetailModel(detailProvider.build(connectionProvider));
       }
       onBuildModel.accept(model);
 
@@ -165,9 +163,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     }
   }
 
-  @Override
-  public SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
+  private SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider) {
     try {
       SwingEntityEditModel editModel;
       if (editModelFactory != null) {
@@ -194,9 +190,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     }
   }
 
-  @Override
-  public SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
+  private SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider) {
     try {
       SwingEntityTableModel tableModel;
       if (tableModelFactory != null) {
@@ -240,10 +234,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   @Override
   public int hashCode() {
     return Objects.hash(entityType, modelClass, editModelClass, tableModelClass);
-  }
-
-  private SwingEntityModel buildDefaultModel(EntityConnectionProvider connectionProvider) {
-    return new SwingEntityModel(buildTableModel(connectionProvider));
   }
 
   private Class<? extends SwingEntityModel> modelClass() {

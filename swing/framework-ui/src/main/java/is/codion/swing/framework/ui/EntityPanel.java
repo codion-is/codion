@@ -1503,41 +1503,19 @@ public class EntityPanel extends JPanel {
     Builder onBuildTablePanel(Consumer<EntityTablePanel> onBuildTablePanel);
 
     /**
-     * Creates an EntityPanel based on this builder,
-     * assuming a EntityModel is available.
-     * @return an EntityPanel based on this builder
-     * @throws IllegalStateException in case no {@link SwingEntityModel} has been set
-     */
-    EntityPanel buildPanel();
-
-    /**
      * Creates an EntityPanel based on this builder
      * @param connectionProvider the connection provider
      * @return an EntityPanel based on this builder
      * @throws IllegalStateException in case no {@link SwingEntityModel.Builder} has been set
      */
-    EntityPanel buildPanel(EntityConnectionProvider connectionProvider);
+    EntityPanel build(EntityConnectionProvider connectionProvider);
 
     /**
      * Creates an EntityPanel based on this builder
      * @param model the EntityModel to base this panel on
      * @return an EntityPanel based on this builder
      */
-    EntityPanel buildPanel(SwingEntityModel model);
-
-    /**
-     * Creates an EntityEditPanel
-     * @param connectionProvider the connection provider
-     * @return an EntityEditPanel based on this provider
-     */
-    EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Creates an EntityTablePanel
-     * @param connectionProvider the connection provider
-     * @return an EntityTablePanel based on this provider
-     */
-    EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
+    EntityPanel build(SwingEntityModel model);
   }
 
   private final class ActivateOnMouseClickListener extends MouseAdapter {

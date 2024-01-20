@@ -801,7 +801,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return cachedEntityPanels.get(panelBuilder);
     }
 
-    EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.connectionProvider());
+    EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
     entityPanel.initialize();
     if (CACHE_ENTITY_PANELS.get()) {
       cachedEntityPanels.put(panelBuilder, entityPanel);

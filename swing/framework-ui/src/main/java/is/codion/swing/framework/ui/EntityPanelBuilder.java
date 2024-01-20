@@ -175,26 +175,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel buildPanel() {
-    if (model == null) {
-      throw new IllegalStateException("A SwingEntityModel is not available in this panel builder: " + entityType);
-    }
-
-    return buildPanel(model);
-  }
-
-  @Override
-  public EntityPanel buildPanel(EntityConnectionProvider connectionProvider) {
+  public EntityPanel build(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     if (modelBuilder == null) {
       throw new IllegalStateException("A SwingEntityModel.Builder is not available in this panel builder: " + entityType);
     }
 
-    return buildPanel(modelBuilder.buildModel(connectionProvider));
+    return build(modelBuilder.build(connectionProvider));
   }
 
   @Override
-  public EntityPanel buildPanel(SwingEntityModel model) {
+  public EntityPanel build(SwingEntityModel model) {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = createPanel(model);
@@ -205,7 +196,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (!detailPanelBuilders.isEmpty()) {
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
           SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
-          EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
+          EntityPanel detailPanel = detailPanelBuilder.build(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
       }
@@ -222,16 +213,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider) {
-    return createEditPanel(modelBuilder.buildEditModel(connectionProvider));
-  }
-
-  @Override
-  public EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider) {
-    return createTablePanel(modelBuilder.buildTableModel(connectionProvider));
   }
 
   private EntityPanel createPanel(SwingEntityModel entityModel) {

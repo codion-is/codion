@@ -139,20 +139,6 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @param connectionProvider the connection provider
      * @return a SwingEntityModel instance
      */
-    SwingEntityModel buildModel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Builds a {@link SwingEntityEditModel} instance
-     * @param connectionProvider the connection provider
-     * @return a SwingEntityEditModel instance
-     */
-    SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Builds a {@link SwingEntityTableModel} instance
-     * @param connectionProvider the connection provider
-     * @return a SwingEntityTableModel instance
-     */
-    SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider);
+    SwingEntityModel build(EntityConnectionProvider connectionProvider);
   }
 }
