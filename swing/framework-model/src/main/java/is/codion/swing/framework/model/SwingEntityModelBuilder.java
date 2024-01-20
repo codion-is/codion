@@ -163,6 +163,25 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     }
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof SwingEntityModelBuilder) {
+      SwingEntityModelBuilder that = (SwingEntityModelBuilder) obj;
+
+      return Objects.equals(entityType, that.entityType) &&
+              Objects.equals(modelClass, that.modelClass) &&
+              Objects.equals(editModelClass, that.editModelClass) &&
+              Objects.equals(tableModelClass, that.tableModelClass);
+    }
+
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(entityType, modelClass, editModelClass, tableModelClass);
+  }
+
   private SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider) {
     try {
       SwingEntityEditModel editModel;
@@ -215,25 +234,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof SwingEntityModelBuilder) {
-      SwingEntityModelBuilder that = (SwingEntityModelBuilder) obj;
-
-      return Objects.equals(entityType, that.entityType) &&
-              Objects.equals(modelClass, that.modelClass) &&
-              Objects.equals(editModelClass, that.editModelClass) &&
-              Objects.equals(tableModelClass, that.tableModelClass);
-    }
-
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(entityType, modelClass, editModelClass, tableModelClass);
   }
 
   private Class<? extends SwingEntityModel> modelClass() {
