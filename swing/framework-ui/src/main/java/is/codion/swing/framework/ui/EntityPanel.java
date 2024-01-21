@@ -1446,7 +1446,7 @@ public class EntityPanel extends JPanel {
      * @param panelBuilder the detail panel provider
      * @return this builder instance
      */
-    Builder detailPanelBuilder(EntityPanel.Builder panelBuilder);
+    Builder detailPanel(EntityPanel.Builder panelBuilder);
 
     /**
      * Default true.
@@ -1472,7 +1472,7 @@ public class EntityPanel extends JPanel {
      * @param panelLayout the panel layout to use
      * @return this builder instane
      */
-    Builder panelLayout(PanelLayout panelLayout);
+    Builder layout(PanelLayout panelLayout);
 
     /**
      * @param preferredSize the preferred panel size
@@ -1485,19 +1485,19 @@ public class EntityPanel extends JPanel {
      * @param panelClass the EntityPanel class to use when providing this panel
      * @return this builder instance
      */
-    Builder panelClass(Class<? extends EntityPanel> panelClass);
+    Builder panel(Class<? extends EntityPanel> panelClass);
 
     /**
      * @param editPanelClass the EntityEditPanel class to use when providing this panel
      * @return this builder instance
      */
-    Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass);
+    Builder editPanel(Class<? extends EntityEditPanel> editPanelClass);
 
     /**
      * @param tablePanelClass the EntityTablePanel class to use when providing this panel
      * @return this builder instance
      */
-    Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass);
+    Builder tablePanel(Class<? extends EntityTablePanel> tablePanelClass);
 
     /**
      * @param onBuildPanel called after the entity panel has been built
@@ -1518,41 +1518,19 @@ public class EntityPanel extends JPanel {
     Builder onBuildTablePanel(Consumer<EntityTablePanel> onBuildTablePanel);
 
     /**
-     * Creates an EntityPanel based on this builder,
-     * assuming a EntityModel is available.
-     * @return an EntityPanel based on this builder
-     * @throws IllegalStateException in case no {@link SwingEntityModel} has been set
-     */
-    EntityPanel buildPanel();
-
-    /**
      * Creates an EntityPanel based on this builder
      * @param connectionProvider the connection provider
      * @return an EntityPanel based on this builder
      * @throws IllegalStateException in case no {@link SwingEntityModel.Builder} has been set
      */
-    EntityPanel buildPanel(EntityConnectionProvider connectionProvider);
+    EntityPanel build(EntityConnectionProvider connectionProvider);
 
     /**
      * Creates an EntityPanel based on this builder
      * @param model the EntityModel to base this panel on
      * @return an EntityPanel based on this builder
      */
-    EntityPanel buildPanel(SwingEntityModel model);
-
-    /**
-     * Creates an EntityEditPanel
-     * @param connectionProvider the connection provider
-     * @return an EntityEditPanel based on this provider
-     */
-    EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Creates an EntityTablePanel
-     * @param connectionProvider the connection provider
-     * @return an EntityTablePanel based on this provider
-     */
-    EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
+    EntityPanel build(SwingEntityModel model);
   }
 
   private final class ActivateOnMouseClickListener extends MouseAdapter {

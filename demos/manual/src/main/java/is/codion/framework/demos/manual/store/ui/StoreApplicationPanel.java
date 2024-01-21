@@ -65,7 +65,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
   protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     EntityPanel.Builder addressPanelBuilder =
             EntityPanel.builder(Address.TYPE)
-                    .editPanelClass(AddressEditPanel.class);
+                    .editPanel(AddressEditPanel.class);
 
     return Collections.singletonList(addressPanelBuilder);
   }

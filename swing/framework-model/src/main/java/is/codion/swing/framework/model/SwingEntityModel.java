@@ -83,7 +83,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @return this builder instance
      * @throws IllegalStateException in case the edit or table model classes have already been set
      */
-    Builder modelClass(Class<? extends SwingEntityModel> modelClass);
+    Builder model(Class<? extends SwingEntityModel> modelClass);
 
     /**
      * Sets the edit model class
@@ -92,7 +92,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @throws IllegalStateException in case the model class has already been set
      * @throws IllegalStateException in case the table model class has already been set
      */
-    Builder editModelClass(Class<? extends SwingEntityEditModel> editModelClass);
+    Builder editModel(Class<? extends SwingEntityEditModel> editModelClass);
 
     /**
      * Sets the table model class
@@ -101,28 +101,28 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @throws IllegalStateException in case the model class has already been set
      * @throws IllegalStateException in case the edit model class has already been set
      */
-    Builder tableModelClass(Class<? extends SwingEntityTableModel> tableModelClass);
+    Builder tableModel(Class<? extends SwingEntityTableModel> tableModelClass);
 
     /**
-     * Takes precedence over {@link #modelClass(Class)}.
+     * Takes precedence over {@link #model(Class)}.
      * @param modelFactory creates the model
      * @return this builder instance
      */
-    Builder modelFactory(Function<EntityConnectionProvider, SwingEntityModel> modelFactory);
+    Builder model(Function<EntityConnectionProvider, SwingEntityModel> modelFactory);
 
     /**
-     * Takes precedence over {@link #editModelClass(Class)}.
+     * Takes precedence over {@link #editModel(Class)}.
      * @param editModelFactory creates the edit model
      * @return this builder instance
      */
-    Builder editModelFactory(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory);
+    Builder editModel(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory);
 
     /**
-     * Takes precedence over {@link #tableModelClass(Class)}.
+     * Takes precedence over {@link #tableModel(Class)}.
      * @param tableModelFactory creates the table model
      * @return this builder instance
      */
-    Builder tableModelFactory(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory);
+    Builder tableModel(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory);
 
     /**
      * @param onBuildModel called after the entity model has been built
@@ -147,27 +147,13 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @param detailModelBuilder the detail model builder to add
      * @return this builder instance
      */
-    Builder detailModelBuilder(Builder detailModelBuilder);
+    Builder detailModel(Builder detailModelBuilder);
 
     /**
      * Builds a {@link SwingEntityModel} instance
      * @param connectionProvider the connection provider
      * @return a SwingEntityModel instance
      */
-    SwingEntityModel buildModel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Builds a {@link SwingEntityEditModel} instance
-     * @param connectionProvider the connection provider
-     * @return a SwingEntityEditModel instance
-     */
-    SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Builds a {@link SwingEntityTableModel} instance
-     * @param connectionProvider the connection provider
-     * @return a SwingEntityTableModel instance
-     */
-    SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider);
+    SwingEntityModel build(EntityConnectionProvider connectionProvider);
   }
 }

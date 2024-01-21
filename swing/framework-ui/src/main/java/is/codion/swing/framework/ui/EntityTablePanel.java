@@ -335,6 +335,8 @@ public class EntityTablePanel extends JPanel {
   private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
+  private final Value<RefreshButtonVisible> refreshButtonVisible =
+          Value.value(RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
   private final Map<TableControl, Value<Control>> controls;
 
@@ -360,7 +362,6 @@ public class EntityTablePanel extends JPanel {
   private JPanel tablePanel;
   private JToolBar refreshButtonToolBar;
   private Control conditionRefreshControl;
-  private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
 
   private boolean initialized = false;
 
@@ -390,6 +391,7 @@ public class EntityTablePanel extends JPanel {
     this.statusPanel = new StatusPanel();
     this.controls = createControlsMap();
     this.deleteConfirmer = createDeleteConfirmer();
+    this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
     this.settings = new Settings();
   }
 
@@ -435,21 +437,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return the refresh button visible setting
+   * @return the Value controlling the refresh button visible setting
    */
-  public final RefreshButtonVisible getRefreshButtonVisible() {
+  public final Value<RefreshButtonVisible> refreshButtonVisible() {
     return refreshButtonVisible;
-  }
-
-  /**
-   * @param refreshButtonVisible the refresh button visible setting
-   */
-  public final void setRefreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
-    this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
-    if (refreshButtonToolBar == null) {
-      refreshButtonToolBar = createRefreshButtonToolBar();
-    }
-    refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get());
   }
 
   /**
@@ -709,7 +700,7 @@ public class EntityTablePanel extends JPanel {
             .rightComponent(statusPanel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
-    southPanel.add(refreshButtonToolBar, BorderLayout.WEST);
+    southPanel.add(refreshButtonToolBar(), BorderLayout.WEST);
     JToolBar southToolBar = createSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
@@ -1379,7 +1370,7 @@ public class EntityTablePanel extends JPanel {
   private void setConditionPanelVisible(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
-      refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
+      refreshButtonToolBar().setVisible(refreshButtonVisible.equalTo(RefreshButtonVisible.ALWAYS) || visible);
       revalidate();
     }
   }
@@ -1398,6 +1389,18 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  private void setRefreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
+    refreshButtonToolBar().setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get());
+  }
+
+  private JToolBar refreshButtonToolBar() {
+    if (refreshButtonToolBar == null) {
+      refreshButtonToolBar = createRefreshButtonToolBar();
+    }
+
+    return refreshButtonToolBar;
+  }
+
   private void setupComponents() {
     if (conditionRefreshControl == null) {
       conditionRefreshControl = createConditionRefreshControl();
@@ -1414,9 +1417,7 @@ public class EntityTablePanel extends JPanel {
     summaryPanel = createSummaryPanel();
     summaryPanelScrollPane = createSummaryPanelScrollPane();
     tablePanel = createTablePanel();
-    if (refreshButtonToolBar == null) {
-      refreshButtonToolBar = createRefreshButtonToolBar();
-    }
+    refreshButtonToolBar();
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
     filterPanelVisibleState.addValidator(new PanelAvailableValidator(filterPanel, "filter"));
     summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));

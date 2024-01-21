@@ -75,27 +75,27 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     SwingEntityModel.Builder tagModelBuilder =
             SwingEntityModel.builder(Tag.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));
+                    .detailModel(SwingEntityModel.builder(TagItem.TYPE));
     SwingEntityModel.Builder sellerContactInfoModelBuilder =
             SwingEntityModel.builder(SellerContactInfo.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Item.TYPE)
-                            .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE)));
+                    .detailModel(SwingEntityModel.builder(Item.TYPE)
+                            .detailModel(SwingEntityModel.builder(TagItem.TYPE)));
 
     return Arrays.asList(
             EntityPanel.builder(Address.TYPE)
-                    .editPanelClass(AddressEditPanel.class),
+                    .editPanel(AddressEditPanel.class),
             EntityPanel.builder(sellerContactInfoModelBuilder)
-                    .editPanelClass(ContactInfoEditPanel.class)
-                    .detailPanelBuilder(EntityPanel.builder(Item.TYPE)
-                            .editPanelClass(ItemEditPanel.class)
-                            .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
-                                    .editPanelClass(TagItemEditPanel.class))
-                            .panelLayout(detailPanelState(PanelState.HIDDEN))),
+                    .editPanel(ContactInfoEditPanel.class)
+                    .detailPanel(EntityPanel.builder(Item.TYPE)
+                            .editPanel(ItemEditPanel.class)
+                            .detailPanel(EntityPanel.builder(TagItem.TYPE)
+                                    .editPanel(TagItemEditPanel.class))
+                            .layout(detailPanelState(PanelState.HIDDEN))),
             EntityPanel.builder(tagModelBuilder)
-                    .editPanelClass(TagEditPanel.class)
-                    .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
-                            .editPanelClass(TagItemEditPanel.class))
-                    .panelLayout(detailPanelState(PanelState.HIDDEN)));
+                    .editPanel(TagEditPanel.class)
+                    .detailPanel(EntityPanel.builder(TagItem.TYPE)
+                            .editPanel(TagItemEditPanel.class))
+                    .layout(detailPanelState(PanelState.HIDDEN)));
   }
 
   public static void main(String[] args) {

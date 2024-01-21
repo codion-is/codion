@@ -93,48 +93,48 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
   protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     EntityPanel.Builder trackPanelBuilder =
             EntityPanel.builder(Track.TYPE)
-                    .tablePanelClass(TrackTablePanel.class);
+                    .tablePanel(TrackTablePanel.class);
 
     SwingEntityModel.Builder genreModelBuilder =
             SwingEntityModel.builder(Genre.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE));
+                    .detailModel(SwingEntityModel.builder(Track.TYPE));
 
     EntityPanel.Builder genrePanelBuilder =
             EntityPanel.builder(genreModelBuilder)
-                    .editPanelClass(GenreEditPanel.class)
-                    .detailPanelBuilder(trackPanelBuilder)
-                    .panelLayout(detailPanelState(PanelState.HIDDEN));
+                    .editPanel(GenreEditPanel.class)
+                    .detailPanel(trackPanelBuilder)
+                    .layout(detailPanelState(PanelState.HIDDEN));
 
     SwingEntityModel.Builder mediaTypeModelBuilder =
             SwingEntityModel.builder(MediaType.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE));
+                    .detailModel(SwingEntityModel.builder(Track.TYPE));
 
     EntityPanel.Builder mediaTypePanelBuilder =
             EntityPanel.builder(mediaTypeModelBuilder)
-                    .editPanelClass(MediaTypeEditPanel.class)
-                    .detailPanelBuilder(trackPanelBuilder)
-                    .panelLayout(detailPanelState(PanelState.HIDDEN));
+                    .editPanel(MediaTypeEditPanel.class)
+                    .detailPanel(trackPanelBuilder)
+                    .layout(detailPanelState(PanelState.HIDDEN));
 
     EntityPanel.Builder artistPanelBuilder =
             EntityPanel.builder(Artist.TYPE)
-                    .editPanelClass(ArtistEditPanel.class);
+                    .editPanel(ArtistEditPanel.class);
 
     EntityPanel.Builder customerPanelBuilder =
             EntityPanel.builder(Customer.TYPE)
-                    .editPanelClass(CustomerEditPanel.class)
-                    .tablePanelClass(CustomerTablePanel.class);
+                    .editPanel(CustomerEditPanel.class)
+                    .tablePanel(CustomerTablePanel.class);
 
     SwingEntityModel.Builder employeeModelBuilder =
             SwingEntityModel.builder(Employee.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
-                    .editModelClass(EmployeeEditModel.class);
+                    .detailModel(SwingEntityModel.builder(Customer.TYPE))
+                    .editModel(EmployeeEditModel.class);
 
     EntityPanel.Builder employeePanelBuilder =
             EntityPanel.builder(employeeModelBuilder)
-                    .editPanelClass(EmployeeEditPanel.class)
-                    .tablePanelClass(EmployeeTablePanel.class)
-                    .detailPanelBuilder(customerPanelBuilder)
-                    .panelLayout(detailPanelState(PanelState.HIDDEN))
+                    .editPanel(EmployeeEditPanel.class)
+                    .tablePanel(EmployeeTablePanel.class)
+                    .detailPanel(customerPanelBuilder)
+                    .layout(detailPanelState(PanelState.HIDDEN))
                     .preferredSize(new Dimension(1000, 500));
 
     return Arrays.asList(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);

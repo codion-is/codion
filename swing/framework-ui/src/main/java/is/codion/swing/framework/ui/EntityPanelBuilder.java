@@ -86,7 +86,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder detailPanelBuilder(EntityPanel.Builder panelBuilder) {
+  public EntityPanel.Builder detailPanel(EntityPanel.Builder panelBuilder) {
     if (!detailPanelBuilders.contains(panelBuilder)) {
       detailPanelBuilders.add(panelBuilder);
     }
@@ -113,7 +113,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder panelLayout(PanelLayout panelLayout) {
+  public EntityPanel.Builder layout(PanelLayout panelLayout) {
     this.panelLayout = requireNonNull(panelLayout);
     return this;
   }
@@ -125,7 +125,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder panelClass(Class<? extends EntityPanel> panelClass) {
+  public EntityPanel.Builder panel(Class<? extends EntityPanel> panelClass) {
     if (editPanelClass != null || tablePanelClass != null) {
       throw new IllegalStateException("Edit or table panel class has been set");
     }
@@ -134,7 +134,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass) {
+  public EntityPanel.Builder editPanel(Class<? extends EntityEditPanel> editPanelClass) {
     if (panelClass != null) {
       throw new IllegalStateException("Panel class has been set");
     }
@@ -143,7 +143,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass) {
+  public EntityPanel.Builder tablePanel(Class<? extends EntityTablePanel> tablePanelClass) {
     if (panelClass != null) {
       throw new IllegalStateException("Panel class has been set");
     }
@@ -190,26 +190,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel buildPanel() {
-    if (model == null) {
-      throw new IllegalStateException("A SwingEntityModel is not available in this panel builder: " + entityType);
-    }
-
-    return buildPanel(model);
-  }
-
-  @Override
-  public EntityPanel buildPanel(EntityConnectionProvider connectionProvider) {
+  public EntityPanel build(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     if (modelBuilder == null) {
       throw new IllegalStateException("A SwingEntityModel.Builder is not available in this panel builder: " + entityType);
     }
 
-    return buildPanel(modelBuilder.buildModel(connectionProvider));
+    return build(modelBuilder.build(connectionProvider));
   }
 
   @Override
-  public EntityPanel buildPanel(SwingEntityModel model) {
+  public EntityPanel build(SwingEntityModel model) {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = createPanel(model);
@@ -220,7 +211,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (!detailPanelBuilders.isEmpty()) {
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
           SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
-          EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
+          EntityPanel detailPanel = detailPanelBuilder.build(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
       }
@@ -237,16 +228,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider) {
-    return createEditPanel(modelBuilder.buildEditModel(connectionProvider));
-  }
-
-  @Override
-  public EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider) {
-    return createTablePanel(modelBuilder.buildTableModel(connectionProvider));
   }
 
   private EntityPanel createPanel(SwingEntityModel entityModel) {

@@ -17,6 +17,9 @@ Codion Change Log
 - TemporalFieldPanel, TextFieldPanel.setTransferFocusOnEnter() renamed transferFocusOnEnter().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based column condition models for entity, item and non-comparable based columns.
+### is.codion.swing.framework.model
+- SwingEntityModel.Builder.modelClass(), editModelClass(), tableModelClass(), modelFactory(), editModelFactory(), tableModelFactory() and detailModelBuilder() renamed model(), editModel(), tableModel() and detailModel().
+- SwingEntityModel.Builder.buildEditModel() and buildTableModel() removed, buildModel() renamed build().
 ### is.codion.swing.framework.ui
 - TabbedApplicationLayout bug fixed, now applies the border to the application panel, instead of only the tabbed pane.
 - EntityTablePanel.DefaultStatusMessage bug fixed, no longer returns an empty message when all rows are filtered.
@@ -25,6 +28,9 @@ Codion Change Log
 - EntityDialogs.EditDialogBuilder.Updater now with generic edit model type parameter.
 - EntitySearchField.Selector.setPreferredSize() renamed preferredSize().
 - EntitySearchField.setSelectorFactory() renamed selectorFactory().
+- EntityPanel.Builder.panelClass(), editPanelClass(), tablePanelClass(), detailPanelBuilder() and panelLayout() renamed panel(), editPanel(), tablePanel(), detailPanel() and layout().
+- EntityPanel.Builder.buildEditPanel() and buildTablePanel() removed, buildPanel() renamed build().
+- EntityTablePanel.setRefreshButtonVisible() replaced with Value based refreshButtonVisible().
 
 ## 0.17.24
 ### is.codion.common.core
