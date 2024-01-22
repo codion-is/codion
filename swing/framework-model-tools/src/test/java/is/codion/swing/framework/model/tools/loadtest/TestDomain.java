@@ -31,7 +31,7 @@ public final class TestDomain extends DefaultDomain {
             DEPARTMENT_NAME.define()
                     .column()
                     .caption(DEPARTMENT_NAME.name())
-                    .searchColumn(true)
+                    .searchable(true)
                     .maximumLength(14)
                     .nullable(false),
             DEPARTMENT_LOCATION.define()

@@ -83,7 +83,7 @@ public final class TestDomain extends DefaultDomain {
                     .updatable(true).nullable(false),
             Department.NAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .maximumLength(14)
                     .nullable(false),
             Department.LOCATION.define()
@@ -116,7 +116,7 @@ public final class TestDomain extends DefaultDomain {
                     .primaryKey(),
             Employee.NAME.define()
                     .column()
-                    .searchColumn(true).maximumLength(10).nullable(false),
+                    .searchable(true).maximumLength(10).nullable(false),
             Employee.DEPARTMENT.define()
                     .column()
                     .nullable(false),
@@ -125,7 +125,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.JOB.define()
                     .column()
                     .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchColumn(true),
+                    .searchable(true),
             Employee.SALARY.define()
                     .column()
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),

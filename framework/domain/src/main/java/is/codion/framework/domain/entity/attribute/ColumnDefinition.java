@@ -94,7 +94,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * @return true if this column should be included when searching by string
    */
-  boolean searchColumn();
+  boolean searchable();
 
   /**
    * Fetches a value for this column from a ResultSet
@@ -202,10 +202,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
     /**
      * Specifies whether this column should be included when searching for an entity by a string value.
      * Only applicable to attributes of type {@link java.sql.Types#VARCHAR}.
-     * @param searchColumn true if this column is a search column
+     * @param searchable true if this column is a searchable column
      * @return this instance
      * @throws IllegalStateException in case this column type is not String
      */
-    B searchColumn(boolean searchColumn);
+    B searchable(boolean searchable);
   }
 }

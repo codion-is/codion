@@ -300,7 +300,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
       this.entityType = requireNonNull(entityType);
       this.connectionProvider = requireNonNull(connectionProvider);
-      this.columns = connectionProvider.entities().definition(entityType).columns().searchColumns();
+      this.columns = connectionProvider.entities().definition(entityType).columns().searchable();
     }
 
     @Override

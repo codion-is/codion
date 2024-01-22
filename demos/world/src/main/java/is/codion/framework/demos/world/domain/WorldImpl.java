@@ -55,7 +55,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             City.NAME.define()
                     .column()
                     .caption("Name")
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(35),
             City.COUNTRY_CODE.define()
@@ -109,7 +109,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             Country.NAME.define()
                     .column()
                     .caption("Name")
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(52),
             // tag::item[]
@@ -138,7 +138,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             Country.INDEPYEAR_SEARCHABLE.define()
                     .column()
                     .expression("to_char(indepyear)")
-                    .searchColumn(true)
+                    .searchable(true)
                     .readOnly(true),
             Country.POPULATION.define()
                     .column()

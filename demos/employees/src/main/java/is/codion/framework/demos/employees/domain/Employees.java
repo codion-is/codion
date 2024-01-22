@@ -170,7 +170,7 @@ public final class Employees extends DefaultDomain {
             Employee.NAME.define()
                     .column()
                     .caption("Name")
-                    .searchColumn(true)
+                    .searchable(true)
                     .maximumLength(10)
                     .nullable(false)
                     .beanProperty("name"),

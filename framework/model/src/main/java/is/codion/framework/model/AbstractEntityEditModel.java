@@ -473,13 +473,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     entityDefinition().foreignKeys().definition(foreignKey);
-    Collection<Column<String>> searchColumns = entities().definition(foreignKey.referencedType()).columns().searchColumns();
-    if (searchColumns.isEmpty()) {
-      throw new IllegalStateException("No search columns defined for entity: " + foreignKey.referencedType());
+    Collection<Column<String>> searchable = entities().definition(foreignKey.referencedType()).columns().searchable();
+    if (searchable.isEmpty()) {
+      throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
     }
 
     return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider)
-            .columns(searchColumns)
+            .columns(searchable)
             .singleSelection(true)
             .build();
   }

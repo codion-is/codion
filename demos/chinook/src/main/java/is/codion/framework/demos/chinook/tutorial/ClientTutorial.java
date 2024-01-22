@@ -69,7 +69,7 @@ public final class ClientTutorial {
               Artist.NAME.define()
                       .column()
                       .caption("Name")
-                      .searchColumn(true)
+                      .searchable(true)
                       .nullable(false)
                       .maximumLength(120),
               Artist.NUMBER_OF_ALBUMS.define()

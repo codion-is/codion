@@ -453,9 +453,9 @@ public interface EntityDefinition {
     /**
      * Returns the columns to search by when searching for entities of this type by a string value
      * @return the columns to use when searching by string
-     * @see ColumnDefinition.Builder#searchColumn(boolean)
+     * @see ColumnDefinition.Builder#searchable(boolean)
      */
-    Collection<Column<String>> searchColumns();
+    Collection<Column<String>> searchable();
 
     /**
      * @param column the column

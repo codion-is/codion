@@ -86,7 +86,7 @@ public final class EmployeesMinimalApp {
               Department.DEPTNO.define()
                       .column()
                       .caption("Department name")
-                      .searchColumn(true)
+                      .searchable(true)
                       .nullable(false)
                       .maximumLength(14),
              Department.LOC.define()
@@ -107,7 +107,7 @@ public final class EmployeesMinimalApp {
               Employee.ENAME.define()
                       .column()
                       .caption("Name")
-                      .searchColumn(true)
+                      .searchable(true)
                       .nullable(false)
                       .maximumLength(10),
               Employee.DEPTNO.define()

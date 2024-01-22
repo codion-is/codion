@@ -210,14 +210,14 @@ public final class Petstore extends DefaultDomain {
             SellerContactInfo.FIRST_NAME.define()
                     .column()
                     .caption(SellerContactInfo.FIRST_NAME.name())
-                    .searchColumn(true)
+                    .searchable(true)
                     .name("firstname")
                     .maximumLength(24)
                     .nullable(false),
             SellerContactInfo.LAST_NAME.define()
                     .column()
                     .caption(SellerContactInfo.LAST_NAME.name())
-                    .searchColumn(true)
+                    .searchable(true)
                     .name("lastname")
                     .maximumLength(24)
                     .nullable(false),

@@ -425,7 +425,7 @@ public final class TestDomain extends DefaultDomain {
             Department.NAME.define()
                     .column()
                     .caption(Department.NAME.name())
-                    .searchColumn(true)
+                    .searchable(true)
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
@@ -505,7 +505,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.NAME.define()
                     .column()
                     .caption(Employee.NAME.name())
-                    .searchColumn(true)
+                    .searchable(true)
                     .name("ename")
                     .maximumLength(10)
                     .nullable(false)
@@ -523,7 +523,7 @@ public final class TestDomain extends DefaultDomain {
                     .items(asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
-                    .searchColumn(true)
+                    .searchable(true)
                     .beanProperty("job"),
             Employee.SALARY.define()
                     .column()

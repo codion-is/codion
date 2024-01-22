@@ -37,7 +37,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private final boolean columnHasDefaultValue;
   private final boolean insertable;
   private final boolean updatable;
-  private final boolean searchColumn;
+  private final boolean searchable;
 
   private final transient String name;
   private final transient String expression;
@@ -55,7 +55,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     this.columnHasDefaultValue = builder.columnHasDefaultValue;
     this.insertable = builder.insertable;
     this.updatable = builder.updatable;
-    this.searchColumn = builder.searchColumn;
+    this.searchable = builder.searchable;
     this.name = builder.name;
     this.expression = builder.expression == null ? builder.name : builder.expression;
     this.fetcher = builder.fetcher;
@@ -142,8 +142,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final boolean searchColumn() {
-    return searchColumn;
+  public final boolean searchable() {
+    return searchable;
   }
 
   @Override
@@ -216,7 +216,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private boolean columnHasDefaultValue;
     private boolean insertable;
     private boolean updatable;
-    private boolean searchColumn;
+    private boolean searchable;
     private String name;
     private String expression;
     private Fetcher<Object> fetcher;
@@ -238,7 +238,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
       this.insertable = true;
       nullable(primaryKeyIndex < 0);
       this.updatable = primaryKeyIndex < 0;
-      this.searchColumn = false;
+      this.searchable = false;
       this.name = column.name();
       this.fetcher = (Fetcher<Object>) fetcher(this.type, column);
       this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
@@ -339,11 +339,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     }
 
     @Override
-    public final B searchColumn(boolean searchColumn) {
-      if (searchColumn && !attribute.type().isString()) {
-        throw new IllegalStateException("Search columns must be String based: " + attribute);
+    public final B searchable(boolean searchable) {
+      if (searchable && !attribute.type().isString()) {
+        throw new IllegalStateException("Searchable columns must be String based: " + attribute);
       }
-      this.searchColumn = searchColumn;
+      this.searchable = searchable;
       return (B) this;
     }
 
