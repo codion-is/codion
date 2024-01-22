@@ -1,6 +1,11 @@
 Codion Change Log
 ==================
 
+## 0.17.26-SNAPSHOT
+### is.codion.framework.domain
+- ColumnDefinition, ColumnDefinition.Builder.searchColumn() renamed searchable().
+- EntityDefinition.Columns.searchColumns() renamed searchable().
+
 ## 0.17.25
 ### is.codion.common.db
 - Database.setConnectionProvider() renamed connectionProvider().

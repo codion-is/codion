@@ -65,7 +65,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .primaryKey(),
             Artist.NAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(120),
             Artist.NUMBER_OF_ALBUMS.define()
@@ -95,7 +95,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .attributes(Artist.NAME),
             Album.TITLE.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(160),
             Album.COVER.define()
@@ -118,12 +118,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .primaryKey(),
             Employee.LASTNAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(20),
             Employee.FIRSTNAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(20),
             Employee.TITLE.define()
@@ -165,7 +165,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(24),
             Employee.EMAIL.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(60))
             .tableName("chinook.employee")
@@ -185,12 +185,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .primaryKey(),
             Customer.LASTNAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(20),
             Customer.FIRSTNAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(40),
             Customer.COMPANY.define()
@@ -219,7 +219,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(24),
             Customer.EMAIL.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(60),
             Customer.SUPPORTREP_ID.define()
@@ -242,7 +242,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .primaryKey(),
             Genre.NAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(120))
             .tableName("chinook.genre")
@@ -281,7 +281,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             // end::fetchDepth2[]
             Track.NAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(200),
             Track.GENRE_ID.define()
@@ -413,7 +413,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .primaryKey(),
             Playlist.NAME.define()
                     .column()
-                    .searchColumn(true)
+                    .searchable(true)
                     .nullable(false)
                     .maximumLength(120))
             .tableName("chinook.playlist")

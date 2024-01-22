@@ -56,7 +56,7 @@ public final class DefaultEntitySearchModelTest {
           .build();
 
   private EntitySearchModel searchModel;
-  private Collection<Column<String>> searchColumns;
+  private Collection<Column<String>> searchable;
 
   @Test
   void constructorNullEntityType() {
@@ -87,7 +87,7 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void theRest() {
     assertNotNull(searchModel.connectionProvider());
-    assertTrue(searchModel.columns().containsAll(searchColumns));
+    assertTrue(searchModel.columns().containsAll(searchable));
     assertNotNull(searchModel.wildcard().get());
   }
 
@@ -239,9 +239,9 @@ public final class DefaultEntitySearchModelTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    searchColumns = asList(Employee.NAME, Employee.JOB);
+    searchable = asList(Employee.NAME, Employee.JOB);
     searchModel = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-            .columns(searchColumns)
+            .columns(searchable)
             .build();
 
     CONNECTION_PROVIDER.connection().beginTransaction();

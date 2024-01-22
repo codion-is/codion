@@ -222,8 +222,8 @@ public final class AttributeDefinitionTest {
   }
 
   @Test
-  void searchColumnNonVarchar() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().searchColumn(true));
+  void searchableNonVarchar() {
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().searchable(true));
   }
 
   @Test

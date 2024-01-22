@@ -63,5 +63,9 @@ public final class UpdateTotals extends AbstractUsageScenario<EntityConnectionPr
       connection.rollbackTransaction();
       throw e;
     }
+    catch (Exception e) {
+      connection.rollbackTransaction();
+      throw new RuntimeException(e);
+    }
   }
 }

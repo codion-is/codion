@@ -58,6 +58,10 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
       connection.rollbackTransaction();
       throw e;
     }
+    catch (Exception e) {
+      connection.rollbackTransaction();
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -74,6 +78,10 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
       connection.rollbackTransaction();
       throw e;
     }
+    catch (Exception e) {
+      connection.rollbackTransaction();
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -87,6 +95,10 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
     catch (DatabaseException e) {
       connection.rollbackTransaction();
       throw e;
+    }
+    catch (Exception e) {
+      connection.rollbackTransaction();
+      throw new RuntimeException(e);
     }
   }
 

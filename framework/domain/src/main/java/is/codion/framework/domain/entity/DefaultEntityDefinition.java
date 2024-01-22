@@ -630,9 +630,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Collection<Column<String>> searchColumns() {
+    public Collection<Column<String>> searchable() {
       return entityAttributes.columnDefinitions.stream()
-              .filter(ColumnDefinition::searchColumn)
+              .filter(ColumnDefinition::searchable)
               .map(column -> ((ColumnDefinition<String>) column).attribute())
               .collect(toList());
     }
