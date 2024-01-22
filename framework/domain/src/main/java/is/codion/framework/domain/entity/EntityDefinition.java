@@ -554,7 +554,7 @@ public interface EntityDefinition {
      * If the entity has no primary key columns defined, an empty list is returned.
      * @return the primary key column definitions of this entity type, sorted by primary key column index
      */
-    List<ColumnDefinition<?>> columnDefinitions();
+    List<ColumnDefinition<?>> definitions();
 
     /**
      * @return the object responsible for generating primary key values for entities of this type
