@@ -79,7 +79,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
     @Override
     public void stateChanged(ChangeEvent e) {
       if (applicationTabPane.getTabCount() > 0) {
-        ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
+        ((EntityPanel) applicationTabPane.getSelectedComponent()).activate();
       }
     }
   }
