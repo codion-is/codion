@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.26-SNAPSHOT
+
 ## 0.17.25
 ### is.codion.common.db
 - Database.setConnectionProvider() renamed connectionProvider().
