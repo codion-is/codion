@@ -710,7 +710,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public List<ColumnDefinition<?>> columnDefinitions() {
+    public List<ColumnDefinition<?>> definitions() {
       return entityAttributes.primaryKeyColumnDefinitions;
     }
 

@@ -50,7 +50,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKey().columnDefinitions()));
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKey().definitions()));
     populateForeignKeyMenu(rootMenu, entity, connection);
     populateValueMenu(rootMenu, entity);
   }

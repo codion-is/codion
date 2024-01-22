@@ -15,6 +15,8 @@ Codion Change Log
 - FilteredTable.setAutoStartsEdit() renamed autoStartsEdit().
 - SearchHighlighter.setHighlightColor() and setSelectedHighlightColor() renamed highlightColor() and highlightSelectedColor() respectively.
 - TemporalFieldPanel, TextFieldPanel.setTransferFocusOnEnter() renamed transferFocusOnEnter().
+### is.codion.framework.domain
+- EntityDefinition.PrimaryKey.columnDefinitions() renamed definitions().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityFilterModelFactory now creates String based column condition models for entity, item and non-comparable based columns.
 ### is.codion.swing.framework.model
