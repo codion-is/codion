@@ -261,9 +261,9 @@ public final class TestDomain extends DefaultDomain {
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
-            .conditionProvider(Employee.CONDITION_1_TYPE, (attributes, values) -> "1 = 2")
-            .conditionProvider(Employee.CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
-            .conditionProvider(Employee.CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
+            .condition(Employee.CONDITION_1_TYPE, (attributes, values) -> "1 = 2")
+            .condition(Employee.CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
+            .condition(Employee.CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {

@@ -462,14 +462,14 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
-            .conditionProvider(Department.CONDITION, (columns, values) -> {
+            .condition(Department.CONDITION, (columns, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(Department.NAME_NOT_NULL_CONDITION, (columns, values) -> "department name is not null")
+            .condition(Department.NAME_NOT_NULL_CONDITION, (columns, values) -> "department name is not null")
             .caption("Department"));
   }
 

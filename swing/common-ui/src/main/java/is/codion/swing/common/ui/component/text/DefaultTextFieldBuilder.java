@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.AbstractAction;
@@ -45,7 +45,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private int columns = -1;
   private Action action;
   private ActionListener actionListener;
-  private Selector<T> selector;
+  private SingleSelector<T> selector;
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
   private String hintText;
@@ -79,7 +79,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  public final B selector(Selector<T> selector) {
+  public final B selector(SingleSelector<T> selector) {
     this.selector = requireNonNull(selector);
     return (B) this;
   }
@@ -149,7 +149,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     return format;
   }
 
-  private void setSelector(C textField, Selector<T> selector) {
+  private void setSelector(C textField, SingleSelector<T> selector) {
     KeyEvents.builder(VK_SPACE)
             .modifiers(CTRL_DOWN_MASK)
             .action(new SelectionAction<>(textField, selector))
@@ -159,9 +159,9 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private static final class SelectionAction<T> extends AbstractAction {
 
     private final JTextField textField;
-    private final Selector<T> selector;
+    private final SingleSelector<T> selector;
 
-    private SelectionAction(JTextField textField, Selector<T> selector) {
+    private SelectionAction(JTextField textField, SingleSelector<T> selector) {
       super("DefaultTextFieldBuilder.SelectionAction");
       this.textField = textField;
       this.selector = selector;

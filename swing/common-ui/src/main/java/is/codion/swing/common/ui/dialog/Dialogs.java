@@ -18,23 +18,17 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.MultiSelector;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.io.File;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,7 +55,7 @@ public final class Dialogs {
 
   /**
    * @param task the task to run
-   * @return a new {@link ProgressWorkerDialogBuilder} instance
+   * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
    */
   public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Control.Command task) {
     requireNonNull(task);
@@ -69,18 +63,18 @@ public final class Dialogs {
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
       task.execute();
       return null;
-    }).indeterminate(true);
+    });
   }
 
   /**
    * @param task the task to run
    * @param <T> the worker result type
-   * @return a new {@link ProgressWorkerDialogBuilder} instance
+   * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
    */
   public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ProgressWorker.Task<T> task) {
     requireNonNull(task);
 
-    return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.execute()).indeterminate(true);
+    return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.execute());
   }
 
   /**
@@ -88,7 +82,7 @@ public final class Dialogs {
    * @param task the task to run
    * @param <T> the worker result type
    * @param <V> the worker intermediate result type
-   * @return a new {@link ProgressWorkerDialogBuilder} instance
+   * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
    * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
    */
   public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(ProgressWorker.ProgressTask<T, V> task) {
@@ -177,16 +171,29 @@ public final class Dialogs {
   }
 
   /**
-   * Returns a {@link Selector} implmentation based on a selection dialog.
+   * Returns a {@link SingleSelector} implmentation based on a selection dialog.
    * @param valueSupplier supplies the values for the selection dialog
    * @param <T> the type of values being looked up
-   * @return a new {@link Selector} based on a selection dialog
+   * @return a new {@link SingleSelector} based on a selection dialog
    */
-  public static <T> Selector<T> selector(Supplier<Collection<T>> valueSupplier) {
+  public static <T> SingleSelector<T> singleSelector(Supplier<Collection<T>> valueSupplier) {
     requireNonNull(valueSupplier);
     return dialogOwner -> selectionDialog(valueSupplier.get())
             .owner(dialogOwner)
             .selectSingle();
+  }
+
+  /**
+   * Returns a {@link MultiSelector} implmentation based on a selection dialog.
+   * @param valueSupplier supplies the values for the selection dialog
+   * @param <T> the type of values being looked up
+   * @return a new {@link MultiSelector} based on a selection dialog
+   */
+  public static <T> MultiSelector<T> multiSelector(Supplier<Collection<T>> valueSupplier) {
+    requireNonNull(valueSupplier);
+    return dialogOwner -> selectionDialog(valueSupplier.get())
+            .owner(dialogOwner)
+            .select();
   }
 
   /**
@@ -198,39 +205,5 @@ public final class Dialogs {
     new DefaultExceptionDialogBuilder()
             .owner(dialogParent)
             .show(exception);
-  }
-
-  /**
-   * Creates an Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
-   * @param filenameField the text field for displaying the file path
-   * @return the Action
-   */
-  public static Action createBrowseAction(JTextField filenameField) {
-    requireNonNull(filenameField, "filenameField");
-    return new AbstractAction("...") {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          File file = fileSelectionDialog()
-                  .owner(filenameField)
-                  .startDirectory(parentPath(filenameField.getText()))
-                  .selectFile();
-          filenameField.setText(file.getAbsolutePath());
-        }
-        catch (CancelException ignored) {/*ignored*/}
-      }
-    };
-  }
-
-  private static String parentPath(String text) {
-    if (nullOrEmpty(text)) {
-      return null;
-    }
-    try {
-      return new File(text).getParentFile().getPath();
-    }
-    catch (Exception e) {
-      return null;
-    }
   }
 }

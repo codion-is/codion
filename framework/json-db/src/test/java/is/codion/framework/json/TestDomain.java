@@ -80,7 +80,7 @@ public final class TestDomain extends DefaultDomain {
                     .column(),
             TestEntity.ENTITY.define()
                     .attribute())
-            .conditionProvider(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
+            .condition(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
   }
 
   public interface Department {

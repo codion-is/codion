@@ -148,7 +148,7 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
-            .conditionProvider(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
+            .condition(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
 
     add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {

@@ -1030,7 +1030,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider) {
+    public Builder condition(ConditionType conditionType, ConditionProvider conditionProvider) {
       requireNonNull(conditionType, "conditionType");
       requireNonNull(conditionProvider, "conditionProvider");
       if (this.conditionProviders == null) {

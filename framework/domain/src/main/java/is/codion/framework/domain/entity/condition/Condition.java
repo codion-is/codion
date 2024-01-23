@@ -223,7 +223,7 @@ public interface Condition {
    * @param conditionType the condition type
    * @return a new {@link CustomCondition} instance
    * @throws NullPointerException in case the condition type is null
-   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
+   * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
    */
   static CustomCondition custom(ConditionType conditionType) {
     return custom(conditionType, emptyList(), emptyList());
@@ -236,7 +236,7 @@ public interface Condition {
    * @param values the values used by this condition string
    * @return a new {@link CustomCondition} instance
    * @throws NullPointerException in case any of the parameters are null
-   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
+   * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
    */
   static CustomCondition custom(ConditionType conditionType, List<Column<?>> columns,
                                 List<Object> values) {

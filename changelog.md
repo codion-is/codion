@@ -2,9 +2,17 @@ Codion Change Log
 ==================
 
 ## 0.17.26-SNAPSHOT
+### is.codion.swing.common.ui
+- Dialogs.createBrowseAction() removed.
+- SelectionDialogBuilder.Selector renamed SingleSelector, Dialogs.selector() renamed singleSelector().
+- SelectionDialogBuilder.MuliSelector added along with Dialogs.multiSelector().
 ### is.codion.framework.domain
 - ColumnDefinition, ColumnDefinition.Builder.searchColumn() renamed searchable().
 - EntityDefinition.Columns.searchColumns() renamed searchable().
+- EntityDefinition.Builder.conditionProvider() renamed condition().
+### is.codion.swing.framework.ui
+- EntityPanel.setDisposeEditDialogOnEscape() replaced with State based disposeEditDialogOnEscape().
+- EntityPanel.INCLUDE_DETAIL_PANEL_CONTROLS removed, replaced by TabbedPanelLayout.INCLUDE_DETAIL_CONTROLS.
 
 ## 0.17.25
 ### is.codion.common.db

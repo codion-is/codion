@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
@@ -64,7 +64,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @param selector the selector providing the values to select from
    * @return this builder instance
    */
-  B selector(Selector<T> selector);
+  B selector(SingleSelector<T> selector);
 
   /**
    * Associates the given format with the text field. Note that the format instance is
