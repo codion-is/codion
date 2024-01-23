@@ -240,7 +240,7 @@ public interface EntityDefinition {
      * @param conditionProvider the condition provider
      * @return this {@link Builder} instance
      */
-    Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider);
+    Builder condition(ConditionType conditionType, ConditionProvider conditionProvider);
 
     /**
      * @param backgroundColorProvider the background color provider

@@ -133,18 +133,18 @@ public class DomainTest {
   }
 
   @Test
-  void conditionProvider() {
+  void condition() {
     EntityType nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
     assertThrows(NullPointerException.class, () -> domain.add(nullConditionProvider1.define(nullConditionProvider1.integerColumn("id").define().primaryKey())
-            .conditionProvider(null, (columns, values) -> null)));
+            .condition(null, (columns, values) -> null)));
     EntityType nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
     assertThrows(NullPointerException.class, () -> domain.add(nullConditionProvider2.define(nullConditionProvider2.integerColumn("id").define().primaryKey())
-            .conditionProvider(nullConditionProvider2.conditionType("id"), null)));
+            .condition(nullConditionProvider2.conditionType("id"), null)));
     EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
     ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
     assertThrows(IllegalStateException.class, () -> domain.add(nullConditionProvider3.define(nullConditionProvider3.integerColumn("id").define().primaryKey())
-            .conditionProvider(nullConditionType, (columns, values) -> null)
-            .conditionProvider(nullConditionType, (columns, values) -> null)));
+            .condition(nullConditionType, (columns, values) -> null)
+            .condition(nullConditionType, (columns, values) -> null)));
   }
 
   @Test

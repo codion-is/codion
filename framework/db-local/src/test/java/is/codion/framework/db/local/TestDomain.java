@@ -128,15 +128,15 @@ public final class TestDomain extends DefaultDomain {
                     .attribute())
             .smallDataset(true)
             .stringFactory(Department.DNAME)
-            .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
+            .condition(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(Department.DEPARTMENT_CONDITION_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
-            .conditionProvider(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
+            .condition(Department.DEPARTMENT_CONDITION_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
+            .condition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
             .caption("Department"));
   }
 
@@ -214,8 +214,8 @@ public final class TestDomain extends DefaultDomain {
                     .column())
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
-            .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
-            .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
+            .condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
+            .condition(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
   }
 
@@ -443,7 +443,7 @@ public final class TestDomain extends DefaultDomain {
                     .where("e.deptno = d.deptno")
                     .orderBy("e.deptno, e.ename")
                     .build())
-            .conditionProvider(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10"));
+            .condition(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10"));
   }
 
   public interface Query {
