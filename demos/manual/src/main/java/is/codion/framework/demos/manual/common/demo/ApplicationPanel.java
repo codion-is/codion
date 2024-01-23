@@ -15,7 +15,7 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.Selector;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -334,7 +334,7 @@ public final class ApplicationPanel extends JPanel {
     }
   }
 
-  private static class StringSelector implements Selector<String> {
+  private static class StringSelector implements SingleSelector<String> {
 
     private static final String DEFAULT_SELECTION = "strings";
 

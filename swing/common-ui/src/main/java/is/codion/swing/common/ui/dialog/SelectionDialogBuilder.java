@@ -46,10 +46,10 @@ public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialog
   Collection<T> select();
 
   /**
-   * Provides the user with the ability to select a value.
+   * Provides the user with the ability to select a single value.
    * @param <T> the value type
    */
-  interface Selector<T> {
+  interface SingleSelector<T> {
 
     /**
      * @param dialogOwner the dialog owner
