@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
@@ -254,6 +255,7 @@ public class EntityPanel extends JPanel {
   private final DetailController detailController;
   private final Value<String> caption;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
+  private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
   private final Settings settings = new Settings();
 
@@ -261,7 +263,6 @@ public class EntityPanel extends JPanel {
   private EntityPanel parentPanel;
   private EntityPanel previousSiblingPanel;
   private EntityPanel nextSiblingPanel;
-  private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
 
   private boolean initialized = false;
 
@@ -632,19 +633,11 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return true if the edit dialog is disposed of on ESC
+   * @return the State controlling whtether the edit dialog is disposed of on ESC
    * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
    */
-  public final boolean isDisposeEditDialogOnEscape() {
+  public final State disposeEditDialogOnEscape() {
     return disposeEditDialogOnEscape;
-  }
-
-  /**
-   * @param disposeEditDialogOnEscape if true then the edit dialog is disposed of on ESC
-   * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
-   */
-  public final void setDisposeEditDialogOnEscape(boolean disposeEditDialogOnEscape) {
-    this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
   }
 
   /**
@@ -1122,7 +1115,7 @@ public class EntityPanel extends JPanel {
             .owner(this)
             .title(caption.get())
             .modal(false)
-            .disposeOnEscape(disposeEditDialogOnEscape)
+            .disposeOnEscape(disposeEditDialogOnEscape.get())
             .onClosed(windowEvent -> editPanelState.set(HIDDEN))
             .build();
   }
