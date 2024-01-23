@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.MultiSelector;
 import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 
 import javax.swing.JComponent;
@@ -165,6 +166,19 @@ public final class Dialogs {
     return dialogOwner -> selectionDialog(valueSupplier.get())
             .owner(dialogOwner)
             .selectSingle();
+  }
+
+  /**
+   * Returns a {@link MultiSelector} implmentation based on a selection dialog.
+   * @param valueSupplier supplies the values for the selection dialog
+   * @param <T> the type of values being looked up
+   * @return a new {@link MultiSelector} based on a selection dialog
+   */
+  public static <T> MultiSelector<T> multiSelector(Supplier<Collection<T>> valueSupplier) {
+    requireNonNull(valueSupplier);
+    return dialogOwner -> selectionDialog(valueSupplier.get())
+            .owner(dialogOwner)
+            .select();
   }
 
   /**

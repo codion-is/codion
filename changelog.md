@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Dialogs.createBrowseAction() removed.
 - SelectionDialogBuilder.Selector renamed SingleSelector, Dialogs.selector() renamed singleSelector().
+- SelectionDialogBuilder.MuliSelector added along with Dialogs.multiSelector().
 ### is.codion.framework.domain
 - ColumnDefinition, ColumnDefinition.Builder.searchColumn() renamed searchable().
 - EntityDefinition.Columns.searchColumns() renamed searchable().

@@ -58,4 +58,18 @@ public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialog
      */
     Optional<T> select(JComponent dialogOwner);
   }
+
+  /**
+   * Provides the user with the ability to select one or more values.
+   * @param <T> the value type
+   */
+  interface MultiSelector<T> {
+
+    /**
+     * @param dialogOwner the dialog owner
+     * @return the selected values, an empty Collections if nothing was selected
+     * @throws is.codion.common.model.CancelException in case the user cancelled
+     */
+    Collection<T> select(JComponent dialogOwner);
+  }
 }
