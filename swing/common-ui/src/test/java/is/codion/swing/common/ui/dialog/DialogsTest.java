@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 
@@ -159,10 +158,5 @@ public final class DialogsTest {
   void selectionDialogNonExistingDefaultSelection() {
     assertThrows(IllegalArgumentException.class, () -> Dialogs.selectionDialog(Collections.singletonList("helloist"))
             .defaultSelection("hello"));
-  }
-
-  @Test
-  void createBrowseAction() {
-    Dialogs.createBrowseAction(new JTextField());
   }
 }

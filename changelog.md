@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.26-SNAPSHOT
+### is.codion.swing.common.ui
+- Dialogs.createBrowseAction() removed.
 ### is.codion.framework.domain
 - ColumnDefinition, ColumnDefinition.Builder.searchColumn() renamed searchable().
 - EntityDefinition.Columns.searchColumns() renamed searchable().
