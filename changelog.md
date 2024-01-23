@@ -7,6 +7,7 @@ Codion Change Log
 - EntityDefinition.Columns.searchColumns() renamed searchable().
 ### is.codion.swing.framework.ui
 - EntityPanel.setDisposeEditDialogOnEscape() replaced with State based disposeEditDialogOnEscape().
+- EntityPanel.INCLUDE_DETAIL_PANEL_CONTROLS removed, replaced by TabbedPanelLayout.INCLUDE_DETAIL_CONTROLS.
 
 ## 0.17.25
 ### is.codion.common.db

@@ -115,14 +115,6 @@ public class EntityPanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeToggleEditPanelControl", true);
 
   /**
-   * Specifies whether actions to hide detail panels or show them in a dialog are available to the user<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_DETAIL_PANEL_CONTROLS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeDetailPanelControls", true);
-
-  /**
    * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
    * Value type: Boolean<br>
    * Default value: false
