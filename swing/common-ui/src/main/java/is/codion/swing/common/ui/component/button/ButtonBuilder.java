@@ -217,7 +217,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @param controlBuilder the builder for the control to base the button on
    * @return this builder instance
    */
-  B control(Control.Builder controlBuilder);
+  B control(Control.Builder<?, ?> controlBuilder);
 
   /**
    * @param actionListener the action listener
@@ -257,7 +257,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @param controlBuilder the button control builder
    * @return a builder for a JButton
    */
-  static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Control.Builder controlBuilder) {
+  static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Control.Builder<?, ?> controlBuilder) {
     return new DefaultButtonBuilder<>(requireNonNull(controlBuilder).build());
   }
 }

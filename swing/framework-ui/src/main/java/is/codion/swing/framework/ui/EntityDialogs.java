@@ -129,9 +129,10 @@ public final class EntityDialogs {
 
     /**
      * @param updater the updater to use
+     * @param <E> the edit model type
      * @return this builder
      */
-    EditDialogBuilder<T> updater(Updater updater);
+    <E extends SwingEntityEditModel> EditDialogBuilder<T> updater(Updater<E> updater);
 
     /**
      * Displays a dialog for editing the given entity
@@ -223,8 +224,8 @@ public final class EntityDialogs {
     }
 
     @Override
-    public EditDialogBuilder<T> updater(Updater updater) {
-      this.updater = requireNonNull(updater);
+    public <E extends SwingEntityEditModel> EditDialogBuilder<T> updater(Updater<E> updater) {
+      this.updater = (Updater<SwingEntityEditModel>) requireNonNull(updater);
       return this;
     }
 
@@ -357,6 +358,8 @@ public final class EntityDialogs {
 
   private static final class EditEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
 
+    private static final int TEXT_INPUT_PANEL_COLUMNS = 20;
+
     @Override
     public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
@@ -366,6 +369,7 @@ public final class EntityDialogs {
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textFieldPanel((Attribute<String>) attribute)
                 .initialValue((String) initialValue)
+                .columns(TEXT_INPUT_PANEL_COLUMNS)
                 .buildValue();
       }
 
