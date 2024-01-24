@@ -214,7 +214,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  public final B control(Control.Builder controlBuilder) {
+  public final B control(Control.Builder<?, ?> controlBuilder) {
     return control(requireNonNull(controlBuilder).build());
   }
 

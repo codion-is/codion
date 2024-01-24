@@ -112,7 +112,7 @@ public final class Components {
    * @param controlBuilder the button control builder
    * @return a JButton builder
    */
-  public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Control.Builder controlBuilder) {
+  public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Control.Builder<?, ?> controlBuilder) {
     return ButtonBuilder.builder(controlBuilder);
   }
 
@@ -198,7 +198,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a new JMenuItem builder
    */
-  public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Control.Builder controlBuilder) {
+  public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Control.Builder<?, ?> controlBuilder) {
     return MenuItemBuilder.builder(controlBuilder);
   }
 

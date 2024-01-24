@@ -50,7 +50,7 @@ public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<
    * @param controlBuilder the button control builder
    * @return a builder for a JButton
    */
-  static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> builder(Control.Builder controlBuilder) {
+  static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> builder(Control.Builder<?, ?> controlBuilder) {
     return new DefaultMenuItemBuilder<>(requireNonNull(controlBuilder).build());
   }
 }

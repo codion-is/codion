@@ -114,9 +114,10 @@ public final class EntityDialogs {
 
     /**
      * @param updater the updater to use
+     * @param <E> the edit model type
      * @return this builder
      */
-    EditDialogBuilder<T> updater(Updater updater);
+    <E extends SwingEntityEditModel> EditDialogBuilder<T> updater(Updater<E> updater);
 
     /**
      * Displays a dialog for editing the given entity
@@ -208,8 +209,8 @@ public final class EntityDialogs {
     }
 
     @Override
-    public EditDialogBuilder<T> updater(Updater updater) {
-      this.updater = requireNonNull(updater);
+    public <E extends SwingEntityEditModel> EditDialogBuilder<T> updater(Updater<E> updater) {
+      this.updater = (Updater<SwingEntityEditModel>) requireNonNull(updater);
       return this;
     }
 
