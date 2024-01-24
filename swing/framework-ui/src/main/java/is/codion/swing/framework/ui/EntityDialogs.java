@@ -342,6 +342,8 @@ public final class EntityDialogs {
 
   private static final class EditEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
 
+    private static final int TEXT_INPUT_PANEL_COLUMNS = 20;
+
     @Override
     public ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
@@ -351,6 +353,7 @@ public final class EntityDialogs {
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textFieldPanel((Attribute<String>) attribute)
                 .initialValue((String) initialValue)
+                .columns(TEXT_INPUT_PANEL_COLUMNS)
                 .buildValue();
       }
 

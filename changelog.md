@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPanel.setDisposeEditDialogOnEscape() replaced with State based disposeEditDialogOnEscape().
 - EntityPanel.INCLUDE_DETAIL_PANEL_CONTROLS removed, replaced by TabbedPanelLayout.INCLUDE_DETAIL_CONTROLS.
+- EntityDialogs.EditEntityComponentFactory.componentValue(), now sets the columns for text input panels, preventing multi-screen spanning dialogs in case of very long strings.
 
 ## 0.17.25
 ### is.codion.common.db
