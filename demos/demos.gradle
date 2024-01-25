@@ -99,7 +99,6 @@ tasks.register("runClientRMI", JavaExec) {
             "codion.client.connectionType"    : "remote",
             "codion.server.hostname"          : "${serverHostName}",
             "codion.client.trustStore"        : "../../framework/server/src/main/config/truststore.jks",
-            "codion.client.trustStorePassword": "crappypass",
             "sun.awt.disablegrab"             : "true"
     ]
 }
@@ -123,8 +122,7 @@ tasks.register("runLoadTestRMI", JavaExec) {
     systemProperties = [
             "codion.client.connectionType"    : "remote",
             "codion.server.hostname"          : "${serverHostName}",
-            "codion.client.trustStore"        : "../../framework/server/src/main/config/truststore.jks",
-            "codion.client.trustStorePassword": "crappypass"
+            "codion.client.trustStore"        : "../../framework/server/src/main/config/truststore.jks"
     ]
 }
 

@@ -33,7 +33,6 @@ tasks.register("runServerMonitor", JavaExec) {
             "codion.server.hostname"          : "${serverHostName}",
             "codion.server.admin.user"        : "scott:tiger",
             "codion.client.trustStore"        : "../../framework/server/src/main/config/truststore.jks",
-            "codion.client.trustStorePassword": "crappypass",
             "logback.configurationFile"       : "src/config/logback.xml"
     ]
 }

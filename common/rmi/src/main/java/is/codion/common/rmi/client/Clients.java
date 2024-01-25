@@ -57,13 +57,16 @@ public final class Clients {
    */
   public static final PropertyValue<String> SERVER_HOSTNAME = Configuration.stringValue("codion.server.hostname", "localhost");
 
+  private static final String DEFAULT_TRUSTSTORE_PASSWORD = "changeit";
+
   private Clients() {}
 
   /**
    * Reads the trust store and password specified by the 'codion.client.trustStore' and 'codion.client.trustStorePassword'
-   * system properties and if one exists, either in the filesystem or on the classpath, combines it with the default
+   * system properties and if a truststore is specified, either in the filesystem or on the classpath, combines it with the default
    * system truststore, writes the combined truststore to a temporary file and sets 'javax.net.ssl.trustStore'
    * so that it points to that file and 'javax.net.ssl.trustStorePassword' to the given password.
+   * If no password is provided, the default 'changeit' password is used.
    * If no truststore is specified or the file is not found, this method has no effect.
    * @throws IllegalArgumentException in case a truststore is specified but no password
    * @see Clients#TRUSTSTORE
@@ -75,7 +78,7 @@ public final class Clients {
       LOG.debug("No client truststore specified via {}", TRUSTSTORE.propertyName());
       return;
     }
-    String password = TRUSTSTORE_PASSWORD.getOrThrow();
+    String password = TRUSTSTORE_PASSWORD.optional().orElse(DEFAULT_TRUSTSTORE_PASSWORD);
     SSLFactory.Builder sslFactoryBuilder = SSLFactory.builder()
             .withDefaultTrustMaterial();
     File trustStore = new File(trustStorePath);

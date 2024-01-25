@@ -138,7 +138,7 @@ configure(project.frameworkModules) {
             }
             exec {
                 executable = keyToolExecutable
-                args = ["-import", "-alias", "Alias", "-storepass", "crappypass", "-file", certificate,
+                args = ["-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate,
                         "-keystore", truststore, "-noprompt", "-storetype", "pkcs12"]
             }
             ant.delete(file: certificate)

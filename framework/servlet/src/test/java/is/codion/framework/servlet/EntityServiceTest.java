@@ -587,7 +587,6 @@ public class EntityServiceTest {
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOSTNAME.set("localhost");
     Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
-    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
@@ -608,7 +607,6 @@ public class EntityServiceTest {
   private static void deconfigure() {
     Clients.SERVER_HOSTNAME.set(null);
     Clients.TRUSTSTORE.set(null);
-    Clients.TRUSTSTORE_PASSWORD.set(null);
     System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
     System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
     ServerConfiguration.RMI_SERVER_HOSTNAME.set(null);

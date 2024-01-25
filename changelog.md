@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.26-SNAPSHOT
+### is.codion.common.rmi
+- Clients.resolveTrustStore() now uses the default 'changeit' truststore password when combining truststores instead of throwing an exception in case no truststore password is provided.
 ### is.codion.swing.common.ui
 - Dialogs.createBrowseAction() removed.
 - SelectionDialogBuilder.Selector renamed SingleSelector, Dialogs.selector() renamed singleSelector().
