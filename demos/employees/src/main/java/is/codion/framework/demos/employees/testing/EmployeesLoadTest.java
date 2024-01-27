@@ -7,6 +7,8 @@ import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.employees.domain.Employees;
+import is.codion.framework.demos.employees.domain.Employees.Department;
+import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.demos.employees.testing.scenarios.InsertDepartment;
 import is.codion.framework.demos.employees.testing.scenarios.InsertEmployee;
@@ -39,8 +41,8 @@ public final class EmployeesLoadTest extends EntityLoadTestModel<EmployeesAppMod
                     .user(user)
                     .build());
 
-    SwingEntityModel model = applicationModel.entityModel(Employees.Department.TYPE);
-    model.detailModelLink(model.detailModel(Employees.Employee.TYPE)).active().set(true);
+    SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
+    model.detailModelLink(model.detailModel(Employee.TYPE)).active().set(true);
     try {
       model.tableModel().refresh();
     }

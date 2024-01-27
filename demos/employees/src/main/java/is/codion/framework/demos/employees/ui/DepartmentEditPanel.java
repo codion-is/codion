@@ -21,9 +21,9 @@ public class DepartmentEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    initialFocusAttribute().set(Department.DEPTNO);
+    initialFocusAttribute().set(Department.DEPARTMENT_NO);
 
-    createTextField(Department.DEPTNO)
+    createTextField(Department.DEPARTMENT_NO)
             .columns(3)
             //don't allow editing of existing department numbers
             .enabled(editModel().exists().not());
@@ -33,12 +33,12 @@ public class DepartmentEditPanel extends EntityEditPanel {
             .columns(12);
 
     editModel().exists().addDataListener(exists ->
-            initialFocusAttribute().set(exists ? Department.NAME: Department.DEPTNO));
+            initialFocusAttribute().set(exists ? Department.NAME: Department.DEPARTMENT_NO));
 
     setLayout(borderLayout());
     add(borderLayoutPanel()
             .northComponent(borderLayoutPanel()
-                    .westComponent(createInputPanel(Department.DEPTNO))
+                    .westComponent(createInputPanel(Department.DEPARTMENT_NO))
                     .centerComponent(createInputPanel(Department.NAME))
                     .build())
             .centerComponent(createInputPanel(Department.LOCATION))

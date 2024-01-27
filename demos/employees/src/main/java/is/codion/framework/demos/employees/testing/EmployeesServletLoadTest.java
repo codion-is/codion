@@ -9,6 +9,8 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.demos.employees.domain.Employees;
+import is.codion.framework.demos.employees.domain.Employees.Department;
+import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
@@ -71,9 +73,9 @@ public final class EmployeesServletLoadTest {
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(all(Employees.Department.TYPE));
+      List<Entity> departments = client.connection().select(all(Department.TYPE));
       Entity entity = departments.get(new Random().nextInt(departments.size()));
-      entity.put(Employees.Department.LOCATION, Text.randomString(10, 13));
+      entity.put(Department.LOCATION, Text.randomString(10, 13));
       client.connection().update(entity);
     }
   }
@@ -88,7 +90,7 @@ public final class EmployeesServletLoadTest {
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      client.connection().select(Employees.Department.NAME.equalTo("Accounting"));
+      client.connection().select(Department.NAME.equalTo("Accounting"));
     }
   }
 
@@ -102,10 +104,10 @@ public final class EmployeesServletLoadTest {
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(all(Employees.Department.TYPE));
+      List<Entity> departments = client.connection().select(all(Department.TYPE));
 
-      client.connection().select(Employees.Employee.DEPARTMENT
-              .equalTo(departments.get(new Random().nextInt(departments.size())).get(Employees.Department.DEPTNO)));
+      client.connection().select(Employee.DEPARTMENT
+              .equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.DEPARTMENT_NO)));
     }
   }
 
@@ -118,11 +120,11 @@ public final class EmployeesServletLoadTest {
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      int deptNo = new Random().nextInt(5000);
-      client.connection().insert(client.entities().builder(Employees.Department.TYPE)
-              .with(Employees.Department.DEPTNO, deptNo)
-              .with(Employees.Department.NAME, Text.randomString(4, 8))
-              .with(Employees.Department.LOCATION, Text.randomString(5, 10))
+      int departmentNo = new Random().nextInt(5000);
+      client.connection().insert(client.entities().builder(Department.TYPE)
+              .with(Department.DEPARTMENT_NO, departmentNo)
+              .with(Department.NAME, Text.randomString(4, 8))
+              .with(Department.LOCATION, Text.randomString(5, 10))
               .build());
     }
   }
@@ -139,15 +141,15 @@ public final class EmployeesServletLoadTest {
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(all(Employees.Department.TYPE));
+      List<Entity> departments = client.connection().select(all(Department.TYPE));
       Entity department = departments.get(random.nextInt(departments.size()));
-      client.connection().insert(client.entities().builder(Employees.Employee.TYPE)
-              .with(Employees.Employee.DEPARTMENT_FK, department)
-              .with(Employees.Employee.NAME, Text.randomString(5, 10))
-              .with(Employees.Employee.JOB, Employees.Employee.JOB_VALUES.get(random.nextInt(Employees.Employee.JOB_VALUES.size())).get())
-              .with(Employees.Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
-              .with(Employees.Employee.HIREDATE, LocalDate.now())
-              .with(Employees.Employee.COMMISSION, random.nextDouble() * 500)
+      client.connection().insert(client.entities().builder(Employee.TYPE)
+              .with(Employee.DEPARTMENT_FK, department)
+              .with(Employee.NAME, Text.randomString(5, 10))
+              .with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).get())
+              .with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
+              .with(Employee.HIREDATE, LocalDate.now())
+              .with(Employee.COMMISSION, random.nextDouble() * 500)
               .build());
     }
   }

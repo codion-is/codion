@@ -4,7 +4,8 @@
 package is.codion.framework.demos.employees.testing.scenarios;
 
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.demos.employees.domain.Employees;
+import is.codion.framework.demos.employees.domain.Employees.Department;
+import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -22,9 +23,9 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmployeesA
 
   @Override
   protected void perform(EmployeesAppModel application) throws Exception {
-    SwingEntityModel departmentModel = application.entityModel(Employees.Department.TYPE);
+    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
     selectRandomRow(departmentModel.tableModel());
-    SwingEntityModel employeeModel = departmentModel.detailModel(Employees.Employee.TYPE);
+    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     if (employeeModel.tableModel().getRowCount() > 0) {
       EntityConnection connection = employeeModel.connectionProvider().connection();
       connection.beginTransaction();

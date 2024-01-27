@@ -4,7 +4,7 @@
 package is.codion.framework.demos.employees.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.employees.domain.Employees;
+import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -15,8 +15,8 @@ import java.util.Objects;
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
   public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
-    super(Employees.Employee.TYPE, connectionProvider);
-    initializeComboBoxModels(Employees.Employee.MGR_FK, Employees.Employee.DEPARTMENT_FK);
+    super(Employee.TYPE, connectionProvider);
+    initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
     bindEvents();
   }
   // end::constructor[]
@@ -26,7 +26,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   @Override
   public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
-    if (foreignKey.equals(Employees.Employee.MGR_FK)) {
+    if (foreignKey.equals(Employee.MANAGER_FK)) {
       //Customize the null value caption so that it displays 'None'
       //instead of the default '-' character
       comboBoxModel.setNullCaption("None");
@@ -35,7 +35,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.filterSelectedItem().set(false);
       //Only select the president and managers from the database
       comboBoxModel.condition().set(() ->
-              Employees.Employee.JOB.in("Manager", "President"));
+              Employee.JOB.in("Manager", "President"));
     }
 
     return comboBoxModel;
@@ -46,15 +46,15 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
     //in case a new manager got hired, fired or promoted
-    addInsertUpdateOrDeleteListener(() -> foreignKeyComboBoxModel(Employees.Employee.MGR_FK).refresh());
+    addInsertUpdateOrDeleteListener(() -> foreignKeyComboBoxModel(Employee.MANAGER_FK).refresh());
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed, either when an employee is
     //selected or the department combo box selection changes
-    addValueListener(Employees.Employee.DEPARTMENT_FK, department -> {
+    addValueListener(Employee.DEPARTMENT_FK, department -> {
       //only show managers from the same department as the selected employee and hide the currently
       //selected employee to prevent an employee from being made her own manager
-      foreignKeyComboBoxModel(Employees.Employee.MGR_FK).includeCondition().set(manager ->
-              Objects.equals(manager.referencedEntity(Employees.Employee.DEPARTMENT_FK), department)
+      foreignKeyComboBoxModel(Employee.MANAGER_FK).includeCondition().set(manager ->
+              Objects.equals(manager.referencedEntity(Employee.DEPARTMENT_FK), department)
                       && !Objects.equals(manager, entity()));
     });
   }

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
-import is.codion.framework.demos.employees.domain.Employees;
+import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
@@ -14,7 +14,7 @@ public final class SelectDepartment extends AbstractEntityUsageScenario<Employee
 
   @Override
   protected void perform(EmployeesAppModel application) {
-    selectRandomRow(application.entityModel(Employees.Department.TYPE).tableModel());
+    selectRandomRow(application.entityModel(Department.TYPE).tableModel());
   }
 
   @Override
