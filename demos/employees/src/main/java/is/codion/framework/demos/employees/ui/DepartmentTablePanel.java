@@ -47,7 +47,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   // tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
     Collection<Integer> departmentNumbers =
-            Entity.distinct(Department.DEPTNO,
+            Entity.distinct(Department.DEPARTMENT_NO,
                     tableModel().selectionModel().getSelectedItems());
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);

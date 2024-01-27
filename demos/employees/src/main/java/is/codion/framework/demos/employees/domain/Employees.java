@@ -51,19 +51,19 @@ public final class Employees extends DefaultDomain {
   /** The domain type identifying this domain model */
   public static final DomainType DOMAIN = domainType(Employees.class);
 
-  /** Entity type for the table scott.dept */
+  /** Entity type for the table employees.department */
   public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
+    EntityType TYPE = DOMAIN.entityType("employees.department", Department.class);
 
-    /** Columns for the columns in the scott.dept table */
-    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
-    Column<String> NAME = TYPE.stringColumn("dname");
-    Column<String> LOCATION = TYPE.stringColumn("loc");
+    /** Columns for the columns in the employees.department table */
+    Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("department_no");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> LOCATION = TYPE.stringColumn("location");
 
     /** Bean getters and setters */
-    Integer getDeptno();
+    Integer getDepartmentNo();
 
-    void setDeptno(Integer deptno);
+    void setDepartmentNo(Integer departmentNo);
 
     String getName();
 
@@ -76,24 +76,24 @@ public final class Employees extends DefaultDomain {
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
-  /** Entity type for the table scott.emp */
+  /** Entity type for the table employees.employee */
   public interface Employee extends Entity {
-    EntityType TYPE = DOMAIN.entityType("scott.emp", Employee.class);
+    EntityType TYPE = DOMAIN.entityType("employees.employee", Employee.class);
 
-    /** Columns for the columns in the scott.emp table */
+    /** Columns for the columns in the employees.employee table */
     Column<Integer> ID = TYPE.integerColumn("id");
-    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> NAME = TYPE.stringColumn("name");
     Column<String> JOB = TYPE.stringColumn("job");
-    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<Integer> MANAGER_ID = TYPE.integerColumn("manager_id");
     Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
-    Column<BigDecimal> SALARY = TYPE.bigDecimalColumn("sal");
-    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
-    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+    Column<BigDecimal> SALARY = TYPE.bigDecimalColumn("salary");
+    Column<Double> COMMISSION = TYPE.doubleColumn("commission");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("department_no");
 
-    /** Foreign key attribute for the DEPTNO column in the table scott.emp */
-    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
-    /** Foreign key attribute for the MGR column in the table scott.emp */
-    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
+    /** Foreign key attribute for the DEPTNO column in the table employees.employee */
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_no_fk", DEPARTMENT, Department.DEPARTMENT_NO);
+    /** Foreign key attribute for the MGR column in the table employees.employee */
+    ForeignKey MANAGER_FK = TYPE.foreignKey("manager_fk", MANAGER_ID, Employee.ID);
     /** Attribute for the denormalized department location property */
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
@@ -152,11 +152,11 @@ public final class Employees extends DefaultDomain {
   void department() {
     /*Defining the entity Department.TYPE*/
     add(Department.TYPE.define(
-            Department.DEPTNO.define()
+            Department.DEPARTMENT_NO.define()
                     .primaryKey()
-                    .caption("Deptno.")
+                    .caption("No.")
                     .nullable(false)
-                    .beanProperty("deptno"),
+                    .beanProperty("departmentNo"),
             Department.NAME.define()
                     .column()
                     .caption("Name")
@@ -214,9 +214,9 @@ public final class Employees extends DefaultDomain {
                     .valueRange(100, 2000)
                     .maximumFractionDigits(2)
                     .beanProperty("commission"),
-            Employee.MGR.define()
+            Employee.MANAGER_ID.define()
                     .column(),
-            Employee.MGR_FK.define()
+            Employee.MANAGER_FK.define()
                     .foreignKey()
                     .caption("Manager")
                     .beanProperty("manager"),
@@ -232,7 +232,7 @@ public final class Employees extends DefaultDomain {
             Employee.DEPARTMENT_LOCATION.define()
                     .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption("Location"))
-            .keyGenerator(sequence("scott.emp_seq"))
+            .keyGenerator(sequence("employees.employee_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee")

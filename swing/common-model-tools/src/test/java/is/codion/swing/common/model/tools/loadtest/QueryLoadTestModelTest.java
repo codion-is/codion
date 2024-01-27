@@ -36,17 +36,17 @@ public final class QueryLoadTestModelTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
-          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectEmployees", "select * from scott.emp where ename not like ?") {
+          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectEmployees", "select * from employees.employee where ename not like ?") {
             @Override
             protected List<Object> parameters() {
               return singletonList("ADAMS");
             }
           };
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
-          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from scott.dept", true);
+          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from employees.department", true);
   @Test
   void test() throws DatabaseException {
-    QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
+    QueryLoadTestModel loadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.loadTestModel().minimumThinkTime().set(10);
     loadTest.loadTestModel().maximumThinkTime().set(30);
@@ -65,12 +65,5 @@ public final class QueryLoadTestModelTest {
     assertTrue(SELECT_DEPARTMENTS.successfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.successfulRunCount() > 0);
     loadTest.loadTestModel().shutdown();
-  }
-
-  private static Database createTestDatabaseInstance() {
-    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("../../demos/employees/src/main/sql/create_schema.sql");
-
-    return Database.instance();
   }
 }

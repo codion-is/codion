@@ -406,7 +406,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.scott.dept", Department.class);
+    EntityType TYPE = DOMAIN.entityType("domain.employees.department", Department.class);
     Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
@@ -458,7 +458,7 @@ public final class TestDomain extends DefaultDomain {
                     .lazy(true),
             Department.CODE.define()
                     .column())
-            .tableName("scott.dept")
+            .tableName("employees.department")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
@@ -474,7 +474,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Employee extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.scott.emp", Employee.class);
+    EntityType TYPE = DOMAIN.entityType("domain.employees.employee", Employee.class);
     Column<Integer> ID = TYPE.integerColumn("emp_id");
     Column<String> NAME = TYPE.stringColumn("emp_name");
     Column<String> JOB = TYPE.stringColumn("job");
@@ -575,8 +575,8 @@ public final class TestDomain extends DefaultDomain {
             Employee.DATA.define()
                     .column()
                     .caption("Data"))
-            .tableName("scott.emp")
-            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
+            .tableName("employees.employee")
+            .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee"));

@@ -48,7 +48,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Department {
-    EntityType TYPE = DOMAIN.entityType("scott.dept");
+    EntityType TYPE = DOMAIN.entityType("employees.department");
 
     Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
@@ -81,7 +81,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Employee {
-    EntityType TYPE = DOMAIN.entityType("scott.emp");
+    EntityType TYPE = DOMAIN.entityType("employees.employee");
 
     Column<Integer> ID = TYPE.integerColumn("empno");
     Column<String> NAME = TYPE.stringColumn("ename");
@@ -147,7 +147,7 @@ public final class TestDomain extends DefaultDomain {
                     .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
-            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
+            .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .condition(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
 

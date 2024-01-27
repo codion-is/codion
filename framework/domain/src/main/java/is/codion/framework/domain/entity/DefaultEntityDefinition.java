@@ -674,7 +674,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       }
 
       return definition;
-
     }
 
     @Override

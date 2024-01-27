@@ -127,12 +127,12 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final boolean addDataListener(Consumer<T> listener) {
+  public final boolean addDataListener(Consumer<? super T> listener) {
     return changeEvent().addDataListener(listener);
   }
 
   @Override
-  public final boolean removeDataListener(Consumer<T> listener) {
+  public final boolean removeDataListener(Consumer<? super T> listener) {
     if (changeEvent != null) {
       return changeEvent.removeDataListener(listener);
     }
@@ -155,12 +155,12 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final boolean addWeakDataListener(Consumer<T> listener) {
+  public final boolean addWeakDataListener(Consumer<? super T> listener) {
     return changeEvent().addWeakDataListener(listener);
   }
 
   @Override
-  public final boolean removeWeakDataListener(Consumer<T> listener) {
+  public final boolean removeWeakDataListener(Consumer<? super T> listener) {
     if (changeEvent != null) {
       return changeEvent.removeWeakDataListener(listener);
     }

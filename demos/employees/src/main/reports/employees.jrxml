@@ -10,15 +10,15 @@
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="DEPTNO" class="java.util.Collection" isForPrompting="false"/>
 	<queryString>
-		<![CDATA[select d.dname, d.loc, e.ename, e.job
-from scott.dept d, scott.emp e
-where $X{IN, d.deptno, DEPTNO}
-and e.deptno = d.deptno
-order by d.dname, e.ename]]>
+		<![CDATA[select d.name as department_name, d.location, e.name as employee_name, e.job
+from employees.department d, employees.employee e
+where $X{IN, d.department_no, DEPTNO}
+and e.department_no = d.department_no
+order by d.name, e.name]]>
 	</queryString>
-	<field name="DNAME" class="java.lang.String"/>
-	<field name="LOC" class="java.lang.String"/>
-	<field name="ENAME" class="java.lang.String"/>
+	<field name="DEPARTMENT_NAME" class="java.lang.String"/>
+	<field name="LOCATION" class="java.lang.String"/>
+	<field name="EMPLOYEE_NAME" class="java.lang.String"/>
 	<field name="JOB" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -73,15 +73,15 @@ order by d.dname, e.ename]]>
 		<band height="18" splitType="Stretch">
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField" x="0" y="0" width="100" height="18" uuid="2df8ebf8-02dd-4e05-a300-8aa01f6803b0"/>
-				<textFieldExpression><![CDATA[$F{DNAME}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{DEPARTMENT_NAME}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField" x="109" y="0" width="100" height="18" uuid="66ab00b6-109b-48a8-ab2e-361d1a768a6f"/>
-				<textFieldExpression><![CDATA[$F{LOC}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{LOCATION}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField" x="224" y="0" width="100" height="18" uuid="f6ac305c-a0a6-41fe-85d4-c8e0d4d0f674"/>
-				<textFieldExpression><![CDATA[$F{ENAME}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{EMPLOYEE_NAME}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField" x="343" y="0" width="100" height="18" uuid="392439b1-5142-4b46-85c7-6cc0c8761cf1"/>

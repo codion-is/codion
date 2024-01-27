@@ -1,38 +1,38 @@
 create user if not exists scott password 'tiger';
 alter user scott admin true;
 
-create schema scott;
+create schema employees;
 
-CREATE TABLE scott.dept (
-  deptno INT NOT NULL,
-  dname VARCHAR(14) NOT NULL,
-  loc VARCHAR(13),
-  constraint dept_pk primary key (deptno)
+CREATE TABLE employees.department (
+  department_no INT NOT NULL,
+  name VARCHAR(14) NOT NULL,
+  location VARCHAR(13),
+  constraint department_pk primary key (department_no)
 );
 
-CREATE TABLE scott.emp (
+CREATE TABLE employees.employee(
   id INT NOT NULL,
-  ename VARCHAR(10) NOT NULL,
+  name VARCHAR(10) NOT NULL,
   job VARCHAR(9),
-  mgr INT,
+  manager_id INT,
   hiredate DATE,
-  sal DECIMAL(7, 2) NOT NULL,
-  comm DECIMAL(7, 2),
-  deptno INT NOT NULL,
-  constraint emp_pk primary key (id),
-  constraint emp_dept_fk foreign key (deptno) references scott.dept(deptno),
-  constraint emp_mgr_fk foreign key (mgr) references scott.emp(id)
+  salary DECIMAL(7, 2) NOT NULL,
+  commission DECIMAL(7, 2),
+  department_no INT NOT NULL,
+  constraint employee_pk primary key (id),
+  constraint employee_department_fk foreign key (department_no) references employees.department(department_no),
+  constraint employee_manager_fk foreign key (manager_id) references employees.employee(id)
 );
 
-CREATE SEQUENCE scott.emp_seq START WITH 17;
+CREATE SEQUENCE employees.employee_seq START WITH 17;
 
-INSERT INTO scott.dept(deptno, dname, loc)
+INSERT INTO employees.department(department_no, name, location)
 VALUES (10, 'Accounting', 'New York'),
   (20, 'Research', 'Dallas'),
   (30, 'Sales', 'Chicaco'),
   (40, 'Operations', 'Boston');
 
-INSERT INTO scott.emp(id, ename, job, mgr, hiredate, sal, comm, deptno)
+INSERT INTO employees.employee(id, name, job, manager_id, hiredate, salary, commission, department_no)
 VALUES (8, 'King', 'President', NULL, '1981-11-17', 5000, NULL, 10),
   (3, 'Jones', 'Manager', 8, '1981-04-02', 2975, NULL, 20),
   (5, 'Blake', 'Manager', 3, '1981-05-01', 2850, NULL, 10),

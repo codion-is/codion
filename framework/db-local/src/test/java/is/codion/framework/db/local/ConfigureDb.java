@@ -38,7 +38,7 @@ final class ConfigureDb extends DefaultDomain {
   }
 
   interface Configured {
-    EntityType TYPE = DOMAIN.entityType("scott.configured");
+    EntityType TYPE = DOMAIN.entityType("employees.configured");
     Column<Integer> ID = TYPE.integerColumn("id");
   }
 
@@ -50,7 +50,7 @@ final class ConfigureDb extends DefaultDomain {
   public void configureDatabase(Database database) throws DatabaseException {
     try {
       database.createConnection(User.parse("sa")).createStatement()
-              .execute("create table scott.configured(id integer)");
+              .execute("create table employees.configured(id integer)");
     }
     catch (SQLException e) {
       throw new DatabaseException(e);

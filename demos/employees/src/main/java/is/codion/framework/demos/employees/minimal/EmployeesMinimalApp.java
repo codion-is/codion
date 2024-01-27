@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
@@ -56,79 +55,78 @@ public final class EmployeesMinimalApp {
   static final DomainType DOMAIN = domainType(EmployeesMinimalApp.class);
 
   /*
-   * We start by defining attributes for the columns in the SCOTT.DEPT table.
+   * We start by defining attributes for the columns in the EMPLOYEES.DEPARTMENT table.
    */
   interface Department {
-    EntityType TYPE = DOMAIN.entityType("scott.dept");
+    EntityType TYPE = DOMAIN.entityType("employees.department");
 
-    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
-    Column<String> DNAME = TYPE.stringColumn("dname");
-    Column<String> LOC = TYPE.stringColumn("loc");
+    Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("department_no");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> LOCATION = TYPE.stringColumn("location");
   }
 
   /*
-   * And for the columns in the SCOTT.EMP table.
+   * And for the columns in the EMPLOYEES.EMPLOYEE table.
    */
   interface Employee {
-    EntityType TYPE = DOMAIN.entityType("scott.emp");
+    EntityType TYPE = DOMAIN.entityType("employees.employee");
 
     Column<Integer> ID = TYPE.integerColumn("id");
-    Column<String> ENAME = TYPE.stringColumn("ename");
-    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("department_no");
     Column<String> JOB = TYPE.stringColumn("job");
-    Column<Double> SAL = TYPE.doubleColumn("sal");
-    Column<Double> COMM = TYPE.doubleColumn("comm");
-    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<Double> SALARY = TYPE.doubleColumn("salary");
+    Column<Double> COMMISSION = TYPE.doubleColumn("commission");
+    Column<Integer> MANAGER_ID = TYPE.integerColumn("manager_id");
     Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 
-    ForeignKey DEPT_FK = TYPE.foreignKey("dept_fk", DEPTNO, Department.DEPTNO);
-    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_NO, Department.DEPARTMENT_NO);
+    ForeignKey MANAGER_FK = TYPE.foreignKey("manager_fk", MANAGER_ID, Employee.ID);
   }
 
   /**
-   * This class initializes the domain model based on the SCOTT schema
+   * This class initializes the domain model based on the EMPLOYEES schema
    */
   private static final class Employees extends DefaultDomain {
 
     public Employees() {
       super(DOMAIN);
       /*
-       * We then define the entity based on the SCOTT.DEPT table
+       * We then define the entity based on the EMPLOYEES.DEPARTMENT table
        */
       add(Department.TYPE.define(
-              Department.DEPTNO.define()
+              Department.DEPARTMENT_NO.define()
                       .primaryKey(),
-              Department.DEPTNO.define()
+              Department.DEPARTMENT_NO.define()
                       .column()
                       .caption("Department name")
                       .searchable(true)
                       .nullable(false)
                       .maximumLength(14),
-             Department.LOC.define()
+             Department.LOCATION.define()
                      .column()
                      .caption("Department location")
                      .maximumLength(13))
-              .keyGenerator(sequence("scott.dept_seq"))
               .caption("Departments")
-              .stringFactory(Department.DNAME));
+              .stringFactory(Department.NAME));
       /*
-       * We then define the entity based on the SCOTT.EMP table,
+       * We then define the entity based on the EMPLOYEES.EMPLOYEE table,
        * note the foreign keys, referencing the
        * department as well as the manager
        */
       add(Employee.TYPE.define(
               Employee.ID.define()
                       .primaryKey(),
-              Employee.ENAME.define()
+              Employee.NAME.define()
                       .column()
                       .caption("Name")
                       .searchable(true)
                       .nullable(false)
                       .maximumLength(10),
-              Employee.DEPTNO.define()
+              Employee.DEPARTMENT_NO.define()
                       .column()
                       .nullable(false),
-              Employee.DEPT_FK.define()
+              Employee.DEPARTMENT_FK.define()
                       .foreignKey()
                       .caption("Department"),
               Employee.JOB.define()
@@ -136,28 +134,28 @@ public final class EmployeesMinimalApp {
                       .caption("Job")
                       .nullable(false)
                       .maximumLength(9),
-              Employee.SAL.define()
+              Employee.SALARY.define()
                       .column()
                       .caption("Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
                       .valueRange(1000, 10000),
-              Employee.COMM.define()
+              Employee.COMMISSION.define()
                       .column()
                       .caption("Commission")
                       .maximumFractionDigits(2),
-              Employee.MGR.define()
+              Employee.MANAGER_ID.define()
                       .column(),
-              Employee.MGR_FK.define()
+              Employee.MANAGER_FK.define()
                       .foreignKey()
                       .caption("Manager"),
               Employee.HIREDATE.define()
                       .column()
                       .caption("Hiredate")
                       .nullable(false))
-            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
+            .keyGenerator(KeyGenerator.sequence("employees.emp_seq"))
             .caption("Employees")
-            .stringFactory(Employee.ENAME));
+            .stringFactory(Employee.NAME));
     }
   }
 
@@ -171,7 +169,7 @@ public final class EmployeesMinimalApp {
       super(Employee.TYPE, connectionProvider);
       //initialize the combo box models now, otherwise it
       //happens on the EDT later when the combo boxes are created
-      initializeComboBoxModels(Employee.MGR_FK, Employee.DEPT_FK);
+      initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
     }
 
     /**
@@ -181,7 +179,7 @@ public final class EmployeesMinimalApp {
     @Override
     public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
       EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
-      if (foreignKey.equals(Employee.MGR_FK)) {
+      if (foreignKey.equals(Employee.MANAGER_FK)) {
         comboBoxModel.condition().set(() ->
                 Employee.JOB.in("Manager", "President"));
       }
@@ -204,17 +202,17 @@ public final class EmployeesMinimalApp {
 
     @Override
     protected void initializeUI() {
-      initialFocusAttribute().set(Department.DEPTNO);
+      initialFocusAttribute().set(Department.DEPARTMENT_NO);
 
-      createTextField(Department.DEPTNO);
-      createTextField(Department.DNAME);
-      createTextField(Department.LOC);
+      createTextField(Department.DEPARTMENT_NO);
+      createTextField(Department.NAME);
+      createTextField(Department.LOCATION);
 
       setLayout(gridLayout(3, 1));
 
-      addInputPanel(Department.DEPTNO);
-      addInputPanel(Department.DNAME);
-      addInputPanel(Department.LOC);
+      addInputPanel(Department.DEPARTMENT_NO);
+      addInputPanel(Department.NAME);
+      addInputPanel(Department.LOCATION);
     }
   }
 
@@ -229,25 +227,25 @@ public final class EmployeesMinimalApp {
 
     @Override
     protected void initializeUI() {
-      initialFocusAttribute().set(Employee.ENAME);
+      initialFocusAttribute().set(Employee.NAME);
 
-      createTextField(Employee.ENAME);
-      createForeignKeyComboBox(Employee.DEPT_FK);
+      createTextField(Employee.NAME);
+      createForeignKeyComboBox(Employee.DEPARTMENT_FK);
       createTextField(Employee.JOB);
-      createForeignKeyComboBox(Employee.MGR_FK);
+      createForeignKeyComboBox(Employee.MANAGER_FK);
       createTemporalFieldPanel(Employee.HIREDATE);
-      createTextField(Employee.SAL);
-      createTextField(Employee.COMM);
+      createTextField(Employee.SALARY);
+      createTextField(Employee.COMMISSION);
 
       setLayout(gridLayout(4, 2));
 
-      addInputPanel(Employee.ENAME);
-      addInputPanel(Employee.DEPT_FK);
+      addInputPanel(Employee.NAME);
+      addInputPanel(Employee.DEPARTMENT_FK);
       addInputPanel(Employee.JOB);
-      addInputPanel(Employee.MGR_FK);
+      addInputPanel(Employee.MANAGER_FK);
       addInputPanel(Employee.HIREDATE);
-      addInputPanel(Employee.SAL);
-      addInputPanel(Employee.COMM);
+      addInputPanel(Employee.SALARY);
+      addInputPanel(Employee.COMMISSION);
     }
   }
 

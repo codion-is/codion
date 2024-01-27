@@ -47,7 +47,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTextField(Employee.NAME)
             .columns(8);
     createItemComboBox(Employee.JOB);
-    createForeignKeyComboBox(Employee.MGR_FK);
+    createForeignKeyComboBox(Employee.MANAGER_FK);
     createTextField(Employee.SALARY)
             .columns(5);
     createTextField(Employee.COMMISSION)
@@ -61,7 +61,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     addInputPanel(Employee.DEPARTMENT_FK, createDepartmentPanel());
     addInputPanel(Employee.JOB);
 
-    addInputPanel(Employee.MGR_FK);
+    addInputPanel(Employee.MANAGER_FK);
     add(gridLayoutPanel(1, 2)
             .add(createInputPanel(Employee.SALARY))
             .add(createInputPanel(Employee.COMMISSION))
@@ -71,7 +71,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
   private JPanel createDepartmentPanel() {
     EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
-    NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPTNO)
+    NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPARTMENT_NO)
             .transferFocusOnEnter(true)
             .build();
 

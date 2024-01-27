@@ -73,8 +73,8 @@ public class H2DatabaseTest {
   void multipleDatabases() throws DatabaseException, SQLException, IOException {
     File file1 = File.createTempFile("h2db_test_1", ".sql");
     File file2 = File.createTempFile("h2db_test_2", ".sql");
-    Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
-    Files.write(file2.toPath(), singletonList("create schema scott; create table scott.test2 (id int);"));
+    Files.write(file1.toPath(), singletonList("create schema employees; create table employees.test1 (id int);"));
+    Files.write(file2.toPath(), singletonList("create schema employees; create table employees.test2 (id int);"));
 
     final String url1 = "jdbc:h2:mem:test1";
     final String url2 = "jdbc:h2:mem:test2";
@@ -84,8 +84,8 @@ public class H2DatabaseTest {
     H2Database db2 = new H2Database(url2, singletonList(file2.getAbsolutePath()));
     Connection connection1 = db1.createConnection(user);
     Connection connection2 = db2.createConnection(user);
-    connection1.prepareCall("select id from scott.test1").executeQuery();
-    connection2.prepareCall("select id from scott.test2").executeQuery();
+    connection1.prepareCall("select id from employees.test1").executeQuery();
+    connection2.prepareCall("select id from employees.test2").executeQuery();
     connection1.close();
     connection2.close();
     file1.delete();

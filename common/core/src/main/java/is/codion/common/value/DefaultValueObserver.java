@@ -51,12 +51,12 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   }
 
   @Override
-  public boolean addDataListener(Consumer<T> listener) {
+  public boolean addDataListener(Consumer<? super T> listener) {
     return value.addDataListener(listener);
   }
 
   @Override
-  public boolean removeDataListener(Consumer<T> listener) {
+  public boolean removeDataListener(Consumer<? super T> listener) {
     return value.removeDataListener(listener);
   }
 
@@ -71,12 +71,12 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   }
 
   @Override
-  public boolean addWeakDataListener(Consumer<T> listener) {
+  public boolean addWeakDataListener(Consumer<? super T> listener) {
     return value.addWeakDataListener(listener);
   }
 
   @Override
-  public boolean removeWeakDataListener(Consumer<T> listener) {
+  public boolean removeWeakDataListener(Consumer<? super T> listener) {
     return value.removeWeakDataListener(listener);
   }
 }

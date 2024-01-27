@@ -49,14 +49,14 @@ public interface EventObserver<T> {
    * @return true if this observer did not already contain the specified listener
    * @throws NullPointerException in case listener is null
    */
-  boolean addDataListener(Consumer<T> listener);
+  boolean addDataListener(Consumer<? super T> listener);
 
   /**
    * Removes {@code listener} from this {@link EventObserver}
    * @param listener the listener to remove
    * @return true if this observer contained the specified listener
    */
-  boolean removeDataListener(Consumer<T> listener);
+  boolean removeDataListener(Consumer<? super T> listener);
 
   /**
    * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
@@ -79,12 +79,12 @@ public interface EventObserver<T> {
    * @param listener the listener
    * @return true if this observer did not already contain the specified listener
    */
-  boolean addWeakDataListener(Consumer<T> listener);
+  boolean addWeakDataListener(Consumer<? super T> listener);
 
   /**
    * Removes {@code listener} from this {@link EventObserver}.
    * @param listener the listener to remove
    * @return true if this observer contained the specified listener
    */
-  boolean removeWeakDataListener(Consumer<T> listener);
+  boolean removeWeakDataListener(Consumer<? super T> listener);
 }

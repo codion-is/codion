@@ -1438,7 +1438,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       Database destinationDatabase = H2DatabaseFactory.createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       LocalEntityConnection destinationConnection = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
-      destinationConnection.databaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk if exists");
+      destinationConnection.databaseConnection().getConnection().createStatement().execute("alter table employees.employee drop constraint emp_mgr_fk if exists");
       destinationConnection.delete(all(Employee.TYPE));
       destinationConnection.delete(all(Department.TYPE));
 

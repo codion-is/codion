@@ -150,7 +150,7 @@ public final class EntityObjectMapperTest {
     Entity.Key key = entities.primaryKey(Department.TYPE, 42);
 
     String keyJSON = mapper.writeValueAsString(singletonList(key));
-    assertEquals("[{\"entityType\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
+    assertEquals("[{\"entityType\":\"employees.department\",\"values\":{\"deptno\":42}}]", keyJSON);
     Entity.Key keyParsed = mapper.deserializeKeys(keyJSON).get(0);
     assertEquals(key.entityType(), keyParsed.entityType());
     assertEquals(key.column(), keyParsed.column());

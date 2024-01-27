@@ -41,7 +41,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Department {
-    EntityType TYPE = DOMAIN.entityType("db.scott.dept");
+    EntityType TYPE = DOMAIN.entityType("db.employees.department");
 
     Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
@@ -64,7 +64,7 @@ public final class TestDomain extends DefaultDomain {
                     .column()
                     .caption(Department.LOCATION.name())
                     .maximumLength(13))
-            .tableName("scott.dept")
+            .tableName("employees.department")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
@@ -72,7 +72,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Employee {
-    EntityType TYPE = DOMAIN.entityType("db.scott.emp");
+    EntityType TYPE = DOMAIN.entityType("db.employees.employee");
 
     Column<Integer> ID = TYPE.integerColumn("emp_id");
     Column<String> NAME = TYPE.stringColumn("emp_name");
@@ -135,7 +135,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT_LOCATION.define()
                     .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
-            .tableName("scott.emp")
+            .tableName("employees.employee")
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee"));

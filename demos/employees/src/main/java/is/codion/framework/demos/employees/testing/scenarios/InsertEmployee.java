@@ -18,7 +18,8 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
-import is.codion.framework.demos.employees.domain.Employees;
+import is.codion.framework.demos.employees.domain.Employees.Department;
+import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -36,12 +37,12 @@ public final class InsertEmployee extends AbstractEntityUsageScenario<EmployeesA
 
   @Override
   protected void perform(EmployeesAppModel application) throws Exception {
-    SwingEntityModel departmentModel = application.entityModel(Employees.Department.TYPE);
+    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
     selectRandomRow(departmentModel.tableModel());
-    SwingEntityModel employeeModel = departmentModel.detailModel(Employees.Employee.TYPE);
+    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
-    foreignKeyEntities.put(Employees.Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
-    employeeModel.editModel().set(createRandomEntity(application.entities(), Employees.Employee.TYPE, foreignKeyEntities));
+    foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
+    employeeModel.editModel().set(createRandomEntity(application.entities(), Employee.TYPE, foreignKeyEntities));
     employeeModel.editModel().insert();
   }
 

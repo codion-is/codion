@@ -1,13 +1,13 @@
-create schema scott;
+create schema employees;
 
-CREATE TABLE scott.dept (
+CREATE TABLE employees.department (
   deptno INT NOT NULL,
   dname VARCHAR(14) NOT NULL,
   loc VARCHAR(13),
   constraint dept_pk primary key (deptno)
 );
 
-CREATE TABLE scott.emp (
+CREATE TABLE employees.employee (
   empno INT NOT NULL,
   ename VARCHAR(10) NOT NULL,
   job VARCHAR(9),
@@ -17,17 +17,17 @@ CREATE TABLE scott.emp (
   comm DECIMAL(7, 2),
   deptno INT NOT NULL,
   constraint emp_pk primary key (empno),
-  constraint emp_dept_fk foreign key (deptno) references scott.dept(deptno),
-  constraint emp_mgr_fk foreign key (mgr) references scott.emp(empno)
+  constraint emp_dept_fk foreign key (deptno) references employees.department(deptno),
+  constraint emp_mgr_fk foreign key (mgr) references employees.employee(empno)
 );
 
-INSERT INTO scott.dept(deptno, dname, loc)
+INSERT INTO employees.department(deptno, dname, loc)
 VALUES (10, 'ACCOUNTING', 'NEW YORK'),
   (20, 'RESEARCH', 'DALLAS'),
   (30, 'SALES', 'CHICAGO'),
   (40, 'OPERATIONS', 'BOSTON');
 
-INSERT INTO scott.emp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+INSERT INTO employees.employee(empno, ename, job, mgr, hiredate, sal, comm, deptno)
 VALUES (8, 'KING', 'PRESIDENT', NULL, '1981-11-17', 5000, NULL, 10),
   (3, 'JONES', 'MANAGER', 8, '1981-04-02', 2975, NULL, 20),
   (5, 'BLAKE', 'MANAGER', 3, '1981-05-01', 2850, NULL, 10),
