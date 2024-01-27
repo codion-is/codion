@@ -114,12 +114,12 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public boolean addDataListener(Consumer<Boolean> listener) {
+  public boolean addDataListener(Consumer<? super Boolean> listener) {
     return observer.addDataListener(listener);
   }
 
   @Override
-  public boolean removeDataListener(Consumer<Boolean> listener) {
+  public boolean removeDataListener(Consumer<? super Boolean> listener) {
     return observer.removeDataListener(listener);
   }
 
@@ -134,12 +134,12 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public boolean addWeakDataListener(Consumer<Boolean> listener) {
+  public boolean addWeakDataListener(Consumer<? super Boolean> listener) {
     return observer.addWeakDataListener(listener);
   }
 
   @Override
-  public boolean removeWeakDataListener(Consumer<Boolean> listener) {
+  public boolean removeWeakDataListener(Consumer<? super Boolean> listener) {
     return observer.removeWeakDataListener(listener);
   }
 

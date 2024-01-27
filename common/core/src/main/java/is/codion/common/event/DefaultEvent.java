@@ -44,12 +44,12 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public boolean addDataListener(Consumer<T> listener) {
+  public boolean addDataListener(Consumer<? super T> listener) {
     return observer().addDataListener(listener);
   }
 
   @Override
-  public boolean removeDataListener(Consumer<T> listener) {
+  public boolean removeDataListener(Consumer<? super T> listener) {
     return observer().removeDataListener(listener);
   }
 
@@ -64,12 +64,12 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public boolean addWeakDataListener(Consumer<T> listener) {
+  public boolean addWeakDataListener(Consumer<? super T> listener) {
     return observer().addWeakDataListener(listener);
   }
 
   @Override
-  public boolean removeWeakDataListener(Consumer<T> listener) {
+  public boolean removeWeakDataListener(Consumer<? super T> listener) {
     return observer().removeWeakDataListener(listener);
   }
 }
