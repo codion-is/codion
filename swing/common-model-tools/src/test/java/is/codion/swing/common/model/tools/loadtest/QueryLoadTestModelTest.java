@@ -31,7 +31,7 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from scott.dept", true);
   @Test
   void test() throws DatabaseException {
-    QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
+    QueryLoadTestModel loadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.loadTestModel().minimumThinkTime().set(10);
     loadTest.loadTestModel().maximumThinkTime().set(30);
@@ -50,12 +50,5 @@ public final class QueryLoadTestModelTest {
     assertTrue(SELECT_DEPARTMENTS.successfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.successfulRunCount() > 0);
     loadTest.loadTestModel().shutdown();
-  }
-
-  private static Database createTestDatabaseInstance() {
-    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("../../demos/employees/src/main/sql/create_schema.sql");
-
-    return Database.instance();
   }
 }
