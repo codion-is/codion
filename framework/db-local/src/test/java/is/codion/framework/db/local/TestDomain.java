@@ -81,7 +81,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
+    EntityType TYPE = DOMAIN.entityType("employees.department", Department.class);
 
     Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
     Column<String> DNAME = TYPE.stringColumn("dname");
@@ -141,7 +141,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Employee {
-    EntityType TYPE = DOMAIN.entityType("scott.emp");
+    EntityType TYPE = DOMAIN.entityType("employees.employee");
 
     Column<Integer> ID = TYPE.integerColumn("empno");
     Column<String> NAME = TYPE.stringColumn("ename");
@@ -213,14 +213,14 @@ public final class TestDomain extends DefaultDomain {
             Employee.DATA.define()
                     .column())
             .stringFactory(Employee.NAME)
-            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
+            .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
             .condition(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
   }
 
   public interface DepartmentFk extends Entity {
-    EntityType TYPE = DOMAIN.entityType("scott.deptfk");
+    EntityType TYPE = DOMAIN.entityType("employees.departmentfk");
 
     Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
     Column<String> DNAME = TYPE.stringColumn("dname");
@@ -238,12 +238,12 @@ public final class TestDomain extends DefaultDomain {
             DepartmentFk.LOC.define()
                     .column()
                     .caption(DepartmentFk.LOC.name()))
-            .tableName("scott.dept")
+            .tableName("employees.department")
             .stringFactory(DepartmentFk.DNAME));
   }
 
   public interface EmployeeFk {
-    EntityType TYPE = DOMAIN.entityType("scott.empfk");
+    EntityType TYPE = DOMAIN.entityType("employees.employeefk");
 
     Column<Integer> ID = TYPE.integerColumn("empno");
     Column<String> NAME = TYPE.stringColumn("ename");
@@ -298,14 +298,14 @@ public final class TestDomain extends DefaultDomain {
             EmployeeFk.HIRETIME.define()
                     .column()
                     .caption(EmployeeFk.HIRETIME.name()))
-            .tableName("scott.emp")
+            .tableName("employees.employee")
             .stringFactory(EmployeeFk.NAME)
-            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
+            .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .caption("Employee"));
   }
 
   public interface UUIDTestDefault {
-    EntityType TYPE = DOMAIN.entityType("scott.uuid_test_default");
+    EntityType TYPE = DOMAIN.entityType("employees.uuid_test_default");
 
     Column<UUID> ID = TYPE.column("id", UUID.class);
     Column<String> DATA = TYPE.stringColumn("data");
@@ -337,7 +337,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface UUIDTestNoDefault {
-    EntityType TYPE = DOMAIN.entityType("scott.uuid_test_no_default");
+    EntityType TYPE = DOMAIN.entityType("employees.uuid_test_no_default");
 
     Column<UUID> ID = TYPE.column("id", UUID.class);
     Column<String> DATA = TYPE.stringColumn("data");
@@ -396,14 +396,14 @@ public final class TestDomain extends DefaultDomain {
                     .column()
                     .expression("min(comm)")
                     .aggregate(true))
-            .tableName("scott.emp")
+            .tableName("employees.employee")
             .selectQuery(SelectQuery.builder()
                     .having("job <> 'PRESIDENT'")
                     .build()));
   }
 
   public interface NoPrimaryKey {
-    EntityType TYPE = DOMAIN.entityType("scott.no_pk_table");
+    EntityType TYPE = DOMAIN.entityType("employees.no_pk_table");
 
     Column<Integer> COL_4 = TYPE.integerColumn("col4");
     Column<String> COL_3 = TYPE.stringColumn("col3");
@@ -439,7 +439,7 @@ public final class TestDomain extends DefaultDomain {
             EmpnoDeptno.EMPNO.define()
                     .primaryKey())
             .selectQuery(SelectQuery.builder()
-                    .from("scott.emp e, scott.dept d")
+                    .from("employees.employee e, employees.department d")
                     .where("e.deptno = d.deptno")
                     .orderBy("e.deptno, e.ename")
                     .build())
@@ -459,9 +459,9 @@ public final class TestDomain extends DefaultDomain {
                     .column(),
             Query.ENAME.define()
                     .column())
-            .tableName("scott.emp")
+            .tableName("employees.employee")
             .orderBy(OrderBy.descending(Query.ENAME))
-            .selectTableName("scott.emp e")
+            .selectTableName("employees.employee e")
             .selectQuery(SelectQuery.builder()
                     .columns("empno, ename")
                     .orderBy("ename")
@@ -481,7 +481,7 @@ public final class TestDomain extends DefaultDomain {
                     .column(),
             QueryColumnsWhereClause.ENAME.define()
                     .column())
-            .tableName("scott.emp e")
+            .tableName("employees.employee e")
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .columns("e.empno, e.ename")
@@ -504,7 +504,7 @@ public final class TestDomain extends DefaultDomain {
                     .column())
             .orderBy(OrderBy.descending(QueryFromClause.ENAME))
             .selectQuery(SelectQuery.builder()
-                    .from("scott.emp")
+                    .from("employees.employee")
                     .orderBy("ename")
                     .build()));
   }
@@ -524,14 +524,14 @@ public final class TestDomain extends DefaultDomain {
                     .column())
             .orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
-                    .from("scott.emp")
+                    .from("employees.employee")
                     .where("deptno > 10")
                     .orderBy("deptno")
                     .build()));
   }
 
   public interface Master {
-    EntityType TYPE = DOMAIN.entityType("scott.master");
+    EntityType TYPE = DOMAIN.entityType("employees.master");
 
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> DATA = TYPE.stringColumn("data");
@@ -547,7 +547,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Detail {
-    EntityType TYPE = DOMAIN.entityType("scott.detail");
+    EntityType TYPE = DOMAIN.entityType("employees.detail");
 
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<Integer> MASTER_1_ID = TYPE.integerColumn("master_1_id");
@@ -573,7 +573,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface MasterFk {
-    EntityType TYPE = DOMAIN.entityType("scott.master_fk");
+    EntityType TYPE = DOMAIN.entityType("employees.master_fk");
 
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> NAME = TYPE.stringColumn("name");
@@ -588,7 +588,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface DetailFk {
-    EntityType TYPE = DOMAIN.entityType("scott.detail_fk");
+    EntityType TYPE = DOMAIN.entityType("employees.detail_fk");
 
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
@@ -619,7 +619,7 @@ public final class TestDomain extends DefaultDomain {
                     .primaryKey(),
             EmployeeNonOpt.NAME.define()
                     .column())
-            .tableName("scott.emp")
+            .tableName("employees.employee")
             .optimisticLocking(false));
   }
 }

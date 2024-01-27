@@ -40,7 +40,7 @@ public final class EmployeesMinimalApp {
   static final DomainType DOMAIN = domainType(EmployeesMinimalApp.class);
 
   /*
-   * We start by defining attributes for the columns in the SCOTT.DEPT table.
+   * We start by defining attributes for the columns in the EMPLOYEES.DEPARTMENT table.
    */
   interface Department {
     EntityType TYPE = DOMAIN.entityType("employees.department");
@@ -51,7 +51,7 @@ public final class EmployeesMinimalApp {
   }
 
   /*
-   * And for the columns in the SCOTT.EMP table.
+   * And for the columns in the EMPLOYEES.EMPLOYEE table.
    */
   interface Employee {
     EntityType TYPE = DOMAIN.entityType("employees.employee");
@@ -70,14 +70,14 @@ public final class EmployeesMinimalApp {
   }
 
   /**
-   * This class initializes the domain model based on the SCOTT schema
+   * This class initializes the domain model based on the EMPLOYEES schema
    */
   private static final class Employees extends DefaultDomain {
 
     public Employees() {
       super(DOMAIN);
       /*
-       * We then define the entity based on the SCOTT.DEPT table
+       * We then define the entity based on the EMPLOYEES.DEPARTMENT table
        */
       add(Department.TYPE.define(
               Department.DEPARTMENT_NO.define()
@@ -95,7 +95,7 @@ public final class EmployeesMinimalApp {
               .caption("Departments")
               .stringFactory(Department.NAME));
       /*
-       * We then define the entity based on the SCOTT.EMP table,
+       * We then define the entity based on the EMPLOYEES.EMPLOYEE table,
        * note the foreign keys, referencing the
        * department as well as the manager
        */

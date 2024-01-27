@@ -30,14 +30,14 @@ include::{dir-source-sql}/create_schema.sql[]
 
 == Domain model
 
-We start by creating a class named Employees in a package of our choosing, extending DefaultDomain and define the identity and column constants required for the department {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the SCOTT.DEPT table. The EntityType constant represents the entity type, the columns represent the columns in the table. The entityType in this example contains the actual table name (scott.dept), but the table name can be specified via the __tableName()__ builder method when the entity is defined. The column names are the actual column names from the table, but these can also be specified via __columnName()__ builder method.
+We start by creating a class named Employees in a package of our choosing, extending DefaultDomain and define the identity and column constants required for the department {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the EMPLOYEES.DEPARTMENT table. The EntityType constant represents the entity type, the columns represent the columns in the table. The entityType in this example contains the actual table name (employees.department), but the table name can be specified via the __tableName()__ builder method when the entity is defined. The column names are the actual column names from the table, but these can also be specified via __columnName()__ builder method.
 
 [source,java]
 ----
 include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=departmentConstants]
 ----
 
-Next we define the constants required for the employee entity, which is based on the SCOTT.EMP table. Here there are two additional attributes with _FK suffixes, we'll use these later when we specify the foreign key properties for the employee entity.
+Next we define the constants required for the employee entity, which is based on the EMPLOYEES.EMPLOYEE table. Here there are two additional attributes with _FK suffixes, we'll use these later when we specify the foreign key properties for the employee entity.
 
 [source,java]
 ----
@@ -58,7 +58,7 @@ Next we add the method defining the department entity. *EntityDefinition.Builder
 include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=defineDepartment]
 ----
 
-Next we define the employee entity. Here we set the *keyGenerator* to *KeyGenerator.sequence("scott.emp_seq")* which, as the name suggests, fetches a value from a sequence. Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkey, ForeignKey>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for an entity instance.
+Next we define the employee entity. Here we set the *keyGenerator* to *KeyGenerator.sequence("employees.employee_seq")* which, as the name suggests, fetches a value from a sequence. Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkey, ForeignKey>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for an entity instance.
 
 [source,java]
 ----

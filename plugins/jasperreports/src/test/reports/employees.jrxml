@@ -11,7 +11,7 @@
 	<parameter name="DEPTNO" class="java.util.Collection" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[select d.dname, d.loc, e.ename, e.job
-from scott.dept d, scott.emp e
+from employees.department d, employees.employee e
 where $X{IN, d.deptno, DEPTNO}
 and e.deptno = d.deptno
 order by d.dname, e.ename]]>
