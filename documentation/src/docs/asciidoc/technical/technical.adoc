@@ -1,7 +1,7 @@
 = Technical details
 :docinfo: shared-head
 :toc: left
-:toclevels: 4
+:toclevels: 2
 :basedir: ..
 
 include::{basedir}/technical/project.adoc[leveloffset=+1]
@@ -19,3 +19,5 @@ include::{basedir}/technical/design.adoc[leveloffset=+1]
 include::{basedir}/technical/modules.adoc[leveloffset=+1]
 
 include::{basedir}/technical/utilities.adoc[leveloffset=+1]
+
+include::{basedir}/technical/i18n.adoc[leveloffset=+1]
