@@ -1,6 +1,12 @@
 Codion Change Log
 ==================
 
+## 0.17.27-SNAPSHOT
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
+### is.codion.swing.framework.ui
+- EntityTablePanel, popup menu for configuring the limit added to status message panel along with INCLUDE_LIMIT_MENU configuration value, default false.
+
 ## 0.17.26
 ### is.codion.common.core
 - EventObserver now accepts data listeners for value type superclasses.

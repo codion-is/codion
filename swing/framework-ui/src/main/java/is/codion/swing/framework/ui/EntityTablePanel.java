@@ -45,6 +45,7 @@ import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilteredTableConditionPanel;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -202,6 +203,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
 
   /**
+   * Specifies whether to include a popup menu for configuring the table model limit.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeLimitMenu", false);
+
+  /**
    * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -348,10 +357,10 @@ public class EntityTablePanel extends JPanel {
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
   private final FilteredTable<Entity, Attribute<?>> table;
-  private final StatusPanel statusPanel;
   private final JPanel southPanel = new JPanel(new BorderLayout());
   private final Value<Confirmer> deleteConfirmer;
 
+  private StatusPanel statusPanel;
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
   private JScrollPane conditionPanelScrollPane;
@@ -388,7 +397,6 @@ public class EntityTablePanel extends JPanel {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
     this.table = createTable();
-    this.statusPanel = new StatusPanel();
     this.controls = createControlsMap();
     this.deleteConfirmer = createDeleteConfirmer();
     this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
@@ -469,7 +477,7 @@ public class EntityTablePanel extends JPanel {
    * @see #SHOW_REFRESH_PROGRESS_BAR
    */
   public final State showRefreshProgressBar() {
-    return statusPanel.showRefreshProgressBar;
+    return statusPanel().showRefreshProgressBar;
   }
 
   /**
@@ -477,7 +485,7 @@ public class EntityTablePanel extends JPanel {
    * @see #statusMessage()
    */
   public final Value<Function<SwingEntityTableModel, String>> statusMessage() {
-    return statusPanel.statusMessageFunction;
+    return statusPanel().statusMessageFunction;
   }
 
   /**
@@ -697,7 +705,7 @@ public class EntityTablePanel extends JPanel {
     JSplitPane southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
             .leftComponent(searchFieldPanel)
-            .rightComponent(statusPanel)
+            .rightComponent(statusPanel())
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshButtonToolBar(), BorderLayout.WEST);
@@ -1308,6 +1316,14 @@ public class EntityTablePanel extends JPanel {
     return panel;
   }
 
+  private StatusPanel statusPanel() {
+    if (statusPanel == null) {
+      statusPanel = new StatusPanel();
+    }
+
+    return statusPanel;
+  }
+
   private void bindEvents() {
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(VK_V)
@@ -1790,6 +1806,7 @@ public class EntityTablePanel extends JPanel {
     private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
     private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
     private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
+    private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
     private boolean includePopupMenu = true;
@@ -1856,6 +1873,17 @@ public class EntityTablePanel extends JPanel {
     public Settings includeClearControl(boolean includeClearControl) {
       throwIfInitialized();
       this.includeClearControl = includeClearControl;
+      return this;
+    }
+
+    /**
+     * @param includeLimitMenu true if a popup menu for configuring the table model limit should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeLimitMenu(boolean includeLimitMenu) {
+      throwIfInitialized();
+      this.includeLimitMenu = includeLimitMenu;
       return this;
     }
 
@@ -2005,6 +2033,9 @@ public class EntityTablePanel extends JPanel {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });
+      if (settings.includeLimitMenu) {
+        setComponentPopupMenu(createPopupMenu());
+      }
       Runnable statusListener = this::updateStatusMessage;
       statusMessageFunction.addListener(statusListener);
       tableModel.selectionModel().addSelectionListener(statusListener);
@@ -2020,6 +2051,27 @@ public class EntityTablePanel extends JPanel {
                       .stringPainted(true)
                       .build(), createHorizontalFillConstraints())
               .build();
+    }
+
+    private JPopupMenu createPopupMenu() {
+      JPopupMenu popupMenu = new JPopupMenu();
+      popupMenu.add(Control.builder(this::configureLimit)
+              .name(MESSAGES.getString("row_limit"))
+              .build());
+
+      return popupMenu;
+    }
+
+    private void configureLimit() {
+      ComponentValue<Integer, NumberField<Integer>> limitValue = Components.integerField()
+              .initialValue(tableModel.limit().get())
+              .groupingUsed(true)
+              .minimumValue(0)
+              .columns(6)
+              .buildValue();
+      tableModel.limit().set(Dialogs.inputDialog(limitValue)
+              .title(MESSAGES.getString("row_limit"))
+              .show());
     }
 
     private void updateStatusMessage() {
