@@ -523,15 +523,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return a Control for refreshing the application model
-   */
-  protected final Control createRefreshAllControl() {
-    return Control.builder(applicationModel::refresh)
-            .name(FrameworkMessages.refreshAll())
-            .build();
-  }
-
-  /**
    * @return a Control for viewing the application structure tree
    */
   protected final Control createViewApplicationTreeControl() {

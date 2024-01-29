@@ -16,7 +16,6 @@ public class FrameworkMessagesTest {
     FrameworkMessages.exitTip();
     FrameworkMessages.view();
     FrameworkMessages.viewMnemonic();
-    FrameworkMessages.refreshAll();
     FrameworkMessages.supportTables();
     FrameworkMessages.supportTablesMnemonic();
     FrameworkMessages.update();

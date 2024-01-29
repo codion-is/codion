@@ -21,7 +21,6 @@ public final class FrameworkMessages {
   private static final String EXIT_TIP = "exit_tip";
   private static final String VIEW = "view";
   private static final String VIEW_MNEMONIC = "view_mnemonic";
-  private static final String REFRESH_ALL = "refresh_all";
   private static final String SUPPORT_TABLES = "support_tables";
   private static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
   private static final String UPDATE = "update";
@@ -111,13 +110,6 @@ public final class FrameworkMessages {
    */
   public static char viewMnemonic() {
     return get(VIEW_MNEMONIC).charAt(0);
-  }
-
-  /**
-   * @return refresh all
-   */
-  public static String refreshAll() {
-    return get(REFRESH_ALL);
   }
 
   /**
