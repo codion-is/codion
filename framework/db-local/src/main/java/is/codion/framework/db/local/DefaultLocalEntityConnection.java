@@ -327,13 +327,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         int deleteCount = 0;
         for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
           EntityDefinition entityDefinition = definition(entityTypeKeys.getKey());
-          condition = keys(entityTypeKeys.getValue());
-          statementValues = condition.values();
-          statementColumns = definitions(entityDefinition, condition.columns());
-          deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
-          statement = prepareStatement(deleteQuery);
-          deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
-          statement.close();
+          List<Key> keysToDelete = entityTypeKeys.getValue();
+          for (int i = 0; i < keysToDelete.size(); i += database.maximumNumberOfParameters()) {
+            condition = keys(keysToDelete.subList(i, Math.min(i + database.maximumNumberOfParameters(), keysToDelete.size())));
+            statementValues = condition.values();
+            statementColumns = definitions(entityDefinition, condition.columns());
+            deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
+            statement = prepareStatement(deleteQuery);
+            deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
+            statement.close();
+          }
         }
         if (keys.size() != deleteCount) {
           throw new DeleteException(deleteCount + " rows deleted, expected " + keys.size());
@@ -946,9 +949,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Key referencedKey = referencedKeys.get(0);
     Collection<Column<?>> keyColumns = referencedKey.columns();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
-    int maximumNumberOfParameters = database.maximumNumberOfParameters();
-    for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
-      List<Key> keys = referencedKeys.subList(i, Math.min(i + maximumNumberOfParameters, referencedKeys.size()));
+    for (int i = 0; i < referencedKeys.size(); i += database.maximumNumberOfParameters()) {
+      List<Key> keys = referencedKeys.subList(i, Math.min(i + database.maximumNumberOfParameters(), referencedKeys.size()));
       Select referencedEntitiesCondition = where(keys(keys))
               .fetchDepth(conditionFetchDepthLimit)
               .attributes(attributesToSelect(foreignKeyDefinition, keyColumns))

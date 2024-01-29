@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.27-SNAPSHOT
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
 
 ## 0.17.26
 ### is.codion.common.core
