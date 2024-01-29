@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.27-SNAPSHOT
+
 ## 0.17.26
 ### is.codion.common.core
 - EventObserver now accepts data listeners for value type superclasses.
