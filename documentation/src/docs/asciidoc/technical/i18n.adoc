@@ -725,6 +725,7 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 |refreshing|Refreshing|Endurhleð
 |require_query_condition|Search Condition Required|Krefjast Leitarskilyrðis
 |require_query_condition_description|One or more active search conditions required for displaying data|Eins eða fleiri leitarskilyrða krafist til að sækja gögn
+|row_limit|Row limit|Fjöldatakmörkun
 |selected|selected|valdar
 |selection_down_tip|Move selection down|Færa val niður
 |selection_up_tip|Move selection up|Færa val upp
