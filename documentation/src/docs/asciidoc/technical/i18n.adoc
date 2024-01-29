@@ -58,7 +58,7 @@ is/codion/common/i18n/Messages_is_IS.properties
 |print_mnemonic|P|P
 |refresh|Refresh|Endurhlaða
 |refresh_mnemonic|R|E
-|refresh_tip|Refresh Data|Endurhlaða Gögnum
+|refresh_tip|Refresh data|Endurhlaða gögnum
 |search|Search|Leita
 |username|Username|Notendanafn
 |yes|Yes|Já
@@ -277,7 +277,6 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |file_mnemonic|F|K
 |filter|Filter|Sýja
 |no_results_found|No results found|Leit skilaði engum niðurstöðum
-|refresh_all|Refresh All|Endurhlaða Öllu
 |save|Save|Vista
 |save_mnemonic|S|V
 |search|Search|Leita
@@ -672,7 +671,7 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |log_level_desc|Set the logging level for the application|Stilla nákvæmni logs
 |log_mnemonic|L|L
 |memory_usage|Memory Usage|Minnisnotkun
-|open_log_file|Open log file|Opna log skrá
+|open_log_file|Open Log File|Opna Log Skrá
 |tools|Tools|Tól
 |tools_mnemonic|T|T
 |view_application_tree|Application Tree|Yfirlitsmynd
