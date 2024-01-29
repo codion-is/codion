@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.26-SNAPSHOT
+## 0.17.26
 ### is.codion.common.core
 - EventObserver now accepts data listeners for value type superclasses.
 ### is.codion.common.rmi
@@ -18,6 +18,7 @@ Codion Change Log
 - EntityPanel.setDisposeEditDialogOnEscape() replaced with State based disposeEditDialogOnEscape().
 - EntityPanel.INCLUDE_DETAIL_PANEL_CONTROLS removed, replaced by TabbedPanelLayout.INCLUDE_DETAIL_CONTROLS.
 - EntityDialogs.EditEntityComponentFactory.componentValue(), now sets the columns for text input panels, preventing multi-screen spanning dialogs in case of very long strings.
+- EntityApplicationPanel.createRefreshAllControl() removed.
 
 ## 0.17.25
 ### is.codion.common.db

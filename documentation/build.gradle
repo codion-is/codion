@@ -10,6 +10,7 @@ def documentationVersion = project.version.replace("-SNAPSHOT", "")
 def documentationDir = "${documentationVersion}"
 
 tasks.register("copyModuleDependencyGraphs") {
+    group "documentation"
     doLast {
         frameworkModules.each {
             def moduleDir = it.projectDir
@@ -22,8 +23,28 @@ tasks.register("copyModuleDependencyGraphs") {
     }
 }
 
+tasks.register("populateI18nPage") {
+    group "documentation"
+    doLast {
+        def file = file("src/docs/asciidoc/technical/i18n.adoc")
+        def moduleFiles = new LinkedHashMap<>()
+        frameworkModules.each {
+            def files = new ArrayList<>()
+            it.sourceSets.main.resources.matching {
+                include "**/*.properties"
+            }.each {
+                files.add(it.toString())
+            }
+            if (!files.empty) {
+                moduleFiles.put(it.name, files.sort())
+            }
+        }
+        file.text = new I18n(moduleFiles).toAsciidoc()
+    }
+}
+
 asciidoctor {
-    dependsOn copyModuleDependencyGraphs
+    dependsOn copyModuleDependencyGraphs, populateI18nPage
     // since the sources included in the docs may have changed, there"s definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"))

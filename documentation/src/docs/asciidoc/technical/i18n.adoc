@@ -1,0 +1,874 @@
+= Internationalization (i18n)
+
+Overview of the available i18n properties files and their keys and values.
+
+== codion-common-core
+
+=== is/codion/common/Operator.java
+
+[source]
+----
+is/codion/common/Operator.properties
+is/codion/common/Operator_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|between|Between|Innan bils eða jafnt og
+|between_exclusive|Between (exclusive)|Innan bils
+|equal|Equal|Jafnt og
+|greater_than|Greater than|Stærra en
+|greater_than_or_equal|Greater than or equal|Stærra eða jafnt og
+|less_than|Less than|Minna en
+|less_than_or_equal|Less than or equal|Minna eða jafnt og
+|not_between|Not between|Utan bils eða jafnt og
+|not_between_exclusive|Not between (exclusive)|Utan bils
+|not_equal|Not equal|Ekki jafnt og
+|===
+
+== codion-common-i18n
+
+=== is/codion/common/i18n/Messages.java
+
+[source]
+----
+is/codion/common/i18n/Messages.properties
+is/codion/common/i18n/Messages_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|advanced|Advanced|Nákvæm
+|cancel|Cancel|Hætta við
+|cancel_mnemonic|C|H
+|clear|Clear|Hreinsa
+|clear_mnemonic|C|R
+|clear_tip|Clear all fields|Hreinsa alla reiti
+|copy|Copy|Afrita
+|error|Error|Villa
+|find|Find|Finna
+|login|Login|Innskrá
+|no|No|Nei
+|ok|OK|Í lagi
+|ok_mnemonic|O|L
+|password|Password|Lykilorð
+|print|Print|Prenta
+|print_mnemonic|P|P
+|refresh|Refresh|Endurhlaða
+|refresh_mnemonic|R|E
+|refresh_tip|Refresh data|Endurhlaða gögnum
+|search|Search|Leita
+|username|Username|Notendanafn
+|yes|Yes|Já
+|===
+
+== codion-common-model
+
+=== is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard.java
+
+[source]
+----
+is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard.properties
+is/codion/common/model/table/ColumnConditionModel$AutomaticWildcard_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|NONE|None|Ekkert
+|POSTFIX|Postfix|Að aftan
+|PREFIX|Prefix|Að framan
+|PREFIX_AND_POSTFIX|Prefix and postfix|Að framan og aftan
+|===
+
+=== is/codion/common/model/table/ColumnSummary.java
+
+[source]
+----
+is/codion/common/model/table/ColumnSummary.properties
+is/codion/common/model/table/ColumnSummary_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|average|Average|Meðaltal
+|maximum|Maximum|Hæsta gildi
+|minimum|Minimum|Lægsta gildi
+|minimum_and_maximum|Min/max|Lægsta/hæsta
+|none|None|Ekkert
+|sum|Sum|Summa
+|===
+
+== codion-common-rmi
+
+=== is/codion/common/rmi/server/exception/ConnectionNotAvailableException.java
+
+[source]
+----
+is/codion/common/rmi/server/exception/ConnectionNotAvailableException.properties
+is/codion/common/rmi/server/exception/ConnectionNotAvailableException_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|connection_not_available|This server is not accepting more connections|Þessi þjónn tekur ekki við fleiri tengingum
+|===
+
+== codion-dbms-oracle
+
+=== is/codion/dbms/oracle/OracleDatabase.java
+
+[source]
+----
+is/codion/dbms/oracle/OracleDatabase.properties
+is/codion/dbms/oracle/OracleDatabase_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|check_constraint_error|The value or values attempted to be entered in a field or fields violate a defined check constraint|Óleyfilegt gildi
+|child_record_error|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
+|integrity_constraint_error|A foreign key value has no matching primary key value|Reynt var að vísa í færslu sem ekki er til
+|login_credentials_error|Invalid username or password|Rangt notendanafn eða lykilorð
+|missing_privileges_error|You are not authorized to perform this action|Þig vantar réttindi til að framkvæma umbeðna aðgerð
+|null_value_error|An attempt was made to insert or update a required column to NULL|Ekki er hægt að vista færslu með tómum gildum, tiltaktu öll gildi fyrst
+|table_not_found_error|Table or view does not exist|Tafla eða view finnst ekki
+|unique_key_error|This value combination already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|user_cannot_connect|User does not have session privileges|Notandi hefur ekki réttindi til að tengjast
+|value_missing|Value missing|Gildi vantar
+|value_too_large_for_column_error|The value entered is larger than the maximum width defined for the column|Gildi er of stórt fyrir dálk
+|view_has_errors_error|View has errors|Villur eru í undirliggjandi sýn (view)
+|===
+
+== codion-dbms-postgresql
+
+=== is/codion/dbms/postgresql/PostgreSQLDatabase.java
+
+[source]
+----
+is/codion/dbms/postgresql/PostgreSQLDatabase.properties
+is/codion/dbms/postgresql/PostgreSQLDatabase_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|check_constraint_error|The value or values attempted to be entered in a field or fields violate a defined check constraint|Óleyfilegt gildi
+|foreign_key_violation|A foreign key value has no matching primary key value|Reynt var að vísa í færslu sem ekki er til
+|foreign_key_violation_delete|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
+|missing_privileges_error|You are not authorized to perform this action|Þig vantar réttindi til að framkvæma umbeðna aðgerð
+|null_value_error|An attempt was made to insert or update a required column to NULL|Ekki er hægt að vista færslu með tómum gildum, tiltaktu öll gildi fyrst
+|unique_key_error|This value combination already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|value_missing|Value missing|Gildi vantar
+|value_too_large_for_column_error|The value entered is larger than the maximum defined for the column|Gildi er of stórt fyrir dálk
+|===
+
+== codion-framework-db-http
+
+=== is/codion/framework/db/http/HttpEntityConnection.java
+
+[source]
+----
+is/codion/framework/db/http/HttpEntityConnection.properties
+is/codion/framework/db/http/HttpEntityConnection_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|many_records_found|Many records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
+|record_not_found|Record not found|Engin færsla fannst
+|===
+
+== codion-framework-db-local
+
+=== is/codion/framework/db/local/LocalEntityConnection.java
+
+[source]
+----
+is/codion/framework/db/local/LocalEntityConnection.properties
+is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|has_been_deleted|has been deleted|hefur verið eytt
+|multiple_records_found|Multiple records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
+|record_modified|This record has been modified|Þessari færslu hefur verið breytt
+|record_not_found|Record not found|Engin færsla fannst
+|===
+
+== codion-framework-domain
+
+=== is/codion/framework/domain/entity/DefaultEntityValidator.java
+
+[source]
+----
+is/codion/framework/domain/entity/DefaultEntityValidator.properties
+is/codion/framework/domain/entity/DefaultEntityValidator_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|invalid_item_value|Invalid value|Ógilt gildi
+|value_is_required|Value for ''{0}'' is required|Gildi fyrir ''{0}'' vantar
+|value_too_large|value must be equal to or less than|gildi verður að vera minna eða jafnt og
+|value_too_long|value exceeds allowed length|gildi má ekki vera lengra en
+|value_too_small|value must be equal to or greater than|gildi verður að vera stærra eða jafnt og
+|===
+
+=== is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition.java
+
+[source]
+----
+is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition.properties
+is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|invalid_item_suffix|INVALID|ÓGILT
+|===
+
+== codion-framework-i18n
+
+=== is/codion/framework/i18n/FrameworkMessages.java
+
+[source]
+----
+is/codion/framework/i18n/FrameworkMessages.properties
+is/codion/framework/i18n/FrameworkMessages_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|add|Add|Vista
+|add_mnemonic|A|V
+|add_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
+|confirm_delete|Delete record?|Eyða færslu?
+|confirm_delete_selected|Delete {0, choice, 1#record\|1<{0, number, integer} records}?|Eyða {0, choice, 1#færslu\|1<{0, number, integer} færslum}?
+|confirm_exit|Are you sure you want to close the application?|Ertu viss um að þú viljir hætta?
+|confirm_exit_title|Exit?|Hætta?
+|confirm_insert|Insert?|Vista?
+|confirm_update|Update selected?|Uppfæra valdar?
+|copy_cell|Copy Cell|Afrita Reit
+|copy_table_with_header|Copy Table With Header|Afrita Töflu Með Dálkaheitum
+|delete|Delete|Eyða
+|delete_current_tip|Delete current record|Eyða færslu
+|delete_mnemonic|D|A
+|delete_selected_tip|Delete selected records|Eyða völdum færslum
+|dependencies|Dependencies|Tengdar Færslur
+|dependencies_tip|View records depending on the selected record|Skoða færslur sem byggja á völdu færslunni
+|edit|Edit|Breyta
+|edit_selected_tip|Edit selected records|Breyta völdum færslum
+|exit|Exit|Hætta
+|exit_mnemonic|X|Æ
+|exit_tip|Exit the application|Hætta í forritinu
+|file|File|Skrá
+|file_mnemonic|F|K
+|filter|Filter|Sýja
+|no_results_found|No results found|Leit skilaði engum niðurstöðum
+|save|Save|Vista
+|save_mnemonic|S|V
+|search|Search|Leita
+|search_mnemonic|S|T
+|select_filter_field|Select filter field|Veldu sýjunarreit
+|select_input_field|Select input field|Veldu innsláttarreit
+|select_search_field|Select search field|Veldu leitarreit
+|settings|Settings|Stillingar
+|show|Show|Sýna
+|support_tables|Support Tables|Stoðtöflur
+|support_tables_mnemonic|O|O
+|unsaved_data_warning|Unsaved data will be lost, continue?|Óvistuð gögn fundust, viltu halda áfram?
+|unsaved_data_warning_title|Unsaved data!|Óvistuð gögn!
+|update|Update|Uppfæra
+|update_mnemonic|U|U
+|update_tip|Update the current record based on the given values|Uppfæra færslu út frá innslegnum gildum
+|view|View|Sýn
+|view_mnemonic|V|N
+|===
+
+== codion-plugin-imagepanel
+
+=== is/codion/plugin/imagepanel/NavigableImagePanel.java
+
+[source]
+----
+is/codion/plugin/imagepanel/NavigableImagePanel.properties
+is/codion/plugin/imagepanel/NavigableImagePanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|file_not_found|File not found|Skrá fannst ekki
+|===
+
+== codion-swing-common-ui
+
+=== is/codion/swing/common/ui/SwingMessages.java
+
+[source]
+----
+is/codion/swing/common/ui/SwingMessages.properties
+is/codion/swing/common/ui/SwingMessages_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|FileChooser.acceptAllFileFilterText|All Files|Allar Skrár
+|FileChooser.byDateText|Date Modified|Dagsetningu
+|FileChooser.byNameText|Name|Nafn
+|FileChooser.cancelButtonMnemonic|0|0
+|FileChooser.cancelButtonText|Cancel|Hætta við
+|FileChooser.cancelButtonToolTipText|Abort file chooser dialog|Hætta við að velja skrá
+|FileChooser.chooseButtonText|Choose|Velja
+|FileChooser.createButtonText|Create|Búa til
+|FileChooser.desktopName|Desktop|Skjáborð
+|FileChooser.detailsViewButtonToolTipText|Details|Ýtarlegt
+|FileChooser.directoryDescriptionText|Directory|Mappa
+|FileChooser.directoryOpenButtonMnemonic|0|0
+|FileChooser.directoryOpenButtonText|Open|Opna
+|FileChooser.directoryOpenButtonToolTipText|Open selected directory|Opna valda möppu
+|FileChooser.fileDescriptionText|Generic File|Almenn Skrá
+|FileChooser.fileNameLabelMnemonic|0|0
+|FileChooser.fileNameLabelText|File:|Skrá:
+|FileChooser.filesOfTypeLabelMnemonic|0|0
+|FileChooser.filesOfTypeLabelText|File Format:|Skráarsnið:
+|FileChooser.helpButtonMnemonic|72|0
+|FileChooser.helpButtonText|Help|Hjálp
+|FileChooser.helpButtonToolTipText|FileChooser help|Birta hjálp
+|FileChooser.homeFolderToolTipText|Home|Heim
+|FileChooser.listViewButtonToolTipText|List|Listi
+|FileChooser.lookInLabelMnemonic|0|0
+|FileChooser.lookInLabelText|Look in|Leita í
+|FileChooser.newFolderButtonText|New Folder|Ný Mappa
+|FileChooser.newFolderErrorSeparator|:|:
+|FileChooser.newFolderErrorText|Error creating new folder|Villa við að búa til nýja möppu
+|FileChooser.newFolderExistsErrorText|That name is already taken|Nafnið er þegar í notkun
+|FileChooser.newFolderParentDoesntExistText|Unable to create the folder.
+
+The system cannot find the path specified.|Tókst ekki að búa til möppuna.
+
+Slóðin fannst ekki.
+|FileChooser.newFolderParentDoesntExistTitleText|Unable to create folder|Tókst ekki að búa til nýa möppu
+|FileChooser.newFolderPromptText|Name of new folder:|Nafn nýrrar möppu:
+|FileChooser.newFolderTitleText|New Folder|Ný mappa
+|FileChooser.newFolderToolTipText|Create New Folder|Búa til nýja möppu
+|FileChooser.openButtonMnemonic|0|0
+|FileChooser.openButtonText|Open|Opna
+|FileChooser.openButtonToolTipText|Open selected file|Opna valda skrá
+|FileChooser.openDialogTitleText|Open|Opna
+|FileChooser.openTitleText|Open|Opna
+|FileChooser.saveButtonMnemonic|0|0
+|FileChooser.saveButtonText|Save|Vista
+|FileChooser.saveButtonToolTipText|Save selected file|Vista valda skrá
+|FileChooser.saveDialogTitleText|Save|Vista
+|FileChooser.saveTitleText|Save|Vista
+|FileChooser.upFolderToolTipText|Up One Level|Upp um eitt stig
+|FileChooser.updateButtonMnemonic|85|0
+|FileChooser.updateButtonText|Update|Uppfæra
+|FileChooser.updateButtonToolTipText|Update directory listing|Uppfæra skráalista
+|OptionPane.inputDialogTitle|Input|Inntak
+|OptionPane.messageDialogTitle|Message|Skilaboð
+|===
+
+=== is/codion/swing/common/ui/component/calendar/CalendarPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/calendar/CalendarPanel.properties
+is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|today|Today|Í dag
+|today_mnemonic|T|D
+|===
+
+=== is/codion/swing/common/ui/component/table/ColumnConditionPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/ColumnConditionPanel.properties
+is/codion/swing/common/ui/component/table/ColumnConditionPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|auto_enable|Auto-enable|Virkja sjálfkrafa
+|automatic_wildcard|Automatic wildcard|Sjálfkrafa algildi
+|case_sensitive|Case-sensitive|Hástafanæmni
+|===
+
+=== is/codion/swing/common/ui/component/table/ColumnSelectionPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/ColumnSelectionPanel.properties
+is/codion/swing/common/ui/component/table/ColumnSelectionPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|select_all|All|Alla
+|select_all_mnemonic|A|A
+|select_none|None|Engan
+|select_none_mnemonic|N|E
+|===
+
+=== is/codion/swing/common/ui/component/table/FilteredTable.java
+
+[source]
+----
+is/codion/swing/common/ui/component/table/FilteredTable.properties
+is/codion/swing/common/ui/component/table/FilteredTable_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|auto_resize|Auto-resize|Stærðarjafna
+|case_sensitive_search|Case-sensitive|Hástafanæmni
+|regular_expression_search|Regular expression search|Leita með reglulegum segðum
+|reset|Reset|Frumstilla
+|reset_columns_description|Reset columns to their original location|Frumstilla dálka í upphaflega stöðu
+|resize_all_columns|All columns|Alla dálka
+|resize_last_column|Last column|Aftasta dálk
+|resize_next_column|Next column|Næsta dálk
+|resize_off|Off|Slökkt
+|resize_subsequent_columns|Subsequent columns|Aftari dálka
+|select|Select|Velja
+|select_columns|Select columns|Velja dálka
+|single_selection_mode|Single selection|Einnar línu val
+|===
+
+=== is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter.java
+
+[source]
+----
+is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter.properties
+is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFilter_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|value_outside_range|Value outside allowed range:|Gildi utan leyfilegs bils:
+|===
+
+=== is/codion/swing/common/ui/component/text/SearchHighlighter.java
+
+[source]
+----
+is/codion/swing/common/ui/component/text/SearchHighlighter.properties
+is/codion/swing/common/ui/component/text/SearchHighlighter_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|case_sensitive|Case-sensitive|Hástafanæmni
+|===
+
+=== is/codion/swing/common/ui/component/text/StringLengthValidator.java
+
+[source]
+----
+is/codion/swing/common/ui/component/text/StringLengthValidator.properties
+is/codion/swing/common/ui/component/text/StringLengthValidator_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|length_exceeds_maximum|Text length may not exceed:|Texti má ekki vera lengri en:
+|===
+
+=== is/codion/swing/common/ui/component/text/TemporalField.java
+
+[source]
+----
+is/codion/swing/common/ui/component/text/TemporalField.properties
+is/codion/swing/common/ui/component/text/TemporalField_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|display_calendar|Display calendar|Birta dagatal
+|===
+
+=== is/codion/swing/common/ui/component/text/TextFieldPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/text/TextFieldPanel.properties
+is/codion/swing/common/ui/component/text/TextFieldPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|show_input_dialog|Show larger input field|Sýna stærri innsláttarreit
+|===
+
+=== is/codion/swing/common/ui/dialog/DefaultCalendarDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/DefaultCalendarDialogBuilder.properties
+is/codion/swing/common/ui/dialog/DefaultCalendarDialogBuilder_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|select_date|Select a date|Veldu dagsetningu
+|select_date_time|Select a date and time|Veldu dagsetningu og tíma
+|===
+
+=== is/codion/swing/common/ui/dialog/DefaultExceptionDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/DefaultExceptionDialogBuilder.properties
+is/codion/swing/common/ui/dialog/DefaultExceptionDialogBuilder_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|file_not_found|File not found|Skrá fannst ekki
+|===
+
+=== is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder.properties
+is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|file_exists|File with the same name exists|Skrá er til
+|overwrite_file|Overwrite file?|Yfirskrifa skrá?
+|select_directories|Select directories|Veldu möppur
+|select_directory|Select directory|Veldu möppu
+|select_file|Select file|Veldu skrá
+|select_file_or_directory|Select file or directory|Veldu skrá eða möppu
+|select_files|Select files|Veldu skrár
+|select_files_or_directories|Select files or directories|Veldu skrár eða möppur
+|===
+
+=== is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder.properties
+is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|font_size_selected_message|The selected font size will be activated on next application start|Valin leturstærð virkjast við næstu ræsingu
+|select_font_size|Select Font Size|Velja Leturstærð
+|===
+
+=== is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder.properties
+is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|select_value|Select value|Veldu gildi
+|select_values|Select values|Veldu gildi
+|===
+
+=== is/codion/swing/common/ui/dialog/ExceptionPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/ExceptionPanel.properties
+is/codion/swing/common/ui/dialog/ExceptionPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|close|Close|Loka
+|close_dialog|Close this dialog|Loka glugga
+|close_mnemonic|C|L
+|copy_mnemonic|C|A
+|copy_to_clipboard|Copy text to clipboard|Afrita texta á klippiborð
+|details|Details|Meira
+|print_error_report|Print an error report|Prenta upplýsingar um villu
+|print_error_report_mnemonic|P|P
+|save|Save|Vista
+|save_error_log|Save error log|Vista upplýsingar um villu
+|save_mnemonic|S|S
+|show_details|Show details|Sýna meira
+|===
+
+=== is/codion/swing/common/ui/laf/LookAndFeelProvider.java
+
+[source]
+----
+is/codion/swing/common/ui/laf/LookAndFeelProvider.properties
+is/codion/swing/common/ui/laf/LookAndFeelProvider_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|select_look_and_feel|Select Look & Feel|Velja Útlit
+|===
+
+== codion-swing-framework-ui
+
+=== is/codion/swing/framework/ui/EntityApplicationPanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityApplicationPanel.properties
+is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|about|About|Um Forritið
+|always_on_top|Always on Top|Alltaf Ofan á
+|application_version|Application Version|Kerfisútgáfa
+|codion_version|Codion Version|Codion Útgáfa
+|help|Help|Hjálp
+|help_mnemonic|H|H
+|keyboard_shortcuts|Keyboard shortcuts|Flýtilyklar
+|log|Log|Loggur
+|log_level|Level|Nákvæmni
+|log_level_desc|Set the logging level for the application|Stilla nákvæmni logs
+|log_mnemonic|L|L
+|memory_usage|Memory Usage|Minnisnotkun
+|open_log_file|Open Log File|Opna Log Skrá
+|tools|Tools|Tól
+|tools_mnemonic|T|T
+|view_application_tree|Application Tree|Yfirlitsmynd
+|===
+
+=== is/codion/swing/framework/ui/EntityDependenciesPanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityDependenciesPanel.properties
+is/codion/swing/framework/ui/EntityDependenciesPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|no_dependencies|This record has no dependent records|Færslan á sér engar tengdar færslur
+|no_dependencies_title|No dependencies|Engar tengdar færslur
+|===
+
+=== is/codion/swing/framework/ui/EntityPanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityPanel.properties
+is/codion/swing/framework/ui/EntityPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|toggle_edit|Toggle between edit views|Skipta á milli sýna á innsláttarsvæði
+|===
+
+=== is/codion/swing/framework/ui/EntityTablePanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityTablePanel.properties
+is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|clear_selection_tip|Clear selection|Hreinsa val
+|columns|Columns|Dálkar
+|delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
+|filtered|filtered|sýjaðar
+|limited_to|Limited to|Takmarkað við
+|refreshing|Refreshing|Endurhleð
+|require_query_condition|Search Condition Required|Krefjast Leitarskilyrðis
+|require_query_condition_description|One or more active search conditions required for displaying data|Eins eða fleiri leitarskilyrða krafist til að sækja gögn
+|selected|selected|valdar
+|selection_down_tip|Move selection down|Færa val niður
+|selection_up_tip|Move selection up|Færa val upp
+|show_condition_panel|Show Condition Panel|Sýna Leitarflöt
+|show_filter_panel|Show Filter Panel|Sýna Sýjunarflöt
+|toggle_summary_tip|Toggle Summary View|Sýna/fela samantekt
+|unknown_dependent_records|This record has unknown dependencies|Færslan á sér óþekktar tengdar færslur
+|===
+
+=== is/codion/swing/framework/ui/KeyboardShortcutsPanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/KeyboardShortcutsPanel.properties
+is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|add|Add|Ný færsla
+|add_new_item|Add new item|Bæta við nýrri færslu
+|calendar|Calendar|Dagatal
+|condition_panel|Table condition panel|Leitarflötur
+|copy_selected_cell|Copy selected cell to clipboard|Afrita valinn reit á klippiborð
+|copy_selected_rows|Copy selected rows to clipboard|Afrita valdar línur á klippiborð
+|date_time_field|Date/time field|Dagsetning/tíma reitur
+|delete|Delete|Eyða
+|delete_selected|Delete selected|Eyða völdum
+|display_calendar|Display calendar|Birta dagatal
+|display_input_dialog|Display multi-line input dialog|Birta innsláttarreit með fleiri línum
+|edit_panel|Edit panel|Innsláttarflötur
+|edit_selected_item|Edit selected item|Breyta valinni færslu
+|enable_disable_condition|Enable/disable column condition|Virkja/afvirkja leitarreit dálks
+|entity_field|Entity field (combo box or search field) with a new item or edit item control|Færslureitur (flettilisti eða leitarreitur) með aðgerð til að búa til nýja eða breyta færslu
+|find_and_select_next|Find and select next|Finna og velja næstu
+|find_and_select_previous|Find and select previous|Finna og velja síðustu
+|find_next|Find next|Finna næstu
+|find_previous|Find previous|Finna síðustu
+|increment_decrement|Increment/decrement based to cursor position|Hækka/læækka út frá staðsetningu bendils
+|move_focus_to_table|Move focus to table|Færa fókus í töflu
+|move_selected_column|Move selected column|Færa valinn dálk
+|navigate_left_right|Navigate left/right|Flakka hægri/vinstri
+|navigate_up_down|Navigate up/down|Flakka upp/niður
+|navigation|Navigation|Flakk
+|previous_next_day|Previous/next day|Fyrri/næsti dagur
+|previous_next_hour|Previous/next hour|Fyrri/næsta klukkustund
+|previous_next_minute|Previous/next minute|Fyrri/næsta mínúta
+|previous_next_month|Previous/next month|Fyrri/næsti mánuður
+|previous_next_operator|Previous/next search operator|Fyrri/næsta leitartýpa
+|previous_next_week|Previous/next week|Fyrri/næsta vika
+|previous_next_year|Previous/next year|Fyrra/næsta ár
+|print|Print (if printing is available)|Prenta (ef prentun er til staðar)
+|refresh|Refresh|Endurhlaða
+|refresh_button|Refresh, when condition panel is visible and button enabled|Endurhlaða, þegar leitarflötur er sýnilegur og hnappur virkur
+|refresh_table_data|Refresh table data|Endurhlaða gögnum
+|resize_left_right|Resize left/right|Stækka/minnka
+|resize_selected_column|Resize selected column|Breyta stærð á völdum dálk
+|resizing|Resizing|Stærð
+|save|Save|Vista
+|select_condition_panel|Select a condition panel|Velja leitarflöt
+|select_filter_panel|Select a filter panel|Velja sýjunarflöt
+|show_popup_menu|Show popup menu|Birta valmynd
+|table_panel|Table panel|Tafla
+|table_search_field|Table search field|Töfluleitarreitur
+|text_field_panel|Text field panel|Textainnsláttarflötur
+|toggle_column_sort|Toggle sorting by selected column|Raða út frá völdum dálk
+|toggle_column_sort_add|Toggle and add sorting by selected column|Bæta við röðun út frá völdum dálk
+|toggle_condition_panel|Toggle condition panel view, between hidden, visible and advanced|Skipta á milli sýna á leitarfleti, falinn, sjáanlegur og nákvæmur
+|toggle_edit_panel|Toggle edit panel|Fela/birta innsláttarflöt
+|toggle_filter_panel|Toggle filter panel view, between hidden, visible and advanced|Skipta á milli sýna á sýjunarfleti, falinn, sjáanlegur og nákvæmur
+|transfer_focus|Transfer focus|Færa fókus
+|transfer_focus_edit_panel|Edit panel|Innsláttarflötur
+|transfer_focus_find_in_table|Find in table field|Leita í töflu
+|transfer_focus_input_field|Input field|Innsláttarreitur
+|transfer_focus_search_field|Search field|Leitarreitur
+|transfer_focus_table|Table|Tafla
+|transfer_focus_to_next_input_field|Transfer focus to next input field|Færa fókus í næsta innsláttarreit
+|transfer_focus_to_previous_input_field|Transfer focus to previous input field|Færa fókus í síðasta innsláttarreit
+|update|Update|Uppfæra
+|===
+
+=== is/codion/swing/framework/ui/TabbedPanelLayout.java
+
+[source]
+----
+is/codion/swing/framework/ui/TabbedPanelLayout.properties
+is/codion/swing/framework/ui/TabbedPanelLayout_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|detail_tables|Detail Tables|Undirtöflur
+|toggle_detail|Toggle between detail views|Skipta á milli sýna á undirtöflur
+|===
+
+=== is/codion/swing/framework/ui/component/EntityComboBox.java
+
+[source]
+----
+is/codion/swing/framework/ui/component/EntityComboBox.properties
+is/codion/swing/framework/ui/component/EntityComboBox_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|filter_by|Filter by|Sía út frá
+|===
+
+=== is/codion/swing/framework/ui/component/EntityControls.java
+
+[source]
+----
+is/codion/swing/framework/ui/component/EntityControls.properties
+is/codion/swing/framework/ui/component/EntityControls_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|add_new|Add new item|Skrá nýja færslu
+|edit_selected|Edit selected item|Breyta valinni færslu
+|===
+
+=== is/codion/swing/framework/ui/component/EntitySearchField.java
+
+[source]
+----
+is/codion/swing/framework/ui/component/EntitySearchField.properties
+is/codion/swing/framework/ui/component/EntitySearchField_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|case_sensitive|Case-sensitive|Hástafanæmni
+|multiple_item_separator|Multiple item separator|Tákn sem aðgreinir færslur
+|postfix_wildcard|Auto-postfix wildcard|Sjálfkrafa algildi fyrir aftan
+|prefix_wildcard|Auto-prefix wildcard|Sjálfkrafa algildi fyrir framan
+|result_limit|Result limit|Fjöldatakmörkun
+|result_limited|Result limited to {0, choice, 1#record\|1<{0, number, integer} records}|Niðurstöður takmarkaðar við {0, choice, 1#færslu\|1<{0, number, integer} færslur}
+|search_columns|Search columns|Leitardálkar
+|searching|Searching|Leita
+|select_entity|Select record|Veldu færslu
+|===
