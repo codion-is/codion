@@ -6,6 +6,8 @@ Codion Change Log
 - DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, popup menu for configuring the limit added to status message panel along with INCLUDE_LIMIT_MENU configuration value, default false.
+### is.codion.framework.model
+- AbstractEntityEditModel.insert(), update() and delete(), exception order now consistent.
 
 ## 0.17.26
 ### is.codion.common.core

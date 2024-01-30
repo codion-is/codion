@@ -362,12 +362,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
+      return emptyList();
+    }
     if (readOnly.get() || !insertEnabled.get()) {
       throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
-    }
-    requireNonNull(entities, ENTITIES);
-    if (entities.isEmpty()) {
-      return emptyList();
     }
     Collection<Entity> insertedEntities = insertEntities(entities);
 
@@ -388,15 +387,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    requireNonNull(entities, ENTITIES);
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
+      return emptyList();
+    }
     if (readOnly.get() || !updateEnabled.get()) {
       throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
     }
     if (entities.size() > 1 && !updateMultipleEnabled.get()) {
       throw new IllegalStateException("Batch update of entities is not enabled");
-    }
-    if (entities.isEmpty()) {
-      return emptyList();
     }
 
     Collection<Entity> modifiedEntities = modified(entities);
@@ -431,12 +429,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
-    requireNonNull(entities, ENTITIES);
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
+      return;
+    }
     if (readOnly.get() || !deleteEnabled.get()) {
       throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
-    }
-    if (entities.isEmpty()) {
-      return;
     }
     LOG.debug("{} - delete {}", this, entities);
 
