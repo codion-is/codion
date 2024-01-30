@@ -217,7 +217,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the state controlling whether this table model handles entity edit events, by replacing foreign key values
    * @see EntityEditEvents
    */
-  State handleEditEvents();
+  State editEvents();
 
   /**
    * @return the Value controlling the action to perform when entities are inserted via the associated edit model
