@@ -8,6 +8,7 @@ Codion Change Log
 - EntityTablePanel, popup menu for configuring the limit added to status message panel along with INCLUDE_LIMIT_MENU configuration value, default false.
 ### is.codion.framework.model
 - AbstractEntityEditModel.insert(), update() and delete(), exception order now consistent.
+- AbstractEntityEditModel refactored, events, states and related methods moved to separate inner classes.
 
 ## 0.17.26
 ### is.codion.common.core
