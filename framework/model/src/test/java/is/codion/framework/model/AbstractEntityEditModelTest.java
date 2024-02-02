@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.exception.UpdateException;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -371,7 +370,6 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void update() throws Exception {
-    assertThrows(UpdateException.class, () -> employeeEditModel.update());
     assertTrue(employeeEditModel.update(emptyList()).isEmpty());
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();

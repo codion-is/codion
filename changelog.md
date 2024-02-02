@@ -12,6 +12,7 @@ Codion Change Log
 - AbstractEntityEditModel.modified() now final, modifiedPredicate() should suffice.
 - AbstractEntityEditModel.updateModifiedState() added.
 - AbstractEntityEditModel.modifiedState() removed.
+- AbstractEntityEditModel.modified(entities) removed.
 ### is.codion.swing.framework.ui
 - SwingEntityTableModel.handleEditEvents() renamed editEvents() for consistency.
 

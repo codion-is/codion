@@ -45,7 +45,6 @@ import java.util.function.Supplier;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -362,24 +361,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       throw new IllegalStateException("Batch update of entities is not enabled");
     }
 
-    Collection<Entity> modifiedEntities = modified(entities);
-    if (modifiedEntities.isEmpty()) {
-      return emptyList();
-    }
-
-    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, entities));
-    validate(modifiedEntities);
+    notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
+    validate(entities);
     //entity.toString() could potentially cause NullPointerException if null-validation
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(modifiedEntities), connectionProvider.connection()));
+    List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(entities), connectionProvider.connection()));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       setEntity(updatedEntities.get(index));
     }
 
-    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, updatedEntities));
+    notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
 
     return updatedEntities;
   }
@@ -615,22 +609,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected void delete(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
     requireNonNull(connection).delete(Entity.primaryKeys(entities));
-  }
-
-  /**
-   * Called during the {@link #update()} function, to determine which entities need to be updated,
-   * these entities will then be forwarded to {@link #update(Collection, EntityConnection)}.
-   * Returns the entities that have been modified and require updating, override to be able to
-   * perform an update on unmodified entities or to return an empty list to veto an update action.
-   * @param entities the entities
-   * @return the entities requiring update
-   * @see #update()
-   * @see #update(Collection)
-   */
-  protected Collection<Entity> modified(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .filter(Entity::modified)
-            .collect(toList());
   }
 
   /**
@@ -892,7 +870,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<? extends Entity> entitiesBeforeUpdate,
                                                                  Collection<? extends Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
