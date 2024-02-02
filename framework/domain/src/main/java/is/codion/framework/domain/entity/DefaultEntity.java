@@ -185,7 +185,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final Entity referencedEntity(ForeignKey foreignKey) {
-    Entity value = (Entity) values.get(foreignKey);
+    Entity value = (Entity) values.get(requireNonNull(foreignKey));
     if (value == null) {//possibly not loaded
       Key referencedKey = referencedKey(foreignKey);
       if (referencedKey != null) {

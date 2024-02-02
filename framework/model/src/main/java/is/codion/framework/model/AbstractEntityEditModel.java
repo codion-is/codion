@@ -214,7 +214,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver modified(Attribute<?> attribute) {
-    return states.modified(attribute);
+    return states.modifiedObserver(attribute);
   }
 
   @Override
@@ -289,7 +289,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final void validate(Collection<? extends Entity> entities) throws ValidationException {
-    for (Entity entityToValidate : entities) {
+    for (Entity entityToValidate : requireNonNull(entities)) {
       validate(entityToValidate);
     }
   }
@@ -666,7 +666,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addBeforeInsertListener(Consumer)
    */
   protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
-    events.beforeInsert.accept(entitiesToInsert);
+    events.beforeInsert.accept(requireNonNull(entitiesToInsert));
   }
 
   /**
@@ -675,7 +675,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addAfterInsertListener(Consumer)
    */
   protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
-    events.afterInsert.accept(insertedEntities);
+    events.afterInsert.accept(requireNonNull(insertedEntities));
   }
 
   /**
@@ -684,7 +684,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addBeforeUpdateListener(Consumer)
    */
   protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
-    events.beforeUpdate.accept(entitiesToUpdate);
+    events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
   }
 
   /**
@@ -693,7 +693,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addAfterUpdateListener(Consumer)
    */
   protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
-    events.afterUpdate.accept(updatedEntities);
+    events.afterUpdate.accept(requireNonNull(updatedEntities));
   }
 
   /**
@@ -702,7 +702,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addBeforeDeleteListener(Consumer)
    */
   protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
-    events.beforeDelete.accept(entitiesToDelete);
+    events.beforeDelete.accept(requireNonNull(entitiesToDelete));
   }
 
   /**
@@ -711,7 +711,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addAfterDeleteListener(Consumer)
    */
   protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
-    events.afterDelete.accept(deletedEntities);
+    events.afterDelete.accept(requireNonNull(deletedEntities));
   }
 
   private Collection<Entity> insertEntities(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
@@ -1018,7 +1018,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
     private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
 
-    private StateObserver modified(Attribute<?> attribute) {
+    private StateObserver modifiedObserver(Attribute<?> attribute) {
       entityDefinition().attributes().definition(attribute);
       return attributeModifiedMap.computeIfAbsent(attribute, k ->
               State.state(entityExists.get() && entity.modified(attribute))).observer();
