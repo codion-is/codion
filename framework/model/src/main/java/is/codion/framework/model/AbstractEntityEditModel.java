@@ -209,7 +209,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public StateObserver modified() {
+  public final StateObserver modified() {
     return states.entityModified.observer();
   }
 
