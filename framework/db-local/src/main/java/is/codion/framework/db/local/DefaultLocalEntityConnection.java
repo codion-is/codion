@@ -749,7 +749,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
                     columnDefinition -> entity.modified(columnDefinition.attribute()));
             if (statementColumns.isEmpty()) {
-              throw new SQLException("Unable to update entity " + entity.entityType() + ", no modified values found");
+              throw new UpdateException("Unable to update entity " + entity.entityType() + ", no modified values found");
             }
 
             Condition condition = key(entity.originalPrimaryKey());
