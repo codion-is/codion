@@ -675,13 +675,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * @return the State used to indicate the modified state of this edit model, handle with care
-   */
-  protected final State modifiedState() {
-    return states.entityModified;
-  }
-
-  /**
    * Updates the modified state.
    * @see #modified()
    */
