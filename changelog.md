@@ -10,6 +10,7 @@ Codion Change Log
 - AbstractEntityEditModel.insert(), update() and delete(), exception order now consistent.
 - AbstractEntityEditModel refactored, events, states and related methods moved to separate inner classes.
 - AbstractEntityEditModel.modified() now final, modifiedPredicate() should suffice.
+- AbstractEntityEditModel.updateModifiedState() added.
 ### is.codion.swing.framework.ui
 - SwingEntityTableModel.handleEditEvents() renamed editEvents() for consistency.
 

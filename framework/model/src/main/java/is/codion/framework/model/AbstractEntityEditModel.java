@@ -682,6 +682,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
+   * Updates the modified state.
+   * @see #modified()
+   */
+  protected final void updateModifiedState() {
+    states.updateModifiedState();
+  }
+
+  /**
    * Notifies that insert is about to be performed
    * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(Consumer)
@@ -1058,9 +1066,25 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     private void updateEntityStates() {
+      updateExistsState();
+      updateModifiedState();
+      updateValidState();
+      updatePrimaryKeyNullState();
+    }
+
+    private void updateExistsState() {
       entityExists.set(existsPredicate.get().test(entity));
+    }
+
+    private void updateModifiedState() {
       entityModified.set(modifiedPredicate.get().test(entity));
+    }
+
+    private void updateValidState() {
       entityValid.set(validator.valid(entity));
+    }
+
+    private void updatePrimaryKeyNullState() {
       primaryKeyNull.set(entity.primaryKey().isNull());
     }
 
