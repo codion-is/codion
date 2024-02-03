@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
 - DefaultLocalEntityConnection.update() now throws UpdateException in case of unmodified entities.
+- DefaultLocalEntityConnection bug fixed, maximum number of parameters did not take composite keys into account.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, popup menu for configuring the limit added to status message panel along with INCLUDE_LIMIT_MENU configuration value, default false.
 ### is.codion.framework.model
