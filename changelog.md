@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.27-SNAPSHOT
+### is.codion.framework.domain
+- DefaultEntityDefinition.validatePrimaryKeyAttributes(), key column indexes now sorted before being displayed in error message. 
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
 - DefaultLocalEntityConnection.update() now throws UpdateException in case of unmodified entities.
