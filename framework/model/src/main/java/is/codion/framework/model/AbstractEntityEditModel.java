@@ -749,16 +749,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     events.entity.accept(entity);
   }
 
-  private boolean isValid(Attribute<?> attribute) {
-    try {
-      validate(attribute);
-      return true;
-    }
-    catch (ValidationException e) {
-      return false;
-    }
-  }
-
   private void configurePersistentForeignKeys() {
     if (EntityEditModel.PERSIST_FOREIGN_KEYS.get()) {
       entityDefinition().foreignKeys().get().forEach(foreignKey ->
@@ -1033,7 +1023,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     private StateObserver validObserver(Attribute<?> attribute) {
       entityDefinition().attributes().definition(attribute);
       return attributeValidMap.computeIfAbsent(attribute, k ->
-              State.state(isValid(attribute))).observer();
+              State.state(valid(attribute))).observer();
     }
 
     private void updateEntityStates() {
@@ -1066,11 +1056,21 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       }
       State validState = attributeValidMap.get(attribute);
       if (validState != null) {
-        validState.set(isValid(attribute));
+        validState.set(valid(attribute));
       }
       State modifiedState = attributeModifiedMap.get(attribute);
       if (modifiedState != null) {
         updateAttributeModifiedState(attribute, modifiedState);
+      }
+    }
+
+    private boolean valid(Attribute<?> attribute) {
+      try {
+        validate(attribute);
+        return true;
+      }
+      catch (ValidationException e) {
+        return false;
       }
     }
 
