@@ -176,7 +176,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   @Override
   public final double systemCpuLoad() throws RemoteException {
-    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getCpuLoad();
   }
 
   @Override
