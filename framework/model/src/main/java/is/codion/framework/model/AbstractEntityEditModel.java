@@ -76,12 +76,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
-    EntityValidator defaultValidator = connectionProvider.entities().definition(entityType).validator();
-    this.validator = Value.value(defaultValidator, defaultValidator);
+    this.validator = Value.value(entityDefinition().validator(), entityDefinition().validator());
     this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
-    this.existsPredicate = Value.value(entity.definition().exists(), entity.definition().exists());
-    states.readOnly.set(entityDefinition().readOnly());
-    events.bindEvents();
+    this.existsPredicate = Value.value(entityDefinition().exists(), entityDefinition().exists());
+    this.states.readOnly.set(entityDefinition().readOnly());
+    this.events.bindEvents();
     configurePersistentForeignKeys();
     setEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
@@ -934,6 +933,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       afterInsert.addDataListener(new NotifyInserted());
       afterUpdate.addDataListener(new NotifyUpdated());
       afterDelete.addDataListener(new NotifyDeleted());
+      validator.addListener(states::updateValidState);
+      modifiedPredicate.addListener(states::updateModifiedState);
+      existsPredicate.addListener(states::updateExistsState);
     }
 
     private <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {

@@ -19,6 +19,7 @@ Codion Change Log
 - AbstractEntityEditModel.modified(entities) removed.
 - EntityEditModel.validator() removed.
 - AbstractEntityEditModel.validator() now protected and Value based, overloaded constructor removed.
+- AbstractEntityEditModel, validator, modifiedPredicate and existsPredicate values now trigger an update in their respective states when changed.
 ### is.codion.swing.framework.ui
 - SwingEntityTableModel.handleEditEvents() renamed editEvents() for consistency.
 
