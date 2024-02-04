@@ -40,7 +40,9 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * @see #addValidator(Validator)
    */
   @Override
-  void accept(T value);
+  default void accept(T value) {
+    set(value);
+  }
 
   /**
    * Sets the value. Note that if the value is equal to the current value according to {@link java.util.Objects#equals}
@@ -58,14 +60,17 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * {@code
    * Value<Integer> value = Value.value(0);
    *
-   * //increment the value by one
+   * // increment the value by one
    * value.map(currentValue -> currentValue + 1);
    * }
    * </pre>
    * @param mapper maps from the current value to a new value
    * @return true if the underlying value changed
+   * @throws NullPointerException in case {@code mapper} is null
    */
-  boolean map(Function<T, T> mapper);
+  default boolean map(Function<T, T> mapper) {
+    return set(requireNonNull(mapper).apply(get()));
+  }
 
   /**
    * Sets a new value in case the current value is null.
@@ -73,16 +78,19 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
    * {@code
    * Value<Integer> value = Value.value(null);
    *
-   * //replace null with 1
+   * // replace null with 1
    * value.mapNull(() -> 1);
    *
-   * value.mapNull(() -> 2);//has no effect since the value is non-null
+   * // has no effect since the value is non-null
+   * value.mapNull(() -> 2);
    * }
    * </pre>
    * @param supplier supplies the value to use as replacement for null
    * @return true if the underlying value changed
+   * @throws NullPointerException in case {@code supplier} is null
    */
   default boolean mapNull(Supplier<T> supplier) {
+    requireNonNull(supplier);
     if (isNull()) {
       return set(supplier.get());
     }
