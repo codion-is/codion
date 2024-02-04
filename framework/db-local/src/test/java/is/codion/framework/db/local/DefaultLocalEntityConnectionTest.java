@@ -594,14 +594,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateNoModifiedValues() throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      Entity department = connection.selectSingle(Department.DEPTNO.equalTo(10));
-      assertThrows(DatabaseException.class, () -> connection.update(department));
-    }
-    finally {
-      connection.rollbackTransaction();
-    }
+    Entity department = connection.selectSingle(Department.DEPTNO.equalTo(10));
+    assertThrows(UpdateException.class, () -> connection.update(department));
   }
 
   @Test

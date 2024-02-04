@@ -38,6 +38,7 @@
  * {@link is.codion.swing.framework.ui.EntityTablePanel#CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_ENTITY_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_CLEAR_CONTROL}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_LIMIT_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#REFRESH_BUTTON_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#COLUMN_SELECTION}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_FILTER_PANEL}<br>

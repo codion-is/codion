@@ -60,7 +60,6 @@ import java.util.function.Supplier;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -71,43 +70,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private static final String ENTITIES = "entities";
 
-  private final Event<Collection<Entity>> beforeInsertEvent = Event.event();
-  private final Event<Collection<Entity>> afterInsertEvent = Event.event();
-  private final Event<Map<Entity.Key, Entity>> beforeUpdateEvent = Event.event();
-  private final Event<Map<Entity.Key, Entity>> afterUpdateEvent = Event.event();
-  private final Event<Collection<Entity>> beforeDeleteEvent = Event.event();
-  private final Event<Collection<Entity>> afterDeleteEvent = Event.event();
-  private final Event<?> insertUpdateOrDeleteEvent = Event.event();
-  private final Event<State> confirmOverwriteEvent = Event.event();
-  private final Event<Entity> entityEvent = Event.event();
-  private final Event<Attribute<?>> valueChangeEvent = Event.event();
-
-  private final State entityValid = State.state();
-  private final State entityExists = State.state(false);
-  private final State entityModified = State.state();
-  private final State primaryKeyNull = State.state(true);
-  private final State readOnly = State.state();
-  private final State insertEnabled = State.state(true);
-  private final State updateEnabled = State.state(true);
-  private final State updateMultipleEnabled = State.state(true);
-  private final State deleteEnabled = State.state(true);
-  private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
-  private final State editEvents = State.state(EDIT_EVENTS.get());
-  private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
-  private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
-  private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
-
   private final Entity entity;
   private final EntityConnectionProvider connectionProvider;
-  private final EntityValidator validator;
   private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
-  private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
-  private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
+  private final Value<EntityValidator> validator;
   private final Value<Predicate<Entity>> modifiedPredicate;
   private final Value<Predicate<Entity>> existsPredicate;
+
+  private final Events events = new Events();
+  private final States states = new States();
 
   /**
    * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
@@ -115,25 +89,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(requireNonNull(entityType), requireNonNull(connectionProvider), connectionProvider.entities().definition(entityType).validator());
-  }
-
-  /**
-   * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
-   * @param connectionProvider the {@link EntityConnectionProvider} instance
-   * @param validator the validator to use
-   */
-  protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                    EntityValidator validator) {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
-    this.validator = requireNonNull(validator);
+    this.validator = Value.value(entityDefinition().validator(), entityDefinition().validator());
     this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
-    this.existsPredicate = Value.value(entity.definition().exists(), entity.definition().exists());
-    readOnly.set(entityDefinition().readOnly());
+    this.existsPredicate = Value.value(entityDefinition().exists(), entityDefinition().exists());
+    this.states.readOnly.set(entityDefinition().readOnly());
+    this.events.bindEvents();
     configurePersistentForeignKeys();
-    bindEventsInternal();
     setEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
 
@@ -160,54 +123,53 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final State overwriteWarning() {
-    return overwriteWarning;
+    return states.overwriteWarning;
   }
 
   @Override
   public final State editEvents() {
-    return editEvents;
+    return states.editEvents;
   }
 
   @Override
   public final State persist(Attribute<?> attribute) {
     entityDefinition().attributes().definition(attribute);
-
     return persistValues.computeIfAbsent(attribute, k -> State.state());
   }
 
   @Override
   public final State readOnly() {
-    return readOnly;
+    return states.readOnly;
   }
 
   @Override
   public final State insertEnabled() {
-    return insertEnabled;
+    return states.insertEnabled;
   }
 
   @Override
   public final State updateEnabled() {
-    return updateEnabled;
+    return states.updateEnabled;
   }
 
   @Override
   public final State updateMultipleEnabled() {
-    return updateMultipleEnabled;
+    return states.updateMultipleEnabled;
   }
 
   @Override
   public final State deleteEnabled() {
-    return deleteEnabled;
+    return states.deleteEnabled;
   }
 
   @Override
   public final StateObserver exists() {
-    return entityExists.observer();
+    return states.entityExists.observer();
   }
 
   @Override
   public final StateObserver primaryKeyNull() {
-    return primaryKeyNull.observer();
+    return states.primaryKeyNull.observer();
   }
 
   @Override
@@ -250,16 +212,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public StateObserver modified() {
-    return entityModified.observer();
+  public final StateObserver modified() {
+    return states.entityModified.observer();
   }
 
   @Override
   public final StateObserver modified(Attribute<?> attribute) {
-    entityDefinition().attributes().definition(attribute);
-
-    return attributeModifiedMap.computeIfAbsent(attribute, k ->
-            State.state(entityExists.get() && entity.modified(attribute))).observer();
+    return states.modifiedObserver(attribute);
   }
 
   @Override
@@ -278,7 +237,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueEdit(attribute, value, dependingValues);
+      events.notifyValueEdit(attribute, value, dependingValues);
     }
 
     return previousValue;
@@ -291,7 +250,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (entity.contains(attribute)) {
       Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
       value = entity.remove(attribute);
-      notifyValueEdit(attribute, null, dependingValues);
+      events.notifyValueEdit(attribute, null, dependingValues);
     }
 
     return value;
@@ -299,32 +258,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean nullable(Attribute<?> attribute) {
-    return validator.nullable(entity, attribute);
+    return validator.get().nullable(entity, attribute);
   }
 
   @Override
   public final StateObserver isNull(Attribute<?> attribute) {
-    return nullObserver(attribute);
+    return states.nullObserver(attribute);
   }
 
   @Override
   public final StateObserver isNotNull(Attribute<?> attribute) {
-    return nullObserver(attribute).not();
+    return states.nullObserver(attribute).not();
   }
 
   @Override
   public final StateObserver valid() {
-    return entityValid.observer();
+    return states.entityValid.observer();
   }
 
   @Override
   public final StateObserver valid(Attribute<?> attribute) {
-    return validObserver(attribute);
+    return states.validObserver(attribute);
   }
 
   @Override
   public final void validate(Attribute<?> attribute) throws ValidationException {
-    validator.validate(entity, attribute);
+    validator.get().validate(entity, attribute);
   }
 
   @Override
@@ -334,7 +293,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final void validate(Collection<? extends Entity> entities) throws ValidationException {
-    for (Entity entityToValidate : entities) {
+    for (Entity entityToValidate : requireNonNull(entities)) {
       validate(entityToValidate);
     }
   }
@@ -342,7 +301,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public void validate(Entity entity) throws ValidationException {
     if (entity.entityType().equals(entityType())) {
-      validator.validate(entity);
+      validator.get().validate(entity);
     }
     else {
       entity.definition().validator().validate(entity);
@@ -350,15 +309,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityValidator validator() {
-    return validator;
-  }
-
-  @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    if (readOnly.get() || !insertEnabled.get()) {
-      throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
-    }
+    states.verifyInsertEnabled();
     Entity toInsert = entity.copy();
     if (entityDefinition().primaryKey().generated()) {
       toInsert.clearPrimaryKey();
@@ -377,13 +329,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    if (readOnly.get() || !insertEnabled.get()) {
-      throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
-    }
-    requireNonNull(entities, ENTITIES);
-    if (entities.isEmpty()) {
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
+    states.verifyInsertEnabled();
     Collection<Entity> insertedEntities = insertEntities(entities);
 
     notifyAfterInsert(unmodifiableCollection(insertedEntities));
@@ -403,35 +352,27 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    requireNonNull(entities, ENTITIES);
-    if (readOnly.get() || !updateEnabled.get()) {
-      throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
+      return emptyList();
     }
-    if (entities.size() > 1 && !updateMultipleEnabled.get()) {
+    states.verifyUpdateEnabled();
+    if (entities.size() > 1 && !states.updateMultipleEnabled.get()) {
       throw new IllegalStateException("Batch update of entities is not enabled");
     }
-    if (entities.isEmpty()) {
-      return emptyList();
-    }
 
-    Collection<Entity> modifiedEntities = modified(entities);
-    if (modifiedEntities.isEmpty()) {
-      return emptyList();
-    }
-
-    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, entities));
-    validate(modifiedEntities);
+    notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
+    validate(entities);
     //entity.toString() could potentially cause NullPointerException if null-validation
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(modifiedEntities), connectionProvider.connection()));
+    List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(entities), connectionProvider.connection()));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       setEntity(updatedEntities.get(index));
     }
 
-    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, updatedEntities));
+    notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
 
     return updatedEntities;
   }
@@ -446,13 +387,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
-    requireNonNull(entities, ENTITIES);
-    if (readOnly.get() || !deleteEnabled.get()) {
-      throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
-    }
-    if (entities.isEmpty()) {
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return;
     }
+    states.verifyDeleteEnabled();
     LOG.debug("{} - delete {}", this, entities);
 
     notifyBeforeDelete(unmodifiableCollection(entities));
@@ -468,7 +406,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void refreshEntity() {
     try {
-      if (entityExists.get()) {
+      if (states.entityExists.get()) {
         set(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
@@ -522,130 +460,122 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
-    entityDefinition().attributes().definition(attribute);
-    if (valueEditEvents.containsKey(attribute)) {
-      ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
-    }
+    events.removeEditListener(attribute, listener);
   }
 
   @Override
   public final <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
-    entityDefinition().attributes().definition(attribute);
-    ((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+    events.addEditListener(attribute, listener);
   }
 
   @Override
   public final <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
-    entityDefinition().attributes().definition(attribute);
-    if (valueChangeEvents.containsKey(attribute)) {
-      ((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
-    }
+    events.removeValueListener(attribute, listener);
   }
 
   @Override
   public final <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
-    entityDefinition().attributes().definition(attribute);
-    ((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+    events.addValueListener(attribute, listener);
   }
 
   @Override
   public final void removeValueChangeListener(Consumer<Attribute<?>> listener) {
-    valueChangeEvent.removeDataListener(listener);
+    events.valueChange.removeDataListener(listener);
   }
 
   @Override
   public final void addValueChangeListener(Consumer<Attribute<?>> listener) {
-    valueChangeEvent.addDataListener(listener);
+    events.valueChange.addDataListener(listener);
   }
 
   @Override
   public final void removeEntityListener(Consumer<Entity> listener) {
-    entityEvent.removeDataListener(listener);
+    events.entity.removeDataListener(listener);
   }
 
   @Override
   public final void addEntityListener(Consumer<Entity> listener) {
-    entityEvent.addDataListener(listener);
+    events.entity.addDataListener(listener);
   }
 
   @Override
   public final void removeBeforeInsertListener(Consumer<Collection<Entity>> listener) {
-    beforeInsertEvent.removeDataListener(listener);
+    events.beforeInsert.removeDataListener(listener);
   }
 
   @Override
   public final void addBeforeInsertListener(Consumer<Collection<Entity>> listener) {
-    beforeInsertEvent.addDataListener(listener);
+    events.beforeInsert.addDataListener(listener);
   }
 
   @Override
   public final void removeAfterInsertListener(Consumer<Collection<Entity>> listener) {
-    afterInsertEvent.removeDataListener(listener);
+    events.afterInsert.removeDataListener(listener);
   }
 
   @Override
   public final void addAfterInsertListener(Consumer<Collection<Entity>> listener) {
-    afterInsertEvent.addDataListener(listener);
+    events.afterInsert.addDataListener(listener);
   }
 
   @Override
   public final void removeBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    beforeUpdateEvent.removeDataListener(listener);
+    events.beforeUpdate.removeDataListener(listener);
   }
 
   @Override
   public final void addBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    beforeUpdateEvent.addDataListener(listener);
+    events.beforeUpdate.addDataListener(listener);
   }
 
   @Override
   public final void removeAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    afterUpdateEvent.removeDataListener(listener);
+    events.afterUpdate.removeDataListener(listener);
   }
 
   @Override
   public final void addAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    afterUpdateEvent.addDataListener(listener);
+    events.afterUpdate.addDataListener(listener);
   }
 
   @Override
   public final void addBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
-    beforeDeleteEvent.addDataListener(listener);
+    events.beforeDelete.addDataListener(listener);
   }
 
   @Override
   public final void removeBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
-    beforeDeleteEvent.removeDataListener(listener);
+    events.beforeDelete.removeDataListener(listener);
   }
 
   @Override
   public final void removeAfterDeleteListener(Consumer<Collection<Entity>> listener) {
-    afterDeleteEvent.removeDataListener(listener);
+    events.afterDelete.removeDataListener(listener);
   }
 
   @Override
   public final void addAfterDeleteListener(Consumer<Collection<Entity>> listener) {
-    afterDeleteEvent.addDataListener(listener);
+    events.afterDelete.addDataListener(listener);
   }
 
   @Override
   public final void removeInsertUpdateOrDeleteListener(Runnable listener) {
-    insertUpdateOrDeleteEvent.removeListener(listener);
+    events.insertUpdateOrDelete.removeListener(listener);
   }
 
   @Override
   public final void addInsertUpdateOrDeleteListener(Runnable listener) {
-    insertUpdateOrDeleteEvent.addListener(listener);
+    events.insertUpdateOrDelete.addListener(listener);
   }
 
   @Override
   public final void addConfirmOverwriteListener(Consumer<State> listener) {
-    confirmOverwriteEvent.addDataListener(listener);
+    events.confirmOverwrite.addDataListener(listener);
   }
 
   @Override
   public final void removeConfirmOverwriteListener(Consumer<State> listener) {
-    confirmOverwriteEvent.removeDataListener(listener);
+    events.confirmOverwrite.removeDataListener(listener);
   }
 
   /**
@@ -681,22 +611,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Called during the {@link #update()} function, to determine which entities need to be updated,
-   * these entities will then be forwarded to {@link #update(Collection, EntityConnection)}.
-   * Returns the entities that have been modified and require updating, override to be able to
-   * perform an update on unmodified entities or to return an empty list to veto an update action.
-   * @param entities the entities
-   * @return the entities requiring update
-   * @see #update()
-   * @see #update(Collection)
-   */
-  protected Collection<Entity> modified(Collection<? extends Entity> entities) {
-    return requireNonNull(entities).stream()
-            .filter(Entity::modified)
-            .collect(toList());
-  }
-
-  /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
    * the corresponding entity from {@code values}, useful when attribute
    * values have been changed in the referenced entity that must be reflected in the edit model.
@@ -713,6 +627,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
         }
       }
     }
+  }
+
+  /**
+   * Controls the validator used by this edit model.
+   * @return the value controlling the validator
+   * @see #validate(Entity)
+   */
+  protected final Value<EntityValidator> validator() {
+    return validator;
   }
 
   /**
@@ -738,10 +661,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * @return the State used to indicate the modified state of this edit model, handle with care
+   * Updates the modified state.
+   * @see #modified()
    */
-  protected final State modifiedState() {
-    return entityModified;
+  protected final void updateModifiedState() {
+    states.updateModifiedState();
   }
 
   /**
@@ -750,7 +674,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addBeforeInsertListener(Consumer)
    */
   protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
-    beforeInsertEvent.accept(entitiesToInsert);
+    events.beforeInsert.accept(requireNonNull(entitiesToInsert));
   }
 
   /**
@@ -759,7 +683,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addAfterInsertListener(Consumer)
    */
   protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
-    afterInsertEvent.accept(insertedEntities);
+    events.afterInsert.accept(requireNonNull(insertedEntities));
   }
 
   /**
@@ -768,7 +692,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addBeforeUpdateListener(Consumer)
    */
   protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
-    beforeUpdateEvent.accept(entitiesToUpdate);
+    events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
   }
 
   /**
@@ -777,7 +701,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addAfterUpdateListener(Consumer)
    */
   protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
-    afterUpdateEvent.accept(updatedEntities);
+    events.afterUpdate.accept(requireNonNull(updatedEntities));
   }
 
   /**
@@ -786,7 +710,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addBeforeDeleteListener(Consumer)
    */
   protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
-    beforeDeleteEvent.accept(entitiesToDelete);
+    events.beforeDelete.accept(requireNonNull(entitiesToDelete));
   }
 
   /**
@@ -795,7 +719,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #addAfterDeleteListener(Consumer)
    */
   protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
-    afterDeleteEvent.accept(deletedEntities);
+    events.afterDelete.accept(requireNonNull(deletedEntities));
   }
 
   private Collection<Entity> insertEntities(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
@@ -809,9 +733,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private boolean setEntityAllowed() {
-    if (overwriteWarning.get() && exists().get() && modified().get()) {
+    if (states.overwriteWarning.get() && exists().get() && modified().get()) {
       State confirmation = State.state(true);
-      confirmOverwriteEvent.accept(confirmation);
+      events.confirmOverwrite.accept(confirmation);
 
       return confirmation.get();
     }
@@ -823,36 +747,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? defaultEntity(this::defaultValue) : entity);
     for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
       Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
-      notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
+      events.notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
     }
-    if (affectedAttributes.isEmpty()) {//otherwise onValueChange() triggers entity state updates
-      updateEntityStates();
+    if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
+      states.updateEntityStates();
     }
-    updateAttributeModifiedStates();
+    states.updateAttributeModifiedStates();
 
-    entityEvent.accept(entity);
-  }
-
-  private StateObserver nullObserver(Attribute<?> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    return attributeNullMap.computeIfAbsent(attribute, k ->
-            State.state(entity.isNull(attribute))).observer();
-  }
-
-  private StateObserver validObserver(Attribute<?> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    return attributeValidMap.computeIfAbsent(attribute, k ->
-            State.state(isValid(attribute))).observer();
-  }
-
-  private boolean isValid(Attribute<?> attribute) {
-    try {
-      validate(attribute);
-      return true;
-    }
-    catch (ValidationException e) {
-      return false;
-    }
+    events.entity.accept(entity);
   }
 
   private void configurePersistentForeignKeys() {
@@ -905,15 +807,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return (T) defaultValueSuppliers.computeIfAbsent(attributeDefinition.attribute(), k -> attributeDefinition::defaultValue).get();
   }
 
-  private void bindEventsInternal() {
-    afterInsertEvent.addListener(insertUpdateOrDeleteEvent);
-    afterUpdateEvent.addListener(insertUpdateOrDeleteEvent);
-    afterDeleteEvent.addListener(insertUpdateOrDeleteEvent);
-    afterInsertEvent.addDataListener(new NotifyInserted());
-    afterUpdateEvent.addDataListener(new NotifyUpdated());
-    afterDeleteEvent.addDataListener(new NotifyDeleted());
-  }
-
   private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
     return dependingValues(attribute, new LinkedHashMap<>());
   }
@@ -947,60 +840,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
             dependingValues.put(reference.column(), get(reference.column())));
   }
 
-  private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
-    notifyValueChange(attribute, value);
-    Event<T> editEvent = (Event<T>) valueEditEvents.get(attribute);
-    if (editEvent != null) {
-      editEvent.accept(value);
-    }
-    dependingValues.forEach((dependingAttribute, previousValue) -> {
-      Object currentValue = get(dependingAttribute);
-      if (!Objects.equals(previousValue, currentValue)) {
-        notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
-      }
-    });
-  }
-
-  private <T> void notifyValueChange(Attribute<T> attribute, T value) {
-    updateEntityStates();
-    updateAttributeStates(attribute);
-    Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
-    if (changeEvent != null) {
-      changeEvent.accept(value);
-    }
-    valueChangeEvent.accept(attribute);
-  }
-
-  private void updateEntityStates() {
-    entityExists.set(existsPredicate.get().test(entity));
-    entityModified.set(modifiedPredicate.get().test(entity));
-    entityValid.set(validator.valid(entity));
-    primaryKeyNull.set(entity.primaryKey().isNull());
-  }
-
-  private <T> void updateAttributeStates(Attribute<T> attribute) {
-    State nullState = attributeNullMap.get(attribute);
-    if (nullState != null) {
-      nullState.set(entity.isNull(attribute));
-    }
-    State validState = attributeValidMap.get(attribute);
-    if (validState != null) {
-      validState.set(isValid(attribute));
-    }
-    State modifiedState = attributeModifiedMap.get(attribute);
-    if (modifiedState != null) {
-      updateAttributeModifiedState(attribute, modifiedState);
-    }
-  }
-
-  private void updateAttributeModifiedStates() {
-    attributeModifiedMap.forEach(this::updateAttributeModifiedState);
-  }
-
-  private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-    modifiedState.set(existsPredicate.get().test(entity) && entity.modified(attribute));
-  }
-
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
     definition.columns().definitions().stream()
             .filter(columnDefinition -> !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
@@ -1029,7 +868,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<? extends Entity> entitiesBeforeUpdate,
                                                                  Collection<? extends Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
@@ -1061,7 +900,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     @Override
     public void accept(Collection<Entity> insertedEntities) {
-      if (editEvents.get()) {
+      if (states.editEvents.get()) {
         EntityEditEvents.notifyInserted(insertedEntities);
       }
     }
@@ -1071,7 +910,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     @Override
     public void accept(Map<Entity.Key, Entity> updatedEntities) {
-      if (editEvents.get()) {
+      if (states.editEvents.get()) {
         EntityEditEvents.notifyUpdated(updatedEntities);
       }
     }
@@ -1081,8 +920,194 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     @Override
     public void accept(Collection<Entity> deletedEntities) {
-      if (editEvents.get()) {
+      if (states.editEvents.get()) {
         EntityEditEvents.notifyDeleted(deletedEntities);
+      }
+    }
+  }
+
+  private final class Events {
+
+    private final Event<Collection<Entity>> beforeInsert = Event.event();
+    private final Event<Collection<Entity>> afterInsert = Event.event();
+    private final Event<Map<Entity.Key, Entity>> beforeUpdate = Event.event();
+    private final Event<Map<Entity.Key, Entity>> afterUpdate = Event.event();
+    private final Event<Collection<Entity>> beforeDelete = Event.event();
+    private final Event<Collection<Entity>> afterDelete = Event.event();
+    private final Event<?> insertUpdateOrDelete = Event.event();
+    private final Event<State> confirmOverwrite = Event.event();
+    private final Event<Entity> entity = Event.event();
+    private final Event<Attribute<?>> valueChange = Event.event();
+    private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
+    private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
+
+    private void bindEvents() {
+      afterInsert.addListener(insertUpdateOrDelete);
+      afterUpdate.addListener(insertUpdateOrDelete);
+      afterDelete.addListener(insertUpdateOrDelete);
+      afterInsert.addDataListener(new NotifyInserted());
+      afterUpdate.addDataListener(new NotifyUpdated());
+      afterDelete.addDataListener(new NotifyDeleted());
+      validator.addListener(states::updateValidState);
+      modifiedPredicate.addListener(states::updateModifiedState);
+      existsPredicate.addListener(states::updateExistsState);
+    }
+
+    private <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
+      entityDefinition().attributes().definition(attribute);
+      ((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+    }
+
+    private <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
+      entityDefinition().attributes().definition(attribute);
+      if (valueEditEvents.containsKey(attribute)) {
+        ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
+      }
+    }
+
+    private <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
+      entityDefinition().attributes().definition(attribute);
+      ((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+    }
+
+    private <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
+      entityDefinition().attributes().definition(attribute);
+      if (valueChangeEvents.containsKey(attribute)) {
+        ((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
+      }
+    }
+
+    private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
+      notifyValueChange(attribute, value);
+      Event<T> editEvent = (Event<T>) valueEditEvents.get(attribute);
+      if (editEvent != null) {
+        editEvent.accept(value);
+      }
+      dependingValues.forEach((dependingAttribute, previousValue) -> {
+        Object currentValue = get(dependingAttribute);
+        if (!Objects.equals(previousValue, currentValue)) {
+          notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
+        }
+      });
+    }
+
+    private <T> void notifyValueChange(Attribute<T> attribute, T value) {
+      states.updateEntityStates();
+      states.updateAttributeStates(attribute);
+      Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
+      if (changeEvent != null) {
+        changeEvent.accept(value);
+      }
+      valueChange.accept(attribute);
+    }
+  }
+
+  private final class States {
+
+    private final State entityValid = State.state();
+    private final State entityExists = State.state(false);
+    private final State entityModified = State.state();
+    private final State primaryKeyNull = State.state(true);
+    private final State readOnly = State.state();
+    private final State insertEnabled = State.state(true);
+    private final State updateEnabled = State.state(true);
+    private final State updateMultipleEnabled = State.state(true);
+    private final State deleteEnabled = State.state(true);
+    private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
+    private final State editEvents = State.state(EDIT_EVENTS.get());
+    private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
+    private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
+    private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
+
+    private StateObserver modifiedObserver(Attribute<?> attribute) {
+      entityDefinition().attributes().definition(attribute);
+      return attributeModifiedMap.computeIfAbsent(attribute, k ->
+              State.state(entityExists.get() && entity.modified(attribute))).observer();
+    }
+
+    private StateObserver nullObserver(Attribute<?> attribute) {
+      entityDefinition().attributes().definition(attribute);
+      return attributeNullMap.computeIfAbsent(attribute, k ->
+              State.state(entity.isNull(attribute))).observer();
+    }
+
+    private StateObserver validObserver(Attribute<?> attribute) {
+      entityDefinition().attributes().definition(attribute);
+      return attributeValidMap.computeIfAbsent(attribute, k ->
+              State.state(valid(attribute))).observer();
+    }
+
+    private void updateEntityStates() {
+      updateExistsState();
+      updateModifiedState();
+      updateValidState();
+      updatePrimaryKeyNullState();
+    }
+
+    private void updateExistsState() {
+      entityExists.set(existsPredicate.get().test(entity));
+    }
+
+    private void updateModifiedState() {
+      entityModified.set(modifiedPredicate.get().test(entity));
+    }
+
+    private void updateValidState() {
+      entityValid.set(validator.get().valid(entity));
+    }
+
+    private void updatePrimaryKeyNullState() {
+      primaryKeyNull.set(entity.primaryKey().isNull());
+    }
+
+    private <T> void updateAttributeStates(Attribute<T> attribute) {
+      State nullState = attributeNullMap.get(attribute);
+      if (nullState != null) {
+        nullState.set(entity.isNull(attribute));
+      }
+      State validState = attributeValidMap.get(attribute);
+      if (validState != null) {
+        validState.set(valid(attribute));
+      }
+      State modifiedState = attributeModifiedMap.get(attribute);
+      if (modifiedState != null) {
+        updateAttributeModifiedState(attribute, modifiedState);
+      }
+    }
+
+    private boolean valid(Attribute<?> attribute) {
+      try {
+        validate(attribute);
+        return true;
+      }
+      catch (ValidationException e) {
+        return false;
+      }
+    }
+
+    private void updateAttributeModifiedStates() {
+      attributeModifiedMap.forEach(this::updateAttributeModifiedState);
+    }
+
+    private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
+      modifiedState.set(existsPredicate.get().test(entity) && entity.modified(attribute));
+    }
+
+    private void verifyInsertEnabled() {
+      if (readOnly.get() || !insertEnabled.get()) {
+        throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
+      }
+    }
+
+    private void verifyUpdateEnabled() {
+      if (readOnly.get() || !updateEnabled.get()) {
+        throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
+      }
+    }
+
+    private void verifyDeleteEnabled() {
+      if (readOnly.get() || !deleteEnabled.get()) {
+        throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
       }
     }
   }

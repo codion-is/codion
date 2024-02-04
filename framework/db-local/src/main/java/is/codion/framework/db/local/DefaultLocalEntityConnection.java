@@ -343,8 +343,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
           EntityDefinition entityDefinition = definition(entityTypeKeys.getKey());
           List<Key> keysToDelete = entityTypeKeys.getValue();
-          for (int i = 0; i < keysToDelete.size(); i += database.maximumNumberOfParameters()) {
-            condition = keys(keysToDelete.subList(i, Math.min(i + database.maximumNumberOfParameters(), keysToDelete.size())));
+          int keysPerStatement = keysPerStatement(keysToDelete.get(0));
+          for (int i = 0; i < keysToDelete.size(); i += keysPerStatement) {
+            condition = keys(keysToDelete.subList(i, Math.min(i + keysPerStatement, keysToDelete.size())));
             statementValues = condition.values();
             statementColumns = definitions(entityDefinition, condition.columns());
             deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
@@ -764,7 +765,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
                     columnDefinition -> entity.modified(columnDefinition.attribute()));
             if (statementColumns.isEmpty()) {
-              throw new SQLException("Unable to update entity " + entity.entityType() + ", no modified values found");
+              throw new UpdateException("Unable to update entity " + entity.entityType() + ", no modified values found");
             }
 
             Condition condition = key(entity.originalPrimaryKey());
@@ -964,8 +965,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Key referencedKey = referencedKeys.get(0);
     Collection<Column<?>> keyColumns = referencedKey.columns();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
-    for (int i = 0; i < referencedKeys.size(); i += database.maximumNumberOfParameters()) {
-      List<Key> keys = referencedKeys.subList(i, Math.min(i + database.maximumNumberOfParameters(), referencedKeys.size()));
+    int keysPerStatement = keysPerStatement(referencedKeys.get(0));
+    for (int i = 0; i < referencedKeys.size(); i += keysPerStatement) {
+      List<Key> keys = referencedKeys.subList(i, Math.min(i + keysPerStatement, referencedKeys.size()));
       Select referencedEntitiesCondition = where(keys(keys))
               .fetchDepth(conditionFetchDepthLimit)
               .attributes(attributesToSelect(foreignKeyDefinition, keyColumns))
@@ -981,6 +983,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     return referencedEntities.stream()
             .collect(toMap(entity -> createKey(entity, keyColumns), Function.identity()));
+  }
+
+  private int keysPerStatement(Key key) {
+    if (database.maximumNumberOfParameters() == Integer.MAX_VALUE) {
+      return Integer.MAX_VALUE;
+    }
+
+    return database.maximumNumberOfParameters() / key.columns().size();
   }
 
   private Key createKey(Entity entity, Collection<Column<?>> keyColumns) {

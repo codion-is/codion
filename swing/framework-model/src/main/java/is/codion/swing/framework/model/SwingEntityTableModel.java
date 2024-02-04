@@ -102,7 +102,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
   private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
   private final State conditionRequired = State.state();
-  private final State handleEditEvents = State.state();
+  private final State editEvents = State.state();
   private final State editable = State.state();
   private final Value<Integer> limit = Value.value();
   private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
@@ -205,7 +205,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.attributes.addValidator(new AttributeValidator());
     bindEvents();
     applyPreferences();
-    handleEditEvents.set(true);
+    editEvents.set(true);
   }
 
   @Override
@@ -259,8 +259,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final State handleEditEvents() {
-    return handleEditEvents;
+  public final State editEvents() {
+    return editEvents;
   }
 
   @Override
@@ -861,7 +861,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    handleEditEvents.addDataListener(new HandleEditEventsListener());
+    editEvents.addDataListener(new HandleEditEventsListener());
     conditionModel.addChangeListener(() -> onConditionChanged(createSelect(conditionModel)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);

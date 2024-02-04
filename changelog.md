@@ -2,10 +2,26 @@ Codion Change Log
 ==================
 
 ## 0.17.27-SNAPSHOT
+### is.codion.framework.domain
+- DefaultEntityDefinition.validatePrimaryKeyAttributes(), key column indexes now sorted before being displayed in error message. 
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
+- DefaultLocalEntityConnection.update() now throws UpdateException in case of unmodified entities.
+- DefaultLocalEntityConnection bug fixed, maximum number of parameters did not take composite keys into account.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, popup menu for configuring the limit added to status message panel along with INCLUDE_LIMIT_MENU configuration value, default false.
+### is.codion.framework.model
+- AbstractEntityEditModel.insert(), update() and delete(), exception order now consistent.
+- AbstractEntityEditModel refactored, events, states and related methods moved to separate inner classes.
+- AbstractEntityEditModel.modified() now final, modifiedPredicate() should suffice.
+- AbstractEntityEditModel.updateModifiedState() added.
+- AbstractEntityEditModel.modifiedState() removed.
+- AbstractEntityEditModel.modified(entities) removed.
+- EntityEditModel.validator() removed.
+- AbstractEntityEditModel.validator() now protected and Value based, overloaded constructor removed.
+- AbstractEntityEditModel, validator, modifiedPredicate and existsPredicate values now trigger an update in their respective states when changed.
+### is.codion.swing.framework.ui
+- SwingEntityTableModel.handleEditEvents() renamed editEvents() for consistency.
 
 ## 0.17.26
 ### is.codion.common.core
