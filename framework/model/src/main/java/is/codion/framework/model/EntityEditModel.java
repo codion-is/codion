@@ -355,15 +355,9 @@ public interface EntityEditModel {
   void replace(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
-   * @return the validator
-   */
-  EntityValidator validator();
-
-  /**
    * Validates the value associated with the given attribute, using the underlying validator.
    * @param attribute the attribute the value is associated with
    * @throws ValidationException if the given value is not valid for the given attribute
-   * @see #validator()
    */
   void validate(Attribute<?> attribute) throws ValidationException;
 
@@ -379,7 +373,6 @@ public interface EntityEditModel {
    * their respective validators are used.
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
-   * @see #validator()
    * @see EntityDefinition#validator()
    */
   void validate(Collection<? extends Entity> entities) throws ValidationException;
@@ -391,13 +384,11 @@ public interface EntityEditModel {
    * @param entity the entity to validate
    * @throws ValidationException in case the entity is invalid
    * @throws NullPointerException in case the entity is null
-   * @see #validator()
    */
   void validate(Entity entity) throws ValidationException;
 
   /**
    * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
-   * @see #validator()
    * @see #validate(Attribute)
    * @see EntityValidator#validate(Entity)
    */
@@ -406,7 +397,6 @@ public interface EntityEditModel {
   /**
    * @param attribute the attribute
    * @return a {@link StateObserver} indicating the valid status of the given attribute.
-   * @see #validator()
    */
   StateObserver valid(Attribute<?> attribute);
 

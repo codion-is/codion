@@ -57,11 +57,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private final Entity entity;
   private final EntityConnectionProvider connectionProvider;
-  private final EntityValidator validator;
   private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
+  private final Value<EntityValidator> validator;
   private final Value<Predicate<Entity>> modifiedPredicate;
   private final Value<Predicate<Entity>> existsPredicate;
 
@@ -74,25 +74,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(requireNonNull(entityType), requireNonNull(connectionProvider), connectionProvider.entities().definition(entityType).validator());
-  }
-
-  /**
-   * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
-   * @param connectionProvider the {@link EntityConnectionProvider} instance
-   * @param validator the validator to use
-   */
-  protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                    EntityValidator validator) {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
-    this.validator = requireNonNull(validator);
+    EntityValidator defaultValidator = connectionProvider.entities().definition(entityType).validator();
+    this.validator = Value.value(defaultValidator, defaultValidator);
     this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
     this.existsPredicate = Value.value(entity.definition().exists(), entity.definition().exists());
     states.readOnly.set(entityDefinition().readOnly());
-    configurePersistentForeignKeys();
     events.bindEvents();
+    configurePersistentForeignKeys();
     setEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
 
@@ -254,7 +244,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean nullable(Attribute<?> attribute) {
-    return validator.nullable(entity, attribute);
+    return validator.get().nullable(entity, attribute);
   }
 
   @Override
@@ -279,7 +269,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final void validate(Attribute<?> attribute) throws ValidationException {
-    validator.validate(entity, attribute);
+    validator.get().validate(entity, attribute);
   }
 
   @Override
@@ -297,16 +287,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public void validate(Entity entity) throws ValidationException {
     if (entity.entityType().equals(entityType())) {
-      validator.validate(entity);
+      validator.get().validate(entity);
     }
     else {
       entity.definition().validator().validate(entity);
     }
-  }
-
-  @Override
-  public final EntityValidator validator() {
-    return validator;
   }
 
   @Override
@@ -628,6 +613,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
         }
       }
     }
+  }
+
+  /**
+   * Controls the validator used by this edit model.
+   * @return the value controlling the validator
+   * @see #validate(Entity)
+   */
+  protected final Value<EntityValidator> validator() {
+    return validator;
   }
 
   /**
@@ -1042,7 +1036,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     private void updateValidState() {
-      entityValid.set(validator.valid(entity));
+      entityValid.set(validator.get().valid(entity));
     }
 
     private void updatePrimaryKeyNullState() {

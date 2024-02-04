@@ -8,7 +8,6 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -41,17 +40,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, requireNonNull(connectionProvider), connectionProvider.entities().definition(entityType).validator());
-  }
-
-  /**
-   * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
-   * @param connectionProvider the {@link EntityConnectionProvider} instance
-   * @param validator the validator to use
-   */
-  public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider, EntityValidator validator) {
-    super(entityType, connectionProvider, validator);
+    super(entityType, requireNonNull(connectionProvider));
   }
 
   /**
