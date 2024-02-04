@@ -149,7 +149,7 @@ public final class EntityDialogs {
   }
 
   /**
-   * A builder for {@link EntitySelectionDialog}.
+   * A builder for a selection dialog.
    */
   public interface SelectionDialogBuilder extends DialogBuilder<SelectionDialogBuilder> {
 
