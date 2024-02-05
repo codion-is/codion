@@ -128,11 +128,6 @@ final class DefaultState implements State {
   }
 
   @Override
-  public void accept(Boolean data) {
-    set(data);
-  }
-
-  @Override
   public boolean addListener(Runnable listener) {
     return observer().addListener(listener);
   }

@@ -1,7 +1,9 @@
 Codion Change Log
 ==================
 
-## 0.17.27-SNAPSHOT
+## 0.17.27
+### is.codion.common.core
+- Value, default implementations added for accept() and map().
 ### is.codion.framework.domain
 - DefaultEntityDefinition.validatePrimaryKeyAttributes(), key column indexes now sorted before being displayed in error message. 
 ### is.codion.framework.db.local
