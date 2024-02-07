@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.28-SNAPSHOT
+### is.codion.framework.servlet
+- Javalin upgraded to v6.
 
 ## 0.17.27
 ### is.codion.common.core

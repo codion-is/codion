@@ -50,8 +50,8 @@ import is.codion.framework.json.domain.EntityObjectMapperFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
-import io.javalin.community.ssl.SSLConfig;
-import io.javalin.community.ssl.SSLPlugin;
+import io.javalin.community.ssl.SslConfig;
+import io.javalin.community.ssl.SslPlugin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
@@ -186,7 +186,7 @@ public final class EntityService implements AuxiliaryServer {
   @Override
   public void stopServer() {
     if (javalin != null) {
-      javalin.close();
+      javalin.stop();
     }
   }
 
@@ -940,15 +940,15 @@ public final class EntityService implements AuxiliaryServer {
     @Override
     public void accept(JavalinConfig config) {
       if (sslEnabled) {
-        config.plugins.register(new SSLPlugin(new SSLPLuginConfigurer()));
+        config.registerPlugin(new SslPlugin(new SslPLuginConfigurer()));
       }
     }
   }
 
-  private final class SSLPLuginConfigurer implements Consumer<SSLConfig> {
+  private final class SslPLuginConfigurer implements Consumer<SslConfig> {
 
     @Override
-    public void accept(SSLConfig ssl) {
+    public void accept(SslConfig ssl) {
       ssl.keystoreFromPath(HTTP_SERVER_KEYSTORE_PATH.getOrThrow(), HTTP_SERVER_KEYSTORE_PASSWORD.getOrThrow());
       ssl.securePort = securePort;
       ssl.insecurePort = port;

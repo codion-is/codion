@@ -13,8 +13,12 @@ dependencies {
     implementation project(":codion-framework-json-domain")
     implementation project(":codion-framework-json-db")
 
-    implementation(libs.javalin)
-    implementation(libs.javalin.ssl)
+    implementation(libs.javalin) {
+        exclude group: "org.jetbrains", module: "annotations"
+    }
+    implementation(libs.javalin.ssl) {
+        exclude group: "org.jetbrains", module: "annotations"
+    }
 
     implementation(libs.slf4j.api)
 
