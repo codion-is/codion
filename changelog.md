@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.28-SNAPSHOT
+
 ## 0.17.27
 ### is.codion.common.core
 - Value, default implementations added for accept() and map().
