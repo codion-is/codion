@@ -3,8 +3,6 @@
  */
 package is.codion.common.db.operation;
 
-import is.codion.common.db.exception.DatabaseException;
-
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
@@ -17,11 +15,6 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
 
   DefaultProcedureType(String name) {
     this.name = requireNonNull(name, "name");
-  }
-
-  @Override
-  public void execute(C connection, DatabaseProcedure<C, T> procedure, T argument) throws DatabaseException {
-    requireNonNull(procedure, "procedure").execute(connection, argument);
   }
 
   @Override

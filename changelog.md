@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.28-SNAPSHOT
+### is.codion.common.db
+- FunctionType, ProcedureType.execute() removed.
 
 ## 0.17.27
 ### is.codion.common.core
