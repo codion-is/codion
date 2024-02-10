@@ -69,7 +69,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
             new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
     this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
     this.refresher = new DefaultRefresher(builder.itemSupplier == null ? this::items : builder.itemSupplier);
-    this.refresher.asyncRefresh().set(builder.asyncRefresh);
+    this.refresher.async().set(builder.asyncRefresh);
     this.refresher.mergeOnRefresh.set(builder.mergeOnRefresh);
     this.itemValidator = builder.itemValidator;
     bindEventsInternal();

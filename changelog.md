@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.db
 - FunctionType, ProcedureType.execute() removed.
 - ReportType.fill() removed.
+### is.codion.common.model
+- FilteredModel.Refresher.asyncRefresh() renamed async().
 
 ## 0.17.27
 ### is.codion.common.core
