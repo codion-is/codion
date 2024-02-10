@@ -160,7 +160,7 @@ public interface TableSelectionModel<R> {
   List<Integer> getSelectedIndexes();
 
   /**
-   * Selects all visible entities
+   * Selects all visible rows
    * @see #addSelectionListener(Runnable)
    */
   void selectAll();
