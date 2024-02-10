@@ -116,22 +116,20 @@ public class JasperReportsTest {
 
   @Test
   void classPathReport() throws ReportException {
-    JRReportType report = JasperReports.reportType("report");
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-    report.fill(Employee.CLASS_PATH_REPORT, connection.databaseConnection().getConnection(), reportParameters);
+    Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
 
     assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").load());
   }
 
   @Test
   void fileReport() throws ReportException {
-    JRReportType report = JasperReports.reportType("report");
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-    report.fill(Employee.FILE_REPORT, connection.databaseConnection().getConnection(), reportParameters);
+    Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
     assertTrue(Employee.FILE_REPORT.cached());
     Employee.FILE_REPORT.clearCache();
     assertFalse(Employee.FILE_REPORT.cached());
