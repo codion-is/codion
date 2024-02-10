@@ -18,8 +18,6 @@
  */
 package is.codion.common.db.report;
 
-import java.sql.Connection;
-
 /**
  * Identifies a report.
  * A factory for {@link ReportType} instances.
@@ -33,16 +31,6 @@ public interface ReportType<T, R, P> {
    * @return the report name
    */
   String name();
-
-  /**
-   * Fills the given report.
-   * @param report the report to fill
-   * @param connection the connection to use
-   * @param parameters the report parameters
-   * @return a report result
-   * @throws ReportException in case of an exception
-   */
-  R fill(Report<T, R, P> report, Connection connection, P parameters) throws ReportException;
 
   /**
    * Instantiates a new Report instance with the given name.

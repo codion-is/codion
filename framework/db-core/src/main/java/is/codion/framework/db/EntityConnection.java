@@ -245,7 +245,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Performs an update based on the given update, updating the columns found
-   * in the {@link Update#columnValues()} map, with the associated values.
+   * in the {@link Update#values()} map, using the associated value.
    * @param update the update to perform
    * @return the number of affected rows
    * @throws DatabaseException in case of a database exception
@@ -723,7 +723,7 @@ public interface EntityConnection extends AutoCloseable {
     /**
      * @return an unmodifiable view of the new values mapped to their respective columns
      */
-    Map<Column<?>, Object> columnValues();
+    Map<Column<?>, Object> values();
 
     /**
      * Builds an {@link Update}.

@@ -273,8 +273,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public int update(Update update) throws DatabaseException {
-    if (requireNonNull(update, CONDITION).columnValues().isEmpty()) {
-      throw new IllegalArgumentException("No attribute values provided for update");
+    if (requireNonNull(update, CONDITION).values().isEmpty()) {
+      throw new IllegalArgumentException("No values provided for update");
     }
     throwIfReadOnly(update.where().entityType());
 
@@ -570,7 +570,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logEntry(EXECUTE, functionType, argument);
       synchronized (connection) {
-        return functionType.execute((C) this, domain.function(functionType), argument);
+        return domain.function(functionType).execute((C) this, argument);
       }
     }
     catch (DatabaseException e) {
@@ -595,7 +595,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logEntry(EXECUTE, procedureType, argument);
       synchronized (connection) {
-        procedureType.execute((C) this, domain.procedure(procedureType), argument);
+        domain.procedure(procedureType).execute((C) this, argument);
       }
     }
     catch (DatabaseException e) {
@@ -615,7 +615,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         logEntry(REPORT, reportType, reportParameters);
-        R result = reportType.fill(domain.report(reportType), connection.getConnection(), reportParameters);
+        R result = domain.report(reportType).fill(connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -859,7 +859,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
                                    List<Object> statementValues) throws UpdateException {
     EntityDefinition entityDefinition = definition(update.where().entityType());
-    for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
+    for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
       ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
       if (!columnDefinition.updatable()) {
         throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());

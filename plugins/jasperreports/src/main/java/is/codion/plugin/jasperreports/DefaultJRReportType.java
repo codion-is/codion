@@ -18,15 +18,12 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.Map;
 
 final class DefaultJRReportType implements JRReportType, Serializable {
@@ -42,12 +39,6 @@ final class DefaultJRReportType implements JRReportType, Serializable {
   @Override
   public String name() {
     return reportType.name();
-  }
-
-  @Override
-  public JasperPrint fill(Report<JasperReport, JasperPrint, Map<String, Object>> report,
-                          Connection connection, Map<String, Object> parameters) throws ReportException {
-    return reportType.fill(report, connection, parameters);
   }
 
   @Override

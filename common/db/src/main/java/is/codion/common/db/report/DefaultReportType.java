@@ -19,7 +19,6 @@
 package is.codion.common.db.report;
 
 import java.io.Serializable;
-import java.sql.Connection;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,11 +35,6 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
   @Override
   public String name() {
     return name;
-  }
-
-  @Override
-  public R fill(Report<T, R, P> report, Connection connection, P parameters) throws ReportException {
-    return report.fill(connection, parameters);
   }
 
   @Override

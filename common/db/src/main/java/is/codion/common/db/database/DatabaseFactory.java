@@ -47,7 +47,6 @@ public interface DatabaseFactory {
   /**
    * @return a {@link DatabaseFactory} implementation for {@link Database#DATABASE_URL}
    * @throws IllegalStateException in case {@link Database#DATABASE_URL} ('codion.db.url') is not specified.
-   * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of the database driver failed
    * @throws IllegalArgumentException in case no implementation exists for the configured jdbc url
    */
@@ -58,7 +57,6 @@ public interface DatabaseFactory {
   /**
    * @param url the jdbc url
    * @return a {@link DatabaseFactory} implementation for the given jdbc url
-   * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of database driver failed
    * @throws IllegalArgumentException in case no implementation exists for the given jdbc url
    */

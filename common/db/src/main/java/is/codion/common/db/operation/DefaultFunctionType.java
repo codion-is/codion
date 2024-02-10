@@ -18,8 +18,6 @@
  */
 package is.codion.common.db.operation;
 
-import is.codion.common.db.exception.DatabaseException;
-
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
@@ -32,11 +30,6 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
 
   DefaultFunctionType(String name) {
     this.name = requireNonNull(name, "name");
-  }
-
-  @Override
-  public R execute(C connection, DatabaseFunction<C, T, R> function, T argument) throws DatabaseException {
-    return requireNonNull(function, "function").execute(connection, argument);
   }
 
   @Override

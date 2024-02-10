@@ -101,7 +101,7 @@ public final class DatabaseObjectMapperTest {
     Update readCondition = mapper.readValue(jsonString, Update.class);
 
     assertEquals(update.where(), readCondition.where());
-    assertEquals(update.columnValues(), readCondition.columnValues());
+    assertEquals(update.values(), readCondition.values());
   }
 
   @Test
