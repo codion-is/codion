@@ -14,8 +14,8 @@ import is.codion.common.db.exception.DatabaseException;
 public interface DatabaseFunction<C, T, R> {
 
   /**
-   * Executes this function with the given connection
-   * @param connection the connection being used to execute this function
+   * Executes this function using the given connection
+   * @param connection the connection to use
    * @param argument the function argument, if any
    * @return the function return argument
    * @throws DatabaseException in case of an exception during the execution
