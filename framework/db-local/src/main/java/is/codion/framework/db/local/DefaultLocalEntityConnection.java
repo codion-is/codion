@@ -258,8 +258,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public int update(Update update) throws DatabaseException {
-    if (requireNonNull(update, CONDITION).columnValues().isEmpty()) {
-      throw new IllegalArgumentException("No attribute values provided for update");
+    if (requireNonNull(update, CONDITION).values().isEmpty()) {
+      throw new IllegalArgumentException("No values provided for update");
     }
     throwIfReadOnly(update.where().entityType());
 
@@ -844,7 +844,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
                                    List<Object> statementValues) throws UpdateException {
     EntityDefinition entityDefinition = definition(update.where().entityType());
-    for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
+    for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
       ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
       if (!columnDefinition.updatable()) {
         throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());

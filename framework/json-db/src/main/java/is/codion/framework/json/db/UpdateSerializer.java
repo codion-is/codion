@@ -34,7 +34,7 @@ final class UpdateSerializer extends StdSerializer<Update> {
     entityObjectMapper.serializeCondition(update.where(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
-    for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
+    for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
       generator.writeFieldName(columnValue.getKey().name());
       entityObjectMapper.writeValue(generator, columnValue.getValue());
     }

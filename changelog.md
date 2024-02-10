@@ -7,6 +7,8 @@ Codion Change Log
 - ReportType.fill() removed.
 ### is.codion.common.model
 - FilteredModel.Refresher.asyncRefresh() renamed async().
+### is.codion.framework.db.core
+- Update.columnValues() renamed values().
 
 ## 0.17.27
 ### is.codion.common.core

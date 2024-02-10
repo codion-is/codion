@@ -20,11 +20,11 @@ final class DefaultUpdate implements Update, Serializable {
   private static final long serialVersionUID = 1;
 
   private final Condition where;
-  private final Map<Column<?>, Object> columnValues;
+  private final Map<Column<?>, Object> values;
 
   private DefaultUpdate(DefaultUpdate.DefaultBuilder builder) {
     this.where = builder.where;
-    this.columnValues = unmodifiableMap(builder.columnValues);
+    this.values = unmodifiableMap(builder.values);
   }
 
   @Override
@@ -33,8 +33,8 @@ final class DefaultUpdate implements Update, Serializable {
   }
 
   @Override
-  public Map<Column<?>, Object> columnValues() {
-    return columnValues;
+  public Map<Column<?>, Object> values() {
+    return values;
   }
 
   @Override
@@ -47,25 +47,25 @@ final class DefaultUpdate implements Update, Serializable {
     }
     DefaultUpdate that = (DefaultUpdate) object;
     return Objects.equals(where, that.where) &&
-            Objects.equals(columnValues, that.columnValues);
+            Objects.equals(values, that.values);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(where, columnValues);
+    return Objects.hash(where, values);
   }
 
   @Override
   public String toString() {
     return "Update{" +
             "where=" + where +
-            ", columnValues=" + columnValues + "}";
+            ", values=" + values + "}";
   }
 
   static final class DefaultBuilder implements Update.Builder {
 
     private final Condition where;
-    private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
+    private final Map<Column<?>, Object> values = new LinkedHashMap<>();
 
     DefaultBuilder(Condition where) {
       this.where = requireNonNull(where);
@@ -74,10 +74,10 @@ final class DefaultUpdate implements Update, Serializable {
     @Override
     public <T> Builder set(Column<?> column, T value) {
       requireNonNull(column, "column");
-      if (columnValues.containsKey(column)) {
+      if (values.containsKey(column)) {
         throw new IllegalStateException("Update already contains a value for column: " + column);
       }
-      columnValues.put(column, value);
+      values.put(column, value);
 
       return this;
     }
