@@ -252,6 +252,7 @@ public abstract class DefaultDomain implements Domain {
     private final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures = new HashMap<>();
 
     private void addProcedure(ProcedureType<?, ?> procedureType, DatabaseProcedure<?, ?> procedure) {
+      requireNonNull(procedureType, "procedureType");
       requireNonNull(procedure, "procedure");
       if (procedures.containsKey(procedureType)) {
         throw new IllegalArgumentException("Procedure already defined: " + procedureType);
@@ -276,6 +277,7 @@ public abstract class DefaultDomain implements Domain {
     private final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions = new HashMap<>();
 
     private void addFunction(FunctionType<?, ?, ?> functionType, DatabaseFunction<?, ?, ?> function) {
+      requireNonNull(functionType, "functionType");
       requireNonNull(function, "function");
       if (functions.containsKey(functionType)) {
         throw new IllegalArgumentException("Function already defined: " + functionType);
