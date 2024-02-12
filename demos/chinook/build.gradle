@@ -44,7 +44,7 @@ dependencies {
     }
     implementation(libs.jdt.core.compiler)
 
-    runtimeOnly project(":codion-dbms-h2database")
+    runtimeOnly project(":codion-dbms-h2")
     runtimeOnly(libs.h2)
 }
 

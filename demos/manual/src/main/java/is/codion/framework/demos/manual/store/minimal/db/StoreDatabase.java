@@ -21,7 +21,7 @@ package is.codion.framework.demos.manual.store.minimal.db;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.dbms.h2database.H2DatabaseFactory;
+import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;

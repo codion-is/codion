@@ -39,9 +39,9 @@ The most used and tested DBMS modules are:
 |===
 |DBMS|Artifact
 
-|Db2|is.codion:codion-dbms-db2database:{codion-version}
+|Db2|is.codion:codion-dbms-db2:{codion-version}
 |Derby|is.codion:codion-dbms-derby:{codion-version}
-|H2|is.codion:codion-dbms-h2database:{codion-version}
+|H2|is.codion:codion-dbms-h2:{codion-version}
 |HSQL|is.codion:codion-dbms-hsql:{codion-version}
 |MariaDB|is.codion:codion-dbms-mariadb:{codion-version}
 |MySQL|is.codion:codion-dbms-mysql:{codion-version}
@@ -71,7 +71,7 @@ dependencies {
     implementation "is.codion:codion-swing-framework-ui:{codion-version}"
 
     runtimeOnly "is.codion:codion-framework-db-local:{codion-version}"
-    runtimeOnly "is.codion:codion-dbms-h2database:{codion-version}"
+    runtimeOnly "is.codion:codion-dbms-h2:{codion-version}"
     runtimeOnly "com.h2database:h2:2.2.220"
     runtimeOnly "is.codion:codion-plugin-logback-proxy:{codion-version}"
 

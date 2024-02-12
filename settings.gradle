@@ -22,14 +22,14 @@ project(":codion-common-rmi").projectDir = file("common/rmi")
 include "codion-common-i18n"
 project(":codion-common-i18n").projectDir = file("common/i18n")
 
-include "codion-dbms-db2database"
-project(":codion-dbms-db2database").projectDir = file("dbms/db2database")
+include "codion-dbms-db2"
+project(":codion-dbms-db2").projectDir = file("dbms/db2")
 
 include "codion-dbms-derby"
 project(":codion-dbms-derby").projectDir = file("dbms/derby")
 
-include "codion-dbms-h2database"
-project(":codion-dbms-h2database").projectDir = file("dbms/h2database")
+include "codion-dbms-h2"
+project(":codion-dbms-h2").projectDir = file("dbms/h2")
 
 include "codion-dbms-hsqldb"
 project(":codion-dbms-hsqldb").projectDir = file("dbms/hsqldb")

@@ -15,6 +15,6 @@ dependencies {
     implementation(libs.jfreechart)
 
     testRuntimeOnly project(":codion-plugin-hikari-pool")
-    testRuntimeOnly project(":codion-dbms-h2database")
+    testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 }

@@ -4,6 +4,6 @@ dependencies {
 
     implementation(libs.hikari)
 
-    testImplementation project(":codion-dbms-h2database")
+    testImplementation project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 }

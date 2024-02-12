@@ -16,7 +16,7 @@ dependencies {
 
     implementation project(":codion-framework-server")
     implementation project(":codion-framework-servlet")
-    implementation project(":codion-dbms-h2database")
+    implementation project(":codion-dbms-h2")
 
     implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)

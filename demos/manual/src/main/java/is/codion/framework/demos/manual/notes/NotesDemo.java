@@ -21,7 +21,7 @@ package is.codion.framework.demos.manual.notes;
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
-import is.codion.dbms.h2database.H2DatabaseFactory;
+import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;

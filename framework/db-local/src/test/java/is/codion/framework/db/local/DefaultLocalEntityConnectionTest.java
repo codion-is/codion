@@ -30,7 +30,7 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
-import is.codion.dbms.h2database.H2DatabaseFactory;
+import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;

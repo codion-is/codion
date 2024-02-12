@@ -24,7 +24,7 @@ dependencies {
     }
     implementation(libs.jdt.core.compiler)
 
-    testImplementation project(":codion-dbms-h2database")
+    testImplementation project(":codion-dbms-h2")
     testImplementation(libs.javalin) {
         exclude group: "org.jetbrains", module: "annotations"
     }
