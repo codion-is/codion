@@ -74,12 +74,12 @@ image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[op
 Database specific implementation classes.
 
 [discrete]
-=== codion-dbms-db2database
+=== codion-dbms-db2
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/dbms/db2database/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/dbms/db2/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -92,12 +92,12 @@ image::modules/dbms/derby/build/reports/dependency-graph/dependency-graph.svg[op
 ====
 
 [discrete]
-=== codion-dbms-h2database
+=== codion-dbms-h2
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/dbms/h2database/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/dbms/h2/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
