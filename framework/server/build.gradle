@@ -17,7 +17,7 @@ dependencies {
     implementation(libs.slf4j.api)
 
     testRuntimeOnly project(":codion-plugin-hikari-pool")
-    testRuntimeOnly project(":codion-dbms-h2database")
+    testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 
     serverRuntime project(":codion-framework-server")
@@ -33,7 +33,7 @@ dependencies {
     serverRuntime project(path: ":codion-demos-schemabrowser", configuration: "domain")
     serverRuntime project(path: ":codion-demos-world", configuration: "domain")
 
-    serverRuntime project(":codion-dbms-h2database")
+    serverRuntime project(":codion-dbms-h2")
     serverRuntime(libs.h2)
 }
 

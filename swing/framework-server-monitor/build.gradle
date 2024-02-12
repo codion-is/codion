@@ -20,7 +20,7 @@ dependencies {
     testImplementation project(":codion-framework-server")
     testImplementation project(":codion-framework-db-rmi")
     testRuntimeOnly project(":codion-plugin-hikari-pool")
-    testRuntimeOnly project(":codion-dbms-h2database")
+    testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 }
 

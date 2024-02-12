@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019 - 2024, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.dbms.db2database;
+package is.codion.dbms.db2;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;

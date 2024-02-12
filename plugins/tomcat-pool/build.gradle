@@ -5,6 +5,6 @@ dependencies {
     implementation(libs.tomcat.jdbc)
     implementation(libs.tomcat.juli)
 
-    testImplementation project(":codion-dbms-h2database")
+    testImplementation project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 }

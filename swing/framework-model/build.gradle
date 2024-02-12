@@ -13,6 +13,6 @@ dependencies {
     testImplementation project(":codion-framework-db-local")
     testImplementation project(":codion-framework-model-test")
 
-    testRuntimeOnly project(":codion-dbms-h2database")
+    testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 }

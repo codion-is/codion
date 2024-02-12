@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.db
 - FunctionType, ProcedureType.execute() removed.
 - ReportType.fill() removed.
+### is.codion.common.dbms
+- Modules h2database and db2database renamed h2 and db2 respectively.
 ### is.codion.common.model
 - FilteredModel.Refresher.asyncRefresh() renamed async().
 ### is.codion.framework.db.core

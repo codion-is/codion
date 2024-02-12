@@ -8,7 +8,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.dbms.h2database.H2DatabaseFactory;
+import is.codion.dbms.h2.H2DatabaseFactory;
 
 import java.sql.SQLException;
 

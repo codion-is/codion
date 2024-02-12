@@ -9,6 +9,6 @@ dependencies {
     implementation(libs.slf4j.api)
 
     testImplementation project(":codion-framework-server")
-    testRuntimeOnly project(":codion-dbms-h2database")
+    testRuntimeOnly project(":codion-dbms-h2")
     testRuntimeOnly(libs.h2)
 }
