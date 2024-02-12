@@ -23,7 +23,7 @@ module is.codion.framework.demos.manual {
   requires java.desktop;
   requires jasperreports;
   requires is.codion.common.core;
-  requires is.codion.dbms.h2database;
+  requires is.codion.dbms.h2;
   requires is.codion.framework.db.local;
   requires is.codion.framework.db.rmi;
   requires is.codion.framework.db.http;

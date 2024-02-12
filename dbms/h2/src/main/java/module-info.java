@@ -17,16 +17,16 @@
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
 /**
- * {@link is.codion.common.db.database.DatabaseFactory} implementation for Db2.<br>
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for H2.<br>
  * <br>
- * {@link is.codion.dbms.db2database.Db2DatabaseFactory}
+ * {@link is.codion.dbms.h2.H2DatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
-module is.codion.dbms.db2database {
+module is.codion.dbms.h2 {
   requires transitive is.codion.common.db;
 
-  exports is.codion.dbms.db2database;
+  exports is.codion.dbms.h2;
 
   provides is.codion.common.db.database.DatabaseFactory
-          with is.codion.dbms.db2database.Db2DatabaseFactory;
+          with is.codion.dbms.h2.H2DatabaseFactory;
 }
