@@ -1043,30 +1043,30 @@ public class EntityPanel extends JPanel {
   //#############################################################################################
 
   private void requestEditPanelFocus() {
-    if (editPanelState.equalTo(HIDDEN)) {
+    if (editPanelState.isEqualTo(HIDDEN)) {
       editPanelState.set(EMBEDDED);
     }
     editPanel().requestInitialFocus();
   }
 
   private void selectInputComponent() {
-    if (editPanelState.equalTo(HIDDEN)) {
+    if (editPanelState.isEqualTo(HIDDEN)) {
       editPanelState.set(EMBEDDED);
     }
     editPanel().selectInputComponent();
   }
 
   private void updateEditPanelState() {
-    if (editPanelState.notEqualTo(WINDOW)) {
+    if (editPanelState.isNotEqualTo(WINDOW)) {
       Window editPanelWindow = parentWindow(editControlPanel);
       if (editPanelWindow != null) {
         editPanelWindow.dispose();
       }
     }
-    if (editPanelState.equalTo(EMBEDDED)) {
+    if (editPanelState.isEqualTo(EMBEDDED)) {
       editControlTablePanel.add(editControlPanel, BorderLayout.NORTH);
     }
-    else if (editPanelState.equalTo(HIDDEN)) {
+    else if (editPanelState.isEqualTo(HIDDEN)) {
       editControlTablePanel.remove(editControlPanel);
     }
     else {
@@ -1078,10 +1078,10 @@ public class EntityPanel extends JPanel {
   }
 
   private void toggleEditPanelState() {
-    if (editPanelState.equalTo(WINDOW)) {
+    if (editPanelState.isEqualTo(WINDOW)) {
       editPanelState.set(HIDDEN);
     }
-    else if (editPanelState.equalTo(EMBEDDED)) {
+    else if (editPanelState.isEqualTo(EMBEDDED)) {
       editPanelState.set(WINDOW);
     }
     else {
@@ -1122,7 +1122,7 @@ public class EntityPanel extends JPanel {
 
     @Override
     public void execute() {
-      if (containsEditPanel() && editPanelState.equalTo(HIDDEN)) {
+      if (containsEditPanel() && editPanelState.isEqualTo(HIDDEN)) {
         editPanelState.set(WINDOW);
       }
     }

@@ -252,7 +252,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   private void initializeDetailPanelState() {
     if (detailPanelTabbedPane != null) {
       Value<PanelState> detailPanelStateValue = detailController.panelState(selectedDetailPanel());
-      if (detailPanelStateValue.notEqualTo(detailPanelState)) {
+      if (detailPanelStateValue.isNotEqualTo(detailPanelState)) {
         detailPanelStateValue.set(detailPanelState);
       }
       else {
@@ -399,7 +399,7 @@ public final class TabbedPanelLayout implements PanelLayout {
       }
 
       PanelState previousPanelState = previousPanelState();
-      if (panelState.notEqualTo(HIDDEN)) {
+      if (panelState.isNotEqualTo(HIDDEN)) {
         selectedDetailPanel().initialize();
       }
 
@@ -409,7 +409,7 @@ public final class TabbedPanelLayout implements PanelLayout {
                   .filter(TabbedDetailController.class::isInstance)
                   .map(TabbedDetailController.class::cast)
                   .ifPresent(controller -> {
-                    if (controller.panelState.equalTo(WINDOW)) {
+                    if (controller.panelState.isEqualTo(WINDOW)) {
                       controller.panelState.set(HIDDEN);
                     }
                   });
@@ -420,14 +420,14 @@ public final class TabbedPanelLayout implements PanelLayout {
       SwingEntityModel detailModel = selectedDetailPanel().model();
       if (entityPanel.model().containsDetailModel(detailModel)) {
         entityPanel.model().detailModelLink(detailModel)
-                .active().set(panelState.notEqualTo(HIDDEN));
+                .active().set(panelState.isNotEqualTo(HIDDEN));
       }
-      if (panelState.equalTo(EMBEDDED)) {
+      if (panelState.isEqualTo(EMBEDDED)) {
         if (tableDetailSplitPane.getRightComponent() != detailPanelTabbedPane) {
           tableDetailSplitPane.setRightComponent(detailPanelTabbedPane);
         }
       }
-      else if (panelState.equalTo(HIDDEN)) {
+      else if (panelState.isEqualTo(HIDDEN)) {
         tableDetailSplitPane.setRightComponent(null);
       }
       else {
@@ -534,7 +534,7 @@ public final class TabbedPanelLayout implements PanelLayout {
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   //the frame can be closed when embedding the panel, don't hide if that's the case
-                  if (panelState.notEqualTo(EMBEDDED)) {
+                  if (panelState.isNotEqualTo(EMBEDDED)) {
                     panelState.set(HIDDEN);
                   }
                 })
@@ -547,7 +547,7 @@ public final class TabbedPanelLayout implements PanelLayout {
               .modal(false)
               .onClosed(e -> {
                 //the dialog can be closed when embedding the panel, don't hide if that's the case
-                if (panelState.notEqualTo(EMBEDDED)) {
+                if (panelState.isNotEqualTo(EMBEDDED)) {
                   panelState.set(HIDDEN);
                 }
               })
@@ -572,7 +572,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
       @Override
       public void execute() {
-        if (panelState.equalTo(HIDDEN)) {
+        if (panelState.isEqualTo(HIDDEN)) {
           panelState.set(EMBEDDED);
         }
         detailPanel.activate();

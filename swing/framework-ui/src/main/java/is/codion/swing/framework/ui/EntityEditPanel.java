@@ -437,7 +437,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling.equalTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
+    if (referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
       displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }

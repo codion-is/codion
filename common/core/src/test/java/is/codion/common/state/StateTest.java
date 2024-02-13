@@ -82,7 +82,7 @@ public class StateTest {
     assertFalse(state.isNull());
     assertTrue(state.isNotNull());
     assertFalse(state.nullable());
-    assertFalse(state.equalTo(true));
+    assertFalse(state.isEqualTo(true));
     assertTrue(state.optional().isPresent());
     state.accept(true);//calls set()
     assertTrue(state.get(), "State should be active after activation");

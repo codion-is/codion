@@ -117,7 +117,7 @@ public final class SearchHighlighter {
   void nextSearchPosition() {
     if (!searchTextPositions.isEmpty()) {
       deselectCurrentSearchPosition();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.equalTo(searchTextPositions.size() - 1)) {
+      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.isEqualTo(searchTextPositions.size() - 1)) {
         currentSearchTextPositionIndex.set(0);
       }
       else {
@@ -133,7 +133,7 @@ public final class SearchHighlighter {
   void previousSearchPosition() {
     if (!searchTextPositions.isEmpty()) {
       deselectCurrentSearchPosition();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.equalTo(0)) {
+      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.isEqualTo(0)) {
         currentSearchTextPositionIndex.set(searchTextPositions.size() - 1);
       }
       else {
