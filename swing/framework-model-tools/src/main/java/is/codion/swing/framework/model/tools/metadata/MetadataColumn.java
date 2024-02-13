@@ -37,7 +37,7 @@ public final class MetadataColumn {
     this.decimalDigits = decimalDigits;
     this.nullable = nullable;
     this.defaultValue = defaultValue;
-    this.comment = comment;
+    this.comment = comment == null ? null : comment.trim();
     this.primaryKeyIndex = primaryKeyIndex;
     this.foreignKeyColumn = foreignKeyColumn;
     this.autoIncrement = autoIncrement;

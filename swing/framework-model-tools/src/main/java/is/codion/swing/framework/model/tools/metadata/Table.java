@@ -33,7 +33,7 @@ public final class Table {
     this.schema = requireNonNull(schema);
     this.tableName = requireNonNull(tableName);
     this.tableType = requireNonNull(tableType);
-    this.comment = comment;
+    this.comment = comment == null ? null : comment.trim();
     this.foreignKeyColumns = requireNonNull(foreignKeyColumns);
     requireNonNull(columns).forEach(column -> this.columns.put(column.columnName(), column));
   }

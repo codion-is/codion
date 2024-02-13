@@ -15,6 +15,7 @@ Codion Change Log
 - Update.columnValues() renamed values().
 ### is.codion.swing.framework.model.tools
 - DatabaseExplorerModel, now displays the entity table type (view/table).
+- DatabaseExplorerModel, now trims table and column comments.
 
 ## 0.17.27
 ### is.codion.common.core
