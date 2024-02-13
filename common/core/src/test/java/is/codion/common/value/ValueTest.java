@@ -68,11 +68,11 @@ public class ValueTest {
     Value<Integer> intValue = Value.value(42, -1);
     assertFalse(intValue.nullable());
     assertTrue(intValue.optional().isPresent());
-    assertTrue(intValue.equalTo(42));
+    assertTrue(intValue.isEqualTo(42));
     ValueObserver<Integer> valueObserver = intValue.observer();
     assertFalse(valueObserver.nullable());
     assertTrue(valueObserver.optional().isPresent());
-    assertTrue(valueObserver.equalTo(42));
+    assertTrue(valueObserver.isEqualTo(42));
     Runnable listener = eventCounter::incrementAndGet;
     assertTrue(valueObserver.addListener(listener));
     assertFalse(valueObserver.addListener(listener));
@@ -85,9 +85,9 @@ public class ValueTest {
     assertEquals(0, eventCounter.get());
     intValue.set(20);
     assertEquals(1, eventCounter.get());
-    assertTrue(intValue.equalTo(20));
+    assertTrue(intValue.isEqualTo(20));
     intValue.set(null);
-    assertTrue(intValue.equalTo(-1));
+    assertTrue(intValue.isEqualTo(-1));
     assertFalse(intValue.isNull());
     assertTrue(intValue.isNotNull());
     assertTrue(intValue.optional().isPresent());
@@ -155,7 +155,7 @@ public class ValueTest {
     assertNull(modelValue.get());
     assertTrue(modelValue.isNull());
     assertFalse(modelValue.isNotNull());
-    assertTrue(modelValue.equalTo(null));
+    assertTrue(modelValue.isEqualTo(null));
     assertNull(uiValue.get());
     assertTrue(uiValue.isNull());
     assertEquals(3, modelValueEventCounter.get());

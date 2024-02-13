@@ -65,7 +65,7 @@ public final class KeyboardShortcutsTest {
       Value<KeyStroke> keyStrokeValue = shortcuts.keyStroke(shortcut);
       Value<KeyStroke> keyStrokeValueCopy = copy.keyStroke(shortcut);
       assertNotSame(keyStrokeValue, keyStrokeValueCopy);
-      assertTrue(keyStrokeValue.equalTo(keyStrokeValueCopy.get()));
+      assertTrue(keyStrokeValue.isEqualTo(keyStrokeValueCopy.get()));
     });
   }
 }

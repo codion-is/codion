@@ -893,7 +893,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     Collection<Entity> entitiesToAdd = insertedEntities.stream()
             .filter(entity -> entity.entityType().equals(entityType()))
             .collect(toList());
-    if (!onInsert.equalTo(OnInsert.DO_NOTHING) && !entitiesToAdd.isEmpty()) {
+    if (!onInsert.isEqualTo(OnInsert.DO_NOTHING) && !entitiesToAdd.isEmpty()) {
       if (!selectionModel().isSelectionEmpty()) {
         selectionModel().clearSelection();
       }

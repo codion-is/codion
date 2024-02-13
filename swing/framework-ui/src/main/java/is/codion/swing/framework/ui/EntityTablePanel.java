@@ -1386,7 +1386,7 @@ public class EntityTablePanel extends JPanel {
   private void setConditionPanelVisible(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
-      refreshButtonToolBar().setVisible(refreshButtonVisible.equalTo(RefreshButtonVisible.ALWAYS) || visible);
+      refreshButtonToolBar().setVisible(refreshButtonVisible.isEqualTo(RefreshButtonVisible.ALWAYS) || visible);
       revalidate();
     }
   }
@@ -1989,7 +1989,7 @@ public class EntityTablePanel extends JPanel {
       }
       int selectionCount = tableModel.selectionModel().selectionCount();
       StringBuilder builder = new StringBuilder();
-      if (tableModel.limit().equalTo(tableModel.getRowCount())) {
+      if (tableModel.limit().isEqualTo(tableModel.getRowCount())) {
         builder.append(MESSAGES.getString("limited_to")).append(" ");
       }
       builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));

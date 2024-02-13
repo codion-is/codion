@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.28-SNAPSHOT
+### is.codion.common.core
+- ValueObserver.equalTo() and notEqualTo() renamed isEqualTo() and isNotEqualTo() respectively, now consistent with isNull() and isNotNull() and less likely to be confused with equals().
 ### is.codion.common.db
 - FunctionType, ProcedureType.execute() removed.
 - ReportType.fill() removed.
@@ -13,6 +15,12 @@ Codion Change Log
 - Update.columnValues() renamed values().
 ### is.codion.framework.servlet
 - Javalin upgraded to v6.
+### is.codion.framework.domain.test
+- EntityTestUnit.insertOrSelect() error message now includes entity being inserted.
+### is.codion.swing.framework.model.tools
+- DatabaseExplorerModel, now displays the entity table type (view/table).
+- DatabaseExplorerModel, now trims table and column comments.
+- DatabaseExplorerModel, now escapes double quotes in table and column comments.
 
 ## 0.17.27
 ### is.codion.common.core

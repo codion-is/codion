@@ -53,7 +53,7 @@ public class ValueSetTest {
     assertFalse(valueSet.empty());
     assertTrue(valueSet.notEmpty());
     assertEquals(initialValues, valueSet.get());
-    assertTrue(valueSet.equalTo(initialValues));
+    assertTrue(valueSet.isEqualTo(initialValues));
 
     assertFalse(valueSet.add(1));
     assertFalse(valueSet.add(2));

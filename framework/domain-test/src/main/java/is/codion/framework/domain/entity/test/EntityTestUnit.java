@@ -300,7 +300,7 @@ public class EntityTestUnit {
     }
     catch (DatabaseException e) {
       LOG.error("EntityTestUnit.insertOrSelect()", e);
-      throw e;
+      throw new DatabaseException(e.getMessage() + ": " + entity);
     }
   }
 
