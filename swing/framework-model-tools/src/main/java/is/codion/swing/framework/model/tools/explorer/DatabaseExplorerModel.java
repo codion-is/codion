@@ -134,12 +134,16 @@ public final class DatabaseExplorerModel {
               .headerValue("Domain")
               .columnClass(String.class)
               .build();
+      FilteredTableColumn<Integer> typeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.TABLE_TYPE)
+              .headerValue("Type")
+              .columnClass(String.class)
+              .build();
       FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.ENTITY)
               .headerValue("Entity")
               .columnClass(String.class)
               .build();
 
-      return asList(domainColumn, entityTypeColumn);
+      return asList(domainColumn, typeColumn, entityTypeColumn);
     }
   }
 
@@ -147,7 +151,7 @@ public final class DatabaseExplorerModel {
     DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
 
     return domain.entities().definitions().stream()
-            .map(definition -> new DefinitionRow(domain, definition))
+            .map(definition -> new DefinitionRow(domain, domain.tableType(definition.entityType()), definition))
             .collect(toList());
   }
 
@@ -183,13 +187,16 @@ public final class DatabaseExplorerModel {
   private static final class DefinitionColumnValueProvider implements FilteredTableModel.ColumnValueProvider<DefinitionRow, Integer> {
 
     private static final int DOMAIN = 0;
-    private static final int ENTITY = 1;
+    private static final int TABLE_TYPE = 1;
+    private static final int ENTITY = 2;
 
     @Override
     public Object value(DefinitionRow row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case DOMAIN:
           return row.domain.type().name();
+        case TABLE_TYPE:
+          return row.tableType;
         case ENTITY:
           return row.definition.entityType().name();
         default:

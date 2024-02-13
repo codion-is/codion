@@ -39,6 +39,15 @@ final class DatabaseDomain extends DefaultDomain {
     tables.forEach(this::defineEntity);
   }
 
+  String tableType(EntityType entityType) {
+    return tableEntityTypes.entrySet().stream()
+            .filter(entry -> entry.getValue().equals(entityType))
+            .findFirst()
+            .map(Map.Entry::getKey)
+            .map(Table::tableType)
+            .orElseThrow(IllegalArgumentException::new);
+  }
+
   private void defineEntity(Table table) {
     if (!tableEntityTypes.containsKey(table)) {
       EntityType entityType = type().entityType(table.schema().name() + "." + table.tableName());

@@ -46,7 +46,7 @@ public final class DatabaseExplorerModelTest {
     model.schemaModel().selectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
     model.definitionModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
-    model.definitionModel().sortModel().addSortOrder(1, SortOrder.ASCENDING);
+    model.definitionModel().sortModel().addSortOrder(2, SortOrder.ASCENDING);
   }
 
   @AfterEach

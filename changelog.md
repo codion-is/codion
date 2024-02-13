@@ -13,6 +13,8 @@ Codion Change Log
 - FilteredModel.Refresher.asyncRefresh() renamed async().
 ### is.codion.framework.db.core
 - Update.columnValues() renamed values().
+### is.codion.swing.framework.model.tools
+- DatabaseExplorerModel, now displays the entity table type (view/table).
 
 ## 0.17.27
 ### is.codion.common.core
