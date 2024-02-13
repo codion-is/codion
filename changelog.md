@@ -13,6 +13,8 @@ Codion Change Log
 - FilteredModel.Refresher.asyncRefresh() renamed async().
 ### is.codion.framework.db.core
 - Update.columnValues() renamed values().
+### is.codion.framework.domain.test
+- EntityTestUnit.insertOrSelect() error message now includes entity being inserted.
 ### is.codion.swing.framework.model.tools
 - DatabaseExplorerModel, now displays the entity table type (view/table).
 - DatabaseExplorerModel, now trims table and column comments.
