@@ -98,7 +98,9 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
      * @param trueValue the value representing 'true' in the underlying column
      * @param falseValue the value representing 'false' in the underlying column
      * @return a new {@link ColumnDefinition.Builder}
-     * @throws IllegalStateException in case this columnn is note a boolean column
+     * @throws NullPointerException in case either the true or false value is null
+     * @throws IllegalStateException in case this column is not a boolean column
+     * @throws IllegalArgumentException in case the values representing true and false are equal
      */
     <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
                                                                                                            C trueValue, C falseValue);
@@ -133,10 +135,12 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 
     /**
      * A convenience method for a {@link Converter} for boolean columns
+     * @param <C> the actual column type
      * @param trueValue the true value
      * @param falseValue the false value
      * @return a boolean value converter
-     * @param <C> the actual column type
+     * @throws NullPointerException in case either the true or false value is null
+     * @throws IllegalArgumentException in case the values representing true and false are equal
      */
     static <C> Converter<Boolean, C> booleanConverter(C trueValue, C falseValue) {
       return new DefaultColumn.BooleanConverter<>(trueValue, falseValue);
