@@ -18,4 +18,9 @@ public final class UpdateTest {
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }
+
+  @Test
+  void updateNoValues() {
+    assertThrows(IllegalStateException.class, () -> Update.all(Employee.TYPE).build());
+  }
 }

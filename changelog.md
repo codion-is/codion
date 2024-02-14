@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultColumn.BooleanConverter, now throws exception in case the values representing true and false are equal.
 ### is.codion.framework.db.core
 - Update.columnValues() renamed values().
+- DefaultUpdate.DefaultBuilder.build() now throws exception in case of no values to update.
 ### is.codion.framework.domain.test
 - EntityTestUnit.insertOrSelect() error message now includes entity being inserted.
 ### is.codion.swing.framework.model.tools

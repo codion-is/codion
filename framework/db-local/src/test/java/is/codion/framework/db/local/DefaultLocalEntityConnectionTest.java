@@ -59,6 +59,7 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -691,7 +692,16 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithConditionNoColumns() {
-    Update update = Update.all(Employee.TYPE).build();
+    Update update = new Update() {
+      @Override
+      public Condition where() {
+        return Condition.all(Employee.TYPE);
+      }
+      @Override
+      public Map<Column<?>, Object> values() {
+        return emptyMap();
+      }
+    };
     assertThrows(IllegalArgumentException.class, () -> connection.update(update));
   }
 
