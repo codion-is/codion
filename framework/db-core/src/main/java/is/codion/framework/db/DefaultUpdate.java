@@ -37,7 +37,7 @@ final class DefaultUpdate implements Update, Serializable {
   private final Condition where;
   private final Map<Column<?>, Object> values;
 
-  private DefaultUpdate(DefaultUpdate.DefaultBuilder builder) {
+  private DefaultUpdate(DefaultBuilder builder) {
     this.where = builder.where;
     this.values = unmodifiableMap(builder.values);
   }
@@ -99,6 +99,10 @@ final class DefaultUpdate implements Update, Serializable {
 
     @Override
     public Update build() {
+      if (values.isEmpty()) {
+        throw new IllegalStateException("No values provided for update");
+      }
+
       return new DefaultUpdate(this);
     }
   }

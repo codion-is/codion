@@ -231,6 +231,9 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
     private final T falseValue;
 
     BooleanConverter(T trueValue, T falseValue) {
+      if (Objects.equals(trueValue, falseValue)) {
+        throw new IllegalArgumentException("The values representing true and false are equal: " + trueValue);
+      }
       this.trueValue = requireNonNull(trueValue);
       this.falseValue = requireNonNull(falseValue);
     }

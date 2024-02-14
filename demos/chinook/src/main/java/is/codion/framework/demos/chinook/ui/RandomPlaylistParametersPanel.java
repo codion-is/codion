@@ -58,42 +58,56 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
   RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
     super(borderLayout());
-    this.playlistNameField = stringField(model.playlistName)
-            .transferFocusOnEnter(true)
-            .selectAllOnFocusGained(true)
-            .maximumLength(120)
-            .columns(10)
-            .build();
-    this.noOfTracksField = integerField(model.noOfTracks)
-            .valueRange(1, 5000)
-            .transferFocusOnEnter(true)
-            .selectAllOnFocusGained(true)
-            .columns(3)
-            .build();
-    this.genreList = Components.list(createGenreListModel(connectionProvider), model.genres)
-            .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-            .visibleRowCount(5)
-            .build();
-    gridLayoutPanel(1, 2)
-            .add(new JLabel(BUNDLE.getString("playlist_name")))
-            .add(new JLabel(BUNDLE.getString("no_of_tracks")))
-            .build(panel -> add(panel, BorderLayout.NORTH));
-    gridLayoutPanel(1, 2)
-            .add(playlistNameField)
-            .add(noOfTracksField)
-            .build(panel -> add(panel, BorderLayout.CENTER));
-    borderLayoutPanel()
-            .northComponent(new JLabel(BUNDLE.getString("genres")))
-            .centerComponent(new JScrollPane(genreList))
-            .build(panel -> add(panel, BorderLayout.SOUTH));
+    this.playlistNameField = createPlaylistNameField();
+    this.noOfTracksField = createNoOfTracksField();
+    this.genreList = createGenreList(connectionProvider);
+    add(borderLayoutPanel()
+            .northComponent(gridLayoutPanel(1, 2)
+                    .add(new JLabel(BUNDLE.getString("playlist_name")))
+                    .add(new JLabel(BUNDLE.getString("no_of_tracks")))
+                    .build())
+            .centerComponent(gridLayoutPanel(1, 2)
+                    .add(playlistNameField)
+                    .add(noOfTracksField)
+                    .build())
+            .southComponent(borderLayoutPanel()
+                    .northComponent(new JLabel(BUNDLE.getString("genres")))
+                    .centerComponent(new JScrollPane(genreList))
+                    .build())
+            .build(), BorderLayout.CENTER);
   }
 
-  StateObserver parametersValidObserver() {
+  StateObserver parametersValid() {
     return model.parametersValid.observer();
   }
 
   RandomPlaylistParameters get() {
     return new RandomPlaylistParameters(model.playlistName.get(), model.noOfTracks.get(), model.genres.get());
+  }
+
+  private JTextField createPlaylistNameField() {
+    return stringField(model.playlistName)
+            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
+            .maximumLength(120)
+            .columns(10)
+            .build();
+  }
+
+  private NumberField<Integer> createNoOfTracksField() {
+    return integerField(model.noOfTracks)
+            .valueRange(1, 5000)
+            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
+            .columns(3)
+            .build();
+  }
+
+  private JList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
+    return Components.list(createGenreListModel(connectionProvider), model.genres)
+            .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+            .visibleRowCount(5)
+            .build();
   }
 
   private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {

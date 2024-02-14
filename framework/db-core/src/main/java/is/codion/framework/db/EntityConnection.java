@@ -742,6 +742,7 @@ public interface EntityConnection extends AutoCloseable {
 
       /**
        * @return a new {@link Update} instance based on this builder
+       * @throws IllegalStateException in case no values have been specified
        */
       Update build();
     }

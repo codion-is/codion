@@ -11,8 +11,11 @@ Codion Change Log
 - Modules h2database and db2database renamed h2 and db2 respectively.
 ### is.codion.common.model
 - FilteredModel.Refresher.asyncRefresh() renamed async().
+### is.codion.framework.domain
+- DefaultColumn.BooleanConverter, now throws exception in case the values representing true and false are equal.
 ### is.codion.framework.db.core
 - Update.columnValues() renamed values().
+- DefaultUpdate.DefaultBuilder.build() now throws exception in case of no values to update.
 ### is.codion.framework.servlet
 - Javalin upgraded to v6.
 ### is.codion.framework.domain.test
