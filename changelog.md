@@ -20,10 +20,19 @@ Codion Change Log
 - Javalin upgraded to v6.
 ### is.codion.framework.domain.test
 - EntityTestUnit.insertOrSelect() error message now includes entity being inserted.
+### is.codion.swing.common.ui
+- FilteredTableColumn.toolTipText() and FilteredTableColumn.Builder.toolTipText() added.
+- FilteredTable now uses a custom header for displaying column tooltips.
+- DefaultLookAndFeelProvider bug fixed, cross platform look and feel now takes precedence over system look and feel.
+### is.codion.swing.framework.model
+- SwingEntityColumnFactory now uses the attribute descriptions as column tooltips.
 ### is.codion.swing.framework.model.tools
 - DatabaseExplorerModel, now displays the entity table type (view/table).
 - DatabaseExplorerModel, now trims table and column comments.
 - DatabaseExplorerModel, now escapes double quotes in table and column comments.
+- DatabaseExplorerModel, refactoring and renaming of related classes.
+### is.codion.swing.framework.ui.tools
+- DatabaseExplorerPanel now with FlatLaf available.
 
 ## 0.17.27
 ### is.codion.common.core

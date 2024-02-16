@@ -18,6 +18,8 @@
  */
 package is.codion.swing.framework.model.tools.metadata;
 
+import is.codion.swing.framework.model.tools.metadata.MetaDataTable.TablePacker;
+
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,14 +33,14 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
-public final class Schema {
+public final class MetaDataSchema {
 
   private final String name;
-  private final Map<String, Table> tables = new HashMap<>();
+  private final Map<String, MetaDataTable> tables = new HashMap<>();
 
   private boolean populated = false;
 
-  Schema(String name) {
+  MetaDataSchema(String name) {
     this.name = requireNonNull(name);
   }
 
@@ -46,18 +48,18 @@ public final class Schema {
     return name;
   }
 
-  public Map<String, Table> tables() {
+  public Map<String, MetaDataTable> tables() {
     return unmodifiableMap(tables);
   }
 
-  public void populate(DatabaseMetaData metaData, Map<String, Schema> schemas,
+  public void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas,
                        Consumer<String> schemaNotifier, Set<String> populatedSchemas) {
     if (!populatedSchemas.contains(name)) {
       schemaNotifier.accept(name);
       tables.clear();
       try (ResultSet resultSet = metaData.getTables(null, name, null, new String[]{"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
-                .collect(toMap(Table::tableName, Function.identity())));
+                .collect(toMap(MetaDataTable::tableName, Function.identity())));
         tables.values().stream()
                 .flatMap(table -> table.referencedSchemaNames().stream())
                 .map(schemas::get)
@@ -89,7 +91,7 @@ public final class Schema {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    Schema schema = (Schema) object;
+    MetaDataSchema schema = (MetaDataSchema) object;
 
     return name.equals(schema.name);
   }

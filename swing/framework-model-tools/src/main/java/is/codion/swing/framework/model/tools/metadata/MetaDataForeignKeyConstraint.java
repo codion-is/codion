@@ -18,21 +18,30 @@
  */
 package is.codion.swing.framework.model.tools.metadata;
 
-public final class PrimaryKeyColumn {
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-  private final String columnName;
-  private final int index;
+import static java.util.Objects.requireNonNull;
 
-  PrimaryKeyColumn(String columnName, int index) {
-    this.columnName = columnName;
-    this.index = index;
+public final class MetaDataForeignKeyConstraint {
+
+  private final MetaDataTable referencedTable;
+  private final Map<MetaDataColumn, MetaDataColumn> references = new LinkedHashMap<>();
+
+  MetaDataForeignKeyConstraint(MetaDataTable referencedTable) {
+    this.referencedTable = requireNonNull(referencedTable);
   }
 
-  public String columnName() {
-    return columnName;
+  public MetaDataTable referencedTable() {
+    return referencedTable;
   }
 
-  public int index() {
-    return index;
+  public Map<MetaDataColumn, MetaDataColumn> references() {
+    return Collections.unmodifiableMap(references);
+  }
+
+  void addReference(MetaDataColumn fkColumn, MetaDataColumn pkColumn) {
+    references.put(fkColumn, pkColumn);
   }
 }

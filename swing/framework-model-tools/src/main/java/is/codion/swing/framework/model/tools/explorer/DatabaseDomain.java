@@ -27,9 +27,9 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.framework.model.tools.metadata.ForeignKeyConstraint;
-import is.codion.swing.framework.model.tools.metadata.MetadataColumn;
-import is.codion.swing.framework.model.tools.metadata.Table;
+import is.codion.swing.framework.model.tools.metadata.MetaDataColumn;
+import is.codion.swing.framework.model.tools.metadata.MetaDataForeignKeyConstraint;
+import is.codion.swing.framework.model.tools.metadata.MetaDataTable;
 
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
@@ -47,10 +47,11 @@ final class DatabaseDomain extends DefaultDomain {
 
   private static final int MAXIMUM_COLUMN_SIZE = 2_147_483_647;
 
-  private final Map<Table, EntityType> tableEntityTypes = new HashMap<>();
+  private final Map<MetaDataTable, EntityType> tableEntityTypes = new HashMap<>();
 
-  DatabaseDomain(DomainType domainType, Collection<Table> tables) {
+  DatabaseDomain(DomainType domainType, Collection<MetaDataTable> tables) {
     super(domainType);
+    setStrictForeignKeys(false);
     tables.forEach(this::defineEntity);
   }
 
@@ -59,23 +60,23 @@ final class DatabaseDomain extends DefaultDomain {
             .filter(entry -> entry.getValue().equals(entityType))
             .findFirst()
             .map(Map.Entry::getKey)
-            .map(Table::tableType)
+            .map(MetaDataTable::tableType)
             .orElseThrow(IllegalArgumentException::new);
   }
 
-  private void defineEntity(Table table) {
+  private void defineEntity(MetaDataTable table) {
     if (!tableEntityTypes.containsKey(table)) {
       EntityType entityType = type().entityType(table.schema().name() + "." + table.tableName());
       tableEntityTypes.put(table, entityType);
       table.foreignKeys().stream()
-              .map(ForeignKeyConstraint::referencedTable)
+              .map(MetaDataForeignKeyConstraint::referencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
       define(table, entityType);
     }
   }
 
-  private void define(Table table, EntityType entityType) {
+  private void define(MetaDataTable table, EntityType entityType) {
     List<AttributeDefinition.Builder<?, ?>> definitionBuilders = definitionBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
     if (!definitionBuilders.isEmpty()) {
       EntityDefinition.Builder definitionBuilder = entityType.define(definitionBuilders.toArray(new AttributeDefinition.Builder[0]));
@@ -89,8 +90,8 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private List<AttributeDefinition.Builder<?, ?>> definitionBuilders(Table table, EntityType entityType,
-                                                                     Collection<ForeignKeyConstraint> foreignKeyConstraints) {
+  private List<AttributeDefinition.Builder<?, ?>> definitionBuilders(MetaDataTable table, EntityType entityType,
+                                                                     Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
     List<AttributeDefinition.Builder<?, ?>> builders = new ArrayList<>();
     table.columns().forEach(column -> {
       builders.add(columnDefinitionBuilder(column, entityType));
@@ -110,8 +111,8 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private AttributeDefinition.Builder<?, ?> foreignKeyDefinitionBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
-    Table referencedTable = foreignKeyConstraint.referencedTable();
+  private AttributeDefinition.Builder<?, ?> foreignKeyDefinitionBuilder(MetaDataForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
+    MetaDataTable referencedTable = foreignKeyConstraint.referencedTable();
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
             foreignKeyConstraint.references().entrySet().stream()
@@ -121,7 +122,7 @@ final class DatabaseDomain extends DefaultDomain {
     return foreignKey.define().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
   }
 
-  private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetadataColumn metadataColumn, EntityType entityType) {
+  private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
     String caption = caption(metadataColumn.columnName());
     Column<?> column = column(entityType, metadataColumn);
     ColumnDefinition.Builder<?, ?> builder;
@@ -150,7 +151,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builder;
   }
 
-  private static <T> Column<T> column(EntityType entityType, MetadataColumn column) {
+  private static <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
     return (Column<T>) entityType.column(column.columnName(), column.columnClass());
   }
 
@@ -160,23 +161,23 @@ final class DatabaseDomain extends DefaultDomain {
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
-  private static boolean lastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, MetadataColumn column) {
+  private static boolean lastKeyColumn(MetaDataForeignKeyConstraint foreignKeyConstraint, MetaDataColumn column) {
     return foreignKeyConstraint.references().keySet().stream()
-            .mapToInt(MetadataColumn::position)
+            .mapToInt(MetaDataColumn::position)
             .max()
             .orElse(-1) == column.position();
   }
 
-  private static String createForeignKeyName(ForeignKeyConstraint foreignKeyConstraint) {
+  private static String createForeignKeyName(MetaDataForeignKeyConstraint foreignKeyConstraint) {
     return foreignKeyConstraint.references().keySet().stream()
-            .map(MetadataColumn::columnName)
+            .map(MetaDataColumn::columnName)
             .map(String::toUpperCase)
             .collect(joining("_"));
   }
 
-  private static boolean tableHasAutoIncrementPrimaryKeyColumn(Table table) {
+  private static boolean tableHasAutoIncrementPrimaryKeyColumn(MetaDataTable table) {
     return table.columns().stream()
-            .filter(MetadataColumn::primaryKeyColumn)
-            .anyMatch(MetadataColumn::autoIncrement);
+            .filter(MetaDataColumn::primaryKeyColumn)
+            .anyMatch(MetaDataColumn::autoIncrement);
   }
 }

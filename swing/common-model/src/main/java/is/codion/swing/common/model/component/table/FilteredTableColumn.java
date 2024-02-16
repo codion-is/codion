@@ -50,12 +50,14 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   private final Class<?> columnClass;
   private final Comparator<?> comparator;
+  private final String toolTipText;
 
   private FilteredTableColumn(DefaultBuilder<C> builder) {
     super(builder.modelIndex);
     super.setIdentifier(builder.identifier);
     this.columnClass = builder.columnClass;
     this.comparator = builder.comparator == null ? defaultComparator(this.columnClass) : builder.comparator;
+    this.toolTipText = builder.toolTipText;
     if (builder.preferredWidth != 0) {
       setPreferredWidth(builder.preferredWidth);
     }
@@ -109,6 +111,13 @@ public final class FilteredTableColumn<C> extends TableColumn {
    */
   public Comparator<?> comparator() {
     return comparator;
+  }
+
+  /**
+   * @return the tool tip text to display for this column, null in case of no tool tip
+   */
+  public String toolTipText() {
+    return toolTipText;
   }
 
   /**
@@ -222,6 +231,12 @@ public final class FilteredTableColumn<C> extends TableColumn {
     Builder<C> headerRenderer(TableCellRenderer headerRenderer);
 
     /**
+     * @param toolTipText the column tool tip text
+     * @return this builder instance
+     */
+    Builder<C> toolTipText(String toolTipText);
+
+    /**
      * @param cellEditor the cell editor
      * @return this builder instance
      */
@@ -252,6 +267,7 @@ public final class FilteredTableColumn<C> extends TableColumn {
     private int width;
     private boolean resizable = true;
     private Object headerValue;
+    private String toolTipText;
     private TableCellRenderer headerRenderer;
     private TableCellEditor cellEditor;
     private TableCellRenderer cellRenderer;
@@ -316,6 +332,12 @@ public final class FilteredTableColumn<C> extends TableColumn {
     @Override
     public Builder<C> headerRenderer(TableCellRenderer headerRenderer) {
       this.headerRenderer = requireNonNull(headerRenderer);
+      return this;
+    }
+
+    @Override
+    public Builder<C> toolTipText(String toolTipText) {
+      this.toolTipText = toolTipText;
       return this;
     }
 

@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 
 public final class MetaDataModel {
 
-  private final Map<String, Schema> schemas;
+  private final Map<String, MetaDataSchema> schemas;
   private final DatabaseMetaData metaData;
 
   public MetaDataModel(DatabaseMetaData metaData) throws DatabaseException {
@@ -47,25 +47,25 @@ public final class MetaDataModel {
     }
   }
 
-  public Collection<Schema> schemas() {
+  public Collection<MetaDataSchema> schemas() {
     return unmodifiableCollection(schemas.values());
   }
 
   public void populateSchema(String schemaName, Consumer<String> schemaNotifier) {
-    Schema schema = schemas.get(requireNonNull(schemaName));
+    MetaDataSchema schema = schemas.get(requireNonNull(schemaName));
     if (schema == null) {
       throw new IllegalArgumentException("Schema not found: " + schemaName);
     }
     schema.populate(metaData, schemas, schemaNotifier, new HashSet<>());
   }
 
-  private static Map<String, Schema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
-    Map<String, Schema> schemas = new HashMap<>();
+  private static Map<String, MetaDataSchema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
+    Map<String, MetaDataSchema> schemas = new HashMap<>();
     try (ResultSet resultSet = metaData.getCatalogs()) {
       while (resultSet.next()) {
         String tableCat = resultSet.getString("TABLE_CAT");
         if (tableCat != null) {
-          schemas.put(tableCat, new Schema(tableCat));
+          schemas.put(tableCat, new MetaDataSchema(tableCat));
         }
       }
     }
@@ -73,7 +73,7 @@ public final class MetaDataModel {
       while (resultSet.next()) {
         String tableSchem = resultSet.getString("TABLE_SCHEM");
         if (tableSchem != null) {
-          schemas.put(tableSchem, new Schema(tableSchem));
+          schemas.put(tableSchem, new MetaDataSchema(tableSchem));
         }
       }
     }

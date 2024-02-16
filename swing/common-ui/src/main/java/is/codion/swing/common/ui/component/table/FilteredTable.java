@@ -533,6 +533,11 @@ public final class FilteredTable<R, C> extends JTable {
     return new DefaultBuilder<>(tableModel);
   }
 
+  @Override
+  protected JTableHeader createDefaultTableHeader() {
+    return new FilteredTableHeader(columnModel);
+  }
+
   /**
    * Creates a JTextField for searching through this table.
    * @return a search field
@@ -1071,6 +1076,23 @@ public final class FilteredTable<R, C> extends JTable {
       case TOGGLE_SORT_COLUMN: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
       case TOGGLE_SORT_COLUMN_ADD: return keyStroke(VK_UP, ALT_DOWN_MASK);
       default: throw new IllegalArgumentException();
+    }
+  }
+
+  private static final class FilteredTableHeader extends JTableHeader {
+
+    private FilteredTableHeader(TableColumnModel columnModel) {
+      super(columnModel);
+    }
+
+    @Override
+    public String getToolTipText(MouseEvent event) {
+      int index = columnModel.getColumnIndexAtX(event.getPoint().x);
+      if (index != -1) {
+        return ((FilteredTableColumn<?>) columnModel.getColumn(index)).toolTipText();
+      }
+
+      return null;
     }
   }
 }

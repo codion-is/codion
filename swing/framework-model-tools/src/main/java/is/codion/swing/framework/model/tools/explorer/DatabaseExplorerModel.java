@@ -23,11 +23,10 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
-import is.codion.swing.framework.model.tools.metadata.Schema;
+import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import javax.swing.SortOrder;
 import java.sql.Connection;
@@ -51,14 +50,10 @@ import static java.util.stream.Collectors.toList;
 public final class DatabaseExplorerModel {
 
   private final MetaDataModel metaDataModel;
-  private final FilteredTableModel<Schema, Integer> schemaTableModel;
+  private final FilteredTableModel<MetaDataSchema, Integer> schemaTableModel;
   private final FilteredTableModel<DefinitionRow, Integer> definitionTableModel;
   private final Connection connection;
   private final Value<String> domainSourceValue = Value.value();
-
-  static {
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
-  }
 
   private DatabaseExplorerModel(Database database, User user) throws DatabaseException {
     this.connection = requireNonNull(database, "database").createConnection(user);
@@ -79,7 +74,7 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  public FilteredTableModel<Schema, Integer> schemaModel() {
+  public FilteredTableModel<MetaDataSchema, Integer> schemaModel() {
     return schemaTableModel;
   }
 
@@ -162,7 +157,7 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
+  private static Collection<DefinitionRow> createDomainDefinitions(MetaDataSchema schema) {
     DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
 
     return domain.entities().definitions().stream()
@@ -181,13 +176,13 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  private static final class SchemaColumnValueProvider implements FilteredTableModel.ColumnValueProvider<Schema, Integer> {
+  private static final class SchemaColumnValueProvider implements FilteredTableModel.ColumnValueProvider<MetaDataSchema, Integer> {
 
     private static final int SCHEMA = 0;
     private static final int POPULATED = 1;
 
     @Override
-    public Object value(Schema row, Integer columnIdentifier) {
+    public Object value(MetaDataSchema row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case SCHEMA:
           return row.name();
