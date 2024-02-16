@@ -10,8 +10,8 @@ dependencies {
     runtimeOnly project(":codion-dbms-h2")
     runtimeOnly(libs.h2)
 
-    runtimeOnly project(":codion-dbms-postgresql")
-    runtimeOnly "org.postgresql:postgresql:42.7.1"
+//    runtimeOnly project(":codion-dbms-postgresql")
+//    runtimeOnly "org.postgresql:postgresql:42.7.1"
 
 //    runtimeOnly project(":codion-dbms-oracle")
 //    runtimeOnly ("com.oracle.database.jdbc:ojdbc8:23.3.0.23.09") { transitive false }
@@ -53,15 +53,15 @@ tasks.register("runDatabaseExplorerH2", JavaExec) {
 //    ]
 //}
 
-tasks.register("runDatabaseExplorerPostgres", JavaExec) {
-    group "application"
-    mainClass.set("is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel")
-    classpath = sourceSets.main.runtimeClasspath
-    maxHeapSize = "256m"
-    systemProperties = [
-            "codion.db.url": "jdbc:postgresql://localhost:5432/nidev_import"
-    ]
-}
+//tasks.register("runDatabaseExplorerPostgres", JavaExec) {
+//    group "application"
+//    mainClass.set("is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel")
+//    classpath = sourceSets.main.runtimeClasspath
+//    maxHeapSize = "256m"
+//    systemProperties = [
+//            "codion.db.url": "jdbc:postgresql://localhost:5432/postgres"
+//    ]
+//}
 
 //tasks.register("runDatabaseExplorerMariaDB", JavaExec) {
 //    group "application"
