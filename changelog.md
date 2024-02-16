@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.28-SNAPSHOT
+## 0.17.28
 ### is.codion.common.core
 - ValueObserver.equalTo() and notEqualTo() renamed isEqualTo() and isNotEqualTo() respectively, now consistent with isNull() and isNotNull() and less likely to be confused with equals().
 ### is.codion.common.db
