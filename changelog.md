@@ -18,6 +18,11 @@ Codion Change Log
 - DefaultUpdate.DefaultBuilder.build() now throws exception in case of no values to update.
 ### is.codion.framework.domain.test
 - EntityTestUnit.insertOrSelect() error message now includes entity being inserted.
+### is.codion.swing.common.ui
+- FilteredTableColumn.toolTipText() and FilteredTableColumn.Builder.toolTipText() added.
+- FilteredTable now uses a custom header for displaying column tooltips.
+### is.codion.swing.framework.model
+- SwingEntityColumnFactory now uses the attribute descriptions as column tooltips.
 ### is.codion.swing.framework.model.tools
 - DatabaseExplorerModel, now displays the entity table type (view/table).
 - DatabaseExplorerModel, now trims table and column comments.

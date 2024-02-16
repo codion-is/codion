@@ -55,6 +55,7 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
             FilteredTableColumn.builder(attributeDefinition.attribute(), modelIndex)
                     .headerValue(attributeDefinition.caption())
                     .columnClass(attributeDefinition.attribute().type().valueClass())
+                    .toolTipText(attributeDefinition.description())
                     .comparator(attributeComparator(attributeDefinition.attribute()));
 
     return Optional.of((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
