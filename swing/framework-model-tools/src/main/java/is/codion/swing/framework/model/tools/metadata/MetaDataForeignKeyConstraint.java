@@ -9,24 +9,24 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ForeignKeyConstraint {
+public final class MetaDataForeignKeyConstraint {
 
-  private final Table referencedTable;
-  private final Map<MetadataColumn, MetadataColumn> references = new LinkedHashMap<>();
+  private final MetaDataTable referencedTable;
+  private final Map<MetaDataColumn, MetaDataColumn> references = new LinkedHashMap<>();
 
-  ForeignKeyConstraint(Table referencedTable) {
+  MetaDataForeignKeyConstraint(MetaDataTable referencedTable) {
     this.referencedTable = requireNonNull(referencedTable);
   }
 
-  public Table referencedTable() {
+  public MetaDataTable referencedTable() {
     return referencedTable;
   }
 
-  public Map<MetadataColumn, MetadataColumn> references() {
+  public Map<MetaDataColumn, MetaDataColumn> references() {
     return Collections.unmodifiableMap(references);
   }
 
-  void addReference(MetadataColumn fkColumn, MetadataColumn pkColumn) {
+  void addReference(MetaDataColumn fkColumn, MetaDataColumn pkColumn) {
     references.put(fkColumn, pkColumn);
   }
 }

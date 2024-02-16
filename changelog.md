@@ -27,6 +27,7 @@ Codion Change Log
 - DatabaseExplorerModel, now displays the entity table type (view/table).
 - DatabaseExplorerModel, now trims table and column comments.
 - DatabaseExplorerModel, now escapes double quotes in table and column comments.
+- DatabaseExplorerModel, refactoring and renaming of related classes.
 
 ## 0.17.27
 ### is.codion.common.core

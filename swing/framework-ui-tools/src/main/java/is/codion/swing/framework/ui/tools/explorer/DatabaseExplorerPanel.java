@@ -15,7 +15,7 @@ import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.tools.explorer.DatabaseExplorerModel;
 import is.codion.swing.framework.model.tools.explorer.DefinitionRow;
-import is.codion.swing.framework.model.tools.metadata.Schema;
+import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,7 +53,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .name("Populate")
             .enabled(model.schemaModel().selectionModel().selectionNotEmpty())
             .build();
-    FilteredTable<Schema, Integer> schemaTable =
+    FilteredTable<MetaDataSchema, Integer> schemaTable =
             FilteredTable.builder(model.schemaModel())
                     .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
                     .doubleClickAction(populateSchemaControl)
