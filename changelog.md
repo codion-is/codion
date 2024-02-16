@@ -28,6 +28,8 @@ Codion Change Log
 - DatabaseExplorerModel, now trims table and column comments.
 - DatabaseExplorerModel, now escapes double quotes in table and column comments.
 - DatabaseExplorerModel, refactoring and renaming of related classes.
+### is.codion.swing.framework.ui.tools
+- DatabaseExplorerPanel now with FlatLaf available.
 
 ## 0.17.27
 ### is.codion.common.core

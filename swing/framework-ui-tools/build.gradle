@@ -7,6 +7,8 @@ dependencies {
     implementation project(":codion-swing-common-ui")
     api project(":codion-swing-framework-model-tools")
 
+    implementation(libs.flatlaf.intellij.themes)
+
     runtimeOnly project(":codion-dbms-h2")
     runtimeOnly(libs.h2)
 

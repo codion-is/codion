@@ -10,12 +10,16 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.tools.explorer.DatabaseExplorerModel;
 import is.codion.swing.framework.model.tools.explorer.DefinitionRow;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
+
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,9 +34,13 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
@@ -108,6 +116,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     Windows.frame(this)
             .title("Codion Database Explorer")
             .icon(Logos.logoTransparent())
+            .menuBar(menu(createMainMenuControls()).createMenuBar())
             .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
             .onClosing(windowEvent -> model.close())
             .centerFrame(true)
@@ -128,11 +137,33 @@ public final class DatabaseExplorerPanel extends JPanel {
             .execute();
   }
 
+  private Controls createMainMenuControls() {
+    return Controls.builder()
+            .controls(Controls.builder()
+                    .name("File")
+                    .mnemonic('F')
+                    .control(Control.builder(() -> System.exit(0))
+                            .name("Exit")
+                            .mnemonic('X')))
+            .controls(Controls.builder()
+                    .name("View")
+                    .mnemonic('V')
+                    .control(lookAndFeelSelectionDialog()
+                            .owner(this)
+                            .userPreferencePropertyName(DatabaseExplorerPanel.class.getName())
+                            .createControl()))
+            .build();
+  }
+
   /**
    * Runs a DatabaseExplorerPanel instance in a frame
    * @param arguments no arguments required
    */
   public static void main(String[] arguments) {
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
+    findLookAndFeelProvider(defaultLookAndFeelName(DatabaseExplorerPanel.class.getName()))
+            .ifPresent(LookAndFeelProvider::enable);
     try {
       Database database = Database.instance();
       DatabaseExplorerModel explorerModel = DatabaseExplorerModel.databaseExplorerModel(database,
