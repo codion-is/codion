@@ -22,11 +22,11 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
 
   static {
-    LookAndFeelProvider systemProvider = lookAndFeelProvider(new LookAndFeelInfo("System", Utilities.systemLookAndFeelClassName()));
-    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.lookAndFeelInfo().getClassName(), systemProvider);
     LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(new LookAndFeelInfo("Cross Platform", UIManager.getCrossPlatformLookAndFeelClassName()));
-    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.lookAndFeelInfo().getClassName())) {
-      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.lookAndFeelInfo().getClassName(), crossPlatformProvider);
+    LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.lookAndFeelInfo().getClassName(), crossPlatformProvider);
+    LookAndFeelProvider systemProvider = lookAndFeelProvider(new LookAndFeelInfo("System", Utilities.systemLookAndFeelClassName()));
+    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(systemProvider.lookAndFeelInfo().getClassName())) {
+      LOOK_AND_FEEL_PROVIDERS.put(systemProvider.lookAndFeelInfo().getClassName(), systemProvider);
     }
   }
 

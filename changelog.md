@@ -21,6 +21,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilteredTableColumn.toolTipText() and FilteredTableColumn.Builder.toolTipText() added.
 - FilteredTable now uses a custom header for displaying column tooltips.
+- DefaultLookAndFeelProvider bug fixed, cross platform look and feel now takes precedence over system look and feel.
 ### is.codion.swing.framework.model
 - SwingEntityColumnFactory now uses the attribute descriptions as column tooltips.
 ### is.codion.swing.framework.model.tools
