@@ -22,6 +22,7 @@
  * {@link is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel}<br>
  */
 module is.codion.swing.framework.ui.tools {
+  requires com.formdev.flatlaf.intellijthemes;
   requires is.codion.swing.common.ui;
   requires is.codion.swing.framework.model.tools;
 
