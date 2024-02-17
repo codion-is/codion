@@ -26,14 +26,8 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-runClientLocal {
-    mainClass.set("is.codion.framework.demos.manual.store.ui.StoreAppPanel")
-}
-
-runClientRMI {
-    mainClass.set("is.codion.framework.demos.manual.store.ui.StoreAppPanel")
-}
-
-runClientHttp {
-    mainClass.set("is.codion.framework.demos.manual.store.ui.StoreAppPanel")
+tasks.register("runNotesDemo", JavaExec) {
+    group "application"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set("is.codion.framework.demos.manual.notes.NotesDemo")
 }

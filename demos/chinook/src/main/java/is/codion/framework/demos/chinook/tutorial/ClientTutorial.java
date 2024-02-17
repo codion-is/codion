@@ -5,7 +5,9 @@ package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
@@ -13,23 +15,25 @@ import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityApplicationPanel.Builder.ConnectionProviderFactory;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
+
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import java.awt.Color;
+import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
 
@@ -80,7 +84,7 @@ public final class ClientTutorial {
               .stringFactory(Artist.NAME)
               .caption("Artists"));
 
-      add(Artist.TYPE.define(
+      add(Album.TYPE.define(
               Album.ID.define()
                       .primaryKey(),
               Album.ARTIST_ID.define()
@@ -170,16 +174,32 @@ public final class ClientTutorial {
     }
   }
 
+  private static final class LocalConnectionProviderFactory implements ConnectionProviderFactory {
+
+    @Override
+    public EntityConnectionProvider createConnectionProvider(User user, DomainType domainType,
+                                                             String clientTypeId, Version clientVersion) {
+      return LocalEntityConnectionProvider.builder()
+              .user(user)
+              .domain(new Chinook())
+              .clientTypeId(clientTypeId)
+              .build();
+    }
+  }
+
   public static void main(String[] args) {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
-    UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
+            .applicationModelFactory(ApplicationModel::new)
+            .applicationPanelFactory(ApplicationPanel::new)
+            .connectionProviderFactory(new LocalConnectionProviderFactory())
+            .defaultLookAndFeelClassName("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme")
             .applicationName("Artists and Albums")
-            .domainType(Chinook.DOMAIN)
-            .frameSize(screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

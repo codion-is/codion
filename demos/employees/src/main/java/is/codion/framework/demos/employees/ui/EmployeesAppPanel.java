@@ -22,7 +22,6 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.Dimension;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +101,6 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
             .applicationName("Employees")
             .domainType(Employees.DOMAIN)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .frameSize(new Dimension(1000, 600))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }
