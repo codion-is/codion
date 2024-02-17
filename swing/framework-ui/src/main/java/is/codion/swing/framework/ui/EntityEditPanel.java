@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
+import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
@@ -429,15 +430,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
-   * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * Called when a {@link ReferentialIntegrityException} occurs. If a {@link Operation#DELETE} operation is being
+   * performed and the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
    * @see #referentialIntegrityErrorHandling()
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
+    if (exception.operation() == Operation.DELETE && referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
       displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }

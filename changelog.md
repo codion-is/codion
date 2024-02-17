@@ -7,6 +7,8 @@ Codion Change Log
 - AbstractDatabase and subclasses, null handling improved.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase.errorMessage() refactored, now handles referential integrity errors for update and insert as well as delete.
+### is.codion.swing.framework.ui
+- EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
 
 ## 0.17.28
 ### is.codion.common.core
