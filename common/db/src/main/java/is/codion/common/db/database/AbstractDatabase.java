@@ -217,7 +217,7 @@ public abstract class AbstractDatabase implements Database {
       return new UniqueConstraintException(exception, errorMessage(exception, operation));
     }
     else if (isReferentialIntegrityException(exception)) {
-      return new ReferentialIntegrityException(exception, errorMessage(exception, operation));
+      return new ReferentialIntegrityException(exception, errorMessage(exception, operation), operation);
     }
     else if (isTimeoutException(exception)) {
       return new QueryTimeoutException(exception, errorMessage(exception, operation));
