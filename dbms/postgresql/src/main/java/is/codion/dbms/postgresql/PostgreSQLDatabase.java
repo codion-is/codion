@@ -118,6 +118,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public String errorMessage(SQLException exception, Operation operation) {
+    requireNonNull(exception);
+    requireNonNull(operation);
     String sqlState = exception.getSQLState();
     if (NULL_VALUE_ERROR.equals(sqlState)) {
       return createNullValueErrorMessage(exception.getMessage());
@@ -125,8 +127,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
     if (UNIQUE_CONSTRAINT_ERROR.equals(sqlState)) {
       return createUniqueConstraintErrorMessage(exception.getMessage());
     }
-    if (FOREIGN_KEY_VIOLATION.equals(sqlState) && operation == Operation.DELETE) {
-      return ERROR_CODE_MAP.get(FOREIGN_KEY_VIOLATION_DELETE);
+    if (FOREIGN_KEY_VIOLATION.equals(sqlState)) {
+      return createForeignKeyViolationErrorMessage(operation);
     }
     if (ERROR_CODE_MAP.containsKey(sqlState)) {
       return ERROR_CODE_MAP.get(sqlState);
@@ -154,10 +156,18 @@ final class PostgreSQLDatabase extends AbstractDatabase {
     if (indexOfDetail != -1 && indexOfAlreadyExists != -1) {
       //Detail: Key (col1, col2)=(val1, val2) already exists.
       String values = exceptionMessage.substring(indexOfDetail + 11, indexOfAlreadyExists);
-      
+
       return MESSAGES.getString(UNIQUE_KEY_ERROR) + ": " + values;
     }
 
     return MESSAGES.getString(UNIQUE_KEY_ERROR);
+  }
+
+  private static String createForeignKeyViolationErrorMessage(Operation operation) {
+    if (operation == Operation.DELETE) {
+      return ERROR_CODE_MAP.get(FOREIGN_KEY_VIOLATION_DELETE);
+    }
+
+    return ERROR_CODE_MAP.get(FOREIGN_KEY_VIOLATION);
   }
 }
