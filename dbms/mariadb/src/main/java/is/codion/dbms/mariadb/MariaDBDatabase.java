@@ -7,6 +7,8 @@ import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A Database implementation based on the MariaDB database.
  */
@@ -52,16 +54,16 @@ final class MariaDBDatabase extends AbstractDatabase {
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return exception.getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
+    return requireNonNull(exception).getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
   }
 
   @Override
   public boolean isUniqueConstraintException(SQLException exception) {
-    return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
+    return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
   }
 
   @Override
   public boolean isTimeoutException(SQLException exception) {
-    return exception.getErrorCode() == TIMEOUT_ERROR;
+    return requireNonNull(exception).getErrorCode() == TIMEOUT_ERROR;
   }
 }

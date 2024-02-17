@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.29-SNAPSHOT
 ### is.codion.common.db
 - ReferentialIntegrityException.operation() added.
+- AbstractDatabase and subclasses, null handling improved.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase.errorMessage() refactored, now handles referential integrity errors for update and insert as well as delete.
 

@@ -180,6 +180,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception represents a login credentials failure
    * @param exception the exception
    * @return true if this exception represents a login credentials failure
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isAuthenticationException(SQLException exception);
 
@@ -187,6 +188,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception is a referential integrity exception
    * @param exception the exception
    * @return true if this exception is a referential integrity exception
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isReferentialIntegrityException(SQLException exception);
 
@@ -194,6 +196,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception is a unique key exception
    * @param exception the exception
    * @return true if this exception is a unique key exception
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isUniqueConstraintException(SQLException exception);
 
@@ -201,6 +204,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception is a timeout exception
    * @param exception the exception
    * @return true if this exception is a timeout exception
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isTimeoutException(SQLException exception);
 
