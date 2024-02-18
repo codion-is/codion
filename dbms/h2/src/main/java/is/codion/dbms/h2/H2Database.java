@@ -112,23 +112,23 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public boolean isAuthenticationException(SQLException exception) {
-    return exception.getErrorCode() == AUTHENTICATION_ERROR;
+    return requireNonNull(exception).getErrorCode() == AUTHENTICATION_ERROR;
   }
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS ||
+    return requireNonNull(exception).getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS ||
             exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING;
   }
 
   @Override
   public boolean isUniqueConstraintException(SQLException exception) {
-    return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
+    return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
   }
 
   @Override
   public boolean isTimeoutException(SQLException exception) {
-    return exception.getErrorCode() == TIMEOUT_ERROR;
+    return requireNonNull(exception).getErrorCode() == TIMEOUT_ERROR;
   }
 
   static String databaseName(String url) {

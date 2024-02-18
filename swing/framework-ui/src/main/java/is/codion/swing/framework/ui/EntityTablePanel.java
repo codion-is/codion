@@ -539,8 +539,8 @@ public class EntityTablePanel extends JPanel {
    */
   public final void selectConditionPanel() {
     if (settings.includeConditionPanel) {
-      selectConditionPanel(conditionPanel, conditionPanelScrollPane, conditionPanelVisibleState,
-              tableModel, this, FrameworkMessages.selectSearchField());
+      selectConditionPanel(conditionPanel, conditionPanelScrollPane, conditionPanel.advanced(),
+              conditionPanelVisibleState, tableModel, this, FrameworkMessages.selectSearchField());
     }
   }
 
@@ -549,8 +549,8 @@ public class EntityTablePanel extends JPanel {
    */
   public final void selectFilterPanel() {
     if (settings.includeFilterPanel) {
-      selectConditionPanel(filterPanel, filterPanelScrollPane, filterPanelVisibleState,
-              tableModel, this, FrameworkMessages.selectFilterField());
+      selectConditionPanel(filterPanel, filterPanelScrollPane, filterPanel.advanced(),
+              filterPanelVisibleState, tableModel, this, FrameworkMessages.selectFilterField());
     }
   }
 
@@ -1658,18 +1658,17 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static final void selectConditionPanel(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
-                                                 JScrollPane conditionPanelScrollPane, State conditionPanelVisibleState,
-                                                 SwingEntityTableModel tableModel, JComponent dialogOwner, String dialogTitle) {
+                                                 JScrollPane conditionPanelScrollPane, State conditionPanelAdvancedState,
+                                                 State conditionPanelVisibleState, SwingEntityTableModel tableModel,
+                                                 JComponent dialogOwner, String dialogTitle) {
     if (tableConditionPanel != null) {
-      if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
-        conditionPanelVisibleState.set(true);
-      }
       List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.conditionPanels().stream()
               .filter(panel -> tableModel.columnModel().visible(panel.model().columnIdentifier()).get())
               .map(panel -> tableModel.entityDefinition().attributes().definition(panel.model().columnIdentifier()))
               .sorted(AttributeDefinition.definitionComparator())
               .collect(toList());
       if (attributeDefinitions.size() == 1) {
+        displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
         tableConditionPanel.conditionPanel(attributeDefinitions.get(0).attribute())
                 .ifPresent(ColumnConditionPanel::requestInputFocus);
       }
@@ -1679,8 +1678,20 @@ public class EntityTablePanel extends JPanel {
                 .title(dialogTitle)
                 .selectSingle()
                 .flatMap(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()))
-                .ifPresent(ColumnConditionPanel::requestInputFocus);
+                .ifPresent(conditionPanel -> {
+                  displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
+                  conditionPanel.requestInputFocus();
+                });
       }
+    }
+  }
+
+  private static void displayConditionPanel(JScrollPane conditionPanelScrollPane,
+                                            State conditionPanelAdvancedState,
+                                            State conditionPanelVisibleState) {
+    if (conditionPanelScrollPane != null && !conditionPanelScrollPane.isVisible()) {
+      conditionPanelAdvancedState.set(false);
+      conditionPanelVisibleState.set(true);
     }
   }
 

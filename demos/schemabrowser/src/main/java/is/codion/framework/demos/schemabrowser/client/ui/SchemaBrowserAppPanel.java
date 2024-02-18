@@ -26,7 +26,6 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintCo
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -76,7 +75,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
             .applicationName("Schema Browser")
             .domainType(SchemaBrowser.DOMAIN)
-            .frameSize(Windows.screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

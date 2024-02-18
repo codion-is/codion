@@ -70,11 +70,11 @@ final class DerbyDatabase extends AbstractDatabase {
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return exception.getErrorCode() == FOREIGN_KEY_ERROR;
+    return requireNonNull(exception).getErrorCode() == FOREIGN_KEY_ERROR;
   }
 
   @Override
   public boolean isTimeoutException(SQLException exception) {
-    return TIMEOUT_ERROR_CODE.equals(exception.getSQLState());
+    return TIMEOUT_ERROR_CODE.equals(requireNonNull(exception).getSQLState());
   }
 }

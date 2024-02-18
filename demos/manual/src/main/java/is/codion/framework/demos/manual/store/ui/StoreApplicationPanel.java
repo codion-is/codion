@@ -26,7 +26,6 @@ import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.demos.manual.store.model.CustomerAddressModel;
 import is.codion.framework.demos.manual.store.model.CustomerModel;
 import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
@@ -79,7 +78,6 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
     EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
             .applicationName("Store")
             .domainType(Store.DOMAIN)
-            .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

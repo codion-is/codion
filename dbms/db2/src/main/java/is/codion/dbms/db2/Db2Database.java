@@ -75,7 +75,7 @@ final class Db2Database extends AbstractDatabase {
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    int errorCode = exception.getErrorCode();
+    int errorCode = requireNonNull(exception).getErrorCode();
 
     return errorCode == REFERENTIAL_INTEGRITY_INSERT_UPDATE ||
             errorCode == REFERENTIAL_INTEGRITY_DELETE_1 ||
@@ -84,17 +84,17 @@ final class Db2Database extends AbstractDatabase {
 
   @Override
   public boolean isUniqueConstraintException(SQLException exception) {
-    return exception.getErrorCode() == UNIQUE_CONSTRAINT;
+    return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT;
   }
 
   @Override
   public boolean isAuthenticationException(SQLException exception) {
-    return exception.getErrorCode() == AUTHENTICATION_ERROR;
+    return requireNonNull(exception).getErrorCode() == AUTHENTICATION_ERROR;
   }
 
   @Override
   public boolean isTimeoutException(SQLException exception) {
-    int errorCode = exception.getErrorCode();
+    int errorCode = requireNonNull(exception).getErrorCode();
 
     return errorCode == TIMEOUT_ERROR_1 ||
             errorCode == TIMEOUT_ERROR_2;

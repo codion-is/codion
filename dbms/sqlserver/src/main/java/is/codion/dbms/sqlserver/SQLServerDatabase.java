@@ -22,6 +22,8 @@ import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A Database implementation based on the SQL Server (2000 or higher) database.
  */
@@ -78,16 +80,16 @@ final class SQLServerDatabase extends AbstractDatabase {
 
   @Override
   public boolean isAuthenticationException(SQLException exception) {
-    return exception.getErrorCode() == AUTHENTICATION_ERROR;
+    return requireNonNull(exception).getErrorCode() == AUTHENTICATION_ERROR;
   }
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
+    return requireNonNull(exception).getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
   }
 
   @Override
   public boolean isUniqueConstraintException(SQLException exception) {
-    return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
+    return requireNonNull(exception).getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
   }
 }

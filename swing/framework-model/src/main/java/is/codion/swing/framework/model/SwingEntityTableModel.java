@@ -325,7 +325,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     Attribute<?> columnIdentifier = columnModel().columnIdentifier(modelColumnIndex);
     entity.put((Attribute<Object>) columnIdentifier, value);
     try {
-      editModel.update(singletonList(entity));
+      if (entity.modified()) {
+        editModel.update(singletonList(entity));
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);

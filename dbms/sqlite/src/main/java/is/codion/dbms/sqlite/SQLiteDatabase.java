@@ -22,6 +22,8 @@ import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
  */
@@ -62,6 +64,6 @@ final class SQLiteDatabase extends AbstractDatabase {
    */
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return exception.getErrorCode() == FOREIGN_KEY_ERROR;
+    return requireNonNull(exception).getErrorCode() == FOREIGN_KEY_ERROR;
   }
 }

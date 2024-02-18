@@ -194,33 +194,27 @@ public abstract class AbstractDatabase implements Database {
     return exception.getMessage();
   }
 
-  /**
-   * This default implementation returns false
-   * @param exception the exception
-   * @return false
-   */
   @Override
   public boolean isAuthenticationException(SQLException exception) {
+    requireNonNull(exception);
     return false;
   }
 
-  /**
-   * This default implementation returns false
-   * @param exception the exception
-   * @return false
-   */
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
+    requireNonNull(exception);
     return false;
   }
 
   @Override
   public boolean isUniqueConstraintException(SQLException exception) {
+    requireNonNull(exception);
     return false;
   }
 
   @Override
   public boolean isTimeoutException(SQLException exception) {
+    requireNonNull(exception);
     return false;
   }
 
@@ -232,7 +226,7 @@ public abstract class AbstractDatabase implements Database {
       return new UniqueConstraintException(exception, errorMessage(exception, operation));
     }
     else if (isReferentialIntegrityException(exception)) {
-      return new ReferentialIntegrityException(exception, errorMessage(exception, operation));
+      return new ReferentialIntegrityException(exception, errorMessage(exception, operation), operation);
     }
     else if (isTimeoutException(exception)) {
       return new QueryTimeoutException(exception, errorMessage(exception, operation));

@@ -20,7 +20,6 @@ package is.codion.framework.demos.petstore.ui;
 
 import is.codion.common.user.User;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -104,7 +103,6 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
             .applicationName("The Pet Store")
             .domainType(DOMAIN)
-            .frameSize(Windows.screenSizeRatio(0.8))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

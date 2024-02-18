@@ -116,6 +116,7 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String errorMessage(SQLException exception, Operation operation) {
+    requireNonNull(exception);
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
       String exceptionMessage = exception.getMessage();
       int newlineIndex = exception.getMessage().indexOf('\n');
@@ -137,21 +138,21 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public boolean isAuthenticationException(SQLException exception) {
-    return exception.getErrorCode() == LOGIN_CREDS_ERROR;
+    return requireNonNull(exception).getErrorCode() == LOGIN_CREDS_ERROR;
   }
 
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
-    return exception.getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
+    return requireNonNull(exception).getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
   }
 
   @Override
   public boolean isUniqueConstraintException(SQLException exception) {
-    return exception.getErrorCode() == UNIQUE_KEY_ERROR;
+    return requireNonNull(exception).getErrorCode() == UNIQUE_KEY_ERROR;
   }
 
   @Override
   public boolean isTimeoutException(SQLException exception) {
-    return exception.getErrorCode() == TIMEOUT_ERROR;
+    return requireNonNull(exception).getErrorCode() == TIMEOUT_ERROR;
   }
 }

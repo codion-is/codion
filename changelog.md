@@ -1,6 +1,18 @@
 Codion Change Log
 ==================
 
+## 0.17.29-SNAPSHOT
+### is.codion.common.db
+- ReferentialIntegrityException.operation() added.
+- AbstractDatabase and subclasses, null handling improved.
+### is.codion.dbms.postgresql
+- PostgreSQLDatabase.errorMessage() refactored, now handles referential integrity errors for update and insert as well as delete.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.setValueAt() bug fixed, no longer tries to update an unmodified entity.
+### is.codion.swing.framework.ui
+- EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
+- EntityTablePanel.selectConditionPanel(), now only displays the condition panel in case one is selected.
+
 ## 0.17.28
 ### is.codion.common.core
 - ValueObserver.equalTo() and notEqualTo() renamed isEqualTo() and isNotEqualTo() respectively, now consistent with isNull() and isNotNull() and less likely to be confused with equals().

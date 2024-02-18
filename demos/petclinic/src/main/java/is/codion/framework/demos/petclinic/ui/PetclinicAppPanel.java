@@ -30,7 +30,6 @@ import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
 import is.codion.framework.demos.petclinic.model.VetSpecialtyEditModel;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -114,7 +113,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
             .applicationName("Petclinic")
             .domainType(Petclinic.DOMAIN)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

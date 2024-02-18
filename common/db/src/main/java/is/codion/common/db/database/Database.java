@@ -177,6 +177,7 @@ public interface Database extends ConnectionFactory {
    * @param exception the underlying SQLException
    * @param operation the operation resulting in the exception
    * @return the message assigned to the given exception
+   * @throws NullPointerException in case {@code exception} or {@code operation} is null
    */
   String errorMessage(SQLException exception, Operation operation);
 
@@ -185,6 +186,7 @@ public interface Database extends ConnectionFactory {
    * @param exception the SQL exception
    * @param operation the current operation
    * @return a DatabaseException
+   * @throws NullPointerException in case {@code exception} or {@code operation} is null
    * @see #errorMessage(SQLException, Operation)
    */
   DatabaseException databaseException(SQLException exception, Operation operation);
@@ -193,6 +195,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception represents a login credentials failure
    * @param exception the exception
    * @return true if this exception represents a login credentials failure
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isAuthenticationException(SQLException exception);
 
@@ -200,6 +203,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception is a referential integrity exception
    * @param exception the exception
    * @return true if this exception is a referential integrity exception
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isReferentialIntegrityException(SQLException exception);
 
@@ -207,6 +211,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception is a unique key exception
    * @param exception the exception
    * @return true if this exception is a unique key exception
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isUniqueConstraintException(SQLException exception);
 
@@ -214,6 +219,7 @@ public interface Database extends ConnectionFactory {
    * Returns true if this exception is a timeout exception
    * @param exception the exception
    * @return true if this exception is a timeout exception
+   * @throws NullPointerException in case {@code exception} is null
    */
   boolean isTimeoutException(SQLException exception);
 

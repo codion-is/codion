@@ -35,7 +35,6 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import java.awt.Dimension;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -310,7 +309,6 @@ public final class EmployeesMinimalApp {
     EntityApplicationPanel.builder(EmployeesApplicationModel.class, EmployeesApplicationPanel.class)
             .applicationName("Employees Minimal")
             .domainType(DOMAIN)
-            .frameSize(new Dimension(800, 600))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
   }

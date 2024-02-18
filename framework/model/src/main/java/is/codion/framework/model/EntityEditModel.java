@@ -286,7 +286,7 @@ public interface EntityEditModel {
 
   /**
    * Note: This method must be called on the UI thread in case a panel has been based on this model.
-   * Performs an insert on the given entities, returns silently on receiving an empty collection.
+   * Performs an insert on the given entities.
    * @param entities the entities to insert
    * @return a list containing the inserted entities
    * @throws DatabaseException in case of a database exception
@@ -313,7 +313,7 @@ public interface EntityEditModel {
 
   /**
    * Note: This method must be called on the UI thread in case a panel has been based on this model.
-   * Updates the given entities. If the entities are unmodified or the collection is empty this method returns silently.
+   * Updates the given entities.
    * @param entities the entities to update
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
