@@ -62,14 +62,14 @@ create table petstore.item (
  foreign key (contactinfo_contactinfoid) references petstore.sellercontactinfo(contactinfoid)
 );
 
-create table petstore.tag(
+create table petstore.tag (
  tagid integer not null,
  tag varchar(30) not null,
  primary key (tagid),
  unique(tag)
 );
 
-create table petstore.tag_item(
+create table petstore.tag_item (
  tagid integer not null,
  itemid integer not null,
  primary key (tagid, itemid),
