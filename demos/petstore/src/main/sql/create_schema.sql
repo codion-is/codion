@@ -3,7 +3,7 @@ alter user scott admin true;
 
 create schema petstore;
 
-create table petstore.category(
+create table petstore.category (
  categoryid INTEGER NOT NULL,
  name VARCHAR(25) NOT NULL,
  description VARCHAR(255) NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE petstore.item (
 
 create sequence petstore.item_seq start with 420;
 
-create table petstore.tag(
+create table petstore.tag (
  tagid INTEGER NOT NULL,
  tag VARCHAR(30) NOT NULL,
  primary key (tagid),
@@ -79,7 +79,7 @@ create table petstore.tag(
 
 create sequence petstore.tag_seq start with 9;
 
-create table petstore.tag_item(
+create table petstore.tag_item (
  tagid INTEGER NOT NULL,
  itemid INTEGER NOT NULL,
  primary key (tagid, itemid),

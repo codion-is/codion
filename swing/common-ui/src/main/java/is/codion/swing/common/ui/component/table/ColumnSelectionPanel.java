@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
@@ -28,7 +29,6 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Insets;
@@ -41,7 +41,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -58,7 +57,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
   private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
 
   private final FilteredTableColumnModel<C> columnModel;
-  private final Map<TableColumn, State> visibleStates;
+  private final Map<FilteredTableColumn<C>, State> visibleStates;
   private final List<JCheckBox> checkBoxes;
 
   ColumnSelectionPanel(FilteredTableColumnModel<C> columnModel) {
@@ -67,7 +66,8 @@ final class ColumnSelectionPanel<C> extends JPanel {
     this.visibleStates = createVisibleStates();
     this.checkBoxes = visibleStates.entrySet().stream()
             .map(entry -> Components.checkBox(entry.getValue())
-                    .text(Objects.toString(entry.getKey().getHeaderValue()))
+                    .text(String.valueOf(entry.getKey().getHeaderValue()))
+                    .toolTipText(entry.getKey().toolTipText())
                     .build())
             .collect(Collectors.toList());
     JScrollPane checkBoxPanel = createCheckBoxPanel();
@@ -94,8 +94,8 @@ final class ColumnSelectionPanel<C> extends JPanel {
     });
   }
 
-  private Map<TableColumn, State> createVisibleStates() {
-    Map<TableColumn, State> states = new LinkedHashMap<>();
+  private Map<FilteredTableColumn<C>, State> createVisibleStates() {
+    Map<FilteredTableColumn<C>, State> states = new LinkedHashMap<>();
     columnModel.columns().stream()
             .sorted(new FilteredTable.ColumnComparator())
             .forEach(column -> states.put(column, State.state(columnModel.visible(column.getIdentifier()).get())));

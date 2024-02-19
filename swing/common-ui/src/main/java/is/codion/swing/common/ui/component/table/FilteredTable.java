@@ -662,7 +662,8 @@ public final class FilteredTable<R, C> extends JTable {
 
   private ToggleControl createToggleColumnControl(FilteredTableColumn<C> column) {
     return ToggleControl.builder(tableModel.columnModel().visible(column.getIdentifier()))
-            .name(column.getHeaderValue().toString())
+            .name(String.valueOf(column.getHeaderValue()))
+            .description(column.toolTipText())
             .build();
   }
 
@@ -1045,7 +1046,7 @@ public final class FilteredTable<R, C> extends JTable {
 
     @Override
     public int compare(TableColumn col1, TableColumn col2) {
-      return collator.compare(col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
+      return collator.compare(String.valueOf(col1.getHeaderValue()), String.valueOf(col2.getHeaderValue()));
     }
   }
 
