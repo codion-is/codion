@@ -648,6 +648,7 @@ public final class FilteredTable<R, C> extends JTable {
   private ToggleControl createToggleColumnControl(FilteredTableColumn<C> column) {
     return ToggleControl.builder(tableModel.columnModel().visible(column.getIdentifier()))
             .name(column.getHeaderValue().toString())
+            .description(column.toolTipText())
             .build();
   }
 

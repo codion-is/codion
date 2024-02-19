@@ -7,6 +7,8 @@ Codion Change Log
 - AbstractDatabase and subclasses, null handling improved.
 ### is.codion.dbms.postgresql
 - PostgreSQLDatabase.errorMessage() refactored, now handles referential integrity errors for update and insert as well as delete.
+### is.codion.swing.common.ui
+- FilteredTable, column tooltips now enabled when selecting columns.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.setValueAt() bug fixed, no longer tries to update an unmodified entity.
 ### is.codion.swing.framework.ui
