@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -52,7 +51,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
     this.visibleStates = createVisibleStates();
     this.checkBoxes = visibleStates.entrySet().stream()
             .map(entry -> Components.checkBox(entry.getValue())
-                    .text(Objects.toString(entry.getKey().getHeaderValue()))
+                    .text(String.valueOf(entry.getKey().getHeaderValue()))
                     .toolTipText(entry.getKey().toolTipText())
                     .build())
             .collect(Collectors.toList());
