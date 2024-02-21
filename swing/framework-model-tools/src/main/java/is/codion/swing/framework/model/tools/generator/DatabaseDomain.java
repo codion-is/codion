@@ -72,7 +72,7 @@ final class DatabaseDomain extends DefaultDomain {
       if (!nullOrEmpty(table.comment())) {
         definitionBuilder.description(table.comment());
       }
-      definitionBuilder.readOnly(table.tableType().equalsIgnoreCase("view"));
+      definitionBuilder.readOnly("view".equalsIgnoreCase(table.tableType()));
       add(definitionBuilder);
     }
   }

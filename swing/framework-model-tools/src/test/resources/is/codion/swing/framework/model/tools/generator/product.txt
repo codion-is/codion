@@ -12,29 +12,29 @@ public interface Product {
 
 void product() {
 	add(Product.TYPE.define(
-		Product.PRODUCTID.define()
-			.primaryKey(),
-		Product.CATEGORYID.define()
-			.column()
-			.nullable(false),
-		Product.CATEGORYID_FK.define()
-			.foreignKey()
-			.caption("Category"),
-		Product.NAME.define()
-			.column()
-			.caption("Name")
-			.nullable(false)
-			.maximumLength(25)
-			.description("The product name"),
-		Product.DESCRIPTION.define()
-			.column()
-			.caption("Description")
-			.nullable(false)
-			.maximumLength(255),
-		Product.IMAGEURL.define()
-			.column()
-			.caption("Imageurl")
-			.maximumLength(55))
+			Product.PRODUCTID.define()
+				.primaryKey(),
+			Product.CATEGORYID.define()
+				.column()
+				.nullable(false),
+			Product.CATEGORYID_FK.define()
+				.foreignKey()
+				.caption("Category"),
+			Product.NAME.define()
+				.column()
+				.caption("Name")
+				.nullable(false)
+				.maximumLength(25)
+				.description("The product name"),
+			Product.DESCRIPTION.define()
+				.column()
+				.caption("Description")
+				.nullable(false)
+				.maximumLength(255),
+			Product.IMAGEURL.define()
+				.column()
+				.caption("Imageurl")
+				.maximumLength(55))
 		.keyGenerator(identity())
 		.caption("Product")
 		.description("The available products"));

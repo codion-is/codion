@@ -16,6 +16,7 @@ Codion Change Log
 ### is.codion.swing.framework.model.tools
 - DatabaseExplorerModel, caption based on table name, identity key generator, views readOnly by default.
 - DatabaseExplorerModel renamed DomainGeneratorModel, moved to generator package.
+- DomainToString, default IntelliJ indentation used.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
 - EntityTablePanel.selectConditionPanel(), now only displays the condition panel in case one is selected.
