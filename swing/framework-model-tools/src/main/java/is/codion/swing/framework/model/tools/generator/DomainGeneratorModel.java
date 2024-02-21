@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.model.tools.explorer;
+package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
@@ -45,9 +45,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * For instances use the factory method {@link #databaseExplorerModel(Database, User)}.
+ * For instances use the factory method {@link #domainGeneratorModel(Database, User)}.
  */
-public final class DatabaseExplorerModel {
+public final class DomainGeneratorModel {
 
   private final MetaDataModel metaDataModel;
   private final FilteredTableModel<MetaDataSchema, Integer> schemaTableModel;
@@ -55,7 +55,7 @@ public final class DatabaseExplorerModel {
   private final Connection connection;
   private final Value<String> domainSourceValue = Value.value();
 
-  private DatabaseExplorerModel(Database database, User user) throws DatabaseException {
+  private DomainGeneratorModel(Database database, User user) throws DatabaseException {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
@@ -105,14 +105,14 @@ public final class DatabaseExplorerModel {
   }
 
   /**
-   * Instantiates a new {@link DatabaseExplorerModel} instance.
+   * Instantiates a new {@link DomainGeneratorModel} instance.
    * @param database the database to connect to
    * @param user the user to connect with
-   * @return a new {@link DatabaseExplorerModel} instance
+   * @return a new {@link DomainGeneratorModel} instance
    * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public static DatabaseExplorerModel databaseExplorerModel(Database database, User user) throws DatabaseException {
-    return new DatabaseExplorerModel(database, user);
+  public static DomainGeneratorModel domainGeneratorModel(Database database, User user) throws DatabaseException {
+    return new DomainGeneratorModel(database, user);
   }
 
   private void updateCodeValue() {

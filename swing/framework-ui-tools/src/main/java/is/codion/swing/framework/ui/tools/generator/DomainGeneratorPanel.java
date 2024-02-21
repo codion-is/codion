@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2010 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.ui.tools.explorer;
+package is.codion.swing.framework.ui.tools.generator;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.i18n.Messages;
@@ -30,8 +30,8 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.framework.model.tools.explorer.DatabaseExplorerModel;
-import is.codion.swing.framework.model.tools.explorer.DefinitionRow;
+import is.codion.swing.framework.model.tools.generator.DefinitionRow;
+import is.codion.swing.framework.model.tools.generator.DomainGeneratorModel;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
@@ -60,17 +60,17 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
 
-public final class DatabaseExplorerPanel extends JPanel {
+public final class DomainGeneratorPanel extends JPanel {
 
   private static final double RESIZE_WEIGHT = 0.2;
 
-  private final DatabaseExplorerModel model;
+  private final DomainGeneratorModel model;
 
   /**
-   * Instantiates a new DatabaseExplorerPanel.
-   * @param model the database explorer model to base this panel on
+   * Instantiates a new DomainGeneratorPanel.
+   * @param model the domain generator model to base this panel on
    */
-  DatabaseExplorerPanel(DatabaseExplorerModel model) {
+  DomainGeneratorPanel(DomainGeneratorModel model) {
     this.model = requireNonNull(model);
     Control populateSchemaControl = Control.builder(this::populateSchema)
             .name("Populate")
@@ -165,28 +165,28 @@ public final class DatabaseExplorerPanel extends JPanel {
                     .mnemonic('V')
                     .control(lookAndFeelSelectionDialog()
                             .owner(this)
-                            .userPreferencePropertyName(DatabaseExplorerPanel.class.getName())
+                            .userPreferencePropertyName(DomainGeneratorPanel.class.getName())
                             .createControl()))
             .build();
   }
 
   /**
-   * Runs a DatabaseExplorerPanel instance in a frame
+   * Runs a DomainGeneratorPanel instance in a frame
    * @param arguments no arguments required
    */
   public static void main(String[] arguments) {
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    findLookAndFeelProvider(defaultLookAndFeelName(DatabaseExplorerPanel.class.getName()))
+    findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName()))
             .ifPresent(LookAndFeelProvider::enable);
     try {
       Database database = Database.instance();
-      DatabaseExplorerModel explorerModel = DatabaseExplorerModel.databaseExplorerModel(database,
+      DomainGeneratorModel explorerModel = DomainGeneratorModel.domainGeneratorModel(database,
               Dialogs.loginDialog()
                       .icon(Logos.logoTransparent())
                       .validator(user -> database.createConnection(user).close())
                       .show());
-      SwingUtilities.invokeLater(() -> new DatabaseExplorerPanel(explorerModel).showFrame());
+      SwingUtilities.invokeLater(() -> new DomainGeneratorPanel(explorerModel).showFrame());
     }
     catch (CancelException ignored) {
       System.exit(0);

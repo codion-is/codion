@@ -35,7 +35,5 @@ public final class DualValueColumnConditionTest {
     assertThrows(IllegalArgumentException.class, () -> new DualValueColumnCondition<>(Employee.ID, 0, 1, Operator.GREATER_THAN_OR_EQUAL));
     assertThrows(IllegalArgumentException.class, () -> new DualValueColumnCondition<>(Employee.ID, 0, 1, Operator.LESS_THAN));
     assertThrows(IllegalArgumentException.class, () -> new DualValueColumnCondition<>(Employee.ID, 0, 1, Operator.LESS_THAN_OR_EQUAL));
-    assertThrows(NullPointerException.class, () -> new DualValueColumnCondition<>(Employee.ID, null, 1, Operator.BETWEEN));
-    assertThrows(NullPointerException.class, () -> new DualValueColumnCondition<>(Employee.ID, 1, null, Operator.BETWEEN));
   }
 }

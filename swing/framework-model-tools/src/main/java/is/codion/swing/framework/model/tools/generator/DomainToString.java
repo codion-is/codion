@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.model.tools.explorer;
+package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.common.Text;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -35,7 +35,8 @@ final class DomainToString {
 
   private static final String INDENT = "\t";
   private static final String DOUBLE_INDENT = INDENT + INDENT;
-  private static final String TRIPLE_INDENT = INDENT + INDENT + INDENT;
+  private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
+  private static final String QUADRUPLE_INDENT = TRIPLE_INDENT + INDENT;
 
   private DomainToString() {}
 
@@ -60,8 +61,17 @@ final class DomainToString {
     builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("add(").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
     builder.append(String.join("," + LINE_SEPARATOR, attributeStrings(definition.attributes().definitions(), interfaceName, definition))).append(")");
+    if (definition.primaryKey().generated()) {
+      builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".keyGenerator(identity())");
+    }
+    if (!nullOrEmpty(definition.caption())) {
+      builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
+    }
     if (!nullOrEmpty(definition.description())) {
       builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".description(\"").append(definition.description()).append("\")");
+    }
+    if (definition.readOnly()) {
+      builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".readOnly(true)");
     }
     builder.append(");");
     builder.append(LINE_SEPARATOR);
@@ -116,43 +126,43 @@ final class DomainToString {
   private static String foreignKeyDefinition(String interfaceName, ForeignKeyDefinition definition) {
     StringBuilder builder = new StringBuilder();
     String foreignKey = definition.attribute().name().toUpperCase();
-    builder.append(DOUBLE_INDENT).append(interfaceName).append(".").append(foreignKey).append(".define()")
-            .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+    builder.append(TRIPLE_INDENT).append(interfaceName).append(".").append(foreignKey).append(".define()")
+            .append(LINE_SEPARATOR).append(QUADRUPLE_INDENT)
             .append(".foreignKey()")
             .append(LINE_SEPARATOR)
-            .append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
+            .append(QUADRUPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
 
     return builder.toString();
   }
 
   private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
                                          boolean isForeignKey, boolean compositePrimaryKey) {
-    StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
+    StringBuilder builder = new StringBuilder(TRIPLE_INDENT)
             .append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
-            .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+            .append(LINE_SEPARATOR).append(QUADRUPLE_INDENT)
             .append(".").append(definitionType(column, compositePrimaryKey));
     if (!isForeignKey && !column.primaryKey()) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
     }
     if (column.columnHasDefaultValue()) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".columnHasDefaultValue(true)");
     }
     if (!column.nullable() && !column.primaryKey()) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".nullable(false)");
     }
     if (column.lazy()) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".lazy(true)");
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".lazy(true)");
     }
     if (column.attribute().type().isString() && column.maximumLength() != -1) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".maximumLength(")
               .append(column.maximumLength()).append(")");
     }
     if (column.attribute().type().isDecimal() && column.maximumFractionDigits() >= 1) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".maximumFractionDigits(")
               .append(column.maximumFractionDigits()).append(")");
     }
     if (!nullOrEmpty(column.description())) {
-      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".description(")
+      builder.append(LINE_SEPARATOR).append(QUADRUPLE_INDENT).append(".description(")
               .append("\"").append(column.description()).append("\")");
     }
 

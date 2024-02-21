@@ -9,11 +9,19 @@ Codion Change Log
 - PostgreSQLDatabase.errorMessage() refactored, now handles referential integrity errors for update and insert as well as delete.
 ### is.codion.swing.common.ui
 - FilteredTable, column tooltips now enabled when selecting columns.
+### is.codion.framework.domain
+- DualValueColumnCondition bug fixed, null value checking too restrictive, prevented enabling of conditions when no values were specified.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.setValueAt() bug fixed, no longer tries to update an unmodified entity.
+### is.codion.swing.framework.model.tools
+- DatabaseExplorerModel, caption based on table name, identity key generator, views readOnly by default.
+- DatabaseExplorerModel renamed DomainGeneratorModel, moved to generator package.
+- DomainToString, default IntelliJ indentation used.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
 - EntityTablePanel.selectConditionPanel(), now only displays the condition panel in case one is selected.
+### is.codion.swing.framework.ui.tools
+- DatabaseExplorerPanel renamed DomainGeneratorPanel, moved to generator package.
 
 ## 0.17.28
 ### is.codion.common.core

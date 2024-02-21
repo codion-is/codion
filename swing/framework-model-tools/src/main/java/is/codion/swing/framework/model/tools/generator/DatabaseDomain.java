@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.model.tools.explorer;
+package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -80,12 +80,14 @@ final class DatabaseDomain extends DefaultDomain {
     List<AttributeDefinition.Builder<?, ?>> definitionBuilders = definitionBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
     if (!definitionBuilders.isEmpty()) {
       EntityDefinition.Builder definitionBuilder = entityType.define(definitionBuilders.toArray(new AttributeDefinition.Builder[0]));
+      definitionBuilder.caption(caption(table.tableName()));
       if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
         definitionBuilder.keyGenerator(KeyGenerator.identity());
       }
       if (!nullOrEmpty(table.comment())) {
         definitionBuilder.description(table.comment());
       }
+      definitionBuilder.readOnly("view".equalsIgnoreCase(table.tableType()));
       add(definitionBuilder);
     }
   }

@@ -177,8 +177,8 @@ dependencyResolutionManagement {
             version("jfreechart", "1.5.4")
             version("jcommon", "1.0.24")
             version("junit", "5.10.2")
-            version("sslcontext.kickstart", "8.3.1")
-            version("flatlaf", "3.3")
+            version("sslcontext.kickstart", "8.3.2")
+            version("flatlaf", "3.4")
             version("ikonli", "12.3.1")
             version("javalin", "6.1.0")
             //plugins
