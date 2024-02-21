@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.model.tools.explorer;
+package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;

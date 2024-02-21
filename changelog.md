@@ -15,9 +15,12 @@ Codion Change Log
 - SwingEntityTableModel.setValueAt() bug fixed, no longer tries to update an unmodified entity.
 ### is.codion.swing.framework.model.tools
 - DatabaseExplorerModel, caption based on table name, identity key generator, views readOnly by default.
+- DatabaseExplorerModel renamed DomainGeneratorModel, moved to generator package.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
 - EntityTablePanel.selectConditionPanel(), now only displays the condition panel in case one is selected.
+### is.codion.swing.framework.ui.tools
+- DatabaseExplorerPanel renamed DomainGeneratorPanel, moved to generator package.
 
 ## 0.17.28
 ### is.codion.common.core

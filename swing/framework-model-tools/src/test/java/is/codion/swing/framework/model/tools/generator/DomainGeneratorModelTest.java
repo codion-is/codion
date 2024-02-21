@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019 - 2024, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.model.tools.explorer;
+package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.common.Text;
 import is.codion.common.db.database.Database;
@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class DatabaseExplorerModelTest {
+public final class DomainGeneratorModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -27,20 +27,20 @@ public final class DatabaseExplorerModelTest {
 
   static {
     try {
-      ADDRESS_DEF = Text.textFileContents(DatabaseExplorerModelTest.class, "address.txt").trim();
-      TAG_ITEM_DEF = Text.textFileContents(DatabaseExplorerModelTest.class, "tagitem.txt").trim();
-      PRODUCT_DEF = Text.textFileContents(DatabaseExplorerModelTest.class, "product.txt").trim();
+      ADDRESS_DEF = Text.textFileContents(DomainGeneratorModelTest.class, "address.txt").trim();
+      TAG_ITEM_DEF = Text.textFileContents(DomainGeneratorModelTest.class, "tagitem.txt").trim();
+      PRODUCT_DEF = Text.textFileContents(DomainGeneratorModelTest.class, "product.txt").trim();
     }
     catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private DatabaseExplorerModel model;
+  private DomainGeneratorModel model;
 
   @BeforeEach
   void setUp() throws Exception {
-    model = DatabaseExplorerModel.databaseExplorerModel(Database.instance(), UNIT_TEST_USER);
+    model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
     model.schemaModel().refresh();
     model.schemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
     model.schemaModel().selectionModel().setSelectedIndex(2);

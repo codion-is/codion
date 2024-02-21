@@ -29,9 +29,9 @@ dependencies {
     testRuntimeOnly project(":codion-framework-server")
 }
 
-tasks.register("runDatabaseExplorerH2", JavaExec) {
+tasks.register("runDomainGeneratorH2", JavaExec) {
     group "application"
-    mainClass.set("is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel")
+    mainClass.set("is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel")
     classpath = sourceSets.main.runtimeClasspath
     maxHeapSize = "256m"
     systemProperties = [
@@ -45,9 +45,9 @@ tasks.register("runDatabaseExplorerH2", JavaExec) {
     ]
 }
 
-//tasks.register("runDatabaseExplorerOracle", JavaExec) {
+//tasks.register("runDomainGeneratorOracle", JavaExec) {
 //    group "application"
-//    mainClass.set("is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel")
+//    mainClass.set("is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel")
 //    classpath = sourceSets.main.runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = [
@@ -55,9 +55,9 @@ tasks.register("runDatabaseExplorerH2", JavaExec) {
 //    ]
 //}
 
-//tasks.register("runDatabaseExplorerPostgres", JavaExec) {
+//tasks.register("runDomainGeneratorPostgres", JavaExec) {
 //    group "application"
-//    mainClass.set("is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel")
+//    mainClass.set("is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel")
 //    classpath = sourceSets.main.runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = [
@@ -65,9 +65,9 @@ tasks.register("runDatabaseExplorerH2", JavaExec) {
 //    ]
 //}
 
-//tasks.register("runDatabaseExplorerMariaDB", JavaExec) {
+//tasks.register("runDomainGeneratorMariaDB", JavaExec) {
 //    group "application"
-//    mainClass.set("is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel")
+//    mainClass.set("is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel")
 //    classpath = sourceSets.main.runtimeClasspath
 //    maxHeapSize = "256m"
 //    systemProperties = [
