@@ -19,12 +19,12 @@
 /**
  * Framework Swing UI tools.<br>
  * <br>
- * {@link is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel}<br>
+ * {@link is.codion.swing.framework.ui.tools.generator.DomainGeneratorPanel}<br>
  */
 module is.codion.swing.framework.ui.tools {
   requires com.formdev.flatlaf.intellijthemes;
   requires is.codion.swing.common.ui;
   requires is.codion.swing.framework.model.tools;
 
-  exports is.codion.swing.framework.ui.tools.explorer;
+  exports is.codion.swing.framework.ui.tools.generator;
 }
