@@ -7,15 +7,13 @@ import is.codion.common.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
 
 final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
   private static final long serialVersionUID = 1;
 
   DualValueColumnCondition(Column<T> column, T lowerBound, T upperBound, Operator operator) {
-    super(column, operator, asList(requireNonNull(lowerBound, "lowerBound"),
-            requireNonNull(upperBound, "upperBound")), true);
+    super(column, operator, asList(lowerBound, upperBound), true);
     validateOperator(operator);
   }
 
