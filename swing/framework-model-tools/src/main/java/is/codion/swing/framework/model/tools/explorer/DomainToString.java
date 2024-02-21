@@ -45,8 +45,17 @@ final class DomainToString {
     builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("add(").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
     builder.append(String.join("," + LINE_SEPARATOR, attributeStrings(definition.attributes().definitions(), interfaceName, definition))).append(")");
+    if (definition.primaryKey().generated()) {
+      builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".keyGenerator(identity())");
+    }
+    if (!nullOrEmpty(definition.caption())) {
+      builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
+    }
     if (!nullOrEmpty(definition.description())) {
       builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".description(\"").append(definition.description()).append("\")");
+    }
+    if (definition.readOnly()) {
+      builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".readOnly(true)");
     }
     builder.append(");");
     builder.append(LINE_SEPARATOR);

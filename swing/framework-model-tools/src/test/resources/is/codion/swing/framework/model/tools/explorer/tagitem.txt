@@ -19,5 +19,6 @@ void tagItem() {
 			.primaryKey(1),
 		TagItem.ITEMID_FK.define()
 			.foreignKey()
-			.caption("Item")));
+			.caption("Item"))
+		.caption("Tag item"));
 }

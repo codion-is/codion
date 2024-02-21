@@ -13,6 +13,8 @@ Codion Change Log
 - DualValueColumnCondition bug fixed, null value checking too restrictive, prevented enabling of conditions when no values were specified.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.setValueAt() bug fixed, no longer tries to update an unmodified entity.
+### is.codion.swing.framework.model.tools
+- DatabaseExplorerModel, caption based on table name, identity key generator, views readOnly by default.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
 - EntityTablePanel.selectConditionPanel(), now only displays the condition panel in case one is selected.

@@ -65,12 +65,14 @@ final class DatabaseDomain extends DefaultDomain {
     List<AttributeDefinition.Builder<?, ?>> definitionBuilders = definitionBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
     if (!definitionBuilders.isEmpty()) {
       EntityDefinition.Builder definitionBuilder = entityType.define(definitionBuilders.toArray(new AttributeDefinition.Builder[0]));
+      definitionBuilder.caption(caption(table.tableName()));
       if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
         definitionBuilder.keyGenerator(KeyGenerator.identity());
       }
       if (!nullOrEmpty(table.comment())) {
         definitionBuilder.description(table.comment());
       }
+      definitionBuilder.readOnly(table.tableType().equalsIgnoreCase("view"));
       add(definitionBuilder);
     }
   }

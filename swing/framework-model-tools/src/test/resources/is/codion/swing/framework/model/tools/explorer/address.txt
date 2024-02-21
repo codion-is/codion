@@ -55,5 +55,7 @@ void address() {
 			.caption("Location"),
 		Address.IMAGE.define()
 			.blobColumn()
-			.caption("Image")));
+			.caption("Image"))
+		.keyGenerator(identity())
+		.caption("Address"));
 }
