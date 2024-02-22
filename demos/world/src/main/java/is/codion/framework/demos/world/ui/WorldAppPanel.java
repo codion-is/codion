@@ -24,7 +24,6 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.SwingConstants;
-import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +69,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
             .domainType(World.DOMAIN)
             .applicationVersion(WorldAppModel.VERSION)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
             .start();
