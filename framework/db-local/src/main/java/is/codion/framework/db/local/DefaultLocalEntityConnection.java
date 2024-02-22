@@ -821,7 +821,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Key> originalKeys = originalPrimaryKeys(entities);
     Select selectForUpdate = where(keys(originalKeys))
-            .attributes(primaryKeyAndWritableColumnAttributes(entityType))
+            .attributes(primaryKeyAndWritableColumns(entityType))
             .forUpdate()
             .build();
     Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(query(selectForUpdate));
@@ -1168,12 +1168,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             writableColumnDefinitions(entityDefinition, true, false));
   }
 
-  private List<Attribute<?>> primaryKeyAndWritableColumnAttributes(EntityType entityType) {
+  private List<Attribute<?>> primaryKeyAndWritableColumns(EntityType entityType) {
     return primaryKeyAndWritableColumnsCache.computeIfAbsent(entityType, e ->
-            collectPrimaryKeyAndWritableColumnAttributes(entityType));
+            collectPrimaryKeyAndWritableColumns(entityType));
   }
 
-  private List<Attribute<?>> collectPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
+  private List<Attribute<?>> collectPrimaryKeyAndWritableColumns(EntityType entityType) {
     EntityDefinition entityDefinition = definition(entityType);
     List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
             new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
