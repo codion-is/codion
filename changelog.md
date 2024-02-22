@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.29-SNAPSHOT
+## 0.17.29
 ### is.codion.common.db
 - ReferentialIntegrityException.operation() added.
 - AbstractDatabase and subclasses, null handling improved.
