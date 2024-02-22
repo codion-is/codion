@@ -21,6 +21,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityEditPanel.onReferentialIntegrityException() now only displays dependencies in case of a DELETE operation.
 - EntityTablePanel.selectConditionPanel(), now only displays the condition panel in case one is selected.
+- EntityDialogs.DefaultEntityEditDialogBuilder bug fixed, did not set locationRelativeTo().
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel renamed DomainGeneratorPanel, moved to generator package.
 

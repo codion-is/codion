@@ -243,6 +243,7 @@ public final class EntityDialogs {
       while (!updatePerformed) {
         T newValue = Dialogs.inputDialog(componentValue)
                 .owner(owner)
+                .locationRelativeTo(locationRelativeTo)
                 .title(FrameworkMessages.edit())
                 .caption(attributeDefinition.caption())
                 .inputValidator(inputValidator)
