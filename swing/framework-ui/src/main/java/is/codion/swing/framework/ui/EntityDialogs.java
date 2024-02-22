@@ -382,12 +382,14 @@ public final class EntityDialogs {
 
     @Override
     public List<Entity> select() {
-      return new EntitySelectionDialog(tableModel, owner, titleProvider, icon, preferredSize, false).selectEntities();
+      return new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
+              titleProvider, icon, preferredSize, false).selectEntities();
     }
 
     @Override
     public Optional<Entity> selectSingle() {
-      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, titleProvider, icon, preferredSize, true).selectEntities();
+      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, locationRelativeTo,
+              titleProvider, icon, preferredSize, true).selectEntities();
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }
@@ -410,8 +412,9 @@ public final class EntityDialogs {
             .mnemonic(FrameworkMessages.searchMnemonic())
             .build();
 
-    private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, ValueObserver<String> titleObserver,
-                                  ImageIcon icon, Dimension preferredSize, boolean singleSelection) {
+    private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Component locationRelativeTo,
+                                  ValueObserver<String> titleObserver, ImageIcon icon, Dimension preferredSize,
+                                  boolean singleSelection) {
       this.dialog = new JDialog(owner, titleObserver == null ? null : titleObserver.get());
       if (titleObserver != null) {
         titleObserver.addDataListener(dialog::setTitle);
@@ -442,7 +445,7 @@ public final class EntityDialogs {
       dialog.add(entityTablePanel, BorderLayout.CENTER);
       dialog.add(buttonPanel, BorderLayout.SOUTH);
       dialog.pack();
-      dialog.setLocationRelativeTo(owner);
+      dialog.setLocationRelativeTo(locationRelativeTo);
       dialog.setModal(true);
       dialog.setResizable(true);
     }
