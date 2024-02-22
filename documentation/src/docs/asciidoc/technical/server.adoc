@@ -40,7 +40,7 @@ codion.server.connection.sslEnabled=true # <1>
 javax.net.ssl.keyStore=keystore.jks
 javax.net.ssl.keyStorePassword=password
 ----
-<1> This property is 'true' by default, included here for completenes's sake
+<1> This property is 'true' by default, included here for completeness' sake
 
 ==== Client side
 

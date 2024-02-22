@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.30-SNAPSHOT
+
 ## 0.17.29
 ### is.codion.common.db
 - ReferentialIntegrityException.operation() added.
