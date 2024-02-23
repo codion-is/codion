@@ -22,16 +22,16 @@ public final class PetEditPanel extends EntityEditPanel {
 
     createForeignKeyComboBox(Pet.OWNER_FK);
     createTextField(Pet.NAME);
-    createTemporalFieldPanel(Pet.BIRTH_DATE);
     createForeignKeyComboBoxPanel(Pet.PET_TYPE_FK, this::createPetTypeEditPanel)
             .add(true);
+    createTemporalFieldPanel(Pet.BIRTH_DATE);
 
     setLayout(gridLayout(2, 2));
 
     addInputPanel(Pet.OWNER_FK);
     addInputPanel(Pet.NAME);
-    addInputPanel(Pet.BIRTH_DATE);
     addInputPanel(Pet.PET_TYPE_FK);
+    addInputPanel(Pet.BIRTH_DATE);
   }
 
   private PetTypeEditPanel createPetTypeEditPanel() {
