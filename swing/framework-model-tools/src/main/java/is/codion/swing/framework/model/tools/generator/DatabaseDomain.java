@@ -57,28 +57,28 @@ final class DatabaseDomain extends DefaultDomain {
               .map(MetaDataForeignKeyConstraint::referencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
-      define(table, entityType);
+      defineEntity(table, entityType);
     }
   }
 
-  private void define(MetaDataTable table, EntityType entityType) {
-    List<AttributeDefinition.Builder<?, ?>> definitionBuilders = definitionBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
-    if (!definitionBuilders.isEmpty()) {
-      EntityDefinition.Builder definitionBuilder = entityType.define(definitionBuilders.toArray(new AttributeDefinition.Builder[0]));
-      definitionBuilder.caption(caption(table.tableName()));
+  private void defineEntity(MetaDataTable table, EntityType entityType) {
+    List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders = defineAttributes(table, entityType, new ArrayList<>(table.foreignKeys()));
+    if (!attributeDefinitionBuilders.isEmpty()) {
+      EntityDefinition.Builder entityDefinitionBuilder = entityType.define(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
+      entityDefinitionBuilder.caption(caption(table.tableName()));
       if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
-        definitionBuilder.keyGenerator(KeyGenerator.identity());
+        entityDefinitionBuilder.keyGenerator(KeyGenerator.identity());
       }
       if (!nullOrEmpty(table.comment())) {
-        definitionBuilder.description(table.comment());
+        entityDefinitionBuilder.description(table.comment());
       }
-      definitionBuilder.readOnly("view".equalsIgnoreCase(table.tableType()));
-      add(definitionBuilder);
+      entityDefinitionBuilder.readOnly("view".equalsIgnoreCase(table.tableType()));
+      add(entityDefinitionBuilder);
     }
   }
 
-  private List<AttributeDefinition.Builder<?, ?>> definitionBuilders(MetaDataTable table, EntityType entityType,
-                                                                     Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
+  private List<AttributeDefinition.Builder<?, ?>> defineAttributes(MetaDataTable table, EntityType entityType,
+                                                                   Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
     List<AttributeDefinition.Builder<?, ?>> builders = new ArrayList<>();
     table.columns().forEach(column -> {
       builders.add(columnDefinitionBuilder(column, entityType));
