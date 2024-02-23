@@ -7,13 +7,11 @@ import is.codion.framework.domain.entity.EntityDefinition;
 
 public final class DefinitionRow {
 
-  final DatabaseDomain domain;
   final String tableType;
   final EntityDefinition definition;
 
-  DefinitionRow(DatabaseDomain domain, String tableType, EntityDefinition definition) {
-    this.domain = domain;
-    this.tableType = tableType;
+  DefinitionRow(EntityDefinition definition, String tableType) {
     this.definition = definition;
+    this.tableType = tableType;
   }
 }

@@ -6,6 +6,7 @@ Codion Change Log
 - SerializationWhitelist, now allows arrays but checks the component type.
 ### is.codion.swing.framework.model.tools
 - DomainToString bug fixed, now handles the mapping from an unknown column data type to an object based Column correctly, DatabaseDomain some renaming.
+- DomainGeneratorModel, table type column moved.
 
 ## 0.17.29
 ### is.codion.common.db

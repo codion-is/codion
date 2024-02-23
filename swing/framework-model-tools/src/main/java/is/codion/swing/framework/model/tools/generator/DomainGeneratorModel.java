@@ -129,16 +129,17 @@ public final class DomainGeneratorModel {
               .headerValue("Domain")
               .columnClass(String.class)
               .build();
-      FilteredTableColumn<Integer> typeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.TABLE_TYPE)
-              .headerValue("Type")
-              .columnClass(String.class)
-              .build();
       FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.ENTITY)
               .headerValue("Entity")
               .columnClass(String.class)
               .build();
+      FilteredTableColumn<Integer> typeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.TABLE_TYPE)
+              .headerValue("Type")
+              .columnClass(String.class)
+              .preferredWidth(120)
+              .build();
 
-      return asList(domainColumn, typeColumn, entityTypeColumn);
+      return asList(domainColumn, entityTypeColumn, typeColumn);
     }
   }
 
@@ -146,7 +147,7 @@ public final class DomainGeneratorModel {
     DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
 
     return domain.entities().definitions().stream()
-            .map(definition -> new DefinitionRow(domain, domain.tableType(definition.entityType()), definition))
+            .map(definition -> new DefinitionRow(definition, domain.tableType(definition.entityType())))
             .collect(toList());
   }
 
@@ -182,18 +183,18 @@ public final class DomainGeneratorModel {
   private static final class DefinitionColumnValueProvider implements FilteredTableModel.ColumnValueProvider<DefinitionRow, Integer> {
 
     private static final int DOMAIN = 0;
-    private static final int TABLE_TYPE = 1;
-    private static final int ENTITY = 2;
+    private static final int ENTITY = 1;
+    private static final int TABLE_TYPE = 2;
 
     @Override
     public Object value(DefinitionRow row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case DOMAIN:
-          return row.domain.type().name();
-        case TABLE_TYPE:
-          return row.tableType;
+          return row.definition.entityType().domainType().name();
         case ENTITY:
           return row.definition.entityType().name();
+        case TABLE_TYPE:
+          return row.tableType;
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }
