@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.30-SNAPSHOT
+### is.codion.common.rmi
+- SerializationWhitelist, now allows arrays but checks the component type.
 
 ## 0.17.29
 ### is.codion.common.db

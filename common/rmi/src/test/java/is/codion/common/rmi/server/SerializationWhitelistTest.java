@@ -84,6 +84,20 @@ public final class SerializationWhitelistTest {
     testFilter(SerializationWhitelist.whitelistFilter("classpath:/whitelist_test.txt"));
   }
 
+  @Test
+  void array() throws IOException, ClassNotFoundException {
+    List<String> whitelistItems = asList(
+            "java.lang.Number",
+            "java.lang.Byte"
+    );
+    WhitelistFilter filter = SerializationWhitelist.whitelistFilter(whitelistItems);
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new byte[0].getClass()));
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new byte[0][].getClass()));
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new Byte[0].getClass()));
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new Byte[0][].getClass()));
+    assertEquals(ObjectInputFilter.Status.REJECTED, filter.checkArrayInput(new Double[0].getClass()));
+  }
+
   private static void testFilter(WhitelistFilter filter) {
     assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
