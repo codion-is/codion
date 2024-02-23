@@ -9,29 +9,31 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
-import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
+
+import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
-public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
+public class StoreLoadTest {
 
-  public StoreLoadTest() {
-    super(User.parse("scott:tiger"), singletonList(new UsageScenario()));
-  }
+  private static final class StoreApplicationModelFactory
+          implements Function<User, StoreApplicationModel> {
 
-  @Override
-  protected StoreApplicationModel createApplication(User user) {
-    EntityConnectionProvider connectionProvider =
-            RemoteEntityConnectionProvider.builder()
-                    .user(user)
-                    .domainType(Store.DOMAIN)
-                    .build();
+    @Override
+    public StoreApplicationModel apply(User user) {
+      EntityConnectionProvider connectionProvider =
+              RemoteEntityConnectionProvider.builder()
+                      .user(user)
+                      .domainType(Store.DOMAIN)
+                      .build();
 
-    return new StoreApplicationModel(connectionProvider);
+      return new StoreApplicationModel(connectionProvider);
+    }
   }
 
   private static class UsageScenario extends
@@ -46,7 +48,14 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new StoreLoadTest().loadTestModel()).run();
+    LoadTestModel<StoreApplicationModel> loadTestModel =
+            LoadTestModel.builder(new StoreApplicationModelFactory(),
+                            application -> application.connectionProvider().close())
+                    .user(User.parse("scott:tiger"))
+                    .usageScenarios(singletonList(new UsageScenario()))
+                    .titleFactory(model -> "Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+                    .build();
+    new LoadTestPanel<>(loadTestModel).run();
   }
 }
 // end::storeLoadTest[]

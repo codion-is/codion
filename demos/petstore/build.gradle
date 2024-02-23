@@ -35,3 +35,11 @@ runClientRMI {
 runClientHttp {
     mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
 }
+
+runLoadTestRMI {
+    mainClass.set("is.codion.framework.demos.petstore.testing.PetstoreLoadTest")
+}
+
+runLoadTestHttp {
+    mainClass.set("is.codion.framework.demos.petstore.testing.PetstoreLoadTest")
+}

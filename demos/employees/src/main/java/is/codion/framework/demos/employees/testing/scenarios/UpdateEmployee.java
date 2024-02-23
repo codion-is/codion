@@ -14,7 +14,6 @@ import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenari
 import java.util.Random;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.randomize;
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]
 public final class UpdateEmployee extends AbstractEntityUsageScenario<EmployeesAppModel> {

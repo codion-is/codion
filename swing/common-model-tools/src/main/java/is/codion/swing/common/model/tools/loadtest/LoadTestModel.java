@@ -24,6 +24,11 @@ import java.util.function.Function;
  */
 public interface LoadTestModel<T> {
 
+  int DEFAULT_MINIMUM_THINKTIME = 2500;
+  int DEFAULT_MAXIMUM_THINKTIME = 5000;
+  int DEFAULT_LOGIN_DELAY_FACTOR = 2;
+  int DEFAULT_APPLICATION_BATCH_SIZE = 10;
+
   /**
    * Removes all applications and exits
    */

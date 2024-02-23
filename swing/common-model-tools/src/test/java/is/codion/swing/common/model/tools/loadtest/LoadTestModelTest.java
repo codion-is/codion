@@ -114,4 +114,20 @@ public class LoadTestModelTest {
     model.shutdown();
     assertEquals(1, exitCounter.get());
   }
+
+  @Test
+  void setLoginDelayFactorNegative() {
+    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
+            .user(User.user("test"))
+            .build();
+    assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactor().set(-1));
+  }
+
+  @Test
+  void setUpdateIntervalNegative() {
+    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
+            .user(User.user("test"))
+            .build();
+    assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
+  }
 }

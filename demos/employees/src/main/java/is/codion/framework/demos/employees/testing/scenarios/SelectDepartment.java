@@ -7,8 +7,6 @@ import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
-
 // tag::loadTest[]
 public final class SelectDepartment extends AbstractEntityUsageScenario<EmployeesAppModel> {
 

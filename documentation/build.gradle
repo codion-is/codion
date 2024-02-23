@@ -87,7 +87,9 @@ asciidoctor {
             "framework-servlet": "",
             "plugin-jasperreports": "",
             "swing-common-model": "",
+            "swing-common-model-tools": "",
             "swing-common-ui": "",
+            "swing-common-ui-tools": "",
             "swing-framework-model": "",
             "swing-framework-model-tools": "",
             "swing-framework-ui": ""

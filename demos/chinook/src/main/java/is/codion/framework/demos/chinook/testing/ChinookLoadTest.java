@@ -36,16 +36,8 @@ public final class ChinookLoadTest {
           asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(), new UpdateTotals(),
                   new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices(),new RandomPlaylist(), new InsertDeleteInvoice());
 
-  public static void main(String[] args) {
-    LoadTestModel<EntityConnectionProvider> testModel =
-            LoadTestModel.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
-                    .usageScenarios(SCENARIOS)
-                    .user(UNIT_TEST_USER)
-                    .build();
-    new LoadTestPanel<>(testModel).run();
-  }
-
   private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
+
     @Override
     public EntityConnectionProvider apply(User user) {
       EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
@@ -58,5 +50,14 @@ public final class ChinookLoadTest {
 
       return connectionProvider;
     }
+  }
+
+  public static void main(String[] args) {
+    LoadTestModel<EntityConnectionProvider> testModel =
+            LoadTestModel.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
+                    .usageScenarios(SCENARIOS)
+                    .user(UNIT_TEST_USER)
+                    .build();
+    new LoadTestPanel<>(testModel).run();
   }
 }

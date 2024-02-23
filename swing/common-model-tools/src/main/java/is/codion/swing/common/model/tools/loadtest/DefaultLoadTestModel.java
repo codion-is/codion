@@ -736,10 +736,10 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private final Consumer<T> closeApplication;
 
     private User user;
-    private int minimumThinkTime = 2500;
-    private int maximumThinkTime = 5000;
-    private int loginDelayFactor = 2;
-    private int applicationBatchSize = 10;
+    private int minimumThinkTime = DEFAULT_MINIMUM_THINKTIME;
+    private int maximumThinkTime = DEFAULT_MAXIMUM_THINKTIME;
+    private int loginDelayFactor = DEFAULT_LOGIN_DELAY_FACTOR;
+    private int applicationBatchSize = DEFAULT_APPLICATION_BATCH_SIZE;
     private Function<LoadTestModel<T>, String> titleFactory = new DefaultTitleFactory<>();
 
     DefaultBuilder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
