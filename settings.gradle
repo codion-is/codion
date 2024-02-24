@@ -180,7 +180,7 @@ dependencyResolutionManagement {
             version("sslcontext.kickstart", "8.3.2")
             version("flatlaf", "3.4")
             version("ikonli", "12.3.1")
-            version("javalin", "6.1.0")
+            version("javalin", "6.1.1")
             //plugins
             version("hikari", "5.1.0")
             version("jackson", "2.16.1")
