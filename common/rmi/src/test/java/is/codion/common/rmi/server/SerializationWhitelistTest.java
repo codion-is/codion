@@ -41,6 +41,7 @@ public final class SerializationWhitelistTest {
     assertEquals(Number.class.getName(), classNames.get(2));
 
     Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
+    Serializer.deserialize(Serializer.serialize(new Double[] {42d}));
     serialFilter.writeToFile(tempFile.getAbsolutePath());
 
     classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);

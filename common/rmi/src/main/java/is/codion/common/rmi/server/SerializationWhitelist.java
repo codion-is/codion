@@ -70,6 +70,9 @@ final class SerializationWhitelist {
     public Status checkInput(FilterInfo filterInfo) {
       Class<?> clazz = filterInfo.serialClass();
       if (clazz != null) {
+        while (clazz.isArray()) {
+          clazz = clazz.getComponentType();
+        }
         deserializedClasses.add(clazz);
       }
 
