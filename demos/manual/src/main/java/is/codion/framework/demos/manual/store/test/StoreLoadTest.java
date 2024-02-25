@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.test;
 
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
@@ -48,14 +49,14 @@ public class StoreLoadTest {
   }
 
   public static void main(String[] args) {
-    LoadTestModel<StoreApplicationModel> loadTestModel =
-            LoadTestModel.builder(new StoreApplicationModelFactory(),
+    LoadTest<StoreApplicationModel> loadTest =
+            LoadTest.builder(new StoreApplicationModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(User.parse("scott:tiger"))
                     .usageScenarios(singletonList(new UsageScenario()))
                     .titleFactory(model -> "Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
-    new LoadTestPanel<>(loadTestModel).run();
+    new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
   }
 }
 // end::storeLoadTest[]

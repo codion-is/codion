@@ -31,24 +31,24 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from employees.department", true);
   @Test
   void test() throws DatabaseException {
-    QueryLoadTestModel loadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
+    QueryLoadTestModel queryLoadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
-    loadTest.loadTestModel().minimumThinkTime().set(10);
-    loadTest.loadTestModel().maximumThinkTime().set(30);
-    loadTest.loadTestModel().loginDelayFactor().set(1);
-    loadTest.loadTestModel().applicationBatchSize().set(6);
-    loadTest.loadTestModel().addApplicationBatch();
+    queryLoadTest.loadTest().minimumThinkTime().set(10);
+    queryLoadTest.loadTest().maximumThinkTime().set(30);
+    queryLoadTest.loadTest().loginDelayFactor().set(1);
+    queryLoadTest.loadTest().applicationBatchSize().set(6);
+    queryLoadTest.loadTest().addApplicationBatch();
     try {
       Thread.sleep(1500);
     }
     catch (InterruptedException ignored) {/*ignored*/}
-    loadTest.loadTestModel().removeApplicationBatch();
+    queryLoadTest.loadTest().removeApplicationBatch();
     try {
       Thread.sleep(500);
     }
     catch (InterruptedException ignored) {/*ignored*/}
     assertTrue(SELECT_DEPARTMENTS.successfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.successfulRunCount() > 0);
-    loadTest.loadTestModel().shutdown();
+    queryLoadTest.loadTest().shutdown();
   }
 }

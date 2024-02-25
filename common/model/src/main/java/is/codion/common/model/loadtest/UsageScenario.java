@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.model.tools.loadtest;
+package is.codion.common.model.loadtest;
 
-import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario.DefaultRunResult;
+import is.codion.common.model.loadtest.AbstractUsageScenario.DefaultRunResult;
 
 import java.util.List;
 import java.util.Optional;

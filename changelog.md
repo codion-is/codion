@@ -9,6 +9,7 @@ Codion Change Log
 - DomainToString bug fixed, now handles the mapping from an unknown column data type to an object based Column correctly, DatabaseDomain some renaming.
 - DomainGeneratorModel, table type column moved.
 - EntityLoadTestModel removed.
+- LoadTest extracted from LoadTestModel and moved to common.model.loadtest, related refactoring.
 
 ## 0.17.29
 ### is.codion.common.db

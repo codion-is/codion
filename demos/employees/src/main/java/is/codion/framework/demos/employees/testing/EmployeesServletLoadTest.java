@@ -5,6 +5,8 @@ package is.codion.framework.demos.employees.testing;
 
 import is.codion.common.Text;
 import is.codion.common.model.CancelException;
+import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
@@ -12,7 +14,6 @@ import is.codion.framework.demos.employees.domain.Employees;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
@@ -32,14 +33,14 @@ public final class EmployeesServletLoadTest {
   private final LoadTestModel<EntityConnectionProvider> loadTestModel;
 
   private EmployeesServletLoadTest(User user) {
-    loadTestModel = LoadTestModel.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
+    loadTestModel = LoadTestModel.loadTestModel(LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
             .user(user)
             .usageScenarios(asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()))
             .minimumThinkTime(2500)
             .maximumThinkTime(5000)
             .loginDelayFactor(2)
             .applicationBatchSize(10)
-            .build();
+            .build());
     loadTestModel.setWeight(UpdateLocation.NAME, 2);
     loadTestModel.setWeight(SelectDepartment.NAME, 4);
     loadTestModel.setWeight(SelectEmployees.NAME, 5);

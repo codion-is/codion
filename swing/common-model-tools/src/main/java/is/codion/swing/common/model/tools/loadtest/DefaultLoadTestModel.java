@@ -4,7 +4,10 @@
 package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.Memory;
-import is.codion.common.event.Event;
+import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.UsageScenario;
+import is.codion.common.model.loadtest.UsageScenario.RunResult;
+import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -14,8 +17,6 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
-import is.codion.swing.common.model.tools.loadtest.UsageScenario.RunResult;
-import is.codion.swing.common.model.tools.randomizer.ItemRandomizer;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -23,8 +24,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
@@ -35,63 +34,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A default LoadTest implementation.
- * @param <T> the type of the applications this load test uses
- */
 final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
-
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultLoadTestModel.class);
-
-  private static final Random RANDOM = new Random();
-  private static final double THOUSAND = 1000d;
   private static final double HUNDRED = 100d;
-  private static final int MINIMUM_NUMBER_OF_THREADS = 12;
+  private static final double THOUSAND = 1000d;
 
-  private final Function<User, T> applicationFactory;
-  private final Consumer<T> closeApplication;
-  private final State paused = State.state();
+  private final LoadTest<T> loadTest;
+
+  private final FilteredTableModel<Application, Integer> applicationTableModel;
+  private final Counter counter = new Counter();
+
   private final State collectChartData = State.state();
   private final State autoRefreshApplications = State.state(true);
-  private final StateObserver chartUpdateSchedulerEnabled =
-          State.and(paused.not(), collectChartData);
-  private final StateObserver applicationsRefreshSchedulerEnabled =
-          State.and(paused.not(), autoRefreshApplications);
-
-  private final Value<Integer> loginDelayFactor;
-  private final Value<Integer> applicationBatchSize;
-  private final Value<Integer> maximumThinkTime;
-  private final Value<Integer> minimumThinkTime;
-  private final Value<Integer> applicationCount = Value.value(0);
-  private final Event<?> shutdownEvent = Event.event();
-
-  private final Value<User> user;
-
-  private final List<ApplicationRunner> applications = new ArrayList<>();
-  private final FilteredTableModel<Application, Integer> applicationTableModel;
-  private final Map<String, UsageScenario<T>> usageScenarios;
-  private final ItemRandomizer<UsageScenario<T>> scenarioChooser;
-  private final ScheduledExecutorService scheduledExecutor =
-          newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
-  private final Counter counter = new Counter();
+  private final StateObserver chartUpdateSchedulerEnabled;
+  private final StateObserver applicationsRefreshSchedulerEnabled;
   private final TaskScheduler chartUpdateScheduler;
   private final TaskScheduler applicationsRefreshScheduler;
 
@@ -119,85 +84,139 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   private final XYSeries systemLoadSeries = new XYSeries("System Load");
   private final XYSeries processLoadSeries = new XYSeries("Process Load");
   private final XYSeriesCollection systemLoadCollection = new XYSeriesCollection();
-  private final Function<LoadTestModel<T>, String> titleFactory;
 
-  DefaultLoadTestModel(DefaultBuilder<T> builder) {
-    this.applicationFactory = builder.applicationFactory;
-    this.closeApplication = builder.closeApplication;
-    this.titleFactory = builder.titleFactory;
-    this.applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
+  DefaultLoadTestModel(LoadTest<T> loadTest) {
+    this.loadTest = requireNonNull(loadTest);
+    applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
             .itemSupplier(new ApplicationItemSupplier())
             .build();
-    this.user = Value.value(builder.user, builder.user);
-    this.loginDelayFactor = Value.value(builder.loginDelayFactor, builder.loginDelayFactor);
-    this.applicationBatchSize = Value.value(builder.applicationBatchSize, builder.applicationBatchSize);
-    this.minimumThinkTime = Value.value(builder.minimumThinkTime, builder.minimumThinkTime);
-    this.maximumThinkTime = Value.value(builder.maximumThinkTime, builder.maximumThinkTime);
-    this.loginDelayFactor.addValidator(new MinimumValidator(1));
-    this.applicationBatchSize.addValidator(new MinimumValidator(1));
-    this.minimumThinkTime.addValidator(new MinimumThinkTimeValidator());
-    this.maximumThinkTime.addValidator(new MaximumThinkTimeValidator());
-    this.usageScenarios = unmodifiableMap(builder.usageScenarios.stream()
-            .collect(Collectors.toMap(UsageScenario::name, Function.identity())));
-    this.scenarioChooser = createScenarioChooser();
+    chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
+    applicationsRefreshSchedulerEnabled = State.and(loadTest.paused().not(), autoRefreshApplications);
     initializeChartModels();
-    this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
+    chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
             .build();
-    this.applicationsRefreshScheduler = TaskScheduler.builder(applicationTableModel::refresh)
+    applicationsRefreshScheduler = TaskScheduler.builder(applicationTableModel::refresh)
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
             .start();
     bindEvents();
   }
 
   @Override
+  public void shutdown() {
+    loadTest.shutdown();
+  }
+
+  @Override
+  public void stop(ApplicationRunner applicationRunner) {
+    loadTest.stop(applicationRunner);
+  }
+
+  @Override
   public Value<User> user() {
-    return user;
+    return loadTest.user();
+  }
+
+  @Override
+  public String title() {
+    return loadTest.title();
+  }
+
+  @Override
+  public void setWeight(String scenarioName, int weight) {
+    loadTest.setWeight(scenarioName, weight);
+  }
+
+  @Override
+  public boolean isScenarioEnabled(String scenarioName) {
+    return loadTest.isScenarioEnabled(scenarioName);
+  }
+
+  @Override
+  public void setScenarioEnabled(String scenarioName, boolean enabled) {
+    loadTest.setScenarioEnabled(scenarioName, enabled);
+  }
+
+  @Override
+  public Collection<UsageScenario<T>> usageScenarios() {
+    return loadTest.usageScenarios();
+  }
+
+  @Override
+  public UsageScenario<T> usageScenario(String usageScenarioName) {
+    return loadTest.usageScenario(usageScenarioName);
+  }
+
+  @Override
+  public void addRunResultListener(Consumer<RunResult> listener) {
+    loadTest.addRunResultListener(listener);
+  }
+
+  @Override
+  public void addShutdownListener(Runnable listener) {
+    loadTest.addShutdownListener(listener);
+  }
+
+  @Override
+  public Value<Integer> applicationBatchSize() {
+    return loadTest.applicationBatchSize();
+  }
+
+  @Override
+  public State paused() {
+    return loadTest.paused();
+  }
+
+  @Override
+  public Value<Integer> maximumThinkTime() {
+    return loadTest.maximumThinkTime();
+  }
+
+  @Override
+  public Value<Integer> minimumThinkTime() {
+    return loadTest.minimumThinkTime();
+  }
+
+  @Override
+  public Value<Integer> loginDelayFactor() {
+    return loadTest.loginDelayFactor();
+  }
+
+  @Override
+  public ValueObserver<Integer> applicationCount() {
+    return loadTest.applicationCount();
+  }
+
+  @Override
+  public void addApplicationBatch() {
+    loadTest.addApplicationBatch();
+  }
+
+  @Override
+  public void removeApplicationBatch() {
+    loadTest.removeApplicationBatch();
+  }
+
+  @Override
+  public void removeSelectedApplications() {
+    applicationTableModel.selectionModel().getSelectedItems().stream()
+            .map(DefaultApplication.class::cast)
+            .forEach(application -> loadTest.stop(application.applicationRunner));
+  }
+
+  @Override
+  public ItemRandomizer<UsageScenario<T>> scenarioChooser() {
+    return loadTest.scenarioChooser();
+  }
+
+  @Override
+  public Map<ApplicationRunner, T> applications() {
+    return loadTest.applications();
   }
 
   @Override
   public FilteredTableModel<Application, Integer> applicationTableModel() {
     return applicationTableModel;
-  }
-
-  @Override
-  public String title() {
-    return titleFactory.apply(this);
-  }
-
-  @Override
-  public UsageScenario<T> usageScenario(String usageScenarioName) {
-    UsageScenario<T> scenario = usageScenarios.get(requireNonNull(usageScenarioName));
-    if (scenario == null) {
-      throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
-    }
-
-    return scenario;
-  }
-
-  @Override
-  public Collection<String> usageScenarios() {
-    return usageScenarios.keySet();
-  }
-
-  @Override
-  public void setWeight(String scenarioName, int weight) {
-    scenarioChooser.setWeight(usageScenario(scenarioName), weight);
-  }
-
-  @Override
-  public boolean isScenarioEnabled(String scenarioName) {
-    return scenarioChooser.isItemEnabled(usageScenario(scenarioName));
-  }
-
-  @Override
-  public void setScenarioEnabled(String scenarioName, boolean enabled) {
-    scenarioChooser.setItemEnabled(usageScenario(scenarioName), enabled);
-  }
-
-  @Override
-  public ItemRandomizer<UsageScenario<T>> scenarioChooser() {
-    return scenarioChooser;
   }
 
   @Override
@@ -272,63 +291,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public Value<Integer> applicationBatchSize() {
-    return applicationBatchSize;
-  }
-
-  @Override
-  public void addApplicationBatch() {
-    synchronized (applications) {
-      int batchSize = applicationBatchSize.get();
-      for (int i = 0; i < batchSize; i++) {
-        ApplicationRunner applicationRunner = new ApplicationRunner(user.get(), applicationFactory);
-        synchronized (applications) {
-          applications.add(applicationRunner);
-          applicationCount.set(applications.size());
-        }
-        scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
-      }
-    }
-  }
-
-  @Override
-  public void removeApplicationBatch() {
-    synchronized (applications) {
-      if (!applications.isEmpty()) {
-        int batchSize = applicationBatchSize.get();
-        List<ApplicationRunner> toStop = applications.stream()
-                .filter(applicationRunner -> !applicationRunner.stopped.get())
-                .limit(batchSize)
-                .collect(toList());
-        toStop.forEach(this::stop);
-      }
-    }
-  }
-
-  @Override
-  public void removeSelectedApplications() {
-    synchronized (applications) {
-      List<? extends DefaultLoadTestModel<?>.ApplicationRunner> applicationRunners =
-              applicationTableModel.selectionModel().getSelectedItems().stream()
-                      .map(DefaultApplication.class::cast)
-                      .map(application -> application.applicationRunner)
-                      .collect(toList());
-      if (!applicationRunners.isEmpty()) {
-        List<ApplicationRunner> toStop = applications.stream()
-                .filter(applicationRunner -> !applicationRunner.stopped.get())
-                .filter(applicationRunners::contains)
-                .collect(toList());
-        toStop.forEach(this::stop);
-      }
-    }
-  }
-
-  @Override
-  public State paused() {
-    return paused;
-  }
-
-  @Override
   public State collectChartData() {
     return collectChartData;
   }
@@ -336,59 +298,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   @Override
   public State autoRefreshApplications() {
     return autoRefreshApplications;
-  }
-
-  @Override
-  public void shutdown() {
-    applicationsRefreshScheduler.stop();
-    chartUpdateScheduler.stop();
-    synchronized (applications) {
-      new ArrayList<>(applications).forEach(this::stop);
-    }
-    scheduledExecutor.shutdown();
-    try {
-      scheduledExecutor.awaitTermination(1, TimeUnit.MINUTES);
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-    shutdownEvent.run();
-  }
-
-  @Override
-  public Value<Integer> maximumThinkTime() {
-    return maximumThinkTime;
-  }
-
-  @Override
-  public Value<Integer> minimumThinkTime() {
-    return minimumThinkTime;
-  }
-
-  @Override
-  public Value<Integer> loginDelayFactor() {
-    return loginDelayFactor;
-  }
-
-  @Override
-  public ValueObserver<Integer> applicationCount() {
-    return applicationCount.observer();
-  }
-
-  @Override
-  public void addShutdownListener(Runnable listener) {
-    shutdownEvent.addListener(listener);
-  }
-
-  private int initialDelay() {
-    int time = maximumThinkTime.get() - minimumThinkTime.get();
-    return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.get()) + minimumThinkTime.get() : minimumThinkTime.get();
-  }
-
-  private ItemRandomizer<UsageScenario<T>> createScenarioChooser() {
-    return ItemRandomizer.itemRandomizer(usageScenarios.values().stream()
-            .map(scenario -> ItemRandomizer.RandomItem.randomItem(scenario, scenario.defaultWeight()))
-            .collect(toList()));
   }
 
   private void initializeChartModels() {
@@ -401,7 +310,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     systemLoadCollection.addSeries(systemLoadSeries);
     systemLoadCollection.addSeries(processLoadSeries);
     usageScenarioCollection.addSeries(scenariosRunSeries);
-    for (UsageScenario<T> usageScenario : usageScenarios.values()) {
+    for (UsageScenario<T> usageScenario : loadTest.usageScenarios()) {
       XYSeries series = new XYSeries(usageScenario.name());
       usageScenarioCollection.addSeries(series);
       usageSeries.add(series);
@@ -415,14 +324,55 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   private void bindEvents() {
+    loadTest.addRunResultListener(counter::addScenarioDuration);
+    addShutdownListener(() -> {
+      applicationsRefreshScheduler.stop();
+      chartUpdateScheduler.stop();
+    });
     chartUpdateSchedulerEnabled.addDataListener(new TaskSchedulerController(chartUpdateScheduler));
     applicationsRefreshSchedulerEnabled.addDataListener(new TaskSchedulerController(applicationsRefreshScheduler));
   }
 
-  private void stop(ApplicationRunner applicationRunner) {
-    applicationRunner.stopped.set(true);
-    applications.remove(applicationRunner);
-    applicationCount.set(applications.size());
+  private static double systemCpuLoad() {
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
+  }
+
+  private static double processCpuLoad() {
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
+  }
+
+  private final class ChartUpdateTask implements Runnable {
+
+    @Override
+    public void run() {
+      counter.updateRequestsPerSecond();
+      updateChartData();
+    }
+
+    private void updateChartData() {
+      long time = System.currentTimeMillis();
+      delayedScenarioRunsSeries.add(time, counter.delayedWorkRequestsPerSecond());
+      minimumThinkTimeSeries.add(time, loadTest.minimumThinkTime().get());
+      maximumThinkTimeSeries.add(time, loadTest.maximumThinkTime().get());
+      numberOfApplicationsSeries.add(time, loadTest.applicationCount().get());
+      allocatedMemoryCollection.add(time, Memory.allocatedMemory() / THOUSAND);
+      usedMemoryCollection.add(time, Memory.usedMemory() / THOUSAND);
+      maxMemoryCollection.add(time, Memory.maxMemory() / THOUSAND);
+      systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);
+      processLoadSeries.add(time, processCpuLoad() * HUNDRED);
+      scenariosRunSeries.add(time, counter.workRequestsPerSecond());
+      for (XYSeries series : usageSeries) {
+        series.add(time, counter.scenarioRate((String) series.getKey()));
+      }
+      for (YIntervalSeries series : durationSeries.values()) {
+        String scenario = (String) series.getKey();
+        series.add(time, counter.averageScenarioDuration(scenario),
+                counter.minimumScenarioDuration(scenario), counter.maximumScenarioDuration(scenario));
+      }
+      for (XYSeries series : failureSeries) {
+        series.add(time, counter.scenarioFailureRate((String) series.getKey()));
+      }
+    }
   }
 
   private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
@@ -460,142 +410,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
                     .columnClass(LocalDateTime.class)
                     .build()
     );
-  }
-
-  private static double systemCpuLoad() {
-    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
-  }
-
-  private static double processCpuLoad() {
-    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
-  }
-
-  private final class ApplicationRunner implements Runnable {
-
-    private static final int MAX_RESULTS = 20;
-
-    private final User user;
-    private final Function<User, T> applicationFactory;
-    private final List<RunResult> runResults = new ArrayList<>();
-    private final AtomicBoolean stopped = new AtomicBoolean();
-    private final LocalDateTime created = LocalDateTime.now();
-
-    private T application;
-
-    private ApplicationRunner(User user, Function<User, T> applicationFactory) {
-      this.user = user;
-      this.applicationFactory = applicationFactory;
-    }
-
-    @Override
-    public void run() {
-      if (stopped.get()) {
-        cleanupOnStop();
-        return;
-      }
-      try {
-        if (!paused.get()) {
-          if (application == null && !stopped.get()) {
-            application = initializeApplication();
-          }
-          else if (!stopped.get()) {
-            runScenario(application, scenarioChooser.randomItem());
-          }
-        }
-        if (stopped.get()) {
-          cleanupOnStop();
-          return;
-        }
-        scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
-      }
-      catch (Exception e) {
-        LOG.debug("Exception during run " + application, e);
-      }
-    }
-
-    private void cleanupOnStop() {
-      if (application != null) {
-        closeApplication.accept(application);
-        LOG.debug("LoadTestModel disconnected application: {}", application);
-        application = null;
-      }
-    }
-
-    private T initializeApplication() {
-      try {
-        long startTime = System.nanoTime();
-        T app = applicationFactory.apply(user);
-        int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
-        addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", duration, null));
-        LOG.debug("LoadTestModel initialized application: {}", app);
-
-        return app;
-      }
-      catch (Exception e) {
-        addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", -1, e));
-        return null;
-      }
-    }
-
-    private void runScenario(T application, UsageScenario<T> scenario) {
-      RunResult runResult = scenario.run(application);
-      counter.addScenarioDuration(scenario, runResult.duration());
-      addRunResult(runResult);
-    }
-
-    private void addRunResult(RunResult runResult) {
-      synchronized (runResults) {
-        runResults.add(runResult);
-        if (runResults.size() > MAX_RESULTS) {
-          runResults.remove(0);
-        }
-      }
-    }
-
-    private int thinkTime() {
-      int time = maximumThinkTime.get() - minimumThinkTime.get();
-      return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.get() : minimumThinkTime.get();
-    }
-
-    private LocalDateTime created() {
-      return created;
-    }
-  }
-
-  private final class ChartUpdateTask implements Runnable {
-
-    @Override
-    public void run() {
-      counter.updateRequestsPerSecond();
-      updateChartData();
-    }
-
-    private void updateChartData() {
-      long time = System.currentTimeMillis();
-      delayedScenarioRunsSeries.add(time, counter.delayedWorkRequestsPerSecond());
-      minimumThinkTimeSeries.add(time, minimumThinkTime.get());
-      maximumThinkTimeSeries.add(time, maximumThinkTime.get());
-      synchronized (applications) {
-        numberOfApplicationsSeries.add(time, applications.size());
-      }
-      allocatedMemoryCollection.add(time, Memory.allocatedMemory() / THOUSAND);
-      usedMemoryCollection.add(time, Memory.usedMemory() / THOUSAND);
-      maxMemoryCollection.add(time, Memory.maxMemory() / THOUSAND);
-      systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);
-      processLoadSeries.add(time, processCpuLoad() * HUNDRED);
-      scenariosRunSeries.add(time, counter.workRequestsPerSecond());
-      for (XYSeries series : usageSeries) {
-        series.add(time, counter.scenarioRate((String) series.getKey()));
-      }
-      for (YIntervalSeries series : durationSeries.values()) {
-        String scenario = (String) series.getKey();
-        series.add(time, counter.averageScenarioDuration(scenario),
-                counter.minimumScenarioDuration(scenario), counter.maximumScenarioDuration(scenario));
-      }
-      for (XYSeries series : failureSeries) {
-        series.add(time, counter.scenarioFailureRate((String) series.getKey()));
-      }
-    }
   }
 
   private final class Counter {
@@ -663,11 +477,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       return usageScenarioRates.get(scenarioName);
     }
 
-    private void addScenarioDuration(UsageScenario<T> scenario, int duration) {
+    private void addScenarioDuration(RunResult runResult) {
       synchronized (scenarioDurations) {
-        scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(duration);
+        UsageScenario<T> scenario = loadTest.usageScenario(runResult.scenario());
+        scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(runResult.duration());
         workRequestCounter++;
-        if (scenario.maximumTime() > 0 && duration > scenario.maximumTime()) {
+        if (scenario.maximumTime() > 0 && runResult.duration() > scenario.maximumTime()) {
           delayedWorkRequestCounter++;
         }
       }
@@ -682,7 +497,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
         usageScenarioMaxDurations.clear();
         workRequestsPerSecond = workRequestCounter / elapsedSeconds;
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
-        for (UsageScenario<T> scenario : usageScenarios.values()) {
+        for (UsageScenario<T> scenario : loadTest.usageScenarios()) {
           usageScenarioRates.put(scenario.name(), (int) (scenario.totalRunCount() / elapsedSeconds));
           usageScenarioFailures.put(scenario.name(), scenario.unsuccessfulRunCount());
           calculateScenarioDuration(scenario);
@@ -718,7 +533,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     private void resetCounters() {
-      for (UsageScenario<T> scenario : usageScenarios.values()) {
+      for (UsageScenario<T> scenario : usageScenarios()) {
         scenario.resetRunCount();
       }
       workRequestCounter = 0;
@@ -729,140 +544,13 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
   }
 
-  static final class DefaultBuilder<T> implements Builder<T> {
-
-    private final Function<User, T> applicationFactory;
-    private final List<UsageScenario<T>> usageScenarios = new ArrayList<>();
-    private final Consumer<T> closeApplication;
-
-    private User user;
-    private int minimumThinkTime = DEFAULT_MINIMUM_THINKTIME;
-    private int maximumThinkTime = DEFAULT_MAXIMUM_THINKTIME;
-    private int loginDelayFactor = DEFAULT_LOGIN_DELAY_FACTOR;
-    private int applicationBatchSize = DEFAULT_APPLICATION_BATCH_SIZE;
-    private Function<LoadTestModel<T>, String> titleFactory = new DefaultTitleFactory<>();
-
-    DefaultBuilder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
-      this.applicationFactory = requireNonNull(applicationFactory);
-      this.closeApplication = requireNonNull(closeApplication);
-    }
+  private final class ApplicationItemSupplier implements Supplier<Collection<Application>> {
 
     @Override
-    public Builder<T> user(User user) {
-      this.user = user;
-      return this;
-    }
-
-    @Override
-    public Builder<T> minimumThinkTime(int minimumThinkTime) {
-      if (minimumThinkTime <= 0) {
-        throw new IllegalArgumentException("Minimum think time must be a positive integer");
-      }
-      if (minimumThinkTime > maximumThinkTime) {
-        throw new IllegalArgumentException("Minimum think time must be less than maximum think time");
-      }
-      this.minimumThinkTime = minimumThinkTime;
-      return this;
-    }
-
-    @Override
-    public Builder<T> maximumThinkTime(int maximumThinkTime) {
-      if (maximumThinkTime <= 0) {
-        throw new IllegalArgumentException("Maximum think time must be a positive integer");
-      }
-      if (maximumThinkTime < minimumThinkTime) {
-        throw new IllegalArgumentException("Maximum think time must be greater than than minimum think time");
-      }
-      this.maximumThinkTime = maximumThinkTime;
-      return this;
-    }
-
-    @Override
-    public Builder<T> loginDelayFactor(int loginDelayFactor) {
-      if (loginDelayFactor < 1) {
-        throw new IllegalArgumentException("Login delay factor must be greatar than or equal to one");
-      }
-      this.loginDelayFactor = loginDelayFactor;
-      return this;
-    }
-
-    @Override
-    public Builder<T> applicationBatchSize(int applicationBatchSize) {
-      if (loginDelayFactor < 1) {
-        throw new IllegalArgumentException("Application batch size must be greatar than or equal to one");
-      }
-      this.applicationBatchSize = applicationBatchSize;
-      return this;
-    }
-
-    @Override
-    public Builder<T> usageScenarios(Collection<? extends UsageScenario<T>> usageScenarios) {
-      this.usageScenarios.addAll(usageScenarios);
-      return this;
-    }
-
-    @Override
-    public Builder<T> titleFactory(Function<LoadTestModel<T>, String> titleFactory) {
-      this.titleFactory = requireNonNull(titleFactory);
-      return this;
-    }
-
-    @Override
-    public LoadTestModel<T> build() {
-      return new DefaultLoadTestModel<>(this);
-    }
-
-    private static final class DefaultTitleFactory<T> implements Function<LoadTestModel<T>, String> {
-      @Override
-      public String apply(LoadTestModel<T> loadTest) {
-        return loadTest.getClass().getSimpleName();
-      }
-    }
-  }
-
-  private static class MinimumValidator implements Value.Validator<Integer> {
-
-    private final int minimumValue;
-
-    private MinimumValidator(int minimumValue) {
-      this.minimumValue = minimumValue;
-    }
-
-    @Override
-    public void validate(Integer value) {
-      if (value == null || value < minimumValue) {
-        throw new IllegalArgumentException("Value must be larger than: " + minimumValue);
-      }
-    }
-  }
-
-  private final class MinimumThinkTimeValidator extends MinimumValidator {
-
-    private MinimumThinkTimeValidator() {
-      super(0);
-    }
-
-    @Override
-    public void validate(Integer value) {
-      super.validate(value);
-      if (value > maximumThinkTime.get()) {
-        throw new IllegalArgumentException("Minimum think time must be equal to or below maximum think time");
-      }
-    }
-  }
-
-  private final class MaximumThinkTimeValidator extends MinimumValidator {
-
-    private MaximumThinkTimeValidator() {
-      super(0);
-    }
-
-    @Override
-    public void validate(Integer value) {
-      super.validate(value);
-      if (value < minimumThinkTime.get()) {
-        throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
-      }
+    public Collection<Application> get() {
+      return loadTest.applications().keySet().stream()
+              .map(DefaultApplication::new)
+              .collect(toList());
     }
   }
 
@@ -887,7 +575,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   private static final class DefaultApplication implements Application {
 
-    private final DefaultLoadTestModel<?>.ApplicationRunner applicationRunner;
+    private final ApplicationRunner applicationRunner;
     private final List<RunResult> runResults;
     private final String user;
     private final String scenario;
@@ -896,11 +584,11 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private final Throwable exception;
     private final LocalDateTime created;
 
-    private DefaultApplication(DefaultLoadTestModel<?>.ApplicationRunner applicationRunner) {
+    private DefaultApplication(ApplicationRunner applicationRunner) {
       this.applicationRunner = applicationRunner;
-      this.runResults = applicationRunner.runResults == null ? emptyList() : applicationRunner.runResults;
+      this.runResults = applicationRunner.runResults();
       RunResult runResult = runResults.isEmpty() ? null : runResults.get(runResults.size() - 1);
-      this.user = applicationRunner.user.username();
+      this.user = applicationRunner.user().username();
       this.scenario = runResult == null ? null : runResult.scenario();
       this.successful = runResult == null ? null : runResult.successful();
       this.duration = runResult == null ? -1 : runResult.duration();
@@ -910,7 +598,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     @Override
     public String name() {
-      return applicationRunner.application == null ? "Not initialized" : applicationRunner.application.toString();
+      return applicationRunner.name();
     }
 
     @Override
@@ -964,22 +652,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     @Override
     public int hashCode() {
       return Objects.hash(applicationRunner);
-    }
-  }
-
-  private final class ApplicationItemSupplier implements Supplier<Collection<Application>> {
-
-    @Override
-    public Collection<Application> get() {
-      synchronized (applications) {
-        return applications.stream()
-                .map(this::toApplication)
-                .collect(toList());
-      }
-    }
-
-    private Application toApplication(ApplicationRunner applicationRunner) {
-      return new DefaultApplication(applicationRunner);
     }
   }
 

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.tools.randomizer;
 
-import is.codion.swing.common.model.tools.randomizer.ItemRandomizer;
+import is.codion.common.model.randomizer.ItemRandomizer;
 
 import org.junit.jupiter.api.Test;
 

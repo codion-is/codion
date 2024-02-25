@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.employees.testing;
 
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.employees.domain.Employees;
@@ -52,15 +53,15 @@ public final class EmployeesLoadTest {
   }
 
   public static void main(String[] args) {
-    LoadTestModel<EmployeesAppModel> loadTestModel =
-            LoadTestModel.builder(new EmployeesAppModelFactory(),
+    LoadTest<EmployeesAppModel> loadTest =
+            LoadTest.builder(new EmployeesAppModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
                     .usageScenarios(asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
                             new SelectDepartment(), new UpdateEmployee()))
                     .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
-    new LoadTestPanel<>(loadTestModel).run();
+    new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
   }
 }
 // end::loadTest[]

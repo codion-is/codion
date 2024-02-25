@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 - 2024, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.model.tools.randomizer;
+package is.codion.common.model.randomizer;
 
 import java.util.Collection;
 

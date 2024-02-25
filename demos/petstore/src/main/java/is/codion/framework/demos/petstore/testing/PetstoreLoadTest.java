@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.petstore.testing;
 
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.domain.Petstore;
@@ -61,13 +62,13 @@ public final class PetstoreLoadTest {
   }
 
   public static void main(String[] args) {
-    LoadTestModel<PetstoreAppModel> loadTestModel =
-            LoadTestModel.builder(new PetstoreAppModelFactory(),
+    LoadTest<PetstoreAppModel> loadTest =
+            LoadTest.builder(new PetstoreAppModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
                     .usageScenarios(singletonList(new PetstoreUsageScenario()))
                     .titleFactory(model -> "Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
-    new LoadTestPanel<>(loadTestModel).run();
+    new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
   }
 }

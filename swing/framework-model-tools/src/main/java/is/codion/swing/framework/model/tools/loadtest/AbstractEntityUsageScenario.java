@@ -3,9 +3,9 @@
  */
 package is.codion.swing.framework.model.tools.loadtest;
 
+import is.codion.common.model.loadtest.AbstractUsageScenario;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 

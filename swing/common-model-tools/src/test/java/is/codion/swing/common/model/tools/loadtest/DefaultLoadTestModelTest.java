@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.model.tools.loadtest;
 
+import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.UsageScenario;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LoadTestModelTest {
+public class DefaultLoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -33,21 +36,8 @@ public class LoadTestModelTest {
   };
 
   @Test
-  void unknownUsageScenario() {
-    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
-            .user(User.user("test"))
-            .usageScenarios(asList(SCENARIO, SCENARIO_II))
-            .minimumThinkTime(25)
-            .maximumThinkTime(50)
-            .loginDelayFactor(2)
-            .applicationBatchSize(2)
-            .build();
-    assertThrows(IllegalArgumentException.class, () -> model.usageScenario("bla"));
-  }
-
-  @Test
   void test() throws Exception {
-    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
+    LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
             .user(UNIT_TEST_USER)
             .usageScenarios(asList(SCENARIO, SCENARIO_II))
             .minimumThinkTime(25)
@@ -55,6 +45,7 @@ public class LoadTestModelTest {
             .loginDelayFactor(2)
             .applicationBatchSize(2)
             .build();
+    LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
     assertEquals(2, model.applicationBatchSize().get());
     model.collectChartData().set(true);
 
@@ -77,7 +68,7 @@ public class LoadTestModelTest {
     assertEquals(40, model.maximumThinkTime().get());
 
     model.applicationBatchSize().set(5);
-    assertTrue(model.usageScenarios().contains(SCENARIO.name()));
+    assertTrue(model.usageScenarios().contains(SCENARIO));
     model.user().set(UNIT_TEST_USER);
     assertEquals(UNIT_TEST_USER, model.user().get());
     assertNotNull(model.scenarioChooser());
@@ -116,18 +107,11 @@ public class LoadTestModelTest {
   }
 
   @Test
-  void setLoginDelayFactorNegative() {
-    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
-            .user(User.user("test"))
-            .build();
-    assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactor().set(-1));
-  }
-
-  @Test
   void setUpdateIntervalNegative() {
-    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
+    LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .build();
+    LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
     assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 }

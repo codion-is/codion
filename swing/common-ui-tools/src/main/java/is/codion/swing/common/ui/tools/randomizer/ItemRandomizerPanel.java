@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.tools.randomizer;
 
 import is.codion.common.event.Event;
+import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.value.AbstractValue;
-import is.codion.swing.common.model.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 

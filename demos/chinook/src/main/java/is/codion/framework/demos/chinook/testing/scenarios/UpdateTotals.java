@@ -4,13 +4,13 @@
 package is.codion.framework.demos.chinook.testing.scenarios;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.loadtest.AbstractUsageScenario;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import java.util.Collection;
 import java.util.List;

@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.tools.loadtest;
 
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 
@@ -15,13 +16,13 @@ public class LoadTestPanelTest {
 
   @Test
   void test() {
-    LoadTestModel<Object> model = LoadTestModel.builder(user -> new Object(), object -> {})
+    LoadTestModel<Object> model = LoadTestModel.loadTestModel(LoadTest.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .minimumThinkTime(25)
             .maximumThinkTime(50)
             .loginDelayFactor(2)
             .applicationBatchSize(2)
-            .build();
+            .build());
     LoadTestPanel<Object> panel = new LoadTestPanel<>(model);
     assertEquals(model, panel.model());
     model.shutdown();
@@ -29,6 +30,6 @@ public class LoadTestPanelTest {
 
   @Test
   void constructorNullModel() {
-    assertThrows(NullPointerException.class, () -> new LoadTestPanel<LoadTestModel<?>>(null));
+    assertThrows(NullPointerException.class, () -> new LoadTestPanel<LoadTest<?>>(null));
   }
 }
