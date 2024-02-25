@@ -22,6 +22,8 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
+import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
@@ -43,7 +45,7 @@ public final class QueryLoadTestModel {
   private static final int DEFAULT_LOGIN_DELAY_FACTOR = 2;
   private static final int DEFAULT_BATCH_SIZE = 5;
 
-  private final LoadTestModel<QueryApplication> loadTestModel;
+  private final LoadTest<QueryApplication> loadTest;
   private final ConnectionPoolWrapper pool;
 
   /**
@@ -54,7 +56,7 @@ public final class QueryLoadTestModel {
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
-    this.loadTestModel = LoadTestModel.builder(this::createApplication, this::disconnectApplication)
+    this.loadTest = LoadTest.builder(this::createApplication, this::disconnectApplication)
             .user(user)
             .usageScenarios(scenarios)
             .minimumThinkTime(DEFAULT_MAXIMUM_THINK_TIME_MS / 2)
@@ -64,11 +66,11 @@ public final class QueryLoadTestModel {
             .build();
     ConnectionPoolFactory poolProvider = ConnectionPoolFactory.instance();
     this.pool = poolProvider.createConnectionPool(database, user);
-    loadTestModel.addShutdownListener(pool::close);
+    loadTest.addShutdownListener(pool::close);
   }
 
-  public LoadTestModel<QueryApplication> loadTestModel() {
-    return loadTestModel;
+  public LoadTest<QueryApplication> loadTest() {
+    return loadTest;
   }
 
   /**

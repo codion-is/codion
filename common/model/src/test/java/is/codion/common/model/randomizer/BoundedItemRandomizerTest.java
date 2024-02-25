@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2010 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.tools.randomizer;
+package is.codion.common.model.randomizer;
 
 import org.junit.jupiter.api.Test;
 

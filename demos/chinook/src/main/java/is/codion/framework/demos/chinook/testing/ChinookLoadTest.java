@@ -18,6 +18,8 @@
  */
 package is.codion.framework.demos.chinook.testing;
 
+import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.UsageScenario;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -34,7 +36,6 @@ import is.codion.framework.demos.chinook.testing.scenarios.ViewGenre;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewInvoice;
 import is.codion.framework.demos.chinook.ui.ChinookAppPanel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
-import is.codion.swing.common.model.tools.loadtest.UsageScenario;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.util.Collection;
@@ -51,16 +52,8 @@ public final class ChinookLoadTest {
           asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(), new UpdateTotals(),
                   new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices(),new RandomPlaylist(), new InsertDeleteInvoice());
 
-  public static void main(String[] args) {
-    LoadTestModel<EntityConnectionProvider> testModel =
-            LoadTestModel.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
-                    .usageScenarios(SCENARIOS)
-                    .user(UNIT_TEST_USER)
-                    .build();
-    new LoadTestPanel<>(testModel).run();
-  }
-
   private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
+
     @Override
     public EntityConnectionProvider apply(User user) {
       EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
@@ -73,5 +66,14 @@ public final class ChinookLoadTest {
 
       return connectionProvider;
     }
+  }
+
+  public static void main(String[] args) {
+    LoadTest<EntityConnectionProvider> loadTest =
+            LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
+                    .usageScenarios(SCENARIOS)
+                    .user(UNIT_TEST_USER)
+                    .build();
+    new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
   }
 }

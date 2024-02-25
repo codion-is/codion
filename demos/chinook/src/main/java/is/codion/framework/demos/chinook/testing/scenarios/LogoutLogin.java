@@ -18,8 +18,8 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
+import is.codion.common.model.loadtest.AbstractUsageScenario;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
 
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 

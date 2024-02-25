@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandomEntity;
-import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]
 public final class InsertEmployee extends AbstractEntityUsageScenario<EmployeesAppModel> {

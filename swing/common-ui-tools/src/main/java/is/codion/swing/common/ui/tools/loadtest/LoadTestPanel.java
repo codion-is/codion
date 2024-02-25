@@ -20,12 +20,12 @@ package is.codion.swing.common.ui.tools.loadtest;
 
 import is.codion.common.Separators;
 import is.codion.common.model.CancelException;
+import is.codion.common.model.loadtest.UsageScenario;
+import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel.Application;
-import is.codion.swing.common.model.tools.loadtest.UsageScenario;
-import is.codion.swing.common.model.tools.randomizer.ItemRandomizer.RandomItem;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;

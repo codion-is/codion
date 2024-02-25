@@ -9,7 +9,7 @@ public interface Address {
 	Column<Integer> ZIP = TYPE.integerColumn("zip");
 	Column<Double> LATITUDE = TYPE.doubleColumn("latitude");
 	Column<Double> LONGITUDE = TYPE.doubleColumn("longitude");
-	Column<Object> LOCATION = TYPE.objectColumn("location");
+	Column<Object> LOCATION = TYPE.column("location", Object.class);
 	Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
 }
 

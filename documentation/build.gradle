@@ -87,7 +87,9 @@ asciidoctor {
             "framework-servlet": "/is.codion.framework.servlet",
             "plugin-jasperreports": "/is.codion.plugin.jasperreports",
             "swing-common-model": "/is.codion.swing.common.model",
+            "swing-common-model-tools": "/is.codion.swing.common.model.tools",
             "swing-common-ui": "/is.codion.swing.common.ui",
+            "swing-common-ui-tools": "/is.codion.swing.common.ui.tools",
             "swing-framework-model": "/is.codion.swing.framework.model",
             "swing-framework-model-tools": "/is.codion.swing.framework.model.tools",
             "swing-framework-ui": "/is.codion.swing.framework.ui"

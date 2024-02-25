@@ -56,6 +56,7 @@ public final class SerializationWhitelistTest {
     assertEquals(Number.class.getName(), classNames.get(2));
 
     Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
+    Serializer.deserialize(Serializer.serialize(new Double[] {42d}));
     serialFilter.writeToFile(tempFile.getAbsolutePath());
 
     classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
@@ -97,6 +98,20 @@ public final class SerializationWhitelistTest {
     assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.whitelistFilter("classpath:src/test/resources/whitelist_test.txt"));
     testFilter(SerializationWhitelist.whitelistFilter("classpath:whitelist_test.txt"));
     testFilter(SerializationWhitelist.whitelistFilter("classpath:/whitelist_test.txt"));
+  }
+
+  @Test
+  void array() throws IOException, ClassNotFoundException {
+    List<String> whitelistItems = asList(
+            "java.lang.Number",
+            "java.lang.Byte"
+    );
+    WhitelistFilter filter = SerializationWhitelist.whitelistFilter(whitelistItems);
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new byte[0].getClass()));
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new byte[0][].getClass()));
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new Byte[0].getClass()));
+    assertEquals(ObjectInputFilter.Status.ALLOWED, filter.checkArrayInput(new Byte[0][].getClass()));
+    assertEquals(ObjectInputFilter.Status.REJECTED, filter.checkArrayInput(new Double[0].getClass()));
   }
 
   private static void testFilter(WhitelistFilter filter) {

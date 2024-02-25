@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.employees.testing;
 
-import is.codion.common.model.CancelException;
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.employees.domain.Employees;
@@ -30,44 +30,53 @@ import is.codion.framework.demos.employees.testing.scenarios.InsertEmployee;
 import is.codion.framework.demos.employees.testing.scenarios.LoginLogout;
 import is.codion.framework.demos.employees.testing.scenarios.SelectDepartment;
 import is.codion.framework.demos.employees.testing.scenarios.UpdateEmployee;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
+
+import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 
 // tag::loadTest[]
-public final class EmployeesLoadTest extends EntityLoadTestModel<EmployeesAppModel> {
+public final class EmployeesLoadTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  public EmployeesLoadTest() {
-    super(UNIT_TEST_USER, asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
-            new SelectDepartment(), new UpdateEmployee()));
-  }
+  private static final class EmployeesAppModelFactory
+          implements Function<User, EmployeesAppModel> {
 
-  @Override
-  protected EmployeesAppModel createApplication(User user) throws CancelException {
-    EmployeesAppModel applicationModel =
-            new EmployeesAppModel(EntityConnectionProvider.builder()
-                    .domainType(Employees.DOMAIN)
-                    .clientTypeId(EmployeesLoadTest.class.getSimpleName())
-                    .user(user)
-                    .build());
+    @Override
+    public EmployeesAppModel apply(User user) {
+      EmployeesAppModel applicationModel =
+              new EmployeesAppModel(EntityConnectionProvider.builder()
+                      .domainType(Employees.DOMAIN)
+                      .clientTypeId(EmployeesLoadTest.class.getSimpleName())
+                      .user(user)
+                      .build());
 
-    SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
-    model.detailModelLink(model.detailModel(Employee.TYPE)).active().set(true);
-    try {
-      model.tableModel().refresh();
+      SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
+      model.detailModelLink(model.detailModel(Employee.TYPE)).active().set(true);
+      try {
+        model.tableModel().refresh();
+      }
+      catch (Exception ignored) {/*ignored*/}
+
+      return applicationModel;
     }
-    catch (Exception ignored) {/*ignored*/}
-
-    return applicationModel;
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new EmployeesLoadTest().loadTestModel()).run();
+    LoadTest<EmployeesAppModel> loadTest =
+            LoadTest.builder(new EmployeesAppModelFactory(),
+                            application -> application.connectionProvider().close())
+                    .user(UNIT_TEST_USER)
+                    .usageScenarios(asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
+                            new SelectDepartment(), new UpdateEmployee()))
+                    .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+                    .build();
+    new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
   }
 }
 // end::loadTest[]

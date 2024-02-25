@@ -35,7 +35,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -86,6 +85,9 @@ final class SerializationWhitelist {
     public Status checkInput(FilterInfo filterInfo) {
       Class<?> clazz = filterInfo.serialClass();
       if (clazz != null) {
+        while (clazz.isArray()) {
+          clazz = clazz.getComponentType();
+        }
         deserializedClasses.add(clazz);
       }
 
@@ -135,8 +137,23 @@ final class SerializationWhitelist {
       if (clazz == null) {
         return Status.ALLOWED;
       }
+      if (clazz.isArray()) {
+        return checkArrayInput(clazz);
+      }
 
       return checkInput(clazz.getName());
+    }
+
+    Status checkArrayInput(Class<?> arrayClass) {
+      Class<?> componentType = arrayClass.getComponentType();
+      while (componentType.isArray()) {
+        componentType = componentType.getComponentType();
+      }
+      if (componentType.isPrimitive()) {
+        return Status.ALLOWED;
+      }
+
+      return checkInput(componentType.getName());
     }
 
     Status checkInput(String classname) {
@@ -199,8 +216,8 @@ final class SerializationWhitelist {
     }
 
     private static Collection<String> readFileWhitelistItems(String whitelistFile) {
-      try (Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
-        return stream.collect(toSet());
+      try {
+        return new HashSet<>(Files.readAllLines(Paths.get(whitelistFile)));
       }
       catch (IOException e) {
         LOG.error("Unable to read serialization whitelist: " + whitelistFile);

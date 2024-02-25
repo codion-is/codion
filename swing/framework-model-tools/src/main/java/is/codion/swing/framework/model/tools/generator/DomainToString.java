@@ -85,8 +85,15 @@ final class DomainToString {
       ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
       String valueClassName = columnDefinition.attribute().type().valueClass().getSimpleName();
       builder.append(INDENT).append("Column<").append(valueClassName).append("> ")
-              .append(columnDefinition.name().toUpperCase()).append(" = TYPE.").append(attributeTypePrefix(valueClassName))
-              .append("Column(\"").append(columnDefinition.name().toLowerCase()).append("\");").append(LINE_SEPARATOR);
+              .append(columnDefinition.name().toUpperCase()).append(" = TYPE.");
+      if (valueClassName.equals("Object")) {
+        //special handling for mapping unknown column data types to Object columns
+        builder.append("column(\"").append(columnDefinition.name().toLowerCase()).append("\", Object.class);").append(LINE_SEPARATOR);
+      }
+      else {
+        builder.append(attributeTypePrefix(valueClassName))
+                .append("Column(\"").append(columnDefinition.name().toLowerCase()).append("\");").append(LINE_SEPARATOR);
+      }
     }
     else if (attributeDefinition instanceof ForeignKeyDefinition) {
       ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;

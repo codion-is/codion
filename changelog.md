@@ -2,6 +2,14 @@ Codion Change Log
 ==================
 
 ## 0.17.30-SNAPSHOT
+### is.codion.common.rmi
+- SerializationWhitelist, now allows arrays but checks the component type.
+- SerializationWhitelist.DryRun, now excludes arrays and includes the component type.
+### is.codion.swing.framework.model.tools
+- DomainToString bug fixed, now handles the mapping from an unknown column data type to an object based Column correctly, DatabaseDomain some renaming.
+- DomainGeneratorModel, table type column moved.
+- EntityLoadTestModel removed.
+- LoadTest extracted from LoadTestModel and moved to common.model.loadtest, related refactoring.
 
 ## 0.17.29
 ### is.codion.common.db

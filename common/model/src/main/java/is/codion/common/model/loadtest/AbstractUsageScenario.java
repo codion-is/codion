@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.tools.loadtest;
+package is.codion.common.model.loadtest;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
