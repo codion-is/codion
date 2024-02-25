@@ -19,8 +19,7 @@
 /**
  * Common Swing model tools, such as:<br>
  * <br>
- * {@link is.codion.swing.common.model.tools.loadtest.LoadTestModel}<br>
- * {@link is.codion.swing.common.model.tools.loadtest.UsageScenario}<br>
+ * {@link is.codion.swing.common.model.tools.loadtest.LoadTestModel}
  */
 module is.codion.swing.common.model.tools {
   requires org.slf4j;
@@ -32,5 +31,4 @@ module is.codion.swing.common.model.tools {
   requires transitive is.codion.swing.common.model;
 
   exports is.codion.swing.common.model.tools.loadtest;
-  exports is.codion.swing.common.model.tools.randomizer;
 }
