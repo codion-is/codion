@@ -71,7 +71,7 @@ final class DomainToString {
       String valueClassName = columnDefinition.attribute().type().valueClass().getSimpleName();
       builder.append(INDENT).append("Column<").append(valueClassName).append("> ")
               .append(columnDefinition.name().toUpperCase()).append(" = TYPE.");
-      if (valueClassName.equals("Object")) {
+      if ("Object".equals(valueClassName)) {
         //special handling for mapping unknown column data types to Object columns
         builder.append("column(\"").append(columnDefinition.name().toLowerCase()).append("\", Object.class);").append(LINE_SEPARATOR);
       }
