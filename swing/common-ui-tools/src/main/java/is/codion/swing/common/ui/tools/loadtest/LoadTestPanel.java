@@ -66,6 +66,7 @@ import static org.jfree.chart.ChartFactory.createXYStepChart;
 /**
  * A default UI component for the LoadTestModel class.
  * @param <T> the load test application type
+ * @see #loadTestPanel(LoadTestModel)
  * @see LoadTestModel
  */
 public final class LoadTestPanel<T> extends JPanel {
@@ -92,11 +93,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private boolean exiting;
 
-  /**
-   * Constructs a new LoadTestPanel.
-   * @param loadTestModel the LoadTestModel to base this panel on
-   */
-  public LoadTestPanel(LoadTestModel<T> loadTestModel) {
+  private LoadTestPanel(LoadTestModel<T> loadTestModel) {
     this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
     this.loadTest = loadTestModel.loadTest();
     this.loadTestModel.applicationTableModel().refresher().addRefreshFailedListener(this::displayException);
@@ -115,6 +112,16 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public void run() {
     SwingUtilities.invokeLater(this::showFrame);
+  }
+
+  /**
+   * Instantiates a new {@link LoadTestPanel} instance.
+   * @param loadTestModel the LoadTestModel to base this panel on
+   * @return a new {@link LoadTestPanel} instance.
+   * @param <T> the load test application type
+   */
+  public static <T> LoadTestPanel<T> loadTestPanel(LoadTestModel<T> loadTestModel) {
+    return new LoadTestPanel<>(loadTestModel);
   }
 
   /**

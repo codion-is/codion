@@ -14,7 +14,6 @@ import is.codion.framework.demos.employees.domain.Employees;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,6 +23,7 @@ import java.util.Random;
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
+import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
 import static java.util.Arrays.asList;
 
 public final class EmployeesServletLoadTest {
@@ -62,7 +62,7 @@ public final class EmployeesServletLoadTest {
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
+    loadTestPanel(loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
   }
 
   private static final class UpdateLocation implements Scenario.Performer<EntityConnectionProvider> {

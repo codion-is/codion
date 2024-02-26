@@ -10,6 +10,7 @@ import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import org.junit.jupiter.api.Test;
 
 import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
+import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,13 +26,13 @@ public class LoadTestPanelTest {
             .applicationBatchSize(2)
             .build();
     LoadTestModel<Object> model = loadTestModel(loadTest);
-    LoadTestPanel<Object> panel = new LoadTestPanel<>(model);
+    LoadTestPanel<Object> panel = loadTestPanel(model);
     assertEquals(model, panel.model());
     loadTest.shutdown();
   }
 
   @Test
   void constructorNullModel() {
-    assertThrows(NullPointerException.class, () -> new LoadTestPanel<LoadTest<?>>(null));
+    assertThrows(NullPointerException.class, () -> loadTestPanel(null));
   }
 }

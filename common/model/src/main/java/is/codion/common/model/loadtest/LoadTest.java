@@ -247,7 +247,7 @@ public interface LoadTest<T> {
   /**
    * Specifies a load test usage scenario.
    * @param <T> the type used to run the scenario
-   * @see #scenario(String)
+   * @see #scenario(Performer)
    * @see #scenario(Performer, int)
    * @see #builder(Performer)
    */

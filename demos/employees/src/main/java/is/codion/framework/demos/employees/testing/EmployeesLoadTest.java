@@ -15,13 +15,13 @@ import is.codion.framework.demos.employees.testing.scenarios.InsertEmployee;
 import is.codion.framework.demos.employees.testing.scenarios.LoginLogout;
 import is.codion.framework.demos.employees.testing.scenarios.SelectDepartment;
 import is.codion.framework.demos.employees.testing.scenarios.UpdateEmployee;
-import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.function.Function;
 
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
+import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
 import static java.util.Arrays.asList;
 
 // tag::loadTest[]
@@ -66,7 +66,7 @@ public final class EmployeesLoadTest {
                             scenario(new UpdateEmployee(), 5)))
                     .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
-    new LoadTestPanel<>(loadTestModel(loadTest)).run();
+    loadTestPanel(loadTestModel(loadTest)).run();
   }
 }
 // end::loadTest[]

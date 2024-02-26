@@ -20,13 +20,13 @@ import is.codion.framework.demos.chinook.testing.scenarios.ViewCustomerReport;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewGenre;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewInvoice;
 import is.codion.framework.demos.chinook.ui.ChinookAppPanel;
-import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.util.Collection;
 import java.util.function.Function;
 
 import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
+import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
 import static java.util.Arrays.asList;
 
 public final class ChinookLoadTest {
@@ -68,6 +68,6 @@ public final class ChinookLoadTest {
                     .scenarios(SCENARIOS)
                     .user(UNIT_TEST_USER)
                     .build();
-    new LoadTestPanel<>(loadTestModel(loadTest)).run();
+    loadTestPanel(loadTestModel(loadTest)).run();
   }
 }
