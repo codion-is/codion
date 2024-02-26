@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.model.loadtest.AbstractScenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -16,10 +16,10 @@ import java.util.List;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 
-public final class ViewAlbum extends AbstractScenario<EntityConnectionProvider> {
+public final class ViewAlbum implements Performer<EntityConnectionProvider> {
 
   @Override
-  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
+  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
     EntityConnection connection = connectionProvider.connection();
     Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
     List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
@@ -28,10 +28,5 @@ public final class ViewAlbum extends AbstractScenario<EntityConnectionProvider> 
     if (!albums.isEmpty()) {
       connection.select(Chinook.Track.ALBUM_FK.equalTo(albums.get(0)));
     }
-  }
-
-  @Override
-  public int defaultWeight() {
-    return 10;
   }
 }

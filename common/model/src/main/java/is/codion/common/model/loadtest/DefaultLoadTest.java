@@ -321,13 +321,13 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
         long startTime = System.nanoTime();
         T app = applicationFactory.apply(user);
         int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
-        addResult(new AbstractScenario.DefaultRunResult("Initialization", duration, null));
+        addResult(Result.success("Initialization", duration));
         LOG.debug("LoadTestModel initialized application: {}", app);
 
         return app;
       }
       catch (Exception e) {
-        addResult(new AbstractScenario.DefaultRunResult("Initialization", -1, e));
+        addResult(Result.failure("Initialization", e));
         return null;
       }
     }

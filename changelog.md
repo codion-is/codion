@@ -7,6 +7,7 @@ Codion Change Log
 - UsageScenario renamed Scenario and moved to LoadTest.
 - AbstractScenario, run counting removed.
 - LoadTest.Scenario.maximumTime() removed.
+- LoadTest.Scenario.Builder introduced along with LoadTest.Performer, AbstractScenario removed, related refactoring.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.

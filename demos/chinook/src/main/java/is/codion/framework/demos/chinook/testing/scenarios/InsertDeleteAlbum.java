@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.model.loadtest.AbstractScenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
@@ -22,12 +22,12 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.R
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
-public final class InsertDeleteAlbum extends AbstractScenario<EntityConnectionProvider> {
+public final class InsertDeleteAlbum implements Performer<EntityConnectionProvider> {
 
   private static final BigDecimal UNIT_PRICE = BigDecimal.valueOf(2);
 
   @Override
-  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
+  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
     EntityConnection connection = connectionProvider.connection();
     Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
     Entity album = connectionProvider.entities().builder(Album.TYPE)
@@ -55,10 +55,5 @@ public final class InsertDeleteAlbum extends AbstractScenario<EntityConnectionPr
     Collection<Entity.Key> toDelete = new ArrayList<>(Entity.primaryKeys(tracks));
     toDelete.add(album.primaryKey());
     connection.delete(toDelete);
-  }
-
-  @Override
-  public int defaultWeight() {
-    return 3;
   }
 }

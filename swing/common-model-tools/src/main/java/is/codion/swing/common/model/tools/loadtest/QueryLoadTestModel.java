@@ -7,8 +7,9 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
@@ -40,7 +41,8 @@ public final class QueryLoadTestModel {
    * @param scenarios the query scenarios
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
+  public QueryLoadTestModel(Database database, User user,
+                            Collection<? extends Scenario<QueryApplication>> scenarios) throws DatabaseException {
     this.loadTest = LoadTest.builder(this::createApplication, this::disconnectApplication)
             .user(user)
             .scenarios(scenarios)
@@ -83,45 +85,35 @@ public final class QueryLoadTestModel {
     }
   }
 
-  /**
-   * A usage scenario based on an SQL query.
-   */
-  public static class QueryScenario extends AbstractScenario<QueryApplication> {
+  public static class QueryPerformer implements Performer<QueryApplication> {
 
     private final User user;
     private final String query;
     private final boolean transactional;
 
     /**
-     * Instantiates a new non-transactional QueryScenario.
+     * Instantiates a new non-transactional QueryPerformer.
      * @param user the user
-     * @param name a unique name for the scenario
      * @param query the query
      */
-    public QueryScenario(User user, String name, String query) {
-      this(user, name, query, false);
+    public QueryPerformer(User user, String query) {
+      this(user, query, false);
     }
 
     /**
-     * Instantiates a new QueryScenario.
+     * Instantiates a new QueryPerformer.
      * @param user the user
-     * @param name a unique name for the scenario
      * @param query the query
      * @param transactional if true, commit and rollback is performed on success and error respectively
      */
-    public QueryScenario(User user, String name, String query, boolean transactional) {
-      super(name);
+    public QueryPerformer(User user, String query, boolean transactional) {
       this.user = user;
       this.query = query;
       this.transactional = transactional;
     }
 
-    /**
-     * @param application the connection pool providing connections
-     * @throws Exception in case of an exception during the scenario run
-     */
     @Override
-    protected final void perform(QueryApplication application) throws Exception {
+    public void perform(QueryApplication application) throws Exception {
       Connection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;

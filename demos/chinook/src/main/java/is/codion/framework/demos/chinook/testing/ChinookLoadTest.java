@@ -34,8 +34,36 @@ public final class ChinookLoadTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final Collection<Scenario<EntityConnectionProvider>> SCENARIOS =
-          asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(), new UpdateTotals(),
-                  new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices(),new RandomPlaylist(), new InsertDeleteInvoice());
+          asList(Scenario.builder(new ViewGenre())
+                          .defaultWeight(10)
+                          .build(),
+                  Scenario.builder(new ViewCustomerReport())
+                          .defaultWeight(2)
+                          .build(),
+                  Scenario.builder(new ViewInvoice())
+                          .defaultWeight(10)
+                          .build(),
+                  Scenario.builder(new ViewAlbum())
+                          .defaultWeight(10)
+                          .build(),
+                  Scenario.builder(new UpdateTotals())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new InsertDeleteAlbum())
+                          .defaultWeight(3)
+                          .build(),
+                  Scenario.builder(new LogoutLogin())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new RaisePrices())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new RandomPlaylist())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new InsertDeleteInvoice())
+                          .defaultWeight(3)
+                          .build());
 
   private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
 

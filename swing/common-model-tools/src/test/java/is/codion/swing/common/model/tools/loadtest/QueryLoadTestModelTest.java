@@ -5,17 +5,17 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
+import is.codion.swing.common.model.tools.loadtest.QueryLoadTestModel.QueryApplication;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class QueryLoadTestModelTest {
@@ -23,15 +23,15 @@ public final class QueryLoadTestModelTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
-          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectEmployees", "select * from employees.employee where ename not like ?") {
-            @Override
-            protected List<Object> parameters() {
-              return singletonList("ADAMS");
-            }
-          };
-  private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
-          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from employees.department", true);
+  private static final LoadTest.Scenario<QueryApplication> SELECT_EMPLOYEE =
+          LoadTest.Scenario.builder(new QueryLoadTestModel.QueryPerformer(UNIT_TEST_USER, "select * from employees.employee where ename not like ?"))
+                  .name("selectEmployees")
+                  .build();
+  private static final LoadTest.Scenario<QueryApplication> SELECT_DEPARTMENTS =
+          LoadTest.Scenario.builder(new QueryLoadTestModel.QueryPerformer(UNIT_TEST_USER, "select * from employees.department", true))
+                  .name("selectDepartments")
+                  .build();
+
   @Test
   void test() throws DatabaseException {
     QueryLoadTestModel queryLoadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.model.loadtest.AbstractScenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -24,10 +24,10 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
 
-public final class InsertDeleteInvoice extends AbstractScenario<EntityConnectionProvider> {
+public final class InsertDeleteInvoice implements Performer<EntityConnectionProvider> {
 
   @Override
-  protected void perform(EntityConnectionProvider connectionProvider) throws Exception {
+  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
     EntityConnection connection = connectionProvider.connection();
 
     Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
@@ -67,10 +67,5 @@ public final class InsertDeleteInvoice extends AbstractScenario<EntityConnection
     toDelete.add(invoice);
 
     connection.delete(primaryKeys(toDelete));
-  }
-
-  @Override
-  public int defaultWeight() {
-    return 3;
   }
 }

@@ -3,9 +3,9 @@
  */
 package is.codion.swing.common.model.tools.loadtest;
 
-import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -20,20 +20,17 @@ public class DefaultLoadTestModelTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Scenario<Object> SCENARIO = new AbstractScenario<Object>("test") {
+  private static final Scenario<Object> SCENARIO = Scenario.builder(new Performer<Object>() {
     int counter = 0;
     @Override
-    protected void perform(Object application) throws Exception {
+    public void perform(Object application) throws Exception {
       if (counter++ % 2 == 0) {
         throw new Exception();
       }
     }
-  };
+  }).build();
 
-  private static final Scenario<Object> SCENARIO_II = new AbstractScenario<Object>("testII") {
-    @Override
-    protected void perform(Object application) {}
-  };
+  private static final Scenario<Object> SCENARIO_II = Scenario.builder(application -> {}).build();
 
   @Test
   void test() throws Exception {

@@ -3,6 +3,7 @@
  */
 package is.codion.common.model.loadtest;
 
+import is.codion.common.model.loadtest.DefaultScenario.DefaultRunResult;
 import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.state.State;
@@ -246,6 +247,7 @@ public interface LoadTest<T> {
   /**
    * Specifies a load test usage scenario.
    * @param <T> the type used to run the scenario
+   * @see #builder(Performer)
    */
   interface Scenario<T> {
 
@@ -265,6 +267,65 @@ public interface LoadTest<T> {
      * @return the run result
      */
     Result run(T application);
+
+    /**
+     * Performs a load test scenario.
+     * @param <T> the load test application type
+     */
+    interface Performer<T> {
+
+      /**
+       * Performs the scenario using the given application
+       * @param application the application
+       * @throws Exception in case of an exception
+       */
+      void perform(T application) throws Exception;
+    }
+
+    /**
+     * A {@link Scenario} builder.
+     * @param <T> the load test application type
+     */
+    interface Builder<T> {
+
+      /**
+       * @param name the scenario name
+       * @return this builder
+       */
+      Builder<T> name(String name);
+
+      /**
+       * @param defaultWeight the default weight
+       * @return this builder
+       */
+      Builder<T> defaultWeight(int defaultWeight);
+
+      /**
+       * @param beforeRun called before each run
+       * @return this builder
+       */
+      Builder<T> beforeRun(Consumer<T> beforeRun);
+
+      /**
+       * @param afterRun called after each run
+       * @return this builder
+       */
+      Builder<T> afterRun(Consumer<T> afterRun);
+
+      /**
+       * @return a new {@link Scenario} instance
+       */
+      Scenario<T> build();
+    }
+
+    /**
+     * @param performer the scenario performer
+     * @return a new Builder
+     * @param <T> the load test application type
+     */
+    static <T> Builder<T> builder(Performer<T> performer) {
+      return new DefaultScenario.DefaultBuilder<>(performer);
+    }
 
     /**
      * Describes the results of a load test scenario run
@@ -297,7 +358,7 @@ public interface LoadTest<T> {
        * @return a new {@link Result} instance
        */
       static Result success(String scenarioName, int duration) {
-        return new AbstractScenario.DefaultRunResult(scenarioName, duration, null);
+        return new DefaultRunResult(scenarioName, duration, null);
       }
 
       /**
@@ -306,7 +367,7 @@ public interface LoadTest<T> {
        * @return a new {@link Result} instance
        */
       static Result failure(String scenarioName, Throwable exception) {
-        return new AbstractScenario.DefaultRunResult(scenarioName, -1, exception);
+        return new DefaultRunResult(scenarioName, -1, exception);
       }
     }
   }
