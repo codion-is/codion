@@ -5,6 +5,7 @@ package is.codion.framework.demos.petstore.testing;
 
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.domain.Petstore;
@@ -12,10 +13,10 @@ import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityPerformer;
 
 import java.util.function.Function;
 
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest {
@@ -45,7 +46,8 @@ public final class PetstoreLoadTest {
     }
   }
 
-  private static final class PetstoreUsageScenario extends AbstractEntityPerformer<PetstoreAppModel> {
+  private static final class PetstoreUsageScenario
+          implements Performer<PetstoreAppModel> {
 
     @Override
     public void perform(PetstoreAppModel application) throws Exception {

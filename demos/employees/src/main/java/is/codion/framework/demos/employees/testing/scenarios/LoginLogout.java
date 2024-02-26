@@ -3,13 +3,13 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityPerformer;
 
 import java.util.Random;
 
 // tag::loadTest[]
-public final class LoginLogout extends AbstractEntityPerformer<EmployeesAppModel> {
+public final class LoginLogout implements Performer<EmployeesAppModel> {
 
   final Random random = new Random();
 

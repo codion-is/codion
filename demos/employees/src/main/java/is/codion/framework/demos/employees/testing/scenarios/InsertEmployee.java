@@ -3,21 +3,22 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityPerformer;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandomEntity;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 
 // tag::loadTest[]
-public final class InsertEmployee extends AbstractEntityPerformer<EmployeesAppModel> {
+public final class InsertEmployee implements Performer<EmployeesAppModel> {
 
   @Override
   public void perform(EmployeesAppModel application) throws Exception {

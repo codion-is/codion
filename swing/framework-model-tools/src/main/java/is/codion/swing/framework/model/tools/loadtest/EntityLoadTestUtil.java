@@ -3,10 +3,8 @@
  */
 package is.codion.swing.framework.model.tools.loadtest;
 
-import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.List;
@@ -15,12 +13,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * An abstract base class for usage scenario performers based on SwingEntityApplicationModel instances
- * @param <M> the application model type used by this usage scenario
+ * A utility class for load testing SwingEntityApplicationModel instances.
  */
-public abstract class AbstractEntityPerformer<M extends SwingEntityApplicationModel> implements Performer<M> {
+public abstract class EntityLoadTestUtil{
 
   private static final Random RANDOM = new Random();
+
+  private EntityLoadTestUtil() {}
 
   /**
    * Selects a random row in the given table model

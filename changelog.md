@@ -20,6 +20,7 @@ Codion Change Log
 - LoadTestModel no longer extends LoadTest.
 - LoadTestModel now handles all counting runs.
 - LoadTestModel no longer counts runs exceeding maximum scenario time.
+- AbstractEntityPerformer replaced with EntityLoadTestUtil.
 
 ## 0.17.29
 ### is.codion.common.db

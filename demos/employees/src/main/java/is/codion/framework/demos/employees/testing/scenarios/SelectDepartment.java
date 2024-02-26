@@ -3,12 +3,14 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityPerformer;
+
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 
 // tag::loadTest[]
-public final class SelectDepartment extends AbstractEntityPerformer<EmployeesAppModel> {
+public final class SelectDepartment implements Performer<EmployeesAppModel> {
 
   @Override
   public void perform(EmployeesAppModel application) {

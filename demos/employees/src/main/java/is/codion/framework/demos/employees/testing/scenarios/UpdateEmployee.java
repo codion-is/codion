@@ -3,20 +3,21 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityPerformer;
 
 import java.util.Random;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.randomize;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 
 // tag::loadTest[]
-public final class UpdateEmployee extends AbstractEntityPerformer<EmployeesAppModel> {
+public final class UpdateEmployee implements Performer<EmployeesAppModel> {
 
   private final Random random = new Random();
 
