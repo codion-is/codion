@@ -19,7 +19,7 @@
 /**
  * Framework Swing model tools, such as:<br>
  * <br>
- * {@link is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel}<br>
+ * {@link is.codion.swing.framework.model.tools.generator.DomainGeneratorModel}<br>
  */
 module is.codion.swing.framework.model.tools {
   requires org.slf4j;
