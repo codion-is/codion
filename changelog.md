@@ -14,6 +14,7 @@ Codion Change Log
 - EntityLoadTestModel removed.
 - LoadTest extracted from LoadTestModel and moved to common.model.loadtest, related refactoring.
 - LoadTestModel, refactoring and renaming.
+- LoadTestModel no longer extends LoadTest.
 
 ## 0.17.29
 ### is.codion.common.db

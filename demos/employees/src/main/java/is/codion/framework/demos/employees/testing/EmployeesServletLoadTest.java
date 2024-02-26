@@ -30,22 +30,22 @@ public final class EmployeesServletLoadTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private final LoadTestModel<EntityConnectionProvider> loadTestModel;
+  private final LoadTest<EntityConnectionProvider> loadTest;
 
   private EmployeesServletLoadTest(User user) {
-    loadTestModel = LoadTestModel.loadTestModel(LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
+    loadTest = LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
             .user(user)
             .scenarios(asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()))
             .minimumThinkTime(2500)
             .maximumThinkTime(5000)
             .loginDelayFactor(2)
             .applicationBatchSize(10)
-            .build());
-    loadTestModel.setWeight(UpdateLocation.NAME, 2);
-    loadTestModel.setWeight(SelectDepartment.NAME, 4);
-    loadTestModel.setWeight(SelectEmployees.NAME, 5);
-    loadTestModel.setWeight(AddDepartment.NAME, 1);
-    loadTestModel.setWeight(AddEmployee.NAME, 4);
+            .build();
+    loadTest.setWeight(UpdateLocation.NAME, 2);
+    loadTest.setWeight(SelectDepartment.NAME, 4);
+    loadTest.setWeight(SelectEmployees.NAME, 5);
+    loadTest.setWeight(AddDepartment.NAME, 1);
+    loadTest.setWeight(AddEmployee.NAME, 4);
   }
 
   private static void disconnectApplication(EntityConnectionProvider client) {
@@ -61,7 +61,7 @@ public final class EmployeesServletLoadTest {
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTestModel).run();
+    new LoadTestPanel<>(LoadTestModel.loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
   }
 
   private static final class UpdateLocation extends AbstractScenario<EntityConnectionProvider> {

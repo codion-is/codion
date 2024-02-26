@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.tools.loadtest;
 
 import is.codion.common.Separators;
 import is.codion.common.model.CancelException;
+import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
 import is.codion.common.user.User;
@@ -78,6 +79,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
 
   private final LoadTestModel<T> loadTestModel;
+  private final LoadTest<T> loadTest;
   private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
 
   static {
@@ -96,6 +98,7 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public LoadTestPanel(LoadTestModel<T> loadTestModel) {
     this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
+    this.loadTest = loadTestModel.loadTest();
     this.loadTestModel.applicationTableModel().refresher().addRefreshFailedListener(this::displayException);
     initializeUI();
   }
@@ -122,7 +125,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return frame(this)
             .icon(logoTransparent())
             .menuBar(menu(createMainMenuControls()).createMenuBar())
-            .title("Codion - " + loadTestModel.title())
+            .title("Codion - " + loadTest.title())
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
             .onClosing(windowEvent -> exit())
             .size(screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
@@ -161,7 +164,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
-    ItemRandomizerPanel<Scenario<T>> panel = itemRandomizerPanel(loadTestModel.scenarioChooser());
+    ItemRandomizerPanel<Scenario<T>> panel = itemRandomizerPanel(loadTest.scenarioChooser());
     panel.setBorder(createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
@@ -170,7 +173,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel createAddRemoveApplicationPanel() {
     return borderLayoutPanel()
-            .westComponent(button(Control.builder(loadTestModel::removeApplicationBatch)
+            .westComponent(button(Control.builder(loadTest::removeApplicationBatch)
                     .name("-")
                     .description("Remove application batch"))
                     .build())
@@ -179,9 +182,9 @@ public final class LoadTestPanel<T> extends JPanel {
                     .focusable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
-                    .linkedValue(loadTestModel.applicationCount())
+                    .linkedValue(loadTest.applicationCount())
                     .build())
-            .eastComponent(button(Control.builder(loadTestModel::addApplicationBatch)
+            .eastComponent(button(Control.builder(loadTest::addApplicationBatch)
                     .name("+")
                     .description("Add application batch"))
                     .build())
@@ -214,7 +217,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .northComponent(borderLayoutPanel()
                     .centerComponent(flowLayoutPanel(FlowLayout.LEADING)
                             .add(new JLabel("Batch size"))
-                            .add(integerSpinner(loadTestModel.applicationBatchSize())
+                            .add(integerSpinner(loadTest.applicationBatchSize())
                                     .editable(false)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .toolTipText("Application batch size")
@@ -222,16 +225,16 @@ public final class LoadTestPanel<T> extends JPanel {
                             .add(createAddRemoveApplicationPanel())
                             .add(createUserPanel())
                             .add(new JLabel("Min. think time", SwingConstants.CENTER))
-                            .add(integerSpinner(loadTestModel.minimumThinkTime())
+                            .add(integerSpinner(loadTest.minimumThinkTime())
                                     .stepSize(SPINNER_STEP_SIZE)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .build())
                             .add(new JLabel("Max. think time", SwingConstants.CENTER))
-                            .add(integerSpinner(loadTestModel.maximumThinkTime())
+                            .add(integerSpinner(loadTest.maximumThinkTime())
                                     .stepSize(SPINNER_STEP_SIZE)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .build())
-                            .add(toggleButton(loadTestModel.paused())
+                            .add(toggleButton(loadTest.paused())
                                     .text("Pause")
                                     .mnemonic('P')
                                     .build())
@@ -245,13 +248,13 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createUserPanel() {
-    User user = loadTestModel.user().get();
+    User user = loadTest.user().get();
     JTextField usernameField = stringField()
             .initialValue(user == null ? null : user.username())
             .columns(USER_COLUMNS)
             .editable(false)
             .build();
-    loadTestModel.user().addDataListener(u -> usernameField.setText(u.username()));
+    loadTest.user().addDataListener(u -> usernameField.setText(u.username()));
 
     return flexibleGridLayoutPanel(1, 3)
             .add(new JLabel("User"))
@@ -264,9 +267,9 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private void setUser() {
-    User user = loadTestModel.user().get();
+    User user = loadTest.user().get();
     try {
-      loadTestModel.user().set(Dialogs.loginDialog()
+      loadTest.user().set(Dialogs.loginDialog()
               .owner(LoadTestPanel.this)
               .title("User")
               .defaultUser(user == null ? null : User.user(user.username()))
@@ -446,7 +449,7 @@ public final class LoadTestPanel<T> extends JPanel {
     if (frame != null) {
       frame.setTitle(frame.getTitle() + " - Closing...");
     }
-    loadTestModel.shutdown();
+    loadTest.shutdown();
     System.exit(0);
   }
 

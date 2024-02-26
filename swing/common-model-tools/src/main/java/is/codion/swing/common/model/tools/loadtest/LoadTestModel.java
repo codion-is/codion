@@ -15,11 +15,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Provides chart data for a load test.
+ * Collects chart data for a load test.
  * @param <T> the load test application type
  * @see #loadTestModel(LoadTest)
  */
-public interface LoadTestModel<T> extends LoadTest<T> {
+public interface LoadTestModel<T> {
+
+  /**
+   * @return the underlying {@link LoadTest} instance
+   */
+  LoadTest<T> loadTest();
 
   /**
    * @return a table model for displaying the active application instances

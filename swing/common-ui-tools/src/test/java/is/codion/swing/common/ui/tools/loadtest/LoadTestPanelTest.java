@@ -16,16 +16,17 @@ public class LoadTestPanelTest {
 
   @Test
   void test() {
-    LoadTestModel<Object> model = LoadTestModel.loadTestModel(LoadTest.builder(user -> new Object(), object -> {})
+    LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .minimumThinkTime(25)
             .maximumThinkTime(50)
             .loginDelayFactor(2)
             .applicationBatchSize(2)
-            .build());
+            .build();
+    LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
     LoadTestPanel<Object> panel = new LoadTestPanel<>(model);
     assertEquals(model, panel.model());
-    model.shutdown();
+    loadTest.shutdown();
   }
 
   @Test

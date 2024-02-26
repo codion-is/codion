@@ -5,14 +5,12 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.Memory;
 import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.LoadTest.ApplicationRunner;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
-import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.user.User;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
@@ -102,98 +100,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public void shutdown() {
-    loadTest.shutdown();
-  }
-
-  @Override
-  public void stop(ApplicationRunner applicationRunner) {
-    loadTest.stop(applicationRunner);
-  }
-
-  @Override
-  public Value<User> user() {
-    return loadTest.user();
-  }
-
-  @Override
-  public String title() {
-    return loadTest.title();
-  }
-
-  @Override
-  public void setWeight(String scenarioName, int weight) {
-    loadTest.setWeight(scenarioName, weight);
-  }
-
-  @Override
-  public boolean isScenarioEnabled(String scenarioName) {
-    return loadTest.isScenarioEnabled(scenarioName);
-  }
-
-  @Override
-  public void setScenarioEnabled(String scenarioName, boolean enabled) {
-    loadTest.setScenarioEnabled(scenarioName, enabled);
-  }
-
-  @Override
-  public Collection<Scenario<T>> scenarios() {
-    return loadTest.scenarios();
-  }
-
-  @Override
-  public Scenario<T> scenario(String scenarioName) {
-    return loadTest.scenario(scenarioName);
-  }
-
-  @Override
-  public void addResultListener(Consumer<Result> listener) {
-    loadTest.addResultListener(listener);
-  }
-
-  @Override
-  public void addShutdownListener(Runnable listener) {
-    loadTest.addShutdownListener(listener);
-  }
-
-  @Override
-  public Value<Integer> applicationBatchSize() {
-    return loadTest.applicationBatchSize();
-  }
-
-  @Override
-  public State paused() {
-    return loadTest.paused();
-  }
-
-  @Override
-  public Value<Integer> maximumThinkTime() {
-    return loadTest.maximumThinkTime();
-  }
-
-  @Override
-  public Value<Integer> minimumThinkTime() {
-    return loadTest.minimumThinkTime();
-  }
-
-  @Override
-  public Value<Integer> loginDelayFactor() {
-    return loadTest.loginDelayFactor();
-  }
-
-  @Override
-  public ValueObserver<Integer> applicationCount() {
-    return loadTest.applicationCount();
-  }
-
-  @Override
-  public void addApplicationBatch() {
-    loadTest.addApplicationBatch();
-  }
-
-  @Override
-  public void removeApplicationBatch() {
-    loadTest.removeApplicationBatch();
+  public LoadTest<T> loadTest() {
+    return loadTest;
   }
 
   @Override
@@ -201,16 +109,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     applicationTableModel.selectionModel().getSelectedItems().stream()
             .map(DefaultApplicationRow.class::cast)
             .forEach(application -> loadTest.stop(application.applicationRunner));
-  }
-
-  @Override
-  public ItemRandomizer<Scenario<T>> scenarioChooser() {
-    return loadTest.scenarioChooser();
-  }
-
-  @Override
-  public Map<ApplicationRunner, T> applications() {
-    return loadTest.applications();
   }
 
   @Override
@@ -324,7 +222,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   private void bindEvents() {
     loadTest.addResultListener(counter::addScenarioDuration);
-    addShutdownListener(() -> {
+    loadTest.addShutdownListener(() -> {
       applicationsRefreshScheduler.stop();
       chartUpdateScheduler.stop();
     });
@@ -532,7 +430,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     private void resetCounters() {
-      for (Scenario<T> scenario : scenarios()) {
+      for (Scenario<T> scenario : loadTest.scenarios()) {
         scenario.resetRunCount();
       }
       workRequestCounter = 0;

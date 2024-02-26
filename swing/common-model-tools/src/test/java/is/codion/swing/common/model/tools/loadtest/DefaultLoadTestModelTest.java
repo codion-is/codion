@@ -46,7 +46,7 @@ public class DefaultLoadTestModelTest {
             .applicationBatchSize(2)
             .build();
     LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
-    assertEquals(2, model.applicationBatchSize().get());
+    assertEquals(2, loadTest.applicationBatchSize().get());
     model.collectChartData().set(true);
 
     assertNotNull(model.memoryUsageDataset());
@@ -54,32 +54,32 @@ public class DefaultLoadTestModelTest {
     assertNotNull(model.thinkTimeDataset());
     assertNotNull(model.scenarioDataset());
 
-    assertEquals(2, model.loginDelayFactor().get());
-    model.loginDelayFactor().set(3);
-    assertEquals(3, model.loginDelayFactor().get());
+    assertEquals(2, loadTest.loginDelayFactor().get());
+    loadTest.loginDelayFactor().set(3);
+    assertEquals(3, loadTest.loginDelayFactor().get());
     assertEquals(DefaultLoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
-    assertEquals(2, model.applicationBatchSize().get());
+    assertEquals(2, loadTest.applicationBatchSize().get());
 
-    assertEquals(25, model.minimumThinkTime().get());
-    assertEquals(50, model.maximumThinkTime().get());
-    model.maximumThinkTime().set(40);
-    model.minimumThinkTime().set(20);
-    assertEquals(20, model.minimumThinkTime().get());
-    assertEquals(40, model.maximumThinkTime().get());
+    assertEquals(25, loadTest.minimumThinkTime().get());
+    assertEquals(50, loadTest.maximumThinkTime().get());
+    loadTest.maximumThinkTime().set(40);
+    loadTest.minimumThinkTime().set(20);
+    assertEquals(20, loadTest.minimumThinkTime().get());
+    assertEquals(40, loadTest.maximumThinkTime().get());
 
-    model.applicationBatchSize().set(5);
-    assertTrue(model.scenarios().contains(SCENARIO));
-    model.user().set(UNIT_TEST_USER);
-    assertEquals(UNIT_TEST_USER, model.user().get());
-    assertNotNull(model.scenarioChooser());
-    model.setWeight(SCENARIO.name(), 2);
-    model.setScenarioEnabled(SCENARIO_II.name(), false);
-    model.addApplicationBatch();
+    loadTest.applicationBatchSize().set(5);
+    assertTrue(loadTest.scenarios().contains(SCENARIO));
+    loadTest.user().set(UNIT_TEST_USER);
+    assertEquals(UNIT_TEST_USER, loadTest.user().get());
+    assertNotNull(loadTest.scenarioChooser());
+    loadTest.setWeight(SCENARIO.name(), 2);
+    loadTest.setScenarioEnabled(SCENARIO_II.name(), false);
+    loadTest.addApplicationBatch();
     Thread.sleep(500);
-    model.paused().set(true);
+    loadTest.paused().set(true);
     Thread.sleep(200);
-    model.paused().set(false);
-    assertEquals(5, model.applicationCount().get());
+    loadTest.paused().set(false);
+    assertEquals(5, loadTest.applicationCount().get());
     assertEquals(0, SCENARIO_II.totalRunCount());
     assertTrue(SCENARIO.successfulRunCount() > 0);
     assertTrue(SCENARIO.unsuccessfulRunCount() > 0);
@@ -94,15 +94,15 @@ public class DefaultLoadTestModelTest {
     model.applicationTableModel().refresh();
     model.applicationTableModel().selectionModel().setSelectedIndex(0);
     model.removeSelectedApplications();
-    assertEquals(4, model.applicationCount().get());
+    assertEquals(4, loadTest.applicationCount().get());
 
     model.clearCharts();
-    model.removeApplicationBatch();
-    assertEquals(0, model.applicationCount().get());
+    loadTest.removeApplicationBatch();
+    assertEquals(0, loadTest.applicationCount().get());
 
     AtomicInteger exitCounter = new AtomicInteger();
-    model.addShutdownListener(exitCounter::incrementAndGet);
-    model.shutdown();
+    loadTest.addShutdownListener(exitCounter::incrementAndGet);
+    loadTest.shutdown();
     assertEquals(1, exitCounter.get());
   }
 
