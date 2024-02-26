@@ -80,16 +80,16 @@ public class DefaultLoadTestModelTest {
     Thread.sleep(200);
     loadTest.paused().set(false);
     assertEquals(5, loadTest.applicationCount().get());
-    assertEquals(0, SCENARIO_II.totalRunCount());
-    assertTrue(SCENARIO.successfulRunCount() > 0);
-    assertTrue(SCENARIO.unsuccessfulRunCount() > 0);
-    assertFalse(SCENARIO.exceptions().isEmpty());
-    SCENARIO.clearExceptions();
-    assertEquals(0, SCENARIO.exceptions().size());
-    assertEquals(SCENARIO.successfulRunCount() + SCENARIO.unsuccessfulRunCount(), SCENARIO.totalRunCount());
-    SCENARIO.resetRunCount();
-    assertEquals(0, SCENARIO.successfulRunCount());
-    assertEquals(0, SCENARIO.unsuccessfulRunCount());
+    assertEquals(0, model.totalRunCount(SCENARIO_II.name()));
+    assertTrue(model.successfulRunCount(SCENARIO.name()) > 0);
+    assertTrue(model.unsuccessfulRunCount(SCENARIO.name()) > 0);
+    assertFalse(model.exceptions(SCENARIO.name()).isEmpty());
+    model.clearExceptions(SCENARIO.name());
+    assertTrue(model.exceptions(SCENARIO.name()).isEmpty());
+    assertEquals(model.successfulRunCount(SCENARIO.name()) + model.unsuccessfulRunCount(SCENARIO.name()), model.totalRunCount(SCENARIO.name()));
+    model.resetRunCounter();
+    assertEquals(0, model.successfulRunCount(SCENARIO.name()));
+    assertEquals(0, model.unsuccessfulRunCount(SCENARIO.name()));
 
     model.applicationTableModel().refresh();
     model.applicationTableModel().selectionModel().setSelectedIndex(0);

@@ -5,12 +5,8 @@ package is.codion.common.model.loadtest;
 
 import is.codion.common.model.loadtest.LoadTest.Scenario;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,13 +16,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractScenario<T> implements Scenario<T> {
 
-  private static final int MAXIMUM_EXCEPTIONS = 20;
-
   private final String name;
   private final int maximumTime;
-  private final AtomicInteger successfulRunCount = new AtomicInteger();
-  private final AtomicInteger unsuccessfulRunCount = new AtomicInteger();
-  private final LinkedList<Throwable> exceptions = new LinkedList<>();
 
   /**
    * Instantiates a new Scenario using the simple class name as scenario name
@@ -68,41 +59,6 @@ public abstract class AbstractScenario<T> implements Scenario<T> {
   }
 
   @Override
-  public final int successfulRunCount() {
-    return successfulRunCount.get();
-  }
-
-  @Override
-  public final int unsuccessfulRunCount() {
-    return unsuccessfulRunCount.get();
-  }
-
-  @Override
-  public final int totalRunCount() {
-    return successfulRunCount.get() + unsuccessfulRunCount.get();
-  }
-
-  @Override
-  public final List<Throwable> exceptions() {
-    synchronized (exceptions) {
-      return new ArrayList<>(exceptions);
-    }
-  }
-
-  @Override
-  public final void resetRunCount() {
-    successfulRunCount.set(0);
-    unsuccessfulRunCount.set(0);
-  }
-
-  @Override
-  public final void clearExceptions() {
-    synchronized (exceptions) {
-      exceptions.clear();
-    }
-  }
-
-  @Override
   public final String toString() {
     return name;
   }
@@ -114,19 +70,10 @@ public abstract class AbstractScenario<T> implements Scenario<T> {
       prepare(application);
       long startTime = System.nanoTime();
       perform(application);
-      successfulRunCount.incrementAndGet();
 
       return Result.success(name, (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
     }
     catch (Throwable e) {
-      unsuccessfulRunCount.incrementAndGet();
-      synchronized (exceptions) {
-        exceptions.add(e);
-        if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
-          exceptions.removeFirst();
-        }
-      }
-
       return Result.failure(name, e);
     }
     finally {

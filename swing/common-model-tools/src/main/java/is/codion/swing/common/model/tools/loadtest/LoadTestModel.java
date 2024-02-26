@@ -62,6 +62,41 @@ public interface LoadTestModel<T> {
   void clearCharts();
 
   /**
+   * @param scenarioName the scenario name
+   * @return the total number of runs since the counter was cleared
+   */
+  int totalRunCount(String scenarioName);
+
+  /**
+   * @param scenarioName the scenario name
+   * @return the total number of successful runs since the counter was cleared
+   */
+  int successfulRunCount(String scenarioName);
+
+  /**
+   * @param scenarioName the scenario name
+   * @return the total number of unsuccessful runs since the counter was cleared
+   */
+  int unsuccessfulRunCount(String scenarioName);
+
+  /**
+   * Resets the run counters
+   */
+  void resetRunCounter();
+
+  /**
+   * @param scenarioName the scenario name
+   * @return the exceptions collected from running the scenario
+   */
+  List<Throwable> exceptions(String scenarioName);
+
+  /**
+   * Clears the exceptions collected from running the given scenario
+   * @param scenarioName the scenario name
+   */
+  void clearExceptions(String scenarioName);
+
+  /**
    * @param name the scenario name
    * @return a dataset plotting the average scenario duration
    */

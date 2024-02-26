@@ -484,7 +484,7 @@ public final class LoadTestPanel<T> extends JPanel {
     }
   }
 
-  private static final class ClearExceptionsCommand implements Control.Command {
+  private final class ClearExceptionsCommand implements Control.Command {
 
     private final JTextArea exceptionsTextArea;
     private final Scenario<?> scenario;
@@ -496,12 +496,12 @@ public final class LoadTestPanel<T> extends JPanel {
 
     @Override
     public void execute() {
-      scenario.clearExceptions();
+      loadTestModel.clearExceptions(scenario.name());
       exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
     }
   }
 
-  private static final class RefreshExceptionsCommand implements Control.Command {
+  private final class RefreshExceptionsCommand implements Control.Command {
 
     private final JTextArea exceptionsTextArea;
     private final Scenario<?> scenario;
@@ -514,7 +514,7 @@ public final class LoadTestPanel<T> extends JPanel {
     @Override
     public void execute() {
       exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
-      for (Throwable exception : scenario.exceptions()) {
+      for (Throwable exception : loadTestModel.exceptions(scenario.name())) {
         exceptionsTextArea.append(exception.getMessage());
         exceptionsTextArea.append(Separators.LINE_SEPARATOR);
         exceptionsTextArea.append(Separators.LINE_SEPARATOR);

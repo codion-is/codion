@@ -27,11 +27,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -44,6 +46,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
   private static final double HUNDRED = 100d;
   private static final double THOUSAND = 1000d;
+  private static final int MAXIMUM_EXCEPTIONS = 20;
+  private static final AtomicInteger ZERO = new AtomicInteger();
 
   private final LoadTest<T> loadTest;
 
@@ -178,6 +182,52 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
+  public int totalRunCount(String scenarioName) {
+    synchronized (counter) {
+      return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get() + counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+    }
+  }
+
+  @Override
+  public int successfulRunCount(String scenarioName) {
+    synchronized (counter) {
+      return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get();
+    }
+  }
+
+  @Override
+  public int unsuccessfulRunCount(String scenarioName) {
+    synchronized (counter) {
+      return counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+    }
+  }
+
+  @Override
+  public void resetRunCounter() {
+    synchronized (counter) {
+      counter.resetCounters();
+    }
+  }
+
+  @Override
+  public List<Throwable> exceptions(String scenarioName) {
+    synchronized (counter) {
+      Collection<Throwable> exceptions = counter.scenarioExceptions.get(scenarioName);
+      return exceptions == null ? Collections.emptyList() : new ArrayList<>(exceptions);
+    }
+  }
+
+  @Override
+  public void clearExceptions(String scenarioName) {
+    synchronized (counter) {
+      Collection<Throwable> exceptions = counter.scenarioExceptions.get(scenarioName);
+      if (exceptions != null) {
+        exceptions.clear();
+      }
+    }
+  }
+
+  @Override
   public int getUpdateInterval() {
     return chartUpdateScheduler.interval().get();
   }
@@ -221,7 +271,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   private void bindEvents() {
-    loadTest.addResultListener(counter::addScenarioDuration);
+    loadTest.addResultListener(counter::addScenarioResults);
     loadTest.addShutdownListener(() -> {
       applicationsRefreshScheduler.stop();
       chartUpdateScheduler.stop();
@@ -318,12 +368,16 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private final Map<String, Integer> scenarioMaxDurations = new HashMap<>();
     private final Map<String, Integer> scenarioMinDurations = new HashMap<>();
     private final Map<String, Integer> scenarioFailures = new HashMap<>();
-    private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<>();
+    private final Map<String, List<Integer>> scenarioDurations = new HashMap<>();
+    private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
+    private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
+    private final Map<String, List<Throwable>> scenarioExceptions = new HashMap<>();
+
+    private final AtomicInteger workRequestCounter = new AtomicInteger();
+    private final AtomicInteger delayedWorkRequestsPerSecond = new AtomicInteger();
+    private final AtomicInteger delayedWorkRequestCounter = new AtomicInteger();
 
     private double workRequestsPerSecond = 0;
-    private int workRequestCounter = 0;
-    private int delayedWorkRequestsPerSecond = 0;
-    private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
 
     private double workRequestsPerSecond() {
@@ -331,7 +385,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     private int delayedWorkRequestsPerSecond() {
-      return delayedWorkRequestsPerSecond;
+      return delayedWorkRequestsPerSecond.get();
     }
 
     private int minimumScenarioDuration(String scenarioName) {
@@ -374,29 +428,40 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       return scenarioRates.get(scenarioName);
     }
 
-    private void addScenarioDuration(Result result) {
+    private synchronized void addScenarioResults(Result result) {
       Scenario<T> scenario = loadTest.scenario(result.scenario());
-      synchronized (scenarioDurations) {
-        scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(result.duration());
-        workRequestCounter++;
-        if (scenario.maximumTime() > 0 && result.duration() > scenario.maximumTime()) {
-          delayedWorkRequestCounter++;
-        }
+      scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(result.duration());
+      if (result.successful()) {
+        scenarioRunCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
+      }
+      else {
+        scenarioFailureCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
+        result.exception().ifPresent(exception -> {
+          List<Throwable> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
+          exceptions.add(exception);
+          if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
+            exceptions.remove(0);
+          }
+        });
+      }
+      workRequestCounter.incrementAndGet();
+      if (scenario.maximumTime() > 0 && result.duration() > scenario.maximumTime()) {
+        delayedWorkRequestCounter.incrementAndGet();
       }
     }
 
-    private void updateRequestsPerSecond() {
+    private synchronized void updateRequestsPerSecond() {
       long current = System.currentTimeMillis();
       double elapsedSeconds = (current - time) / THOUSAND;
       if (elapsedSeconds > UPDATE_INTERVAL) {
         scenarioAvgDurations.clear();
         scenarioMinDurations.clear();
         scenarioMaxDurations.clear();
-        workRequestsPerSecond = workRequestCounter / elapsedSeconds;
-        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
+        workRequestsPerSecond = workRequestCounter.get() / elapsedSeconds;
+        delayedWorkRequestsPerSecond.set((int) (delayedWorkRequestCounter.get() / elapsedSeconds));
         for (Scenario<T> scenario : loadTest.scenarios()) {
-          scenarioRates.put(scenario.name(), (int) (scenario.totalRunCount() / elapsedSeconds));
-          scenarioFailures.put(scenario.name(), scenario.unsuccessfulRunCount());
+          scenarioRates.put(scenario.name(), (int) (scenarioRunCounts.getOrDefault(scenario.name(), ZERO).get() / elapsedSeconds));
+          scenarioFailures.put(scenario.name(), scenarioFailureCounts.getOrDefault(scenario.name(), ZERO).get());
           calculateScenarioDuration(scenario);
         }
         resetCounters();
@@ -405,39 +470,35 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     private void calculateScenarioDuration(Scenario<T> scenario) {
-      synchronized (scenarioDurations) {
-        Collection<Integer> durations = scenarioDurations.get(scenario.name());
-        if (!nullOrEmpty(durations)) {
-          int totalDuration = 0;
-          int minDuration = -1;
-          int maxDuration = -1;
-          for (Integer duration : durations) {
-            totalDuration += duration;
-            if (minDuration == -1) {
-              minDuration = duration;
-              maxDuration = duration;
-            }
-            else {
-              minDuration = Math.min(minDuration, duration);
-              maxDuration = Math.max(maxDuration, duration);
-            }
+      Collection<Integer> durations = scenarioDurations.get(scenario.name());
+      if (!nullOrEmpty(durations)) {
+        int totalDuration = 0;
+        int minDuration = -1;
+        int maxDuration = -1;
+        for (Integer duration : durations) {
+          totalDuration += duration;
+          if (minDuration == -1) {
+            minDuration = duration;
+            maxDuration = duration;
           }
-          scenarioAvgDurations.put(scenario.name(), totalDuration / durations.size());
-          scenarioMinDurations.put(scenario.name(), minDuration);
-          scenarioMaxDurations.put(scenario.name(), maxDuration);
+          else {
+            minDuration = Math.min(minDuration, duration);
+            maxDuration = Math.max(maxDuration, duration);
+          }
         }
+        scenarioAvgDurations.put(scenario.name(), totalDuration / durations.size());
+        scenarioMinDurations.put(scenario.name(), minDuration);
+        scenarioMaxDurations.put(scenario.name(), maxDuration);
       }
     }
 
-    private void resetCounters() {
-      for (Scenario<T> scenario : loadTest.scenarios()) {
-        scenario.resetRunCount();
-      }
-      workRequestCounter = 0;
-      delayedWorkRequestCounter = 0;
-      synchronized (scenarioDurations) {
-        scenarioDurations.clear();
-      }
+    private synchronized void resetCounters() {
+      workRequestCounter.set(0);
+      delayedWorkRequestCounter.set(0);
+      scenarioDurations.clear();
+      scenarioRunCounts.clear();
+      scenarioFailureCounts.clear();
+      scenarioExceptions.clear();
     }
   }
 

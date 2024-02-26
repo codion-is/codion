@@ -8,6 +8,10 @@ import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
@@ -56,8 +60,8 @@ public final class DefaultLoadTestTest {
             .loginDelayFactor(2)
             .applicationBatchSize(2)
             .build();
-    AtomicInteger counter = new AtomicInteger();
-    model.addResultListener(result -> counter.incrementAndGet());
+    Map<String, List<Scenario.Result>> results = new HashMap<>();
+    model.addResultListener(result -> results.computeIfAbsent(result.scenario(), scenarioName -> new ArrayList<>()).add(result));
     assertEquals(2, model.applicationBatchSize().get());
 
     assertEquals(2, model.loginDelayFactor().get());
@@ -85,21 +89,13 @@ public final class DefaultLoadTestTest {
     Thread.sleep(200);
     model.paused().set(false);
     assertEquals(5, model.applicationCount().get());
-    assertEquals(0, SCENARIO_II.totalRunCount());
-    assertTrue(SCENARIO.successfulRunCount() > 0);
-    assertTrue(SCENARIO.unsuccessfulRunCount() > 0);
-    assertFalse(SCENARIO.exceptions().isEmpty());
-    SCENARIO.clearExceptions();
-    assertEquals(0, SCENARIO.exceptions().size());
-    assertEquals(SCENARIO.successfulRunCount() + SCENARIO.unsuccessfulRunCount(), SCENARIO.totalRunCount());
-    SCENARIO.resetRunCount();
-    assertEquals(0, SCENARIO.successfulRunCount());
-    assertEquals(0, SCENARIO.unsuccessfulRunCount());
+    assertNull(results.get(SCENARIO_II.name()));
+    assertFalse(results.get(SCENARIO.name()).isEmpty());
 
     model.removeApplicationBatch();
     assertEquals(0, model.applicationCount().get());
 
-    assertTrue(counter.get() > 0);
+    results.values().forEach(result -> assertFalse(result.isEmpty()));
 
     AtomicInteger exitCounter = new AtomicInteger();
     model.addShutdownListener(exitCounter::incrementAndGet);

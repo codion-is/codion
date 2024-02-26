@@ -273,36 +273,6 @@ public interface LoadTest<T> {
     Result run(T application);
 
     /**
-     * @return the total number of times this scenario has been run
-     */
-    int totalRunCount();
-
-    /**
-     * @return any exceptions that have occurred during a run
-     */
-    List<Throwable> exceptions();
-
-    /**
-     * Resets the run counters
-     */
-    void resetRunCount();
-
-    /**
-     * Clears the exceptions that have been collected so far
-     */
-    void clearExceptions();
-
-    /**
-     * @return the number of times this scenario has been successfully run
-     */
-    int successfulRunCount();
-
-    /**
-     * @return the number of times this scenario has been unsuccessfully run
-     */
-    int unsuccessfulRunCount();
-
-    /**
      * Describes the results of a load test scenario run
      */
     interface Result {
@@ -313,7 +283,7 @@ public interface LoadTest<T> {
       String scenario();
 
       /**
-       * @return the duration in microseconds
+       * @return the duration in microseconds, -1 in case of failure
        */
       int duration();
 

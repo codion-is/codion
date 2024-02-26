@@ -9,7 +9,10 @@ import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -33,6 +36,9 @@ public final class QueryLoadTestModelTest {
   void test() throws DatabaseException {
     QueryLoadTestModel queryLoadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
+    Map<String, AtomicInteger> counters = new HashMap<>();
+    queryLoadTest.loadTest().addResultListener(result ->
+            counters.computeIfAbsent(result.scenario(), scenarioName -> new AtomicInteger()).incrementAndGet());
     queryLoadTest.loadTest().minimumThinkTime().set(10);
     queryLoadTest.loadTest().maximumThinkTime().set(30);
     queryLoadTest.loadTest().loginDelayFactor().set(1);
@@ -47,8 +53,9 @@ public final class QueryLoadTestModelTest {
       Thread.sleep(500);
     }
     catch (InterruptedException ignored) {/*ignored*/}
-    assertTrue(SELECT_DEPARTMENTS.successfulRunCount() > 0);
-    assertTrue(SELECT_EMPLOYEE.successfulRunCount() > 0);
+    assertTrue(counters.containsKey(SELECT_DEPARTMENTS.name()));
+    assertTrue(counters.get(SELECT_DEPARTMENTS.name()).get() > 0);
+    assertTrue(counters.get(SELECT_EMPLOYEE.name()).get() > 0);
     queryLoadTest.loadTest().shutdown();
   }
 }
