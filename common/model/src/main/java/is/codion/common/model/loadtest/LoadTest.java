@@ -247,6 +247,8 @@ public interface LoadTest<T> {
   /**
    * Specifies a load test usage scenario.
    * @param <T> the type used to run the scenario
+   * @see #scenario(String)
+   * @see #scenario(Performer, int)
    * @see #builder(Performer)
    */
   interface Scenario<T> {
@@ -325,6 +327,27 @@ public interface LoadTest<T> {
      */
     static <T> Builder<T> builder(Performer<T> performer) {
       return new DefaultScenario.DefaultBuilder<>(performer);
+    }
+
+    /**
+     * @param performer the scenario performer
+     * @return a new {@link Scenario} instance
+     * @param <T> the load test application type
+     */
+    static <T> Scenario<T> scenario(Performer<T> performer) {
+      return builder(performer).build();
+    }
+
+    /**
+     * @param performer the scenario performer
+     * @param defaultWeight the default scenario weight
+     * @return a new {@link Scenario} instance
+     * @param <T> the load test application type
+     */
+    static <T> Scenario<T> scenario(Performer<T> performer, int defaultWeight) {
+      return builder(performer)
+              .defaultWeight(defaultWeight)
+              .build();
     }
 
     /**

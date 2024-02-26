@@ -9,6 +9,7 @@ import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -23,7 +24,7 @@ public class LoadTestPanelTest {
             .loginDelayFactor(2)
             .applicationBatchSize(2)
             .build();
-    LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
+    LoadTestModel<Object> model = loadTestModel(loadTest);
     LoadTestPanel<Object> panel = new LoadTestPanel<>(model);
     assertEquals(model, panel.model());
     loadTest.shutdown();

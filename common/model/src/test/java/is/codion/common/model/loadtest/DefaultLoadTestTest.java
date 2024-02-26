@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +24,7 @@ public final class DefaultLoadTestTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Scenario<Object> SCENARIO = Scenario.builder(new Performer<Object>() {
+  private static final Scenario<Object> SCENARIO = scenario(new Performer<Object>() {
     int counter = 0;
     @Override
     public void perform(Object application) throws Exception {
@@ -31,9 +32,9 @@ public final class DefaultLoadTestTest {
         throw new Exception();
       }
     }
-  }).build();
+  });
 
-  private static final Scenario<Object> SCENARIO_II = Scenario.builder(application -> {}).build();
+  private static final Scenario<Object> SCENARIO_II = scenario(application -> {});
 
   @Test
   void unknownScenario() {

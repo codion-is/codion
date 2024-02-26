@@ -14,7 +14,6 @@ import is.codion.framework.demos.employees.domain.Employees;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
@@ -22,7 +21,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
+import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
 import static is.codion.framework.domain.entity.condition.Condition.all;
+import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
 import static java.util.Arrays.asList;
 
 public final class EmployeesServletLoadTest {
@@ -36,21 +37,11 @@ public final class EmployeesServletLoadTest {
     loadTest = LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
             .user(user)
             .scenarios(asList(
-                    Scenario.builder(new SelectDepartment())
-                            .defaultWeight(4)
-                            .build(),
-                    Scenario.builder(new UpdateLocation())
-                            .defaultWeight(2)
-                            .build(),
-                    Scenario.builder(new SelectEmployees())
-                            .defaultWeight(5)
-                            .build(),
-                    Scenario.builder(new AddDepartment())
-                            .defaultWeight(1)
-                            .build(),
-                    Scenario.builder(new AddEmployee())
-                            .defaultWeight(4)
-                            .build()))
+                    scenario(new SelectDepartment(), 4),
+                    scenario(new UpdateLocation(), 2),
+                    scenario(new SelectEmployees(), 5),
+                    scenario(new AddDepartment(), 1),
+                    scenario(new AddEmployee(), 4)))
             .minimumThinkTime(2500)
             .maximumThinkTime(5000)
             .loginDelayFactor(2)
@@ -71,7 +62,7 @@ public final class EmployeesServletLoadTest {
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(LoadTestModel.loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
+    new LoadTestPanel<>(loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
   }
 
   private static final class UpdateLocation implements Scenario.Performer<EntityConnectionProvider> {
