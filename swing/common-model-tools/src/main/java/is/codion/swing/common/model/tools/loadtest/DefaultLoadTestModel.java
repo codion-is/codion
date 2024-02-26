@@ -5,8 +5,7 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.Memory;
 import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.UsageScenario;
-import is.codion.common.model.loadtest.UsageScenario.Result;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
@@ -138,12 +137,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public Collection<UsageScenario<T>> scenarios() {
+  public Collection<Scenario<T>> scenarios() {
     return loadTest.scenarios();
   }
 
   @Override
-  public UsageScenario<T> scenario(String scenarioName) {
+  public Scenario<T> scenario(String scenarioName) {
     return loadTest.scenario(scenarioName);
   }
 
@@ -205,7 +204,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public ItemRandomizer<UsageScenario<T>> scenarioChooser() {
+  public ItemRandomizer<Scenario<T>> scenarioChooser() {
     return loadTest.scenarioChooser();
   }
 
@@ -310,7 +309,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     systemLoadCollection.addSeries(systemLoadSeries);
     systemLoadCollection.addSeries(processLoadSeries);
     scenarioCollection.addSeries(scenariosRunSeries);
-    for (UsageScenario<T> scenario : loadTest.scenarios()) {
+    for (Scenario<T> scenario : loadTest.scenarios()) {
       XYSeries series = new XYSeries(scenario.name());
       scenarioCollection.addSeries(series);
       usageSeries.add(series);
@@ -478,7 +477,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     private void addScenarioDuration(Result result) {
-      UsageScenario<T> scenario = loadTest.scenario(result.scenario());
+      Scenario<T> scenario = loadTest.scenario(result.scenario());
       synchronized (scenarioDurations) {
         scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(result.duration());
         workRequestCounter++;
@@ -497,7 +496,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
         scenarioMaxDurations.clear();
         workRequestsPerSecond = workRequestCounter / elapsedSeconds;
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
-        for (UsageScenario<T> scenario : loadTest.scenarios()) {
+        for (Scenario<T> scenario : loadTest.scenarios()) {
           scenarioRates.put(scenario.name(), (int) (scenario.totalRunCount() / elapsedSeconds));
           scenarioFailures.put(scenario.name(), scenario.unsuccessfulRunCount());
           calculateScenarioDuration(scenario);
@@ -507,7 +506,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       }
     }
 
-    private void calculateScenarioDuration(UsageScenario<T> scenario) {
+    private void calculateScenarioDuration(Scenario<T> scenario) {
       synchronized (scenarioDurations) {
         Collection<Integer> durations = scenarioDurations.get(scenario.name());
         if (!nullOrEmpty(durations)) {
@@ -533,7 +532,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     private void resetCounters() {
-      for (UsageScenario<T> scenario : scenarios()) {
+      for (Scenario<T> scenario : scenarios()) {
         scenario.resetRunCount();
       }
       workRequestCounter = 0;

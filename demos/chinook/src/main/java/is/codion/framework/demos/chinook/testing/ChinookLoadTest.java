@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.testing;
 
 import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.UsageScenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -33,7 +33,7 @@ public final class ChinookLoadTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Collection<UsageScenario<EntityConnectionProvider>> SCENARIOS =
+  private static final Collection<Scenario<EntityConnectionProvider>> SCENARIOS =
           asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(), new UpdateTotals(),
                   new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices(),new RandomPlaylist(), new InsertDeleteInvoice());
 

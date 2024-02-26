@@ -11,7 +11,7 @@ import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityScenario;
 
 import java.util.function.Function;
 
@@ -44,7 +44,7 @@ public final class PetstoreLoadTest {
     }
   }
 
-  private static final class PetstoreUsageScenario extends AbstractEntityUsageScenario<PetstoreAppModel> {
+  private static final class PetstoreUsageScenario extends AbstractEntityScenario<PetstoreAppModel> {
 
     private PetstoreUsageScenario() {
       super("selectRecords");

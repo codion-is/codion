@@ -9,7 +9,7 @@ import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityScenario;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandomEntity;
 
 // tag::loadTest[]
-public final class InsertEmployee extends AbstractEntityUsageScenario<EmployeesAppModel> {
+public final class InsertEmployee extends AbstractEntityScenario<EmployeesAppModel> {
 
   @Override
   protected void perform(EmployeesAppModel application) throws Exception {

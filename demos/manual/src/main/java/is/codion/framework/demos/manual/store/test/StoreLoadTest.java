@@ -13,7 +13,7 @@ import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityScenario;
 
 import java.util.function.Function;
 
@@ -37,8 +37,8 @@ public class StoreLoadTest {
     }
   }
 
-  private static class UsageScenario extends
-          AbstractEntityUsageScenario<StoreApplicationModel> {
+  private static class StoreUsageScenario extends
+          AbstractEntityScenario<StoreApplicationModel> {
 
     @Override
     protected void perform(StoreApplicationModel application) {
@@ -53,7 +53,7 @@ public class StoreLoadTest {
             LoadTest.builder(new StoreApplicationModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(User.parse("scott:tiger"))
-                    .scenarios(singletonList(new UsageScenario()))
+                    .scenarios(singletonList(new StoreUsageScenario()))
                     .titleFactory(model -> "Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

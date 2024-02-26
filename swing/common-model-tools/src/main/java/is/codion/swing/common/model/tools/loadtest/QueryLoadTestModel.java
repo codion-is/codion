@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 
@@ -86,7 +86,7 @@ public final class QueryLoadTestModel {
   /**
    * A usage scenario based on an SQL query.
    */
-  public static class QueryScenario extends AbstractUsageScenario<QueryApplication> {
+  public static class QueryScenario extends AbstractScenario<QueryApplication> {
 
     private final User user;
     private final String query;

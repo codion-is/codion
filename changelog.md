@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.30-SNAPSHOT
 ### is.codion.common.model
 - LoadTest, refactoring and renaming.
+- UsageScenario renamed Scenario and moved to LoadTest.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.

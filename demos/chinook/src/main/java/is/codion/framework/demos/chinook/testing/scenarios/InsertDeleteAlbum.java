@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
@@ -22,7 +22,7 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.R
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
-public final class InsertDeleteAlbum extends AbstractUsageScenario<EntityConnectionProvider> {
+public final class InsertDeleteAlbum extends AbstractScenario<EntityConnectionProvider> {
 
   private static final BigDecimal UNIT_PRICE = BigDecimal.valueOf(2);
 

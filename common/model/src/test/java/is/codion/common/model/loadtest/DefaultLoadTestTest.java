@@ -3,6 +3,7 @@
  */
 package is.codion.common.model.loadtest;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public final class DefaultLoadTestTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final UsageScenario<Object> SCENARIO = new AbstractUsageScenario<Object>("test") {
+  private static final Scenario<Object> SCENARIO = new AbstractScenario<Object>("test") {
     int counter = 0;
     @Override
     protected void perform(Object application) throws Exception {
@@ -27,13 +28,13 @@ public final class DefaultLoadTestTest {
     }
   };
 
-  private static final UsageScenario<Object> SCENARIO_II = new AbstractUsageScenario<Object>("testII") {
+  private static final Scenario<Object> SCENARIO_II = new AbstractScenario<Object>("testII") {
     @Override
     protected void perform(Object application) {}
   };
 
   @Test
-  void unknownUsageScenario() {
+  void unknownScenario() {
     LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .scenarios(asList(SCENARIO, SCENARIO_II))

@@ -3,6 +3,8 @@
  */
 package is.codion.common.model.loadtest;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  * An abstract usage scenario.
  * @param <T> the application type used to run this scenario
  */
-public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
+public abstract class AbstractScenario<T> implements Scenario<T> {
 
   private static final int MAXIMUM_EXCEPTIONS = 20;
 
@@ -27,27 +29,27 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   private final LinkedList<Throwable> exceptions = new LinkedList<>();
 
   /**
-   * Instantiates a new UsageScenario using the simple class name as scenario name
+   * Instantiates a new Scenario using the simple class name as scenario name
    */
-  protected AbstractUsageScenario() {
+  protected AbstractScenario() {
     this.name = getClass().getSimpleName();
     this.maximumTime = 0;
   }
 
   /**
-   * Instantiates a new UsageScenario with the given name
+   * Instantiates a new Scenario with the given name
    * @param name the scenario name
    */
-  protected AbstractUsageScenario(String name) {
+  protected AbstractScenario(String name) {
     this(name, 0);
   }
 
   /**
-   * Instantiates a new UsageScenario with the given name
+   * Instantiates a new Scenario with the given name
    * @param name the scenario name
    * @param maximumTimeMs the maximum time in milliseconds this scenario should take to run
    */
-  protected AbstractUsageScenario(String name, int maximumTimeMs) {
+  protected AbstractScenario(String name, int maximumTimeMs) {
     this.name = requireNonNull(name, "name");
     if (maximumTimeMs < 0) {
       throw new IllegalArgumentException("Maximum time in ms must be a positive integer");
@@ -139,7 +141,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
 
   @Override
   public final boolean equals(Object obj) {
-    return obj instanceof UsageScenario && ((UsageScenario<T>) obj).name().equals(name);
+    return obj instanceof Scenario && ((Scenario<T>) obj).name().equals(name);
   }
 
   @Override

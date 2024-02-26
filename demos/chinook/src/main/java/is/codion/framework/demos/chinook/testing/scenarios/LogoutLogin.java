@@ -3,12 +3,12 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.framework.db.EntityConnectionProvider;
 
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 
-public final class LogoutLogin extends AbstractUsageScenario<EntityConnectionProvider> {
+public final class LogoutLogin extends AbstractScenario<EntityConnectionProvider> {
 
   @Override
   protected void perform(EntityConnectionProvider connectionProvider) {

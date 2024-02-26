@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.model.tools.loadtest;
 
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -18,22 +18,22 @@ import java.util.stream.IntStream;
  * An abstract base class for usage scenarios based on SwingEntityApplicationModel instances
  * @param <M> the application model type used by this usage scenario
  */
-public abstract class AbstractEntityUsageScenario<M extends SwingEntityApplicationModel> extends AbstractUsageScenario<M> {
+public abstract class AbstractEntityScenario<M extends SwingEntityApplicationModel> extends AbstractScenario<M> {
 
   private static final Random RANDOM = new Random();
 
   /**
-   * Instantiates a new AbstractEntityUsageScenario
+   * Instantiates a new AbstractEntityScenario
    */
-  protected AbstractEntityUsageScenario() {
+  protected AbstractEntityScenario() {
     super();
   }
 
   /**
-   * Instantiates a new AbstractEntityUsageScenario
+   * Instantiates a new AbstractEntityScenario
    * @param name the scenario name
    */
-  protected AbstractEntityUsageScenario(String name) {
+  protected AbstractEntityScenario(String name) {
     super(name);
   }
 

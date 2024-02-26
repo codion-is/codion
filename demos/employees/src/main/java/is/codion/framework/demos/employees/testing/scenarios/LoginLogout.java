@@ -4,12 +4,12 @@
 package is.codion.framework.demos.employees.testing.scenarios;
 
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityScenario;
 
 import java.util.Random;
 
 // tag::loadTest[]
-public final class LoginLogout extends AbstractEntityUsageScenario<EmployeesAppModel> {
+public final class LoginLogout extends AbstractEntityScenario<EmployeesAppModel> {
 
   final Random random = new Random();
 

@@ -5,7 +5,7 @@ package is.codion.framework.demos.employees.testing;
 
 import is.codion.common.Text;
 import is.codion.common.model.CancelException;
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -64,7 +64,7 @@ public final class EmployeesServletLoadTest {
     new LoadTestPanel<>(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTestModel).run();
   }
 
-  private static final class UpdateLocation extends AbstractUsageScenario<EntityConnectionProvider> {
+  private static final class UpdateLocation extends AbstractScenario<EntityConnectionProvider> {
 
     private static final String NAME = "UpdateLocation";
 
@@ -81,7 +81,7 @@ public final class EmployeesServletLoadTest {
     }
   }
 
-  private static final class SelectDepartment extends AbstractUsageScenario<EntityConnectionProvider> {
+  private static final class SelectDepartment extends AbstractScenario<EntityConnectionProvider> {
 
     private static final String NAME = "SelectDepartment";
 
@@ -95,7 +95,7 @@ public final class EmployeesServletLoadTest {
     }
   }
 
-  private static final class SelectEmployees extends AbstractUsageScenario<EntityConnectionProvider> {
+  private static final class SelectEmployees extends AbstractScenario<EntityConnectionProvider> {
 
     private static final String NAME = "SelectEmployees";
 
@@ -112,7 +112,7 @@ public final class EmployeesServletLoadTest {
     }
   }
 
-  private static final class AddDepartment extends AbstractUsageScenario<EntityConnectionProvider> {
+  private static final class AddDepartment extends AbstractScenario<EntityConnectionProvider> {
     public static final String NAME = "AddDepartment";
 
     private AddDepartment() {
@@ -130,7 +130,7 @@ public final class EmployeesServletLoadTest {
     }
   }
 
-  private static final class AddEmployee extends AbstractUsageScenario<EntityConnectionProvider> {
+  private static final class AddEmployee extends AbstractScenario<EntityConnectionProvider> {
 
     private static final String NAME = "AddEmployee";
 

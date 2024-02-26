@@ -4,7 +4,7 @@
 package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.UsageScenario.Result;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 

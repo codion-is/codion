@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.testing.scenarios;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Genre;
@@ -20,7 +20,7 @@ import java.util.UUID;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static java.util.Arrays.asList;
 
-public final class RandomPlaylist extends AbstractUsageScenario<EntityConnectionProvider> {
+public final class RandomPlaylist extends AbstractScenario<EntityConnectionProvider> {
 
   private static final String PLAYLIST_NAME = "Random playlist";
   private static final Collection<String> GENRES =

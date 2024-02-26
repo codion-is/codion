@@ -4,7 +4,7 @@
 package is.codion.common.model.loadtest;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.loadtest.UsageScenario.Result;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
@@ -56,8 +56,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   private final Value<User> user;
 
   private final Map<ApplicationRunner, T> applications = new HashMap<>();
-  private final Map<String, UsageScenario<T>> scenarios;
-  private final ItemRandomizer<UsageScenario<T>> scenarioChooser;
+  private final Map<String, Scenario<T>> scenarios;
+  private final ItemRandomizer<Scenario<T>> scenarioChooser;
   private final ScheduledExecutorService scheduledExecutor =
           newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
   private final Function<LoadTest<T>, String> titleFactory;
@@ -76,7 +76,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
     this.minimumThinkTime.addValidator(new MinimumThinkTimeValidator());
     this.maximumThinkTime.addValidator(new MaximumThinkTimeValidator());
     this.scenarios = unmodifiableMap(builder.scenarios.stream()
-            .collect(Collectors.toMap(UsageScenario::name, Function.identity())));
+            .collect(Collectors.toMap(Scenario::name, Function.identity())));
     this.scenarioChooser = createScenarioChooser();
   }
 
@@ -91,17 +91,17 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   }
 
   @Override
-  public UsageScenario<T> scenario(String scenarioName) {
-    UsageScenario<T> scenario = scenarios.get(requireNonNull(scenarioName));
+  public Scenario<T> scenario(String scenarioName) {
+    Scenario<T> scenario = scenarios.get(requireNonNull(scenarioName));
     if (scenario == null) {
-      throw new IllegalArgumentException("UsageScenario not found: " + scenarioName);
+      throw new IllegalArgumentException("Scenario not found: " + scenarioName);
     }
 
     return scenario;
   }
 
   @Override
-  public Collection<UsageScenario<T>> scenarios() {
+  public Collection<Scenario<T>> scenarios() {
     return scenarios.values();
   }
 
@@ -121,7 +121,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   }
 
   @Override
-  public ItemRandomizer<UsageScenario<T>> scenarioChooser() {
+  public ItemRandomizer<Scenario<T>> scenarioChooser() {
     return scenarioChooser;
   }
 
@@ -220,7 +220,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
     return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.get()) + minimumThinkTime.get() : minimumThinkTime.get();
   }
 
-  private ItemRandomizer<UsageScenario<T>> createScenarioChooser() {
+  private ItemRandomizer<Scenario<T>> createScenarioChooser() {
     return ItemRandomizer.itemRandomizer(scenarios.values().stream()
             .map(scenario -> ItemRandomizer.RandomItem.randomItem(scenario, scenario.defaultWeight()))
             .collect(toList()));
@@ -321,18 +321,18 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
         long startTime = System.nanoTime();
         T app = applicationFactory.apply(user);
         int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
-        addResult(new AbstractUsageScenario.DefaultRunResult("Initialization", duration, null));
+        addResult(new AbstractScenario.DefaultRunResult("Initialization", duration, null));
         LOG.debug("LoadTestModel initialized application: {}", app);
 
         return app;
       }
       catch (Exception e) {
-        addResult(new AbstractUsageScenario.DefaultRunResult("Initialization", -1, e));
+        addResult(new AbstractScenario.DefaultRunResult("Initialization", -1, e));
         return null;
       }
     }
 
-    private void runScenario(T application, UsageScenario<T> scenario) {
+    private void runScenario(T application, Scenario<T> scenario) {
       Result result = scenario.run(application);
       addResult(result);
       resultEvent.accept(result);
@@ -356,7 +356,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   static final class DefaultBuilder<T> implements Builder<T> {
 
     private final Function<User, T> applicationFactory;
-    private final List<UsageScenario<T>> scenarios = new ArrayList<>();
+    private final List<Scenario<T>> scenarios = new ArrayList<>();
     private final Consumer<T> closeApplication;
 
     private User user;
@@ -420,7 +420,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
     }
 
     @Override
-    public Builder<T> scenarios(Collection<? extends UsageScenario<T>> scenarios) {
+    public Builder<T> scenarios(Collection<? extends Scenario<T>> scenarios) {
       this.scenarios.addAll(requireNonNull(scenarios));
       return this;
     }

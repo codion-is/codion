@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.testing.scenarios;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.loadtest.AbstractUsageScenario;
+import is.codion.common.model.loadtest.AbstractScenario;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 
-public final class UpdateTotals extends AbstractUsageScenario<EntityConnectionProvider> {
+public final class UpdateTotals extends AbstractScenario<EntityConnectionProvider> {
 
   @Override
   protected void perform(EntityConnectionProvider connectionProvider) throws Exception {

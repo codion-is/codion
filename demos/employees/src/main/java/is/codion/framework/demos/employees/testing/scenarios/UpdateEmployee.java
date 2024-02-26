@@ -9,14 +9,14 @@ import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityScenario;
 
 import java.util.Random;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.randomize;
 
 // tag::loadTest[]
-public final class UpdateEmployee extends AbstractEntityUsageScenario<EmployeesAppModel> {
+public final class UpdateEmployee extends AbstractEntityScenario<EmployeesAppModel> {
 
   private final Random random = new Random();
 
