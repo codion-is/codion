@@ -260,12 +260,6 @@ public interface LoadTest<T> {
     int defaultWeight();
 
     /**
-     * The maximum time in milliseconds this scenario can run before issuing a warning.
-     * @return the warning time
-     */
-    int maximumTime();
-
-    /**
      * Runs this scenario with the given application
      * @param application the application to use
      * @return the run result

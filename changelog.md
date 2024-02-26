@@ -6,6 +6,7 @@ Codion Change Log
 - LoadTest, refactoring and renaming.
 - UsageScenario renamed Scenario and moved to LoadTest.
 - AbstractScenario, run counting removed.
+- LoadTest.Scenario.maximumTime() removed.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.
@@ -17,6 +18,7 @@ Codion Change Log
 - LoadTestModel, refactoring and renaming.
 - LoadTestModel no longer extends LoadTest.
 - LoadTestModel now handles all counting runs.
+- LoadTestModel no longer counts runs exceeding maximum scenario time.
 
 ## 0.17.29
 ### is.codion.common.db

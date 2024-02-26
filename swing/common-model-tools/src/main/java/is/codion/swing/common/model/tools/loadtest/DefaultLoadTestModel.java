@@ -62,7 +62,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   private final TaskScheduler applicationsRefreshScheduler;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
-  private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
 
   private final XYSeriesCollection scenarioFailureCollection = new XYSeriesCollection();
 
@@ -161,7 +160,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   @Override
   public void clearCharts() {
     scenariosRunSeries.clear();
-    delayedScenarioRunsSeries.clear();
     minimumThinkTimeSeries.clear();
     maximumThinkTimeSeries.clear();
     numberOfApplicationsSeries.clear();
@@ -267,7 +265,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       scenarioFailureCollection.addSeries(failSeries);
       failureSeries.add(failSeries);
     }
-    scenarioCollection.addSeries(delayedScenarioRunsSeries);
   }
 
   private void bindEvents() {
@@ -298,7 +295,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     private void updateChartData() {
       long time = System.currentTimeMillis();
-      delayedScenarioRunsSeries.add(time, counter.delayedWorkRequestsPerSecond());
       minimumThinkTimeSeries.add(time, loadTest.minimumThinkTime().get());
       maximumThinkTimeSeries.add(time, loadTest.maximumThinkTime().get());
       numberOfApplicationsSeries.add(time, loadTest.applicationCount().get());
@@ -372,20 +368,13 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
     private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
     private final Map<String, List<Throwable>> scenarioExceptions = new HashMap<>();
-
     private final AtomicInteger workRequestCounter = new AtomicInteger();
-    private final AtomicInteger delayedWorkRequestsPerSecond = new AtomicInteger();
-    private final AtomicInteger delayedWorkRequestCounter = new AtomicInteger();
 
     private double workRequestsPerSecond = 0;
     private long time = System.currentTimeMillis();
 
     private double workRequestsPerSecond() {
       return workRequestsPerSecond;
-    }
-
-    private int delayedWorkRequestsPerSecond() {
-      return delayedWorkRequestsPerSecond.get();
     }
 
     private int minimumScenarioDuration(String scenarioName) {
@@ -445,9 +434,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
         });
       }
       workRequestCounter.incrementAndGet();
-      if (scenario.maximumTime() > 0 && result.duration() > scenario.maximumTime()) {
-        delayedWorkRequestCounter.incrementAndGet();
-      }
     }
 
     private synchronized void updateRequestsPerSecond() {
@@ -458,7 +444,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
         scenarioMinDurations.clear();
         scenarioMaxDurations.clear();
         workRequestsPerSecond = workRequestCounter.get() / elapsedSeconds;
-        delayedWorkRequestsPerSecond.set((int) (delayedWorkRequestCounter.get() / elapsedSeconds));
         for (Scenario<T> scenario : loadTest.scenarios()) {
           scenarioRates.put(scenario.name(), (int) (scenarioRunCounts.getOrDefault(scenario.name(), ZERO).get() / elapsedSeconds));
           scenarioFailures.put(scenario.name(), scenarioFailureCounts.getOrDefault(scenario.name(), ZERO).get());
@@ -494,7 +479,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     private synchronized void resetCounters() {
       workRequestCounter.set(0);
-      delayedWorkRequestCounter.set(0);
       scenarioDurations.clear();
       scenarioRunCounts.clear();
       scenarioFailureCounts.clear();

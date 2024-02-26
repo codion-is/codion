@@ -17,14 +17,12 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractScenario<T> implements Scenario<T> {
 
   private final String name;
-  private final int maximumTime;
 
   /**
    * Instantiates a new Scenario using the simple class name as scenario name
    */
   protected AbstractScenario() {
     this.name = getClass().getSimpleName();
-    this.maximumTime = 0;
   }
 
   /**
@@ -32,30 +30,12 @@ public abstract class AbstractScenario<T> implements Scenario<T> {
    * @param name the scenario name
    */
   protected AbstractScenario(String name) {
-    this(name, 0);
-  }
-
-  /**
-   * Instantiates a new Scenario with the given name
-   * @param name the scenario name
-   * @param maximumTimeMs the maximum time in milliseconds this scenario should take to run
-   */
-  protected AbstractScenario(String name, int maximumTimeMs) {
     this.name = requireNonNull(name, "name");
-    if (maximumTimeMs < 0) {
-      throw new IllegalArgumentException("Maximum time in ms must be a positive integer");
-    }
-    this.maximumTime = maximumTimeMs;
   }
 
   @Override
   public final String name() {
     return this.name;
-  }
-
-  @Override
-  public final int maximumTime() {
-    return maximumTime;
   }
 
   @Override
