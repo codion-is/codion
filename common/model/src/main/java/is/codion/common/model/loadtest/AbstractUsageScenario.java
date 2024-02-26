@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
 
-  private static final int MAXIMUM_EXCEPTIONS = 50;
+  private static final int MAXIMUM_EXCEPTIONS = 20;
 
   private final String name;
   private final int maximumTime;
@@ -106,17 +106,15 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final RunResult run(T application) {
-    if (application == null) {
-      throw new IllegalArgumentException("Can not run without an application");
-    }
+  public final Result run(T application) {
+    requireNonNull(application, "Can not run without an application");
     try {
       prepare(application);
       long startTime = System.nanoTime();
       perform(application);
       successfulRunCount.incrementAndGet();
 
-      return RunResult.success(name, (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
+      return Result.success(name, (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
     }
     catch (Throwable e) {
       unsuccessfulRunCount.incrementAndGet();
@@ -127,7 +125,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
         }
       }
 
-      return RunResult.failure(name, e);
+      return Result.failure(name, e);
     }
     finally {
       cleanup(application);
@@ -168,7 +166,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    */
   protected void cleanup(T application) {/*Provided for subclasses*/}
 
-  static final class DefaultRunResult implements RunResult {
+  static final class DefaultRunResult implements Result {
 
     private final String scenario;
     private final int duration;

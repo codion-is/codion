@@ -56,7 +56,7 @@ public final class ChinookLoadTest {
   public static void main(String[] args) {
     LoadTest<EntityConnectionProvider> loadTest =
             LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
-                    .usageScenarios(SCENARIOS)
+                    .scenarios(SCENARIOS)
                     .user(UNIT_TEST_USER)
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

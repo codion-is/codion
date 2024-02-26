@@ -4,6 +4,7 @@
 package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.UsageScenario.Result;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 
@@ -11,6 +12,7 @@ import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Provides chart data for a load test.
@@ -22,7 +24,7 @@ public interface LoadTestModel<T> extends LoadTest<T> {
   /**
    * @return a table model for displaying the active application instances
    */
-  FilteredTableModel<Application, Integer> applicationTableModel();
+  FilteredTableModel<ApplicationRow, Integer> applicationTableModel();
 
   /**
    * @return the chart data update interval in milliseconds
@@ -73,7 +75,7 @@ public interface LoadTestModel<T> extends LoadTest<T> {
   /**
    * @return a dataset plotting the number of runs each usage scenario is being run per second
    */
-  XYDataset usageScenarioDataset();
+  XYDataset scenarioDataset();
 
   /**
    * @return a dataset plotting the memory usage of this load test model
@@ -88,7 +90,7 @@ public interface LoadTestModel<T> extends LoadTest<T> {
   /**
    * @return a dataset plotting the failure rate of each usage scenario
    */
-  XYDataset usageScenarioFailureDataset();
+  XYDataset scenarioFailureDataset();
 
   /**
    * @param loadTest the load test
@@ -100,9 +102,9 @@ public interface LoadTestModel<T> extends LoadTest<T> {
   }
 
   /**
-   * Describes a load test application.
+   * Table model row describing a load test application.
    */
-  interface Application {
+  interface ApplicationRow {
 
     int NAME_INDEX = 0;
     int USERNAME_INDEX = 1;
@@ -124,33 +126,13 @@ public interface LoadTestModel<T> extends LoadTest<T> {
     String username();
 
     /**
-     * @return the name of the last scenario run
-     */
-    String scenario();
-
-    /**
-     * @return true if the last scenario run was successful
-     */
-    Boolean successful();
-
-    /**
-     * @return the duration of the last scenario run, in microseconds
-     */
-    Integer duration();
-
-    /**
-     * @return the exception from the last run, if any
-     */
-    Throwable exception();
-
-    /**
-     * @return the exception message from the last run, if any
-     */
-    String message();
-
-    /**
      * @return the application create time
      */
     LocalDateTime created();
+
+    /**
+     * @return the available run results
+     */
+    List<Result> results();
   }
 }

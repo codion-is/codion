@@ -35,7 +35,7 @@ public interface UsageScenario<T> {
    * @param application the application to use
    * @return the run result
    */
-  RunResult run(T application);
+  Result run(T application);
 
   /**
    * @return the total number of times this scenario has been run
@@ -70,7 +70,7 @@ public interface UsageScenario<T> {
   /**
    * Describes the results of a load test scenario run
    */
-  interface RunResult {
+  interface Result {
 
     /**
      * @return the usage scenario name
@@ -95,18 +95,18 @@ public interface UsageScenario<T> {
     /**
      * @param scenarioName the name of the usage scenario
      * @param duration the duriation in microseconds
-     * @return a new {@link RunResult} instance
+     * @return a new {@link Result} instance
      */
-    static RunResult success(String scenarioName, int duration) {
+    static Result success(String scenarioName, int duration) {
       return new DefaultRunResult(scenarioName, duration, null);
     }
 
     /**
      * @param scenarioName the name of the usage scenario
      * @param exception the exception
-     * @return a new {@link RunResult} instance
+     * @return a new {@link Result} instance
      */
-    static RunResult failure(String scenarioName, Throwable exception) {
+    static Result failure(String scenarioName, Throwable exception) {
       return new DefaultRunResult(scenarioName, -1, exception);
     }
   }

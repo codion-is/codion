@@ -66,7 +66,7 @@ public final class PetstoreLoadTest {
             LoadTest.builder(new PetstoreAppModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
-                    .usageScenarios(singletonList(new PetstoreUsageScenario()))
+                    .scenarios(singletonList(new PetstoreUsageScenario()))
                     .titleFactory(model -> "Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

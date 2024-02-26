@@ -57,7 +57,7 @@ public final class EmployeesLoadTest {
             LoadTest.builder(new EmployeesAppModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
-                    .usageScenarios(asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
+                    .scenarios(asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
                             new SelectDepartment(), new UpdateEmployee()))
                     .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();

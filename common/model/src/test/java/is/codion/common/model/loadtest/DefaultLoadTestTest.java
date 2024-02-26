@@ -36,27 +36,27 @@ public final class DefaultLoadTestTest {
   void unknownUsageScenario() {
     LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
-            .usageScenarios(asList(SCENARIO, SCENARIO_II))
+            .scenarios(asList(SCENARIO, SCENARIO_II))
             .minimumThinkTime(25)
             .maximumThinkTime(50)
             .loginDelayFactor(2)
             .applicationBatchSize(2)
             .build();
-    assertThrows(IllegalArgumentException.class, () -> model.usageScenario("bla"));
+    assertThrows(IllegalArgumentException.class, () -> model.scenario("bla"));
   }
 
   @Test
   void test() throws Exception {
     LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
             .user(UNIT_TEST_USER)
-            .usageScenarios(asList(SCENARIO, SCENARIO_II))
+            .scenarios(asList(SCENARIO, SCENARIO_II))
             .minimumThinkTime(25)
             .maximumThinkTime(50)
             .loginDelayFactor(2)
             .applicationBatchSize(2)
             .build();
     AtomicInteger counter = new AtomicInteger();
-    model.addRunResultListener(runResult -> counter.incrementAndGet());
+    model.addResultListener(result -> counter.incrementAndGet());
     assertEquals(2, model.applicationBatchSize().get());
 
     assertEquals(2, model.loginDelayFactor().get());
@@ -72,7 +72,7 @@ public final class DefaultLoadTestTest {
     assertEquals(40, model.maximumThinkTime().get());
 
     model.applicationBatchSize().set(5);
-    assertTrue(model.usageScenarios().contains(SCENARIO));
+    assertTrue(model.scenarios().contains(SCENARIO));
     model.user().set(UNIT_TEST_USER);
     assertEquals(UNIT_TEST_USER, model.user().get());
     assertNotNull(model.scenarioChooser());

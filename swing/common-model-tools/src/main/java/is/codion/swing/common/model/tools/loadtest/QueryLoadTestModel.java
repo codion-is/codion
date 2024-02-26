@@ -43,7 +43,7 @@ public final class QueryLoadTestModel {
   public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     this.loadTest = LoadTest.builder(this::createApplication, this::disconnectApplication)
             .user(user)
-            .usageScenarios(scenarios)
+            .scenarios(scenarios)
             .minimumThinkTime(DEFAULT_MAXIMUM_THINK_TIME_MS / 2)
             .maximumThinkTime(DEFAULT_MAXIMUM_THINK_TIME_MS)
             .loginDelayFactor(DEFAULT_LOGIN_DELAY_FACTOR)

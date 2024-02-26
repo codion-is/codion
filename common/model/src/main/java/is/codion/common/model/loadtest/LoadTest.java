@@ -3,7 +3,7 @@
  */
 package is.codion.common.model.loadtest;
 
-import is.codion.common.model.loadtest.UsageScenario.RunResult;
+import is.codion.common.model.loadtest.UsageScenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
@@ -70,18 +70,18 @@ public interface LoadTest<T> {
   /**
    * @return the usage scenarios used by this load test.
    */
-  Collection<UsageScenario<T>> usageScenarios();
+  Collection<UsageScenario<T>> scenarios();
 
   /**
-   * @param usageScenarioName the scenario name
+   * @param scenarioName the scenario name
    * @return the usage scenario
    */
-  UsageScenario<T> usageScenario(String usageScenarioName);
+  UsageScenario<T> scenario(String scenarioName);
 
   /**
    * @param listener a listener notified each time a run result is produced
    */
-  void addRunResultListener(Consumer<RunResult> listener);
+  void addResultListener(Consumer<Result> listener);
 
   /**
    * @param listener a listener notified when this load test model has been shutdown.
@@ -189,10 +189,10 @@ public interface LoadTest<T> {
     Builder<T> applicationBatchSize(int applicationBatchSize);
 
     /**
-     * @param usageScenarios the usage scenarios
+     * @param scenarios the usage scenarios
      * @return this builder
      */
-    Builder<T> usageScenarios(Collection<? extends UsageScenario<T>> usageScenarios);
+    Builder<T> scenarios(Collection<? extends UsageScenario<T>> scenarios);
 
     /**
      * @param titleFactory the title factory
@@ -229,7 +229,7 @@ public interface LoadTest<T> {
     /**
      * @return the available run results
      */
-    List<RunResult> runResults();
+    List<Result> results();
 
     /**
      * @return true if this runner has been stopped

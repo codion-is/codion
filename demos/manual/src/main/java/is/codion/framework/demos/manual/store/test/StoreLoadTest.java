@@ -53,7 +53,7 @@ public class StoreLoadTest {
             LoadTest.builder(new StoreApplicationModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(User.parse("scott:tiger"))
-                    .usageScenarios(singletonList(new UsageScenario()))
+                    .scenarios(singletonList(new UsageScenario()))
                     .titleFactory(model -> "Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

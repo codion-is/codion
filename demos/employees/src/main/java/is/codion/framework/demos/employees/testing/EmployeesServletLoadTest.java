@@ -35,7 +35,7 @@ public final class EmployeesServletLoadTest {
   private EmployeesServletLoadTest(User user) {
     loadTestModel = LoadTestModel.loadTestModel(LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
             .user(user)
-            .usageScenarios(asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()))
+            .scenarios(asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()))
             .minimumThinkTime(2500)
             .maximumThinkTime(5000)
             .loginDelayFactor(2)

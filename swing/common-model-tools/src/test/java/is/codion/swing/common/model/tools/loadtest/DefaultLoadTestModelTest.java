@@ -39,7 +39,7 @@ public class DefaultLoadTestModelTest {
   void test() throws Exception {
     LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
             .user(UNIT_TEST_USER)
-            .usageScenarios(asList(SCENARIO, SCENARIO_II))
+            .scenarios(asList(SCENARIO, SCENARIO_II))
             .minimumThinkTime(25)
             .maximumThinkTime(50)
             .loginDelayFactor(2)
@@ -52,7 +52,7 @@ public class DefaultLoadTestModelTest {
     assertNotNull(model.memoryUsageDataset());
     assertNotNull(model.numberOfApplicationsDataset());
     assertNotNull(model.thinkTimeDataset());
-    assertNotNull(model.usageScenarioDataset());
+    assertNotNull(model.scenarioDataset());
 
     assertEquals(2, model.loginDelayFactor().get());
     model.loginDelayFactor().set(3);
@@ -68,7 +68,7 @@ public class DefaultLoadTestModelTest {
     assertEquals(40, model.maximumThinkTime().get());
 
     model.applicationBatchSize().set(5);
-    assertTrue(model.usageScenarios().contains(SCENARIO));
+    assertTrue(model.scenarios().contains(SCENARIO));
     model.user().set(UNIT_TEST_USER);
     assertEquals(UNIT_TEST_USER, model.user().get());
     assertNotNull(model.scenarioChooser());

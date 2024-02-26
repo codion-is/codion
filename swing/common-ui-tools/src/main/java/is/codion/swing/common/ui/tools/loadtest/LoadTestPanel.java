@@ -10,7 +10,7 @@ import is.codion.common.model.randomizer.ItemRandomizer.RandomItem;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
-import is.codion.swing.common.model.tools.loadtest.LoadTestModel.Application;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel.ApplicationRow;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -284,7 +284,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private ChartPanel createUsageScenarioChartPanel() {
     JFreeChart usageScenarioChart = createXYStepChart(null, null, null,
-            loadTestModel.usageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
+            loadTestModel.scenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(usageScenarioChart);
     ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(createTitledBorder("Scenarios run per second"));
@@ -294,7 +294,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private ChartPanel createFailureChartPanel() {
     JFreeChart failureChart = createXYStepChart(null, null, null,
-            loadTestModel.usageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
+            loadTestModel.scenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(failureChart);
     ChartPanel failureChartPanel = new ChartPanel(failureChart);
     failureChartPanel.setBorder(createTitledBorder("Scenario run failures per second"));
@@ -352,7 +352,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return numberOfApplicationsChartPanel;
   }
 
-  private FilteredTable<Application, Integer> createApplicationsTable() {
+  private FilteredTable<ApplicationRow, Integer> createApplicationsTable() {
     return FilteredTable.builder(model().applicationTableModel())
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .doubleClickAction(Control.control(this::viewException))
@@ -377,7 +377,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private void viewException() {
-    model().applicationTableModel().selectionModel().selectedItem().map(Application::exception)
+    model().applicationTableModel().selectionModel().selectedItem().map(LoadTestPanel::exception)
             .ifPresent(this::displayException);
   }
 
@@ -454,6 +454,12 @@ public final class LoadTestPanel<T> extends JPanel {
     Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
   }
 
+  private static Throwable exception(ApplicationRow application) {
+    List<UsageScenario.Result> results = application.results();
+
+    return results.isEmpty() ? null : results.get(results.size() - 1).exception().orElse(null);
+  }
+
   private static JPanel createSouthPanel() {
     return flowLayoutPanel(FlowLayout.TRAILING)
             .add(new JLabel("Memory usage:"))
@@ -465,9 +471,9 @@ public final class LoadTestPanel<T> extends JPanel {
 
     @Override
     public TableCellRenderer tableCellRenderer(FilteredTableColumn<Integer> column) {
-      FilteredTableCellRenderer.Builder<Application, Integer> builder =
+      FilteredTableCellRenderer.Builder<ApplicationRow, Integer> builder =
               FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
-      if (column.getIdentifier().equals(Application.DURATION_INDEX)) {
+      if (column.getIdentifier().equals(ApplicationRow.DURATION_INDEX)) {
         builder.displayValueProvider(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
       }
 
