@@ -20,15 +20,12 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.Memory;
 import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.UsageScenario;
-import is.codion.common.model.loadtest.UsageScenario.RunResult;
-import is.codion.common.model.randomizer.ItemRandomizer;
+import is.codion.common.model.loadtest.LoadTest.ApplicationRunner;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.user.User;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
@@ -45,11 +42,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -62,10 +61,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
   private static final double HUNDRED = 100d;
   private static final double THOUSAND = 1000d;
+  private static final int MAXIMUM_EXCEPTIONS = 20;
+  private static final AtomicInteger ZERO = new AtomicInteger();
 
   private final LoadTest<T> loadTest;
 
-  private final FilteredTableModel<Application, Integer> applicationTableModel;
+  private final FilteredTableModel<ApplicationRow, Integer> applicationTableModel;
   private final Counter counter = new Counter();
 
   private final State collectChartData = State.state();
@@ -76,7 +77,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   private final TaskScheduler applicationsRefreshScheduler;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
-  private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
 
   private final XYSeriesCollection scenarioFailureCollection = new XYSeriesCollection();
 
@@ -87,7 +87,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   private final XYSeries numberOfApplicationsSeries = new XYSeries("Application count");
   private final XYSeriesCollection numberOfApplicationsCollection = new XYSeriesCollection();
 
-  private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
+  private final XYSeriesCollection scenarioCollection = new XYSeriesCollection();
 
   private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated");
   private final XYSeries usedMemoryCollection = new XYSeries("Used");
@@ -103,7 +103,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   DefaultLoadTestModel(LoadTest<T> loadTest) {
     this.loadTest = requireNonNull(loadTest);
     applicationTableModel = FilteredTableModel.builder(DefaultLoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
-            .itemSupplier(new ApplicationItemSupplier())
+            .itemSupplier(new ApplicationRowSupplier())
             .build();
     chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
     applicationsRefreshSchedulerEnabled = State.and(loadTest.paused().not(), autoRefreshApplications);
@@ -118,119 +118,19 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public void shutdown() {
-    loadTest.shutdown();
-  }
-
-  @Override
-  public void stop(ApplicationRunner applicationRunner) {
-    loadTest.stop(applicationRunner);
-  }
-
-  @Override
-  public Value<User> user() {
-    return loadTest.user();
-  }
-
-  @Override
-  public String title() {
-    return loadTest.title();
-  }
-
-  @Override
-  public void setWeight(String scenarioName, int weight) {
-    loadTest.setWeight(scenarioName, weight);
-  }
-
-  @Override
-  public boolean isScenarioEnabled(String scenarioName) {
-    return loadTest.isScenarioEnabled(scenarioName);
-  }
-
-  @Override
-  public void setScenarioEnabled(String scenarioName, boolean enabled) {
-    loadTest.setScenarioEnabled(scenarioName, enabled);
-  }
-
-  @Override
-  public Collection<UsageScenario<T>> usageScenarios() {
-    return loadTest.usageScenarios();
-  }
-
-  @Override
-  public UsageScenario<T> usageScenario(String usageScenarioName) {
-    return loadTest.usageScenario(usageScenarioName);
-  }
-
-  @Override
-  public void addRunResultListener(Consumer<RunResult> listener) {
-    loadTest.addRunResultListener(listener);
-  }
-
-  @Override
-  public void addShutdownListener(Runnable listener) {
-    loadTest.addShutdownListener(listener);
-  }
-
-  @Override
-  public Value<Integer> applicationBatchSize() {
-    return loadTest.applicationBatchSize();
-  }
-
-  @Override
-  public State paused() {
-    return loadTest.paused();
-  }
-
-  @Override
-  public Value<Integer> maximumThinkTime() {
-    return loadTest.maximumThinkTime();
-  }
-
-  @Override
-  public Value<Integer> minimumThinkTime() {
-    return loadTest.minimumThinkTime();
-  }
-
-  @Override
-  public Value<Integer> loginDelayFactor() {
-    return loadTest.loginDelayFactor();
-  }
-
-  @Override
-  public ValueObserver<Integer> applicationCount() {
-    return loadTest.applicationCount();
-  }
-
-  @Override
-  public void addApplicationBatch() {
-    loadTest.addApplicationBatch();
-  }
-
-  @Override
-  public void removeApplicationBatch() {
-    loadTest.removeApplicationBatch();
+  public LoadTest<T> loadTest() {
+    return loadTest;
   }
 
   @Override
   public void removeSelectedApplications() {
     applicationTableModel.selectionModel().getSelectedItems().stream()
-            .map(DefaultApplication.class::cast)
+            .map(DefaultApplicationRow.class::cast)
             .forEach(application -> loadTest.stop(application.applicationRunner));
   }
 
   @Override
-  public ItemRandomizer<UsageScenario<T>> scenarioChooser() {
-    return loadTest.scenarioChooser();
-  }
-
-  @Override
-  public Map<ApplicationRunner, T> applications() {
-    return loadTest.applications();
-  }
-
-  @Override
-  public FilteredTableModel<Application, Integer> applicationTableModel() {
+  public FilteredTableModel<ApplicationRow, Integer> applicationTableModel() {
     return applicationTableModel;
   }
 
@@ -253,12 +153,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   }
 
   @Override
-  public XYDataset usageScenarioDataset() {
-    return usageScenarioCollection;
+  public XYDataset scenarioDataset() {
+    return scenarioCollection;
   }
 
   @Override
-  public XYDataset usageScenarioFailureDataset() {
+  public XYDataset scenarioFailureDataset() {
     return scenarioFailureCollection;
   }
 
@@ -275,7 +175,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   @Override
   public void clearCharts() {
     scenariosRunSeries.clear();
-    delayedScenarioRunsSeries.clear();
     minimumThinkTimeSeries.clear();
     maximumThinkTimeSeries.clear();
     numberOfApplicationsSeries.clear();
@@ -292,6 +191,52 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
     for (YIntervalSeries series : durationSeries.values()) {
       series.clear();
+    }
+  }
+
+  @Override
+  public int totalRunCount(String scenarioName) {
+    synchronized (counter) {
+      return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get() + counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+    }
+  }
+
+  @Override
+  public int successfulRunCount(String scenarioName) {
+    synchronized (counter) {
+      return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get();
+    }
+  }
+
+  @Override
+  public int unsuccessfulRunCount(String scenarioName) {
+    synchronized (counter) {
+      return counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+    }
+  }
+
+  @Override
+  public void resetRunCounter() {
+    synchronized (counter) {
+      counter.resetCounters();
+    }
+  }
+
+  @Override
+  public List<Throwable> exceptions(String scenarioName) {
+    synchronized (counter) {
+      Collection<Throwable> exceptions = counter.scenarioExceptions.get(scenarioName);
+      return exceptions == null ? Collections.emptyList() : new ArrayList<>(exceptions);
+    }
+  }
+
+  @Override
+  public void clearExceptions(String scenarioName) {
+    synchronized (counter) {
+      Collection<Throwable> exceptions = counter.scenarioExceptions.get(scenarioName);
+      if (exceptions != null) {
+        exceptions.clear();
+      }
     }
   }
 
@@ -324,23 +269,22 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     memoryUsageCollection.addSeries(usedMemoryCollection);
     systemLoadCollection.addSeries(systemLoadSeries);
     systemLoadCollection.addSeries(processLoadSeries);
-    usageScenarioCollection.addSeries(scenariosRunSeries);
-    for (UsageScenario<T> usageScenario : loadTest.usageScenarios()) {
-      XYSeries series = new XYSeries(usageScenario.name());
-      usageScenarioCollection.addSeries(series);
+    scenarioCollection.addSeries(scenariosRunSeries);
+    for (Scenario<T> scenario : loadTest.scenarios()) {
+      XYSeries series = new XYSeries(scenario.name());
+      scenarioCollection.addSeries(series);
       usageSeries.add(series);
-      YIntervalSeries avgDurSeries = new YIntervalSeries(usageScenario.name());
-      durationSeries.put(usageScenario.name(), avgDurSeries);
-      XYSeries failSeries = new XYSeries(usageScenario.name());
+      YIntervalSeries avgDurSeries = new YIntervalSeries(scenario.name());
+      durationSeries.put(scenario.name(), avgDurSeries);
+      XYSeries failSeries = new XYSeries(scenario.name());
       scenarioFailureCollection.addSeries(failSeries);
       failureSeries.add(failSeries);
     }
-    usageScenarioCollection.addSeries(delayedScenarioRunsSeries);
   }
 
   private void bindEvents() {
-    loadTest.addRunResultListener(counter::addScenarioDuration);
-    addShutdownListener(() -> {
+    loadTest.addResultListener(counter::addScenarioResults);
+    loadTest.addShutdownListener(() -> {
       applicationsRefreshScheduler.stop();
       chartUpdateScheduler.stop();
     });
@@ -366,7 +310,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     private void updateChartData() {
       long time = System.currentTimeMillis();
-      delayedScenarioRunsSeries.add(time, counter.delayedWorkRequestsPerSecond());
       minimumThinkTimeSeries.add(time, loadTest.minimumThinkTime().get());
       maximumThinkTimeSeries.add(time, loadTest.maximumThinkTime().get());
       numberOfApplicationsSeries.add(time, loadTest.applicationCount().get());
@@ -392,35 +335,35 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
   private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
     return Arrays.asList(
-            FilteredTableColumn.builder(Application.NAME_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.NAME_INDEX)
                     .headerValue("Name")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.USERNAME_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.USERNAME_INDEX)
                     .headerValue("User")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.SCENARIO_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.SCENARIO_INDEX)
                     .headerValue("Scenario")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.SUCCESSFUL_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.SUCCESSFUL_INDEX)
                     .headerValue("Success")
                     .columnClass(Boolean.class)
                     .build(),
-            FilteredTableColumn.builder(Application.DURATION_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.DURATION_INDEX)
                     .headerValue("Duration (μs)")
                     .columnClass(Integer.class)
                     .build(),
-            FilteredTableColumn.builder(Application.EXCEPTION_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.EXCEPTION_INDEX)
                     .headerValue("Exception")
                     .columnClass(Throwable.class)
                     .build(),
-            FilteredTableColumn.builder(Application.MESSAGE_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.MESSAGE_INDEX)
                     .headerValue("Message")
                     .columnClass(String.class)
                     .build(),
-            FilteredTableColumn.builder(Application.CREATED_INDEX)
+            FilteredTableColumn.builder(ApplicationRow.CREATED_INDEX)
                     .headerValue("Created")
                     .columnClass(LocalDateTime.class)
                     .build()
@@ -431,90 +374,94 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
     private static final int UPDATE_INTERVAL = 5;
 
-    private final Map<String, Integer> usageScenarioRates = new HashMap<>();
-    private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<>();
-    private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<>();
-    private final Map<String, Integer> usageScenarioMinDurations = new HashMap<>();
-    private final Map<String, Integer> usageScenarioFailures = new HashMap<>();
-    private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<>();
+    private final Map<String, Integer> scenarioRates = new HashMap<>();
+    private final Map<String, Integer> scenarioAvgDurations = new HashMap<>();
+    private final Map<String, Integer> scenarioMaxDurations = new HashMap<>();
+    private final Map<String, Integer> scenarioMinDurations = new HashMap<>();
+    private final Map<String, Integer> scenarioFailures = new HashMap<>();
+    private final Map<String, List<Integer>> scenarioDurations = new HashMap<>();
+    private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
+    private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
+    private final Map<String, List<Throwable>> scenarioExceptions = new HashMap<>();
+    private final AtomicInteger workRequestCounter = new AtomicInteger();
 
     private double workRequestsPerSecond = 0;
-    private int workRequestCounter = 0;
-    private int delayedWorkRequestsPerSecond = 0;
-    private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
 
     private double workRequestsPerSecond() {
       return workRequestsPerSecond;
     }
 
-    private int delayedWorkRequestsPerSecond() {
-      return delayedWorkRequestsPerSecond;
-    }
-
     private int minimumScenarioDuration(String scenarioName) {
-      if (!usageScenarioMinDurations.containsKey(scenarioName)) {
+      if (!scenarioMinDurations.containsKey(scenarioName)) {
         return 0;
       }
 
-      return usageScenarioMinDurations.get(scenarioName);
+      return scenarioMinDurations.get(scenarioName);
     }
 
     private int maximumScenarioDuration(String scenarioName) {
-      if (!usageScenarioMaxDurations.containsKey(scenarioName)) {
+      if (!scenarioMaxDurations.containsKey(scenarioName)) {
         return 0;
       }
 
-      return usageScenarioMaxDurations.get(scenarioName);
+      return scenarioMaxDurations.get(scenarioName);
     }
 
     private int averageScenarioDuration(String scenarioName) {
-      if (!usageScenarioAvgDurations.containsKey(scenarioName)) {
+      if (!scenarioAvgDurations.containsKey(scenarioName)) {
         return 0;
       }
 
-      return usageScenarioAvgDurations.get(scenarioName);
+      return scenarioAvgDurations.get(scenarioName);
     }
 
     private double scenarioFailureRate(String scenarioName) {
-      if (!usageScenarioFailures.containsKey(scenarioName)) {
+      if (!scenarioFailures.containsKey(scenarioName)) {
         return 0;
       }
 
-      return usageScenarioFailures.get(scenarioName);
+      return scenarioFailures.get(scenarioName);
     }
 
     private int scenarioRate(String scenarioName) {
-      if (!usageScenarioRates.containsKey(scenarioName)) {
+      if (!scenarioRates.containsKey(scenarioName)) {
         return 0;
       }
 
-      return usageScenarioRates.get(scenarioName);
+      return scenarioRates.get(scenarioName);
     }
 
-    private void addScenarioDuration(RunResult runResult) {
-      synchronized (scenarioDurations) {
-        UsageScenario<T> scenario = loadTest.usageScenario(runResult.scenario());
-        scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(runResult.duration());
-        workRequestCounter++;
-        if (scenario.maximumTime() > 0 && runResult.duration() > scenario.maximumTime()) {
-          delayedWorkRequestCounter++;
-        }
+    private synchronized void addScenarioResults(Result result) {
+      Scenario<T> scenario = loadTest.scenario(result.scenario());
+      scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(result.duration());
+      if (result.successful()) {
+        scenarioRunCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
       }
+      else {
+        scenarioFailureCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
+        result.exception().ifPresent(exception -> {
+          List<Throwable> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
+          exceptions.add(exception);
+          if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
+            exceptions.remove(0);
+          }
+        });
+      }
+      workRequestCounter.incrementAndGet();
     }
 
-    private void updateRequestsPerSecond() {
+    private synchronized void updateRequestsPerSecond() {
       long current = System.currentTimeMillis();
       double elapsedSeconds = (current - time) / THOUSAND;
       if (elapsedSeconds > UPDATE_INTERVAL) {
-        usageScenarioAvgDurations.clear();
-        usageScenarioMinDurations.clear();
-        usageScenarioMaxDurations.clear();
-        workRequestsPerSecond = workRequestCounter / elapsedSeconds;
-        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
-        for (UsageScenario<T> scenario : loadTest.usageScenarios()) {
-          usageScenarioRates.put(scenario.name(), (int) (scenario.totalRunCount() / elapsedSeconds));
-          usageScenarioFailures.put(scenario.name(), scenario.unsuccessfulRunCount());
+        scenarioAvgDurations.clear();
+        scenarioMinDurations.clear();
+        scenarioMaxDurations.clear();
+        workRequestsPerSecond = workRequestCounter.get() / elapsedSeconds;
+        for (Scenario<T> scenario : loadTest.scenarios()) {
+          scenarioRates.put(scenario.name(), (int) (scenarioRunCounts.getOrDefault(scenario.name(), ZERO).get() / elapsedSeconds));
+          scenarioFailures.put(scenario.name(), scenarioFailureCounts.getOrDefault(scenario.name(), ZERO).get());
           calculateScenarioDuration(scenario);
         }
         resetCounters();
@@ -522,49 +469,44 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       }
     }
 
-    private void calculateScenarioDuration(UsageScenario<T> scenario) {
-      synchronized (scenarioDurations) {
-        Collection<Integer> durations = scenarioDurations.get(scenario.name());
-        if (!nullOrEmpty(durations)) {
-          int totalDuration = 0;
-          int minDuration = -1;
-          int maxDuration = -1;
-          for (Integer duration : durations) {
-            totalDuration += duration;
-            if (minDuration == -1) {
-              minDuration = duration;
-              maxDuration = duration;
-            }
-            else {
-              minDuration = Math.min(minDuration, duration);
-              maxDuration = Math.max(maxDuration, duration);
-            }
+    private void calculateScenarioDuration(Scenario<T> scenario) {
+      Collection<Integer> durations = scenarioDurations.get(scenario.name());
+      if (!nullOrEmpty(durations)) {
+        int totalDuration = 0;
+        int minDuration = -1;
+        int maxDuration = -1;
+        for (Integer duration : durations) {
+          totalDuration += duration;
+          if (minDuration == -1) {
+            minDuration = duration;
+            maxDuration = duration;
           }
-          usageScenarioAvgDurations.put(scenario.name(), totalDuration / durations.size());
-          usageScenarioMinDurations.put(scenario.name(), minDuration);
-          usageScenarioMaxDurations.put(scenario.name(), maxDuration);
+          else {
+            minDuration = Math.min(minDuration, duration);
+            maxDuration = Math.max(maxDuration, duration);
+          }
         }
+        scenarioAvgDurations.put(scenario.name(), totalDuration / durations.size());
+        scenarioMinDurations.put(scenario.name(), minDuration);
+        scenarioMaxDurations.put(scenario.name(), maxDuration);
       }
     }
 
-    private void resetCounters() {
-      for (UsageScenario<T> scenario : usageScenarios()) {
-        scenario.resetRunCount();
-      }
-      workRequestCounter = 0;
-      delayedWorkRequestCounter = 0;
-      synchronized (scenarioDurations) {
-        scenarioDurations.clear();
-      }
+    private synchronized void resetCounters() {
+      workRequestCounter.set(0);
+      scenarioDurations.clear();
+      scenarioRunCounts.clear();
+      scenarioFailureCounts.clear();
+      scenarioExceptions.clear();
     }
   }
 
-  private final class ApplicationItemSupplier implements Supplier<Collection<Application>> {
+  private final class ApplicationRowSupplier implements Supplier<Collection<ApplicationRow>> {
 
     @Override
-    public Collection<Application> get() {
+    public Collection<ApplicationRow> get() {
       return loadTest.applications().keySet().stream()
-              .map(DefaultApplication::new)
+              .map(DefaultApplicationRow::new)
               .collect(toList());
     }
   }
@@ -588,27 +530,18 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
   }
 
-  private static final class DefaultApplication implements Application {
+  private static final class DefaultApplicationRow implements ApplicationRow {
 
     private final ApplicationRunner applicationRunner;
-    private final List<RunResult> runResults;
     private final String user;
-    private final String scenario;
-    private final Boolean successful;
-    private final int duration;
-    private final Throwable exception;
     private final LocalDateTime created;
+    private final List<Result> results;
 
-    private DefaultApplication(ApplicationRunner applicationRunner) {
+    private DefaultApplicationRow(ApplicationRunner applicationRunner) {
       this.applicationRunner = applicationRunner;
-      this.runResults = applicationRunner.runResults();
-      RunResult runResult = runResults.isEmpty() ? null : runResults.get(runResults.size() - 1);
       this.user = applicationRunner.user().username();
-      this.scenario = runResult == null ? null : runResult.scenario();
-      this.successful = runResult == null ? null : runResult.successful();
-      this.duration = runResult == null ? -1 : runResult.duration();
-      this.exception = runResult == null ? null : runResult.exception().orElse(null);
       this.created = applicationRunner.created();
+      this.results = applicationRunner.results();
     }
 
     @Override
@@ -622,33 +555,13 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
 
     @Override
-    public String scenario() {
-      return scenario;
-    }
-
-    @Override
-    public Boolean successful() {
-      return successful;
-    }
-
-    @Override
-    public Integer duration() {
-      return duration == -1 ? null : duration;
-    }
-
-    @Override
-    public Throwable exception() {
-      return exception;
-    }
-
-    @Override
-    public String message() {
-      return exception == null ? null : exception.getMessage();
-    }
-
-    @Override
     public LocalDateTime created() {
       return created;
+    }
+
+    @Override
+    public List<Result> results() {
+      return results;
     }
 
     @Override
@@ -656,12 +569,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
       if (this == object) {
         return true;
       }
-      if (!(object instanceof DefaultApplication)) {
+      if (!(object instanceof DefaultLoadTestModel.DefaultApplicationRow)) {
         return false;
       }
-      DefaultApplication that = (DefaultApplication) object;
+      DefaultApplicationRow that = (DefaultApplicationRow) object;
 
-      return Objects.equals(applicationRunner, that.applicationRunner);
+      return applicationRunner == that.applicationRunner;
     }
 
     @Override
@@ -670,26 +583,29 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
     }
   }
 
-  private static final class ApplicationColumnValueProvider implements ColumnValueProvider<Application, Integer> {
+  private static final class ApplicationColumnValueProvider implements ColumnValueProvider<ApplicationRow, Integer> {
 
     @Override
-    public Object value(Application application, Integer columnIdentifier) {
+    public Object value(ApplicationRow application, Integer columnIdentifier) {
+      List<Result> results = application.results();
+      Result result = results.isEmpty() ? null : results.get(results.size() - 1);
+      Throwable exception = result == null ? null : result.exception().orElse(null);
       switch (columnIdentifier) {
-        case Application.NAME_INDEX:
+        case ApplicationRow.NAME_INDEX:
           return application.name();
-        case Application.USERNAME_INDEX:
+        case ApplicationRow.USERNAME_INDEX:
           return application.username();
-        case Application.SCENARIO_INDEX:
-          return application.scenario();
-        case Application.SUCCESSFUL_INDEX:
-          return application.successful();
-        case Application.DURATION_INDEX:
-          return application.duration();
-        case Application.EXCEPTION_INDEX:
-          return application.exception();
-        case Application.MESSAGE_INDEX:
-          return application.message();
-        case Application.CREATED_INDEX:
+        case ApplicationRow.SCENARIO_INDEX:
+          return result == null ? null : result.scenario();
+        case ApplicationRow.SUCCESSFUL_INDEX:
+          return result == null ? null : result.successful();
+        case ApplicationRow.DURATION_INDEX:
+          return result == null ? null : result.duration();
+        case ApplicationRow.EXCEPTION_INDEX:
+          return exception;
+        case ApplicationRow.MESSAGE_INDEX:
+          return exception == null ? null : exception.getMessage();
+        case ApplicationRow.CREATED_INDEX:
           return application.created();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);

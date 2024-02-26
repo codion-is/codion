@@ -18,21 +18,18 @@
  */
 package is.codion.framework.demos.employees.testing.scenarios;
 
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.model.EmployeesAppModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 
 // tag::loadTest[]
-public final class SelectDepartment extends AbstractEntityUsageScenario<EmployeesAppModel> {
+public final class SelectDepartment implements Performer<EmployeesAppModel> {
 
   @Override
-  protected void perform(EmployeesAppModel application) {
+  public void perform(EmployeesAppModel application) {
     selectRandomRow(application.entityModel(Department.TYPE).tableModel());
-  }
-
-  @Override
-  public int defaultWeight() {
-    return 10;
   }
 }
 // end::loadTest[]

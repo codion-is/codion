@@ -19,6 +19,8 @@
 package is.codion.framework.demos.petstore.testing;
 
 import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.domain.Petstore;
@@ -26,10 +28,10 @@ import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.function.Function;
 
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest {
@@ -59,14 +61,11 @@ public final class PetstoreLoadTest {
     }
   }
 
-  private static final class PetstoreUsageScenario extends AbstractEntityUsageScenario<PetstoreAppModel> {
-
-    private PetstoreUsageScenario() {
-      super("selectRecords");
-    }
+  private static final class PetstoreUsageScenario
+          implements Performer<PetstoreAppModel> {
 
     @Override
-    protected void perform(PetstoreAppModel application) throws Exception {
+    public void perform(PetstoreAppModel application) throws Exception {
       SwingEntityModel categoryModel = application.entityModels().iterator().next();
       categoryModel.tableModel().selectionModel().clearSelection();
       categoryModel.tableModel().refresh();
@@ -81,7 +80,9 @@ public final class PetstoreLoadTest {
             LoadTest.builder(new PetstoreAppModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
-                    .usageScenarios(singletonList(new PetstoreUsageScenario()))
+                    .scenarios(singletonList(Scenario.builder(new PetstoreUsageScenario())
+                            .name("selectRecords")
+                            .build()))
                     .titleFactory(model -> "Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

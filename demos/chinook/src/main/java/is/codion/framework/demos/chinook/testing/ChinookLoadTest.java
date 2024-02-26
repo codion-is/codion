@@ -19,7 +19,7 @@
 package is.codion.framework.demos.chinook.testing;
 
 import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.UsageScenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -48,9 +48,37 @@ public final class ChinookLoadTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Collection<UsageScenario<EntityConnectionProvider>> SCENARIOS =
-          asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(), new UpdateTotals(),
-                  new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices(),new RandomPlaylist(), new InsertDeleteInvoice());
+  private static final Collection<Scenario<EntityConnectionProvider>> SCENARIOS =
+          asList(Scenario.builder(new ViewGenre())
+                          .defaultWeight(10)
+                          .build(),
+                  Scenario.builder(new ViewCustomerReport())
+                          .defaultWeight(2)
+                          .build(),
+                  Scenario.builder(new ViewInvoice())
+                          .defaultWeight(10)
+                          .build(),
+                  Scenario.builder(new ViewAlbum())
+                          .defaultWeight(10)
+                          .build(),
+                  Scenario.builder(new UpdateTotals())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new InsertDeleteAlbum())
+                          .defaultWeight(3)
+                          .build(),
+                  Scenario.builder(new LogoutLogin())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new RaisePrices())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new RandomPlaylist())
+                          .defaultWeight(1)
+                          .build(),
+                  Scenario.builder(new InsertDeleteInvoice())
+                          .defaultWeight(3)
+                          .build());
 
   private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
 
@@ -71,7 +99,7 @@ public final class ChinookLoadTest {
   public static void main(String[] args) {
     LoadTest<EntityConnectionProvider> loadTest =
             LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
-                    .usageScenarios(SCENARIOS)
+                    .scenarios(SCENARIOS)
                     .user(UNIT_TEST_USER)
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

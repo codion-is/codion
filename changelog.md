@@ -2,6 +2,12 @@ Codion Change Log
 ==================
 
 ## 0.17.30-SNAPSHOT
+### is.codion.common.model
+- LoadTest, refactoring and renaming.
+- UsageScenario renamed Scenario and moved to LoadTest.
+- AbstractScenario, run counting removed.
+- LoadTest.Scenario.maximumTime() removed.
+- LoadTest.Scenario.Builder introduced along with LoadTest.Performer, AbstractScenario removed, related refactoring.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.
@@ -10,6 +16,11 @@ Codion Change Log
 - DomainGeneratorModel, table type column moved.
 - EntityLoadTestModel removed.
 - LoadTest extracted from LoadTestModel and moved to common.model.loadtest, related refactoring.
+- LoadTestModel, refactoring and renaming.
+- LoadTestModel no longer extends LoadTest.
+- LoadTestModel now handles all counting runs.
+- LoadTestModel no longer counts runs exceeding maximum scenario time.
+- AbstractEntityPerformer replaced with EntityLoadTestUtil.
 
 ## 0.17.29
 ### is.codion.common.db

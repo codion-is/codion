@@ -19,6 +19,7 @@
 package is.codion.framework.demos.employees.testing;
 
 import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.employees.domain.Employees;
@@ -72,8 +73,22 @@ public final class EmployeesLoadTest {
             LoadTest.builder(new EmployeesAppModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
-                    .usageScenarios(asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
-                            new SelectDepartment(), new UpdateEmployee()))
+                    .scenarios(asList(
+                            Scenario.builder(new InsertDepartment())
+                                    .defaultWeight(1)
+                                    .build(),
+                            Scenario.builder(new InsertEmployee())
+                                    .defaultWeight(3)
+                                    .build(),
+                            Scenario.builder(new LoginLogout())
+                                    .defaultWeight(4)
+                                    .build(),
+                            Scenario.builder(new SelectDepartment())
+                                    .defaultWeight(10)
+                                    .build(),
+                            Scenario.builder(new UpdateEmployee())
+                                    .defaultWeight(5)
+                                    .build()))
                     .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();

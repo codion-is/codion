@@ -19,6 +19,8 @@
 package is.codion.framework.demos.manual.store.test;
 
 import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
+import is.codion.common.model.loadtest.LoadTest.Scenario.Performer;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
@@ -28,10 +30,10 @@ import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.function.Function;
 
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.selectRandomRow;
 import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
@@ -52,11 +54,11 @@ public class StoreLoadTest {
     }
   }
 
-  private static class UsageScenario extends
-          AbstractEntityUsageScenario<StoreApplicationModel> {
+  private static class StoreScenarioPerformer
+          implements Performer<StoreApplicationModel> {
 
     @Override
-    protected void perform(StoreApplicationModel application) {
+    public void perform(StoreApplicationModel application) {
       SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
       customerModel.tableModel().refresh();
       selectRandomRow(customerModel.tableModel());
@@ -68,7 +70,7 @@ public class StoreLoadTest {
             LoadTest.builder(new StoreApplicationModelFactory(),
                             application -> application.connectionProvider().close())
                     .user(User.parse("scott:tiger"))
-                    .usageScenarios(singletonList(new UsageScenario()))
+                    .scenarios(singletonList(Scenario.builder(new StoreScenarioPerformer()).build()))
                     .titleFactory(model -> "Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
