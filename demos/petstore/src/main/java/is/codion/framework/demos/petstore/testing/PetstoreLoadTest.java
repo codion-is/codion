@@ -68,7 +68,7 @@ public final class PetstoreLoadTest {
                     .scenarios(singletonList(Scenario.builder(new PetstoreUsageScenario())
                             .name("selectRecords")
                             .build()))
-                    .titleFactory(model -> "Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+                    .name("Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     loadTestPanel(loadTestModel(loadTest)).run();
   }

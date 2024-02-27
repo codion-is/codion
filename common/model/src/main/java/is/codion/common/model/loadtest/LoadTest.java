@@ -46,9 +46,9 @@ public interface LoadTest<T> {
   Value<User> user();
 
   /**
-   * @return the load test title
+   * @return the load test name, or an empty Optional if none is available
    */
-  String title();
+  Optional<String> name();
 
   /**
    * Sets the random chooser weight for the given scenario
@@ -197,10 +197,10 @@ public interface LoadTest<T> {
     Builder<T> scenarios(Collection<? extends Scenario<T>> scenarios);
 
     /**
-     * @param titleFactory the title factory
+     * @param name the load test name
      * @return this builder
      */
-    Builder<T> titleFactory(Function<LoadTest<T>, String> titleFactory);
+    Builder<T> name(String name);
 
     /**
      * @return a new load test instance

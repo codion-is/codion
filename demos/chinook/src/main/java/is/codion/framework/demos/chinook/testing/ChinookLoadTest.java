@@ -67,6 +67,7 @@ public final class ChinookLoadTest {
             LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
                     .scenarios(SCENARIOS)
                     .user(UNIT_TEST_USER)
+                    .name("Chinook LoadTest " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     loadTestPanel(loadTestModel(loadTest)).run();
   }

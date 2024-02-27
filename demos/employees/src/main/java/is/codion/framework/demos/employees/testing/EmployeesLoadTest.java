@@ -64,7 +64,7 @@ public final class EmployeesLoadTest {
                             scenario(new LoginLogout(), 4),
                             scenario(new SelectDepartment(), 10),
                             scenario(new UpdateEmployee(), 5)))
-                    .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+                    .name("Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     loadTestPanel(loadTestModel(loadTest)).run();
   }

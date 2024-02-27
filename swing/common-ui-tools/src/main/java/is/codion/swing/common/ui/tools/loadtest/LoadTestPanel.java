@@ -78,6 +78,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
   private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
+  private static final String DEFAULT_TITLE = "Codion LoadTest";
 
   private final LoadTestModel<T> loadTestModel;
   private final LoadTest<T> loadTest;
@@ -132,7 +133,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return frame(this)
             .icon(logoTransparent())
             .menuBar(menu(createMainMenuControls()).createMenuBar())
-            .title("Codion - " + loadTest.title())
+            .title(loadTest.name().orElse(DEFAULT_TITLE))
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
             .onClosing(windowEvent -> exit())
             .size(screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))

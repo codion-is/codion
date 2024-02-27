@@ -56,7 +56,7 @@ public class StoreLoadTest {
                             application -> application.connectionProvider().close())
                     .user(User.parse("scott:tiger"))
                     .scenarios(singletonList(scenario(new StoreScenarioPerformer())))
-                    .titleFactory(model -> "Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+                    .name("Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
     loadTestPanel(loadTestModel(loadTest)).run();
   }
