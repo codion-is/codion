@@ -325,6 +325,7 @@ Codion Change Log
 ### is.codion.swing.framework.model.tools
 - DatabaseDomain, DomainToString, no longer sets the maximum column size for TEXT columns.
 - MetaDataModel, DomainGeneratorModel, catalog now available for schemas.
+- DatabaseDomain, DomainGeneratorModel, some refactoring.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, table status message now indicates whether the result is limited.
 - EntityTablePanel.INCLUDE_CONDITION_PANEL added.

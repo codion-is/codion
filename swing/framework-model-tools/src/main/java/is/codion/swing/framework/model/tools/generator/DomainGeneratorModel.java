@@ -10,13 +10,13 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 import is.codion.swing.framework.model.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 
 import javax.swing.SortOrder;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.common.Separators.LINE_SEPARATOR;
-import static is.codion.framework.domain.DomainType.domainType;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -78,15 +77,15 @@ public final class DomainGeneratorModel {
     catch (Exception ignored) {/*ignored*/}
   }
 
-  private void bindEvents() {
-    schemaTableModel.selectionModel().addSelectionListener(definitionTableModel::refresh);
-    definitionTableModel.selectionModel().addSelectionListener(this::updateCodeValue);
-  }
-
   public void populateSelected(Consumer<String> schemaNotifier) {
     schemaTableModel.selectionModel().getSelectedItems().forEach(schema ->
             metaDataModel.populateSchema(schema.name(), schemaNotifier));
     definitionTableModel.refresh();
+  }
+
+  private void bindEvents() {
+    schemaTableModel.selectionModel().addSelectionListener(definitionTableModel::refresh);
+    definitionTableModel.selectionModel().addSelectionListener(this::updateCodeValue);
   }
 
   /**
@@ -107,6 +106,7 @@ public final class DomainGeneratorModel {
   }
 
   private static final class SchemaColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+
     @Override
     public List<FilteredTableColumn<Integer>> createColumns() {
       FilteredTableColumn<Integer> catalogColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.CATALOG)
@@ -127,6 +127,7 @@ public final class DomainGeneratorModel {
   }
 
   private static final class DefinitionColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+
     @Override
     public List<FilteredTableColumn<Integer>> createColumns() {
       FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.DOMAIN)
@@ -147,26 +148,25 @@ public final class DomainGeneratorModel {
     }
   }
 
-  private static Collection<DefinitionRow> createDomainDefinitions(MetaDataSchema schema) {
-    DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
-
-    return domain.entities().definitions().stream()
-            .map(definition -> new DefinitionRow(definition, domain.tableType(definition.entityType())))
-            .collect(toList());
-  }
-
   private final class DefinitionItemSupplier implements Supplier<Collection<DefinitionRow>> {
 
     @Override
     public Collection<DefinitionRow> get() {
-      Collection<DefinitionRow> items = new ArrayList<>();
-      schemaTableModel.selectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
+      return schemaTableModel.selectionModel().getSelectedItems().stream()
+              .flatMap(schema -> createDefinitionRows(schema).stream())
+              .collect(toList());
+    }
 
-      return items;
+    private Collection<DefinitionRow> createDefinitionRows(MetaDataSchema schema) {
+      DatabaseDomain domain = new DatabaseDomain(schema);
+
+      return domain.entities().definitions().stream()
+              .map(definition -> new DefinitionRow(definition, domain.tableType(definition.entityType())))
+              .collect(toList());
     }
   }
 
-  private static final class SchemaColumnValueProvider implements FilteredTableModel.ColumnValueProvider<MetaDataSchema, Integer> {
+  private static final class SchemaColumnValueProvider implements ColumnValueProvider<MetaDataSchema, Integer> {
 
     private static final int CATALOG = 0;
     private static final int SCHEMA = 1;
@@ -187,7 +187,7 @@ public final class DomainGeneratorModel {
     }
   }
 
-  private static final class DefinitionColumnValueProvider implements FilteredTableModel.ColumnValueProvider<DefinitionRow, Integer> {
+  private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
 
     private static final int DOMAIN = 0;
     private static final int ENTITY = 1;
