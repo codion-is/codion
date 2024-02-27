@@ -12,6 +12,10 @@ import java.sql.Statement;
 
 final class IdentityKeyGenerator implements KeyGenerator {
 
+  static final KeyGenerator INSTANCE = new IdentityKeyGenerator();
+
+  private IdentityKeyGenerator() {}
+
   @Override
   public boolean inserted() {
     return false;

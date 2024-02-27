@@ -97,11 +97,11 @@ public interface KeyGenerator {
   }
 
   /**
-   * Instantiates a primary key generator based on an IDENTITY type column.
+   * Returns a primary key generator based on an IDENTITY type column.
    * @return a generated primary key generator
    * @see Statement#getGeneratedKeys()
    */
   static KeyGenerator identity() {
-    return new IdentityKeyGenerator();
+    return IdentityKeyGenerator.INSTANCE;
   }
 }
