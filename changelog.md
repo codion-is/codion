@@ -335,6 +335,7 @@ Codion Change Log
 - EntityComboBox.forceRefresh() removed.
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
+- DatabaseExplorerPanel, column selection and auto-resize popup menu controls added.
 
 ## 0.17.19
 ### is.codion.common.db
