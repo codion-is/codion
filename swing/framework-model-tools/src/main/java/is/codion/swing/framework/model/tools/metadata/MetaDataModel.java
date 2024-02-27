@@ -46,19 +46,11 @@ public final class MetaDataModel {
 
   private static Map<String, MetaDataSchema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
     Map<String, MetaDataSchema> schemas = new HashMap<>();
-    try (ResultSet resultSet = metaData.getCatalogs()) {
-      while (resultSet.next()) {
-        String tableCat = resultSet.getString("TABLE_CAT");
-        if (tableCat != null) {
-          schemas.put(tableCat, new MetaDataSchema(tableCat));
-        }
-      }
-    }
     try (ResultSet resultSet = metaData.getSchemas()) {
       while (resultSet.next()) {
         String tableSchem = resultSet.getString("TABLE_SCHEM");
         if (tableSchem != null) {
-          schemas.put(tableSchem, new MetaDataSchema(tableSchem));
+          schemas.put(tableSchem, new MetaDataSchema(tableSchem, resultSet.getString("TABLE_CATALOG")));
         }
       }
     }

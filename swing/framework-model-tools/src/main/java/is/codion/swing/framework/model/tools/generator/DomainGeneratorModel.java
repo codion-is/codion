@@ -47,7 +47,7 @@ public final class DomainGeneratorModel {
       this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValueProvider())
               .itemSupplier(metaDataModel::schemas)
               .build();
-      this.schemaTableModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
+      this.schemaTableModel.sortModel().setSortOrder(SchemaColumnValueProvider.SCHEMA, SortOrder.ASCENDING);
       this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValueProvider())
               .itemSupplier(new DefinitionItemSupplier())
               .build();
@@ -109,6 +109,10 @@ public final class DomainGeneratorModel {
   private static final class SchemaColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
     @Override
     public List<FilteredTableColumn<Integer>> createColumns() {
+      FilteredTableColumn<Integer> catalogColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.CATALOG)
+              .headerValue("Catalog")
+              .columnClass(String.class)
+              .build();
       FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.SCHEMA)
               .headerValue("Schema")
               .columnClass(String.class)
@@ -118,7 +122,7 @@ public final class DomainGeneratorModel {
               .columnClass(Boolean.class)
               .build();
 
-      return asList(schemaColumn, populatedColumn);
+      return asList(catalogColumn, schemaColumn, populatedColumn);
     }
   }
 
@@ -164,12 +168,15 @@ public final class DomainGeneratorModel {
 
   private static final class SchemaColumnValueProvider implements FilteredTableModel.ColumnValueProvider<MetaDataSchema, Integer> {
 
-    private static final int SCHEMA = 0;
-    private static final int POPULATED = 1;
+    private static final int CATALOG = 0;
+    private static final int SCHEMA = 1;
+    private static final int POPULATED = 2;
 
     @Override
     public Object value(MetaDataSchema row, Integer columnIdentifier) {
       switch (columnIdentifier) {
+        case CATALOG:
+          return row.catalog();
         case SCHEMA:
           return row.name();
         case POPULATED:

@@ -42,8 +42,8 @@ public final class DomainGeneratorModelTest {
   void setUp() throws Exception {
     model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
     model.schemaModel().refresh();
-    model.schemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
-    model.schemaModel().selectionModel().setSelectedIndex(2);
+    model.schemaModel().sortModel().setSortOrder(1, SortOrder.ASCENDING);
+    model.schemaModel().selectionModel().setSelectedIndex(1);
     model.populateSelected(schema -> {});
     model.definitionModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
     model.definitionModel().sortModel().addSortOrder(1, SortOrder.ASCENDING);
