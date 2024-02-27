@@ -8,9 +8,15 @@ Codion Change Log
 - AbstractScenario, run counting removed.
 - LoadTest.Scenario.maximumTime() removed.
 - LoadTest.Scenario.Builder introduced along with LoadTest.Performer, AbstractScenario removed, related refactoring.
+- LoadTest.Scenario, couple of scenario() factory methods added.
+- LoadTest.title() renamed name(), related refactoring.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.
+### is.codion.swing.common.ui.tools
+- LoadTestPanel.loadTestPanel() factory method added, constructor now private.
+### is.codion.framework.domain
+- IdentityKeyGenerator now a singleton.
 ### is.codion.swing.framework.model.tools
 - DomainToString bug fixed, now handles the mapping from an unknown column data type to an object based Column correctly, DatabaseDomain some renaming.
 - DomainGeneratorModel, table type column moved.
@@ -321,6 +327,8 @@ Codion Change Log
 - EntityComboBoxModel.staticData() removed along with forceRefresh().
 ### is.codion.swing.framework.model.tools
 - DatabaseDomain, DomainToString, no longer sets the maximum column size for TEXT columns.
+- MetaDataModel, DomainGeneratorModel, catalog now available for schemas.
+- DatabaseDomain, DomainGeneratorModel, some refactoring.
 ### is.codion.swing.framework.ui
 - EntityTablePanel, table status message now indicates whether the result is limited.
 - EntityTablePanel.INCLUDE_CONDITION_PANEL added.
@@ -331,6 +339,7 @@ Codion Change Log
 - EntityComboBox.forceRefresh() removed.
 ### is.codion.swing.framework.ui.tools
 - DatabaseExplorerPanel, schema having been populated no longer prevents it from being repopulated, in case of changes, popup menu added to schema table.
+- DatabaseExplorerPanel, column selection and auto-resize popup menu controls added.
 
 ## 0.17.19
 ### is.codion.common.db

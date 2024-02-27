@@ -19,7 +19,6 @@
 package is.codion.swing.framework.model.tools.generator;
 
 import is.codion.framework.domain.DefaultDomain;
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -29,6 +28,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.tools.metadata.MetaDataColumn;
 import is.codion.swing.framework.model.tools.metadata.MetaDataForeignKeyConstraint;
+import is.codion.swing.framework.model.tools.metadata.MetaDataSchema;
 import is.codion.swing.framework.model.tools.metadata.MetaDataTable;
 
 import java.sql.DatabaseMetaData;
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -49,10 +50,10 @@ final class DatabaseDomain extends DefaultDomain {
 
   private final Map<MetaDataTable, EntityType> tableEntityTypes = new HashMap<>();
 
-  DatabaseDomain(DomainType domainType, Collection<MetaDataTable> tables) {
-    super(domainType);
+  DatabaseDomain(MetaDataSchema schema) {
+    super(domainType(schema.name()));
     setStrictForeignKeys(false);
-    tables.forEach(this::defineEntity);
+    schema.tables().values().forEach(this::defineEntity);
   }
 
   String tableType(EntityType entityType) {

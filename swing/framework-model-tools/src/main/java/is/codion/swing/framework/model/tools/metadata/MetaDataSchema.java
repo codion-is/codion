@@ -35,17 +35,23 @@ import static java.util.stream.Collectors.toMap;
 
 public final class MetaDataSchema {
 
+  private final String catalog;
   private final String name;
   private final Map<String, MetaDataTable> tables = new HashMap<>();
 
   private boolean populated = false;
 
-  MetaDataSchema(String name) {
+  MetaDataSchema(String name, String catalog) {
     this.name = requireNonNull(name);
+    this.catalog = catalog;
   }
 
   public String name() {
     return name;
+  }
+
+  public String catalog() {
+    return catalog;
   }
 
   public Map<String, MetaDataTable> tables() {

@@ -20,9 +20,10 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.loadtest.LoadTest;
+import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.tools.loadtest.QueryLoadTestModel.QueryApplication;
+import is.codion.swing.common.model.tools.loadtest.QueryLoadTestModel.QueryPerformer;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,12 +39,12 @@ public final class QueryLoadTestModelTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final LoadTest.Scenario<QueryApplication> SELECT_EMPLOYEE =
-          LoadTest.Scenario.builder(new QueryLoadTestModel.QueryPerformer(UNIT_TEST_USER, "select * from employees.employee where ename not like ?"))
+  private static final Scenario<QueryApplication> SELECT_EMPLOYEE =
+          Scenario.builder(new QueryPerformer(UNIT_TEST_USER, "select * from employees.employee where ename not like ?"))
                   .name("selectEmployees")
                   .build();
-  private static final LoadTest.Scenario<QueryApplication> SELECT_DEPARTMENTS =
-          LoadTest.Scenario.builder(new QueryLoadTestModel.QueryPerformer(UNIT_TEST_USER, "select * from employees.department", true))
+  private static final Scenario<QueryApplication> SELECT_DEPARTMENTS =
+          Scenario.builder(new QueryPerformer(UNIT_TEST_USER, "select * from employees.department", true))
                   .name("selectDepartments")
                   .build();
 

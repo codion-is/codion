@@ -83,12 +83,17 @@ public final class DomainGeneratorPanel extends JPanel {
                     .keyEvent(KeyEvents.builder(VK_ENTER)
                             .modifiers(InputEvent.CTRL_DOWN_MASK)
                             .action(populateSchemaControl))
-                    .popupMenuControl(table -> populateSchemaControl)
+                    .popupMenuControls(table -> Controls.builder()
+                            .control(populateSchemaControl)
+                            .control(createToggleColumnsControls(table))
+                            .controls(table.createAutoResizeModeControl())
+                            .build())
                     .build();
 
     FilteredTable<DefinitionRow, Integer> domainTable =
             FilteredTable.builder(model.definitionModel())
                     .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+                    .popupMenuControl(FilteredTable::createAutoResizeModeControl)
                     .build();
 
     JSplitPane schemaTableSplitPane = splitPane()
@@ -168,6 +173,13 @@ public final class DomainGeneratorPanel extends JPanel {
                             .userPreferencePropertyName(DomainGeneratorPanel.class.getName())
                             .createControl()))
             .build();
+  }
+
+  private static Control createToggleColumnsControls(FilteredTable<MetaDataSchema, Integer> table) {
+    Controls toggleColumnsControls = table.createToggleColumnsControls();
+    toggleColumnsControls.setName("Columns...");
+
+    return toggleColumnsControls;
   }
 
   /**

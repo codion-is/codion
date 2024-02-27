@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +69,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   private final Event<?> shutdownEvent = Event.event();
   private final Event<Result> resultEvent = Event.event();
 
+  private final String name;
   private final Value<User> user;
 
   private final Map<ApplicationRunner, T> applications = new HashMap<>();
@@ -75,12 +77,11 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   private final ItemRandomizer<Scenario<T>> scenarioChooser;
   private final ScheduledExecutorService scheduledExecutor =
           newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
-  private final Function<LoadTest<T>, String> titleFactory;
 
   DefaultLoadTest(DefaultBuilder<T> builder) {
     this.applicationFactory = builder.applicationFactory;
     this.closeApplication = builder.closeApplication;
-    this.titleFactory = builder.titleFactory;
+    this.name = builder.name;
     this.user = Value.value(builder.user, builder.user);
     this.loginDelayFactor = Value.value(builder.loginDelayFactor, builder.loginDelayFactor);
     this.applicationBatchSize = Value.value(builder.applicationBatchSize, builder.applicationBatchSize);
@@ -101,8 +102,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   }
 
   @Override
-  public String title() {
-    return titleFactory.apply(this);
+  public Optional<String> name() {
+    return Optional.ofNullable(name);
   }
 
   @Override
@@ -374,12 +375,12 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
     private final List<Scenario<T>> scenarios = new ArrayList<>();
     private final Consumer<T> closeApplication;
 
+    private String name;
     private User user;
     private int minimumThinkTime = DEFAULT_MINIMUM_THINKTIME;
     private int maximumThinkTime = DEFAULT_MAXIMUM_THINKTIME;
     private int loginDelayFactor = DEFAULT_LOGIN_DELAY_FACTOR;
     private int applicationBatchSize = DEFAULT_APPLICATION_BATCH_SIZE;
-    private Function<LoadTest<T>, String> titleFactory = new DefaultTitleFactory<>();
 
     DefaultBuilder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
       this.applicationFactory = requireNonNull(applicationFactory);
@@ -441,21 +442,14 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
     }
 
     @Override
-    public Builder<T> titleFactory(Function<LoadTest<T>, String> titleFactory) {
-      this.titleFactory = requireNonNull(titleFactory);
+    public Builder<T> name(String name) {
+      this.name = requireNonNull(name);
       return this;
     }
 
     @Override
     public LoadTest<T> build() {
       return new DefaultLoadTest<>(this);
-    }
-
-    private static final class DefaultTitleFactory<T> implements Function<LoadTest<T>, String> {
-      @Override
-      public String apply(LoadTest<T> loadTest) {
-        return loadTest.getClass().getSimpleName();
-      }
     }
   }
 

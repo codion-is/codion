@@ -19,7 +19,6 @@
 package is.codion.framework.demos.employees.testing;
 
 import is.codion.common.model.loadtest.LoadTest;
-import is.codion.common.model.loadtest.LoadTest.Scenario;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.employees.domain.Employees;
@@ -31,12 +30,13 @@ import is.codion.framework.demos.employees.testing.scenarios.InsertEmployee;
 import is.codion.framework.demos.employees.testing.scenarios.LoginLogout;
 import is.codion.framework.demos.employees.testing.scenarios.SelectDepartment;
 import is.codion.framework.demos.employees.testing.scenarios.UpdateEmployee;
-import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
-import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.function.Function;
 
+import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
+import static is.codion.swing.common.ui.tools.loadtest.LoadTestPanel.loadTestPanel;
 import static java.util.Arrays.asList;
 
 // tag::loadTest[]
@@ -74,24 +74,14 @@ public final class EmployeesLoadTest {
                             application -> application.connectionProvider().close())
                     .user(UNIT_TEST_USER)
                     .scenarios(asList(
-                            Scenario.builder(new InsertDepartment())
-                                    .defaultWeight(1)
-                                    .build(),
-                            Scenario.builder(new InsertEmployee())
-                                    .defaultWeight(3)
-                                    .build(),
-                            Scenario.builder(new LoginLogout())
-                                    .defaultWeight(4)
-                                    .build(),
-                            Scenario.builder(new SelectDepartment())
-                                    .defaultWeight(10)
-                                    .build(),
-                            Scenario.builder(new UpdateEmployee())
-                                    .defaultWeight(5)
-                                    .build()))
-                    .titleFactory(model -> "Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+                            scenario(new InsertDepartment(), 1),
+                            scenario(new InsertEmployee(), 3),
+                            scenario(new LoginLogout(), 4),
+                            scenario(new SelectDepartment(), 10),
+                            scenario(new UpdateEmployee(), 5)))
+                    .name("Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
                     .build();
-    new LoadTestPanel<>(LoadTestModel.loadTestModel(loadTest)).run();
+    loadTestPanel(loadTestModel(loadTest)).run();
   }
 }
 // end::loadTest[]

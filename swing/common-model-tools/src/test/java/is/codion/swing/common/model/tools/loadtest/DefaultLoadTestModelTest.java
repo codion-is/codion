@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.model.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.swing.common.model.tools.loadtest.LoadTestModel.loadTestModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +37,7 @@ public class DefaultLoadTestModelTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Scenario<Object> SCENARIO = Scenario.builder(new Performer<Object>() {
+  private static final Scenario<Object> SCENARIO = scenario(new Performer<Object>() {
     int counter = 0;
     @Override
     public void perform(Object application) throws Exception {
@@ -43,9 +45,9 @@ public class DefaultLoadTestModelTest {
         throw new Exception();
       }
     }
-  }).build();
+  });
 
-  private static final Scenario<Object> SCENARIO_II = Scenario.builder(application -> {}).build();
+  private static final Scenario<Object> SCENARIO_II = scenario(application -> {});
 
   @Test
   void test() throws Exception {
@@ -57,7 +59,7 @@ public class DefaultLoadTestModelTest {
             .loginDelayFactor(2)
             .applicationBatchSize(2)
             .build();
-    LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
+    LoadTestModel<Object> model = loadTestModel(loadTest);
     assertEquals(2, loadTest.applicationBatchSize().get());
     model.collectChartData().set(true);
 
@@ -123,7 +125,7 @@ public class DefaultLoadTestModelTest {
     LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
             .user(User.user("test"))
             .build();
-    LoadTestModel<Object> model = LoadTestModel.loadTestModel(loadTest);
+    LoadTestModel<Object> model = loadTestModel(loadTest);
     assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 }
