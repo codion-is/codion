@@ -93,19 +93,16 @@ public final class Employees extends DefaultDomain {
             Department.DEPARTMENT_NO.define()
                     .primaryKey()
                     .caption("No.")
-                    .nullable(false)
-                    .beanProperty("departmentNo"),
+                    .nullable(false),
             Department.NAME.define()
                     .column()
                     .caption("Name")
                     .maximumLength(14)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Department.LOCATION.define()
                     .column()
                     .caption("Location")
-                    .maximumLength(13)
-                    .beanProperty("location"))
+                    .maximumLength(13))
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
@@ -118,51 +115,43 @@ public final class Employees extends DefaultDomain {
     /*Defining the entity Employee.TYPE*/
     add(Employee.TYPE.define(
             Employee.ID.define()
-                    .primaryKey()
-                    .beanProperty("id"),
+                    .primaryKey(),
             Employee.NAME.define()
                     .column()
                     .caption("Name")
                     .searchable(true)
                     .maximumLength(10)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Employee.DEPARTMENT.define()
                     .column()
                     .nullable(false),
             Employee.DEPARTMENT_FK.define()
                     .foreignKey()
-                    .caption("Department")
-                    .beanProperty("department"),
+                    .caption("Department"),
             Employee.JOB.define()
                     .column()
                     .caption("Job")
-                    .items(Employee.JOB_VALUES)
-                    .beanProperty("job"),
+                    .items(Employee.JOB_VALUES),
             Employee.SALARY.define()
                     .column()
                     .caption("Salary")
                     .nullable(false)
                     .valueRange(900, 10000)
-                    .maximumFractionDigits(2)
-                    .beanProperty("salary"),
+                    .maximumFractionDigits(2),
             Employee.COMMISSION.define()
                     .column()
                     .caption("Commission")
                     .valueRange(100, 2000)
-                    .maximumFractionDigits(2)
-                    .beanProperty("commission"),
+                    .maximumFractionDigits(2),
             Employee.MANAGER_ID.define()
                     .column(),
             Employee.MANAGER_FK.define()
                     .foreignKey()
-                    .caption("Manager")
-                    .beanProperty("manager"),
+                    .caption("Manager"),
             Employee.HIREDATE.define()
                     .column()
                     .caption("Hiredate")
                     .nullable(false)
-                    .beanProperty("hiredate")
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDash()
                             .yearFourDigits()

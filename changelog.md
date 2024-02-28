@@ -18,6 +18,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - IdentityKeyGenerator now a singleton.
 - EntityInvoker removed.
+- AttributeDefinition.beanProperty() removed.
 ### is.codion.swing.framework.model.tools
 - DomainToString bug fixed, now handles the mapping from an unknown column data type to an object based Column correctly, DatabaseDomain some renaming.
 - DomainGeneratorModel, table type column moved.

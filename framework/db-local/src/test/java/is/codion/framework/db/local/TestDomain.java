@@ -100,20 +100,17 @@ public final class TestDomain extends DefaultDomain {
                     .primaryKey()
                     .caption(Department.DEPTNO.name())
                     .updatable(true)
-                    .nullable(false)
-                    .beanProperty("id"),
+                    .nullable(false),
             Department.DNAME.define()
                     .column()
                     .caption(Department.DNAME.name())
                     .searchable(true)
                     .maximumLength(14)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Department.LOC.define()
                     .column()
                     .caption(Department.LOC.name())
-                    .maximumLength(13)
-                    .beanProperty("location"),
+                    .maximumLength(13),
             Department.ACTIVE.define()
                     .attribute(),
             Department.DATA.define()
