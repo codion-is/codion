@@ -172,14 +172,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entities);
     }
   }
 
   @Override
-  public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws RemoteException, DatabaseException {
+  public Collection<Entity> insertSelect(Collection<Entity> entities) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insertSelect(entities);
     }
@@ -200,14 +200,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void update(Collection<? extends Entity> entities) throws RemoteException, DatabaseException {
+  public void update(Collection<Entity> entities) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.update(entities);
     }
   }
 
   @Override
-  public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.updateSelect(entities);
     }
@@ -305,7 +305,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.dependencies(entities);
     }

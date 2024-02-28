@@ -116,12 +116,12 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
   }
 
   @Override
-  public Condition in(Collection<? extends Entity> values) {
+  public Condition in(Collection<Entity> values) {
     return factory(this).in(values);
   }
 
   @Override
-  public Condition notIn(Collection<? extends Entity> values) {
+  public Condition notIn(Collection<Entity> values) {
     return factory(this).notIn(values);
   }
 

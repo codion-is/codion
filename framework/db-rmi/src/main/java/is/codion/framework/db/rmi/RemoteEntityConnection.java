@@ -172,7 +172,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Entity.Key> insert(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Inserts the given entities, returning the inserted entities.
@@ -182,7 +182,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Entity> insertSelect(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values. Returns the updated entity.
@@ -217,7 +217,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  void update(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  void update(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
@@ -228,7 +228,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Entity> updateSelect(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Performs an update based on the given update, updating the columns found
@@ -381,7 +381,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Counts the number of rows returned based on the given count conditions

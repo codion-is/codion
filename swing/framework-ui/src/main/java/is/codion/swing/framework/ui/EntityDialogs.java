@@ -129,7 +129,7 @@ public final class EntityDialogs {
      * Displays a dialog for editing the given entities
      * @param entities the entities to edit
      */
-    void edit(Collection<? extends Entity> entities);
+    void edit(Collection<Entity> entities);
 
     /**
      * Handles performing the actual update when entities are edited.
@@ -220,7 +220,7 @@ public final class EntityDialogs {
     }
 
     @Override
-    public void edit(Collection<? extends Entity> entities) {
+    public void edit(Collection<Entity> entities) {
       Set<EntityType> entityTypes = requireNonNull(entities).stream()
               .map(Entity::entityType)
               .collect(toSet());

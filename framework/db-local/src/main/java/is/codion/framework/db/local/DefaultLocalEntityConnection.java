@@ -211,7 +211,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
+  public Collection<Key> insert(Collection<Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
@@ -220,7 +220,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
@@ -241,12 +241,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void update(Collection<? extends Entity> entities) throws DatabaseException {
+  public void update(Collection<Entity> entities) throws DatabaseException {
     update(entities, null);
   }
 
   @Override
-  public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
@@ -511,7 +511,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
     Set<EntityType> entityTypes = requireNonNull(entities, ENTITIES).stream()
             .map(Entity::entityType)
             .collect(toSet());
@@ -675,7 +675,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.defaultQueryTimeout = defaultQueryTimeout;
   }
 
-  private Collection<Key> insert(Collection<? extends Entity> entities, Collection<Entity> insertedEntities) throws DatabaseException {
+  private Collection<Key> insert(Collection<Entity> entities, Collection<Entity> insertedEntities) throws DatabaseException {
     throwIfReadOnly(entities);
 
     List<Key> insertedKeys = new ArrayList<>(entities.size());
@@ -727,7 +727,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void update(Collection<? extends Entity> entities, List<Entity> updatedEntities) throws DatabaseException {
+  private void update(Collection<Entity> entities, List<Entity> updatedEntities) throws DatabaseException {
     Map<EntityType, List<Entity>> entitiesByEntityType = mapToType(entities);
     throwIfReadOnly(entitiesByEntityType.keySet());
 
@@ -1275,7 +1275,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void throwIfReadOnly(Collection<? extends Entity> entities) throws DatabaseException {
+  private void throwIfReadOnly(Collection<Entity> entities) throws DatabaseException {
     for (Entity entity : entities) {
       throwIfReadOnly(entity.entityType());
     }

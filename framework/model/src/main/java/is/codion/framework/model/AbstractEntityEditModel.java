@@ -277,7 +277,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(Collection<? extends Entity> entities) throws ValidationException {
+  public final void validate(Collection<Entity> entities) throws ValidationException {
     for (Entity entityToValidate : requireNonNull(entities)) {
       validate(entityToValidate);
     }
@@ -313,7 +313,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
+  public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
@@ -336,7 +336,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
+  public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
@@ -371,7 +371,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
+  public final void delete(Collection<Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return;
     }
@@ -570,7 +570,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Entity> insert(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+  protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
     return requireNonNull(connection).insertSelect(entities);
   }
 
@@ -581,7 +581,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Entity> update(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+  protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
     return requireNonNull(connection).updateSelect(entities);
   }
 
@@ -591,7 +591,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param connection the connection to use
    * @throws DatabaseException in case of a database exception
    */
-  protected void delete(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+  protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
     requireNonNull(connection).delete(Entity.primaryKeys(entities));
   }
 
@@ -707,7 +707,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     events.afterDelete.accept(requireNonNull(deletedEntities));
   }
 
-  private Collection<Entity> insertEntities(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
+  private Collection<Entity> insertEntities(Collection<Entity> entities) throws DatabaseException, ValidationException {
     notifyBeforeInsert(unmodifiableCollection(entities));
     validate(entities);
     //entity.toString() could potentially cause NullPointerException if null-validation
@@ -853,8 +853,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<? extends Entity> entitiesBeforeUpdate,
-                                                                 Collection<? extends Entity> entitiesAfterUpdate) {
+  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+                                                                 Collection<Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (Entity entity : entitiesBeforeUpdate) {
