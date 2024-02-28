@@ -255,39 +255,6 @@ public final class Text {
             .collect(Collectors.toList());
   }
 
-  /**
-   * Converts a string with underscores into a camelCaseString.
-   * Just don't use this, it's far from bulletproof.
-   * @param text the text
-   * @return a camelCase version of the given text
-   */
-  public static String underscoreToCamelCase(String text) {
-    if (!requireNonNull(text, "text").contains("_")) {
-      return text;
-    }
-    StringBuilder builder = new StringBuilder();
-    boolean firstDone = false;
-    List<String> strings = Arrays.stream(text.toLowerCase().split("_"))
-            .filter(string -> !string.isEmpty()).collect(Collectors.toList());
-    if (strings.size() == 1) {
-      return strings.get(0);
-    }
-    for (String split : strings) {
-      if (!firstDone) {
-        builder.append(Character.toLowerCase(split.charAt(0)));
-        firstDone = true;
-      }
-      else {
-        builder.append(Character.toUpperCase(split.charAt(0)));
-      }
-      if (split.length() > 1) {
-        builder.append(split.substring(1).toLowerCase());
-      }
-    }
-
-    return builder.toString();
-  }
-
   private static String padString(String string, int length, char padChar, boolean left) {
     if (requireNonNull(string, "string").length() >= length) {
       return string;

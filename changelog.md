@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.30-SNAPSHOT
+### is.codion.common
+- Text.underscoreToCamelCase() moved to DomainToString, no longer public.
 ### is.codion.common.model
 - LoadTest, refactoring and renaming.
 - UsageScenario renamed Scenario and moved to LoadTest.

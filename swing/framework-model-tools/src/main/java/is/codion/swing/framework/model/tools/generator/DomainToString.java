@@ -3,17 +3,19 @@
  */
 package is.codion.swing.framework.model.tools.generator;
 
-import is.codion.common.Text;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.Separators.LINE_SEPARATOR;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class DomainToString {
@@ -185,11 +187,38 @@ final class DomainToString {
     if (name.contains(".")) {
       name = name.substring(name.lastIndexOf('.') + 1);
     }
-    name = Text.underscoreToCamelCase(name);
+    name = underscoreToCamelCase(name);
     if (uppercase) {
       name = name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     return name;
+  }
+
+  static String underscoreToCamelCase(String text) {
+    if (!requireNonNull(text, "text").contains("_")) {
+      return text;
+    }
+    StringBuilder builder = new StringBuilder();
+    boolean firstDone = false;
+    List<String> strings = Arrays.stream(text.toLowerCase().split("_"))
+            .filter(string -> !string.isEmpty()).collect(Collectors.toList());
+    if (strings.size() == 1) {
+      return strings.get(0);
+    }
+    for (String split : strings) {
+      if (!firstDone) {
+        builder.append(Character.toLowerCase(split.charAt(0)));
+        firstDone = true;
+      }
+      else {
+        builder.append(Character.toUpperCase(split.charAt(0)));
+      }
+      if (split.length() > 1) {
+        builder.append(split.substring(1).toLowerCase());
+      }
+    }
+
+    return builder.toString();
   }
 }
