@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
@@ -441,15 +442,19 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     @Override
     public Collection<Entity> execute(EntityConnection connection,
                                       Collection<Long> invoiceIds) throws DatabaseException {
-      Collection<Invoice> invoices = Entity.castTo(Invoice.class,
+      Collection<Entity> invoices =
               connection.select(where(Invoice.ID.in(invoiceIds))
                       .forUpdate()
-                      .build()));
+                      .build());
 
       return connection.updateSelect(invoices.stream()
-              .peek(Invoice::updateTotal)
-              .filter(Invoice::modified)
+              .peek(UpdateTotalsFunction::updateTotal)
+              .filter(Entity::modified)
               .collect(toList()));
+    }
+
+    private static void updateTotal(Entity invoice) {
+      invoice.put(Invoice.TOTAL, invoice.optional(Invoice.CALCULATED_TOTAL).orElse(BigDecimal.ZERO));
     }
   }
 
@@ -517,10 +522,13 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                       .forUpdate()
                       .build();
 
-      return entityConnection.updateSelect(Entity.castTo(Track.class,
-                      entityConnection.select(select)).stream()
-              .peek(track -> track.raisePrice(parameters.priceIncrease()))
+      return entityConnection.updateSelect(entityConnection.select(select).stream()
+              .peek(track -> raisePrice(track, parameters.priceIncrease()))
               .collect(toList()));
+    }
+
+    private static void raisePrice(Entity track, BigDecimal priceIncrease) {
+      track.put(Track.UNITPRICE, track.get(Track.UNITPRICE).add(priceIncrease));
     }
   }
 }

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import static java.util.Objects.requireNonNull;
@@ -31,31 +30,10 @@ public interface DomainType {
    * Instantiates a {@link EntityType} associated with this domain type.
    * If this entity type has been defined previously that instance is returned.
    * @param name the entity type name
-   * @param entityClass the entity representation class
-   * @param <T> the Entity type
-   * @return a {@link EntityType} with the given name
-   */
-  <T extends Entity> EntityType entityType(String name, Class<T> entityClass);
-
-  /**
-   * Instantiates a {@link EntityType} associated with this domain type.
-   * If this entity type has been defined previously that instance is returned.
-   * @param name the entity type name
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @return a {@link EntityType} with the given name
    */
   EntityType entityType(String name, String resourceBundleName);
-
-  /**
-   * Instantiates a {@link EntityType} associated with this domain type.
-   * If this entity type has been defined previously that instance is returned.
-   * @param name the entity type name
-   * @param entityClass the entity representation class
-   * @param resourceBundleName the name of a resource bundle to use for captions, if any
-   * @param <T> the Entity type
-   * @return a {@link EntityType} with the given name
-   */
-  <T extends Entity> EntityType entityType(String name, Class<T> entityClass, String resourceBundleName);
 
   /**
    * @param entityType the entity type

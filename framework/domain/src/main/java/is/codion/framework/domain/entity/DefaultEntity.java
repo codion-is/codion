@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Primitives;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -18,9 +17,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -322,21 +318,6 @@ class DefaultEntity implements Entity, Serializable {
   @Override
   public final boolean mutable() {
     return !(this instanceof ImmutableEntity);
-  }
-
-  @Override
-  public final <T extends Entity> T castTo(Class<T> entityClass) {
-    requireNonNull(entityClass);
-    if (entityClass.isAssignableFrom(getClass())) {
-      // no wrapping required
-      return (T) this;
-    }
-    if (!entityType().entityClass().equals(entityClass)) {
-      throw new IllegalArgumentException("entityClass " + entityType().entityClass() + " expected, got: " + entityClass);
-    }
-
-    return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {entityClass}, new EntityInvoker(this));
   }
 
   @Override
@@ -842,73 +823,6 @@ class DefaultEntity implements Entity, Serializable {
       }
 
       return (T) values.get(attribute);
-    }
-  }
-
-  private static final class EntityInvoker implements InvocationHandler, Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    private static final String CAST_TO = "castTo";
-
-    private final DefaultEntity entity;
-
-    private EntityInvoker(DefaultEntity entity) {
-      this.entity = entity;
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      if (CAST_TO.equals(method.getName())) {
-        //prevent double wrapping
-        return proxy;
-      }
-      if (method.getParameterCount() == 0) {
-        Attribute<?> attribute = entity.definition.getterAttribute(method);
-        if (attribute != null) {
-          return getValue(attribute, method.getReturnType());
-        }
-      }
-      else if (method.getParameterCount() == 1) {
-        Attribute<?> attribute = entity.definition.setterAttribute(method);
-        if (attribute != null) {
-          return setValue(attribute, args[0]);
-        }
-      }
-      if (method.isDefault()) {
-        return entity.definition.defaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
-      }
-
-      return method.invoke(entity, args);
-    }
-
-    private Object getValue(Attribute<?> attribute, Class<?> getterReturnType) {
-      Object value;
-      if (attribute instanceof ForeignKey) {
-        value = entity.referencedEntity((ForeignKey) attribute);
-      }
-      else {
-        value = entity.get(attribute);
-      }
-      if (value instanceof Entity) {
-        Entity entityValue = (Entity) value;
-
-        value = entityValue.castTo(entityValue.entityType().entityClass());
-      }
-      if (getterReturnType.equals(Optional.class)) {
-        return Optional.ofNullable(value);
-      }
-      if (value == null && getterReturnType.isPrimitive()) {
-        return Primitives.defaultValue(getterReturnType);
-      }
-
-      return value;
-    }
-
-    private Object setValue(Attribute<?> attribute, Object value) {
-      entity.put((Attribute<Object>) attribute, value);
-
-      return null;
     }
   }
 }

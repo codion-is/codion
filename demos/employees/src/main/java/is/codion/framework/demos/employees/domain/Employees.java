@@ -7,7 +7,6 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -37,33 +36,20 @@ public final class Employees extends DefaultDomain {
   public static final DomainType DOMAIN = domainType(Employees.class);
 
   /** Entity type for the table employees.department */
-  public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("employees.department", Department.class);
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("employees.department");
 
     /** Columns for the columns in the employees.department table */
     Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("department_no");
     Column<String> NAME = TYPE.stringColumn("name");
     Column<String> LOCATION = TYPE.stringColumn("location");
-
-    /** Bean getters and setters */
-    Integer getDepartmentNo();
-
-    void setDepartmentNo(Integer departmentNo);
-
-    String getName();
-
-    void setName(String name);
-
-    String getLocation();
-
-    void setLocation(String location);
   }
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
   /** Entity type for the table employees.employee */
-  public interface Employee extends Entity {
-    EntityType TYPE = DOMAIN.entityType("employees.employee", Employee.class);
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("employees.employee");
 
     /** Columns for the columns in the employees.employee table */
     Column<Integer> ID = TYPE.integerColumn("id");
@@ -88,39 +74,6 @@ public final class Employees extends DefaultDomain {
             item("Analyst"), item("Clerk"),
             item("Manager"), item("President"),
             item("Salesman"));
-
-    /** Bean getters and setters */
-    Integer getId();
-
-    void setId(Integer id);
-
-    String getName();
-
-    void setName(String name);
-
-    String getJob();
-
-    void setJob(String job);
-
-    Employee getManager();
-
-    void setManager(Employee manager);
-
-    LocalDate getHiredate();
-
-    void setHiredate(LocalDate hiredate);
-
-    BigDecimal getSalary();
-
-    void setSalary(BigDecimal salary);
-
-    Double getCommission();
-
-    void setCommission(Double commission);
-
-    Department getDepartment();
-
-    void setDepartment(Department department);
   }
   // end::employeeConstants[]
 

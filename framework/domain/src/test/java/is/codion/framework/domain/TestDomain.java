@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
@@ -108,16 +107,12 @@ public final class TestDomain extends DefaultDomain {
     add(Super.TYPE.define(Super.ID.define().primaryKey()));
   }
 
-  public interface Master extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
+  public interface Master {
+    EntityType TYPE = DOMAIN.entityType("domain.master_entity");
     Column<Long> ID = TYPE.longColumn("id");
     Column<String> NAME = TYPE.stringColumn("name");
     Column<Integer> CODE = TYPE.integerColumn("code");
     Column<Integer> READ_ONLY = TYPE.integerColumn("read_only");
-
-    Long getId();
-
-    String getName();
   }
 
   void master() {
@@ -266,8 +261,8 @@ public final class TestDomain extends DefaultDomain {
     }
   }
 
-  public interface Detail extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
+  public interface Detail {
+    EntityType TYPE = DOMAIN.entityType("domain.detail_entity");
     Column<Long> ID = TYPE.longColumn("id");
     Column<Short> SHORT = TYPE.shortColumn("short");
     Column<Integer> INT = TYPE.integerColumn("int");
@@ -286,26 +281,6 @@ public final class TestDomain extends DefaultDomain {
     Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Column<byte[]> BYTES = TYPE.byteArrayColumn("bytes");
-
-    Optional<Long> getId();
-
-    void setId(Long value);
-
-    Optional<Double> getDouble();
-
-    void setDouble(Double value);
-
-    Master master();
-
-    Optional<Master> getMaster();
-
-    void setMaster(Master master);
-
-    default void setAll(Long id, Double value, Master master) {
-      setId(id);
-      setDouble(value);
-      setMaster(master);
-    }
   }
 
   void detail() {
@@ -390,26 +365,14 @@ public final class TestDomain extends DefaultDomain {
             .stringFactory(Detail.STRING));
   }
 
-  public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.employees.department", Department.class);
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("domain.employees.department");
     Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
     Column<byte[]> DATA = TYPE.byteArrayColumn("data");
     Column<Character> CODE = TYPE.characterColumn("code");
-
-    int deptNo();
-
-    String name();
-
-    String location();
-
-    Boolean active();
-
-    void active(Boolean active);
-
-    void setDeptNo(int deptNo);
 
     ConditionType CONDITION = TYPE.conditionType("condition");
     ConditionType NAME_NOT_NULL_CONDITION = TYPE.conditionType("conditionNameNotNull");
@@ -458,8 +421,8 @@ public final class TestDomain extends DefaultDomain {
             .caption("Department"));
   }
 
-  public interface Employee extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.employees.employee", Employee.class);
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("domain.employees.employee");
     Column<Integer> ID = TYPE.integerColumn("emp_id");
     Column<String> NAME = TYPE.stringColumn("emp_name");
     Column<String> JOB = TYPE.stringColumn("job");
@@ -473,26 +436,6 @@ public final class TestDomain extends DefaultDomain {
     Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
     Column<byte[]> DATA = TYPE.byteArrayColumn("data");
-
-    Integer getId();
-
-    Double getCommission();
-
-    Integer getDeptno();
-
-    Department getDepartment();
-
-    LocalDateTime getHiredate();
-
-    String getJob();
-
-    Integer getMgr();
-
-    Employee getManager();
-
-    String getName();
-
-    Double getSalary();
   }
 
   void employee() {

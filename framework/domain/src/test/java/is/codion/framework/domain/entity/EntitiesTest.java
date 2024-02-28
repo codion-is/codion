@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Serializer;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.KeyTest;
 import is.codion.framework.domain.TestDomainExtended;
@@ -19,7 +18,6 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,13 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -492,157 +485,6 @@ public final class EntitiesTest {
     assertTrue(emp1.valuesEqual(copy));
     assertNotSame(emp1.get(TestDomain.Employee.DEPARTMENT_FK), copy.get(TestDomain.Employee.DEPARTMENT_FK));
     assertFalse(emp1.modified());
-  }
-
-  @Test
-  void toBeans() {
-    final Integer deptNo = 13;
-    final String deptName = "Department";
-    final String deptLocation = "Location";
-    final Boolean deptActive = true;
-
-    Entity department = entities.builder(TestDomain.Department.TYPE)
-            .with(TestDomain.Department.ID, deptNo)
-            .with(TestDomain.Department.NAME, deptName)
-            .with(TestDomain.Department.LOCATION, deptLocation)
-            .with(TestDomain.Department.ACTIVE, deptActive)
-            .build();
-
-    Collection<TestDomain.Department> deptBeans = Entity.castTo(TestDomain.Department.class, singletonList(department));
-    TestDomain.Department departmentBean = deptBeans.iterator().next();
-    assertEquals(deptNo, departmentBean.deptNo());
-    assertEquals(deptName, departmentBean.name());
-    assertEquals(deptLocation, departmentBean.location());
-    assertEquals(deptActive, departmentBean.active());
-
-    departmentBean.active(false);
-    departmentBean.setDeptNo(42);
-
-    assertFalse(department.get(TestDomain.Department.ACTIVE));
-    assertEquals(42, department.get(TestDomain.Department.ID));
-
-    department.put(TestDomain.Department.ID, null);
-    assertEquals(0d, departmentBean.deptNo());
-
-    departmentBean.setDeptNo(deptNo);
-
-    Entity manager = entities.builder(TestDomain.Employee.TYPE)
-            .with(TestDomain.Employee.ID, 12)
-            .build();
-
-    final Integer id = 42;
-    final Double commission = 42.2;
-    LocalDateTime hiredate = LocalDateTime.now();
-    final String job = "CLERK";
-    final Integer mgr = 12;
-    final String name = "John Doe";
-    final Double salary = 1234.5;
-
-    Entity employee = entities.builder(TestDomain.Employee.TYPE)
-            .with(TestDomain.Employee.ID, id)
-            .with(TestDomain.Employee.COMMISSION, commission)
-            .with(TestDomain.Employee.DEPARTMENT_FK, department)
-            .with(TestDomain.Employee.HIREDATE, hiredate)
-            .with(TestDomain.Employee.JOB, job)
-            .with(TestDomain.Employee.MANAGER_FK, manager)
-            .with(TestDomain.Employee.NAME, name)
-            .with(TestDomain.Employee.SALARY, salary)
-            .build();
-
-    Collection<TestDomain.Employee> empBeans = Entity.castTo(TestDomain.Employee.class, singletonList(employee));
-    TestDomain.Employee employeeBean = empBeans.iterator().next();
-    assertEquals(id, employeeBean.getId());
-    assertEquals(commission, employeeBean.getCommission());
-    assertEquals(deptNo, employeeBean.getDeptno());
-    assertEquals(deptNo, employeeBean.getDepartment().deptNo());
-    assertEquals(hiredate, employeeBean.getHiredate());
-    assertEquals(job, employeeBean.getJob());
-    assertEquals(mgr, employeeBean.getMgr());
-    assertEquals(12, employeeBean.getManager().getId());
-    assertEquals(name, employeeBean.getName());
-    assertEquals(salary, employeeBean.getSalary());
-
-    assertTrue(Entity.castTo(TestDomain.Employee.class, emptyList()).isEmpty());
-  }
-
-  @Test
-  void toEntityType() {
-    Entity master = entities.builder(TestDomain.Master.TYPE)
-            .with(TestDomain.Master.ID, 1L)
-            .with(TestDomain.Master.CODE, 1)
-            .with(TestDomain.Master.NAME, "name")
-            .build();
-
-    assertThrows(IllegalArgumentException.class, () -> master.castTo(TestDomain.Detail.class));
-
-    TestDomain.Master master1 = master.castTo(TestDomain.Master.class);
-
-    assertSame(master1, master1.castTo(TestDomain.Master.class));
-
-    Entity master2 = entities.builder(TestDomain.Master.TYPE)
-            .with(TestDomain.Master.ID, 2L)
-            .with(TestDomain.Master.CODE, 2)
-            .with(TestDomain.Master.NAME, "name2")
-            .build();
-
-    List<Entity> masters = asList(master, master1, master2);
-
-    List<TestDomain.Master> mastersTyped = new ArrayList<>(Entity.castTo(TestDomain.Master.class, masters));
-
-    assertSame(master1, mastersTyped.get(1));
-
-    assertEquals(1L, mastersTyped.get(0).get(TestDomain.Master.ID));
-    assertEquals(1L, mastersTyped.get(1).get(TestDomain.Master.ID));
-    assertEquals(2L, mastersTyped.get(2).get(TestDomain.Master.ID));
-
-    assertEquals(1L, mastersTyped.get(0).getId());
-    assertEquals("name", mastersTyped.get(0).getName());
-
-    Entity detail = entities.builder(TestDomain.Detail.TYPE)
-            .with(TestDomain.Detail.ID, 1L)
-            .with(TestDomain.Detail.DOUBLE, 1.2)
-            .with(TestDomain.Detail.MASTER_FK, master)
-            .build();
-
-    TestDomain.Detail detailTyped = detail.castTo(TestDomain.Detail.class);
-    assertEquals(detailTyped.getId().orElse(null), 1L);
-    assertEquals(detailTyped.getDouble().orElse(null), 1.2);
-    assertEquals(detailTyped.getMaster().orElse(null), master);
-    assertEquals(detailTyped.master(), master);
-
-    detailTyped.setId(2L);
-    detailTyped.setDouble(2.1);
-    detailTyped.setMaster(master1);
-
-    assertEquals(detailTyped.getId().orElse(null), detail.get(TestDomain.Detail.ID));
-    assertEquals(detailTyped.getDouble().orElse(null), detail.get(TestDomain.Detail.DOUBLE));
-    assertSame(detailTyped.getMaster().orElse(null), detail.get(TestDomain.Detail.MASTER_FK));
-
-    detailTyped.setAll(3L, 3.2, mastersTyped.get(2));
-
-    assertEquals(detailTyped.getId().orElse(null), 3L);
-    assertEquals(detailTyped.getDouble().orElse(null), 3.2);
-    assertSame(detailTyped.getMaster().orElse(null), mastersTyped.get(2));
-
-    Entity compositeMaster = entities.builder(TestDomain.CompositeMaster.TYPE)
-            .with(TestDomain.CompositeMaster.COMPOSITE_MASTER_ID, 1)
-            .with(TestDomain.CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
-            .build();
-
-    assertSame(compositeMaster, compositeMaster.castTo(Entity.class));
-  }
-
-  @Test
-  void serialize() throws IOException, ClassNotFoundException {
-    List<Entity> entitiesToSer = IntStream.range(0, 10)
-            .mapToObj(i -> entities.builder(TestDomain.Master.TYPE)
-                    .with(TestDomain.Master.ID, (long) i)
-                    .with(TestDomain.Master.NAME, Integer.toString(i))
-                    .with(TestDomain.Master.CODE, 1)
-                    .build())
-            .collect(Collectors.toList());
-
-    Serializer.deserialize(Serializer.serialize(Entity.castTo(TestDomain.Master.class, entitiesToSer)));
   }
 
   @Test

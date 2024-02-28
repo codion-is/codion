@@ -265,15 +265,6 @@ public interface Entity extends Comparable<Entity> {
   boolean mutable();
 
   /**
-   * Casts this entity to the given type. If the entity is already of the given type it is returned as is.
-   * @param entityClass the entity class to cast to
-   * @param <T> the entity class type
-   * @return a typed entity
-   * @throws IllegalArgumentException in case the given entity class has not been associated with the underlying {@link EntityType}.
-   */
-  <T extends Entity> T castTo(Class<T> entityClass);
-
-  /**
    * Returns the primary key of this entity.
    * If the entity has no primary key attribute defined, this key contains no values.
    * @return the primary key of this entity
@@ -434,20 +425,6 @@ public interface Entity extends Comparable<Entity> {
             .map(entity -> entity.get(attribute))
             .filter(Objects::nonNull)
             .collect(toSet());
-  }
-
-  /**
-   * Casts the given entities to the given type. If an entity is already of the given type it is returned as is.
-   * @param entityClass the entity class to cast to
-   * @param entities the entities
-   * @param <T> the entity class type
-   * @return typed entities
-   * @throws IllegalArgumentException in case the given entity class has not been associated with the underlying {@link EntityType}.
-   */
-  static <T extends Entity> Collection<T> castTo(Class<T> entityClass, Collection<Entity> entities) {
-    return requireNonNull(entities).stream()
-            .map(entity -> entity.castTo(entityClass))
-            .collect(toList());
   }
 
   /**
