@@ -431,10 +431,11 @@ public interface Entity extends Comparable<Entity> {
    * Maps the given entities to their primary key
    * @param entities the entities to map
    * @return the mapped entities
+   * @throws IllegalArgumentException in case a non-unique primary key is encountered
    */
   static Map<Key, Entity> mapToPrimaryKey(Collection<Entity> entities) {
     return requireNonNull(entities).stream()
-            .collect(toMap(Entity::primaryKey, Function.identity()));
+            .collect(toMap(Entity::primaryKey, Function.identity(), ThrowIfNonUnique.INSTANCE));
   }
 
   /**

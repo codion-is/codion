@@ -22,6 +22,7 @@ Codion Change Log
 - EntityInvoker removed.
 - AttributeDefinition.beanProperty() removed.
 - Entity, ForeignKeyCondition, method arguments simplified due to EntityInvoker removal.
+- Entity.mapToPrimaryKey() now throws exception in case a non-unique primary key is encountered.
 ### is.codion.framework.db.core
 - EntityConnection, method arguments simplified due to EntityInvoker removal.
 ### is.codion.framework.db.local
