@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Primitives;
 import is.codion.common.Text;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -32,13 +31,7 @@ import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +45,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -70,7 +62,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final String METHOD = "method";
   private static final String ATTRIBUTE = "attribute";
   private static final String COLUMN = "column";
 
@@ -78,21 +69,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * The entity type
    */
   private final EntityType entityType;
-
-  /**
-   * Bean property getters
-   */
-  private final Map<String, Attribute<?>> getters = new HashMap<>();
-
-  /**
-   * Bean property setters
-   */
-  private final Map<String, Attribute<?>> setters = new HashMap<>();
-
-  /**
-   * Entity class default method handles
-   */
-  private transient Map<String, MethodHandle> defaultMethodHandles = new ConcurrentHashMap<>();
 
   /**
    * The caption to use for the entity type
@@ -233,28 +209,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.selectQuery = builder.selectQuery;
     this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
     this.entityAttributes = builder.attributes;
-    resolveEntityClassMethods();
   }
 
   @Override
   public EntityType entityType() {
     return entityType;
-  }
-
-  @Override
-  public Attribute<?> getterAttribute(Method method) {
-    return getters.get(requireNonNull(method, METHOD).getName());
-  }
-
-  @Override
-  public Attribute<?> setterAttribute(Method method) {
-    return setters.get(requireNonNull(method, METHOD).getName());
-  }
-
-  @Override
-  public MethodHandle defaultMethodHandle(Method method) {
-    return defaultMethodHandles.computeIfAbsent(requireNonNull(method, METHOD).getName(),
-            methodName -> createDefaultMethodHandle(method));
   }
 
   @Override
@@ -435,120 +394,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               " expected for " + foreignKey);
     }
     referencedEntities.put(foreignKey, definition);
-  }
-
-  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    stream.defaultReadObject();
-    defaultMethodHandles = new ConcurrentHashMap<>();
-  }
-
-  private void resolveEntityClassMethods() {
-    if (!entityType.entityClass().equals(Entity.class)) {
-      for (Method method : entityType.entityClass().getDeclaredMethods()) {
-        if (method.isDefault()) {
-          defaultMethodHandles.put(method.getName(), createDefaultMethodHandle(method));
-        }
-        else {
-          attributes.definitions().stream()
-                  .filter(definition -> isGetter(method, definition))
-                  .findFirst()
-                  .ifPresent(definition -> getters.put(method.getName(), definition.attribute()));
-          attributes.definitions().stream()
-                  .filter(definition -> isSetter(method, definition))
-                  .findFirst()
-                  .ifPresent(definition -> setters.put(method.getName(), definition.attribute()));
-        }
-      }
-    }
-  }
-
-  /**
-   * Hacky way to use default methods in interfaces via dynamic proxy.
-   * @param method the default method
-   * @return a MethodHandle for the given method
-   */
-  private static MethodHandle createDefaultMethodHandle(Method method) {
-    try {
-      Method privateLookupIn = MethodHandles.class.getMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
-
-      MethodHandles.Lookup lookup = (MethodHandles.Lookup) privateLookupIn.invoke(MethodHandles.class,
-              method.getDeclaringClass(), MethodHandles.lookup());
-
-			return lookup.findSpecial(method.getDeclaringClass(), method.getName(),
-              MethodType.methodType(method.getReturnType(), method.getParameterTypes()), method.getDeclaringClass());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static boolean isGetter(Method method, AttributeDefinition<?> definition) {
-    String beanProperty = definition.beanProperty();
-    if (beanProperty == null || method.getParameterCount() > 0) {
-      return false;
-    }
-
-    String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
-    String methodName = method.getName();
-    Class<?> attributeValueClass = attributeValueClass(definition.attribute());
-    Class<?> methodReturnType = methodReturnType(method);
-
-    return returnsAttributeValueClassOrOptional(methodReturnType, attributeValueClass) &&
-            (isBeanOrPropertyGetter(methodName, beanProperty, beanPropertyCamelCase) ||
-                    isBooleanGetter(methodName, beanPropertyCamelCase, attributeValueClass));
-  }
-
-  private static boolean returnsAttributeValueClassOrOptional(Class<?> methodReturnType, Class<?> attributeValueClass) {
-    return methodReturnType.equals(attributeValueClass) || methodReturnType.equals(Optional.class);
-  }
-
-  private static boolean isBeanOrPropertyGetter(String methodName, String beanProperty, String beanPropertyCamelCase) {
-    return methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase);
-  }
-
-  private static boolean isBooleanGetter(String methodName, String beanPropertyCamelCase, Class<?> attributeValueClass) {
-    return methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(attributeValueClass);
-  }
-
-  private static Class<?> methodReturnType(Method method) {
-    Class<?> returnType = method.getReturnType();
-    if (returnType.isPrimitive()) {
-      return Primitives.boxedType(returnType);
-    }
-
-    return returnType;
-  }
-
-  private static boolean isSetter(Method method, AttributeDefinition<?> definition) {
-    String beanProperty = definition.beanProperty();
-    if (beanProperty == null || method.getParameterCount() != 1 || method.isVarArgs()) {
-      return false;
-    }
-
-    String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
-    String methodName = method.getName();
-    Class<?> parameterType = setterParameterType(method);
-    Class<?> attributeValueClass = attributeValueClass(definition.attribute());
-
-    return parameterType.equals(attributeValueClass) && (methodName.equals(beanProperty) || methodName.equals("set" + beanPropertyCamelCase));
-  }
-
-  private static Class<?> setterParameterType(Method method) {
-    Class<?> parameterType = method.getParameterTypes()[0];
-    if (parameterType.isPrimitive()) {
-      return Primitives.boxedType(parameterType);
-    }
-
-    return parameterType;
-  }
-
-  private static Class<?> attributeValueClass(Attribute<?> attribute) {
-    Class<?> valueClass = attribute.type().valueClass();
-    if (attribute instanceof ForeignKey) {
-      valueClass = ((ForeignKey) attribute).referencedType().entityClass();
-    }
-
-    return valueClass;
   }
 
   private final class DefaultAttributes implements Attributes, Serializable {

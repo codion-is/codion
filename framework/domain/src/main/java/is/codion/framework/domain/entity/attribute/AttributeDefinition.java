@@ -145,11 +145,6 @@ public interface AttributeDefinition<T> {
   String description();
 
   /**
-   * @return the bean property name associated with this property
-   */
-  String beanProperty();
-
-  /**
    * Prepares the value according to the attribute definition, such as rounding
    * to the correct number of fraction digits in case of doubles
    * @param value the value to prepare
@@ -311,13 +306,6 @@ public interface AttributeDefinition<T> {
      * @see EntityType#resourceBundleName()
      */
     B captionResourceKey(String captionResourceKey);
-
-    /**
-     * Sets the bean name property to associate with this attribute
-     * @param beanProperty the bean property name
-     * @return this builder instance
-     */
-    B beanProperty(String beanProperty);
 
     /**
      * Sets the default value for this attribute, overrides the underlying column default value, if any

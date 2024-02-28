@@ -69,7 +69,7 @@ public interface ForeignKeyCondition extends Condition {
      * @return a {@link Condition}
      * @throws NullPointerException in case {@code values} is null
      */
-    Condition in(Collection<? extends Entity> values);
+    Condition in(Collection<Entity> values);
 
     /**
      * Returns a 'notIn' condition.
@@ -77,7 +77,7 @@ public interface ForeignKeyCondition extends Condition {
      * @return a {@link Condition}
      * @throws IllegalArgumentException in case {@code values} is null
      */
-    Condition notIn(Collection<? extends Entity> values);
+    Condition notIn(Collection<Entity> values);
 
     /**
      * Returns a 'isNull' {@link Condition}.

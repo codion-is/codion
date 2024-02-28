@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
+import java.util.Objects;
+
 public final class CountryEditModel extends SwingEntityEditModel {
 
   private final Value<Double> averageCityPopulation = Value.value();
@@ -45,9 +47,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
     if (foreignKey.equals(Country.CAPITAL_FK)) {
       //only show cities for currently selected country
       addEntityListener(country ->
-              comboBoxModel.includeCondition().set(cityEntity ->
-                      cityEntity.castTo(City.class)
-                              .inCountry(country)));
+              comboBoxModel.includeCondition().set(city ->
+                      country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
     }
 
     return comboBoxModel;

@@ -101,12 +101,12 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
   }
 
   @Override
-  public Condition in(Collection<? extends Entity> values) {
+  public Condition in(Collection<Entity> values) {
     return foreignKeyCondition(foreignKey, EQUAL, createValueMaps(values));
   }
 
   @Override
-  public Condition notIn(Collection<? extends Entity> values) {
+  public Condition notIn(Collection<Entity> values) {
     return foreignKeyCondition(foreignKey, NOT_EQUAL, createValueMaps(values));
   }
 
@@ -148,7 +148,7 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
     return new DefaultConditionCombination(AND, conditions);
   }
 
-  private List<Map<Column<?>, ?>> createValueMaps(Collection<? extends Entity> values) {
+  private List<Map<Column<?>, ?>> createValueMaps(Collection<Entity> values) {
     List<Column<?>> referencedColumns = foreignKey.references().stream()
             .map(Reference::foreign)
             .collect(toList());

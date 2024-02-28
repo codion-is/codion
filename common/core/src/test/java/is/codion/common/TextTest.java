@@ -140,23 +140,6 @@ public final class TextTest {
   }
 
   @Test
-  void underscoreToCamelCase() {
-    assertEquals("", Text.underscoreToCamelCase(""));
-    assertEquals("noOfSpeakers", Text.underscoreToCamelCase("noOfSpeakers"));
-    assertEquals("noOfSpeakers", Text.underscoreToCamelCase("no_of_speakers"));
-    assertEquals("noOfSpeakers", Text.underscoreToCamelCase("No_OF_speakeRS"));
-    assertEquals("helloWorld", Text.underscoreToCamelCase("hello_World"));
-    assertEquals("", Text.underscoreToCamelCase("_"));
-    assertEquals("aB", Text.underscoreToCamelCase("a_b"));
-    assertEquals("aB", Text.underscoreToCamelCase("a_b_"));
-    assertEquals("aBC", Text.underscoreToCamelCase("a_b_c"));
-    assertEquals("aBaC", Text.underscoreToCamelCase("a_ba_c"));
-    assertEquals("a", Text.underscoreToCamelCase("a__"));
-    assertEquals("a", Text.underscoreToCamelCase("__a"));
-    assertEquals("a", Text.underscoreToCamelCase("__A"));
-  }
-
-  @Test
   void parseCommaSeparatedValues() {
     List<String> hello = Collections.singletonList("hello");
     assertEquals(hello, Text.parseCommaSeparatedValues("hello"));

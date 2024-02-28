@@ -34,7 +34,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
@@ -123,26 +122,20 @@ public final class TestDomain extends DefaultDomain {
     add(Super.TYPE.define(Super.ID.define().primaryKey()));
   }
 
-  public interface Master extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
+  public interface Master {
+    EntityType TYPE = DOMAIN.entityType("domain.master_entity");
     Column<Long> ID = TYPE.longColumn("id");
     Column<String> NAME = TYPE.stringColumn("name");
     Column<Integer> CODE = TYPE.integerColumn("code");
     Column<Integer> READ_ONLY = TYPE.integerColumn("read_only");
-
-    Long getId();
-
-    String getName();
   }
 
   void master() {
     add(Master.TYPE.define(
             Master.ID.define()
-                    .primaryKey()
-                    .beanProperty("id"),
+                    .primaryKey(),
             Master.NAME.define()
-                    .column()
-                    .beanProperty("name"),
+                    .column(),
             Master.CODE.define()
                     .column(),
             Master.READ_ONLY.define()
@@ -281,8 +274,8 @@ public final class TestDomain extends DefaultDomain {
     }
   }
 
-  public interface Detail extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
+  public interface Detail {
+    EntityType TYPE = DOMAIN.entityType("domain.detail_entity");
     Column<Long> ID = TYPE.longColumn("id");
     Column<Short> SHORT = TYPE.shortColumn("short");
     Column<Integer> INT = TYPE.integerColumn("int");
@@ -301,33 +294,12 @@ public final class TestDomain extends DefaultDomain {
     Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Column<byte[]> BYTES = TYPE.byteArrayColumn("bytes");
-
-    Optional<Long> getId();
-
-    void setId(Long value);
-
-    Optional<Double> getDouble();
-
-    void setDouble(Double value);
-
-    Master master();
-
-    Optional<Master> getMaster();
-
-    void setMaster(Master master);
-
-    default void setAll(Long id, Double value, Master master) {
-      setId(id);
-      setDouble(value);
-      setMaster(master);
-    }
   }
 
   void detail() {
     add(Detail.TYPE.define(
             Detail.ID.define()
-                    .primaryKey()
-                    .beanProperty("id"),
+                    .primaryKey(),
             Detail.SHORT.define()
                     .column()
                     .caption(Detail.SHORT.name()),
@@ -337,8 +309,7 @@ public final class TestDomain extends DefaultDomain {
             Detail.DOUBLE.define()
                     .column()
                     .caption(Detail.DOUBLE.name())
-                    .columnHasDefaultValue(true)
-                    .beanProperty("double"),
+                    .columnHasDefaultValue(true),
             Detail.STRING.define()
                     .column()
                     .caption("Detail string")
@@ -365,14 +336,12 @@ public final class TestDomain extends DefaultDomain {
                     .column(),
             Detail.MASTER_FK.define()
                     .foreignKey()
-                    .caption(Detail.MASTER_FK.name())
-                    .beanProperty("master"),
+                    .caption(Detail.MASTER_FK.name()),
             Detail.MASTER_CODE_NON_DENORM.define()
                     .column(),
             Detail.MASTER_VIA_CODE_FK.define()
                     .foreignKey()
-                    .caption(Detail.MASTER_FK.name())
-                    .beanProperty("master"),
+                    .caption(Detail.MASTER_FK.name()),
             Detail.MASTER_NAME.define()
                     .denormalized(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
@@ -405,26 +374,14 @@ public final class TestDomain extends DefaultDomain {
             .stringFactory(Detail.STRING));
   }
 
-  public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.employees.department", Department.class);
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("domain.employees.department");
     Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
     Column<byte[]> DATA = TYPE.byteArrayColumn("data");
     Column<Character> CODE = TYPE.characterColumn("code");
-
-    int deptNo();
-
-    String name();
-
-    String location();
-
-    Boolean active();
-
-    void active(Boolean active);
-
-    void setDeptNo(int deptNo);
 
     ConditionType CONDITION = TYPE.conditionType("condition");
     ConditionType NAME_NOT_NULL_CONDITION = TYPE.conditionType("conditionNameNotNull");
@@ -435,24 +392,20 @@ public final class TestDomain extends DefaultDomain {
             Department.ID.define()
                     .primaryKey()
                     .caption(Department.ID.name())
-                    .updatable(true).nullable(false)
-                    .beanProperty("deptNo"),
+                    .updatable(true).nullable(false),
             Department.NAME.define()
                     .column()
                     .caption(Department.NAME.name())
                     .searchable(true)
                     .maximumLength(14)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Department.LOCATION.define()
                     .column()
                     .caption(Department.LOCATION.name())
-                    .maximumLength(13)
-                    .beanProperty("location"),
+                    .maximumLength(13),
             Department.ACTIVE.define()
                     .booleanColumn(Integer.class, 1, 0)
-                    .readOnly(true)
-                    .beanProperty("active"),
+                    .readOnly(true),
             Department.DATA.define()
                     .column()
                     .lazy(true),
@@ -473,8 +426,8 @@ public final class TestDomain extends DefaultDomain {
             .caption("Department"));
   }
 
-  public interface Employee extends Entity {
-    EntityType TYPE = DOMAIN.entityType("domain.employees.employee", Employee.class);
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("domain.employees.employee");
     Column<Integer> ID = TYPE.integerColumn("emp_id");
     Column<String> NAME = TYPE.stringColumn("emp_name");
     Column<String> JOB = TYPE.stringColumn("job");
@@ -488,26 +441,6 @@ public final class TestDomain extends DefaultDomain {
     Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
     Column<byte[]> DATA = TYPE.byteArrayColumn("data");
-
-    Integer getId();
-
-    Double getCommission();
-
-    Integer getDeptno();
-
-    Department getDepartment();
-
-    LocalDateTime getHiredate();
-
-    String getJob();
-
-    Integer getMgr();
-
-    Employee getManager();
-
-    String getName();
-
-    Double getSalary();
   }
 
   void employee() {
@@ -515,48 +448,39 @@ public final class TestDomain extends DefaultDomain {
             Employee.ID.define()
                     .primaryKey()
                     .caption(Employee.ID.name())
-                    .name("empno")
-                    .beanProperty("id"),
+                    .name("empno"),
             Employee.NAME.define()
                     .column()
                     .caption(Employee.NAME.name())
                     .searchable(true)
                     .name("ename")
                     .maximumLength(10)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Employee.DEPARTMENT_NO.define()
                     .column()
-                    .nullable(false)
-                    .beanProperty("deptno"),
+                    .nullable(false),
             Employee.DEPARTMENT_FK.define()
                     .foreignKey()
-                    .caption(Employee.DEPARTMENT_FK.name())
-                    .beanProperty("department"),
+                    .caption(Employee.DEPARTMENT_FK.name()),
             Employee.JOB.define()
                     .column()
                     .items(asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
-                    .searchable(true)
-                    .beanProperty("job"),
+                    .searchable(true),
             Employee.SALARY.define()
                     .column()
                     .caption(Employee.SALARY.name())
-                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2)
-                    .beanProperty("salary"),
+                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
             Employee.COMMISSION.define()
                     .column()
                     .caption(Employee.COMMISSION.name())
-                    .valueRange(100, 2000).maximumFractionDigits(2)
-                    .beanProperty("commission"),
+                    .valueRange(100, 2000).maximumFractionDigits(2),
             Employee.MGR.define()
-                    .column()
-                    .beanProperty("mgr"),
+                    .column(),
             Employee.MANAGER_FK.define()
                     .foreignKey()
-                    .caption(Employee.MANAGER_FK.name())
-                    .beanProperty("manager"),
+                    .caption(Employee.MANAGER_FK.name()),
             Employee.HIREDATE.define()
                     .column()
                     .caption(Employee.HIREDATE.name())
@@ -565,8 +489,7 @@ public final class TestDomain extends DefaultDomain {
                             .delimiterDot()
                             .yearFourDigits()
                             .build())
-                    .nullable(false)
-                    .beanProperty("hiredate"),
+                    .nullable(false),
             Employee.DEPARTMENT_LOCATION.define()
                     .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()),

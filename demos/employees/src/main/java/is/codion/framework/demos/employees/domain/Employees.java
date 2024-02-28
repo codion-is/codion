@@ -22,7 +22,6 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -52,33 +51,20 @@ public final class Employees extends DefaultDomain {
   public static final DomainType DOMAIN = domainType(Employees.class);
 
   /** Entity type for the table employees.department */
-  public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("employees.department", Department.class);
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("employees.department");
 
     /** Columns for the columns in the employees.department table */
     Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("department_no");
     Column<String> NAME = TYPE.stringColumn("name");
     Column<String> LOCATION = TYPE.stringColumn("location");
-
-    /** Bean getters and setters */
-    Integer getDepartmentNo();
-
-    void setDepartmentNo(Integer departmentNo);
-
-    String getName();
-
-    void setName(String name);
-
-    String getLocation();
-
-    void setLocation(String location);
   }
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
   /** Entity type for the table employees.employee */
-  public interface Employee extends Entity {
-    EntityType TYPE = DOMAIN.entityType("employees.employee", Employee.class);
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("employees.employee");
 
     /** Columns for the columns in the employees.employee table */
     Column<Integer> ID = TYPE.integerColumn("id");
@@ -103,39 +89,6 @@ public final class Employees extends DefaultDomain {
             item("Analyst"), item("Clerk"),
             item("Manager"), item("President"),
             item("Salesman"));
-
-    /** Bean getters and setters */
-    Integer getId();
-
-    void setId(Integer id);
-
-    String getName();
-
-    void setName(String name);
-
-    String getJob();
-
-    void setJob(String job);
-
-    Employee getManager();
-
-    void setManager(Employee manager);
-
-    LocalDate getHiredate();
-
-    void setHiredate(LocalDate hiredate);
-
-    BigDecimal getSalary();
-
-    void setSalary(BigDecimal salary);
-
-    Double getCommission();
-
-    void setCommission(Double commission);
-
-    Department getDepartment();
-
-    void setDepartment(Department department);
   }
   // end::employeeConstants[]
 
@@ -155,19 +108,16 @@ public final class Employees extends DefaultDomain {
             Department.DEPARTMENT_NO.define()
                     .primaryKey()
                     .caption("No.")
-                    .nullable(false)
-                    .beanProperty("departmentNo"),
+                    .nullable(false),
             Department.NAME.define()
                     .column()
                     .caption("Name")
                     .maximumLength(14)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Department.LOCATION.define()
                     .column()
                     .caption("Location")
-                    .maximumLength(13)
-                    .beanProperty("location"))
+                    .maximumLength(13))
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
@@ -180,51 +130,43 @@ public final class Employees extends DefaultDomain {
     /*Defining the entity Employee.TYPE*/
     add(Employee.TYPE.define(
             Employee.ID.define()
-                    .primaryKey()
-                    .beanProperty("id"),
+                    .primaryKey(),
             Employee.NAME.define()
                     .column()
                     .caption("Name")
                     .searchable(true)
                     .maximumLength(10)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Employee.DEPARTMENT.define()
                     .column()
                     .nullable(false),
             Employee.DEPARTMENT_FK.define()
                     .foreignKey()
-                    .caption("Department")
-                    .beanProperty("department"),
+                    .caption("Department"),
             Employee.JOB.define()
                     .column()
                     .caption("Job")
-                    .items(Employee.JOB_VALUES)
-                    .beanProperty("job"),
+                    .items(Employee.JOB_VALUES),
             Employee.SALARY.define()
                     .column()
                     .caption("Salary")
                     .nullable(false)
                     .valueRange(900, 10000)
-                    .maximumFractionDigits(2)
-                    .beanProperty("salary"),
+                    .maximumFractionDigits(2),
             Employee.COMMISSION.define()
                     .column()
                     .caption("Commission")
                     .valueRange(100, 2000)
-                    .maximumFractionDigits(2)
-                    .beanProperty("commission"),
+                    .maximumFractionDigits(2),
             Employee.MANAGER_ID.define()
                     .column(),
             Employee.MANAGER_FK.define()
                     .foreignKey()
-                    .caption("Manager")
-                    .beanProperty("manager"),
+                    .caption("Manager"),
             Employee.HIREDATE.define()
                     .column()
                     .caption("Hiredate")
                     .nullable(false)
-                    .beanProperty("hiredate")
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDash()
                             .yearFourDigits()

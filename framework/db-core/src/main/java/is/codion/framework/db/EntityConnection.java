@@ -186,7 +186,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException;
+  Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Inserts the given entities, returning the inserted entities.
@@ -195,7 +195,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException;
+  Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values.
@@ -229,7 +229,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
-  void update(Collection<? extends Entity> entities) throws DatabaseException;
+  void update(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
@@ -241,7 +241,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
-  Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException;
+  Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Performs an update based on the given update, updating the columns found
@@ -381,7 +381,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyDefinition#soft()
    */
-  Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException;
+  Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Counts the number of rows returned based on the given count conditions

@@ -43,7 +43,6 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.notNull;
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -77,11 +76,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
    * The resource bundle key specifying the caption
    */
   private final String captionResourceKey;
-
-  /**
-   * The name of a bean property linked to this property, if any
-   */
-  private final String beanProperty;
 
   /**
    * The default value supplier for this property
@@ -176,7 +170,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     this.attribute = builder.attribute;
     this.caption = builder.caption;
     this.captionResourceKey = builder.captionResourceKey;
-    this.beanProperty = builder.beanProperty;
     this.defaultValueSupplier = builder.defaultValueSupplier;
     this.nullable = builder.nullable;
     this.hidden = builder.hidden;
@@ -214,11 +207,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   @Override
   public final EntityType entityType() {
     return attribute.entityType();
-  }
-
-  @Override
-  public final String beanProperty() {
-    return beanProperty;
   }
 
   @Override
@@ -477,7 +465,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     protected final Attribute<T> attribute;
     private String caption;
-    private String beanProperty;
     private ValueSupplier<T> defaultValueSupplier;
     private String captionResourceKey;
     private boolean nullable;
@@ -499,7 +486,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
       this.attribute = requireNonNull(attribute);
       format = defaultFormat(attribute);
       comparator = defaultComparator(attribute);
-      beanProperty = Text.underscoreToCamelCase(attribute.name());
       captionResourceKey = attribute.name();
       hidden = resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
       nullable = true;
@@ -536,15 +522,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
       }
       this.captionResourceKey = captionResourceKey;
       this.hidden = false;
-      return (B) this;
-    }
-
-    @Override
-    public final B beanProperty(String beanProperty) {
-      if (nullOrEmpty(beanProperty)) {
-        throw new IllegalArgumentException("beanProperty must be a non-empty string: " + attribute);
-      }
-      this.beanProperty = beanProperty;
       return (B) this;
     }
 

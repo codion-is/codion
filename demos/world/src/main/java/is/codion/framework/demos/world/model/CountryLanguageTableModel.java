@@ -20,7 +20,6 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
@@ -42,7 +41,8 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
   private void refreshChartDataset() {
     chartDataset.clear();
-    Entity.castTo(CountryLanguage.class, visibleItems()).forEach(language ->
-            chartDataset.setValue(language.language(), language.noOfSpeakers()));
+    visibleItems().forEach(countryLanguage ->
+            chartDataset.setValue(countryLanguage.get(CountryLanguage.LANGUAGE),
+                    countryLanguage.get(CountryLanguage.NO_OF_SPEAKERS)));
   }
 }

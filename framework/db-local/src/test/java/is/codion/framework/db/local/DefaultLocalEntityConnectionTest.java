@@ -1110,43 +1110,6 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void beans() throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      List<Entity> departments = connection.select(all(Department.TYPE));
-      Department department = departments.get(0).castTo(Department.class);
-      department.setName("New Name");
-
-      department = connection.updateSelect(department).castTo(Department.class);
-
-      assertEquals("New Name", department.getName());
-
-      Collection<Department> departmentsCast = Entity.castTo(Department.class, connection.select(all(Department.TYPE)));
-
-      departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
-
-      departmentsCast = Entity.castTo(Department.class, connection.updateSelect(new ArrayList<>(departmentsCast)));
-
-      Department newDept1 = ENTITIES.entity(Department.TYPE).castTo(Department.class);
-      newDept1.setId(-1);
-      newDept1.setName("hello1");
-      newDept1.setLocation("location");
-
-      Department newDept2 = ENTITIES.entity(Department.TYPE).castTo(Department.class);
-      newDept2.setId(-2);
-      newDept2.setName("hello2");
-      newDept2.setLocation("location");
-
-      List<Entity.Key> keys = new ArrayList<>(connection.insert(asList(newDept1, newDept2)));
-      assertEquals(Integer.valueOf(-1), keys.get(0).get());
-      assertEquals(Integer.valueOf(-2), keys.get(1).get());
-    }
-    finally {
-      connection.rollbackTransaction();
-    }
-  }
-
-  @Test
   void selectQuery() throws DatabaseException {
     connection.select(all(Query.TYPE));
     connection.select(Select.all(Query.TYPE).forUpdate().build());

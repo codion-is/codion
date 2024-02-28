@@ -30,8 +30,6 @@ import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -204,29 +202,6 @@ public interface EntityDefinition {
    * @throws IllegalArgumentException in case the value is not of the correct type
    */
   <T> Entity.Key primaryKey(T value);
-
-  /**
-   * Returns the Attribute for the getter this method represents in the {@link EntityType#entityClass()},
-   * null if none exists.
-   * @param method the method
-   * @return the getter attribute
-   */
-  Attribute<?> getterAttribute(Method method);
-
-  /**
-   * Returns the Attribute for the setter this method represents in the {@link EntityType#entityClass()},
-   * null if none exists.
-   * @param method the method
-   * @return the setter attribute
-   */
-  Attribute<?> setterAttribute(Method method);
-
-  /**
-   * Returns the MethodHandle for the given default method in the {@link EntityType#entityClass()}.
-   * @param method the method
-   * @return a MethodHandle based on the method
-   */
-  MethodHandle defaultMethodHandle(Method method);
 
   /**
    * Builds a EntityDefinition

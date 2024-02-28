@@ -48,18 +48,15 @@ final class DefaultEntityType implements EntityType, Serializable {
 
   private final DomainType domainType;
   private final String name;
-  private final Class<? extends Entity> entityClass;
   private final String resourceBundleName;
   private final int hashCode;
 
-  DefaultEntityType(DomainType domainType, String name, Class<? extends Entity> entityClass,
-                    String resourceBundleName) {
+  DefaultEntityType(DomainType domainType, String name, String resourceBundleName) {
     this.domainType = requireNonNull(domainType);
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
     this.name = name;
-    this.entityClass = entityClass;
     if (resourceBundleName != null) {
       ResourceBundle.getBundle(resourceBundleName);
     }
@@ -75,11 +72,6 @@ final class DefaultEntityType implements EntityType, Serializable {
   @Override
   public String name() {
     return name;
-  }
-
-  @Override
-  public <T extends Entity> Class<T> entityClass() {
-    return (Class<T>) (entityClass == null ? Entity.class : entityClass);
   }
 
   @Override

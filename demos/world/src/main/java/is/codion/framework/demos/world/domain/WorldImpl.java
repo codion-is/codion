@@ -362,8 +362,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             Continent.NAME.define()
                     .column()
                     .caption("Continent")
-                    .groupBy(true)
-                    .beanProperty("name"),
+                    .groupBy(true),
             Continent.SURFACE_AREA.define()
                     .column()
                     .caption("Surface area")

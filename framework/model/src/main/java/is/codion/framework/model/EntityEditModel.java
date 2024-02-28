@@ -296,7 +296,7 @@ public interface EntityEditModel {
    * @see #addAfterInsertListener(Consumer)
    * @see EntityValidator#validate(Entity)
    */
-  Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
+  Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -324,7 +324,7 @@ public interface EntityEditModel {
    * @see #addAfterUpdateListener(Consumer)
    * @see EntityValidator#validate(Entity)
    */
-  Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
+  Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -343,7 +343,7 @@ public interface EntityEditModel {
    * @see #addBeforeDeleteListener(Consumer)
    * @see #addAfterDeleteListener(Consumer)
    */
-  void delete(Collection<? extends Entity> entities) throws DatabaseException;
+  void delete(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Adds the given entities to all foreign key models based on that entity type
@@ -390,7 +390,7 @@ public interface EntityEditModel {
    * @throws ValidationException on finding the first invalid entity
    * @see EntityDefinition#validator()
    */
-  void validate(Collection<? extends Entity> entities) throws ValidationException;
+  void validate(Collection<Entity> entities) throws ValidationException;
 
   /**
    * Validates the given entity, using the underlying validator.

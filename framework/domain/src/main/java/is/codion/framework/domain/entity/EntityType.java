@@ -31,8 +31,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 /**
  * Defines an Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
@@ -49,12 +47,6 @@ public interface EntityType {
    * @return the entity type name, unique within a domain.
    */
   String name();
-
-  /**
-   * @param <T> the entity class type
-   * @return the entity type class
-   */
-  <T extends Entity> Class<T> entityClass();
 
   /**
    * @return the name of the resource bundle, containing captions for this entity type, if any
@@ -350,45 +342,11 @@ public interface EntityType {
    * Creates a new EntityType instance.
    * @param name the entity type name
    * @param domainType the domainType to associate this entity type with
-   * @param entityClass the entity representation class
-   * @param <T> the entity representation type
-   * @return a {@link EntityType} instance with the given name
-   */
-  static <T extends Entity> EntityType entityType(String name, DomainType domainType,
-                                                  Class<T> entityClass) {
-    String bundleName = null;
-    try {
-      ResourceBundle.getBundle(entityClass.getName());
-      bundleName = entityClass.getName();
-    }
-    catch (MissingResourceException e) {/* Non-existing bundle */}
-
-    return new DefaultEntityType(domainType, name, entityClass, bundleName);
-  }
-
-  /**
-   * Creates a new EntityType instance.
-   * @param name the entity type name
-   * @param domainType the domainType to associate this entity type with
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @return a {@link EntityType} instance with the given name
    */
   static EntityType entityType(String name, DomainType domainType,
                                String resourceBundleName) {
-    return new DefaultEntityType(domainType, name, Entity.class, resourceBundleName);
-  }
-
-  /**
-   * Creates a new EntityType instance.
-   * @param name the entity type name
-   * @param domainType the domainType to associate this entity type with
-   * @param entityClass the entity representation class
-   * @param resourceBundleName the name of a resource bundle to use for captions, if any
-   * @param <T> the entity representation type
-   * @return a {@link EntityType} instance with the given name
-   */
-  static <T extends Entity> EntityType entityType(String name, DomainType domainType,
-                                                  Class<T> entityClass, String resourceBundleName) {
-    return new DefaultEntityType(domainType, name, entityClass, resourceBundleName);
+    return new DefaultEntityType(domainType, name, resourceBundleName);
   }
 }

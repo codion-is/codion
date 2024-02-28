@@ -38,27 +38,27 @@ import java.util.function.Consumer;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 
-public final class CountryReportDataSource extends JasperReportsDataSource<Country> {
+public final class CountryReportDataSource extends JasperReportsDataSource<Entity> {
 
   private final EntityConnection connection;
 
   CountryReportDataSource(List<Entity> countries, EntityConnection connection,
                           ProgressReporter<String> progressReporter) {
-    super(Entity.castTo(Country.class, countries).iterator(), new CountryValueProvider(),
+    super(countries.iterator(), new CountryValueProvider(),
             new CountryReportProgressReporter(progressReporter));
     this.connection = connection;
   }
 
   /* See usage in src/main/reports/country_report.jrxml, subreport element */
   public JRDataSource cityDataSource() {
-    Country country = currentItem();
+    Entity country = currentItem();
     try {
-      Collection<City> largestCities = Entity.castTo(City.class,
+      Collection<Entity> largestCities =
               connection.select(where(City.COUNTRY_FK.equalTo(country))
                       .attributes(City.NAME, City.POPULATION)
                       .orderBy(descending(City.POPULATION))
                       .limit(5)
-                      .build()));
+                      .build());
 
       return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
     }
@@ -67,7 +67,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Count
     }
   }
 
-  private static final class CountryValueProvider implements BiFunction<Country, JRField, Object> {
+  private static final class CountryValueProvider implements BiFunction<Entity, JRField, Object> {
 
     private static final String NAME = "name";
     private static final String CONTINENT = "continent";
@@ -76,43 +76,43 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Count
     private static final String POPULATION = "population";
 
     @Override
-    public Object apply(Country country, JRField field) {
+    public Object apply(Entity country, JRField field) {
       switch (field.getName()) {
         case NAME:
-          return country.name();
+          return country.get(Country.NAME);
         case CONTINENT:
-          return country.continent();
+          return country.get(Country.CONTINENT);
         case REGION:
-          return country.region();
+          return country.get(Country.REGION);
         case SURFACEAREA:
-          return country.surfacearea();
+          return country.get(Country.SURFACEAREA);
         case POPULATION:
-          return country.population();
+          return country.get(Country.POPULATION);
         default:
           throw new IllegalArgumentException("Unknown field: " + field.getName());
       }
     }
   }
 
-  private static final class CityValueProvider implements BiFunction<City, JRField, Object> {
+  private static final class CityValueProvider implements BiFunction<Entity, JRField, Object> {
 
     private static final String NAME = "name";
     private static final String POPULATION = "population";
 
     @Override
-    public Object apply(City city, JRField field) {
+    public Object apply(Entity city, JRField field) {
       switch (field.getName()) {
         case NAME:
-          return city.name();
+          return city.get(City.NAME);
         case POPULATION:
-          return city.population();
+          return city.get(City.POPULATION);
         default:
           throw new IllegalArgumentException("Unknown field: " + field.getName());
       }
     }
   }
 
-  private static final class CountryReportProgressReporter implements Consumer<Country> {
+  private static final class CountryReportProgressReporter implements Consumer<Entity> {
 
     private final AtomicInteger counter = new AtomicInteger();
     private final ProgressReporter<String> progressReporter;
@@ -122,8 +122,8 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Count
     }
 
     @Override
-    public void accept(Country country) {
-      progressReporter.publish(country.name());
+    public void accept(Entity country) {
+      progressReporter.publish(country.get(Country.NAME));
       progressReporter.report(counter.incrementAndGet());
     }
   }

@@ -46,8 +46,8 @@ public interface World {
 
   DomainType DOMAIN = DomainType.domainType(World.class);
 
-  interface City extends Entity {
-    EntityType TYPE = DOMAIN.entityType("world.city", City.class);
+  interface City {
+    EntityType TYPE = DOMAIN.entityType("world.city");
 
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> NAME = TYPE.stringColumn("name");
@@ -59,26 +59,10 @@ public interface World {
     // end::customType[]
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country", COUNTRY_CODE, Country.CODE);
-
-    String name();
-
-    int population();
-
-    Country country();
-
-    void location(Location location);
-
-    default boolean inCountry(Entity country) {
-      return country != null && Objects.equals(country(), country);
-    }
-
-    default boolean capital() {
-      return Objects.equals(get(City.ID), country().get(Country.CAPITAL));
-    }
   }
 
-  interface Country extends Entity {
-    EntityType TYPE = DOMAIN.entityType("world.country", Country.class);
+  interface Country {
+    EntityType TYPE = DOMAIN.entityType("world.country");
 
     Column<String> CODE = TYPE.stringColumn("code");
     Column<String> NAME = TYPE.stringColumn("name");
@@ -106,20 +90,10 @@ public interface World {
     // end::foreignKeyCapital[]
 
     FunctionType<EntityConnection, String, Double> AVERAGE_CITY_POPULATION = functionType("average_city_population");
-
-    String name();
-
-    String continent();
-
-    String region();
-
-    double surfacearea();
-
-    int population();
   }
 
-  interface CountryLanguage extends Entity {
-    EntityType TYPE = DOMAIN.entityType("world.countrylanguage", CountryLanguage.class);
+  interface CountryLanguage {
+    EntityType TYPE = DOMAIN.entityType("world.countrylanguage");
 
     Column<String> COUNTRY_CODE = TYPE.stringColumn("countrycode");
     Column<String> LANGUAGE = TYPE.stringColumn("language");
@@ -128,14 +102,10 @@ public interface World {
     Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
-
-    String language();
-
-    int noOfSpeakers();
   }
 
-  interface Continent extends Entity {
-    EntityType TYPE = DOMAIN.entityType("continent", Continent.class);
+  interface Continent {
+    EntityType TYPE = DOMAIN.entityType("continent");
 
     Column<String> NAME = TYPE.stringColumn("continent");
     Column<Integer> SURFACE_AREA = TYPE.integerColumn("surface_area");
@@ -145,18 +115,6 @@ public interface World {
     Column<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerColumn("min_indep_year");
     Column<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerColumn("max_indep_year");
     Column<Double> GNP = TYPE.doubleColumn("gnp");
-
-    String name();
-
-    int surfaceArea();
-
-    long population();
-
-    double minLifeExpectancy();
-
-    double maxLifeExpectancy();
-
-    double gnp();
   }
 
   interface Lookup {
@@ -240,13 +198,13 @@ public interface World {
     private static final String GREEN = "#00ff00";
 
     @Override
-    public Object color(Entity cityEntity, Attribute<?> attribute) {
+    public Object color(Entity city, Attribute<?> attribute) {
       if (attribute.equals(City.POPULATION) &&
-              cityEntity.get(City.POPULATION) > 1_000_000) {
+              city.get(City.POPULATION) > 1_000_000) {
         return YELLOW;
       }
-      City city = cityEntity.castTo(City.class);
-      if (attribute.equals(City.NAME) && city.capital()) {
+      if (attribute.equals(City.NAME) &&
+              Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL))) {
         return GREEN;
       }
 

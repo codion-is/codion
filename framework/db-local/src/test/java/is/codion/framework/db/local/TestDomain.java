@@ -95,8 +95,8 @@ public final class TestDomain extends DefaultDomain {
     employeeNonOpt();
   }
 
-  public interface Department extends Entity {
-    EntityType TYPE = DOMAIN.entityType("employees.department", Department.class);
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("employees.department");
 
     Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
     Column<String> DNAME = TYPE.stringColumn("dname");
@@ -107,14 +107,6 @@ public final class TestDomain extends DefaultDomain {
     ConditionType DEPARTMENT_CONDITION_TYPE = TYPE.conditionType("condition");
     ConditionType DEPARTMENT_CONDITION_SALES_TYPE = TYPE.conditionType("conditionSalesId");
     ConditionType DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE = TYPE.conditionType("conditionInvalidColumnId");
-
-    void setName(String name);
-
-    String getName();
-
-    void setId(Integer id);
-
-    void setLocation(String location);
   }
 
   void department() {
@@ -123,20 +115,17 @@ public final class TestDomain extends DefaultDomain {
                     .primaryKey()
                     .caption(Department.DEPTNO.name())
                     .updatable(true)
-                    .nullable(false)
-                    .beanProperty("id"),
+                    .nullable(false),
             Department.DNAME.define()
                     .column()
                     .caption(Department.DNAME.name())
                     .searchable(true)
                     .maximumLength(14)
-                    .nullable(false)
-                    .beanProperty("name"),
+                    .nullable(false),
             Department.LOC.define()
                     .column()
                     .caption(Department.LOC.name())
-                    .maximumLength(13)
-                    .beanProperty("location"),
+                    .maximumLength(13),
             Department.ACTIVE.define()
                     .attribute(),
             Department.DATA.define()
@@ -234,7 +223,7 @@ public final class TestDomain extends DefaultDomain {
             .caption("Employee"));
   }
 
-  public interface DepartmentFk extends Entity {
+  public interface DepartmentFk {
     EntityType TYPE = DOMAIN.entityType("employees.departmentfk");
 
     Column<Integer> DEPTNO = TYPE.integerColumn("deptno");

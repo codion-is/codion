@@ -21,7 +21,9 @@ package is.codion.framework.demos.world.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.Location;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -49,7 +51,7 @@ public final class CityEditModel extends SwingEntityEditModel {
   }
 
   public void populateLocation() throws IOException, DatabaseException, ValidationException {
-    Location location = lookupLocation(entity().castTo(City.class))
+    Location location = lookupLocation(entity())
             .orElseThrow(() -> new RuntimeException("Location not found for city: " + entity()));
     put(City.LOCATION, location);
     if (modified().get()) {
@@ -57,17 +59,17 @@ public final class CityEditModel extends SwingEntityEditModel {
     }
   }
 
-  void populateLocation(City city) throws IOException, DatabaseException, ValidationException {
-    lookupLocation(city).ifPresent(city::location);
+  void populateLocation(Entity city) throws IOException, DatabaseException, ValidationException {
+    lookupLocation(city).ifPresent(location -> city.put(City.LOCATION, location));
     if (city.modified()) {
       update(singletonList(city));
     }
   }
 
-  private static Optional<Location> lookupLocation(City city) throws IOException {
+  private static Optional<Location> lookupLocation(Entity city) throws IOException {
     JSONArray jsonArray = toJSONArray(new URL(OPENSTREETMAP_ORG_SEARCH +
-            URLEncoder.encode(city.name(), UTF_8.name()) + "," +
-            URLEncoder.encode(city.country().name(), UTF_8.name()) + "&format=json"));
+            URLEncoder.encode(city.get(City.NAME), UTF_8.name()) + "," +
+            URLEncoder.encode(city.get(City.COUNTRY_FK).get(Country.NAME), UTF_8.name()) + "&format=json"));
     if (!jsonArray.isEmpty()) {
       JSONObject cityInformation = (JSONObject) jsonArray.get(0);
 
