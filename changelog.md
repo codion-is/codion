@@ -19,6 +19,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - CalendarPanel.Builder.initialValue() now accepts null.
 - DefaultCalendarDialogBuilder refactored.
+- CalendarPanel, day buttons now with zero margin insets, month spinner now displays short name.
+- CalendarPanel.Builder.includeTodayButton() added.
 ### is.codion.swing.common.ui.tools
 - LoadTestPanel.loadTestPanel() factory method added, constructor now private.
 ### is.codion.framework.domain
