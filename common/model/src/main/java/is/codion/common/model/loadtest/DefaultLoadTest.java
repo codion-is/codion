@@ -29,6 +29,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static is.codion.common.model.randomizer.ItemRandomizer.RandomItem.randomItem;
+import static is.codion.common.model.randomizer.ItemRandomizer.itemRandomizer;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -220,8 +222,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   }
 
   private ItemRandomizer<Scenario<T>> createScenarioChooser() {
-    return ItemRandomizer.itemRandomizer(scenarios.values().stream()
-            .map(scenario -> ItemRandomizer.RandomItem.randomItem(scenario, scenario.defaultWeight()))
+    return itemRandomizer(scenarios.values().stream()
+            .map(scenario -> randomItem(scenario, scenario.defaultWeight()))
             .collect(toList()));
   }
 

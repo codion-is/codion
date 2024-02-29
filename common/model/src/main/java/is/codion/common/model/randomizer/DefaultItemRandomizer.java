@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,18 +17,11 @@ import static java.util.Objects.requireNonNull;
  */
 class DefaultItemRandomizer<T> implements ItemRandomizer<T> {
 
-  /**
-   * The items contained in this model
-   */
-  private final List<ItemRandomizer.RandomItem<T>> items;
-
-  /**
-   * The Random instance used by this randomizer
-   */
+  private final List<RandomItem<T>> items;
   private final Random random = new Random();
 
   DefaultItemRandomizer(Collection<RandomItem<T>> items) {
-    this.items = new ArrayList<>(requireNonNull(items));
+    this.items = unmodifiableList(new ArrayList<>(requireNonNull(items)));
   }
 
   @Override
@@ -56,7 +50,7 @@ class DefaultItemRandomizer<T> implements ItemRandomizer<T> {
   }
 
   @Override
-  public final List<ItemRandomizer.RandomItem<T>> items() {
+  public final List<RandomItem<T>> items() {
     return items;
   }
 
@@ -74,14 +68,14 @@ class DefaultItemRandomizer<T> implements ItemRandomizer<T> {
 
     int randomNumber = random.nextInt(totalWeights + 1);
     int position = 0;
-    for (ItemRandomizer.RandomItem<T> item : items) {
+    for (RandomItem<T> item : items) {
       position += item.weight();
       if (randomNumber <= position && item.weight() > 0) {
         return item.item();
       }
     }
 
-    throw new IllegalStateException("getRandomItem() did not find an item");
+    throw new IllegalStateException("randomItem() did not find an item");
   }
 
   @Override
@@ -105,9 +99,10 @@ class DefaultItemRandomizer<T> implements ItemRandomizer<T> {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected final ItemRandomizer.RandomItem<T> randomItem(T item) {
-    for (ItemRandomizer.RandomItem<T> randomItem : items) {
-      if (randomItem.item().equals(item)) {
+  protected final RandomItem<T> randomItem(T item) {
+    requireNonNull(item);
+    for (RandomItem<T> randomItem : items) {
+      if (randomItem.item() == item) {
         return randomItem;
       }
     }
