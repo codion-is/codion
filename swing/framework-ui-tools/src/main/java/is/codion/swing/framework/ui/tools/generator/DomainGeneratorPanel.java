@@ -70,8 +70,10 @@ public final class DomainGeneratorPanel extends JPanel {
                             .action(populateSchemaControl))
                     .popupMenuControls(table -> Controls.builder()
                             .control(populateSchemaControl)
-                            .control(createToggleColumnsControls(table))
-                            .controls(table.createAutoResizeModeControl())
+                            .controls(Controls.builder()
+                                    .name("Columns")
+                                    .control(table.createToggleColumnsControls())
+                                    .controls(table.createAutoResizeModeControl()))
                             .build())
                     .build();
 
@@ -119,7 +121,7 @@ public final class DomainGeneratorPanel extends JPanel {
 
   public void showFrame() {
     Windows.frame(this)
-            .title("Codion Database Explorer")
+            .title("Codion Domain Generator")
             .icon(Logos.logoTransparent())
             .menuBar(menu(createMainMenuControls()).createMenuBar())
             .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
@@ -158,13 +160,6 @@ public final class DomainGeneratorPanel extends JPanel {
                             .userPreferencePropertyName(DomainGeneratorPanel.class.getName())
                             .createControl()))
             .build();
-  }
-
-  private static Control createToggleColumnsControls(FilteredTable<MetaDataSchema, Integer> table) {
-    Controls toggleColumnsControls = table.createToggleColumnsControls();
-    toggleColumnsControls.setName("Columns...");
-
-    return toggleColumnsControls;
   }
 
   /**
