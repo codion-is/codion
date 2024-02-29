@@ -93,10 +93,12 @@ public class DefaultLoadTestModelTest {
     model.applicationTableModel().refresh();
     model.applicationTableModel().selectionModel().setSelectedIndex(0);
     model.removeSelectedApplications();
+    Thread.sleep(100);
     assertEquals(4, loadTest.applicationCount().get());
 
     model.clearCharts();
     loadTest.removeApplicationBatch();
+    Thread.sleep(100);
     assertEquals(0, loadTest.applicationCount().get());
 
     AtomicInteger exitCounter = new AtomicInteger();
