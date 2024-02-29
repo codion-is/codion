@@ -287,14 +287,16 @@ public final class CalendarPanel extends JPanel {
   public interface Builder {
 
     /**
-     * Note that calling this method also sets {@link #includeTime(boolean)} to false
+     * Note that calling this method also sets {@link #includeTime(boolean)} to false.
+     * In case of a null value {@link LocalDate#now()} is used.
      * @param initialValue the initial value
      * @return this builder instance
      */
     Builder initialValue(LocalDate initialValue);
 
     /**
-     * Note that calling this method also sets {@link #includeTime(boolean)} to true
+     * Note that calling this method also sets {@link #includeTime(boolean)} to true.
+     * In case of a null value {@link LocalDateTime#now()} is used.
      * @param initialValue the initial value
      * @return this builder instance
      */
@@ -328,13 +330,13 @@ public final class CalendarPanel extends JPanel {
 
     @Override
     public Builder initialValue(LocalDate initialValue) {
-      this.initialValue = requireNonNull(initialValue).atStartOfDay();
+      this.initialValue = initialValue == null ? LocalDate.now().atStartOfDay() : initialValue.atStartOfDay();
       return includeTime(false);
     }
 
     @Override
     public Builder initialValue(LocalDateTime initialValue) {
-      this.initialValue = requireNonNull(initialValue);
+      this.initialValue = initialValue == null ? LocalDateTime.now() : initialValue;
       return includeTime(true);
     }
 
