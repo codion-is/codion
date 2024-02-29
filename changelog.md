@@ -18,6 +18,7 @@ Codion Change Log
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.
 ### is.codion.swing.common.ui
 - CalendarPanel.Builder.initialValue() now accepts null.
+- DefaultCalendarDialogBuilder refactored.
 ### is.codion.swing.common.ui.tools
 - LoadTestPanel.loadTestPanel() factory method added, constructor now private.
 ### is.codion.framework.domain

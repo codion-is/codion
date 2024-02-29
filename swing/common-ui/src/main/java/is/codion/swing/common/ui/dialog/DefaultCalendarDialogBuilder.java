@@ -38,39 +38,33 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 
   @Override
   public Optional<LocalDate> selectLocalDate() {
-    CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder();
-    if (initialDate != null) {
-      calendarPanelBuilder.initialValue(initialDate);
-    }
-    CalendarPanel calendarPanel = calendarPanelBuilder.build();
+    CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder()
+            .initialValue(initialDate);
     State okPressed = State.state();
-    new DefaultOkCancelDialogBuilder(calendarPanel)
-            .owner(owner)
-            .locationRelativeTo(locationRelativeTo)
-            .title(MESSAGES.getString("select_date"))
-            .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
-            .onOk(() -> okPressed.set(true))
-            .show();
+    CalendarPanel calendarPanel = showCalendarDialog(calendarPanelBuilder.build(), MESSAGES.getString("select_date"), okPressed);
 
     return okPressed.get() ? Optional.of(calendarPanel.getLocalDate()) : Optional.empty();
   }
 
   @Override
   public Optional<LocalDateTime> selectLocalDateTime() {
-    CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder();
-    if (initialDateTime != null) {
-      calendarPanelBuilder.initialValue(initialDateTime);
-    }
-    CalendarPanel calendarPanel = calendarPanelBuilder.build();
+    CalendarPanel.Builder calendarPanelBuilder = CalendarPanel.builder()
+            .initialValue(initialDateTime);
     State okPressed = State.state();
+    CalendarPanel calendarPanel = showCalendarDialog(calendarPanelBuilder.build(), MESSAGES.getString("select_date_time"), okPressed);
+
+    return okPressed.get() ? Optional.of(calendarPanel.getLocalDateTime()) : Optional.empty();
+  }
+
+  private CalendarPanel showCalendarDialog(CalendarPanel calendarPanel, String title, State okPressed) {
     new DefaultOkCancelDialogBuilder(calendarPanel)
             .owner(owner)
             .locationRelativeTo(locationRelativeTo)
-            .title(MESSAGES.getString("select_date_time"))
+            .title(title)
             .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
             .onOk(() -> okPressed.set(true))
             .show();
 
-    return okPressed.get() ? Optional.of(calendarPanel.getLocalDateTime()) : Optional.empty();
+    return calendarPanel;
   }
 }
