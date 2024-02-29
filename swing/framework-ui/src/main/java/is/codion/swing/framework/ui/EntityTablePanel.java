@@ -567,7 +567,7 @@ public class EntityTablePanel extends JPanel {
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */
   public final Value<Control> control(TableControl tableControl) {
-    return controls.get(tableControl);
+    return controls.get(requireNonNull(tableControl));
   }
 
   /**
