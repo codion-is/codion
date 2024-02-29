@@ -46,7 +46,6 @@ public class SwingEntityEditModelTest {
     model.includeNull().set(true);
     model.nullItem().set("null");
     assertNotNull(model);
-    assertTrue(employeeEditModel.containsComboBoxModel(Employee.JOB));
     assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clearComboBoxModels();
@@ -58,7 +57,6 @@ public class SwingEntityEditModelTest {
 
   @Test
   void foreignKeyComboBoxModel() {
-    assertFalse(employeeEditModel.containsComboBoxModel(Employee.DEPARTMENT_FK));
     EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.cleared());
@@ -69,6 +67,7 @@ public class SwingEntityEditModelTest {
     employeeEditModel.clearComboBoxModels();
     assertTrue(model.cleared());
     assertTrue(model.items().isEmpty());
+    assertSame(model, employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK));
   }
 
   @Test

@@ -39,6 +39,9 @@ Codion Change Log
 - RemoteEntityConnection, method arguments simplified due to EntityInvoker removal.
 ### is.codion.framework.model
 - EntityEditModel, method arguments simplified due to EntityInvoker removal.
+- EntityEditModel.containsSearchModel() removed.
+### is.codion.swing.framework.model
+- SwingEntityEditModel.containsComboBoxModel() removed.
 ### is.codion.swing.framework.ui
 - EntityDialogs, method arguments simplified due to EntityInvoker removal.
 - EntityTablePanel.beforeDelete() removed.

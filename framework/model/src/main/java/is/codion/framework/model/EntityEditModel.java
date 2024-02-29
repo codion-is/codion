@@ -219,13 +219,6 @@ public interface EntityEditModel {
   EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey);
 
   /**
-   * Returns true if this edit model contains a {@link EntitySearchModel} for the given foreign key
-   * @param foreignKey the foreign key
-   * @return true if a {@link EntitySearchModel} has been initialized for the given foreign key
-   */
-  boolean containsSearchModel(ForeignKey foreignKey);
-
-  /**
    * @param foreignKey the foreign key for which to retrieve the {@link EntitySearchModel}
    * @return the {@link EntitySearchModel} associated with the {@code foreignKey}, if no search model
    * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.

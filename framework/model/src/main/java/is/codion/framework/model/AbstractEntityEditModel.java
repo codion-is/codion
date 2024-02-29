@@ -82,7 +82,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.states.readOnly.set(entityDefinition().readOnly());
     this.events.bindEvents();
     configurePersistentForeignKeys();
-    setEntity(defaultEntity(AttributeDefinition::defaultValue));
+    setEntity(createEntity(AttributeDefinition::defaultValue));
   }
 
   @Override
@@ -397,14 +397,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public final boolean containsSearchModel(ForeignKey foreignKey) {
-    entityDefinition().foreignKeys().definition(foreignKey);
-    synchronized (entitySearchModels) {
-      return entitySearchModels.containsKey(foreignKey);
     }
   }
 
@@ -729,7 +721,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void setEntity(Entity entity) {
-    Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? defaultEntity(this::defaultValue) : entity);
+    Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
     for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
       Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
       events.notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
@@ -768,7 +760,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see ColumnDefinition.Builder#columnHasDefaultValue()
    * @see ColumnDefinition.Builder#defaultValue(Object)
    */
-  private Entity defaultEntity(ValueSupplier valueSupplier) {
+  private Entity createEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
     addColumnValues(valueSupplier, definition, newEntity);
@@ -1105,7 +1097,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = editModel;
       this.attribute = attribute;
-      this.editModel.addValueListener(attribute, valueChange -> notifyListeners());
+      this.editModel.addValueListener(attribute, value -> notifyListeners());
     }
 
     @Override

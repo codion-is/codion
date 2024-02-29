@@ -116,11 +116,9 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void foreignKeySearchModel() {
-    assertFalse(employeeEditModel.containsSearchModel(Employee.DEPARTMENT_FK));
     EntitySearchModel model = employeeEditModel.foreignKeySearchModel(Employee.DEPARTMENT_FK);
-    assertTrue(employeeEditModel.containsSearchModel(Employee.DEPARTMENT_FK));
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.foreignKeySearchModel(Employee.DEPARTMENT_FK));
+    assertSame(model, employeeEditModel.foreignKeySearchModel(Employee.DEPARTMENT_FK));
   }
 
   @Test
