@@ -12,6 +12,7 @@ Codion Change Log
 - LoadTest.Scenario.Builder introduced along with LoadTest.Performer, AbstractScenario removed, related refactoring.
 - LoadTest.Scenario, couple of scenario() factory methods added.
 - LoadTest.title() renamed name(), related refactoring.
+- DefaultLoadTest.stop() missing synchronization added, addApplicationBatch() superflous syncronization removed.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.

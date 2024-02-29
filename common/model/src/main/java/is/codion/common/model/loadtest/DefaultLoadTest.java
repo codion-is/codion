@@ -144,10 +144,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
       int batchSize = applicationBatchSize.get();
       for (int i = 0; i < batchSize; i++) {
         DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), applicationFactory);
-        synchronized (applications) {
-          applications.put(applicationRunner, applicationRunner.application);
-          applicationCount.set(applications.size());
-        }
+        applications.put(applicationRunner, applicationRunner.application);
+        applicationCount.set(applications.size());
         scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
       }
     }
@@ -230,8 +228,10 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   @Override
   public void stop(ApplicationRunner applicationRunner) {
     requireNonNull(applicationRunner).stop();
-    applications.remove(applicationRunner);
-    applicationCount.set(applications.size());
+    synchronized (applications) {
+      applications.remove(applicationRunner);
+      applicationCount.set(applications.size());
+    }
   }
 
   private final class DefaultApplicationRunner implements ApplicationRunner {
