@@ -12,9 +12,15 @@ Codion Change Log
 - LoadTest.Scenario.Builder introduced along with LoadTest.Performer, AbstractScenario removed, related refactoring.
 - LoadTest.Scenario, couple of scenario() factory methods added.
 - LoadTest.title() renamed name(), related refactoring.
+- DefaultLoadTest.stop() missing synchronization added, addApplicationBatch() superflous syncronization removed.
 ### is.codion.common.rmi
 - SerializationWhitelist, now allows arrays but checks the component type.
 - SerializationWhitelist.DryRun, now excludes arrays and includes the component type.
+### is.codion.swing.common.ui
+- CalendarPanel.Builder.initialValue() now accepts null.
+- DefaultCalendarDialogBuilder refactored.
+- CalendarPanel, day buttons now with zero margin insets, month spinner now displays short name.
+- CalendarPanel.Builder.includeTodayButton() added.
 ### is.codion.swing.common.ui.tools
 - LoadTestPanel.loadTestPanel() factory method added, constructor now private.
 ### is.codion.framework.domain
@@ -22,6 +28,7 @@ Codion Change Log
 - EntityInvoker removed.
 - AttributeDefinition.beanProperty() removed.
 - Entity, ForeignKeyCondition, method arguments simplified due to EntityInvoker removal.
+- Entity.mapToPrimaryKey() now throws exception in case a non-unique primary key is encountered.
 ### is.codion.framework.db.core
 - EntityConnection, method arguments simplified due to EntityInvoker removal.
 ### is.codion.framework.db.local

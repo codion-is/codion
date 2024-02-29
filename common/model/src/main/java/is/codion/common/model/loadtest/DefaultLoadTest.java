@@ -44,6 +44,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static is.codion.common.model.randomizer.ItemRandomizer.RandomItem.randomItem;
+import static is.codion.common.model.randomizer.ItemRandomizer.itemRandomizer;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -159,10 +161,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
       int batchSize = applicationBatchSize.get();
       for (int i = 0; i < batchSize; i++) {
         DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), applicationFactory);
-        synchronized (applications) {
-          applications.put(applicationRunner, applicationRunner.application);
-          applicationCount.set(applications.size());
-        }
+        applications.put(applicationRunner, applicationRunner.application);
+        applicationCount.set(applications.size());
         scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
       }
     }
@@ -237,16 +237,18 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
   }
 
   private ItemRandomizer<Scenario<T>> createScenarioChooser() {
-    return ItemRandomizer.itemRandomizer(scenarios.values().stream()
-            .map(scenario -> ItemRandomizer.RandomItem.randomItem(scenario, scenario.defaultWeight()))
+    return itemRandomizer(scenarios.values().stream()
+            .map(scenario -> randomItem(scenario, scenario.defaultWeight()))
             .collect(toList()));
   }
 
   @Override
   public void stop(ApplicationRunner applicationRunner) {
     requireNonNull(applicationRunner).stop();
-    applications.remove(applicationRunner);
-    applicationCount.set(applications.size());
+    synchronized (applications) {
+      applications.remove(applicationRunner);
+      applicationCount.set(applications.size());
+    }
   }
 
   private final class DefaultApplicationRunner implements ApplicationRunner {

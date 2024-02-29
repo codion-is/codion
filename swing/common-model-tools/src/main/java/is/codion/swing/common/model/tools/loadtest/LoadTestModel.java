@@ -78,19 +78,19 @@ public interface LoadTestModel<T> {
 
   /**
    * @param scenarioName the scenario name
-   * @return the total number of runs since the counter was cleared
+   * @return the total number of runs since the counter was reset
    */
   int totalRunCount(String scenarioName);
 
   /**
    * @param scenarioName the scenario name
-   * @return the total number of successful runs since the counter was cleared
+   * @return the total number of successful runs since the counter was reset
    */
   int successfulRunCount(String scenarioName);
 
   /**
    * @param scenarioName the scenario name
-   * @return the total number of unsuccessful runs since the counter was cleared
+   * @return the total number of unsuccessful runs since the counter was reset
    */
   int unsuccessfulRunCount(String scenarioName);
 

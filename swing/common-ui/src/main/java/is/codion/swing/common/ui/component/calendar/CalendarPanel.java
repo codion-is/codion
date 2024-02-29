@@ -41,6 +41,7 @@ import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -181,9 +182,11 @@ public final class CalendarPanel extends JPanel {
   private final List<JLabel> dayFillLabels;
   private final JLabel formattedDateLabel;
   private final boolean includeTime;
+  private final boolean includeTodayButton;
 
   CalendarPanel(DefaultBuilder builder) {
     this.includeTime = builder.includeTime;
+    this.includeTodayButton = builder.includeTodayButton;
     LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
     monthValue = Value.value(dateTime.getMonth(), dateTime.getMonth());
@@ -302,14 +305,16 @@ public final class CalendarPanel extends JPanel {
   public interface Builder {
 
     /**
-     * Note that calling this method also sets {@link #includeTime(boolean)} to false
+     * Note that calling this method also sets {@link #includeTime(boolean)} to false.
+     * In case of a null value {@link LocalDate#now()} is used.
      * @param initialValue the initial value
      * @return this builder instance
      */
     Builder initialValue(LocalDate initialValue);
 
     /**
-     * Note that calling this method also sets {@link #includeTime(boolean)} to true
+     * Note that calling this method also sets {@link #includeTime(boolean)} to true.
+     * In case of a null value {@link LocalDateTime#now()} is used.
      * @param initialValue the initial value
      * @return this builder instance
      */
@@ -320,6 +325,12 @@ public final class CalendarPanel extends JPanel {
      * @return this builder instance
      */
     Builder includeTime(boolean includeTime);
+
+    /**
+     * @param includeTodayButton true if a 'Today' button for selecting the current date should be included
+     * @return this builder instance
+     */
+    Builder includeTodayButton(boolean includeTodayButton);
 
     /**
      * @param keyboardShortcut the keyboard shortcut key
@@ -340,22 +351,29 @@ public final class CalendarPanel extends JPanel {
 
     private LocalDateTime initialValue;
     private boolean includeTime = false;
+    private boolean includeTodayButton = false;
 
     @Override
     public Builder initialValue(LocalDate initialValue) {
-      this.initialValue = requireNonNull(initialValue).atStartOfDay();
+      this.initialValue = initialValue == null ? LocalDate.now().atStartOfDay() : initialValue.atStartOfDay();
       return includeTime(false);
     }
 
     @Override
     public Builder initialValue(LocalDateTime initialValue) {
-      this.initialValue = requireNonNull(initialValue);
+      this.initialValue = initialValue == null ? LocalDateTime.now() : initialValue;
       return includeTime(true);
     }
 
     @Override
     public Builder includeTime(boolean includeTime) {
       this.includeTime = includeTime;
+      return this;
+    }
+
+    @Override
+    public Builder includeTodayButton(boolean includeTodayButton) {
+      this.includeTodayButton = includeTodayButton;
       return this;
     }
 
@@ -465,9 +483,12 @@ public final class CalendarPanel extends JPanel {
   }
 
   private Map<Integer, JToggleButton> createDayButtons() {
+    Insets margin = new Insets(0, 0, 0, 0);
+
     return dayStates.entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> toggleButton(entry.getValue())
                     .text(Integer.toString(entry.getKey()))
+                    .margin(margin)
                     .build()));
   }
 
@@ -502,10 +523,13 @@ public final class CalendarPanel extends JPanel {
             .add(monthSpinner)
             .add(yearSpinner);
     if (includeTime) {
-      yearMonthHourMinutePanel.addAll(new JLabel(" "), hourSpinner, new JLabel(":", SwingConstants.CENTER), minuteSpinner);
+      yearMonthHourMinutePanel.addAll(hourSpinner, new JLabel(":", SwingConstants.CENTER), minuteSpinner);
+    }
+    if (includeTodayButton) {
+      yearMonthHourMinutePanel.add(createSelectTodayButton());
     }
 
-    return yearMonthHourMinutePanel.add(createSelectTodayButton()).build();
+    return yearMonthHourMinutePanel.build();
   }
 
   private JButton createSelectTodayButton() {
@@ -600,7 +624,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private void updateFormattedDate() {
-    formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? " " + timeFormatter.format(getLocalDateTime()) : ""));
+    formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? ", " + timeFormatter.format(getLocalDateTime()) : ""));
   }
 
   private void addKeyEvents(KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts) {
@@ -736,7 +760,7 @@ public final class CalendarPanel extends JPanel {
 
   private static List<Item<Month>> createMonthItems() {
     return Arrays.stream(Month.values())
-            .map(month -> Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault())))
+            .map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault())))
             .collect(Collectors.toList());
   }
 

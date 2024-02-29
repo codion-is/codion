@@ -34,6 +34,7 @@ final class BoundedItemRandomizer<T> extends DefaultItemRandomizer<T> {
 
   private final Object lock = new Object();
   private final int maximumTotalWeight;
+
   private RandomItem<T> lastAffected;
 
   BoundedItemRandomizer(Collection<T> items, int maximumTotalWeight) {

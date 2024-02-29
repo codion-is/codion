@@ -157,13 +157,13 @@ public final class EntityTest {
             .with(Employee.ID, 3)
             .build();
     Map<Entity.Key, Entity> entityMap = Entity.mapToPrimaryKey(asList(dept, emp));
-    assertEquals(dept, entityMap.get(dept.primaryKey()));
-    assertEquals(emp, entityMap.get(emp.primaryKey()));
+    assertSame(dept, entityMap.get(dept.primaryKey()));
+    assertSame(emp, entityMap.get(emp.primaryKey()));
 
     Entity dept2 = entities.builder(Department.TYPE)
             .with(Department.ID, 1)
             .build();
-    assertThrows(IllegalStateException.class, () -> Entity.mapToPrimaryKey(asList(dept, dept2, emp)));
+    assertThrows(IllegalArgumentException.class, () -> Entity.mapToPrimaryKey(asList(dept, dept2, emp)));
   }
 
   @Test
