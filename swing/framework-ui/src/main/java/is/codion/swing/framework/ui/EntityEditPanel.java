@@ -235,7 +235,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */
   public final Value<Control> control(EditControl editControl) {
-    return controls.get(editControl);
+    return controls.get(requireNonNull(editControl));
   }
 
   /**

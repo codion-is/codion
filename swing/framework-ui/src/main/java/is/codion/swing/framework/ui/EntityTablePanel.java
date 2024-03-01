@@ -582,7 +582,7 @@ public class EntityTablePanel extends JPanel {
    * @return the {@link Value} containing the control associated with {@code controlCode}
    */
   public final Value<Control> control(TableControl tableControl) {
-    return controls.get(tableControl);
+    return controls.get(requireNonNull(tableControl));
   }
 
   /**
@@ -614,7 +614,6 @@ public class EntityTablePanel extends JPanel {
    * the {@link Confirmer} set via {@link #deleteConfirmer()}.
    * @return true if the delete operation was successful
    * @see #deleteConfirmer()
-   * @see #beforeDelete()
    */
   public final boolean deleteWithConfirmation() {
     if (confirmDelete()) {
@@ -627,10 +626,8 @@ public class EntityTablePanel extends JPanel {
   /**
    * Deletes the entities selected in the underlying table model without asking for confirmation.
    * @return true if the delete operation was successful
-   * @see #beforeDelete()
    */
   public final boolean delete() {
-    beforeDelete();
     try {
       tableModel.deleteSelected();
 
@@ -945,12 +942,6 @@ public class EntityTablePanel extends JPanel {
                     .map(JComponent.class::cast)
                     .forEach(component -> component.setToolTipText(null)));
   }
-
-  /**
-   * Called before delete is performed on the selected entities.
-   * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
-   */
-  protected void beforeDelete() {}
 
   /**
    * Propagates the exception to {@link #onValidationException(ValidationException)} or

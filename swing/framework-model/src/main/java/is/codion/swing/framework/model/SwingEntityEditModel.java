@@ -158,16 +158,6 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   /**
-   * @param attribute the attribute
-   * @return true if this edit model contains a combobox model for the attribute
-   */
-  public final boolean containsComboBoxModel(Attribute<?> attribute) {
-    synchronized (comboBoxModels) {
-      return comboBoxModels.containsKey(attribute);
-    }
-  }
-
-  /**
    * Creates a {@link EntityComboBoxModel} for the given foreign key, override to
    * provide a custom {@link EntityComboBoxModel} implementation.
    * This method is called when creating a foreign key {@link EntityComboBoxModel} for the edit
@@ -221,7 +211,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   public final void add(ForeignKey foreignKey, Collection<Entity> entities) {
     requireNonNull(foreignKey);
     requireNonNull(entities);
-    if (containsComboBoxModel(foreignKey)) {
+    if (comboBoxModels.containsKey(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       for (Entity inserted : entities) {
         comboBoxModel.add(inserted);
@@ -234,7 +224,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     requireNonNull(foreignKey);
     requireNonNull(entities);
     clearForeignKeyReferences(foreignKey, entities);
-    if (containsComboBoxModel(foreignKey)) {
+    if (comboBoxModels.containsKey(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       Entity selectedEntity = comboBoxModel.selectedValue();
       entities.forEach(comboBoxModel::remove);
@@ -253,7 +243,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   @Override
   protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> entities) {
     super.replaceForeignKey(foreignKey, entities);
-    if (containsComboBoxModel(foreignKey)) {
+    if (comboBoxModels.containsKey(foreignKey)) {
       EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       entities.forEach(foreignKeyValue -> comboBoxModel.replace(foreignKeyValue, foreignKeyValue));
     }

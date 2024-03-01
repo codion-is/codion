@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.30-SNAPSHOT
+## 0.17.30
 ### is.codion.common
 - Text.underscoreToCamelCase() moved to DomainToString, no longer public.
 ### is.codion.common.model
@@ -39,8 +39,12 @@ Codion Change Log
 - RemoteEntityConnection, method arguments simplified due to EntityInvoker removal.
 ### is.codion.framework.model
 - EntityEditModel, method arguments simplified due to EntityInvoker removal.
+- EntityEditModel.containsSearchModel() removed.
+### is.codion.swing.framework.model
+- SwingEntityEditModel.containsComboBoxModel() removed.
 ### is.codion.swing.framework.ui
 - EntityDialogs, method arguments simplified due to EntityInvoker removal.
+- EntityTablePanel.beforeDelete() removed.
 ### is.codion.swing.framework.model.tools
 - DomainToString bug fixed, now handles the mapping from an unknown column data type to an object based Column correctly, DatabaseDomain some renaming.
 - DomainGeneratorModel, table type column moved.
