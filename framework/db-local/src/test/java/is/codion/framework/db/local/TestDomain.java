@@ -96,25 +96,25 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.DEPTNO.define()
-                    .primaryKey()
-                    .caption(Department.DEPTNO.name())
-                    .updatable(true)
-                    .nullable(false),
-            Department.DNAME.define()
-                    .column()
-                    .caption(Department.DNAME.name())
-                    .searchable(true)
-                    .maximumLength(14)
-                    .nullable(false),
-            Department.LOC.define()
-                    .column()
-                    .caption(Department.LOC.name())
-                    .maximumLength(13),
-            Department.ACTIVE.define()
-                    .attribute(),
-            Department.DATA.define()
-                    .attribute())
+                    Department.DEPTNO.define()
+                            .primaryKey()
+                            .caption(Department.DEPTNO.name())
+                            .updatable(true)
+                            .nullable(false),
+                    Department.DNAME.define()
+                            .column()
+                            .caption(Department.DNAME.name())
+                            .searchable(true)
+                            .maximumLength(14)
+                            .nullable(false),
+                    Department.LOC.define()
+                            .column()
+                            .caption(Department.LOC.name())
+                            .maximumLength(13),
+                    Department.ACTIVE.define()
+                            .attribute(),
+                    Department.DATA.define()
+                            .attribute())
             .smallDataset(true)
             .stringFactory(Department.DNAME)
             .condition(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
@@ -154,53 +154,53 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.define()
-                    .primaryKey()
-                    .caption(Employee.ID.name()),
-            Employee.NAME.define()
-                    .column()
-                    .caption(Employee.NAME.name())
-                    .searchable(true).maximumLength(10).nullable(false),
-            Employee.DEPARTMENT.define()
-                    .column()
-                    .nullable(false),
-            Employee.DEPARTMENT_FK.define()
-                    .foreignKey()
-                    .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.define()
-                    .column()
-                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .caption(Employee.JOB.name())
-                    .searchable(true),
-            Employee.SALARY.define()
-                    .column()
-                    .caption(Employee.SALARY.name())
-                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            Employee.COMMISSION.define()
-                    .column()
-                    .caption(Employee.COMMISSION.name())
-                    .valueRange(100, 2000).maximumFractionDigits(2),
-            Employee.MGR.define()
-                    .column(),
-            Employee.MGR_FK.define()
-                    //not really soft, just for testing purposes
-                    .softForeignKey()
-                    .caption(Employee.MGR_FK.name()),
-            Employee.HIREDATE.define()
-                    .column()
-                    .caption(Employee.HIREDATE.name())
-                    .nullable(false),
-            Employee.HIRETIME.define()
-                    .column()
-                    .caption(Employee.HIRETIME.name()),
-            Employee.DEPARTMENT_LOCATION.define()
-                    .denormalized(Employee.DEPARTMENT_FK, Department.LOC)
-                    .caption(Department.LOC.name()),
-            Employee.DATA_LAZY.define()
-                    .column()
-                    .lazy(true),
-            Employee.DATA.define()
-                    .column())
+                    Employee.ID.define()
+                            .primaryKey()
+                            .caption(Employee.ID.name()),
+                    Employee.NAME.define()
+                            .column()
+                            .caption(Employee.NAME.name())
+                            .searchable(true).maximumLength(10).nullable(false),
+                    Employee.DEPARTMENT.define()
+                            .column()
+                            .nullable(false),
+                    Employee.DEPARTMENT_FK.define()
+                            .foreignKey()
+                            .caption(Employee.DEPARTMENT_FK.name()),
+                    Employee.JOB.define()
+                            .column()
+                            .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                            .caption(Employee.JOB.name())
+                            .searchable(true),
+                    Employee.SALARY.define()
+                            .column()
+                            .caption(Employee.SALARY.name())
+                            .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
+                    Employee.COMMISSION.define()
+                            .column()
+                            .caption(Employee.COMMISSION.name())
+                            .valueRange(100, 2000).maximumFractionDigits(2),
+                    Employee.MGR.define()
+                            .column(),
+                    Employee.MGR_FK.define()
+                            //not really soft, just for testing purposes
+                            .softForeignKey()
+                            .caption(Employee.MGR_FK.name()),
+                    Employee.HIREDATE.define()
+                            .column()
+                            .caption(Employee.HIREDATE.name())
+                            .nullable(false),
+                    Employee.HIRETIME.define()
+                            .column()
+                            .caption(Employee.HIRETIME.name()),
+                    Employee.DEPARTMENT_LOCATION.define()
+                            .denormalized(Employee.DEPARTMENT_FK, Department.LOC)
+                            .caption(Department.LOC.name()),
+                    Employee.DATA_LAZY.define()
+                            .column()
+                            .lazy(true),
+                    Employee.DATA.define()
+                            .column())
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
@@ -218,15 +218,15 @@ public final class TestDomain extends DefaultDomain {
 
   void departmentFk() {
     add(DepartmentFk.TYPE.define(
-            DepartmentFk.DEPTNO.define()
-                    .primaryKey()
-                    .caption(Department.DEPTNO.name()),
-            DepartmentFk.DNAME.define()
-                    .column()
-                    .caption(DepartmentFk.DNAME.name()),
-            DepartmentFk.LOC.define()
-                    .column()
-                    .caption(DepartmentFk.LOC.name()))
+                    DepartmentFk.DEPTNO.define()
+                            .primaryKey()
+                            .caption(Department.DEPTNO.name()),
+                    DepartmentFk.DNAME.define()
+                            .column()
+                            .caption(DepartmentFk.DNAME.name()),
+                    DepartmentFk.LOC.define()
+                            .column()
+                            .caption(DepartmentFk.LOC.name()))
             .tableName("employees.department")
             .stringFactory(DepartmentFk.DNAME));
   }
@@ -250,43 +250,43 @@ public final class TestDomain extends DefaultDomain {
 
   void employeeFk() {
     add(EmployeeFk.TYPE.define(
-            EmployeeFk.ID.define()
-                    .primaryKey()
-                    .caption(EmployeeFk.ID.name()),
-            EmployeeFk.NAME.define()
-                    .column()
-                    .caption(EmployeeFk.NAME.name())
-                    .nullable(false),
-            EmployeeFk.DEPARTMENT.define()
-                    .column()
-                    .nullable(false),
-            EmployeeFk.DEPARTMENT_FK.define()
-                    .foreignKey()
-                    .caption(EmployeeFk.DEPARTMENT_FK.name())
-                    .attributes(DepartmentFk.DNAME),
-            EmployeeFk.JOB.define()
-                    .column()
-                    .caption(EmployeeFk.JOB.name()),
-            EmployeeFk.SALARY.define()
-                    .column()
-                    .caption(EmployeeFk.SALARY.name())
-                    .maximumFractionDigits(2),
-            EmployeeFk.COMMISSION.define()
-                    .column()
-                    .caption(EmployeeFk.COMMISSION.name()),
-            EmployeeFk.MGR.define()
-                    .column(),
-            EmployeeFk.MGR_FK.define()
-                    .softForeignKey()
-                    .caption(EmployeeFk.MGR_FK.name())
-                    .attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
-            EmployeeFk.HIREDATE.define()
-                    .column()
-                    .caption(EmployeeFk.HIREDATE.name())
-                    .nullable(false),
-            EmployeeFk.HIRETIME.define()
-                    .column()
-                    .caption(EmployeeFk.HIRETIME.name()))
+                    EmployeeFk.ID.define()
+                            .primaryKey()
+                            .caption(EmployeeFk.ID.name()),
+                    EmployeeFk.NAME.define()
+                            .column()
+                            .caption(EmployeeFk.NAME.name())
+                            .nullable(false),
+                    EmployeeFk.DEPARTMENT.define()
+                            .column()
+                            .nullable(false),
+                    EmployeeFk.DEPARTMENT_FK.define()
+                            .foreignKey()
+                            .caption(EmployeeFk.DEPARTMENT_FK.name())
+                            .attributes(DepartmentFk.DNAME),
+                    EmployeeFk.JOB.define()
+                            .column()
+                            .caption(EmployeeFk.JOB.name()),
+                    EmployeeFk.SALARY.define()
+                            .column()
+                            .caption(EmployeeFk.SALARY.name())
+                            .maximumFractionDigits(2),
+                    EmployeeFk.COMMISSION.define()
+                            .column()
+                            .caption(EmployeeFk.COMMISSION.name()),
+                    EmployeeFk.MGR.define()
+                            .column(),
+                    EmployeeFk.MGR_FK.define()
+                            .softForeignKey()
+                            .caption(EmployeeFk.MGR_FK.name())
+                            .attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
+                    EmployeeFk.HIREDATE.define()
+                            .column()
+                            .caption(EmployeeFk.HIREDATE.name())
+                            .nullable(false),
+                    EmployeeFk.HIRETIME.define()
+                            .column()
+                            .caption(EmployeeFk.HIRETIME.name()))
             .tableName("employees.employee")
             .stringFactory(EmployeeFk.NAME)
             .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
@@ -316,12 +316,12 @@ public final class TestDomain extends DefaultDomain {
       }
     };
     add(UUIDTestDefault.TYPE.define(
-            UUIDTestDefault.ID.define()
-                    .primaryKey()
-                    .caption("Id"),
-            UUIDTestDefault.DATA.define()
-                    .column()
-                    .caption("Data"))
+                    UUIDTestDefault.ID.define()
+                            .primaryKey()
+                            .caption("Id"),
+                    UUIDTestDefault.DATA.define()
+                            .column()
+                            .caption("Data"))
             .keyGenerator(uuidKeyGenerator));
   }
 
@@ -340,12 +340,12 @@ public final class TestDomain extends DefaultDomain {
       }
     };
     add(UUIDTestNoDefault.TYPE.define(
-            UUIDTestNoDefault.ID.define()
-                    .primaryKey()
-                    .caption("Id"),
-            UUIDTestNoDefault.DATA.define()
-                    .column()
-                    .caption("Data"))
+                    UUIDTestNoDefault.ID.define()
+                            .primaryKey()
+                            .caption("Id"),
+                    UUIDTestNoDefault.DATA.define()
+                            .column()
+                            .caption("Data"))
             .keyGenerator(uuidKeyGenerator));
   }
 
@@ -366,25 +366,25 @@ public final class TestDomain extends DefaultDomain {
 
   private void job() {
     add(Job.TYPE.define(
-            Job.JOB.define()
-                    .primaryKey()
-                    .groupBy(true),
-            Job.MAX_SALARY.define()
-                    .column()
-                    .expression("max(sal)")
-                    .aggregate(true),
-            Job.MIN_SALARY.define()
-                    .column()
-                    .expression("min(sal)")
-                    .aggregate(true),
-            Job.MAX_COMMISSION.define()
-                    .column()
-                    .expression("max(comm)")
-                    .aggregate(true),
-            Job.MIN_COMMISSION.define()
-                    .column()
-                    .expression("min(comm)")
-                    .aggregate(true))
+                    Job.JOB.define()
+                            .primaryKey()
+                            .groupBy(true),
+                    Job.MAX_SALARY.define()
+                            .column()
+                            .expression("max(sal)")
+                            .aggregate(true),
+                    Job.MIN_SALARY.define()
+                            .column()
+                            .expression("min(sal)")
+                            .aggregate(true),
+                    Job.MAX_COMMISSION.define()
+                            .column()
+                            .expression("max(comm)")
+                            .aggregate(true),
+                    Job.MIN_COMMISSION.define()
+                            .column()
+                            .expression("min(comm)")
+                            .aggregate(true))
             .tableName("employees.employee")
             .selectQuery(SelectQuery.builder()
                     .having("job <> 'PRESIDENT'")
@@ -423,10 +423,10 @@ public final class TestDomain extends DefaultDomain {
 
   private void empnoDeptno() {
     add(EmpnoDeptno.TYPE.define(
-            EmpnoDeptno.DEPTNO.define()
-                    .column(),
-            EmpnoDeptno.EMPNO.define()
-                    .primaryKey())
+                    EmpnoDeptno.DEPTNO.define()
+                            .column(),
+                    EmpnoDeptno.EMPNO.define()
+                            .primaryKey())
             .selectQuery(SelectQuery.builder()
                     .from("employees.employee e, employees.department d")
                     .where("e.deptno = d.deptno")
@@ -444,10 +444,10 @@ public final class TestDomain extends DefaultDomain {
 
   private void query() {
     add(Query.TYPE.define(
-            Query.EMPNO.define()
-                    .column(),
-            Query.ENAME.define()
-                    .column())
+                    Query.EMPNO.define()
+                            .column(),
+                    Query.ENAME.define()
+                            .column())
             .tableName("employees.employee")
             .orderBy(OrderBy.descending(Query.ENAME))
             .selectTableName("employees.employee e")
@@ -466,10 +466,10 @@ public final class TestDomain extends DefaultDomain {
 
   private void queryColumnsWhereClause() {
     add(QueryColumnsWhereClause.TYPE.define(
-            QueryColumnsWhereClause.EMPNO.define()
-                    .column(),
-            QueryColumnsWhereClause.ENAME.define()
-                    .column())
+                    QueryColumnsWhereClause.EMPNO.define()
+                            .column(),
+                    QueryColumnsWhereClause.ENAME.define()
+                            .column())
             .tableName("employees.employee e")
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
@@ -487,10 +487,10 @@ public final class TestDomain extends DefaultDomain {
 
   private void queryFromClause() {
     add(QueryFromClause.TYPE.define(
-            QueryFromClause.EMPNO.define()
-                    .column(),
-            QueryFromClause.ENAME.define()
-                    .column())
+                    QueryFromClause.EMPNO.define()
+                            .column(),
+                    QueryFromClause.ENAME.define()
+                            .column())
             .orderBy(OrderBy.descending(QueryFromClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("employees.employee")
@@ -507,10 +507,10 @@ public final class TestDomain extends DefaultDomain {
 
   private void queryFromWhereClause() {
     add(QueryFromWhereClause.TYPE.define(
-            QueryFromWhereClause.EMPNO.define()
-                    .column(),
-            QueryFromWhereClause.ENAME.define()
-                    .column())
+                    QueryFromWhereClause.EMPNO.define()
+                            .column(),
+                    QueryFromWhereClause.ENAME.define()
+                            .column())
             .orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("employees.employee")
@@ -528,10 +528,10 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.define()
-                    .primaryKey(),
-            Master.DATA.define()
-                    .column())
+                    Master.ID.define()
+                            .primaryKey(),
+                    Master.DATA.define()
+                            .column())
             .keyGenerator(identity()));
   }
 
@@ -548,16 +548,16 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.define()
-                    .primaryKey(),
-            Detail.MASTER_1_ID.define()
-                    .column(),
-            Detail.MASTER_1_FK.define()
-                    .foreignKey(),
-            Detail.MASTER_2_ID.define()
-                    .column(),
-            Detail.MASTER_2_FK.define()
-                    .foreignKey())
+                    Detail.ID.define()
+                            .primaryKey(),
+                    Detail.MASTER_1_ID.define()
+                            .column(),
+                    Detail.MASTER_1_FK.define()
+                            .foreignKey(),
+                    Detail.MASTER_2_ID.define()
+                            .column(),
+                    Detail.MASTER_2_FK.define()
+                            .foreignKey())
             .keyGenerator(identity()));
   }
 
@@ -604,10 +604,10 @@ public final class TestDomain extends DefaultDomain {
 
   void employeeNonOpt() {
     add(EmployeeNonOpt.TYPE.define(
-            EmployeeNonOpt.ID.define()
-                    .primaryKey(),
-            EmployeeNonOpt.NAME.define()
-                    .column())
+                    EmployeeNonOpt.ID.define()
+                            .primaryKey(),
+                    EmployeeNonOpt.NAME.define()
+                            .column())
             .tableName("employees.employee")
             .optimisticLocking(false));
   }

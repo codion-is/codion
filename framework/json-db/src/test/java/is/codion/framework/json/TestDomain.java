@@ -48,23 +48,23 @@ public final class TestDomain extends DefaultDomain {
 
   void testEntity() {
     add(TestEntity.TYPE.define(
-            TestEntity.DECIMAL.define()
-                    .primaryKey(0),
-            TestEntity.DATE_TIME.define()
-                    .primaryKey(1),
-            TestEntity.OFFSET_DATE_TIME.define()
-                    .column(),
-            TestEntity.BLOB.define()
-                    .column(),
-            TestEntity.READ_ONLY.define()
-                    .column()
-                    .readOnly(true),
-            TestEntity.BOOLEAN.define()
-                    .column(),
-            TestEntity.TIME.define()
-                    .column(),
-            TestEntity.ENTITY.define()
-                    .attribute())
+                    TestEntity.DECIMAL.define()
+                            .primaryKey(0),
+                    TestEntity.DATE_TIME.define()
+                            .primaryKey(1),
+                    TestEntity.OFFSET_DATE_TIME.define()
+                            .column(),
+                    TestEntity.BLOB.define()
+                            .column(),
+                    TestEntity.READ_ONLY.define()
+                            .column()
+                            .readOnly(true),
+                    TestEntity.BOOLEAN.define()
+                            .column(),
+                    TestEntity.TIME.define()
+                            .column(),
+                    TestEntity.ENTITY.define()
+                            .attribute())
             .condition(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
   }
 
@@ -78,19 +78,19 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.DEPTNO.define()
-                    .primaryKey()
-                    .updatable(true).nullable(false),
-            Department.NAME.define()
-                    .column()
-                    .searchable(true)
-                    .maximumLength(14)
-                    .nullable(false),
-            Department.LOCATION.define()
-                    .column()
-                    .maximumLength(13),
-            Department.LOGO.define()
-                    .column())
+                    Department.DEPTNO.define()
+                            .primaryKey()
+                            .updatable(true).nullable(false),
+                    Department.NAME.define()
+                            .column()
+                            .searchable(true)
+                            .maximumLength(14)
+                            .nullable(false),
+                    Department.LOCATION.define()
+                            .column()
+                            .maximumLength(13),
+                    Department.LOGO.define()
+                            .column())
             .smallDataset(true)
             .caption("Department"));
   }
@@ -112,35 +112,35 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.EMPNO.define()
-                    .primaryKey(),
-            Employee.NAME.define()
-                    .column()
-                    .searchable(true).maximumLength(10).nullable(false),
-            Employee.DEPARTMENT.define()
-                    .column()
-                    .nullable(false),
-            Employee.DEPARTMENT_FK.define()
-                    .foreignKey(),
-            Employee.JOB.define()
-                    .column()
-                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchable(true),
-            Employee.SALARY.define()
-                    .column()
-                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            Employee.COMMISSION.define()
-                    .column()
-                    .valueRange(100, 2000).maximumFractionDigits(2),
-            Employee.MGR.define()
-                    .column(),
-            Employee.MGR_FK.define()
-                    .foreignKey(),
-            Employee.HIREDATE.define()
-                    .column()
-                    .nullable(false),
-            Employee.EMP_DEPARTMENT_LOCATION.define()
-                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
+                    Employee.EMPNO.define()
+                            .primaryKey(),
+                    Employee.NAME.define()
+                            .column()
+                            .searchable(true).maximumLength(10).nullable(false),
+                    Employee.DEPARTMENT.define()
+                            .column()
+                            .nullable(false),
+                    Employee.DEPARTMENT_FK.define()
+                            .foreignKey(),
+                    Employee.JOB.define()
+                            .column()
+                            .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                            .searchable(true),
+                    Employee.SALARY.define()
+                            .column()
+                            .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
+                    Employee.COMMISSION.define()
+                            .column()
+                            .valueRange(100, 2000).maximumFractionDigits(2),
+                    Employee.MGR.define()
+                            .column(),
+                    Employee.MGR_FK.define()
+                            .foreignKey(),
+                    Employee.HIREDATE.define()
+                            .column()
+                            .nullable(false),
+                    Employee.EMP_DEPARTMENT_LOCATION.define()
+                            .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .caption("Employee"));

@@ -35,20 +35,20 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.define()
-                    .primaryKey()
-                    .caption(Department.ID.name())
-                    .updatable(true).nullable(false),
-            Department.NAME.define()
-                    .column()
-                    .caption(Department.NAME.name())
-                    .searchable(true)
-                    .maximumLength(14)
-                    .nullable(false),
-            Department.LOCATION.define()
-                    .column()
-                    .caption(Department.LOCATION.name())
-                    .maximumLength(13))
+                    Department.ID.define()
+                            .primaryKey()
+                            .caption(Department.ID.name())
+                            .updatable(true).nullable(false),
+                    Department.NAME.define()
+                            .column()
+                            .caption(Department.NAME.name())
+                            .searchable(true)
+                            .maximumLength(14)
+                            .nullable(false),
+                    Department.LOCATION.define()
+                            .column()
+                            .caption(Department.LOCATION.name())
+                            .maximumLength(13))
             .smallDataset(true)
             .stringFactory(Department.NAME)
             .caption("Department"));
@@ -72,49 +72,49 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.define()
-                    .primaryKey()
-                    .caption(Employee.ID.name()),
-            Employee.NAME.define()
-                    .column()
-                    .caption(Employee.NAME.name())
-                    .searchable(true)
-                    .maximumLength(10)
-                    .nullable(false),
-            Employee.DEPARTMENT.define()
-                    .column()
-                    .nullable(false),
-            Employee.DEPARTMENT_FK.define()
-                    .foreignKey()
-                    .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.define()
-                    .column()
-                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .caption(Employee.JOB.name())
-                    .searchable(true),
-            Employee.SALARY.define()
-                    .column()
-                    .caption(Employee.SALARY.name())
-                    .nullable(false)
-                    .valueRange(1000, 10000)
-                    .maximumFractionDigits(2),
-            Employee.COMMISSION.define()
-                    .column()
-                    .caption(Employee.COMMISSION.name())
-                    .valueRange(100, 2000)
-                    .maximumFractionDigits(2),
-            Employee.MGR.define()
-                    .column(),
-            Employee.MGR_FK.define()
-                    .foreignKey()
-                    .caption(Employee.MGR_FK.name()),
-            Employee.HIREDATE.define()
-                    .column()
-                    .caption(Employee.HIREDATE.name())
-                    .nullable(false),
-            Employee.DEPARTMENT_LOCATION.define()
-                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
-                    .caption(Department.LOCATION.name()))
+                    Employee.ID.define()
+                            .primaryKey()
+                            .caption(Employee.ID.name()),
+                    Employee.NAME.define()
+                            .column()
+                            .caption(Employee.NAME.name())
+                            .searchable(true)
+                            .maximumLength(10)
+                            .nullable(false),
+                    Employee.DEPARTMENT.define()
+                            .column()
+                            .nullable(false),
+                    Employee.DEPARTMENT_FK.define()
+                            .foreignKey()
+                            .caption(Employee.DEPARTMENT_FK.name()),
+                    Employee.JOB.define()
+                            .column()
+                            .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                            .caption(Employee.JOB.name())
+                            .searchable(true),
+                    Employee.SALARY.define()
+                            .column()
+                            .caption(Employee.SALARY.name())
+                            .nullable(false)
+                            .valueRange(1000, 10000)
+                            .maximumFractionDigits(2),
+                    Employee.COMMISSION.define()
+                            .column()
+                            .caption(Employee.COMMISSION.name())
+                            .valueRange(100, 2000)
+                            .maximumFractionDigits(2),
+                    Employee.MGR.define()
+                            .column(),
+                    Employee.MGR_FK.define()
+                            .foreignKey()
+                            .caption(Employee.MGR_FK.name()),
+                    Employee.HIREDATE.define()
+                            .column()
+                            .caption(Employee.HIREDATE.name())
+                            .nullable(false),
+                    Employee.DEPARTMENT_LOCATION.define()
+                            .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+                            .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .caption("Employee"));

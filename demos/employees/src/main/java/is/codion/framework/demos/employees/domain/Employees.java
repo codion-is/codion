@@ -90,19 +90,19 @@ public final class Employees extends DefaultDomain {
   void department() {
     /*Defining the entity Department.TYPE*/
     add(Department.TYPE.define(
-            Department.DEPARTMENT_NO.define()
-                    .primaryKey()
-                    .caption("No.")
-                    .nullable(false),
-            Department.NAME.define()
-                    .column()
-                    .caption("Name")
-                    .maximumLength(14)
-                    .nullable(false),
-            Department.LOCATION.define()
-                    .column()
-                    .caption("Location")
-                    .maximumLength(13))
+                    Department.DEPARTMENT_NO.define()
+                            .primaryKey()
+                            .caption("No.")
+                            .nullable(false),
+                    Department.NAME.define()
+                            .column()
+                            .caption("Name")
+                            .maximumLength(14)
+                            .nullable(false),
+                    Department.LOCATION.define()
+                            .column()
+                            .caption("Location")
+                            .maximumLength(13))
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
@@ -114,51 +114,51 @@ public final class Employees extends DefaultDomain {
   void employee() {
     /*Defining the entity Employee.TYPE*/
     add(Employee.TYPE.define(
-            Employee.ID.define()
-                    .primaryKey(),
-            Employee.NAME.define()
-                    .column()
-                    .caption("Name")
-                    .searchable(true)
-                    .maximumLength(10)
-                    .nullable(false),
-            Employee.DEPARTMENT.define()
-                    .column()
-                    .nullable(false),
-            Employee.DEPARTMENT_FK.define()
-                    .foreignKey()
-                    .caption("Department"),
-            Employee.JOB.define()
-                    .column()
-                    .caption("Job")
-                    .items(Employee.JOB_VALUES),
-            Employee.SALARY.define()
-                    .column()
-                    .caption("Salary")
-                    .nullable(false)
-                    .valueRange(900, 10000)
-                    .maximumFractionDigits(2),
-            Employee.COMMISSION.define()
-                    .column()
-                    .caption("Commission")
-                    .valueRange(100, 2000)
-                    .maximumFractionDigits(2),
-            Employee.MANAGER_ID.define()
-                    .column(),
-            Employee.MANAGER_FK.define()
-                    .foreignKey()
-                    .caption("Manager"),
-            Employee.HIREDATE.define()
-                    .column()
-                    .caption("Hiredate")
-                    .nullable(false)
-                    .localeDateTimePattern(LocaleDateTimePattern.builder()
-                            .delimiterDash()
-                            .yearFourDigits()
-                            .build()),
-            Employee.DEPARTMENT_LOCATION.define()
-                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
-                    .caption("Location"))
+                    Employee.ID.define()
+                            .primaryKey(),
+                    Employee.NAME.define()
+                            .column()
+                            .caption("Name")
+                            .searchable(true)
+                            .maximumLength(10)
+                            .nullable(false),
+                    Employee.DEPARTMENT.define()
+                            .column()
+                            .nullable(false),
+                    Employee.DEPARTMENT_FK.define()
+                            .foreignKey()
+                            .caption("Department"),
+                    Employee.JOB.define()
+                            .column()
+                            .caption("Job")
+                            .items(Employee.JOB_VALUES),
+                    Employee.SALARY.define()
+                            .column()
+                            .caption("Salary")
+                            .nullable(false)
+                            .valueRange(900, 10000)
+                            .maximumFractionDigits(2),
+                    Employee.COMMISSION.define()
+                            .column()
+                            .caption("Commission")
+                            .valueRange(100, 2000)
+                            .maximumFractionDigits(2),
+                    Employee.MANAGER_ID.define()
+                            .column(),
+                    Employee.MANAGER_FK.define()
+                            .foreignKey()
+                            .caption("Manager"),
+                    Employee.HIREDATE.define()
+                            .column()
+                            .caption("Hiredate")
+                            .nullable(false)
+                            .localeDateTimePattern(LocaleDateTimePattern.builder()
+                                    .delimiterDash()
+                                    .yearFourDigits()
+                                    .build()),
+                    Employee.DEPARTMENT_LOCATION.define()
+                            .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+                            .caption("Location"))
             .keyGenerator(sequence("employees.employee_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)

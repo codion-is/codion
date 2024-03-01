@@ -79,18 +79,18 @@ public final class EmployeesMinimalApp {
        * We then define the entity based on the EMPLOYEES.DEPARTMENT table
        */
       add(Department.TYPE.define(
-              Department.DEPARTMENT_NO.define()
-                      .primaryKey(),
-              Department.DEPARTMENT_NO.define()
-                      .column()
-                      .caption("Department name")
-                      .searchable(true)
-                      .nullable(false)
-                      .maximumLength(14),
-             Department.LOCATION.define()
-                     .column()
-                     .caption("Department location")
-                     .maximumLength(13))
+                      Department.DEPARTMENT_NO.define()
+                              .primaryKey(),
+                      Department.DEPARTMENT_NO.define()
+                              .column()
+                              .caption("Department name")
+                              .searchable(true)
+                              .nullable(false)
+                              .maximumLength(14),
+                      Department.LOCATION.define()
+                              .column()
+                              .caption("Department location")
+                              .maximumLength(13))
               .caption("Departments")
               .stringFactory(Department.NAME));
       /*
@@ -99,47 +99,47 @@ public final class EmployeesMinimalApp {
        * department as well as the manager
        */
       add(Employee.TYPE.define(
-              Employee.ID.define()
-                      .primaryKey(),
-              Employee.NAME.define()
-                      .column()
-                      .caption("Name")
-                      .searchable(true)
-                      .nullable(false)
-                      .maximumLength(10),
-              Employee.DEPARTMENT_NO.define()
-                      .column()
-                      .nullable(false),
-              Employee.DEPARTMENT_FK.define()
-                      .foreignKey()
-                      .caption("Department"),
-              Employee.JOB.define()
-                      .column()
-                      .caption("Job")
-                      .nullable(false)
-                      .maximumLength(9),
-              Employee.SALARY.define()
-                      .column()
-                      .caption("Salary")
-                      .nullable(false)
-                      .maximumFractionDigits(2)
-                      .valueRange(1000, 10000),
-              Employee.COMMISSION.define()
-                      .column()
-                      .caption("Commission")
-                      .maximumFractionDigits(2),
-              Employee.MANAGER_ID.define()
-                      .column(),
-              Employee.MANAGER_FK.define()
-                      .foreignKey()
-                      .caption("Manager"),
-              Employee.HIREDATE.define()
-                      .column()
-                      .caption("Hiredate")
-                      .nullable(false))
-            .keyGenerator(KeyGenerator.sequence("employees.emp_seq"))
-            .caption("Employees")
-            .stringFactory(Employee.NAME));
+                      Employee.ID.define()
+                              .primaryKey(),
+                      Employee.NAME.define()
+                              .column()
+                              .caption("Name")
+                              .searchable(true)
+                              .nullable(false)
+                              .maximumLength(10),
+                      Employee.DEPARTMENT_NO.define()
+                              .column()
+                              .nullable(false),
+                      Employee.DEPARTMENT_FK.define()
+                              .foreignKey()
+                              .caption("Department"),
+                      Employee.JOB.define()
+                              .column()
+                              .caption("Job")
+                              .nullable(false)
+                              .maximumLength(9),
+                      Employee.SALARY.define()
+                              .column()
+                              .caption("Salary")
+                              .nullable(false)
+                              .maximumFractionDigits(2)
+                              .valueRange(1000, 10000),
+                      Employee.COMMISSION.define()
+                              .column()
+                              .caption("Commission")
+                              .maximumFractionDigits(2),
+                      Employee.MANAGER_ID.define()
+                              .column(),
+                      Employee.MANAGER_FK.define()
+                              .foreignKey()
+                              .caption("Manager"),
+                      Employee.HIREDATE.define()
+                              .column()
+                              .caption("Hiredate")
+                              .nullable(false))
+              .keyGenerator(KeyGenerator.sequence("employees.emp_seq"))
+              .caption("Employees")
+              .stringFactory(Employee.NAME));
     }
   }
 

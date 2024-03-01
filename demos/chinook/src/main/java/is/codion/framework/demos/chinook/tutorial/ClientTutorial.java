@@ -68,36 +68,36 @@ public final class ClientTutorial {
     public Chinook() {
       super(DOMAIN);
       add(Artist.TYPE.define(
-              Artist.ID.define()
-                    .primaryKey(),
-              Artist.NAME.define()
-                      .column()
-                      .caption("Name")
-                      .searchable(true)
-                      .nullable(false)
-                      .maximumLength(120),
-              Artist.NUMBER_OF_ALBUMS.define()
-                      .subquery("SELECT COUNT(*) FROM chinook.album " +
-                              "WHERE album.artistid = artist.artistid")
-                      .caption("Albums"))
+                      Artist.ID.define()
+                              .primaryKey(),
+                      Artist.NAME.define()
+                              .column()
+                              .caption("Name")
+                              .searchable(true)
+                              .nullable(false)
+                              .maximumLength(120),
+                      Artist.NUMBER_OF_ALBUMS.define()
+                              .subquery("SELECT COUNT(*) FROM chinook.album " +
+                                      "WHERE album.artistid = artist.artistid")
+                              .caption("Albums"))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(Artist.NAME)
               .caption("Artists"));
 
       add(Album.TYPE.define(
-              Album.ID.define()
-                      .primaryKey(),
-              Album.ARTIST_ID.define()
-                      .column()
-                      .nullable(false),
-              Album.ARTIST_FK.define()
-                      .foreignKey()
-                      .caption("Artist"),
-              Album.TITLE.define()
-                      .column()
-                      .caption("Title")
-                      .nullable(false)
-                      .maximumLength(160))
+                      Album.ID.define()
+                              .primaryKey(),
+                      Album.ARTIST_ID.define()
+                              .column()
+                              .nullable(false),
+                      Album.ARTIST_FK.define()
+                              .foreignKey()
+                              .caption("Artist"),
+                      Album.TITLE.define()
+                              .column()
+                              .caption("Title")
+                              .nullable(false)
+                              .maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(StringFactory.builder()
                       .value(Album.ARTIST_FK)

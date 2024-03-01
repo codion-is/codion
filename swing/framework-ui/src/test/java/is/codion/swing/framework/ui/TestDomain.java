@@ -46,13 +46,13 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.define()
-                    .primaryKey(),
-            Master.NAME.define()
-                    .column()
-                    .searchable(true),
-            Master.CODE.define()
-                    .column())
+                    Master.ID.define()
+                            .primaryKey(),
+                    Master.NAME.define()
+                            .column()
+                            .searchable(true),
+                    Master.CODE.define()
+                            .column())
             .comparator(Comparator.comparing(o -> o.get(Master.CODE)))
             .stringFactory(Master.NAME));
   }
@@ -93,76 +93,76 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.define()
-                    .primaryKey(),
-            Detail.INT.define()
-                    .column()
-                    .caption(Detail.INT.name())
-                    .valueRange(-10_000, 10_000),
-            Detail.DOUBLE.define()
-                    .column()
-                    .caption(Detail.DOUBLE.name())
-                    .valueRange(-10_000, 10_000),
-            Detail.BIG_DECIMAL.define()
-                    .column()
-                    .caption(Detail.BIG_DECIMAL.name()),
-            Detail.STRING.define()
-                    .column()
-                    .caption("Detail string"),
-            Detail.DATE.define()
-                    .column()
-                    .caption(Detail.DATE.name()),
-            Detail.TIME.define()
-                    .column()
-                    .caption(Detail.TIME.name()),
-            Detail.TIMESTAMP.define()
-                    .column()
-                    .caption(Detail.TIMESTAMP.name()),
-            Detail.OFFSET.define()
-                    .column()
-                    .caption(Detail.OFFSET.name()),
-            Detail.BOOLEAN.define()
-                    .column()
-                    .caption(Detail.BOOLEAN.name())
-                    .nullable(false)
-                    .defaultValue(true)
-                    .description("A boolean attribute"),
-            Detail.BOOLEAN_NULLABLE.define()
-                    .column()
-                    .caption(Detail.BOOLEAN_NULLABLE.name())
-                    .defaultValue(true),
-            Detail.MASTER_ID.define()
-                    .column(),
-            Detail.MASTER_FK.define()
-                    .foreignKey()
-                    .caption(Detail.MASTER_FK.name()),
-            Detail.DETAIL_ID.define()
-                    .column(),
-            Detail.DETAIL_FK.define()
-                    .foreignKey()
-                    .caption(Detail.DETAIL_FK.name()),
-            Detail.MASTER_NAME.define()
-                    .denormalized(Detail.MASTER_FK, Master.NAME)
-                    .caption(Detail.MASTER_NAME.name()),
-            Detail.MASTER_CODE.define()
-                    .denormalized(Detail.MASTER_FK, Master.CODE)
-                    .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.define()
-                    .column()
-                    .items(ITEMS)
-                    .caption(Detail.INT_VALUE_LIST.name()),
-            Detail.INT_DERIVED.define()
-                    .derived(linkedValues -> {
-              Integer intValue = linkedValues.get(Detail.INT);
-              if (intValue == null) {
-                return null;
-              }
+                    Detail.ID.define()
+                            .primaryKey(),
+                    Detail.INT.define()
+                            .column()
+                            .caption(Detail.INT.name())
+                            .valueRange(-10_000, 10_000),
+                    Detail.DOUBLE.define()
+                            .column()
+                            .caption(Detail.DOUBLE.name())
+                            .valueRange(-10_000, 10_000),
+                    Detail.BIG_DECIMAL.define()
+                            .column()
+                            .caption(Detail.BIG_DECIMAL.name()),
+                    Detail.STRING.define()
+                            .column()
+                            .caption("Detail string"),
+                    Detail.DATE.define()
+                            .column()
+                            .caption(Detail.DATE.name()),
+                    Detail.TIME.define()
+                            .column()
+                            .caption(Detail.TIME.name()),
+                    Detail.TIMESTAMP.define()
+                            .column()
+                            .caption(Detail.TIMESTAMP.name()),
+                    Detail.OFFSET.define()
+                            .column()
+                            .caption(Detail.OFFSET.name()),
+                    Detail.BOOLEAN.define()
+                            .column()
+                            .caption(Detail.BOOLEAN.name())
+                            .nullable(false)
+                            .defaultValue(true)
+                            .description("A boolean attribute"),
+                    Detail.BOOLEAN_NULLABLE.define()
+                            .column()
+                            .caption(Detail.BOOLEAN_NULLABLE.name())
+                            .defaultValue(true),
+                    Detail.MASTER_ID.define()
+                            .column(),
+                    Detail.MASTER_FK.define()
+                            .foreignKey()
+                            .caption(Detail.MASTER_FK.name()),
+                    Detail.DETAIL_ID.define()
+                            .column(),
+                    Detail.DETAIL_FK.define()
+                            .foreignKey()
+                            .caption(Detail.DETAIL_FK.name()),
+                    Detail.MASTER_NAME.define()
+                            .denormalized(Detail.MASTER_FK, Master.NAME)
+                            .caption(Detail.MASTER_NAME.name()),
+                    Detail.MASTER_CODE.define()
+                            .denormalized(Detail.MASTER_FK, Master.CODE)
+                            .caption(Detail.MASTER_CODE.name()),
+                    Detail.INT_VALUE_LIST.define()
+                            .column()
+                            .items(ITEMS)
+                            .caption(Detail.INT_VALUE_LIST.name()),
+                    Detail.INT_DERIVED.define()
+                            .derived(linkedValues -> {
+                              Integer intValue = linkedValues.get(Detail.INT);
+                              if (intValue == null) {
+                                return null;
+                              }
 
-              return intValue * 10;
-            }, Detail.INT)
-                    .caption(Detail.INT_DERIVED.name()),
-            Detail.ENUM_TYPE.define()
-                    .column())
+                              return intValue * 10;
+                            }, Detail.INT)
+                            .caption(Detail.INT_DERIVED.name()),
+                    Detail.ENUM_TYPE.define()
+                            .column())
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .orderBy(ascending(Detail.STRING))
             .smallDataset(true)
@@ -179,21 +179,21 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.define()
-                    .primaryKey()
-                    .caption(Department.ID.name())
-                    .updatable(true)
-                    .nullable(false),
-            Department.NAME.define()
-                    .column()
-                    .caption(Department.NAME.name())
-                    .searchable(true)
-                    .maximumLength(14)
-                    .nullable(false),
-            Department.LOCATION.define()
-                    .column()
-                    .caption(Department.LOCATION.name())
-                    .maximumLength(13))
+                    Department.ID.define()
+                            .primaryKey()
+                            .caption(Department.ID.name())
+                            .updatable(true)
+                            .nullable(false),
+                    Department.NAME.define()
+                            .column()
+                            .caption(Department.NAME.name())
+                            .searchable(true)
+                            .maximumLength(14)
+                            .nullable(false),
+                    Department.LOCATION.define()
+                            .column()
+                            .caption(Department.LOCATION.name())
+                            .maximumLength(13))
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
@@ -224,49 +224,49 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.define()
-                    .primaryKey()
-                    .caption(Employee.ID.name()),
-            Employee.NAME.define()
-                    .column()
-                    .caption(Employee.NAME.name())
-                    .searchable(true)
-                    .maximumLength(10)
-                    .nullable(false),
-            Employee.DEPARTMENT.define()
-                    .column()
-                    .nullable(false),
-            Employee.DEPARTMENT_FK.define()
-                    .foreignKey()
-                    .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.define()
-                    .column()
-                    .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .caption(Employee.JOB.name())
-                    .searchable(true),
-            Employee.SALARY.define()
-                    .column()
-                    .caption(Employee.SALARY.name())
-                    .nullable(false)
-                    .valueRange(1000, 10000)
-                    .maximumFractionDigits(2),
-            Employee.COMMISSION.define()
-                    .column()
-                    .caption(Employee.COMMISSION.name())
-                    .valueRange(100, 2000)
-                    .maximumFractionDigits(2),
-            Employee.MGR.define()
-                    .column(),
-            Employee.MGR_FK.define()
-                    .foreignKey()
-                    .caption(Employee.MGR_FK.name()),
-            Employee.HIREDATE.define()
-                    .column()
-                    .caption(Employee.HIREDATE.name())
-                    .nullable(false),
-            Employee.DEPARTMENT_LOCATION.define()
-                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
-                    .caption(Department.LOCATION.name()))
+                    Employee.ID.define()
+                            .primaryKey()
+                            .caption(Employee.ID.name()),
+                    Employee.NAME.define()
+                            .column()
+                            .caption(Employee.NAME.name())
+                            .searchable(true)
+                            .maximumLength(10)
+                            .nullable(false),
+                    Employee.DEPARTMENT.define()
+                            .column()
+                            .nullable(false),
+                    Employee.DEPARTMENT_FK.define()
+                            .foreignKey()
+                            .caption(Employee.DEPARTMENT_FK.name()),
+                    Employee.JOB.define()
+                            .column()
+                            .items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                            .caption(Employee.JOB.name())
+                            .searchable(true),
+                    Employee.SALARY.define()
+                            .column()
+                            .caption(Employee.SALARY.name())
+                            .nullable(false)
+                            .valueRange(1000, 10000)
+                            .maximumFractionDigits(2),
+                    Employee.COMMISSION.define()
+                            .column()
+                            .caption(Employee.COMMISSION.name())
+                            .valueRange(100, 2000)
+                            .maximumFractionDigits(2),
+                    Employee.MGR.define()
+                            .column(),
+                    Employee.MGR_FK.define()
+                            .foreignKey()
+                            .caption(Employee.MGR_FK.name()),
+                    Employee.HIREDATE.define()
+                            .column()
+                            .caption(Employee.HIREDATE.name())
+                            .nullable(false),
+                    Employee.DEPARTMENT_LOCATION.define()
+                            .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+                            .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

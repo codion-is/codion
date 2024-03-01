@@ -75,7 +75,7 @@ public final class EntitiesTutorial {
       // create columns for the table 'chinook.artist'
       ColumnDefinition.Builder<Long, ?> artistId =
               Artist.ID.define()
-                    .primaryKey();
+                      .primaryKey();
 
       ColumnDefinition.Builder<String, ?> artistName =
               Artist.NAME.define()
