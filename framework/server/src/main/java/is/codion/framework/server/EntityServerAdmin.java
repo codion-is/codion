@@ -257,20 +257,30 @@ public interface EntityServerAdmin extends ServerAdmin {
   interface DomainEntityDefinition {
 
     /**
+     * @return the domain name
+     */
+    String domain();
+
+    /**
      * @return the entity name
      */
-    String name();
+    String entity();
 
     /**
      * @return the table name
      */
-    String tableName();
+    String table();
   }
 
   /**
    * Basic information about a report.
    */
   interface DomainReport {
+
+    /**
+     * @return the domain name
+     */
+    String domain();
 
     /**
      * @return the report name
@@ -297,6 +307,11 @@ public interface EntityServerAdmin extends ServerAdmin {
    * Basic information about an operation.
    */
   interface DomainOperation {
+
+    /**
+     * @return the domain name
+     */
+    String domain();
 
     /**
      * @return the operation type

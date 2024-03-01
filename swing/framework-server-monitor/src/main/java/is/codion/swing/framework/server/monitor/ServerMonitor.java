@@ -18,6 +18,10 @@ import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -25,19 +29,20 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -73,9 +78,18 @@ public final class ServerMonitor {
 
   private final Value<Integer> connectionCountValue = Value.value(0);
   private final Value<String> memoryUsageValue = Value.value("");
-  private final DefaultTableModel domainTableModel = new ReadOnlyTableModel();
-  private final DefaultTableModel reportTableModel = new ReadOnlyTableModel();
-  private final DefaultTableModel operationTableModel = new ReadOnlyTableModel();
+  private final FilteredTableModel<DomainEntityDefinition, Integer> domainTableModel =
+          FilteredTableModel.builder(new DomainTableColumnFactory(), new DomainTableValueProvider())
+                  .itemSupplier(new DomainTableItemSupplier())
+                  .build();
+  private final FilteredTableModel<DomainReport, Integer> reportTableModel =
+          FilteredTableModel.builder(new ReportTableColumnFactory(), new ReportTableValueProvider())
+                  .itemSupplier(new ReportTableItemSupplier())
+                  .build();
+  private final FilteredTableModel<DomainOperation, Integer> operationTableModel =
+          FilteredTableModel.builder(new OperationTableColumnFactory(), new OperationTableValueProvider())
+                  .itemSupplier(new OperationTableItemSupplier())
+                  .build();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
 
@@ -302,13 +316,7 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshDomainList() throws RemoteException {
-    domainTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Entity Type", "Table Name"});
-    Map<String, Collection<DomainEntityDefinition>> definitions = server.domainEntityDefinitions();
-    for (Map.Entry<String, Collection<DomainEntityDefinition>> domainDefinitions : definitions.entrySet()) {
-      for (DomainEntityDefinition definition : domainDefinitions.getValue()) {
-        domainTableModel.addRow(new Object[] {domainDefinitions.getKey(), definition.name(), definition.tableName()});
-      }
-    }
+    domainTableModel.refresh();
   }
 
   /**
@@ -316,13 +324,7 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshReportList() throws RemoteException {
-    reportTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Report Name", "Report Type", "Report Path", "Is Cached"});
-    Map<String, Collection<DomainReport>> reports = server.domainReports();
-    for (Map.Entry<String, Collection<DomainReport>> domainReports : reports.entrySet()) {
-      for (DomainReport domainReport : domainReports.getValue()) {
-        reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.type(), domainReport.path(), domainReport.cached()});
-      }
-    }
+    reportTableModel.refresh();
   }
 
   /**
@@ -330,33 +332,27 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshOperationList() throws RemoteException {
-    operationTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Operation Type", "Operation Name", "Operation Class Name"});
-    Map<String, Collection<DomainOperation>> operations = server.domainOperations();
-    for (Map.Entry<String, Collection<DomainOperation>> domainOperations : operations.entrySet()) {
-      for (DomainOperation domainOperation : domainOperations.getValue()) {
-        operationTableModel.addRow(new Object[] {domainOperations.getKey(), domainOperation.type(), domainOperation.name(), domainOperation.className()});
-      }
-    }
+    operationTableModel.refresh();
   }
 
   /**
    * @return the table model for viewing the domain models
    */
-  public TableModel domainTableModel() {
+  public FilteredTableModel<DomainEntityDefinition, Integer> domainTableModel() {
     return domainTableModel;
   }
 
   /**
    * @return the table model for viewing reports
    */
-  public TableModel reportTableModel() {
+  public FilteredTableModel<DomainReport, Integer> reportTableModel() {
     return reportTableModel;
   }
 
   /**
    * @return the table model for viewing operations
    */
-  public DefaultTableModel operationTableModel() {
+  public FilteredTableModel<DomainOperation, Integer> operationTableModel() {
     return operationTableModel;
   }
 
@@ -522,10 +518,191 @@ public final class ServerMonitor {
     }
   }
 
-  private static final class ReadOnlyTableModel extends DefaultTableModel {
+  private final class OperationTableItemSupplier implements Supplier<Collection<DomainOperation>> {
+
     @Override
-    public boolean isCellEditable(int row, int column) {
-      return false;
+    public Collection<DomainOperation> get() {
+      try {
+        return server.domainOperations().values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static final class OperationTableColumnFactory implements ColumnFactory<Integer> {
+
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      return Arrays.asList(
+              FilteredTableColumn.builder(OperationTableValueProvider.DOMAIN)
+                      .headerValue(DOMAIN)
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(OperationTableValueProvider.TYPE)
+                      .headerValue("Type")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(OperationTableValueProvider.OPERATION)
+                      .headerValue("Operation")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(OperationTableValueProvider.CLASS)
+                      .headerValue("Class")
+                      .columnClass(String.class)
+                      .build());
+    }
+  }
+
+  private static final class OperationTableValueProvider implements ColumnValueProvider<DomainOperation, Integer> {
+
+    private static final int DOMAIN = 0;
+    private static final int TYPE = 1;
+    private static final int OPERATION = 2;
+    private static final int CLASS = 3;
+
+    @Override
+    public Object value(DomainOperation row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case DOMAIN:
+          return row.domain();
+        case TYPE:
+          return row.type();
+        case OPERATION:
+          return row.name();
+        case CLASS:
+          return row.className();
+        default:
+          throw new IllegalArgumentException();
+      }
+    }
+  }
+
+  private final class ReportTableItemSupplier implements Supplier<Collection<DomainReport>> {
+
+    @Override
+    public Collection<DomainReport> get() {
+      try {
+        return server.domainReports().values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static final class ReportTableColumnFactory implements ColumnFactory<Integer> {
+
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      return Arrays.asList(
+              FilteredTableColumn.builder(ReportTableValueProvider.DOMAIN)
+                      .headerValue(DOMAIN)
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(ReportTableValueProvider.REPORT)
+                      .headerValue("Report")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(ReportTableValueProvider.TYPE)
+                      .headerValue("Type")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(ReportTableValueProvider.PATH)
+                      .headerValue("Path")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(ReportTableValueProvider.CACHED)
+                      .headerValue("Cached")
+                      .columnClass(Boolean.class)
+                      .build());
+    }
+  }
+
+  private static final class ReportTableValueProvider implements ColumnValueProvider<DomainReport, Integer> {
+
+    private static final int DOMAIN = 0;
+    private static final int REPORT = 1;
+    private static final int TYPE = 2;
+    private static final int PATH = 3;
+    private static final int CACHED = 4;
+
+    @Override
+    public Object value(DomainReport row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case DOMAIN:
+          return row.domain();
+        case REPORT:
+          return row.name();
+        case TYPE:
+          return row.type();
+        case PATH:
+          return row.path();
+        case CACHED:
+          return row.cached();
+        default:
+          throw new IllegalArgumentException();
+      }
+    }
+  }
+
+  private final class DomainTableItemSupplier implements Supplier<Collection<DomainEntityDefinition>> {
+    @Override
+    public Collection<DomainEntityDefinition> get() {
+      try {
+        return server.domainEntityDefinitions().values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static final class DomainTableColumnFactory implements ColumnFactory<Integer> {
+
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      return Arrays.asList(
+              FilteredTableColumn.builder(DomainTableValueProvider.DOMAIN)
+                      .headerValue(DOMAIN)
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(DomainTableValueProvider.ENTITY)
+                      .headerValue("Entity")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(DomainTableValueProvider.TABLE)
+                      .headerValue("Table")
+                      .columnClass(String.class)
+                      .build());
+    }
+  }
+
+  private static final class DomainTableValueProvider implements ColumnValueProvider<DomainEntityDefinition, Integer> {
+
+    private static final int DOMAIN = 0;
+    private static final int ENTITY = 1;
+    private static final int TABLE = 2;
+
+    @Override
+    public Object value(DomainEntityDefinition row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case DOMAIN:
+          return row.domain();
+        case ENTITY:
+          return row.entity();
+        case TABLE:
+          return row.table();
+        default:
+          throw new IllegalArgumentException();
+      }
     }
   }
 }
