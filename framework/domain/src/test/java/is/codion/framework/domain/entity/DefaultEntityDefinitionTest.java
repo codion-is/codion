@@ -60,11 +60,11 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         add(entityType.define(
-                id.define()
-                        .primaryKey(),
-                name.define()
-                        .column()
-                        .groupBy(true))
+                        id.define()
+                                .primaryKey(),
+                        name.define()
+                                .column()
+                                .groupBy(true))
                 .tableName("tableName")
                 .selectQuery(SelectQuery.builder()
                         .columns("*")
@@ -265,7 +265,7 @@ public class DefaultEntityDefinitionTest {
         add(entityType.define(
                 integerColumn.define().primaryKey(),
                 foreignKey.define()
-                    .foreignKey()
+                        .foreignKey()
                         .caption("caption")));
         setStrictForeignKeys(true);
       }

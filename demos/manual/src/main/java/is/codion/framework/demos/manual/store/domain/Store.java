@@ -88,26 +88,26 @@ public final class Store extends DefaultDomain {
   private void customer() {
     // tag::customer[]
     add(Customer.TYPE.define(
-            Customer.ID.define()
-                    .primaryKey(),
-            Customer.FIRST_NAME.define()
-                    .column()
-                    .caption("First name")
-                    .nullable(false)
-                    .maximumLength(40),
-            Customer.LAST_NAME.define()
-                    .column()
-                    .caption("Last name")
-                    .nullable(false)
-                    .maximumLength(40),
-            Customer.EMAIL.define()
-                    .column()
-                    .caption("Email"),
-            Customer.ACTIVE.define()
-                    .column()
-                    .caption("Active")
-                    .columnHasDefaultValue(true)
-                    .defaultValue(true))
+                    Customer.ID.define()
+                            .primaryKey(),
+                    Customer.FIRST_NAME.define()
+                            .column()
+                            .caption("First name")
+                            .nullable(false)
+                            .maximumLength(40),
+                    Customer.LAST_NAME.define()
+                            .column()
+                            .caption("Last name")
+                            .nullable(false)
+                            .maximumLength(40),
+                    Customer.EMAIL.define()
+                            .column()
+                            .caption("Email"),
+                    Customer.ACTIVE.define()
+                            .column()
+                            .caption("Active")
+                            .columnHasDefaultValue(true)
+                            .defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
             // tag::customerStringFactory[]
             .stringFactory(new CustomerToString())
@@ -119,23 +119,23 @@ public final class Store extends DefaultDomain {
   private void address() {
     // tag::address[]
     add(Address.TYPE.define(
-            Address.ID.define()
-                    .primaryKey(),
-            Address.STREET.define()
-                    .column()
-                    .caption("Street")
-                    .nullable(false)
-                    .maximumLength(120),
-            Address.CITY.define()
-                    .column()
-                    .caption("City")
-                    .nullable(false)
-                    .maximumLength(50),
-            Address.VALID.define()
-                    .column()
-                    .caption("Valid")
-                    .columnHasDefaultValue(true)
-                    .nullable(false))
+                    Address.ID.define()
+                            .primaryKey(),
+                    Address.STREET.define()
+                            .column()
+                            .caption("Street")
+                            .nullable(false)
+                            .maximumLength(120),
+                    Address.CITY.define()
+                            .column()
+                            .caption("City")
+                            .nullable(false)
+                            .maximumLength(50),
+                    Address.VALID.define()
+                            .column()
+                            .caption("Valid")
+                            .columnHasDefaultValue(true)
+                            .nullable(false))
             .stringFactory(StringFactory.builder()
                     .value(Address.STREET)
                     .text(", ")
@@ -150,20 +150,20 @@ public final class Store extends DefaultDomain {
   private void customerAddress() {
     // tag::customerAddress[]
     add(CustomerAddress.TYPE.define(
-            CustomerAddress.ID.define()
-                    .primaryKey(),
-            CustomerAddress.CUSTOMER_ID.define()
-                    .column()
-                    .nullable(false),
-            CustomerAddress.CUSTOMER_FK.define()
-                    .foreignKey()
-                    .caption("Customer"),
-            CustomerAddress.ADDRESS_ID.define()
-                    .column()
-                    .nullable(false),
-            CustomerAddress.ADDRESS_FK.define()
-                    .foreignKey()
-                    .caption("Address"))
+                    CustomerAddress.ID.define()
+                            .primaryKey(),
+                    CustomerAddress.CUSTOMER_ID.define()
+                            .column()
+                            .nullable(false),
+                    CustomerAddress.CUSTOMER_FK.define()
+                            .foreignKey()
+                            .caption("Customer"),
+                    CustomerAddress.ADDRESS_ID.define()
+                            .column()
+                            .nullable(false),
+                    CustomerAddress.ADDRESS_FK.define()
+                            .foreignKey()
+                            .caption("Address"))
             .keyGenerator(identity())
             .caption("Customer address"));
     // end::customerAddress[]

@@ -1,6 +1,10 @@
 Codion Change Log
 ==================
 
+## 0.17.31-SNAPSHOT
+### is.codion.swing.framework.server.monitor
+- ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
+
 ## 0.17.30
 ### is.codion.common
 - Text.underscoreToCamelCase() moved to DomainToString, no longer public.

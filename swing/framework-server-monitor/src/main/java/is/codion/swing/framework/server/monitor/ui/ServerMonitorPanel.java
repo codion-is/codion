@@ -19,6 +19,10 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
+import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
+import is.codion.framework.server.EntityServerAdmin.DomainOperation;
+import is.codion.framework.server.EntityServerAdmin.DomainReport;
+import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -40,7 +44,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
@@ -229,8 +232,9 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel createOperationPanel() {
-    JTable table = new JTable(model.operationTableModel());
-    table.setRowSorter(new TableRowSorter<>(model.operationTableModel()));
+    FilteredTable<DomainOperation, Integer> table = FilteredTable.builder(model.operationTableModel())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .build();
 
     JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(button(control(model::refreshOperationList))
@@ -245,8 +249,9 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel createReportPanel() {
-    JTable table = new JTable(model.reportTableModel());
-    table.setRowSorter(new TableRowSorter<>(model.reportTableModel()));
+    FilteredTable<DomainReport, Integer> table = FilteredTable.builder(model.reportTableModel())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .build();
 
     JPanel clearCacheAndRefreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(button(control(model::clearReportCache))
@@ -264,8 +269,9 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel createEntityPanel() {
-    JTable table = new JTable(model.domainTableModel());
-    table.setRowSorter(new TableRowSorter<>(model.domainTableModel()));
+    FilteredTable<DomainEntityDefinition, Integer> table = FilteredTable.builder(model.domainTableModel())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .build();
 
     JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(button(control(model::refreshDomainList))

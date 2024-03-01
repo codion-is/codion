@@ -241,7 +241,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     Map<DomainType, Collection<DomainEntityDefinition>> domainEntities = new HashMap<>();
     for (Domain domain : domainModels.values()) {
       domainEntities.put(domain.type(), domain.entities().definitions().stream()
-              .map(definition -> new DefaultDomainEntityDefinition(definition.entityType().name(), definition.tableName()))
+              .map(definition -> new DefaultDomainEntityDefinition(domain.type().name(), definition.entityType().name(), definition.tableName()))
               .collect(Collectors.toList()));
     }
 
@@ -252,7 +252,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     Map<DomainType, Collection<DomainReport>> domainReports = new HashMap<>();
     for (Domain domain : domainModels.values()) {
       domainReports.put(domain.type(), domain.reports().entrySet().stream()
-              .map(entry -> new DefaultDomainReport(entry.getKey().name(), entry.getValue().getClass().getSimpleName(),
+              .map(entry -> new DefaultDomainReport(domain.type().name(), entry.getKey().name(), entry.getValue().getClass().getSimpleName(),
                       entry.getValue().toString(), entry.getValue().cached()))
               .collect(toList()));
     }
@@ -265,10 +265,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     for (Domain domain : domainModels.values()) {
       Collection<DomainOperation> operations = new ArrayList<>();
       operations.addAll(domain.procedures().entrySet().stream()
-              .map(entry -> new DefaultDomainOperation("Procedure", entry.getKey().name(), entry.getValue().getClass().getName()))
+              .map(entry -> new DefaultDomainOperation(domain.type().name(), "Procedure", entry.getKey().name(), entry.getValue().getClass().getName()))
               .collect(toList()));
       operations.addAll(domain.functions().entrySet().stream()
-              .map(entry -> new DefaultDomainOperation("Function", entry.getKey().name(), entry.getValue().getClass().getName()))
+              .map(entry -> new DefaultDomainOperation(domain.type().name(), "Function", entry.getKey().name(), entry.getValue().getClass().getName()))
               .collect(toList()));
       domainOperations.put(domain.type(), operations);
     }
@@ -532,21 +532,28 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
     private static final long serialVersionUID = 1;
 
+    private final String domain;
     private final String name;
     private final String tableName;
 
-    private DefaultDomainEntityDefinition(String name, String tableName) {
+    private DefaultDomainEntityDefinition(String domain, String name, String tableName) {
+      this.domain = domain;
       this.name = name;
       this.tableName = tableName;
     }
 
     @Override
-    public String name() {
+    public String domain() {
+      return domain;
+    }
+
+    @Override
+    public String entity() {
       return name;
     }
 
     @Override
-    public String tableName() {
+    public String table() {
       return tableName;
     }
   }
@@ -555,16 +562,23 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
     private static final long serialVersionUID = 1;
 
+    private final String domain;
     private final String name;
     private final String type;
     private final String path;
     private final boolean cached;
 
-    private DefaultDomainReport(String name, String type, String path, boolean cached) {
+    private DefaultDomainReport(String domain, String name, String type, String path, boolean cached) {
+      this.domain = domain;
       this.name = name;
       this.type = type;
       this.path = path;
       this.cached = cached;
+    }
+
+    @Override
+    public String domain() {
+      return domain;
     }
 
     @Override
@@ -592,14 +606,21 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
     private static final long serialVersionUID = 1;
 
+    private final String domain;
     private final String type;
     private final String name;
     private final String className;
 
-    private DefaultDomainOperation(String type, String name, String className) {
+    private DefaultDomainOperation(String domain, String type, String name, String className) {
+      this.domain = domain;
       this.type = type;
       this.name = name;
       this.className = className;
+    }
+
+    @Override
+    public String domain() {
+      return domain;
     }
 
     @Override

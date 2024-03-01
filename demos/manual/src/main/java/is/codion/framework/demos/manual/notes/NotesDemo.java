@@ -95,21 +95,21 @@ public final class NotesDemo {
     private Notes() {
       super(DOMAIN);
       add(Note.TYPE.define(
-              Note.ID.define()
-                      .primaryKey(),
-              Note.NOTE.define()
-                      .column()
-                      .caption("Note")
-                      .nullable(false),
-              Note.CREATED.define()
-                      .column()
-                      .caption("Created")
-                      .nullable(false)
-                      .updatable(false)
-                      .columnHasDefaultValue(true),
-              Note.UPDATED.define()
-                      .column()
-                      .caption("Updated"))
+                      Note.ID.define()
+                              .primaryKey(),
+                      Note.NOTE.define()
+                              .column()
+                              .caption("Note")
+                              .nullable(false),
+                      Note.CREATED.define()
+                              .column()
+                              .caption("Created")
+                              .nullable(false)
+                              .updatable(false)
+                              .columnHasDefaultValue(true),
+                      Note.UPDATED.define()
+                              .column()
+                              .caption("Updated"))
               .keyGenerator(KeyGenerator.identity())
               .orderBy(OrderBy.descending(Note.CREATED))
               .caption("Notes"));

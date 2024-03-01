@@ -70,29 +70,29 @@ class ManualDomainModel {
 
     void city() {
       add(City.TYPE.define(
-              City.ID.define()
-                      .primaryKey(),
-              City.NAME.define()
-                      .column()
-                      .caption("Name")
-                      .nullable(false))
+                      City.ID.define()
+                              .primaryKey(),
+                      City.NAME.define()
+                              .column()
+                              .caption("Name")
+                              .nullable(false))
               .keyGenerator(KeyGenerator.identity())
               .caption("Cities"));
     }
 
     void customer() {
       add(Customer.TYPE.define(
-              Customer.ID.define()
-                      .primaryKey(),
-              Customer.NAME.define()
-                      .column()
-                      .caption("Name")
-                      .maximumLength(42),
-              Customer.CITY_ID.define()
-                      .column(),
-              Customer.CITY_FK.define()
-                      .foreignKey()
-                      .caption("City"))
+                      Customer.ID.define()
+                              .primaryKey(),
+                      Customer.NAME.define()
+                              .column()
+                              .caption("Name")
+                              .maximumLength(42),
+                      Customer.CITY_ID.define()
+                              .column(),
+                      Customer.CITY_FK.define()
+                              .foreignKey()
+                              .caption("City"))
               .keyGenerator(KeyGenerator.identity())
               .caption("Customers"));
     }

@@ -56,7 +56,7 @@ public final class TrackTableModelTest {
             assertEquals(BigDecimal.valueOf(1.99), track.get(Track.UNITPRICE)));
   }
 
-  private EntityConnectionProvider createConnectionProvider() {
+  private static EntityConnectionProvider createConnectionProvider() {
     return LocalEntityConnectionProvider.builder()
             .domain(new ChinookImpl())
             .user(User.parse("scott:tiger"))
