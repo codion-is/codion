@@ -211,28 +211,28 @@ public class Store extends DefaultDomain {
     // Use the Customer.TYPE constant to define a new entity,
     // based on attributes defined using the Column constants.
     // This entity definition is then added to the domain model.
-    add(Customer.TYPE.define(           // returns EntityDefinition.Builder
-            Customer.ID.define()
-                    .primaryKey(),      // returns ColumnDefinition.Builder
-            Customer.FIRST_NAME.define()
-                    .column()           // returns ColumnDefinition.Builder
-                    .caption("First name")
-                    .nullable(false)
-                    .maximumLength(40),
-            Customer.LAST_NAME.define()
-                    .column()
-                    .caption("Last name")
-                    .nullable(false)
-                    .maximumLength(40),
-            Customer.EMAIL.define()
-                    .column()
-                    .caption("Email")
-                    .maximumLength(100),
-            Customer.ACTIVE.define()
-                    .column()
-                    .caption("Active")
-                    .nullable(false)
-                    .defaultValue(true))
+    add(Customer.TYPE.define(                   // returns EntityDefinition.Builder
+                    Customer.ID.define()
+                            .primaryKey(),      // returns ColumnDefinition.Builder
+                    Customer.FIRST_NAME.define()
+                            .column()           // returns ColumnDefinition.Builder
+                            .caption("First name")
+                            .nullable(false)
+                            .maximumLength(40),
+                    Customer.LAST_NAME.define()
+                            .column()
+                            .caption("Last name")
+                            .nullable(false)
+                            .maximumLength(40),
+                    Customer.EMAIL.define()
+                            .column()
+                            .caption("Email")
+                            .maximumLength(100),
+                    Customer.ACTIVE.define()
+                            .column()
+                            .caption("Active")
+                            .nullable(false)
+                            .defaultValue(true))
             .keyGenerator(identity())
             .stringFactory(StringFactory.builder()
                     .value(Customer.LAST_NAME)
@@ -245,24 +245,24 @@ public class Store extends DefaultDomain {
     // based on attributes defined using the Column and ForeignKey constants.
     // This entity definition is then added to the domain model.
     add(Address.TYPE.define(
-            Address.ID.define()
-                    .primaryKey(),
-            Address.CUSTOMER_ID.define()
-                    .column()
-                    .nullable(false),
-            Address.CUSTOMER_FK.define()
-                    .foreignKey()       // returns ForeignKeyDefinition.Builder
-                    .caption("Customer"),
-            Address.STREET.define()
-                    .column()
-                    .caption("Street")
-                    .nullable(false)
-                    .maximumLength(100),
-            Address.CITY.define()
-                    .column()
-                    .caption("City")
-                    .nullable(false)
-                    .maximumLength(50))
+                    Address.ID.define()
+                            .primaryKey(),
+                    Address.CUSTOMER_ID.define()
+                            .column()
+                            .nullable(false),
+                    Address.CUSTOMER_FK.define()
+                            .foreignKey()       // returns ForeignKeyDefinition.Builder
+                            .caption("Customer"),
+                    Address.STREET.define()
+                            .column()
+                            .caption("Street")
+                            .nullable(false)
+                            .maximumLength(100),
+                    Address.CITY.define()
+                            .column()
+                            .caption("City")
+                            .nullable(false)
+                            .maximumLength(50))
             .keyGenerator(identity())
             .stringFactory(StringFactory.builder()
                     .value(Address.STREET)
