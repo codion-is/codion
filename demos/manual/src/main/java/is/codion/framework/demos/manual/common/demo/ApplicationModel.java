@@ -152,7 +152,7 @@ public final class ApplicationModel {
     return stringListValue;
   }
 
-  public ValueObserver<String> messageObserver() {
+  public ValueObserver<String> message() {
     return messageValue.observer();
   }
 

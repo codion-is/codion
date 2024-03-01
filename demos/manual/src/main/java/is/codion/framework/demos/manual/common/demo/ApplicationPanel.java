@@ -309,7 +309,7 @@ public final class ApplicationPanel extends JPanel {
                     .focusable(false)
                     .border(createTitledBorder("Message"))
                     .enabled(inputEnabledState)
-                    .linkedValue(model.messageObserver())
+                    .linkedValue(model.message())
                     .build(component -> add(component, BorderLayout.SOUTH)))
             .add(lookAndFeelComboBox(true))
             .build(southPanel -> add(southPanel, BorderLayout.SOUTH));

@@ -10,7 +10,7 @@ CREATE TABLE employees.department (
   constraint department_pk primary key (department_no)
 );
 
-CREATE TABLE employees.employee(
+CREATE TABLE employees.employee (
   id INT NOT NULL,
   name VARCHAR(10) NOT NULL,
   job VARCHAR(9),

@@ -37,7 +37,7 @@ We start by creating a class named Employees in a package of our choosing, exten
 include::{dir-source}/is/codion/framework/demos/employees/domain/Employees.java[tags=departmentConstants]
 ----
 
-Next we define the constants required for the employee entity, which is based on the EMPLOYEES.EMPLOYEE table. Here there are two additional attributes with _FK suffixes, we'll use these later when we specify the foreign key properties for the employee entity.
+Next we define the constants required for the employee entity, which is based on the EMPLOYEES.EMPLOYEE table. Here there are two additional attributes with _FK suffixes, we'll use these later when we specify the foreign key attributes for the employee entity.
 
 [source,java]
 ----
