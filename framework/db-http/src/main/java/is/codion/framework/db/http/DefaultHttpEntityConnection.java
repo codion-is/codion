@@ -11,9 +11,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -22,7 +20,6 @@ import is.codion.framework.domain.entity.condition.Condition;
 import org.apache.http.HttpEntity;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -31,7 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -50,23 +46,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   /**
    * Instantiates a new {@link DefaultHttpEntityConnection} instance
-   * @param domainType the domain model type
-   * @param hostName the http server host name
-   * @param user the user
-   * @param clientTypeId the client type id
-   * @param clientId the client id
-   * @param port the http server port
-   * @param securePort the https server port
-   * @param httpsEnabled if true then https is used
-   * @param socketTimeout the socket timeout
-   * @param connectTimeout the connect timeout
+   * @param builder the connection builder
    * @param connectionManager the connection manager
    */
-  DefaultHttpEntityConnection(DomainType domainType, String hostName, User user, String clientTypeId, UUID clientId,
-                              int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
-                              HttpClientConnectionManager connectionManager) {
-    super(domainType, hostName, user, clientTypeId, clientId, "application/octet-stream", "/entities/ser",
-            port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
+  DefaultHttpEntityConnection(DefaultBuilder builder, HttpClientConnectionManager connectionManager) {
+    super(builder, "application/octet-stream", "/entities/ser", connectionManager);
   }
 
   @Override
@@ -473,97 +457,5 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   private static HttpEntity byteArrayEntity(Object data) throws IOException {
     return new ByteArrayEntity(Serializer.serialize(data));
-  }
-
-  static final class DefaultBuilder implements Builder {
-
-    private DomainType domainType;
-    private String hostName = HttpEntityConnection.HOSTNAME.get();
-    private int port = HttpEntityConnection.PORT.get();
-    private int securePort = HttpEntityConnection.SECURE_PORT.get();
-    private boolean https = HttpEntityConnection.SECURE.get();
-    private boolean json = HttpEntityConnection.JSON.get();
-    private int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
-    private int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.get();
-    private User user;
-    private String clientTypeId;
-    private UUID clientId;
-
-    @Override
-    public Builder domainType(DomainType domainType) {
-      this.domainType = requireNonNull(domainType);
-      return this;
-    }
-
-    @Override
-    public Builder hostName(String hostName) {
-      this.hostName = requireNonNull(hostName);
-      return this;
-    }
-
-    @Override
-    public Builder port(int port) {
-      this.port = port;
-      return this;
-    }
-
-    @Override
-    public Builder securePort(int securePort) {
-      this.securePort = securePort;
-      return this;
-    }
-
-    @Override
-    public Builder https(boolean https) {
-      this.https = https;
-      return this;
-    }
-
-    @Override
-    public Builder json(boolean json) {
-      this.json = json;
-      return this;
-    }
-
-    @Override
-    public Builder socketTimeout(int socketTimeout) {
-      this.socketTimeout = socketTimeout;
-      return this;
-    }
-
-    @Override
-    public Builder connectTimeout(int connectTimeout) {
-      this.connectTimeout = connectTimeout;
-      return this;
-    }
-
-    @Override
-    public Builder user(User user) {
-      this.user = requireNonNull(user);
-      return this;
-    }
-
-    @Override
-    public Builder clientTypeId(String clientTypeId) {
-      this.clientTypeId = requireNonNull(clientTypeId);
-      return this;
-    }
-
-    @Override
-    public Builder clientId(UUID clientId) {
-      this.clientId = requireNonNull(clientId);
-      return this;
-    }
-
-    @Override
-    public EntityConnection build() {
-      if (json) {
-        return new JsonHttpEntityConnection(domainType, hostName, user, clientTypeId, clientId, port, securePort,
-                https, socketTimeout, connectTimeout, new BasicHttpClientConnectionManager());
-      }
-
-      return new DefaultHttpEntityConnection(domainType, hostName, user, clientTypeId, clientId, port, securePort,
-              https, socketTimeout, connectTimeout, new BasicHttpClientConnectionManager());
-    }
   }
 }

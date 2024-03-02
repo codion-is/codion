@@ -11,7 +11,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
@@ -44,7 +43,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -65,23 +63,11 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   /**
    * Instantiates a new {@link JsonHttpEntityConnection} instance
-   * @param domainType the domain model type
-   * @param hostName the http server host name
-   * @param user the user
-   * @param clientTypeId the client type id
-   * @param clientId the client id
-   * @param port the http server port
-   * @param securePort the https server port
-   * @param httpsEnabled if true then https is used
-   * @param socketTimeout the socket timeout
-   * @param connectTimeout the connect timeout
+   * @param builder the connection builder
    * @param connectionManager the connection manager
    */
-  JsonHttpEntityConnection(DomainType domainType, String hostName, User user, String clientTypeId, UUID clientId,
-                           int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
-                           HttpClientConnectionManager connectionManager) {
-    super(domainType, hostName, user, clientTypeId, clientId, "application/json", "/entities/json",
-            port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
+  JsonHttpEntityConnection(DefaultBuilder builder, HttpClientConnectionManager connectionManager) {
+    super(builder, "application/json", "/entities/json", connectionManager);
     this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
     this.databaseObjectMapper = DatabaseObjectMapper.databaseObjectMapper(entityObjectMapper);
   }

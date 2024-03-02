@@ -5,6 +5,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.Serializer;
 import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
@@ -30,6 +31,7 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,21 +85,19 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
    * @param connectTimeout the connect timeout
    * @param connectionManager the connection manager
    */
-  AbstractHttpEntityConnection(DomainType domainType, String hostName, User user, String clientTypeId, UUID clientId, String contentType,
-                               String path, int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
-                               HttpClientConnectionManager connectionManager) {
-    this.domainType = requireNonNull(domainType, "domainType");
-    this.baseurl = requireNonNull(hostName, "hostName") + ":" + (httpsEnabled ? securePort : port) + path;
+  AbstractHttpEntityConnection(DefaultBuilder builder, String contentType, String path, HttpClientConnectionManager connectionManager) {
+    this.domainType = requireNonNull(builder.domainType, "domainType");
+    this.baseurl = requireNonNull(builder.hostName, "hostName") + ":" + (builder.https ? builder.securePort : builder.port) + path;
     this.connectionManager = requireNonNull(connectionManager);
-    this.user = requireNonNull(user, "user");
+    this.user = requireNonNull(builder.user, "user");
     this.requestConfig = RequestConfig.custom()
-          .setSocketTimeout(socketTimeout)
-          .setConnectTimeout(connectTimeout)
+          .setSocketTimeout(builder.socketTimeout)
+          .setConnectTimeout(builder.connectTimeout)
           .build();
-    this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId).toString(), requireNonNull(contentType));
-    this.targetHost = new HttpHost(hostName, (httpsEnabled ? securePort : port), httpsEnabled ? HTTPS : HTTP);
-    this.httpContext = createHttpContext(user, targetHost);
-    this.httpsEnabled = httpsEnabled;
+    this.httpClient = createHttpClient(requireNonNull(builder.clientTypeId), requireNonNull(builder.clientId).toString(), requireNonNull(contentType));
+    this.targetHost = new HttpHost(builder.hostName, (builder.https ? builder.securePort : builder.port), builder.https ? HTTPS : HTTP);
+    this.httpContext = createHttpContext(builder.user, targetHost);
+    this.httpsEnabled = builder.https;
     this.entities = initializeEntities();
   }
 
@@ -220,6 +220,96 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     @Override
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
       return executionCount < 2 && exception instanceof NoHttpResponseException;
+    }
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private DomainType domainType;
+    private String hostName = HttpEntityConnection.HOSTNAME.get();
+    private int port = HttpEntityConnection.PORT.get();
+    private int securePort = HttpEntityConnection.SECURE_PORT.get();
+    private boolean https = HttpEntityConnection.SECURE.get();
+    private boolean json = HttpEntityConnection.JSON.get();
+    private int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
+    private int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.get();
+    private User user;
+    private String clientTypeId;
+    private UUID clientId;
+
+    @Override
+    public Builder domainType(DomainType domainType) {
+      this.domainType = requireNonNull(domainType);
+      return this;
+    }
+
+    @Override
+    public Builder hostName(String hostName) {
+      this.hostName = requireNonNull(hostName);
+      return this;
+    }
+
+    @Override
+    public Builder port(int port) {
+      this.port = port;
+      return this;
+    }
+
+    @Override
+    public Builder securePort(int securePort) {
+      this.securePort = securePort;
+      return this;
+    }
+
+    @Override
+    public Builder https(boolean https) {
+      this.https = https;
+      return this;
+    }
+
+    @Override
+    public Builder json(boolean json) {
+      this.json = json;
+      return this;
+    }
+
+    @Override
+    public Builder socketTimeout(int socketTimeout) {
+      this.socketTimeout = socketTimeout;
+      return this;
+    }
+
+    @Override
+    public Builder connectTimeout(int connectTimeout) {
+      this.connectTimeout = connectTimeout;
+      return this;
+    }
+
+    @Override
+    public Builder user(User user) {
+      this.user = requireNonNull(user);
+      return this;
+    }
+
+    @Override
+    public Builder clientTypeId(String clientTypeId) {
+      this.clientTypeId = requireNonNull(clientTypeId);
+      return this;
+    }
+
+    @Override
+    public Builder clientId(UUID clientId) {
+      this.clientId = requireNonNull(clientId);
+      return this;
+    }
+
+    @Override
+    public EntityConnection build() {
+      if (json) {
+        return new JsonHttpEntityConnection(this, new BasicHttpClientConnectionManager());
+      }
+
+      return new DefaultHttpEntityConnection(this, new BasicHttpClientConnectionManager());
     }
   }
 }
