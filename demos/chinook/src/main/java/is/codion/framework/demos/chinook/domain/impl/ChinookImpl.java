@@ -38,15 +38,16 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static java.util.stream.Collectors.toList;
 
-public final class ChinookImpl extends DefaultDomain implements Chinook {
+public final class ChinookImpl extends DefaultDomain {
 
   public ChinookImpl() {
-    super(DOMAIN);
+    super(Chinook.DOMAIN);
     artist();
     album();
     employee();

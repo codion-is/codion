@@ -51,30 +51,40 @@ public final class InvoiceLineEditModelTest {
       Entity invoice = createInvoice(connectionProvider);
       assertNull(invoice.get(Invoice.TOTAL));
 
-      Entity trackBattery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
+      Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
 
       InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
       editModel.put(InvoiceLine.INVOICE_FK, invoice);
-      editModel.put(InvoiceLine.TRACK_FK, trackBattery);
+      editModel.put(InvoiceLine.TRACK_FK, battery);
       Entity invoiceLineBattery = editModel.insert();
 
       invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(BigDecimal.valueOf(0.99), invoice.get(Invoice.TOTAL));
+      assertEquals(battery.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
 
-      Entity trackOrion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
+      Entity orion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
       editModel.setDefaults();
       editModel.put(InvoiceLine.INVOICE_FK, invoice);
-      editModel.put(InvoiceLine.TRACK_FK, trackOrion);
+      editModel.put(InvoiceLine.TRACK_FK, orion);
       editModel.insert();
 
       invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(BigDecimal.valueOf(1.98), invoice.get(Invoice.TOTAL));
+      assertEquals(battery.get(Track.UNITPRICE).add(orion.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
+
+      Entity theCallOfKtulu = connection.selectSingle(Track.NAME.equalToIgnoreCase("the call of ktulu"));
+      theCallOfKtulu.put(Track.UNITPRICE, BigDecimal.valueOf(2));
+      theCallOfKtulu = connection.updateSelect(theCallOfKtulu);
 
       editModel.set(invoiceLineBattery);
+      editModel.put(InvoiceLine.TRACK_FK, theCallOfKtulu);
+      editModel.update();
+
+      invoice = connection.selectSingle(key(invoice.primaryKey()));
+      assertEquals(orion.get(Track.UNITPRICE).add(theCallOfKtulu.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
+
       editModel.delete();
 
       invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(BigDecimal.valueOf(0.99), invoice.get(Invoice.TOTAL));
+      assertEquals(orion.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
     }
   }
 

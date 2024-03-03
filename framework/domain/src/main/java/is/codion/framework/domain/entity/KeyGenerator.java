@@ -41,7 +41,7 @@ public interface KeyGenerator {
   /**
    * The default implementation returns true.
    * @return true if the primary key value should be included in the
-   * insert query when entities of this type are inserted
+   * insert query when entities using this key generator is inserted
    */
   default boolean inserted() {
     return true;

@@ -32,12 +32,13 @@ import java.sql.Statement;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.demos.world.domain.api.World.*;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
-public final class WorldImpl extends DefaultDomain implements World {
+public final class WorldImpl extends DefaultDomain {
 
   // tag::items[]
   private static final List<Item<String>> CONTINENT_ITEMS = asList(
