@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.manual.common.demo;
 
-import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
@@ -21,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static is.codion.common.item.Item.item;
 import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
@@ -29,9 +29,14 @@ import static java.util.Arrays.asList;
 
 /*
 // tag::demoModelImport[]
+import static is.codion.common.item.Item.item;
 import static is.codion.common.value.Value.value;
+import static is.codion.common.value.ValueSet.valueSet;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
+import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
+import static java.util.Arrays.asList;
 // end::demoModelImport[]
- */
+*/
 // tag::demoModel[]
 
 public final class ApplicationModel {
@@ -162,9 +167,9 @@ public final class ApplicationModel {
 
   public ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
     return itemComboBoxModel(asList(
-            Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
-            Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
-            Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
+            item(1, "One"), item(2, "Two"), item(3, "Three"),
+            item(4, "Four"), item(5, "Five"), item(6, "Six"),
+            item(7, "Seven"), item(8, "Eight"), item(9, "Nine")
     ));
   }
 
@@ -182,11 +187,8 @@ public final class ApplicationModel {
 
   public SpinnerListModel createItemSpinnerModel() {
     return new SpinnerListModel(Arrays.asList(
-            Item.item("Hello"),
-            Item.item("Everybody"),
-            Item.item("How"),
-            Item.item("Are"),
-            Item.item("You")
+            item("Hello"), item("Everybody"),
+            item("How"), item("Are"), item("You")
     ));
   }
 
