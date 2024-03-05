@@ -97,8 +97,7 @@ public final class PetclinicImpl extends DefaultDomain {
                     .value(VetSpecialty.VET_FK)
                     .text(" - ")
                     .value(VetSpecialty.SPECIALTY_FK)
-                    .build())
-            .exists(new VetSpecialty.Exists()));
+                    .build()));
   }
 
   private void petType() {
