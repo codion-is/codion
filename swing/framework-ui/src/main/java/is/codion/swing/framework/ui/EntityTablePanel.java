@@ -699,9 +699,6 @@ public class EntityTablePanel extends JPanel {
     return southPanel;
   }
 
-  /**
-   * Sets up the default keyboard actions.
-   */
   protected void setupKeyboardActions() {
     control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
             KeyEvents.builder(settings.keyboardShortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())

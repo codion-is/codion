@@ -28,10 +28,7 @@ final class DefaultKeyboardShortcuts<T extends Enum<T>> implements KeyboardShort
     this.keyStrokes = keyStrokes;
   }
 
-  /**
-   * @param keyboardShortcut the shortcut key
-   * @return the Value controlling the key stroke for the given shortcut key
-   */
+  @Override
   public Value<KeyStroke> keyStroke(T keyboardShortcut) {
     return keyStrokes.get(requireNonNull(keyboardShortcut));
   }
@@ -46,7 +43,7 @@ final class DefaultKeyboardShortcuts<T extends Enum<T>> implements KeyboardShort
   private static <T extends Enum<T>> Value<KeyStroke> keyStrokeValue(Function<T, KeyStroke> defaultKeystrokes, T shortcutKey) {
     KeyStroke keyStroke = requireNonNull(defaultKeystrokes).apply(shortcutKey);
     if (keyStroke == null) {
-      throw new IllegalStateException("No default keystroke provided for shortcut key: " + shortcutKey);
+      throw new IllegalArgumentException("No default keystroke provided for shortcut key: " + shortcutKey);
     }
 
     return Value.value(keyStroke, keyStroke);
