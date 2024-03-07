@@ -501,11 +501,27 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns the panel containing the edit panel and the controls component.
-   * @return the edit control panel
+   * Enables the given key event on this panel
+   * @param keyEventBuilder the key event builder
    */
-  public final JPanel editControlPanel() {
-    return editControlPanel;
+  public final void addKeyEvent(KeyEvents.Builder keyEventBuilder) {
+    requireNonNull(keyEventBuilder);
+    keyEventBuilder.enable(this);
+    if (containsEditPanel()) {
+      keyEventBuilder.enable(editControlPanel);
+    }
+  }
+
+  /**
+   * Disables the given key event on this panel
+   * @param keyEventBuilder the key event builder
+   */
+  public final void removeKeyEvent(KeyEvents.Builder keyEventBuilder) {
+    requireNonNull(keyEventBuilder);
+    keyEventBuilder.disable(this);
+    if (containsEditPanel()) {
+      keyEventBuilder.disable(editControlPanel);
+    }
   }
 
   /**
@@ -708,7 +724,6 @@ public class EntityPanel extends JPanel {
   /**
    * Initializes this EntityPanels UI.
    * @see #panelLayout()
-   * @see #editControlPanel()
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
@@ -722,7 +737,6 @@ public class EntityPanel extends JPanel {
   /**
    * Creates a base panel containing the given edit panel.
    * The default layout is a {@link FlowLayout} with the alignment depending on {@link Settings#controlComponentConstraints(String)}.
-   * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
    * @param editPanel the initialized edit panel
    * @return a base panel for the edit panel
    * @see Settings#controlComponentConstraints(String)
@@ -961,9 +975,7 @@ public class EntityPanel extends JPanel {
   protected final void initializeTablePanel() {
     if (tablePanel != null) {
       editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
-      if (tablePanel.table().doubleClickAction().get() == null) {
-        tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanel()));
-      }
+      tablePanel.table().doubleClickAction().mapNull(() -> Control.control(new ShowHiddenEditPanel()));
       tablePanel.initialize();
       tablePanel.setMinimumSize(new Dimension(0, 0));
     }

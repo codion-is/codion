@@ -223,18 +223,12 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void setupResizing() {
-    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
+    entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeHorizontally(entityPanel, RIGHT));
-    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
+            .action(new ResizeHorizontally(entityPanel, RIGHT)));
+    entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeHorizontally(entityPanel, LEFT));
-    resizeRightKeyEvent.enable(entityPanel);
-    resizeLeftKeyEvent.enable(entityPanel);
-    if (entityPanel.containsEditPanel()) {
-      resizeRightKeyEvent.enable(entityPanel.editControlPanel());
-      resizeLeftKeyEvent.enable(entityPanel.editControlPanel());
-    }
+            .action(new ResizeHorizontally(entityPanel, LEFT)));
   }
 
   private void setupControls() {
