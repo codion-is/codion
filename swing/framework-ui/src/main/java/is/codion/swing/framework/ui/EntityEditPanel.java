@@ -594,11 +594,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     return unmodifiableMap(Stream.of(EditControl.values())
             .collect(toMap(Function.identity(), controlCode -> {
-                      Value<Control> value = Value.value();
-                      value.addValidator(controlValueValidator);
+              Value<Control> value = Value.value();
+              value.addValidator(controlValueValidator);
 
-                      return value;
-                    })));
+              return value;
+            })));
   }
 
   private void throwIfInitialized() {
