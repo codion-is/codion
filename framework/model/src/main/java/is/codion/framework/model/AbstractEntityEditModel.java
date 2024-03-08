@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.exception.UpdateException;
 import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -52,8 +51,6 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
-
-  private static final String ENTITIES = "entities";
 
   private final Entity entity;
   private final EntityConnectionProvider connectionProvider;
@@ -295,97 +292,62 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    states.verifyInsertEnabled();
-    Entity toInsert = entity.copy();
-    if (entityDefinition().primaryKey().generated()) {
-      toInsert.clearPrimaryKey();
-    }
-    Collection<Entity> insertedEntities = insertEntities(singletonList(toInsert));
-    if (insertedEntities.isEmpty()) {
-      throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
-    }
-    Entity inserted = insertedEntities.iterator().next();
-    setEntity(inserted);
-
-    notifyAfterInsert(unmodifiableCollection(insertedEntities));
-
-    return inserted;
+    return new DefaultInsert().perform().iterator().next();
   }
 
   @Override
   public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    if (requireNonNull(entities, ENTITIES).isEmpty()) {
-      return emptyList();
-    }
-    states.verifyInsertEnabled();
-    Collection<Entity> insertedEntities = insertEntities(entities);
-
-    notifyAfterInsert(unmodifiableCollection(insertedEntities));
-
-    return insertedEntities;
+    return new DefaultInsert(entities).perform();
   }
 
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
-    Collection<Entity> updated = update(singletonList(entity.copy()));
-    if (updated.isEmpty()) {
-      throw new UpdateException("Active entity is not modified");
-    }
-
-    return updated.iterator().next();
+    return new DefaultUpdate().perform().iterator().next();
   }
 
   @Override
   public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    if (requireNonNull(entities, ENTITIES).isEmpty()) {
-      return emptyList();
-    }
-    states.verifyUpdateEnabled();
-    if (entities.size() > 1 && !states.updateMultipleEnabled.get()) {
-      throw new IllegalStateException("Batch update of entities is not enabled");
-    }
-
-    notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
-    validate(entities);
-    //entity.toString() could potentially cause NullPointerException if null-validation
-    //has not been performed, hence why this logging is performed after validation
-    LOG.debug("{} - update {}", this, entities);
-
-    List<Entity> updatedEntities = new ArrayList<>(update(new ArrayList<>(entities), connectionProvider.connection()));
-    int index = updatedEntities.indexOf(entity);
-    if (index >= 0) {
-      setEntity(updatedEntities.get(index));
-    }
-
-    notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
-
-    return updatedEntities;
+    return new DefaultUpdate(entities).perform();
   }
 
   @Override
   public final void delete() throws DatabaseException {
-    Entity originalEntity = entity.copy();
-    originalEntity.revert();
-
-    delete(singletonList(originalEntity));
+    new DefaultDelete().perform();
   }
 
   @Override
   public final void delete(Collection<Entity> entities) throws DatabaseException {
-    if (requireNonNull(entities, ENTITIES).isEmpty()) {
-      return;
-    }
-    states.verifyDeleteEnabled();
-    LOG.debug("{} - delete {}", this, entities);
+    new DefaultDelete(entities).perform();
+  }
 
-    notifyBeforeDelete(unmodifiableCollection(entities));
+  @Override
+  public final Insert createInsert() {
+    return new DefaultInsert();
+  }
 
-    delete(entities, connectionProvider.connection());
-    if (entities.contains(entity)) {
-      setDefaults();
-    }
+  @Override
+  public final Insert createInsert(Collection<Entity> entities) {
+    return new DefaultInsert(entities);
+  }
 
-    notifyAfterDelete(unmodifiableCollection(entities));
+  @Override
+  public final Update createUpdate() {
+    return new DefaultUpdate();
+  }
+
+  @Override
+  public final Update createUpdate(Collection<Entity> entities) {
+    return new DefaultUpdate(entities);
+  }
+
+  @Override
+  public final Delete createDelete() {
+    return new DefaultDelete();
+  }
+
+  @Override
+  public final Delete createDelete(Collection<Entity> entities) {
+    return new DefaultDelete(entities);
   }
 
   @Override
@@ -699,16 +661,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     events.afterDelete.accept(requireNonNull(deletedEntities));
   }
 
-  private Collection<Entity> insertEntities(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    notifyBeforeInsert(unmodifiableCollection(entities));
-    validate(entities);
-    //entity.toString() could potentially cause NullPointerException if null-validation
-    //has not been performed, hence why this logging is performed after validation
-    LOG.debug("{} - insert {}", this, entities);
-
-    return insert(entities, connectionProvider.connection());
-  }
-
   private boolean setEntityAllowed() {
     if (states.overwriteWarning.get() && exists().get() && modified().get()) {
       State confirmation = State.state(true);
@@ -871,6 +823,182 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private interface ValueSupplier {
     <T> T get(AttributeDefinition<T> attributeDefinition);
+  }
+
+  private final class DefaultInsert implements Insert {
+
+    private final Collection<Entity> entities;
+    private final boolean activeEntity;
+
+    private DefaultInsert() {
+      this.entities = singleton(activeEntity());
+      this.activeEntity = true;
+      states.verifyInsertEnabled();
+    }
+
+    private DefaultInsert(Collection<Entity> entities) {
+      this.entities = unmodifiableCollection(new ArrayList<>(entities));
+      this.activeEntity = false;
+      states.verifyInsertEnabled();
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+      AbstractEntityEditModel.this.validate(entities);
+    }
+
+    @Override
+    public void notifyBeforeInsert() {
+      AbstractEntityEditModel.this.notifyBeforeInsert(entities);
+    }
+
+    @Override
+    public Collection<Entity> insert() throws DatabaseException {
+      LOG.debug("{} - insert {}", this, entities);
+      Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
+      if (!entities.isEmpty() && inserted.isEmpty()) {
+        throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
+      }
+
+      return inserted;
+    }
+
+    @Override
+    public void notifyAfterInsert(Collection<Entity> insertedEntities) {
+      AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
+      if (activeEntity) {
+        setEntity(insertedEntities.iterator().next());
+      }
+    }
+
+    private Entity activeEntity() {
+      Entity toInsert = entity.copy();
+      if (entity.definition().primaryKey().generated()) {
+        toInsert.clearPrimaryKey();
+      }
+
+      return toInsert;
+    }
+
+    private Collection<Entity> perform() throws ValidationException, DatabaseException {
+      validate();
+      notifyBeforeInsert();
+      Collection<Entity> inserted = insert();
+      notifyAfterInsert(inserted);
+
+      return inserted;
+    }
+  }
+
+  private final class DefaultUpdate implements Update {
+
+    private final Collection<Entity> entities;
+
+    private DefaultUpdate() {
+      this.entities = singleton(entity().copy());
+      states.verifyUpdateEnabled(entities);
+      verifyModified(entities);
+    }
+
+    private DefaultUpdate(Collection<Entity> entities) {
+      this.entities = unmodifiableCollection(new ArrayList<>(entities));
+      states.verifyUpdateEnabled(entities);
+      verifyModified(entities);
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+      AbstractEntityEditModel.this.validate(entities);
+    }
+
+    @Override
+    public void notifyBeforeUpdate() {
+      AbstractEntityEditModel.this.notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
+    }
+
+    @Override
+    public Collection<Entity> update() throws DatabaseException {
+      LOG.debug("{} - update {}", this, entities);
+      return new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection()));
+    }
+
+    @Override
+    public void notifyAfterUpdate(Collection<Entity> updatedEntities) {
+      AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
+      Entity activeEntity = entity();
+      updatedEntities.stream()
+              .filter(entity -> entity.equals(activeEntity))
+              .findFirst()
+              .ifPresent(AbstractEntityEditModel.this::setEntity);
+    }
+
+    private void verifyModified(Collection<Entity> entities) {
+      for (Entity entity : entities) {
+        if (!entity.modified()) {
+          throw new IllegalArgumentException("Entity is not modified: " + entity);
+        }
+      }
+    }
+
+    private Collection<Entity> perform() throws ValidationException, DatabaseException {
+      validate();
+      notifyBeforeUpdate();
+      Collection<Entity> updatedEntities = update();
+      notifyAfterUpdate(updatedEntities);
+
+      return updatedEntities;
+    }
+  }
+
+  private final class DefaultDelete implements Delete {
+
+    private final Collection<Entity> entities;
+    private final boolean activeEntity;
+
+    private DefaultDelete() {
+      this.entities = singleton(activeEntity());
+      this.activeEntity = true;
+      states.verifyDeleteEnabled();
+    }
+
+    private DefaultDelete(Collection<Entity> entities) {
+      this.entities = unmodifiableCollection(new ArrayList<>(entities));
+      this.activeEntity = false;
+      states.verifyDeleteEnabled();
+    }
+
+    @Override
+    public void notifyBeforeDelete() {
+      AbstractEntityEditModel.this.notifyBeforeDelete(entities);
+    }
+
+    @Override
+    public Collection<Entity> delete() throws DatabaseException {
+      LOG.debug("{} - delete {}", this, entities);
+      AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
+
+      return entities;
+    }
+
+    @Override
+    public void notifyAfterDelete(Collection<Entity> deletedEntities) {
+      AbstractEntityEditModel.this.notifyAfterDelete(deletedEntities);
+      if (activeEntity) {
+        setDefaults();
+      }
+    }
+
+    private Entity activeEntity() {
+      Entity copy = entity.copy();
+      copy.revert();
+
+      return copy;
+    }
+
+    private void perform() throws DatabaseException {
+      notifyBeforeDelete();
+      notifyAfterDelete(delete());
+    }
   }
 
   private final class NotifyInserted implements Consumer<Collection<Entity>> {
@@ -1076,9 +1204,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       }
     }
 
-    private void verifyUpdateEnabled() {
+    private void verifyUpdateEnabled(Collection<Entity> entities) {
       if (readOnly.get() || !updateEnabled.get()) {
         throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
+      }
+      if (entities.size() > 1 && !updateMultipleEnabled.get()) {
+        throw new IllegalStateException("Batch update of entities is not enabled");
       }
     }
 

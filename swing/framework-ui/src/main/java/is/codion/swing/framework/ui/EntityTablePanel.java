@@ -93,6 +93,7 @@ import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
+import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
@@ -138,6 +139,7 @@ public class EntityTablePanel extends JPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
+  private static final ResourceBundle EDIT_PANEL_MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
 
   /**
    * Specifies whether table condition panels should be visible or not by default<br>
@@ -1057,7 +1059,7 @@ public class EntityTablePanel extends JPanel {
    * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
    */
   private Control createDeleteSelectedControl() {
-    return Control.builder(this::deleteWithConfirmation)
+    return Control.builder(new DeleteCommand())
             .name(FrameworkMessages.delete())
             .enabled(State.and(
                     tableModel.editModel().deleteEnabled(),
@@ -1617,6 +1619,28 @@ public class EntityTablePanel extends JPanel {
   private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
     configureHorizontalAlignment(columnConditionPanel,
             tableModel.columnModel().column(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
+  }
+
+  private final class DeleteCommand implements Control.Command {
+
+    @Override
+    public void execute() {
+      if (confirmDelete()) {
+        EntityEditModel.Delete delete = tableModel().editModel().createDelete(tableModel().selectionModel().getSelectedItems());
+        delete.notifyBeforeDelete();
+        progressWorkerDialog(delete::delete)
+                .title(EDIT_PANEL_MESSAGES.getString("deleting"))
+                .owner(EntityTablePanel.this)
+                .onException(this::onException)
+                .onResult(delete::notifyAfterDelete)
+                .execute();
+      }
+    }
+
+    private void onException(Throwable exception) {
+      LOG.error(exception.getMessage(), exception);
+      EntityTablePanel.this.onException(exception);
+    }
   }
 
   private static void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -53,6 +55,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
   private static final ResourceBundle TABLE_PANEL_MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
@@ -522,7 +525,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private Control createDeleteControl() {
-    return Control.builder(this::deleteWithConfirmation)
+    return Control.builder(new DeleteCommand())
             .name(FrameworkMessages.delete())
             .enabled(State.and(active,
                     editModel().deleteEnabled(),
@@ -544,7 +547,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private Control createUpdateControl() {
-    return Control.builder(this::updateWithConfirmation)
+    return Control.builder(new UpdateCommand())
             .name(FrameworkMessages.update())
             .enabled(State.and(active,
                     editModel().updateEnabled(),
@@ -560,7 +563,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     boolean useSaveCaption = USE_SAVE_CAPTION.get();
     char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
-    return Control.builder(this::insertWithConfirmation)
+    return Control.builder(new InsertCommand())
             .name(caption)
             .enabled(State.and(active, editModel().insertEnabled()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
@@ -655,6 +658,92 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
      */
     default boolean confirm(JComponent dialogOwner, String message, String title) {
       return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+    }
+  }
+
+  private final class InsertCommand implements Control.Command {
+
+    @Override
+    public void execute() {
+      if (confirmInsert()) {
+        EntityEditModel.Insert insert = editModel().createInsert();
+        insert.notifyBeforeInsert();
+        progressWorkerDialog(insert::insert)
+                .title(MESSAGES.getString("inserting"))
+                .owner(EntityEditPanel.this)
+                .onResult(entities -> afterInsert(entities, insert))
+                .onException(this::onException)
+                .execute();
+      }
+    }
+
+    private void afterInsert(Collection<Entity> insertedEntities, EntityEditModel.Insert insert) {
+      insert.notifyAfterInsert(insertedEntities);
+      if (clearAfterInsert.get()) {
+        editModel().setDefaults();
+      }
+      if (requestFocusAfterInsert.get()) {
+        requestAfterInsertFocus();
+      }
+    }
+
+    private void onException(Throwable exception) {
+      LOG.error(exception.getMessage(), exception);
+      EntityEditPanel.this.onException(exception);
+    }
+  }
+
+  private final class UpdateCommand implements Control.Command {
+
+    @Override
+    public void execute() {
+      if (confirmUpdate()) {
+        EntityEditModel.Update update = editModel().createUpdate();
+        update.notifyBeforeUpdate();
+        progressWorkerDialog(update::update)
+                .title(MESSAGES.getString("updating"))
+                .owner(EntityEditPanel.this)
+                .onResult(entities -> afterUpdate(entities, update))
+                .onException(this::onException)
+                .execute();
+      }
+    }
+
+    private void afterUpdate(Collection<Entity> updatedEntities, EntityEditModel.Update update) {
+      update.notifyAfterUpdate(updatedEntities);
+      requestAfterUpdateFocus();
+    }
+
+    private void onException(Throwable exception) {
+      LOG.error(exception.getMessage(), exception);
+      EntityEditPanel.this.onException(exception);
+    }
+  }
+
+  private final class DeleteCommand implements Control.Command {
+
+    @Override
+    public void execute() {
+      if (confirmDelete()) {
+        EntityEditModel.Delete delete = editModel().createDelete();
+        delete.notifyBeforeDelete();
+        progressWorkerDialog(delete::delete)
+                .title(MESSAGES.getString("deleting"))
+                .owner(EntityEditPanel.this)
+                .onResult(entities -> afterDelete(entities, delete))
+                .onException(this::onException)
+                .execute();
+      }
+    }
+
+    private void afterDelete(Collection<Entity> deletedEntities, EntityEditModel.Delete delete) {
+      delete.notifyAfterDelete(deletedEntities);
+      requestInitialFocus();
+    }
+
+    private void onException(Throwable exception) {
+      LOG.error(exception.getMessage(), exception);
+      EntityEditPanel.this.onException(exception);
     }
   }
 

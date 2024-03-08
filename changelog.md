@@ -4,8 +4,12 @@ Codion Change Log
 ## 0.17.31-SNAPSHOT
 ### is.codion.common
 - DefaultValueSet, synchronization added.
+### is.codion.framework.model
+- EntityEditModel.Insert, Update and Delete added.
+- AbstractEntityEditModel.createInsert(), createUpdate() and createDelete() added, providing support for async CRUD operations.
 ### is.codion.swing.framework.ui
 - EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
+- EntityEditPanel, EntityTablePanel, EntityDialogs CRUD operations now performed in a background thread.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 

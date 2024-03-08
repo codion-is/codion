@@ -324,6 +324,47 @@ public interface EntityEditModel {
   void delete(Collection<Entity> entities) throws DatabaseException;
 
   /**
+   * Creates a new {@link Insert} instance for inserting the active entity.
+   * @return a new {@link Insert} instance
+   */
+  Insert createInsert();
+
+  /**
+   * Creates a new {@link Insert} instance for inserting the given entities.
+   * @param entities the entities to insert
+   * @return a new {@link Insert} instance
+   */
+  Insert createInsert(Collection<Entity> entities);
+
+  /**
+   * Creates a new {@link Update} instance for updating the active entity.
+   * @return a new {@link Update} instance
+   * @throws IllegalArgumentException in case the active entity is unmodified
+   */
+  Update createUpdate();
+
+  /**
+   * Creates a new {@link Update} instance for updating the given entities.
+   * @param entities the entities to update
+   * @return a new {@link Update} instance
+   * @throws IllegalArgumentException in case any of the given entities are unmodified
+   */
+  Update createUpdate(Collection<Entity> entities);
+
+  /**
+   * Creates a new {@link Delete} instance for deleting the active entity.
+   * @return a new {@link Delete} instance
+   */
+  Delete createDelete();
+
+  /**
+   * Creates a new {@link Delete} instance for deleting the given entities.
+   * @param entities the entities to delete
+   * @return a new {@link Delete} instance
+   */
+  Delete createDelete(Collection<Entity> entities);
+
+  /**
    * Adds the given entities to all foreign key models based on that entity type
    * @param foreignKey the foreign key
    * @param entities the values
@@ -567,4 +608,131 @@ public interface EntityEditModel {
    * @param listener a listener to remove
    */
   void removeConfirmOverwriteListener(Consumer<State> listener);
+
+  /**
+   * Represents a task for inserting entities, split up for use with a background thread.
+   * <pre>
+   *   Insert insert = editModel.createInsert();
+   *
+   *   insert.validate();
+   *   insert.notifyBeforeInsert();
+   *
+   *   // Can safely be called in a background thread
+   *   Collection&lt;Entity&gt; insertedEntities = insert.insert();
+   *
+   *   insert.notifyAfterInsert(insertedEntities);
+   * </pre>
+   * {@link #insert()} may be called on a background thread while {@link #validate()}, {@link #notifyBeforeInsert()}
+   * and {@link #notifyAfterInsert(Collection)} must be called on the UI thread.
+   */
+  interface Insert {
+
+    /**
+     * Must be called on the UI thread if this model has a panel based on it.
+     * @throws ValidationException in case of validation failure
+     */
+    void validate() throws ValidationException;
+
+    /**
+     * Notifies listeners that an insert is about to be performed.
+     * Must be called on the UI thread if this model has a panel based on it.
+     */
+    void notifyBeforeInsert();
+
+    /**
+     * May be called in a background thread.
+     * @return the inserted entities
+     * @throws DatabaseException in case of a database exception
+     */
+    Collection<Entity> insert() throws DatabaseException;
+
+    /**
+     * Notifies listeners that an insert has been performed.
+     * Must be called on the UI thread if this model has a panel based on it.
+     * @param insertedEntities the entities returned by {@link #insert()}
+     */
+    void notifyAfterInsert(Collection<Entity> insertedEntities);
+  }
+
+  /**
+   * Represents a task for updating entities.
+   * <pre>
+   *   Update update = editModel.createUpdate();
+   *
+   *   update.validate();
+   *   update.notifyBeforeUpdate();
+   *
+   *   // Can safely be called in a background thread
+   *   Collection&lt;Entity&gt; updatedEntities = update.update();
+   *
+   *   update.notifyAfterUpdate(updatedEntities);
+   * </pre>
+   * {@link #update()} may be called on a background thread while {@link #validate()}, {@link #notifyBeforeUpdate()}
+   * and {@link #notifyAfterUpdate(Collection)} must be called on the UI thread.
+   */
+  interface Update {
+
+    /**
+     * Must be called on the UI thread if this model has a panel based on it.
+     * @throws ValidationException in case of validation failure
+     */
+    void validate() throws ValidationException;
+
+    /**
+     * Notifies listeners that an update is about to be performed.
+     * Must be called on the UI thread if this model has a panel based on it.
+     */
+    void notifyBeforeUpdate();
+
+    /**
+     * May be called in a background thread.
+     * @return the updated entities
+     * @throws DatabaseException in case of a database exception
+     */
+    Collection<Entity> update() throws DatabaseException;
+
+    /**
+     * Notifies listeners that an update has been performed.
+     * Must be called on the UI thread if this model has a panel based on it.
+     * @param updatedEntities the entities returned by {@link #update()}
+     */
+    void notifyAfterUpdate(Collection<Entity> updatedEntities);
+  }
+
+  /**
+   * Represents a task for deleting entities.
+   * <pre>
+   *   Delete delete = editModel.createDelete();
+   *
+   *   delete.notifyBeforeDelete();
+   *
+   *   // Can safely be called in a background thread
+   *   Collection&lt;Entity&gt; deletedEntities = delete.delete();
+   *
+   *   delete.notifyAfterDelete(deletedEntities);
+   * </pre>
+   * {@link #delete()} may be called on a background thread while {@link #notifyBeforeDelete()}
+   * and {@link #notifyAfterDelete(Collection)} must be called on the UI thread.
+   */
+  interface Delete {
+
+    /**
+     * Notifies listeners that a delete is about to be performed.
+     * Must be called on the UI thread if this model has a panel based on it.
+     */
+    void notifyBeforeDelete();
+
+    /**
+     * May be called in a background thread.
+     * @return the deleted entities
+     * @throws DatabaseException in case of a database exception
+     */
+    Collection<Entity> delete() throws DatabaseException;
+
+    /**
+     * Must be called on the UI thread if this model has a panel based on it.
+     * @param deletedEntities the entities returned by {@link #delete()}
+     */
+    void notifyAfterDelete(Collection<Entity> deletedEntities);
+  }
 }

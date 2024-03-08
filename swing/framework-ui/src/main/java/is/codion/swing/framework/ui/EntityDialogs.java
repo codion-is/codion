@@ -13,6 +13,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
@@ -47,6 +48,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -54,6 +56,7 @@ import java.util.function.Predicate;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.button;
 import static is.codion.swing.common.ui.component.Components.flowLayoutPanel;
+import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singletonList;
@@ -68,6 +71,8 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
  * Provides edit and selection dialogs for entities.
  */
 public final class EntityDialogs {
+
+  private static final ResourceBundle EDIT_PANEL_MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
 
   /**
    * @param editModel the edit model to use
@@ -110,7 +115,7 @@ public final class EntityDialogs {
      * @param onException called on exception
      * @return this builder
      */
-    EditDialogBuilder<T> onException(Consumer<Exception> onException);
+    EditDialogBuilder<T> onException(Consumer<Throwable> onException);
 
     /**
      * @param updater the updater to use
@@ -182,8 +187,8 @@ public final class EntityDialogs {
 
     private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
     private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
-    private Consumer<Exception> onException = new DefaultExceptionHandler();
-    private Updater<SwingEntityEditModel> updater = new DefaultUpdater();
+    private Consumer<Throwable> onException = new DefaultExceptionHandler();
+    private Updater<SwingEntityEditModel> updater;
 
     private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = requireNonNull(editModel);
@@ -203,7 +208,7 @@ public final class EntityDialogs {
     }
 
     @Override
-    public EditDialogBuilder<T> onException(Consumer<Exception> onException) {
+    public EditDialogBuilder<T> onException(Consumer<Throwable> onException) {
       this.onException = requireNonNull(onException);
       return this;
     }
@@ -233,12 +238,15 @@ public final class EntityDialogs {
 
       AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
       Collection<Entity> selectedEntities = entities.stream()
-            .map(Entity::copy)
-            .collect(toList());
+              .map(Entity::copy)
+              .collect(toList());
       Collection<T> values = Entity.distinct(attribute, selectedEntities);
       T initialValue = values.size() == 1 ? values.iterator().next() : null;
       ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
       InputValidator<T> inputValidator = new InputValidator<>(attributeDefinition, componentValue);
+      if (updater == null) {
+        updater = new DefaultUpdater(owner, locationRelativeTo, onException);
+      }
       boolean updatePerformed = false;
       while (!updatePerformed) {
         T newValue = Dialogs.inputDialog(componentValue)
@@ -284,9 +292,9 @@ public final class EntityDialogs {
       return false;
     }
 
-    private final class DefaultExceptionHandler implements Consumer<Exception> {
+    private final class DefaultExceptionHandler implements Consumer<Throwable> {
       @Override
-      public void accept(Exception exception) {
+      public void accept(Throwable exception) {
         Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
         if (focusOwner == null) {
           focusOwner = owner;
@@ -303,15 +311,34 @@ public final class EntityDialogs {
         String title = editModel.entityDefinition().attributes()
                 .definition(exception.attribute())
                 .caption();
-        JOptionPane.showMessageDialog(owner, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(locationRelativeTo == null ? owner : locationRelativeTo, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
       }
     }
 
     private static final class DefaultUpdater implements Updater<SwingEntityEditModel> {
 
+      private final Window dialogOwner;
+      private final Component locationRelativeTo;
+      private final Consumer<Throwable> exceptionHandler;
+
+      private DefaultUpdater(Window dialogOwner, Component locationRelativeTo, Consumer<Throwable> exceptionHandler) {
+        this.dialogOwner = dialogOwner;
+        this.locationRelativeTo = locationRelativeTo;
+        this.exceptionHandler = exceptionHandler;
+      }
+
       @Override
-      public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException, DatabaseException {
-        editModel.update(entities);
+      public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException {
+        EntityEditModel.Update update = editModel.createUpdate(entities);
+        update.validate();
+        update.notifyBeforeUpdate();
+        progressWorkerDialog(update::update)
+                .title(EDIT_PANEL_MESSAGES.getString("updating"))
+                .owner(dialogOwner)
+                .locationRelativeTo(locationRelativeTo)
+                .onException(exceptionHandler)
+                .onResult(update::notifyAfterUpdate)
+                .execute();
       }
     }
 
