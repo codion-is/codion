@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.31-SNAPSHOT
+### is.codion.common
+- DefaultValueSet, synchronization added.
 ### is.codion.swing.framework.ui
 - EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
 ### is.codion.swing.framework.server.monitor
