@@ -664,9 +664,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final class InsertCommand implements Control.Command {
 
     @Override
-    public void execute() {
+    public void execute() throws ValidationException {
       if (confirmInsert()) {
         EntityEditModel.Insert insert = editModel().createInsert();
+        insert.validate();
         insert.notifyBeforeInsert();
         progressWorkerDialog(insert::insert)
                 .title(MESSAGES.getString("inserting"))
@@ -696,9 +697,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final class UpdateCommand implements Control.Command {
 
     @Override
-    public void execute() {
+    public void execute() throws ValidationException {
       if (confirmUpdate()) {
         EntityEditModel.Update update = editModel().createUpdate();
+        update.validate();
         update.notifyBeforeUpdate();
         progressWorkerDialog(update::update)
                 .title(MESSAGES.getString("updating"))

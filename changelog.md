@@ -13,6 +13,7 @@ Codion Change Log
 - TabbedPanelLayout refactored.
 - TabbedPanelLayout.Builder.includeDetailTabPane() renamed includeDetailTabbedPane().
 - EntityPanel, edit window location now relative to table panel, if one is available.
+- EntityEditPanel bug fixed, did not validate before insert and update.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 
