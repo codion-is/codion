@@ -120,14 +120,14 @@ public final class TabbedPanelLayout implements PanelLayout {
   private JSplitPane detailPanelSplitPane;
   private Window detailPanelWindow;
   private PanelState detailPanelState = EMBEDDED;
-  private final boolean includeDetailTabPane;
+  private final boolean includeDetailTabbedPane;
   private final boolean includeDetailPanelControls;
   private final double splitPaneResizeWeight;
   private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
 
   private TabbedPanelLayout(DefaultBuilder builder) {
     this.detailPanelState = builder.detailPanelState;
-    this.includeDetailTabPane = builder.includeDetailTabPane;
+    this.includeDetailTabbedPane = builder.includeDetailTabbedPane;
     this.includeDetailPanelControls = builder.includeDetailControls;
     this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
     this.detailController = new TabbedDetailController();
@@ -195,10 +195,10 @@ public final class TabbedPanelLayout implements PanelLayout {
     Builder splitPaneResizeWeight(double splitPaneResizeWeight);
 
     /**
-     * @param includeDetailTabPane true if the detail panel tab pane should be included
+     * @param includeDetailTabbedPane true if the detail panel tab pane should be included
      * @return this builder instance
      */
-    Builder includeDetailTabPane(boolean includeDetailTabPane);
+    Builder includeDetailTabbedPane(boolean includeDetailTabbedPane);
 
     /**
      * @param includeDetailControls true if detail panel controls should be available
@@ -257,7 +257,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private JComponent createCenterComponent() {
-    if (includeDetailTabPane && !entityPanel.detailPanels().isEmpty()) {
+    if (includeDetailTabbedPane && !entityPanel.detailPanels().isEmpty()) {
       detailPanelSplitPane = createTableDetailSplitPane(entityPanel.editControlTablePanel());
       detailPanelTabbedPane = createDetailTabbedPane(entityPanel.detailPanels());
 
@@ -579,7 +579,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     private PanelState detailPanelState = EMBEDDED;
     private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
-    private boolean includeDetailTabPane = true;
+    private boolean includeDetailTabbedPane = true;
     private boolean includeDetailControls = INCLUDE_DETAIL_CONTROLS.get();
 
     @Override
@@ -595,8 +595,8 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     @Override
-    public Builder includeDetailTabPane(boolean includeDetailTabPane) {
-      this.includeDetailTabPane = includeDetailTabPane;
+    public Builder includeDetailTabbedPane(boolean includeDetailTabbedPane) {
+      this.includeDetailTabbedPane = includeDetailTabbedPane;
       return this;
     }
 
