@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
 - EntityEditPanel, EntityTablePanel, EntityDialogs CRUD operations now performed in a background thread.
+- TabbedPanelLayout refactored.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 
