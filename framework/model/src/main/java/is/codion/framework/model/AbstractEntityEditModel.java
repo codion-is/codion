@@ -321,22 +321,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Insert createInsert() {
+  public final Insert createInsert() throws ValidationException {
     return new DefaultInsert();
   }
 
   @Override
-  public final Insert createInsert(Collection<Entity> entities) {
+  public final Insert createInsert(Collection<Entity> entities) throws ValidationException {
     return new DefaultInsert(entities);
   }
 
   @Override
-  public final Update createUpdate() {
+  public final Update createUpdate() throws ValidationException {
     return new DefaultUpdate();
   }
 
   @Override
-  public final Update createUpdate(Collection<Entity> entities) {
+  public final Update createUpdate(Collection<Entity> entities) throws ValidationException {
     return new DefaultUpdate(entities);
   }
 
@@ -830,21 +830,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     private final Collection<Entity> entities;
     private final boolean activeEntity;
 
-    private DefaultInsert() {
+    private DefaultInsert() throws ValidationException {
       this.entities = singleton(activeEntity());
       this.activeEntity = true;
       states.verifyInsertEnabled();
+      validate(entities);
     }
 
-    private DefaultInsert(Collection<Entity> entities) {
+    private DefaultInsert(Collection<Entity> entities) throws ValidationException {
       this.entities = unmodifiableCollection(new ArrayList<>(entities));
       this.activeEntity = false;
       states.verifyInsertEnabled();
-    }
-
-    @Override
-    public void validate() throws ValidationException {
-      AbstractEntityEditModel.this.validate(entities);
+      validate(entities);
     }
 
     @Override
@@ -880,8 +877,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return toInsert;
     }
 
-    private Collection<Entity> perform() throws ValidationException, DatabaseException {
-      validate();
+    private Collection<Entity> perform() throws DatabaseException {
       notifyBeforeInsert();
       Collection<Entity> inserted = insert();
       notifyAfterInsert(inserted);
@@ -894,21 +890,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     private final Collection<Entity> entities;
 
-    private DefaultUpdate() {
+    private DefaultUpdate() throws ValidationException {
       this.entities = singleton(entity().copy());
       states.verifyUpdateEnabled(entities);
+      validate(entities);
       verifyModified(entities);
     }
 
-    private DefaultUpdate(Collection<Entity> entities) {
+    private DefaultUpdate(Collection<Entity> entities) throws ValidationException {
       this.entities = unmodifiableCollection(new ArrayList<>(entities));
       states.verifyUpdateEnabled(entities);
+      validate(entities);
       verifyModified(entities);
-    }
-
-    @Override
-    public void validate() throws ValidationException {
-      AbstractEntityEditModel.this.validate(entities);
     }
 
     @Override
@@ -940,8 +933,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       }
     }
 
-    private Collection<Entity> perform() throws ValidationException, DatabaseException {
-      validate();
+    private Collection<Entity> perform() throws DatabaseException {
       notifyBeforeUpdate();
       Collection<Entity> updatedEntities = update();
       notifyAfterUpdate(updatedEntities);

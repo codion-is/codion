@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditModel.Insert, Update and Delete added.
 - AbstractEntityEditModel.createInsert(), createUpdate() and createDelete() added, providing support for async CRUD operations.
+- EntityEditModel.Insert.validate() and Update.validate() removed, createInsert() and createUpdate() now perform the validation.
 ### is.codion.swing.framework.ui
 - EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
 - EntityEditPanel, EntityTablePanel, EntityDialogs CRUD operations now performed in a background thread.

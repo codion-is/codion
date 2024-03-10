@@ -326,30 +326,34 @@ public interface EntityEditModel {
   /**
    * Creates a new {@link Insert} instance for inserting the active entity.
    * @return a new {@link Insert} instance
+   * @throws ValidationException in case validation fails
    */
-  Insert createInsert();
+  Insert createInsert() throws ValidationException;
 
   /**
    * Creates a new {@link Insert} instance for inserting the given entities.
    * @param entities the entities to insert
    * @return a new {@link Insert} instance
+   * @throws ValidationException in case validation fails
    */
-  Insert createInsert(Collection<Entity> entities);
+  Insert createInsert(Collection<Entity> entities) throws ValidationException;
 
   /**
    * Creates a new {@link Update} instance for updating the active entity.
    * @return a new {@link Update} instance
    * @throws IllegalArgumentException in case the active entity is unmodified
+   * @throws ValidationException in case validation fails
    */
-  Update createUpdate();
+  Update createUpdate() throws ValidationException;
 
   /**
    * Creates a new {@link Update} instance for updating the given entities.
    * @param entities the entities to update
    * @return a new {@link Update} instance
    * @throws IllegalArgumentException in case any of the given entities are unmodified
+   * @throws ValidationException in case validation fails
    */
-  Update createUpdate(Collection<Entity> entities);
+  Update createUpdate(Collection<Entity> entities) throws ValidationException;
 
   /**
    * Creates a new {@link Delete} instance for deleting the active entity.
@@ -614,7 +618,6 @@ public interface EntityEditModel {
    * <pre>
    *   Insert insert = editModel.createInsert();
    *
-   *   insert.validate();
    *   insert.notifyBeforeInsert();
    *
    *   // Can safely be called in a background thread
@@ -626,12 +629,6 @@ public interface EntityEditModel {
    * and {@link #notifyAfterInsert(Collection)} must be called on the UI thread.
    */
   interface Insert {
-
-    /**
-     * Must be called on the UI thread if this model has a panel based on it.
-     * @throws ValidationException in case of validation failure
-     */
-    void validate() throws ValidationException;
 
     /**
      * Notifies listeners that an insert is about to be performed.
@@ -659,7 +656,6 @@ public interface EntityEditModel {
    * <pre>
    *   Update update = editModel.createUpdate();
    *
-   *   update.validate();
    *   update.notifyBeforeUpdate();
    *
    *   // Can safely be called in a background thread
@@ -671,12 +667,6 @@ public interface EntityEditModel {
    * and {@link #notifyAfterUpdate(Collection)} must be called on the UI thread.
    */
   interface Update {
-
-    /**
-     * Must be called on the UI thread if this model has a panel based on it.
-     * @throws ValidationException in case of validation failure
-     */
-    void validate() throws ValidationException;
 
     /**
      * Notifies listeners that an update is about to be performed.
