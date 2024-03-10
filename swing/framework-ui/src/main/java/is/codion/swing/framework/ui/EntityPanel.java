@@ -1106,7 +1106,7 @@ public class EntityPanel extends JPanel {
             .build();
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(basePanel)
-              .locationRelativeTo(this)
+              .locationRelativeTo(tablePanel == null ? this : tablePanel)
               .title(caption.get())
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> editPanelState.set(HIDDEN))
@@ -1115,6 +1115,7 @@ public class EntityPanel extends JPanel {
 
     return Dialogs.componentDialog(basePanel)
             .owner(this)
+            .locationRelativeTo(tablePanel == null ? this : tablePanel)
             .title(caption.get())
             .modal(false)
             .disposeOnEscape(disposeEditDialogOnEscape.get())
