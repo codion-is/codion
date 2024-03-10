@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
@@ -235,6 +236,11 @@ public class EntityPanel extends JPanel {
      */
     NAVIGATE_LEFT
   }
+
+  /**
+   * Specifies the mapping between {@link PanelState} instances: From HIDDEN to EMBEDDED to WINDOW back to HIDDEN
+   */
+  static Function<PanelState, PanelState> PANEL_STATE_MAPPER = new PanelStateMapper();
 
   private final SwingEntityModel entityModel;
   private final List<EntityPanel> detailPanels = new ArrayList<>();
@@ -1090,15 +1096,7 @@ public class EntityPanel extends JPanel {
   }
 
   private void toggleEditPanelState() {
-    if (editPanelState.isEqualTo(WINDOW)) {
-      editPanelState.set(HIDDEN);
-    }
-    else if (editPanelState.isEqualTo(EMBEDDED)) {
-      editPanelState.set(WINDOW);
-    }
-    else {
-      editPanelState.set(EMBEDDED);
-    }
+    editPanelState.map(PANEL_STATE_MAPPER);
   }
 
   private Window createEditWindow() {
@@ -1543,6 +1541,23 @@ public class EntityPanel extends JPanel {
       requireNonNull(detailPanel);
 
       return panelState;
+    }
+  }
+
+  private static final class PanelStateMapper implements Function<PanelState, PanelState> {
+
+    @Override
+    public PanelState apply(PanelState state) {
+      switch (state) {
+        case HIDDEN:
+          return EMBEDDED;
+        case EMBEDDED:
+          return WINDOW;
+        case WINDOW:
+          return HIDDEN;
+        default:
+          throw new IllegalArgumentException("Unknown panel state: " + state);
+      }
     }
   }
 }

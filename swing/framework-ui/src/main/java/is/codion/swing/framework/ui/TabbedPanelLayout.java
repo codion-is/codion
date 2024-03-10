@@ -38,7 +38,6 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
@@ -360,7 +359,6 @@ public final class TabbedPanelLayout implements PanelLayout {
      * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
      */
     private final Value<PanelState> panelState = Value.value(EMBEDDED, EMBEDDED);
-    private final PanelStateMapper stateMapper = new PanelStateMapper();
 
     private TabbedDetailController() {
       panelState.addListener(this::updateDetailState);
@@ -459,7 +457,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     private void toggleDetailState() {
-      panelState.map(stateMapper);
+      panelState.map(EntityPanel.PANEL_STATE_MAPPER);
     }
 
     private Controls createDetailControls() {
@@ -552,23 +550,6 @@ public final class TabbedPanelLayout implements PanelLayout {
           panelState.set(EMBEDDED);
         }
         detailPanel.activate();
-      }
-    }
-
-    private final class PanelStateMapper implements Function<PanelState, PanelState> {
-
-      @Override
-      public PanelState apply(PanelState state) {
-        switch (state) {
-          case HIDDEN:
-            return EMBEDDED;
-          case EMBEDDED:
-            return WINDOW;
-          case WINDOW:
-            return HIDDEN;
-          default:
-            throw new IllegalArgumentException("Unknown panel state: " + state);
-        }
       }
     }
   }
