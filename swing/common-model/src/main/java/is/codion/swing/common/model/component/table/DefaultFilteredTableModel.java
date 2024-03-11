@@ -313,9 +313,11 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void removeItems(Collection<R> items) {
+    selectionModel.setValueIsAdjusting(true);
     for (R item : requireNonNull(items)) {
       removeItem(item);
     }
+    selectionModel.setValueIsAdjusting(false);
   }
 
   @Override
