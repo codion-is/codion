@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
@@ -250,6 +251,11 @@ public class EntityPanel extends JPanel {
      */
     NAVIGATE_LEFT
   }
+
+  /**
+   * Specifies the mapping between {@link PanelState} instances: From HIDDEN to EMBEDDED to WINDOW back to HIDDEN
+   */
+  static Function<PanelState, PanelState> PANEL_STATE_MAPPER = new PanelStateMapper();
 
   private final SwingEntityModel entityModel;
   private final List<EntityPanel> detailPanels = new ArrayList<>();
@@ -516,11 +522,27 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns the panel containing the edit panel and the controls component.
-   * @return the edit control panel
+   * Enables the given key event on this panel
+   * @param keyEventBuilder the key event builder
    */
-  public final JPanel editControlPanel() {
-    return editControlPanel;
+  public final void addKeyEvent(KeyEvents.Builder keyEventBuilder) {
+    requireNonNull(keyEventBuilder);
+    keyEventBuilder.enable(this);
+    if (containsEditPanel()) {
+      keyEventBuilder.enable(editControlPanel);
+    }
+  }
+
+  /**
+   * Disables the given key event on this panel
+   * @param keyEventBuilder the key event builder
+   */
+  public final void removeKeyEvent(KeyEvents.Builder keyEventBuilder) {
+    requireNonNull(keyEventBuilder);
+    keyEventBuilder.disable(this);
+    if (containsEditPanel()) {
+      keyEventBuilder.disable(editControlPanel);
+    }
   }
 
   /**
@@ -723,7 +745,6 @@ public class EntityPanel extends JPanel {
   /**
    * Initializes this EntityPanels UI.
    * @see #panelLayout()
-   * @see #editControlPanel()
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
@@ -737,7 +758,6 @@ public class EntityPanel extends JPanel {
   /**
    * Creates a base panel containing the given edit panel.
    * The default layout is a {@link FlowLayout} with the alignment depending on {@link Settings#controlComponentConstraints(String)}.
-   * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
    * @param editPanel the initialized edit panel
    * @return a base panel for the edit panel
    * @see Settings#controlComponentConstraints(String)
@@ -976,9 +996,7 @@ public class EntityPanel extends JPanel {
   protected final void initializeTablePanel() {
     if (tablePanel != null) {
       editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
-      if (tablePanel.table().doubleClickAction().get() == null) {
-        tablePanel.table().doubleClickAction().set(Control.control(new ShowHiddenEditPanel()));
-      }
+      tablePanel.table().doubleClickAction().mapNull(() -> Control.control(new ShowHiddenEditPanel()));
       tablePanel.initialize();
       tablePanel.setMinimumSize(new Dimension(0, 0));
     }
@@ -1093,15 +1111,7 @@ public class EntityPanel extends JPanel {
   }
 
   private void toggleEditPanelState() {
-    if (editPanelState.isEqualTo(WINDOW)) {
-      editPanelState.set(HIDDEN);
-    }
-    else if (editPanelState.isEqualTo(EMBEDDED)) {
-      editPanelState.set(WINDOW);
-    }
-    else {
-      editPanelState.set(EMBEDDED);
-    }
+    editPanelState.map(PANEL_STATE_MAPPER);
   }
 
   private Window createEditWindow() {
@@ -1111,7 +1121,7 @@ public class EntityPanel extends JPanel {
             .build();
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(basePanel)
-              .locationRelativeTo(this)
+              .locationRelativeTo(tablePanel == null ? this : tablePanel)
               .title(caption.get())
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> editPanelState.set(HIDDEN))
@@ -1120,6 +1130,7 @@ public class EntityPanel extends JPanel {
 
     return Dialogs.componentDialog(basePanel)
             .owner(this)
+            .locationRelativeTo(tablePanel == null ? this : tablePanel)
             .title(caption.get())
             .modal(false)
             .disposeOnEscape(disposeEditDialogOnEscape.get())
@@ -1546,6 +1557,23 @@ public class EntityPanel extends JPanel {
       requireNonNull(detailPanel);
 
       return panelState;
+    }
+  }
+
+  private static final class PanelStateMapper implements Function<PanelState, PanelState> {
+
+    @Override
+    public PanelState apply(PanelState state) {
+      switch (state) {
+        case HIDDEN:
+          return EMBEDDED;
+        case EMBEDDED:
+          return WINDOW;
+        case WINDOW:
+          return HIDDEN;
+        default:
+          throw new IllegalArgumentException("Unknown panel state: " + state);
+      }
     }
   }
 }

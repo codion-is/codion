@@ -50,9 +50,9 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
@@ -131,17 +131,17 @@ public final class TabbedPanelLayout implements PanelLayout {
 
   private EntityPanel entityPanel;
   private JTabbedPane detailPanelTabbedPane;
-  private JSplitPane tableDetailSplitPane;
+  private JSplitPane detailPanelSplitPane;
   private Window detailPanelWindow;
   private PanelState detailPanelState = EMBEDDED;
-  private final boolean includeDetailTabPane;
+  private final boolean includeDetailTabbedPane;
   private final boolean includeDetailPanelControls;
   private final double splitPaneResizeWeight;
   private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
 
   private TabbedPanelLayout(DefaultBuilder builder) {
     this.detailPanelState = builder.detailPanelState;
-    this.includeDetailTabPane = builder.includeDetailTabPane;
+    this.includeDetailTabbedPane = builder.includeDetailTabbedPane;
     this.includeDetailPanelControls = builder.includeDetailControls;
     this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
     this.detailController = new TabbedDetailController();
@@ -150,18 +150,14 @@ public final class TabbedPanelLayout implements PanelLayout {
 
   @Override
   public void updateUI() {
-    Utilities.updateUI(detailPanelTabbedPane, tableDetailSplitPane);
+    Utilities.updateUI(detailPanelTabbedPane, detailPanelSplitPane);
   }
 
   @Override
   public void layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
-    tableDetailSplitPane = createTableDetailSplitPane();
-    detailPanelTabbedPane = createDetailTabbedPane();
     entityPanel.setLayout(borderLayout());
-    entityPanel.add(tableDetailSplitPane == null ?
-            entityPanel.editControlTablePanel() :
-            tableDetailSplitPane, BorderLayout.CENTER);
+    entityPanel.add(createCenterComponent(), BorderLayout.CENTER);
     setupResizing();
     setupControls();
     initializeDetailPanelState();
@@ -213,10 +209,10 @@ public final class TabbedPanelLayout implements PanelLayout {
     Builder splitPaneResizeWeight(double splitPaneResizeWeight);
 
     /**
-     * @param includeDetailTabPane true if the detail panel tab pane should be included
+     * @param includeDetailTabbedPane true if the detail panel tab pane should be included
      * @return this builder instance
      */
-    Builder includeDetailTabPane(boolean includeDetailTabPane);
+    Builder includeDetailTabbedPane(boolean includeDetailTabbedPane);
 
     /**
      * @param includeDetailControls true if detail panel controls should be available
@@ -238,18 +234,12 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void setupResizing() {
-    KeyEvents.Builder resizeRightKeyEvent = KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
+    entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeHorizontally(entityPanel, RIGHT));
-    KeyEvents.Builder resizeLeftKeyEvent = KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
+            .action(new ResizeHorizontally(entityPanel, RIGHT)));
+    entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeHorizontally(entityPanel, LEFT));
-    resizeRightKeyEvent.enable(entityPanel);
-    resizeLeftKeyEvent.enable(entityPanel);
-    if (entityPanel.containsEditPanel()) {
-      resizeRightKeyEvent.enable(entityPanel.editControlPanel());
-      resizeLeftKeyEvent.enable(entityPanel.editControlPanel());
-    }
+            .action(new ResizeHorizontally(entityPanel, LEFT)));
   }
 
   private void setupControls() {
@@ -265,51 +255,49 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   private void initializeDetailPanelState() {
-    if (detailPanelTabbedPane != null) {
-      Value<PanelState> detailPanelStateValue = detailController.panelState(selectedDetailPanel());
+    selectedDetailPanel().ifPresent(selectedDetailPanel -> {
+      Value<PanelState> detailPanelStateValue = detailController.panelState(selectedDetailPanel);
       if (detailPanelStateValue.isNotEqualTo(detailPanelState)) {
         detailPanelStateValue.set(detailPanelState);
       }
       else {
         detailController.updateDetailState();
       }
-    }
+    });
   }
 
-  private EntityPanel selectedDetailPanel() {
-    if (detailPanelTabbedPane == null) {
-      throw new IllegalStateException("No detail panels available");
-    }
-
-    return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
+  private Optional<EntityPanel> selectedDetailPanel() {
+    return Optional.ofNullable(detailPanelTabbedPane == null ? null : (EntityPanel) detailPanelTabbedPane.getSelectedComponent());
   }
 
-  private JSplitPane createTableDetailSplitPane() {
-    if (!includeDetailTabPane || entityPanel.detailPanels().isEmpty()) {
-      return null;
+  private JComponent createCenterComponent() {
+    if (includeDetailTabbedPane && !entityPanel.detailPanels().isEmpty()) {
+      detailPanelSplitPane = createTableDetailSplitPane(entityPanel.editControlTablePanel());
+      detailPanelTabbedPane = createDetailTabbedPane(entityPanel.detailPanels());
+
+      return detailPanelSplitPane;
     }
 
+    return entityPanel.editControlTablePanel();
+  }
+
+  private JSplitPane createTableDetailSplitPane(JPanel editControlTablePanel) {
     return splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)
             .dividerSize(GAP.get() * 2)
             .resizeWeight(splitPaneResizeWeight)
-            .leftComponent(entityPanel.editControlTablePanel())
-            .rightComponent(detailPanelTabbedPane)
+            .leftComponent(editControlTablePanel)
             .build();
   }
 
-  private JTabbedPane createDetailTabbedPane() {
-    if (!includeDetailTabPane || entityPanel.detailPanels().isEmpty()) {
-      return null;
-    }
-
+  private JTabbedPane createDetailTabbedPane(Collection<EntityPanel> detailPanels) {
     TabbedPaneBuilder builder = tabbedPane()
             .focusable(false)
-            .changeListener(e -> selectedDetailPanel().activate())
+            .changeListener(e -> selectedDetailPanel().ifPresent(EntityPanel::activate))
             .onBuild(tabbedPane -> tabbedPane.setFocusCycleRoot(true));
-    entityPanel.detailPanels().forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
+    detailPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
             .toolTipText(detailPanel.getDescription())
             .add());
     if (includeDetailPanelControls) {
@@ -346,7 +334,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     private static void resizePanel(EntityPanel panel, EntityPanel.Direction direction) {
       TabbedPanelLayout detailPanelLayout = panel.panelLayout();
-      JSplitPane splitPane = detailPanelLayout.tableDetailSplitPane;
+      JSplitPane splitPane = detailPanelLayout.detailPanelSplitPane;
       switch (requireNonNull(direction)) {
         case RIGHT:
           if (splitPane != null) {
@@ -369,13 +357,14 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      EntityPanel detailPanel = selectedDetailPanel();
-      if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-        detailController.panelState(detailPanel).map(panelState -> panelState == WINDOW ? EMBEDDED : WINDOW);
-      }
-      else if (e.getButton() == MouseEvent.BUTTON2) {
-        detailController.panelState(detailPanel).map(panelState -> panelState == EMBEDDED ? HIDDEN : EMBEDDED);
-      }
+      selectedDetailPanel().ifPresent(selectedDetailPanel -> {
+        if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+          detailController.panelState(selectedDetailPanel).map(panelState -> panelState == WINDOW ? EMBEDDED : WINDOW);
+        }
+        else if (e.getButton() == MouseEvent.BUTTON2) {
+          detailController.panelState(selectedDetailPanel).map(panelState -> panelState == EMBEDDED ? HIDDEN : EMBEDDED);
+        }
+      });
     }
   }
 
@@ -385,7 +374,6 @@ public final class TabbedPanelLayout implements PanelLayout {
      * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
      */
     private final Value<PanelState> panelState = Value.value(EMBEDDED, EMBEDDED);
-    private final PanelStateMapper stateMapper = new PanelStateMapper();
 
     private TabbedDetailController() {
       panelState.addListener(this::updateDetailState);
@@ -393,6 +381,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     @Override
     public void select(EntityPanel detailPanel) {
+      requireNonNull(detailPanel);
       if (detailPanelTabbedPane != null) {
         detailPanelTabbedPane.setFocusable(true);
         detailPanelTabbedPane.setSelectedComponent(detailPanel);
@@ -409,50 +398,35 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     private void updateDetailState() {
-      if (detailPanelTabbedPane == null) {
-        return;
-      }
-
-      PanelState previousPanelState = previousPanelState();
-      if (panelState.isNotEqualTo(HIDDEN)) {
-        selectedDetailPanel().initialize();
-      }
-
-      if (previousPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
-        for (EntityPanel detailPanel : entityPanel.detailPanels()) {
-          detailPanel.panelLayout().detailController()
-                  .filter(TabbedDetailController.class::isInstance)
-                  .map(TabbedDetailController.class::cast)
-                  .ifPresent(controller -> {
-                    if (controller.panelState.isEqualTo(WINDOW)) {
-                      controller.panelState.set(HIDDEN);
-                    }
-                  });
+      selectedDetailPanel().ifPresent(selectedDetailPanel -> {
+        if (panelState.isNotEqualTo(HIDDEN)) {
+          selectedDetailPanel.initialize();
         }
+        SwingEntityModel selectedDetailModel = selectedDetailPanel.model();
+        if (entityPanel.model().containsDetailModel(selectedDetailModel)) {
+          entityPanel.model().detailModelLink(selectedDetailModel).active().set(panelState.isNotEqualTo(HIDDEN));
+        }
+      });
+      if (previousPanelState() == WINDOW) {
         disposeDetailWindow();
       }
-
-      SwingEntityModel detailModel = selectedDetailPanel().model();
-      if (entityPanel.model().containsDetailModel(detailModel)) {
-        entityPanel.model().detailModelLink(detailModel)
-                .active().set(panelState.isNotEqualTo(HIDDEN));
-      }
       if (panelState.isEqualTo(EMBEDDED)) {
-        if (tableDetailSplitPane.getRightComponent() != detailPanelTabbedPane) {
-          tableDetailSplitPane.setRightComponent(detailPanelTabbedPane);
-        }
+        detailPanelSplitPane.setRightComponent(detailPanelTabbedPane);
       }
       else if (panelState.isEqualTo(HIDDEN)) {
-        tableDetailSplitPane.setRightComponent(null);
+        detailPanelSplitPane.setRightComponent(null);
       }
       else {
-        showDetailWindow();
+        displayDetailWindow();
       }
 
       entityPanel.revalidate();
     }
 
     private PanelState previousPanelState() {
+      if (detailPanelTabbedPane == null) {
+        throw new IllegalStateException("No tabbed detail pane available");
+      }
       if (detailPanelWindow != null) {
         return WINDOW;
       }
@@ -498,7 +472,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     private void toggleDetailState() {
-      panelState.map(stateMapper);
+      panelState.map(EntityPanel.PANEL_STATE_MAPPER);
     }
 
     private Controls createDetailControls() {
@@ -512,7 +486,7 @@ public final class TabbedPanelLayout implements PanelLayout {
       return controls.build();
     }
 
-    private void showDetailWindow() {
+    private void displayDetailWindow() {
       Window parent = parentWindow(entityPanel);
       if (parent != null) {
         Dimension parentSize = parent.getSize();
@@ -593,23 +567,6 @@ public final class TabbedPanelLayout implements PanelLayout {
         detailPanel.activate();
       }
     }
-
-    private final class PanelStateMapper implements Function<PanelState, PanelState> {
-
-      @Override
-      public PanelState apply(PanelState state) {
-        switch (state) {
-          case HIDDEN:
-            return EMBEDDED;
-          case EMBEDDED:
-            return WINDOW;
-          case WINDOW:
-            return HIDDEN;
-          default:
-            throw new IllegalArgumentException("Unknown panel state: " + state);
-        }
-      }
-    }
   }
 
   private static final class DefaultBuilder implements Builder {
@@ -618,7 +575,7 @@ public final class TabbedPanelLayout implements PanelLayout {
 
     private PanelState detailPanelState = EMBEDDED;
     private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
-    private boolean includeDetailTabPane = true;
+    private boolean includeDetailTabbedPane = true;
     private boolean includeDetailControls = INCLUDE_DETAIL_CONTROLS.get();
 
     @Override
@@ -634,8 +591,8 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     @Override
-    public Builder includeDetailTabPane(boolean includeDetailTabPane) {
-      this.includeDetailTabPane = includeDetailTabPane;
+    public Builder includeDetailTabbedPane(boolean includeDetailTabbedPane) {
+      this.includeDetailTabbedPane = includeDetailTabbedPane;
       return this;
     }
 

@@ -719,16 +719,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addRowsRemovedListener(Consumer<RemovedRows> listener) {
-    tableModel.addRowsRemovedListener(listener);
-  }
-
-  @Override
-  public final void removeRowsRemovedListener(Consumer<RemovedRows> listener) {
-    tableModel.removeRowsRemovedListener(listener);
-  }
-
-  @Override
   public final void addTableModelListener(TableModelListener listener) {
     tableModel.addTableModelListener(listener);
   }

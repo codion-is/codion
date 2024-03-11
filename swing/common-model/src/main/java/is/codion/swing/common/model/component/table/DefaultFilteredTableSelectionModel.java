@@ -61,8 +61,6 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   DefaultFilteredTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.tableModel.addRowsRemovedListener(removal ->
-            DefaultFilteredTableSelectionModel.super.removeIndexInterval(removal.fromRow(), removal.toRow()));
     bindEvents();
   }
 

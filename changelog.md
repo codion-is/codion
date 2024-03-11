@@ -2,6 +2,25 @@ Codion Change Log
 ==================
 
 ## 0.17.31-SNAPSHOT
+### is.codion.common
+- DefaultValueSet, synchronization added.
+### is.codion.framework.model
+- EntityEditModel.Insert, Update and Delete added.
+- AbstractEntityEditModel.createInsert(), createUpdate() and createDelete() added, providing support for async CRUD operations.
+- EntityEditModel.Insert.validate() and Update.validate() removed, createInsert() and createUpdate() now perform the validation.
+- DefaultEntityModel.onMasterSelectionChanged() bug fixed, no longer fetches the active entities in case of no detail models.
+### is.codion.swing.common.model
+- FilteredTableModel.RemovedRows removed.
+- DefaultFilteredTableModel now removes or adds the default RemoveSelectionListener when a JTable is added or removed as a tableModelListener, in order to avoid duplicating the selection removal functionality.
+- DefaultFilteredTableModel.removeItems() now calls setValueIsAdjusting() on the selection model to prevent a selection change event on each item removal.
+- DefaultFilteredTableModel, dataChangeListener no longer notifies on each removal when removing multiple items.
+### is.codion.swing.framework.ui
+- EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
+- EntityEditPanel, EntityTablePanel, EntityDialogs CRUD operations now performed in a background thread.
+- TabbedPanelLayout refactored.
+- TabbedPanelLayout.Builder.includeDetailTabPane() renamed includeDetailTabbedPane().
+- EntityPanel, edit window location now relative to table panel, if one is available.
+- EntityEditPanel bug fixed, did not validate before insert and update.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 

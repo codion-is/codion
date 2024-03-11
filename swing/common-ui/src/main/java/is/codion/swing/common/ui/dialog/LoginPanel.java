@@ -69,15 +69,11 @@ final class LoginPanel extends JPanel {
   private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
-  private final Value<String> username = Value.value();
-  private final State usernameSpecified;
   private final State validating = State.state();
 
   LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
-    this.username.set(defaultUser == null ? null : defaultUser.username());
-    this.usernameSpecified = State.state(username.isNotNull());
-    this.username.addDataListener(username -> usernameSpecified.set(username != null));
-    this.usernameField = TextFieldBuilder.builder(String.class, username)
+    Value<String> usernameValue = Value.value(defaultUser == null ? null : defaultUser.username());
+    this.usernameField = TextFieldBuilder.builder(String.class, usernameValue)
             .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
             .enabled(validating.not())
@@ -91,7 +87,7 @@ final class LoginPanel extends JPanel {
     this.okControl = Control.builder(this::onOkPressed)
             .name(Messages.ok())
             .mnemonic(Messages.okMnemonic())
-            .enabled(State.and(usernameSpecified, validating.not()))
+            .enabled(State.and(usernameSpecifiedState(usernameValue), validating.not()))
             .build();
     this.cancelControl = Control.builder(this::closeDialog)
             .name(Messages.cancel())
@@ -203,6 +199,13 @@ final class LoginPanel extends JPanel {
 
   private void closeDialog() {
     Utilities.disposeParentWindow(this);
+  }
+
+  private static State usernameSpecifiedState(Value<String> usernameValue) {
+    State usernameSpecified = State.state(usernameValue.isNotNull());
+    usernameValue.addDataListener(username -> usernameSpecified.set(username != null));
+
+    return usernameSpecified;
   }
 
   private static GridBagConstraints createGridBagConstraints() {

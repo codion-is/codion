@@ -48,7 +48,7 @@ public interface KeyboardShortcuts<T extends Enum<T>> {
    * @param defaultKeyStrokes provides the default keystroke for each shortcut key
    * @return a new {@link KeyboardShortcuts} instance
    * @param <T> the shortcut key type
-   * @throws IllegalStateException in case the default keyStrokes function does not provide keyStrokes for all shortcut keys
+   * @throws IllegalArgumentException in case the default keyStrokes function does not provide keyStrokes for all shortcut keys
    */
   static <T extends Enum<T>> KeyboardShortcuts<T> keyboardShortcuts(Class<T> shortcutKeyClass, Function<T, KeyStroke> defaultKeyStrokes) {
     return new DefaultKeyboardShortcuts<>(shortcutKeyClass, defaultKeyStrokes);

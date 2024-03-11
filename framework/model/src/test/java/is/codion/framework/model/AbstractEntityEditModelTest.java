@@ -405,8 +405,10 @@ public final class AbstractEntityEditModelTest {
 
       employeeEditModel.updateMultipleEnabled().set(false);
 
-      Entity emp1 = ENTITIES.entity(Employee.TYPE);
-      Entity emp2 = ENTITIES.entity(Employee.TYPE);
+      Entity emp1 = connection.selectSingle(Employee.NAME.equalTo("BLAKE"));
+      emp1.put(Employee.COMMISSION, 100d);
+      Entity emp2 = connection.selectSingle(Employee.NAME.equalTo("JONES"));
+      emp2.put(Employee.COMMISSION, 100d);
       assertThrows(IllegalStateException.class, () -> employeeEditModel.update(Arrays.asList(emp1, emp2)));
     }
     finally {

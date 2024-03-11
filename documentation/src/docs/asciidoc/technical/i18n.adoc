@@ -692,6 +692,22 @@ is/codion/swing/framework/ui/EntityDependenciesPanel_is_IS.properties
 |no_dependencies_title|No dependencies|Engar tengdar færslur
 |===
 
+=== is/codion/swing/framework/ui/EntityEditPanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityEditPanel.properties
+is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|deleting|Deleting|Eyði
+|inserting|Inserting|Vista
+|updating|Updating|Uppfæri
+|===
+
 === is/codion/swing/framework/ui/EntityPanel.java
 
 [source]

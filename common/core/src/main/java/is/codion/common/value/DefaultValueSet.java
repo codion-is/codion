@@ -38,61 +38,75 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public void set(Collection<T> values) {
-    set(values == null ? null : new LinkedHashSet<>(values));
+    synchronized (this.values) {
+      set(values == null ? null : new LinkedHashSet<>(values));
+    }
   }
 
   @Override
   public Set<T> get() {
-    return unmodifiableSet(new LinkedHashSet<>(values));
+    synchronized (this.values) {
+      return unmodifiableSet(new LinkedHashSet<>(values));
+    }
   }
 
   @Override
   public boolean add(T value) {
-    Set<T> newValues = new LinkedHashSet<>(values);
-    boolean added = newValues.add(value);
-    set(newValues);
+    synchronized (this.values) {
+      Set<T> newValues = new LinkedHashSet<>(values);
+      boolean added = newValues.add(value);
+      set(newValues);
 
-    return added;
+      return added;
+    }
   }
 
   @Override
   public boolean addAll(T... values) {
     requireNonNull(values);
-    Set<T> newValues = new LinkedHashSet<>(this.values);
-    boolean added = false;
-    for (T val : values) {
-      added = newValues.add(val) || added;
-    }
-    set(newValues);
+    synchronized (this.values) {
+      Set<T> newValues = new LinkedHashSet<>(this.values);
+      boolean added = false;
+      for (T val : values) {
+        added = newValues.add(val) || added;
+      }
+      set(newValues);
 
-    return added;
+      return added;
+    }
   }
 
   @Override
   public boolean remove(T value) {
-    Set<T> newValues = new LinkedHashSet<>(values);
-    boolean removed = newValues.remove(value);
-    set(newValues);
+    synchronized (this.values) {
+      Set<T> newValues = new LinkedHashSet<>(values);
+      boolean removed = newValues.remove(value);
+      set(newValues);
 
-    return removed;
+      return removed;
+    }
   }
 
   @Override
   public boolean removeAll(T... values) {
     requireNonNull(values);
-    Set<T> newValues = new LinkedHashSet<>(this.values);
-    boolean removed = false;
-    for (T val : values) {
-      removed = newValues.remove(val) || removed;
-    }
-    set(newValues);
+    synchronized (this.values) {
+      Set<T> newValues = new LinkedHashSet<>(this.values);
+      boolean removed = false;
+      for (T val : values) {
+        removed = newValues.remove(val) || removed;
+      }
+      set(newValues);
 
-    return removed;
+      return removed;
+    }
   }
 
   @Override
   public boolean empty() {
-    return values.isEmpty();
+    synchronized (this.values) {
+      return values.isEmpty();
+    }
   }
 
   @Override
@@ -102,12 +116,14 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public void clear() {
-    set(emptySet());
+    synchronized (this.values) {
+      set(emptySet());
+    }
   }
 
   @Override
   public Value<T> value() {
-    synchronized (values) {
+    synchronized (this.values) {
       if (value == null) {
         value = new SingleValue();
       }
@@ -123,8 +139,10 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   protected void setValue(Set<T> values) {
-    this.values.clear();
-    this.values.addAll(values);
+    synchronized (this.values) {
+      this.values.clear();
+      this.values.addAll(values);
+    }
   }
 
   private class SingleValue extends AbstractValue<T> {
@@ -143,7 +161,9 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
     @Override
     protected void setValue(T value) {
-      DefaultValueSet.this.set(value == null ? emptySet() : singleton(value));
+      synchronized (DefaultValueSet.this.values) {
+        DefaultValueSet.this.set(value == null ? emptySet() : singleton(value));
+      }
     }
   }
 }

@@ -38,7 +38,7 @@ public final class KeyboardShortcutsTest {
 
   @Test
   void test() {
-    assertThrows(IllegalStateException.class, () -> keyboardShortcuts(Shortcut.class, shortcut -> {
+    assertThrows(IllegalArgumentException.class, () -> keyboardShortcuts(Shortcut.class, shortcut -> {
       if (shortcut == Shortcut.ONE) {
         return keyStroke(KeyEvent.VK_1);
       }

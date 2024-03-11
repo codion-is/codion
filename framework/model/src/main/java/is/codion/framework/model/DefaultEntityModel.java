@@ -244,9 +244,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void onMasterSelectionChanged() {
-    List<Entity> activeEntities = activeEntities();
-    for (M detailModel : activeDetailModels()) {
-      detailModels.get(detailModel).onSelection(activeEntities);
+    Collection<M> activeDetailModels = activeDetailModels();
+    if (!activeDetailModels.isEmpty()) {
+      List<Entity> activeEntities = activeEntities();
+      for (M detailModel : activeDetailModels) {
+        detailModels.get(detailModel).onSelection(activeEntities);
+      }
     }
   }
 
