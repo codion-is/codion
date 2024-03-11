@@ -15,7 +15,9 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import java.text.Format;
 import java.util.ArrayList;
@@ -43,7 +45,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   private final Event<?> dataChangedEvent = Event.event();
   private final Event<?> clearEvent = Event.event();
-  private final Event<RemovedRows> rowsRemovedEvent = Event.event();
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final List<R> visibleItems = new ArrayList<>();
   private final List<R> filteredItems = new ArrayList<>();
@@ -56,6 +57,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   private final CombinedIncludeCondition combinedIncludeCondition;
   private final Predicate<R> itemValidator;
   private final DefaultRefresher refresher;
+  private final RemoveSelectionListener removeSelectionListener;
 
   private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(requireNonNull(builder.columnFactory).createColumns());
@@ -72,6 +74,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     this.refresher.async().set(builder.asyncRefresh);
     this.refresher.mergeOnRefresh.set(builder.mergeOnRefresh);
     this.itemValidator = builder.itemValidator;
+    this.removeSelectionListener = new RemoveSelectionListener();
     bindEventsInternal();
   }
 
@@ -310,7 +313,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void removeItems(Collection<R> items) {
-    for (R item : items) {
+    for (R item : requireNonNull(items)) {
       removeItem(item);
     }
   }
@@ -331,16 +334,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     fireTableRowsDeleted(fromIndex, toIndex);
 
     return removedItems;
-  }
-
-  @Override
-  public void addRowsRemovedListener(Consumer<RemovedRows> listener) {
-    rowsRemovedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public void removeRowsRemovedListener(Consumer<RemovedRows> listener) {
-    rowsRemovedEvent.removeDataListener(listener);
   }
 
   @Override
@@ -400,15 +393,29 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     clearEvent.removeListener(listener);
   }
 
+  @Override
+  public void addTableModelListener(TableModelListener listener) {
+    super.addTableModelListener(listener);
+    if (listener instanceof JTable) {
+      // JTable handles removing the selected indexes on row removal
+      removeTableModelListener(removeSelectionListener);
+    }
+  }
+
+  @Override
+  public void removeTableModelListener(TableModelListener listener) {
+    super.removeTableModelListener(listener);
+    if (listener instanceof JTable) {
+      // JTable handles removing the selected indexes on row removal
+      addTableModelListener(removeSelectionListener);
+    }
+  }
+
   private void bindEventsInternal() {
     addTableModelListener(e -> dataChangedEvent.run());
+    addTableModelListener(removeSelectionListener);
     filterModel.addChangeListener(this::filterItems);
     sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
-    addTableModelListener(e -> {
-      if (e.getType() == TableModelEvent.DELETE) {
-        rowsRemovedEvent.accept(new DefaultRemovedRows(e.getFirstRow(), e.getLastRow()));
-      }
-    });
   }
 
   private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
@@ -584,24 +591,13 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     }
   }
 
-  private static final class DefaultRemovedRows implements RemovedRows {
-
-    private final int fromRow;
-    private final int toRow;
-
-    private DefaultRemovedRows(int fromRow, int toRow) {
-      this.fromRow = fromRow;
-      this.toRow = toRow;
-    }
+  private final class RemoveSelectionListener implements TableModelListener {
 
     @Override
-    public int fromRow() {
-      return fromRow;
-    }
-
-    @Override
-    public int toRow() {
-      return toRow;
+    public void tableChanged(TableModelEvent e) {
+      if (e.getType() == TableModelEvent.DELETE) {
+        selectionModel.removeIndexInterval(e.getFirstRow(), e.getLastRow());
+      }
     }
   }
 
