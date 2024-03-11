@@ -298,26 +298,20 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void removeItem(R item) {
-    int visibleItemIndex = visibleItems.indexOf(item);
-    if (visibleItemIndex >= 0) {
-      visibleItems.remove(visibleItemIndex);
-      fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
-    }
-    else {
-      int filteredIndex = filteredItems.indexOf(item);
-      if (filteredIndex >= 0) {
-        filteredItems.remove(item);
-      }
-    }
+    removeItemInternal(item, true);
   }
 
   @Override
   public void removeItems(Collection<R> items) {
     selectionModel.setValueIsAdjusting(true);
+    boolean visibleItemRemoved = false;
     for (R item : requireNonNull(items)) {
-      removeItem(item);
+      visibleItemRemoved = removeItemInternal(item, true) || visibleItemRemoved;
     }
     selectionModel.setValueIsAdjusting(false);
+    if (visibleItemRemoved) {
+      dataChangedEvent.run();
+    }
   }
 
   @Override
@@ -414,7 +408,11 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   private void bindEventsInternal() {
-    addTableModelListener(e -> dataChangedEvent.run());
+    addTableModelListener(e -> {
+      if (e.getType() != TableModelEvent.DELETE) {
+        dataChangedEvent.run();
+      }
+    });
     addTableModelListener(removeSelectionListener);
     filterModel.addChangeListener(this::filterItems);
     sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
@@ -467,6 +465,25 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     filteredItems.addAll(filtered);
 
     return !visible.isEmpty();
+  }
+
+  private boolean removeItemInternal(R item, boolean dataChanged) {
+    int visibleItemIndex = visibleItems.indexOf(item);
+    if (visibleItemIndex >= 0) {
+      visibleItems.remove(visibleItemIndex);
+      fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
+      if (dataChanged) {
+        dataChangedEvent.run();
+      }
+    }
+    else {
+      int filteredIndex = filteredItems.indexOf(item);
+      if (filteredIndex >= 0) {
+        filteredItems.remove(item);
+      }
+    }
+
+    return visibleItemIndex >= 0;
   }
 
   private void validate(R item) {

@@ -256,7 +256,7 @@ public final class DefaultFilteredTableModelTest {
     tableModel.refresh();
     assertEquals(1, events.get());
     List<TestRow> removed = tableModel.removeItems(1, 3);
-    assertEquals(2, events.get());
+    assertEquals(1, events.get());
     assertTrue(tableModel.containsItem(A));
     assertFalse(tableModel.containsItem(B));
     assertTrue(removed.contains(B));
