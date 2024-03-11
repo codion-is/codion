@@ -8,6 +8,7 @@ Codion Change Log
 - EntityEditModel.Insert, Update and Delete added.
 - AbstractEntityEditModel.createInsert(), createUpdate() and createDelete() added, providing support for async CRUD operations.
 - EntityEditModel.Insert.validate() and Update.validate() removed, createInsert() and createUpdate() now perform the validation.
+- DefaultEntityModel.onMasterSelectionChanged() bug fixed, no longer fetches the active entities in case of no detail models.
 ### is.codion.swing.common.model
 - FilteredTableModel.RemovedRows removed.
 - DefaultFilteredTableModel now removes or adds the default RemoveSelectionListener when a JTable is added or removed as a tableModelListener, in order to avoid duplicating the selection removal functionality.
