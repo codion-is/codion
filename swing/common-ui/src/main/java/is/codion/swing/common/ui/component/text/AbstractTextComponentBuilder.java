@@ -182,7 +182,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
     textComponent.setDragEnabled(dragEnabled);
-    caretListeners.forEach(textComponent::addCaretListener);
+    caretListeners.forEach(new AddCaretListener(textComponent));
     if (focusAcceleratorKey != null) {
       textComponent.setFocusAccelerator(focusAcceleratorKey);
     }
@@ -250,4 +250,18 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
    * @return a JTextComponent or subclass
    */
   protected abstract C createTextComponent();
+
+  private static final class AddCaretListener implements Consumer<CaretListener> {
+
+    private final JTextComponent textComponent;
+
+    private AddCaretListener(JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public void accept(CaretListener listener) {
+      textComponent.addCaretListener(listener);
+    }
+  }
 }

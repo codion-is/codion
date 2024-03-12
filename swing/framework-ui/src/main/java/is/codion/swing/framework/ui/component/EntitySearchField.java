@@ -24,6 +24,7 @@ import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -102,6 +103,7 @@ import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -123,7 +125,7 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(EntitySearchModel)
  * @see #singleSelectionValue()
  * @see #multiSelectionValue()
- * @see #selectorFactory(Function)
+ * @see #selectorFactory()
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -135,7 +137,7 @@ public final class EntitySearchField extends HintTextField {
    * Default value: {@link SearchIndicator#WAIT_CURSOR}
    */
   public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR = Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator",
-          SearchIndicator.class, SearchIndicator.WAIT_CURSOR);
+          SearchIndicator.class, WAIT_CURSOR);
 
   /**
    * The ways which a search field can indicate that a search is in progress.
@@ -156,13 +158,13 @@ public final class EntitySearchField extends HintTextField {
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
   private final State searchOnFocusLost = State.state(true);
   private final State searching = State.state();
+  private final Value<Function<EntitySearchModel, Selector>> selectorFactory;
+  private final Value<SearchIndicator> searchIndicator;
 
   private SettingsPanel settingsPanel;
   private SingleSelectionValue singleSelectionValue;
   private MultiSelectionValue multiSelectionValue;
-  private Function<EntitySearchModel, Selector> selectorFactory;
   private ProgressWorker<List<Entity>, ?> searchWorker;
-  private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
   private Consumer<Boolean> searchIndicatorListener;
 
   private Color backgroundColor;
@@ -181,8 +183,9 @@ public final class EntitySearchField extends HintTextField {
       TextComponents.lowerCase(getDocument());
     }
     searchOnFocusLost.set(builder.searchOnFocusLost);
-    searchIndicator(builder.searchIndicator);
-    selectorFactory = builder.selectorFactory;
+    searchIndicator = Value.value(builder.searchIndicator, builder.searchIndicator);
+    updateSearchIndicator();
+    selectorFactory = Value.value(builder.selectorFactory, builder.selectorFactory);
     if (builder.selectAllOnFocusGained) {
       selectAllOnFocusGained(this);
     }
@@ -232,22 +235,20 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * @param searchIndicator the search indicator type
+   * @return the value controlling the search indicator type
    * @see #SEARCH_INDICATOR
    */
-  public void searchIndicator(SearchIndicator searchIndicator) {
-    this.searchIndicator = requireNonNull(searchIndicator);
-    updateSearchIndicator();
+  public Value<SearchIndicator> searchIndicator() {
+    return searchIndicator;
   }
 
   /**
-   * Sets the factory for the {@link Selector} responsible for selecting items from the search result.
-   * @param selectorFactory a factory for the {@link Selector} implementation to use when presenting
+   * Controls the factory for the {@link Selector} responsible for selecting items from the search result.
+   * @return the Value controlling the factory for the {@link Selector} implementation to use when presenting
    * a selection dialog to the user
-   * @throws NullPointerException in case {@code selectorFactory} is null
    */
-  public void selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
-    this.selectorFactory = requireNonNull(selectorFactory);
+  public Value<Function<EntitySearchModel, Selector>> selectorFactory() {
+    return selectorFactory;
   }
 
   /**
@@ -364,7 +365,7 @@ public final class EntitySearchField extends HintTextField {
     new SearchStringValue(this).link(model.searchString());
     model.searchString().addDataListener(searchString -> updateColors());
     model.entities().addListener(() -> setCaretPosition(0));
-    updateSearchIndicator();
+    searchIndicator.addListener(this::updateSearchIndicator);
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
@@ -379,7 +380,7 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private Consumer<Boolean> createSearchIndicatorListener() {
-    switch (searchIndicator) {
+    switch (searchIndicator.get()) {
       case WAIT_CURSOR:
         return new WaitCursorWhileSearching();
       case PROGRESS_BAR:
@@ -441,7 +442,7 @@ public final class EntitySearchField extends HintTextField {
               SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      selectorFactory.apply(model).select(this, searchResult);
+      selectorFactory.get().apply(model).select(this, searchResult);
     }
   }
 

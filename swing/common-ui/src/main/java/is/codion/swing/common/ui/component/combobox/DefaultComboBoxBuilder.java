@@ -33,6 +33,7 @@ import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
@@ -158,7 +159,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    itemListeners.forEach(comboBox::addItemListener);
+    itemListeners.forEach(new AddItemListener(comboBox));
     if (Utilities.systemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
@@ -179,6 +180,20 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
   protected C createComboBox() {
     return (C) new FocusableComboBox<>(comboBoxModel);
+  }
+
+  private static final class AddItemListener implements Consumer<ItemListener> {
+
+    private final JComboBox<?> comboBox;
+
+    private AddItemListener(JComboBox<?> comboBox) {
+      this.comboBox = comboBox;
+    }
+
+    @Override
+    public void accept(ItemListener listener) {
+      comboBox.addItemListener(listener);
+    }
   }
 
   private static final class RefreshCommand implements Control.Command {

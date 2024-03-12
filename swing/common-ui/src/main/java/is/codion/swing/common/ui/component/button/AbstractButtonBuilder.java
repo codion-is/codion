@@ -42,6 +42,7 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -252,7 +253,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
       }
       action.addPropertyChangeListener(new ActionPropertyChangeListener(button));
     }
-    actionListeners.forEach(button::addActionListener);
+    actionListeners.forEach(new AddActionListener(button));
     if (!includeText) {
       button.setText(null);
       button.setHideActionText(true);
@@ -325,7 +326,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     ButtonModel buttonModel = toggleControl.value().nullable() ?
             new NullableToggleButtonModel(toggleControl.value().get()) : createToggleButtonModel(toggleControl.value().get());
     buttonModel.setEnabled(toggleControl.enabled().get());
-    toggleControl.enabled().addDataListener(buttonModel::setEnabled);
+    toggleControl.enabled().addDataListener(new SetEnabled(buttonModel));
     new BooleanButtonModelValue(buttonModel).link(toggleControl.value());
 
     return buttonModel;
@@ -424,6 +425,34 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
         default:
           break;
       }
+    }
+  }
+
+  private static final class AddActionListener implements java.util.function.Consumer<ActionListener> {
+
+    private final AbstractButton button;
+
+    private AddActionListener(AbstractButton button) {
+      this.button = button;
+    }
+
+    @Override
+    public void accept(ActionListener actionListener) {
+      button.addActionListener(actionListener);
+    }
+  }
+
+  private static final class SetEnabled implements Consumer<Boolean> {
+
+    private final ButtonModel buttonModel;
+
+    private SetEnabled(ButtonModel buttonModel) {
+      this.buttonModel = buttonModel;
+    }
+
+    @Override
+    public void accept(Boolean enabled) {
+      buttonModel.setEnabled(enabled);
     }
   }
 }

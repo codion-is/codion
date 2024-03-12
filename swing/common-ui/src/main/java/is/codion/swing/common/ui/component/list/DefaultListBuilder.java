@@ -30,6 +30,7 @@ import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -109,7 +110,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
     if (selectionModel != null) {
       list.setSelectionModel(selectionModel);
     }
-    listSelectionListeners.forEach(list::addListSelectionListener);
+    listSelectionListeners.forEach(new AddListSelectionListener(list));
     list.setVisibleRowCount(visibleRowCount);
     list.setLayoutOrientation(layoutOrientation);
     list.setFixedCellHeight(fixedCellHeight);
@@ -127,5 +128,19 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
   @Override
   protected void setInitialValue(JList<T> component, Set<T> initialValue) {
     ListValue.selectValues(component, initialValue);
+  }
+
+  private static final class AddListSelectionListener implements Consumer<ListSelectionListener> {
+
+    private final JList<?> list;
+
+    private AddListSelectionListener(JList<?> list) {
+      this.list = list;
+    }
+
+    @Override
+    public void accept(ListSelectionListener listener) {
+      list.addListSelectionListener(listener);
+    }
   }
 }

@@ -1,6 +1,13 @@
 Codion Change Log
 ==================
 
+## 0.17.32
+### is.codion.swing.common.ui
+- ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
+### is.codion.swing.framework.ui
+- EntitySearchField.selectorFactory() now Value based.
+- EntitySearchField.searchIndicator() now Value based.
+
 ## 0.17.31
 ### is.codion.common
 - DefaultValueSet, synchronization added.
