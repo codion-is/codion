@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.32
 ### is.codion.swing.framework.ui
 - EntitySearchField.selectorFactory() now Value based.
+- EntitySearchField.searchIndicator() now Value based.
 
 ## 0.17.31
 ### is.codion.common
