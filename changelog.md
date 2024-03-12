@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.31-SNAPSHOT
+## 0.17.31
 ### is.codion.common
 - DefaultValueSet, synchronization added.
 ### is.codion.framework.model
@@ -13,7 +13,10 @@ Codion Change Log
 - FilteredTableModel.RemovedRows removed.
 - DefaultFilteredTableModel now removes or adds the default RemoveSelectionListener when a JTable is added or removed as a tableModelListener, in order to avoid duplicating the selection removal functionality.
 - DefaultFilteredTableModel.removeItems() now calls setValueIsAdjusting() on the selection model to prevent a selection change event on each item removal.
-- DefaultFilteredTableModel, dataChangeListener no longer notifies on each removal when removing multiple items.
+- DefaultFilteredTableModel, dataChangeListener no longer notifies on each removal when removing multiple items, for real this time.
+### is.codion.swing.common.ui
+- FilteredTableCellRenderer.horizontalAlignment() added.
+- ColumnSummaryPanel.columnSummaryPanel() horizontalAlignment parameter added.
 ### is.codion.swing.framework.ui
 - EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
 - EntityEditPanel, EntityTablePanel, EntityDialogs CRUD operations now performed in a background thread.
@@ -21,6 +24,15 @@ Codion Change Log
 - TabbedPanelLayout.Builder.includeDetailTabPane() renamed includeDetailTabbedPane().
 - EntityPanel, edit window location now relative to table panel, if one is available.
 - EntityEditPanel bug fixed, did not validate before insert and update.
+- EntityTablePanel.createSouthToolBar() renamed createToolBar().
+- EntityTablePanel.Settings.includeSummaryPanel() added along with INCLUDE_SUMMARY_PANEL configuration value.
+- EntityTablePanel, column summary field horizontal alignment no follows column cell renderer alignment.
+- EntityTablePanel.Settings.includeEntityMenu() added.
+- EntityTablePanel.INCLUDE_POPUP_MENU configuration value added.
+- EntityTablePanel.table now initialized lazily.
+- EntityTablePanel.delete(), deleteWithConfirmation() and editSelectedEntities() renamed deleteSelected(), deleteSelectedWithConfirmation() and editSelected() respectively.
+- EntityTablePanel.printTable() removed.
+- EntityTablePanel.setReferentialIntegrityErrorHandling() replaced with Value based referentialIntegrityErrorHandling(). 
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 

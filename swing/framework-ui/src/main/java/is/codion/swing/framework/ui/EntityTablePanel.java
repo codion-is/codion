@@ -87,7 +87,6 @@ import java.awt.GridBagLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.print.PrinterException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,6 +172,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
 
   /**
+   * Specifies whether to include the default popup menu on entity tables<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includePopupMenu", true);
+
+  /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -203,6 +210,14 @@ public class EntityTablePanel extends JPanel {
    */
   public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
+
+  /**
+   * Specifies whether to include a summary panel.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeSummaryPanel", true);
 
   /**
    * Specifies whether to include a popup menu for configuring the table model limit.<br>
@@ -346,22 +361,23 @@ public class EntityTablePanel extends JPanel {
   private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
-  private final Value<RefreshButtonVisible> refreshButtonVisible =
-          Value.value(RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
+  private final Value<RefreshButtonVisible> refreshButtonVisible = Value.value(
+          RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE,
+          RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
-  private final Map<TableControl, Value<Control>> controls;
-
+  private final Map<TableControl, Value<Control>> controls = createControlsMap();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
-
   private final Settings settings;
-
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
-  private final FilteredTable<Entity, Attribute<?>> table;
   private final JPanel southPanel = new JPanel(new BorderLayout());
-  private final Value<Confirmer> deleteConfirmer;
+  private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
+  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
+  private FilteredTable<Entity, Attribute<?>> table;
   private StatusPanel statusPanel;
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
@@ -375,12 +391,6 @@ public class EntityTablePanel extends JPanel {
   private Control conditionRefreshControl;
 
   private boolean initialized = false;
-
-  /**
-   * The action to take when a referential integrity error occurs on delete
-   */
-  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -398,17 +408,18 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
-    this.table = createTable();
-    this.controls = createControlsMap();
-    this.deleteConfirmer = createDeleteConfirmer();
-    this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
     this.settings = new Settings();
+    this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
   }
 
   /**
    * @return the table
    */
   public final FilteredTable<Entity, Attribute<?>> table() {
+    if (table == null) {
+      table = createTable();
+    }
+
     return table;
   }
 
@@ -491,7 +502,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelectedEntities(Attribute)}.
+   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelected(Attribute)}.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
@@ -557,10 +568,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error during delete
+   * @return the Value controlling the action to take on a referential integrity error on delete
    */
-  public final void setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
-    this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
+  public final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling() {
+    return referentialIntegrityErrorHandling;
   }
 
   /**
@@ -594,7 +605,7 @@ public class EntityTablePanel extends JPanel {
    * @param <T> the attribute value type
    * @see #setEditComponentFactory(Attribute, EntityComponentFactory)
    */
-  public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
+  public final <T> void editSelected(Attribute<T> attributeToEdit) {
     requireNonNull(attributeToEdit);
     if (!tableModel.selectionModel().isSelectionEmpty()) {
       editDialogBuilder(attributeToEdit)
@@ -617,9 +628,9 @@ public class EntityTablePanel extends JPanel {
    * @return true if the delete operation was successful
    * @see #deleteConfirmer()
    */
-  public final boolean deleteWithConfirmation() {
+  public final boolean deleteSelectedWithConfirmation() {
     if (confirmDelete()) {
-      return delete();
+      return deleteSelected();
     }
 
     return false;
@@ -629,7 +640,7 @@ public class EntityTablePanel extends JPanel {
    * Deletes the entities selected in the underlying table model without asking for confirmation.
    * @return true if the delete operation was successful
    */
-  public final boolean delete() {
+  public final boolean deleteSelected() {
     try {
       tableModel.deleteSelected();
 
@@ -645,15 +656,6 @@ public class EntityTablePanel extends JPanel {
     }
 
     return false;
-  }
-
-  /**
-   * Prints the table
-   * @throws java.awt.print.PrinterException in case of a print exception
-   * @see JTable#print()
-   */
-  public final void printTable() throws PrinterException {
-    table.print();
   }
 
   /**
@@ -708,7 +710,7 @@ public class EntityTablePanel extends JPanel {
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshButtonToolBar(), BorderLayout.WEST);
-    JToolBar southToolBar = createSouthToolBar();
+    JToolBar southToolBar = createToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }
@@ -924,10 +926,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates the south panel toolbar, by default based on {@link #createToolBarControls(List)}
-   * @return the toolbar to add to the south panel, null if none should be included
+   * Creates the table toolbar, by default based on {@link #createToolBarControls(List)}
+   * @return the toolbar, null if none should be included
    */
-  protected JToolBar createSouthToolBar() {
+  protected JToolBar createToolBar() {
     Controls toolbarControls = createToolBarControls(settings.additionalToolBarControls);
     if (toolbarControls == null || toolbarControls.empty()) {
       return null;
@@ -966,11 +968,11 @@ public class EntityTablePanel extends JPanel {
    * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
+   * @see #referentialIntegrityErrorHandling()
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+    if (referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
@@ -1049,7 +1051,7 @@ public class EntityTablePanel extends JPanel {
     settings.editableAttributes.get().stream()
             .map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
-            .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
+            .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelected(attributeDefinition.attribute()))
                     .name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
                     .enabled(enabledState)
                     .build()));
@@ -1315,7 +1317,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void bindEvents() {
-    if (INCLUDE_ENTITY_MENU.get()) {
+    if (settings.includeEntityMenu) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .action(Control.control(this::showEntityMenu))
@@ -1408,6 +1410,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void setupComponents() {
+    if (table == null) {
+      table = createTable();
+    }
     if (conditionRefreshControl == null) {
       conditionRefreshControl = createConditionRefreshControl();
     }
@@ -1420,9 +1425,12 @@ public class EntityTablePanel extends JPanel {
       filterPanel = configureHorizontalAlignment(table.filterPanel());
       filterPanelScrollPane = createFilterPanelScrollPane();
     }
-    summaryPanel = createSummaryPanel();
-    summaryPanelScrollPane = createSummaryPanelScrollPane();
+    if (settings.includeSummaryPanel) {
+      summaryPanel = createSummaryPanel();
+      summaryPanelScrollPane = createSummaryPanelScrollPane();
+    }
     tablePanel = createTablePanel();
+    tableModel.columnModel().columns().forEach(this::configureColumn);
     refreshButtonToolBar();
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
     filterPanelVisibleState.addValidator(new PanelAvailableValidator(filterPanel, "filter"));
@@ -1557,8 +1565,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void onConditionChanged() {
-    table.getTableHeader().repaint();
-    table.repaint();
+    if (table != null) {
+      table.getTableHeader().repaint();
+      table.repaint();
+    }
   }
 
   private void onRefreshingChanged(boolean refreshing) {
@@ -1732,7 +1742,8 @@ public class EntityTablePanel extends JPanel {
     tableModel.columnModel().columns().forEach(column ->
             tableModel.summaryModel().summaryModel(column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
-                            components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel))));
+                            components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel,
+                                    ((FilteredTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
 
     return components;
   }
@@ -1828,11 +1839,13 @@ public class EntityTablePanel extends JPanel {
     private boolean includeSouthPanel = true;
     private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
     private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
+    private boolean includeSummaryPanel = INCLUDE_SUMMARY_PANEL.get();
     private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
     private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
+    private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
+    private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
-    private boolean includePopupMenu = true;
 
     private Settings() {
       this.editableAttributes = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
@@ -1878,6 +1891,17 @@ public class EntityTablePanel extends JPanel {
     }
 
     /**
+     * @param includeSummaryPanel true if the summary panel should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeSummaryPanel(boolean includeSummaryPanel) {
+      throwIfInitialized();
+      this.includeSummaryPanel = includeSummaryPanel;
+      return this;
+    }
+
+    /**
      * @param includePopupMenu true if a popup menu should be included
      * @return this Settings instance
      * @throws IllegalStateException in case the panel has already been initialized
@@ -1907,6 +1931,17 @@ public class EntityTablePanel extends JPanel {
     public Settings includeLimitMenu(boolean includeLimitMenu) {
       throwIfInitialized();
       this.includeLimitMenu = includeLimitMenu;
+      return this;
+    }
+
+    /**
+     * @param includeEntityMenu true a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.<br>
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeEntityMenu(boolean includeEntityMenu) {
+      throwIfInitialized();
+      this.includeEntityMenu = includeEntityMenu;
       return this;
     }
 

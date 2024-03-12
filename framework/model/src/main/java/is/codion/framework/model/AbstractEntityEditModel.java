@@ -935,15 +935,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
       Entity activeEntity = entity();
       updatedEntities.stream()
-              .filter(entity -> entity.equals(activeEntity))
+              .filter(updatedEntity -> updatedEntity.equals(activeEntity))
               .findFirst()
               .ifPresent(AbstractEntityEditModel.this::setEntity);
     }
 
     private void verifyModified(Collection<Entity> entities) {
-      for (Entity entity : entities) {
-        if (!entity.modified()) {
-          throw new IllegalArgumentException("Entity is not modified: " + entity);
+      for (Entity entityToUpdate : entities) {
+        if (!entityToUpdate.modified()) {
+          throw new IllegalArgumentException("Entity is not modified: " + entityToUpdate);
         }
       }
     }

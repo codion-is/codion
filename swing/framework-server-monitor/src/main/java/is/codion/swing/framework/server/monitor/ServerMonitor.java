@@ -328,25 +328,22 @@ public final class ServerMonitor {
 
   /**
    * Refreshes the domain model list
-   * @throws RemoteException in case of an exception
    */
-  public void refreshDomainList() throws RemoteException {
+  public void refreshDomainList() {
     domainTableModel.refresh();
   }
 
   /**
    * Refreshes the report model list
-   * @throws RemoteException in case of an exception
    */
-  public void refreshReportList() throws RemoteException {
+  public void refreshReportList() {
     reportTableModel.refresh();
   }
 
   /**
    * Refreshes the report model list
-   * @throws RemoteException in case of an exception
    */
-  public void refreshOperationList() throws RemoteException {
+  public void refreshOperationList() {
     operationTableModel.refresh();
   }
 

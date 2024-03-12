@@ -36,12 +36,14 @@
  * {@link is.codion.swing.framework.ui.EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#USE_FRAME_PANEL_DISPLAY}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#CONDITION_PANEL_VISIBLE}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_POPUP_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_ENTITY_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_CLEAR_CONTROL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_LIMIT_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#REFRESH_BUTTON_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#COLUMN_SELECTION}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_FILTER_PANEL}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_SUMMARY_PANEL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#SHOW_REFRESH_PROGRESS_BAR}<br>
  * {@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
  * {@link is.codion.swing.framework.ui.TabbedApplicationLayout#TAB_PLACEMENT}<br>

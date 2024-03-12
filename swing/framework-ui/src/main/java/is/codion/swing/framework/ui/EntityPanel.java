@@ -255,7 +255,7 @@ public class EntityPanel extends JPanel {
   /**
    * Specifies the mapping between {@link PanelState} instances: From HIDDEN to EMBEDDED to WINDOW back to HIDDEN
    */
-  static Function<PanelState, PanelState> PANEL_STATE_MAPPER = new PanelStateMapper();
+  static final Function<PanelState, PanelState> PANEL_STATE_MAPPER = new PanelStateMapper();
 
   private final SwingEntityModel entityModel;
   private final List<EntityPanel> detailPanels = new ArrayList<>();

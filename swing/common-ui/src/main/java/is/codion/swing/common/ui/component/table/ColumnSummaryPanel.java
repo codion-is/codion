@@ -27,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,28 +35,29 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that shows a summary value for a numerical column property.
- * For instances use the {@link #columnSummaryPanel(ColumnSummaryModel)} factory method.
+ * For instances use the {@link #columnSummaryPanel(ColumnSummaryModel, int)} factory method.
  */
 public final class ColumnSummaryPanel extends JPanel {
 
-  private ColumnSummaryPanel(ColumnSummaryModel model) {
+  private ColumnSummaryPanel(ColumnSummaryModel model, int horizontalAlignment) {
     setLayout(new BorderLayout());
-    add(createSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
+    add(createSummaryField(requireNonNull(model, "model"), horizontalAlignment), BorderLayout.CENTER);
   }
 
   /**
    * @param columnSummaryModel the {@link ColumnSummaryModel} instance
+   * @param horizontalAlignment the horizontal alignment
    * @return a new {@link ColumnSummaryPanel} instance.
    */
-  public static ColumnSummaryPanel columnSummaryPanel(ColumnSummaryModel columnSummaryModel) {
-    return new ColumnSummaryPanel(columnSummaryModel);
+  public static ColumnSummaryPanel columnSummaryPanel(ColumnSummaryModel columnSummaryModel, int horizontalAlignment) {
+    return new ColumnSummaryPanel(columnSummaryModel, horizontalAlignment);
   }
 
-  private static JTextField createSummaryField(ColumnSummaryModel model) {
+  private static JTextField createSummaryField(ColumnSummaryModel model, int horizontalAlignment) {
     JPopupMenu popupMenu = createPopupMenu(model);
     return Components.stringField()
             .linkedValue(model.summaryText())
-            .horizontalAlignment(SwingConstants.RIGHT)
+            .horizontalAlignment(horizontalAlignment)
             .editable(false)
             .focusable(false)
             .popupMenu(summaryField -> popupMenu)
