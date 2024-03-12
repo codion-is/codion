@@ -358,6 +358,9 @@ public class EntityTablePanel extends JPanel {
   private final EntityConditionPanelFactory conditionPanelFactory;
   private final JPanel southPanel = new JPanel(new BorderLayout());
   private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
+  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
   private FilteredTable<Entity, Attribute<?>> table;
   private StatusPanel statusPanel;
@@ -373,9 +376,6 @@ public class EntityTablePanel extends JPanel {
   private Control conditionRefreshControl;
 
   private boolean initialized = false;
-
-  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -553,10 +553,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error during delete
+   * @return the Value controlling the action to take on a referential integrity error on delete
    */
-  public final void setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
-    this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
+  public final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling() {
+    return referentialIntegrityErrorHandling;
   }
 
   /**
@@ -953,11 +953,11 @@ public class EntityTablePanel extends JPanel {
    * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
+   * @see #referentialIntegrityErrorHandling()
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+    if (referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
