@@ -72,7 +72,6 @@ import java.awt.GridBagLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.print.PrinterException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -496,7 +495,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelectedEntities(Attribute)}.
+   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelected(Attribute)}.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
@@ -599,7 +598,7 @@ public class EntityTablePanel extends JPanel {
    * @param <T> the attribute value type
    * @see #setEditComponentFactory(Attribute, EntityComponentFactory)
    */
-  public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
+  public final <T> void editSelected(Attribute<T> attributeToEdit) {
     requireNonNull(attributeToEdit);
     if (!tableModel.selectionModel().isSelectionEmpty()) {
       editDialogBuilder(attributeToEdit)
@@ -622,9 +621,9 @@ public class EntityTablePanel extends JPanel {
    * @return true if the delete operation was successful
    * @see #deleteConfirmer()
    */
-  public final boolean deleteWithConfirmation() {
+  public final boolean deleteSelectedWithConfirmation() {
     if (confirmDelete()) {
-      return delete();
+      return deleteSelected();
     }
 
     return false;
@@ -634,7 +633,7 @@ public class EntityTablePanel extends JPanel {
    * Deletes the entities selected in the underlying table model without asking for confirmation.
    * @return true if the delete operation was successful
    */
-  public final boolean delete() {
+  public final boolean deleteSelected() {
     try {
       tableModel.deleteSelected();
 
@@ -650,15 +649,6 @@ public class EntityTablePanel extends JPanel {
     }
 
     return false;
-  }
-
-  /**
-   * Prints the table
-   * @throws java.awt.print.PrinterException in case of a print exception
-   * @see JTable#print()
-   */
-  public final void printTable() throws PrinterException {
-    table().print();
   }
 
   /**
@@ -1054,7 +1044,7 @@ public class EntityTablePanel extends JPanel {
     settings.editableAttributes.get().stream()
             .map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
-            .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
+            .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelected(attributeDefinition.attribute()))
                     .name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
                     .enabled(enabledState)
                     .build()));

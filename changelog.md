@@ -30,6 +30,8 @@ Codion Change Log
 - EntityTablePanel.Settings.includeEntityMenu() added.
 - EntityTablePanel.INCLUDE_POPUP_MENU configuration value added.
 - EntityTablePanel.table now initialized lazily.
+- EntityTablePanel.delete(), deleteWithConfirmation() and editSelectedEntities() renamed deleteSelected(), deleteSelectedWithConfirmation() and editSelected() respectively.
+- EntityTablePanel.printTable() removed.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 
