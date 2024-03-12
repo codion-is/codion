@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.31-SNAPSHOT
+## 0.17.31
 ### is.codion.common
 - DefaultValueSet, synchronization added.
 ### is.codion.framework.model
