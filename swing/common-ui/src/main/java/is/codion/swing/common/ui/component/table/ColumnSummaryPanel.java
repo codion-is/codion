@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that shows a summary value for a numerical column property.
- * For instances use the {@link #columnSummaryPanel(ColumnSummaryModel)} factory method.
+ * For instances use the {@link #columnSummaryPanel(ColumnSummaryModel, int)} factory method.
  */
 public final class ColumnSummaryPanel extends JPanel {
 
