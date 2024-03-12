@@ -306,7 +306,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     selectionModel.setValueIsAdjusting(true);
     boolean visibleItemRemoved = false;
     for (R item : requireNonNull(items)) {
-      visibleItemRemoved = removeItemInternal(item, true) || visibleItemRemoved;
+      visibleItemRemoved = removeItemInternal(item, false) || visibleItemRemoved;
     }
     selectionModel.setValueIsAdjusting(false);
     if (visibleItemRemoved) {
@@ -467,12 +467,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     return !visible.isEmpty();
   }
 
-  private boolean removeItemInternal(R item, boolean dataChanged) {
+  private boolean removeItemInternal(R item, boolean notifyDataChanged) {
     int visibleItemIndex = visibleItems.indexOf(item);
     if (visibleItemIndex >= 0) {
       visibleItems.remove(visibleItemIndex);
       fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
-      if (dataChanged) {
+      if (notifyDataChanged) {
         dataChangedEvent.run();
       }
     }
