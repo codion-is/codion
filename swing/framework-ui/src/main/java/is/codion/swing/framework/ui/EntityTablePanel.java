@@ -693,7 +693,7 @@ public class EntityTablePanel extends JPanel {
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshButtonToolBar(), BorderLayout.WEST);
-    JToolBar southToolBar = createSouthToolBar();
+    JToolBar southToolBar = createToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }
@@ -909,10 +909,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates the south panel toolbar, by default based on {@link #createToolBarControls(List)}
-   * @return the toolbar to add to the south panel, null if none should be included
+   * Creates the table toolbar, by default based on {@link #createToolBarControls(List)}
+   * @return the toolbar, null if none should be included
    */
-  protected JToolBar createSouthToolBar() {
+  protected JToolBar createToolBar() {
     Controls toolbarControls = createToolBarControls(settings.additionalToolBarControls);
     if (toolbarControls == null || toolbarControls.empty()) {
       return null;
