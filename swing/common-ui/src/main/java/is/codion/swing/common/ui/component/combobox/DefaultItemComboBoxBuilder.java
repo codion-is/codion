@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.sortedItemComboBoxModel;
@@ -154,7 +155,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    itemListeners.forEach(comboBox::addItemListener);
+    itemListeners.forEach(new AddItemListener(comboBox));
     if (Utilities.systemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
@@ -195,5 +196,19 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     }
 
     return comboBoxModel;
+  }
+
+  private static final class AddItemListener implements Consumer<ItemListener> {
+
+    private final JComboBox<?> comboBox;
+
+    private AddItemListener(JComboBox<?> comboBox) {
+      this.comboBox = comboBox;
+    }
+
+    @Override
+    public void accept(ItemListener listener) {
+      comboBox.addItemListener(listener);
+    }
   }
 }

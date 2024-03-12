@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -70,7 +71,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
         tabbedPane.setTabComponentAt(tabIndex, tabBuilder.tabComponent);
       }
     });
-    changeListeners.forEach(tabbedPane::addChangeListener);
+    changeListeners.forEach(new AddChangeListener(tabbedPane));
 
     return tabbedPane;
   }
@@ -129,6 +130,20 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
       tabbedPaneBuilder.tabBuilders.add(this);
 
       return tabbedPaneBuilder;
+    }
+  }
+
+  private static final class AddChangeListener implements Consumer<ChangeListener> {
+
+    private final JTabbedPane tabbedPane;
+
+    private AddChangeListener(JTabbedPane tabbedPane) {
+      this.tabbedPane = tabbedPane;
+    }
+
+    @Override
+    public void accept(ChangeListener listener) {
+      tabbedPane.addChangeListener(listener);
     }
   }
 }
