@@ -29,6 +29,7 @@ Codion Change Log
 - EntityTablePanel, column summary field horizontal alignment no follows column cell renderer alignment.
 - EntityTablePanel.Settings.includeEntityMenu() added.
 - EntityTablePanel.INCLUDE_POPUP_MENU configuration value added.
+- EntityTablePanel.table now initialized lazily.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 

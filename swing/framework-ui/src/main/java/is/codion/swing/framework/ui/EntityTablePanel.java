@@ -360,10 +360,10 @@ public class EntityTablePanel extends JPanel {
 
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
-  private final FilteredTable<Entity, Attribute<?>> table;
   private final JPanel southPanel = new JPanel(new BorderLayout());
   private final Value<Confirmer> deleteConfirmer;
 
+  private FilteredTable<Entity, Attribute<?>> table;
   private StatusPanel statusPanel;
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
@@ -400,7 +400,6 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
-    this.table = createTable();
     this.controls = createControlsMap();
     this.deleteConfirmer = createDeleteConfirmer();
     this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
@@ -411,6 +410,10 @@ public class EntityTablePanel extends JPanel {
    * @return the table
    */
   public final FilteredTable<Entity, Attribute<?>> table() {
+    if (table == null) {
+      table = createTable();
+    }
+
     return table;
   }
 
@@ -655,7 +658,7 @@ public class EntityTablePanel extends JPanel {
    * @see JTable#print()
    */
   public final void printTable() throws PrinterException {
-    table.print();
+    table().print();
   }
 
   /**
@@ -1410,6 +1413,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void setupComponents() {
+    if (table == null) {
+      table = createTable();
+    }
     if (conditionRefreshControl == null) {
       conditionRefreshControl = createConditionRefreshControl();
     }
@@ -1562,8 +1568,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void onConditionChanged() {
-    table.getTableHeader().repaint();
-    table.repaint();
+    if (table != null) {
+      table.getTableHeader().repaint();
+      table.repaint();
+    }
   }
 
   private void onRefreshingChanged(boolean refreshing) {
