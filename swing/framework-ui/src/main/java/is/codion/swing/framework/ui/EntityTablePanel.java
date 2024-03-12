@@ -158,6 +158,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
 
   /**
+   * Specifies whether to include the default popup menu on entity tables<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includePopupMenu", true);
+
+  /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -339,8 +347,9 @@ public class EntityTablePanel extends JPanel {
   private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
-  private final Value<RefreshButtonVisible> refreshButtonVisible =
-          Value.value(RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
+  private final Value<RefreshButtonVisible> refreshButtonVisible = Value.value(
+          RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE,
+          RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
   private final Map<TableControl, Value<Control>> controls;
 
@@ -1829,9 +1838,9 @@ public class EntityTablePanel extends JPanel {
     private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
     private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
     private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
+    private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
-    private boolean includePopupMenu = true;
 
     private Settings() {
       this.editableAttributes = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
