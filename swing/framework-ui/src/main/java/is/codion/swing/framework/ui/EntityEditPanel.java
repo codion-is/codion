@@ -110,8 +110,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final EnumMap<Confirmer.Action, Value<Confirmer>> confirmers;
   private final State clearAfterInsert = State.state(true);
   private final State requestFocusAfterInsert = State.state(true);
-  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling =
-          Value.value(ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(), ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
+  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
   private boolean initialized = false;
 

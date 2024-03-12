@@ -350,17 +350,14 @@ public class EntityTablePanel extends JPanel {
           RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE,
           RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
-  private final Map<TableControl, Value<Control>> controls;
-
+  private final Map<TableControl, Value<Control>> controls = createControlsMap();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
-
   private final Settings settings;
-
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
   private final JPanel southPanel = new JPanel(new BorderLayout());
-  private final Value<Confirmer> deleteConfirmer;
+  private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
 
   private FilteredTable<Entity, Attribute<?>> table;
   private StatusPanel statusPanel;
@@ -377,9 +374,6 @@ public class EntityTablePanel extends JPanel {
 
   private boolean initialized = false;
 
-  /**
-   * The action to take when a referential integrity error occurs on delete
-   */
   private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
           ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
@@ -399,10 +393,8 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
-    this.controls = createControlsMap();
-    this.deleteConfirmer = createDeleteConfirmer();
-    this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
     this.settings = new Settings();
+    this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
   }
 
   /**
