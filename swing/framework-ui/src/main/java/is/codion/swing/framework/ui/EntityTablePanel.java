@@ -1727,7 +1727,8 @@ public class EntityTablePanel extends JPanel {
     tableModel.columnModel().columns().forEach(column ->
             tableModel.summaryModel().summaryModel(column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
-                            components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel))));
+                            components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel,
+                                    ((FilteredTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
 
     return components;
   }

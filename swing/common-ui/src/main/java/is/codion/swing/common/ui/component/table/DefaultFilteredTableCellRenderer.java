@@ -67,6 +67,11 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
   }
 
   @Override
+  public int horizontalAlignment() {
+    return getHorizontalAlignment();
+  }
+
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                  boolean hasFocus, int row, int column) {
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -148,6 +153,11 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
     @Override
     public boolean alternateRowColoring() {
       return alternateRowColoring;
+    }
+
+    @Override
+    public int horizontalAlignment() {
+      return getHorizontalAlignment();
     }
 
     @Override

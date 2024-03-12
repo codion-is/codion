@@ -14,6 +14,9 @@ Codion Change Log
 - DefaultFilteredTableModel now removes or adds the default RemoveSelectionListener when a JTable is added or removed as a tableModelListener, in order to avoid duplicating the selection removal functionality.
 - DefaultFilteredTableModel.removeItems() now calls setValueIsAdjusting() on the selection model to prevent a selection change event on each item removal.
 - DefaultFilteredTableModel, dataChangeListener no longer notifies on each removal when removing multiple items, for real this time.
+### is.codion.swing.common.ui
+- FilteredTableCellRenderer.horizontalAlignment() added.
+- ColumnSummaryPanel.columnSummaryPanel() horizontalAlignment parameter added.
 ### is.codion.swing.framework.ui
 - EntityPanel.addKeyEvent() and removeKeyEvent() added, editControlPanel() accessor removed.
 - EntityEditPanel, EntityTablePanel, EntityDialogs CRUD operations now performed in a background thread.
@@ -23,6 +26,7 @@ Codion Change Log
 - EntityEditPanel bug fixed, did not validate before insert and update.
 - EntityTablePanel.createSouthToolBar() renamed createToolBar().
 - EntityTablePanel.Settings.includeSummaryPanel() added along with INCLUDE_SUMMARY_PANEL configuration value.
+- EntityTablePanel, column summary field horizontal alignment no follows column cell renderer alignment.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 

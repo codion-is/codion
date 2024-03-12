@@ -91,6 +91,11 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
   boolean alternateRowColoring();
 
   /**
+   * @return the horizontal alignment
+   */
+  int horizontalAlignment();
+
+  /**
    * Instantiates a new {@link FilteredTableCellRenderer.Builder}.
    * @param <R> the table row type
    * @param <C> the column identifier type
