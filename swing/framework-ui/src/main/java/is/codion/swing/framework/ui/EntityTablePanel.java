@@ -1308,7 +1308,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void bindEvents() {
-    if (INCLUDE_ENTITY_MENU.get()) {
+    if (settings.includeEntityMenu) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .action(Control.control(this::showEntityMenu))
@@ -1418,6 +1418,7 @@ public class EntityTablePanel extends JPanel {
       summaryPanelScrollPane = createSummaryPanelScrollPane();
     }
     tablePanel = createTablePanel();
+    tableModel.columnModel().columns().forEach(this::configureColumn);
     refreshButtonToolBar();
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
     filterPanelVisibleState.addValidator(new PanelAvailableValidator(filterPanel, "filter"));
@@ -1827,6 +1828,7 @@ public class EntityTablePanel extends JPanel {
     private boolean includeSummaryPanel = INCLUDE_SUMMARY_PANEL.get();
     private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
     private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
+    private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
     private boolean includePopupMenu = true;
@@ -1915,6 +1917,17 @@ public class EntityTablePanel extends JPanel {
     public Settings includeLimitMenu(boolean includeLimitMenu) {
       throwIfInitialized();
       this.includeLimitMenu = includeLimitMenu;
+      return this;
+    }
+
+    /**
+     * @param includeEntityMenu true a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.<br>
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeEntityMenu(boolean includeEntityMenu) {
+      throwIfInitialized();
+      this.includeEntityMenu = includeEntityMenu;
       return this;
     }
 

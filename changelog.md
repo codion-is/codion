@@ -27,6 +27,7 @@ Codion Change Log
 - EntityTablePanel.createSouthToolBar() renamed createToolBar().
 - EntityTablePanel.Settings.includeSummaryPanel() added along with INCLUDE_SUMMARY_PANEL configuration value.
 - EntityTablePanel, column summary field horizontal alignment no follows column cell renderer alignment.
+- EntityTablePanel.Settings.includeEntityMenu() added.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 
