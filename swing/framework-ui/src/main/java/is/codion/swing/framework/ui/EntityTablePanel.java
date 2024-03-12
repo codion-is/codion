@@ -190,6 +190,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
 
   /**
+   * Specifies whether to include a summary panel.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeSummaryPanel", true);
+
+  /**
    * Specifies whether to include a popup menu for configuring the table model limit.<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -1405,8 +1413,10 @@ public class EntityTablePanel extends JPanel {
       filterPanel = configureHorizontalAlignment(table.filterPanel());
       filterPanelScrollPane = createFilterPanelScrollPane();
     }
-    summaryPanel = createSummaryPanel();
-    summaryPanelScrollPane = createSummaryPanelScrollPane();
+    if (settings.includeSummaryPanel) {
+      summaryPanel = createSummaryPanel();
+      summaryPanelScrollPane = createSummaryPanelScrollPane();
+    }
     tablePanel = createTablePanel();
     refreshButtonToolBar();
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
@@ -1813,6 +1823,7 @@ public class EntityTablePanel extends JPanel {
     private boolean includeSouthPanel = true;
     private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
     private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
+    private boolean includeSummaryPanel = INCLUDE_SUMMARY_PANEL.get();
     private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
     private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.get();
     private boolean includeSelectionModeControl = false;
@@ -1859,6 +1870,17 @@ public class EntityTablePanel extends JPanel {
     public Settings includeFilterPanel(boolean includeFilterPanel) {
       throwIfInitialized();
       this.includeFilterPanel = includeFilterPanel;
+      return this;
+    }
+
+    /**
+     * @param includeSummaryPanel true if the summary panel should be included
+     * @return this Settings instance
+     * @throws IllegalStateException in case the panel has already been initialized
+     */
+    public Settings includeSummaryPanel(boolean includeSummaryPanel) {
+      throwIfInitialized();
+      this.includeSummaryPanel = includeSummaryPanel;
       return this;
     }
 

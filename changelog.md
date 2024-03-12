@@ -22,6 +22,7 @@ Codion Change Log
 - EntityPanel, edit window location now relative to table panel, if one is available.
 - EntityEditPanel bug fixed, did not validate before insert and update.
 - EntityTablePanel.createSouthToolBar() renamed createToolBar().
+- EntityTablePanel.Settings.includeSummaryPanel() added along with INCLUDE_SUMMARY_PANEL configuration value.
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 
