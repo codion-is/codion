@@ -8,6 +8,8 @@ Codion Change Log
 - DefaultFilteredTableModel bug fixed, did not trigger dataChanged events when removing items by index.
 ### is.codion.swing.common.ui
 - ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
+### is.codion.framework.i18n
+- FrameworkMessages, confirm update and confirm insert messages improved.
 ### is.codion.swing.framework.ui
 - EntitySearchField.selectorFactory() now Value based.
 - EntitySearchField.searchIndicator() now Value based.
