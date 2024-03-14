@@ -423,7 +423,7 @@ public final class EntitySearchField extends HintTextField {
 
   private void promptUser(List<Entity> searchResult) {
     if (searchResult.isEmpty()) {
-      JOptionPane.showMessageDialog(this, FrameworkMessages.noResultsFound(),
+      JOptionPane.showMessageDialog(this, FrameworkMessages.noSearchResults(),
               SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {

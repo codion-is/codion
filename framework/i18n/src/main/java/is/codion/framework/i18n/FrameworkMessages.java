@@ -48,7 +48,7 @@ public final class FrameworkMessages {
   private static final String CONFIRM_DELETE = "confirm_delete";
   private static final String CONFIRM_INSERT = "confirm_insert";
   private static final String SHOW = "show";
-  private static final String NO_RESULTS_FOUND = "no_results_found";
+  private static final String NO_SEARCH_RESULTS = "no_search_results";
   private static final String SEARCH = "search";
   private static final String FILTER = "filter";
   private static final String SEARCH_MNEMONIC = "search_mnemonic";
@@ -303,10 +303,10 @@ public final class FrameworkMessages {
   }
 
   /**
-   * @return no results found
+   * @return no search results
    */
-  public static String noResultsFound() {
-    return get(NO_RESULTS_FOUND);
+  public static String noSearchResults() {
+    return get(NO_SEARCH_RESULTS);
   }
 
   /**

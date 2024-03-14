@@ -509,7 +509,7 @@ public final class EntityDialogs {
         entityTablePanel.table().requestFocusInWindow();
       }
       else {
-        JOptionPane.showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noResultsFound());
+        JOptionPane.showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noSearchResults());
       }
     }
 
