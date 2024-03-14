@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntitySearchField.selectorFactory() now Value based.
 - EntitySearchField.searchIndicator() now Value based.
+- EntityEditComponentPanel.attribute(JComponent) bug fixed, did not take into account that the component is wrapped in a Value.
 
 ## 0.17.31
 ### is.codion.common

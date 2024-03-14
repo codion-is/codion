@@ -194,7 +194,7 @@ public class EntityEditComponentPanel extends JPanel {
   public final <T> Attribute<T> attribute(JComponent component) {
     requireNonNull(component);
     return (Attribute<T>) components.entrySet().stream()
-            .filter(entry -> entry.getValue() == component)
+            .filter(entry -> entry.getValue().get() == component)
             .findFirst()
             .map(Map.Entry::getKey)
             .orElseThrow(() -> new IllegalArgumentException("No attribute associated with this component"));
