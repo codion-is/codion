@@ -223,29 +223,45 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(4, events.get());
     assertFalse(tableModel.containsItem(A));
     tableModel.removeItems(asList(D, E));
-    assertEquals(4, events.get());//no change when removing filtered items
+    assertEquals(4, events.get());//no change event when removing filtered items
     assertFalse(tableModel.visible(D));
     assertFalse(tableModel.visible(E));
+    assertFalse(tableModel.filtered(D));
+    assertFalse(tableModel.filtered(E));
+    tableModel.filterModel().conditionModel(0).setEqualValue(null);
+    tableModel.refresh();
+    assertEquals(7, events.get());
+    tableModel.removeItems(0, 2);
+    assertEquals(8, events.get());//just a single event when removing multiple items
+    tableModel.removeItemAt(0);
+    assertEquals(9, events.get());
     tableModel.removeDataChangedListener(listener);
   }
 
   @Test
   void setItemAt() {
+    AtomicInteger dataChangedEvents = new AtomicInteger();
+    Runnable listener = dataChangedEvents::incrementAndGet;
+    tableModel.addDataChangedListener(listener);
     State selectionChangedState = State.state();
     tableModel.selectionModel().addSelectedItemListener((item) -> selectionChangedState.set(true));
     tableModel.refresh();
+    assertEquals(1, dataChangedEvents.get());
     tableModel.selectionModel().setSelectedItem(B);
     TestRow h = new TestRow("h");
     tableModel.setItemAt(tableModel.indexOf(B), h);
+    assertEquals(2, dataChangedEvents.get());
     assertEquals(h, tableModel.selectionModel().getSelectedItem());
     assertTrue(selectionChangedState.get());
     tableModel.setItemAt(tableModel.indexOf(h), B);
+    assertEquals(3, dataChangedEvents.get());
 
     selectionChangedState.set(false);
     TestRow newB = new TestRow("b");
     tableModel.setItemAt(tableModel.indexOf(B), newB);
     assertFalse(selectionChangedState.get());
     assertEquals(newB, tableModel.selectionModel().getSelectedItem());
+    tableModel.removeDataChangedListener(listener);
   }
 
   @Test
@@ -256,7 +272,7 @@ public final class DefaultFilteredTableModelTest {
     tableModel.refresh();
     assertEquals(1, events.get());
     List<TestRow> removed = tableModel.removeItems(1, 3);
-    assertEquals(1, events.get());
+    assertEquals(2, events.get());
     assertTrue(tableModel.containsItem(A));
     assertFalse(tableModel.containsItem(B));
     assertTrue(removed.contains(B));
@@ -831,7 +847,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  public void tableDataAsDelimitedString() {
+  void tableDataAsDelimitedString() {
     tableModel.refresh();
 
     String expected = "0" + Separators.LINE_SEPARATOR +
