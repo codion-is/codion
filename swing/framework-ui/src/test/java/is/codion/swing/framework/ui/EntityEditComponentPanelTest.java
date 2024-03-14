@@ -42,4 +42,11 @@ public final class EntityEditComponentPanelTest {
     assertThrows(IllegalArgumentException.class, () -> componentPanel.attribute(new JTextField()));
     assertTrue(componentPanel.component(Employee.JOB).isNull());
   }
+
+  @Test
+  void excludeComponentFromSelection() {
+    SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+    EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
+    assertThrows(NullPointerException.class, () -> componentPanel.excludeComponentFromSelection().add(null));
+  }
 }

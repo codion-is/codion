@@ -14,6 +14,7 @@ Codion Change Log
 - EntityEditComponentPanel.attribute(JComponent) bug fixed, did not take into account that the component is wrapped in a Value.
 - EntityEditComponentPanel.setComponentBuilder() bug fixed, did not prevent the creation of a second component if the component had already been built.
 - EntityEditComponentPanelTest added.
+- EntityEditComponentPanel.excludeComponentsFromSelection() replaced with ValueSet based excludeComponentFromSelection().
 
 ## 0.17.31
 ### is.codion.common
