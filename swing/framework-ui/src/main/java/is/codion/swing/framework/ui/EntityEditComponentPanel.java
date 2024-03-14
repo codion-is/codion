@@ -871,13 +871,13 @@ public class EntityEditComponentPanel extends JPanel {
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
     requireNonNull(attribute);
     requireNonNull(componentBuilder);
-    if (componentBuilders.containsKey(attribute)) {
-      throw new IllegalStateException("ComponentBuilder has already been set for attribute: " + attribute);
+    if (componentBuilders.containsKey(attribute) || components.containsKey(attribute)) {
+      throw new IllegalStateException("Component has already been created for attribute: " + attribute);
     }
     componentBuilders.put(attribute, componentBuilder
             .transferFocusOnEnter(transferFocusOnEnter.get())
             .linkedValue(editModel().value(attribute))
-            .onBuild(new OnComponentBuilt<>(attribute)));
+            .onBuild(new SetComponent<>(attribute)));
 
     return componentBuilder;
   }
@@ -1021,11 +1021,11 @@ public class EntityEditComponentPanel extends JPanel {
     }
   }
 
-  private final class OnComponentBuilt<C extends JComponent> implements Consumer<C> {
+  private final class SetComponent<C extends JComponent> implements Consumer<C> {
 
     private final Attribute<?> attribute;
 
-    private OnComponentBuilt(Attribute<?> attribute) {
+    private SetComponent(Attribute<?> attribute) {
       this.attribute = attribute;
     }
 
