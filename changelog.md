@@ -18,6 +18,7 @@ Codion Change Log
 - EntityEditComponentPanel.setComponentBuilder() bug fixed, did not prevent the creation of a second component if the component had already been built.
 - EntityEditComponentPanelTest added.
 - EntityEditComponentPanel.excludeComponentsFromSelection() replaced with ValueSet based excludeComponentFromSelection().
+- EntityComponents, range validation no longer added to number fields by default.
 
 ## 0.17.31
 ### is.codion.common
