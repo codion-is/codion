@@ -443,8 +443,6 @@ public class EntityComponents {
 
     return Components.shortField()
             .format(attributeDefinition.format())
-            .minimumValue(attributeDefinition.minimumValue())
-            .maximumValue(attributeDefinition.maximumValue())
             .toolTipText(attributeDefinition.description());
   }
 
@@ -458,8 +456,6 @@ public class EntityComponents {
 
     return Components.integerField()
             .format(attributeDefinition.format())
-            .minimumValue(attributeDefinition.minimumValue())
-            .maximumValue(attributeDefinition.maximumValue())
             .toolTipText(attributeDefinition.description());
   }
 
@@ -473,8 +469,6 @@ public class EntityComponents {
 
     return Components.longField()
             .format(attributeDefinition.format())
-            .minimumValue(attributeDefinition.minimumValue())
-            .maximumValue(attributeDefinition.maximumValue())
             .toolTipText(attributeDefinition.description());
   }
 
@@ -488,8 +482,6 @@ public class EntityComponents {
 
     return Components.doubleField()
             .format(attributeDefinition.format())
-            .minimumValue(attributeDefinition.minimumValue())
-            .maximumValue(attributeDefinition.maximumValue())
             .maximumFractionDigits(attributeDefinition.maximumFractionDigits())
             .toolTipText(attributeDefinition.description());
   }
@@ -504,8 +496,6 @@ public class EntityComponents {
 
     return Components.bigDecimalField()
             .format(attributeDefinition.format())
-            .minimumValue(attributeDefinition.minimumValue())
-            .maximumValue(attributeDefinition.maximumValue())
             .maximumFractionDigits(attributeDefinition.maximumFractionDigits())
             .toolTipText(attributeDefinition.description());
   }

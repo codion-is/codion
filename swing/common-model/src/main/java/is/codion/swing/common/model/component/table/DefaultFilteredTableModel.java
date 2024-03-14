@@ -333,6 +333,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   public R removeItemAt(int index) {
     R removed = visibleItems.remove(index);
     fireTableRowsDeleted(index, index);
+    dataChangedEvent.run();
 
     return removed;
   }
@@ -343,6 +344,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     List<R> removedItems = new ArrayList<>(subList);
     subList.clear();
     fireTableRowsDeleted(fromIndex, toIndex);
+    dataChangedEvent.run();
 
     return removedItems;
   }
@@ -425,6 +427,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   private void bindEventsInternal() {
     addTableModelListener(e -> {
       if (e.getType() != TableModelEvent.DELETE) {
+        // Removals are handled specially, in order to trigger only a single
+        // event when multiple rows are removed, see remove... methods
         dataChangedEvent.run();
       }
     });

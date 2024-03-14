@@ -64,6 +64,20 @@ public interface ValueSet<T> extends Value<Set<T>> {
   boolean removeAll(T... values);
 
   /**
+   * Returns true if this set contains the specified element
+   * @param value the element
+   * @return true if this set contains the specified element
+   */
+  boolean contains(T value);
+
+  /**
+   * Returns true if this set contains all of the elements of the specified collection
+   * @param values the elements to check
+   * @return true if this set contains all of the elements of the specified collection
+   */
+  boolean containsAll(Collection<T> values);
+
+  /**
    * @return true if this value set is empty
    */
   boolean empty();

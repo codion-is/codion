@@ -2,11 +2,24 @@ Codion Change Log
 ==================
 
 ## 0.17.32
+### is.codion.common.core
+- ValueSet.contains() and containsAll() added.
+### is.codion.swing.common.model
+- DefaultFilteredTableModel bug fixed, did not trigger dataChanged events when removing items by index.
 ### is.codion.swing.common.ui
 - ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
+### is.codion.framework.i18n
+- FrameworkMessages, confirm update and confirm insert messages improved.
+- FrameworkMessages, no search results message improved.
 ### is.codion.swing.framework.ui
 - EntitySearchField.selectorFactory() now Value based.
 - EntitySearchField.searchIndicator() now Value based.
+- EntityEditComponentPanel.attribute(JComponent) bug fixed, did not take into account that the component is wrapped in a Value.
+- EntityEditComponentPanel.setComponentBuilder() bug fixed, did not prevent the creation of a second component if the component had already been built.
+- EntityEditComponentPanelTest added.
+- EntityEditComponentPanel.excludeComponentsFromSelection() replaced with ValueSet based excludeComponentFromSelection().
+- EntityComponents, range validation no longer added to number fields by default.
+- EntityDialogs.DefaultEntityEditDialogBuilder.InputValidator now also uses the entity validator when validating input.
 
 ## 0.17.31
 ### is.codion.common

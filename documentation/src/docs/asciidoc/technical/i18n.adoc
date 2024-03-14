@@ -258,8 +258,8 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |confirm_delete_selected|Delete {0, choice, 1#record\|1<{0, number, integer} records}?|Eyða {0, choice, 1#færslu\|1<{0, number, integer} færslum}?
 |confirm_exit|Are you sure you want to close the application?|Ertu viss um að þú viljir hætta?
 |confirm_exit_title|Exit?|Hætta?
-|confirm_insert|Insert?|Vista?
-|confirm_update|Update selected?|Uppfæra valdar?
+|confirm_insert|Insert record?|Vista færslu?
+|confirm_update|Update record?|Uppfæra færslu?
 |copy_cell|Copy Cell|Afrita Reit
 |copy_table_with_header|Copy Table With Header|Afrita Töflu Með Dálkaheitum
 |delete|Delete|Eyða
@@ -276,7 +276,7 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |file|File|Skrá
 |file_mnemonic|F|K
 |filter|Filter|Sýja
-|no_results_found|No results found|Leit skilaði engum niðurstöðum
+|no_search_results|Search did not return any results|Leit skilaði engum niðurstöðum
 |save|Save|Vista
 |save_mnemonic|S|V
 |search|Search|Leita

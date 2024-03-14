@@ -22,6 +22,7 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -133,7 +134,7 @@ public class EntityEditComponentPanel extends JPanel {
   private final EntityComponents entityComponents;
   private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
   private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
-  private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
+  private final ValueSet<Attribute<?>> excludeComponentFromSelection = ValueSet.valueSet();
   private final Value<JComponent> focusedInputComponent = Value.value();
 
   private final Value<JComponent> initialFocusComponent = Value.value();
@@ -166,6 +167,8 @@ public class EntityEditComponentPanel extends JPanel {
     if (!editModel.entityType().equals(entityComponents.entityDefinition().entityType())) {
       throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().entityType());
     }
+    excludeComponentFromSelection.addValidator(attributes -> attributes.forEach(attribute ->
+            requireNonNull(attribute, "Excluded component attribute may not be null")));
     addFocusedComponentListener();
   }
 
@@ -209,7 +212,7 @@ public class EntityEditComponentPanel extends JPanel {
   public final <T> Attribute<T> attribute(JComponent component) {
     requireNonNull(component);
     return (Attribute<T>) components.entrySet().stream()
-            .filter(entry -> entry.getValue() == component)
+            .filter(entry -> entry.getValue().get() == component)
             .findFirst()
             .map(Map.Entry::getKey)
             .orElseThrow(() -> new IllegalArgumentException("No attribute associated with this component"));
@@ -283,7 +286,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Displays a dialog allowing the user the select an input component which should receive the keyboard focus.
    * If only one input component is available then that component is selected automatically.
    * If no component is available, f.ex. when the panel is not visible, this method does nothing.
-   * @see #excludeComponentsFromSelection(Attribute[])
+   * @see #excludeComponentFromSelection()
    * @see #requestComponentFocus(Attribute)
    */
   public final void selectInputComponent() {
@@ -306,25 +309,23 @@ public class EntityEditComponentPanel extends JPanel {
    * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
    * this returns all (non-excluded) attributes that have an associated component in this panel
    * that is enabled, displayable, visible and focusable.
-   * @see #excludeComponentsFromSelection(Attribute[])
+   * @see #excludeComponentFromSelection()
    * @see #component(Attribute)
    */
   public final Collection<Attribute<?>> selectComponentAttributes() {
     return components.keySet().stream()
-            .filter(attribute -> !excludeFromSelection.contains(attribute))
+            .filter(attribute -> !excludeComponentFromSelection.contains(attribute))
             .filter(attribute -> componentSelectable(component(attribute).get()))
             .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
   }
 
   /**
-   * Specifies that the given attributes should be excluded when presenting a component selection list.
-   * @param attributes the attributes to exclude from selection
+   * Specifies the attributes that should be excluded when presenting a component selection list.
+   * @return the {@link ValueSet} specifying attributes that should be excluded from component selection
    * @see #selectInputComponent()
    */
-  public final void excludeComponentsFromSelection(Attribute<?>... attributes) {
-    for (Attribute<?> attribute : requireNonNull(attributes)) {
-      excludeFromSelection.add(requireNonNull(attribute));
-    }
+  public final ValueSet<Attribute<?>> excludeComponentFromSelection() {
+    return excludeComponentFromSelection;
   }
 
   /**
@@ -886,13 +887,13 @@ public class EntityEditComponentPanel extends JPanel {
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
     requireNonNull(attribute);
     requireNonNull(componentBuilder);
-    if (componentBuilders.containsKey(attribute)) {
-      throw new IllegalStateException("ComponentBuilder has already been set for attribute: " + attribute);
+    if (componentBuilders.containsKey(attribute) || components.containsKey(attribute)) {
+      throw new IllegalStateException("Component has already been created for attribute: " + attribute);
     }
     componentBuilders.put(attribute, componentBuilder
             .transferFocusOnEnter(transferFocusOnEnter.get())
             .linkedValue(editModel().value(attribute))
-            .onBuild(new OnComponentBuilt<>(attribute)));
+            .onBuild(new SetComponent<>(attribute)));
 
     return componentBuilder;
   }
@@ -1036,11 +1037,11 @@ public class EntityEditComponentPanel extends JPanel {
     }
   }
 
-  private final class OnComponentBuilt<C extends JComponent> implements Consumer<C> {
+  private final class SetComponent<C extends JComponent> implements Consumer<C> {
 
     private final Attribute<?> attribute;
 
-    private OnComponentBuilt(Attribute<?> attribute) {
+    private SetComponent(Attribute<?> attribute) {
       this.attribute = attribute;
     }
 

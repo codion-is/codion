@@ -103,6 +103,21 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
+  public boolean contains(T value) {
+    synchronized (this.values) {
+      return this.values.contains(value);
+    }
+  }
+
+  @Override
+  public boolean containsAll(Collection<T> values) {
+    requireNonNull(values);
+    synchronized (this.values) {
+      return this.values.containsAll(values);
+    }
+  }
+
+  @Override
   public boolean empty() {
     synchronized (this.values) {
       return values.isEmpty();

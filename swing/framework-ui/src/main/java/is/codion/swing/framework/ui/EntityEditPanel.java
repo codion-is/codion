@@ -609,7 +609,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private Map<EditControl, Value<Control>> createControlsMap() {
-    Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
+    Value.Validator<Control> controlValueValidator = control -> {
+      if (initialized) {
+        throw new IllegalStateException("Controls must be configured before the panel has been initialized");
+      }
+    };
 
     return unmodifiableMap(Stream.of(EditControl.values())
             .collect(toMap(Function.identity(), controlCode -> {
@@ -618,12 +622,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
               return value;
             })));
-  }
-
-  private void throwIfInitialized() {
-    if (initialized) {
-      throw new IllegalStateException("Method must be called before the panel is initialized");
-    }
   }
 
   private static EnumMap<Confirmer.Action, Value<Confirmer>> createConfirmersMap() {

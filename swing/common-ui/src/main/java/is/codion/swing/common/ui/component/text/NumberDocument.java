@@ -443,7 +443,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
         }
       }
 
-      boolean withinRange(T value) {
+      private boolean withinRange(T value) {
         return value == null || (greaterThanMinimum(value) && lessThanMaximum(value));
       }
 

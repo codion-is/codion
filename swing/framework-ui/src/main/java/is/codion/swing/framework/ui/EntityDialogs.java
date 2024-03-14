@@ -23,6 +23,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -251,14 +252,15 @@ public final class EntityDialogs {
         throw new IllegalArgumentException("All entities must be of the same type when editing");
       }
 
-      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+      EntityDefinition entityDefinition = editModel.entityDefinition();
+      AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
       Collection<Entity> selectedEntities = entities.stream()
               .map(Entity::copy)
               .collect(toList());
       Collection<T> values = Entity.distinct(attribute, selectedEntities);
       T initialValue = values.size() == 1 ? values.iterator().next() : null;
       ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
-      InputValidator<T> inputValidator = new InputValidator<>(attributeDefinition, componentValue);
+      InputValidator<T> inputValidator = new InputValidator<>(entityDefinition, attribute, componentValue);
       if (updater == null) {
         updater = new DefaultUpdater(owner, locationRelativeTo, onException);
       }
@@ -358,23 +360,25 @@ public final class EntityDialogs {
 
     private static final class InputValidator<T> implements Predicate<T> {
 
-      private final AttributeDefinition<T> attributeDefinition;
+      private final EntityDefinition entityDefinition;
+      private final Attribute<T> attribute;
       private final ComponentValue<T, ?> componentValue;
 
-      private InputValidator(AttributeDefinition<T> attributeDefinition, ComponentValue<T, ?> componentValue) {
-        this.attributeDefinition = attributeDefinition;
+      private InputValidator(EntityDefinition entityDefinition, Attribute<T> attribute, ComponentValue<T, ?> componentValue) {
+        this.entityDefinition = entityDefinition;
+        this.attribute = attribute;
         this.componentValue = componentValue;
       }
 
       @Override
       public boolean test(T value) {
-        if (value == null && !attributeDefinition.nullable()) {
-          return false;
-        }
+        Entity entity = entityDefinition.entity();
+        entity.put(attribute, value);
         try {
+          entityDefinition.validator().validate(entity, attribute);
           componentValue.validate(value);
         }
-        catch (IllegalArgumentException e) {
+        catch (ValidationException | IllegalArgumentException e) {
           return false;
         }
 
@@ -524,7 +528,7 @@ public final class EntityDialogs {
         entityTablePanel.table().requestFocusInWindow();
       }
       else {
-        JOptionPane.showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noResultsFound());
+        JOptionPane.showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noSearchResults());
       }
     }
 
