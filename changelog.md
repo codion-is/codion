@@ -19,6 +19,7 @@ Codion Change Log
 - EntityEditComponentPanelTest added.
 - EntityEditComponentPanel.excludeComponentsFromSelection() replaced with ValueSet based excludeComponentFromSelection().
 - EntityComponents, range validation no longer added to number fields by default.
+- EntityDialogs.DefaultEntityEditDialogBuilder.InputValidator now also uses the entity validator when validating input.
 
 ## 0.17.31
 ### is.codion.common
