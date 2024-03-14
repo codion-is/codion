@@ -602,7 +602,7 @@ public interface EntityConnection extends AutoCloseable {
       Builder orderBy(OrderBy orderBy);
 
       /**
-       * @param limit the limit to use for this condition
+       * @param limit the limit to use for this condition, -1 for no limit
        * @return this builder instance
        */
       Builder limit(int limit);
@@ -614,7 +614,7 @@ public interface EntityConnection extends AutoCloseable {
       Builder offset(int offset);
 
       /**
-       * Marks Select instance as a for update query, this means the resulting rows
+       * Marks the Select instance as a for update query, this means the resulting rows
        * will be locked by the given connection until unlocked by running another (non select for update)
        * query on the same connection or performing an update.
        * Note that marking this Select instance as for update, sets the {@link #fetchDepth()} to zero, which can
