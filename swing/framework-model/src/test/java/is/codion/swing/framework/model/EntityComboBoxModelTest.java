@@ -228,7 +228,7 @@ public final class EntityComboBoxModelTest {
   void attributes() {
     List<Attribute<?>> selectAttributes = Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK);
     comboBoxModel.attributes().set(selectAttributes);
-    assertTrue(comboBoxModel.attributes().get().containsAll(selectAttributes));
+    assertTrue(comboBoxModel.attributes().containsAll(selectAttributes));
     comboBoxModel.refresh();
     for (Entity emp : comboBoxModel.items()) {
       assertTrue(emp.contains(Employee.ID));

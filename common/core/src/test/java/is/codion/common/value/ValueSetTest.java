@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueSetTest {
@@ -73,9 +74,9 @@ public class ValueSetTest {
     Value<Integer> value = valueSet.value();
 
     value.set(1);
-    assertTrue(valueSet.get().contains(1));
+    assertTrue(valueSet.contains(1));
     value.set(null);
-    assertTrue(valueSet.get().isEmpty());
+    assertTrue(valueSet.empty());
 
     valueSet.set(Collections.singleton(2));
     assertEquals(2, value.get());
@@ -84,6 +85,8 @@ public class ValueSetTest {
     assertNull(value.get());
 
     assertTrue(valueSet.addAll(1, 2, 3));
+    assertFalse(valueSet.containsAll(asList(1, 2, 4)));
+    assertTrue(valueSet.containsAll(asList(1, 2, 3)));
     assertFalse(valueSet.addAll(1, 2, 3));
     assertTrue(valueSet.removeAll(1, 2));
     assertFalse(valueSet.removeAll(1, 2));

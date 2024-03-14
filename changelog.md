@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.32
+### is.codion.common.core
+- ValueSet.contains() and containsAll() added.
 ### is.codion.swing.common.model
 - DefaultFilteredTableModel bug fixed, did not trigger dataChanged events when removing items by index.
 ### is.codion.swing.common.ui
