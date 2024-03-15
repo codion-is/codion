@@ -237,7 +237,7 @@ public class EntityPanel extends JPanel {
     NAVIGATE_LEFT
   }
 
-  private static final Consumer<Settings> NO_SETTINGS = s -> {};
+  private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
   /**
    * Specifies the mapping between {@link PanelState} instances: From HIDDEN to EMBEDDED to WINDOW back to HIDDEN
@@ -256,7 +256,7 @@ public class EntityPanel extends JPanel {
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
-  private final Settings settings = new Settings();
+  private final Config configuration = new Config();
 
   private String description;
   private EntityPanel parentPanel;
@@ -276,16 +276,16 @@ public class EntityPanel extends JPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(requireNonNull(entityModel), NO_SETTINGS);
+    this(requireNonNull(entityModel), NO_CONFIGURATION);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
-   * @param settings provides access to the panel settings
+   * @param configuration provides access to the panel configuration
    */
-  public EntityPanel(SwingEntityModel entityModel, Consumer<Settings> settings) {
-    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, settings);
+  public EntityPanel(SwingEntityModel entityModel, Consumer<Config> configuration) {
+    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, configuration);
   }
 
   /**
@@ -294,17 +294,17 @@ public class EntityPanel extends JPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(requireNonNull(entityModel), editPanel, NO_SETTINGS);
+    this(requireNonNull(entityModel), editPanel, NO_CONFIGURATION);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
-   * @param settings provides access to the panel settings
+   * @param configuration provides access to the panel configuration
    */
-  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, Consumer<Settings> settings) {
-    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, settings);
+  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
+    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, configuration);
   }
 
   /**
@@ -313,17 +313,17 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel) {
-    this(entityModel, tablePanel, NO_SETTINGS);
+    this(entityModel, tablePanel, NO_CONFIGURATION);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
-   * @param settings provides access to the panel settings
+   * @param configuration provides access to the panel configuration
    */
-  public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, Consumer<Settings> settings) {
-    this(entityModel, null, tablePanel, settings);
+  public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, Consumer<Config> configuration) {
+    this(entityModel, null, tablePanel, configuration);
   }
 
   /**
@@ -333,7 +333,7 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
-    this(entityModel, editPanel, tablePanel, NO_SETTINGS);
+    this(entityModel, editPanel, tablePanel, NO_CONFIGURATION);
   }
 
   /**
@@ -341,20 +341,20 @@ public class EntityPanel extends JPanel {
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    * @param tablePanel the table panel
-   * @param settings provides access to the panel settings
+   * @param configuration provides access to the panel configuration
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
-                     Consumer<Settings> settings) {
+                     Consumer<Config> configuration) {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
-    requireNonNull(settings).accept(this.settings);
+    requireNonNull(configuration).accept(this.configuration);
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
     this.caption = Value.value(defaultCaption, defaultCaption);
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
-    this.detailController = this.settings.panelLayout.detailController().orElse(new NullDetailController());
+    this.detailController = this.configuration.panelLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -365,8 +365,8 @@ public class EntityPanel extends JPanel {
     if (detailPanels != null) {
       Utilities.updateUI(detailPanels);
     }
-    if (settings != null) {
-      settings.panelLayout.updateUI();
+    if (configuration != null) {
+      configuration.panelLayout.updateUI();
     }
   }
 
@@ -404,13 +404,13 @@ public class EntityPanel extends JPanel {
 
   /**
    * Provides a way to configure settings before the panel is initialized.
-   * @return the {@link Settings} instance
+   * @return the {@link Config} instance
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final Settings configure() {
+  public final Config configure() {
     throwIfInitialized();
 
-    return settings;
+    return configuration;
   }
 
   /**
@@ -743,10 +743,10 @@ public class EntityPanel extends JPanel {
 
   /**
    * Creates a base panel containing the given edit panel.
-   * The default layout is a {@link FlowLayout} with the alignment depending on {@link Settings#controlComponentConstraints(String)}.
+   * The default layout is a {@link FlowLayout} with the alignment depending on {@link Config#controlComponentConstraints(String)}.
    * @param editPanel the initialized edit panel
    * @return a base panel for the edit panel
-   * @see Settings#controlComponentConstraints(String)
+   * @see Config#controlComponentConstraints(String)
    */
   protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
     return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
@@ -764,14 +764,14 @@ public class EntityPanel extends JPanel {
    * @see EntityPanel#TOOLBAR_CONTROLS
    * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
    * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
-   * @see Settings#includeControls(boolean)
+   * @see Config#includeControls(boolean)
    */
   protected JComponent createControlComponent(Controls controls) {
     if (requireNonNull(controls).empty()) {
       return null;
     }
 
-    return settings.toolbarControls ? createControlToolbar(controls) : createControlPanel(controls);
+    return configuration.toolbarControls ? createControlToolbar(controls) : createControlPanel(controls);
   }
 
   /**
@@ -812,92 +812,92 @@ public class EntityPanel extends JPanel {
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
       tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-              KeyEvents.builder(settings.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
+              KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
+              KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
+              KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
+              KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-              KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
+              KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      KeyEvents.builder(settings.shortcuts.keyStroke(REQUEST_SEARCH_FIELD_FOCUS).get())
+      KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_SEARCH_FIELD_FOCUS).get())
               .action(createRequestTableSearchFieldControl())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       if (containsEditPanel()) {
         tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-                KeyEvents.builder(settings.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
+                KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
+                KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
+                KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
+                KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-                KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
+                KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
       }
     }
     if (containsEditPanel()) {
-      KeyEvents.builder(settings.shortcuts.keyStroke(REQUEST_EDIT_PANEL_FOCUS).get())
+      KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_EDIT_PANEL_FOCUS).get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(createRequestEditPanelFocusControl())
               .enable(this);
-      KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_INPUT_FIELD).get())
+      KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(createSelectInputComponentControl())
               .enable(this, editControlPanel);
-      KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_EDIT_PANEL).get())
+      KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_EDIT_PANEL).get())
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(createToggleEditPanelControl())
               .enable(this, editControlPanel);
     }
-    if (settings.useKeyboardNavigation) {
+    if (configuration.useKeyboardNavigation) {
       setupNavigation();
     }
   }
 
   protected final void setupNavigation() {
-    KeyEvents.Builder navigateUp = KeyEvents.builder(settings.shortcuts.keyStroke(NAVIGATE_UP).get())
+    KeyEvents.Builder navigateUp = KeyEvents.builder(configuration.shortcuts.keyStroke(NAVIGATE_UP).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(UP));
-    KeyEvents.Builder navigateDown = KeyEvents.builder(settings.shortcuts.keyStroke(NAVIGATE_DOWN).get())
+    KeyEvents.Builder navigateDown = KeyEvents.builder(configuration.shortcuts.keyStroke(NAVIGATE_DOWN).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(DOWN));
-    KeyEvents.Builder navigateRight = KeyEvents.builder(settings.shortcuts.keyStroke(NAVIGATE_RIGHT).get())
+    KeyEvents.Builder navigateRight = KeyEvents.builder(configuration.shortcuts.keyStroke(NAVIGATE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(RIGHT));
-    KeyEvents.Builder navigateLeft = KeyEvents.builder(settings.shortcuts.keyStroke(NAVIGATE_LEFT).get())
+    KeyEvents.Builder navigateLeft = KeyEvents.builder(configuration.shortcuts.keyStroke(NAVIGATE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new Navigate(LEFT));
     navigateUp.enable(this);
@@ -966,10 +966,10 @@ public class EntityPanel extends JPanel {
       editControlPanel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
       editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
       editControlPanel.addMouseListener(new ActivateOnMouseClickListener());
-      if (settings.includeControls) {
+      if (configuration.includeControls) {
         JComponent controlComponent = createControlComponent(createControls());
         if (controlComponent != null) {
-          editControlPanel.add(controlComponent, settings.controlComponentConstraints);
+          editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
         }
       }
       updateEditPanelState();
@@ -1004,7 +1004,7 @@ public class EntityPanel extends JPanel {
   }
 
   final <T extends PanelLayout> T panelLayout() {
-    return (T) settings.panelLayout;
+    return (T) configuration.panelLayout;
   }
 
   static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
@@ -1045,12 +1045,12 @@ public class EntityPanel extends JPanel {
   }
 
   private boolean horizontalControlLayout() {
-    return settings.controlComponentConstraints.equals(BorderLayout.SOUTH) ||
-            settings.controlComponentConstraints.equals(BorderLayout.NORTH);
+    return configuration.controlComponentConstraints.equals(BorderLayout.SOUTH) ||
+            configuration.controlComponentConstraints.equals(BorderLayout.NORTH);
   }
 
   private void setupToggleEditPanelControl() {
-    if (containsTablePanel() && containsEditPanel() && settings.includeToggleEditPanelControl) {
+    if (containsTablePanel() && containsEditPanel() && configuration.includeToggleEditPanelControl) {
       tablePanel.addToolBarControls(Controls.builder()
               .control(createToggleEditPanelControl())
               .build());
@@ -1238,7 +1238,7 @@ public class EntityPanel extends JPanel {
   /**
    * Contains configuration settings for a {@link EntityPanel} which must be set before the panel is initialized.
    */
-  public static final class Settings {
+  public static final class Config {
 
     private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
 
@@ -1250,25 +1250,25 @@ public class EntityPanel extends JPanel {
     private boolean includeControls = INCLUDE_CONTROLS.get();
     private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 
-    private Settings() {
+    private Config() {
       Stream.of(KeyboardShortcut.values()).forEach(shortcuts::keyStroke);
     }
 
     /**
      * @param panelLayout the panel layout
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings panelLayout(PanelLayout panelLayout) {
+    public Config panelLayout(PanelLayout panelLayout) {
       this.panelLayout = requireNonNull(panelLayout);
       return this;
     }
 
     /**
      * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
-     * @return this Settings instance
+     * @return this Config instance
      * @see #TOOLBAR_CONTROLS
      */
-    public Settings toolbarControls(boolean toolbarControls) {
+    public Config toolbarControls(boolean toolbarControls) {
       this.toolbarControls = toolbarControls;
       return this;
     }
@@ -1293,10 +1293,10 @@ public class EntityPanel extends JPanel {
      * etc.
      * </pre>
      * @param controlComponentConstraints the controls component layout constraints (BorderLayout constraints)
-     * @return this Settings instance
+     * @return this Config instance
      * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
      */
-    public Settings controlComponentConstraints(String controlComponentConstraints) {
+    public Config controlComponentConstraints(String controlComponentConstraints) {
       switch (requireNonNull(controlComponentConstraints)) {
         case BorderLayout.SOUTH:
         case BorderLayout.NORTH:
@@ -1312,36 +1312,36 @@ public class EntityPanel extends JPanel {
 
     /**
      * @param includeToggleEditPanelControl true if a control for toggling the edit panel should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
+    public Config includeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
       this.includeToggleEditPanelControl = includeToggleEditPanelControl;
       return this;
     }
 
     /**
      * @param includeControls true if the edit an table panel controls should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeControls(boolean includeControls) {
+    public Config includeControls(boolean includeControls) {
       this.includeControls = includeControls;
       return this;
     }
 
     /**
      * @param useKeyboardNavigation true if keyboard navigation should be enabled
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings useKeyboardNavigation(boolean useKeyboardNavigation) {
+    public Config useKeyboardNavigation(boolean useKeyboardNavigation) {
       this.useKeyboardNavigation = useKeyboardNavigation;
       return this;
     }
 
     /**
      * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
+    public Config keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
       requireNonNull(shortcuts).accept(this.shortcuts);
       return this;
     }

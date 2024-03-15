@@ -13,7 +13,7 @@ import java.awt.Dimension;
 public final class InvoiceLineTablePanel extends EntityTablePanel {
 
   public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, settings -> settings
+    super(tableModel, config -> config
             .includeSouthPanel(false)
             .includeConditionPanel(false)
             .editable(attributes -> attributes.remove(InvoiceLine.INVOICE_FK)));

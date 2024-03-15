@@ -351,7 +351,7 @@ public class EntityTablePanel extends JPanel {
   private final Map<TableControl, Value<Control>> controls = createControlsMap();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
-  private final Settings settings;
+  private final Config configuration;
   private final SwingEntityTableModel tableModel;
   private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
   private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
@@ -379,21 +379,21 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the SwingEntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(tableModel, s -> {});
+    this(tableModel, c -> {});
   }
 
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the SwingEntityTableModel instance
-   * @param settings provides access to the table panel settings
+   * @param configuration provides access to the table panel configuration
    */
-  public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Settings> settings) {
+  public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionRefreshControl = createConditionRefreshControl();
     this.refreshButtonToolBar = createRefreshButtonToolBar();
-    this.settings = new Settings(tableModel);
+    this.configuration = new Config(tableModel);
     this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
-    requireNonNull(settings).accept(this.settings);
+    requireNonNull(configuration).accept(this.configuration);
   }
 
   /**
@@ -524,7 +524,7 @@ public class EntityTablePanel extends JPanel {
    * Allows the user to select one of the available search condition panels
    */
   public final void selectConditionPanel() {
-    if (settings.includeConditionPanel) {
+    if (configuration.includeConditionPanel) {
       selectConditionPanel(conditionPanel, conditionPanelScrollPane, conditionPanel.advanced(),
               conditionPanelVisibleState, tableModel, this, FrameworkMessages.selectSearchField());
     }
@@ -534,7 +534,7 @@ public class EntityTablePanel extends JPanel {
    * Allows the user to select one of the available filter condition panels
    */
   public final void selectFilterPanel() {
-    if (settings.includeFilterPanel) {
+    if (configuration.includeFilterPanel) {
       selectConditionPanel(table.filterPanel(), filterPanelScrollPane, table.filterPanel().advanced(),
               filterPanelVisibleState, tableModel, this, FrameworkMessages.selectFilterField());
     }
@@ -661,7 +661,7 @@ public class EntityTablePanel extends JPanel {
         setupStandardControls();
         setupControls();
         addTablePopupMenu();
-        layoutPanel(tablePanel, settings.includeSouthPanel ? initializeSouthPanel() : null);
+        layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisible(conditionPanelVisibleState.get());
         setFilterPanelVisible(filterPanelVisibleState.get());
         setSummaryPanelVisible(summaryPanelVisibleState.get());
@@ -686,9 +686,9 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
-   * Not called if the south panel has been disabled via {@link Settings#includeSouthPanel(boolean)}.
+   * Not called if the south panel has been disabled via {@link Config#includeSouthPanel(boolean)}.
    * @return the south panel, or null if no south panel should be included
-   * @see Settings#includeSouthPanel(boolean)
+   * @see Config#includeSouthPanel(boolean)
    */
   protected JPanel initializeSouthPanel() {
     return new SouthPanel();
@@ -696,32 +696,32 @@ public class EntityTablePanel extends JPanel {
 
   protected void setupKeyboardActions() {
     control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.PRINT).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(PRINT).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(PRINT).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
@@ -815,14 +815,14 @@ public class EntityTablePanel extends JPanel {
       popupControls.add(control);
       separatorRequired.set(true);
     });
-    if (settings.includeConditionPanel && conditionPanel != null) {
+    if (configuration.includeConditionPanel && conditionPanel != null) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
       addConditionControls(popupControls);
       separatorRequired.set(true);
     }
-    if (settings.includeFilterPanel) {
+    if (configuration.includeFilterPanel) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1024,7 +1024,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
-    settings.editable.get().stream()
+    configuration.editable.get().stream()
             .map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
             .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelected(attributeDefinition.attribute()))
@@ -1076,7 +1076,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createColumnSelectionControl() {
-    return settings.columnSelection == ColumnSelection.DIALOG ?
+    return configuration.columnSelection == ColumnSelection.DIALOG ?
             table.createSelectColumnsControl() : table.createToggleColumnsControls();
   }
 
@@ -1191,7 +1191,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeEditSelectedControls() {
-    return !settings.editable.empty() &&
+    return !configuration.editable.empty() &&
             !tableModel.editModel().readOnly().get() &&
             tableModel.editModel().updateEnabled().get();
   }
@@ -1234,7 +1234,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTableConditionPanel<Attribute<?>> createConditionPanel() {
-    return settings.includeConditionPanel ? filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), settings.conditionPanelFactory) : null;
+    return configuration.includeConditionPanel ? filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), configuration.conditionPanelFactory) : null;
   }
 
   private StatusPanel statusPanel() {
@@ -1246,14 +1246,14 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void bindEvents() {
-    if (settings.includeEntityMenu) {
+    if (configuration.includeEntityMenu) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .action(Control.control(this::showEntityMenu))
               .enable(table);
     }
     control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
-            KeyEvents.builder(settings.shortcuts.keyStroke(DELETE_SELECTED).get())
+            KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE_SELECTED).get())
                     .action(control)
                     .enable(table));
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
@@ -1272,7 +1272,7 @@ public class EntityTablePanel extends JPanel {
         }
       });
     }
-    if (settings.includeFilterPanel) {
+    if (configuration.includeFilterPanel) {
       table.filterPanel().addFocusGainedListener(table::scrollToColumn);
       table.filterPanel().advanced().addDataListener(advanced -> {
         if (filterPanelVisibleState.get()) {
@@ -1349,7 +1349,7 @@ public class EntityTablePanel extends JPanel {
     if (includeEditSelectedControls()) {
       controls.get(TableControl.EDIT_SELECTED).mapNull(this::createEditSelectedControls);
     }
-    if (settings.includeClearControl) {
+    if (configuration.includeClearControl) {
       controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
     }
     controls.get(TableControl.REFRESH).mapNull(this::createRefreshControl);
@@ -1362,12 +1362,12 @@ public class EntityTablePanel extends JPanel {
     if (summaryPanelScrollPane != null) {
       controls.get(TableControl.TOGGLE_SUMMARY_PANEL).mapNull(this::createToggleSummaryPanelControl);
     }
-    if (settings.includeConditionPanel && conditionPanel != null) {
+    if (configuration.includeConditionPanel && conditionPanel != null) {
       controls.get(TableControl.CONDITION_PANEL_VISIBLE).mapNull(this::createConditionPanelControl);
       controls.get(TableControl.TOGGLE_CONDITION_PANEL).mapNull(this::createToggleConditionPanelControl);
       controls.get(TableControl.SELECT_CONDITION_PANEL).mapNull(this::createSelectConditionPanelControl);
     }
-    if (settings.includeFilterPanel) {
+    if (configuration.includeFilterPanel) {
       controls.get(TableControl.FILTER_PANEL_VISIBLE).mapNull(this::createFilterPanelControl);
       controls.get(TableControl.TOGGLE_FILTER_PANEL).mapNull(this::createToggleFilterPanelControl);
       controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(this::createSelectFilterPanelControl);
@@ -1376,7 +1376,7 @@ public class EntityTablePanel extends JPanel {
     controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
     controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
     controls.get(TableControl.COPY_TABLE_DATA).mapNull(this::createCopyControls);
-    if (settings.includeSelectionModeControl) {
+    if (configuration.includeSelectionModeControl) {
       controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
     }
     controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
@@ -1399,7 +1399,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void addTablePopupMenu() {
-    if (!settings.includePopupMenu) {
+    if (!configuration.includePopupMenu) {
       return;
     }
     Controls popupControls = createPopupMenuControls(additionalPopupControls);
@@ -1410,7 +1410,7 @@ public class EntityTablePanel extends JPanel {
     JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     tableScrollPane.setComponentPopupMenu(popupMenu);
-    KeyEvents.builder(settings.shortcuts.keyStroke(DISPLAY_POPUP_MENU).get())
+    KeyEvents.builder(configuration.shortcuts.keyStroke(DISPLAY_POPUP_MENU).get())
             .action(Control.control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
@@ -1699,7 +1699,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * Contains configuration settings for a {@link EntityTablePanel} which must be set before the panel is initialized.
    */
-  public static final class Settings {
+  public static final class Config {
 
     private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
     private final ValueSet<Attribute<?>> editable;
@@ -1716,7 +1716,7 @@ public class EntityTablePanel extends JPanel {
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 
-    private Settings(SwingEntityTableModel tableModel) {
+    private Config(SwingEntityTableModel tableModel) {
       this.conditionPanelFactory = new EntityConditionPanelFactory(requireNonNull(tableModel).entityDefinition());
       this.editable = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
               .map(AttributeDefinition::attribute)
@@ -1725,116 +1725,116 @@ public class EntityTablePanel extends JPanel {
       Stream.of(KeyboardShortcut.values()).forEach(shortcuts::keyStroke);
     }
 
-    public Settings conditionPanelFactory(EntityConditionPanelFactory conditionPanelFactory) {
+    public Config conditionPanelFactory(EntityConditionPanelFactory conditionPanelFactory) {
       this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
       return this;
     }
 
     /**
      * @param includeSouthPanel true if the south panel should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeSouthPanel(boolean includeSouthPanel) {
+    public Config includeSouthPanel(boolean includeSouthPanel) {
       this.includeSouthPanel = includeSouthPanel;
       return this;
     }
 
     /**
      * @param includeConditionPanel true if the condition panel should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeConditionPanel(boolean includeConditionPanel) {
+    public Config includeConditionPanel(boolean includeConditionPanel) {
       this.includeConditionPanel = includeConditionPanel;
       return this;
     }
 
     /**
      * @param includeFilterPanel true if the filter panel should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeFilterPanel(boolean includeFilterPanel) {
+    public Config includeFilterPanel(boolean includeFilterPanel) {
       this.includeFilterPanel = includeFilterPanel;
       return this;
     }
 
     /**
      * @param includeSummaryPanel true if the summary panel should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeSummaryPanel(boolean includeSummaryPanel) {
+    public Config includeSummaryPanel(boolean includeSummaryPanel) {
       this.includeSummaryPanel = includeSummaryPanel;
       return this;
     }
 
     /**
      * @param includePopupMenu true if a popup menu should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includePopupMenu(boolean includePopupMenu) {
+    public Config includePopupMenu(boolean includePopupMenu) {
       this.includePopupMenu = includePopupMenu;
       return this;
     }
 
     /**
      * @param includeClearControl true if a 'Clear' control should be included in the popup menu
-     * @return this Settings instance
+     * @return this Config instance
      * @throws IllegalStateException in case the panel has already been initialized
      */
-    public Settings includeClearControl(boolean includeClearControl) {
+    public Config includeClearControl(boolean includeClearControl) {
       this.includeClearControl = includeClearControl;
       return this;
     }
 
     /**
      * @param includeLimitMenu true if a popup menu for configuring the table model limit should be included
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeLimitMenu(boolean includeLimitMenu) {
+    public Config includeLimitMenu(boolean includeLimitMenu) {
       this.includeLimitMenu = includeLimitMenu;
       return this;
     }
 
     /**
      * @param includeEntityMenu true a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.<br>
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeEntityMenu(boolean includeEntityMenu) {
+    public Config includeEntityMenu(boolean includeEntityMenu) {
       this.includeEntityMenu = includeEntityMenu;
       return this;
     }
 
     /**
      * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings includeSelectionModeControl(boolean includeSelectionModeControl) {
+    public Config includeSelectionModeControl(boolean includeSelectionModeControl) {
       this.includeSelectionModeControl = includeSelectionModeControl;
       return this;
     }
 
     /**
      * @param columnSelection specifies how columns are selected
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings columnSelection(ColumnSelection columnSelection) {
+    public Config columnSelection(ColumnSelection columnSelection) {
       this.columnSelection = requireNonNull(columnSelection);
       return this;
     }
 
     /**
      * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
+    public Config keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
       requireNonNull(shortcuts).accept(this.shortcuts);
       return this;
     }
 
     /**
      * @param attributes provides this tables editable attribute value set
-     * @return this Settings instance
+     * @return this Config instance
      */
-    public Settings editable(Consumer<ValueSet<Attribute<?>>> attributes) {
+    public Config editable(Consumer<ValueSet<Attribute<?>>> attributes) {
       requireNonNull(attributes).accept(this.editable);
       return this;
     }
@@ -1912,7 +1912,7 @@ public class EntityTablePanel extends JPanel {
 
     private TablePanel() {
       super(new BorderLayout());
-      if (settings.includeConditionPanel) {
+      if (configuration.includeConditionPanel) {
         if (conditionPanel == null) {
           conditionPanel = createConditionPanel();
         }
@@ -1920,14 +1920,14 @@ public class EntityTablePanel extends JPanel {
         add(conditionPanelScrollPane, BorderLayout.NORTH);
       }
       JPanel tableSouthPanel = new JPanel(new BorderLayout());
-      if (settings.includeSummaryPanel) {
+      if (configuration.includeSummaryPanel) {
         summaryPanel = createSummaryPanel();
         if (summaryPanel != null) {
           summaryPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
           tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
         }
       }
-      if (settings.includeFilterPanel) {
+      if (configuration.includeFilterPanel) {
         filterPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, table.filterPanel());
         tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
       }
@@ -1997,7 +1997,7 @@ public class EntityTablePanel extends JPanel {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });
-      if (settings.includeLimitMenu) {
+      if (configuration.includeLimitMenu) {
         setComponentPopupMenu(createPopupMenu());
       }
       Runnable statusListener = this::updateStatusMessage;

@@ -169,7 +169,7 @@ public final class NotesDemo {
   private static final class NoteTablePanel extends EntityTablePanel  {
 
     private NoteTablePanel(NoteTableModel tableModel) {
-      super(tableModel, settings -> settings
+      super(tableModel, config -> config
               // Exclude the Note.UPDATED attribute from the Edit popup menu since
               // the value is set automatically and shouldn't be editable via the UI.
               // Note.CREATED is excluded by default since it is not updatable.

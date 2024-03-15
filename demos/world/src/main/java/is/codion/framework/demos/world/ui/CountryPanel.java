@@ -17,7 +17,7 @@ final class CountryPanel extends EntityPanel {
     super(countryModel,
             new CountryEditPanel(countryModel.editModel()),
             new CountryTablePanel(countryModel.tableModel()),
-            settings -> settings.panelLayout(splitPaneResizeWeight(0.7)));
+            config -> config.panelLayout(splitPaneResizeWeight(0.7)));
 
     SwingEntityModel cityModel = countryModel.detailModel(City.TYPE);
     EntityPanel cityPanel = new EntityPanel(cityModel,

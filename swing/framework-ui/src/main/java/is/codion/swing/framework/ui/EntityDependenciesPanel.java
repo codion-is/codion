@@ -118,8 +118,7 @@ public final class EntityDependenciesPanel extends JPanel {
 
   private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
     SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, connectionProvider);
-    EntityTablePanel tablePanel = new EntityTablePanel(tableModel, settings -> settings
-            .includeConditionPanel(false)) {
+    EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditionPanel(false)) {
       @Override
       protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
         Controls popupMenuControls = Controls.controls();
