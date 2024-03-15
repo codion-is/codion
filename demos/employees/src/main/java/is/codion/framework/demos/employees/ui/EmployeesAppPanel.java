@@ -72,8 +72,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
     SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, applicationModel().connectionProvider());
     tableModel.editModel().readOnly().set(true);
-    EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-    tablePanel.configure().includePopupMenu(false);
+    EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
+            settings -> settings.includePopupMenu(false));
 
     Dialogs.componentDialog(tablePanel.initialize())
             .owner(this)

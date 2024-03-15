@@ -249,13 +249,12 @@ public class EntityPanel extends JPanel {
   private final JPanel editControlPanel = new JPanel(borderLayout());
   private final JPanel editControlTablePanel = new JPanel(borderLayout());
   private final Event<EntityPanel> activateEvent = Event.event();
-  private final PanelLayout panelLayout;
   private final DetailController detailController;
   private final Value<String> caption;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
-  private final Settings settings = new Settings();
+  private final Settings settings;
 
   private String description;
   private EntityPanel parentPanel;
@@ -346,13 +345,14 @@ public class EntityPanel extends JPanel {
                      PanelLayout panelLayout) {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
+    this.settings = new Settings();
+    settings.panelLayout = panelLayout;//todo
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
     this.caption = Value.value(defaultCaption, defaultCaption);
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
-    this.panelLayout = requireNonNull(panelLayout);
     this.detailController = panelLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
@@ -364,8 +364,8 @@ public class EntityPanel extends JPanel {
     if (detailPanels != null) {
       Utilities.updateUI(detailPanels);
     }
-    if (panelLayout != null) {
-      panelLayout.updateUI();
+    if (settings != null) {
+      settings.panelLayout.updateUI();
     }
   }
 
@@ -1003,7 +1003,7 @@ public class EntityPanel extends JPanel {
   }
 
   final <T extends PanelLayout> T panelLayout() {
-    return (T) panelLayout;
+    return (T) settings.panelLayout;
   }
 
   static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
@@ -1050,7 +1050,7 @@ public class EntityPanel extends JPanel {
 
   private void setupToggleEditPanelControl() {
     if (containsTablePanel() && containsEditPanel() && settings.includeToggleEditPanelControl) {
-      tablePanel.configure().addToolBarControls(Controls.builder()
+      tablePanel.addToolBarControls(Controls.builder()
               .control(createToggleEditPanelControl())
               .build());
     }
@@ -1241,6 +1241,7 @@ public class EntityPanel extends JPanel {
 
     private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
+    private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
     private boolean toolbarControls = TOOLBAR_CONTROLS.get();
     private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
     private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
@@ -1252,6 +1253,11 @@ public class EntityPanel extends JPanel {
       Value.Validator<KeyStroke> keyboardShortcutValidator = keystroke -> throwIfInitialized();
       Stream.of(KeyboardShortcut.values()).forEach(keyboardShortcut ->
               keyboardShortcuts.keyStroke(keyboardShortcut).addValidator(keyboardShortcutValidator));
+    }
+
+    public Settings panelLayout(PanelLayout panelLayout) {
+      this.panelLayout = requireNonNull(panelLayout);
+      return this;
     }
 
     /**

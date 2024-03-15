@@ -169,12 +169,12 @@ public final class NotesDemo {
   private static final class NoteTablePanel extends EntityTablePanel  {
 
     private NoteTablePanel(NoteTableModel tableModel) {
-      super(tableModel);
+      super(tableModel, settings -> settings
+              // Exclude the Note.UPDATED attribute from the Edit popup menu since
+              // the value is set automatically and shouldn't be editable via the UI.
+              // Note.CREATED is excluded by default since it is not updatable.
+              .editableAttributes(attributes -> attributes.remove(Note.UPDATED)));
       table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-      // Exclude the Note.UPDATED attribute from the Edit popup menu since
-      // the value is set automatically and shouldn't be editable via the UI.
-      // Note.CREATED is excluded by default since it is not updatable.
-      configure().editableAttributes().remove(Note.UPDATED);
     }
   }
 

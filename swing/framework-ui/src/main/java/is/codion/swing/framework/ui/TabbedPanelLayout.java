@@ -233,9 +233,9 @@ public final class TabbedPanelLayout implements PanelLayout {
       Controls controls = Controls.controls();
       detailController.toggleDetailControl().ifPresent(controls::add);
       if (controls.notEmpty()) {
-        tablePanel.configure().addToolBarControls(controls);
+        tablePanel.addToolBarControls(controls);
       }
-      detailController.detailControls().ifPresent(tablePanel.configure()::addPopupMenuControls);
+      detailController.detailControls().ifPresent(tablePanel::addPopupMenuControls);
     }
   }
 

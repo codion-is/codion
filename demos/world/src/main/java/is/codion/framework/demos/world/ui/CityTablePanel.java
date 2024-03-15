@@ -21,8 +21,8 @@ import java.util.List;
 final class CityTablePanel extends ChartTablePanel {
 
   CityTablePanel(CityTableModel tableModel) {
-    super(tableModel, tableModel.chartDataset(), "Cities");
-    configure().editableAttributes().remove(City.LOCATION);
+    super(tableModel, tableModel.chartDataset(), "Cities",
+            settings -> settings.editableAttributes(attributes -> attributes.remove(City.LOCATION)));
   }
 
   @Override

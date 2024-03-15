@@ -13,8 +13,7 @@ import java.util.List;
 final class ContinentTablePanel extends EntityTablePanel {
 
   ContinentTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-    configure().includeSouthPanel(false);
+    super(tableModel, settings -> settings.includeSouthPanel(false));
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
 
