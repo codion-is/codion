@@ -54,7 +54,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -356,11 +355,12 @@ public class EntityTablePanel extends JPanel {
   private final Settings settings;
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
-  private final JPanel southPanel = new JPanel(new BorderLayout());
   private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
   private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
           ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
           ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
+  private final Control conditionRefreshControl;
+  private final JToolBar refreshButtonToolBar;
 
   private FilteredTable<Entity, Attribute<?>> table;
   private StatusPanel statusPanel;
@@ -371,9 +371,7 @@ public class EntityTablePanel extends JPanel {
   private JScrollPane filterPanelScrollPane;
   private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
   private JScrollPane summaryPanelScrollPane;
-  private JPanel tablePanel;
-  private JToolBar refreshButtonToolBar;
-  private Control conditionRefreshControl;
+  private TablePanel tablePanel;
 
   private boolean initialized = false;
 
@@ -393,6 +391,8 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionPanelFactory = conditionPanelFactory;
+    this.conditionRefreshControl = createConditionRefreshControl();
+    this.refreshButtonToolBar = createRefreshButtonToolBar();
     this.settings = new Settings();
     this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
   }
@@ -685,22 +685,7 @@ public class EntityTablePanel extends JPanel {
    * @see Settings#includeSouthPanel(boolean)
    */
   protected JPanel initializeSouthPanel() {
-    JPanel searchFieldPanel = Components.panel(new GridBagLayout())
-            .add(table.searchField(), createHorizontalFillConstraints())
-            .build();
-    JSplitPane southPanelSplitPane = Components.splitPane()
-            .continuousLayout(true)
-            .leftComponent(searchFieldPanel)
-            .rightComponent(statusPanel())
-            .build();
-    southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
-    southPanel.add(refreshButtonToolBar(), BorderLayout.WEST);
-    JToolBar southToolBar = createToolBar();
-    if (southToolBar != null) {
-      southPanel.add(southToolBar, BorderLayout.EAST);
-    }
-
-    return southPanel;
+    return new SouthPanel();
   }
 
   protected void setupKeyboardActions() {
@@ -1229,9 +1214,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private JToolBar createRefreshButtonToolBar() {
-    if (conditionRefreshControl == null) {
-      conditionRefreshControl = createConditionRefreshControl();
-    }
     KeyEvents.builder(VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(conditionRefreshControl)
@@ -1273,24 +1255,6 @@ public class EntityTablePanel extends JPanel {
     }
 
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
-  }
-
-  private JPanel createTablePanel() {
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(tableScrollPane, BorderLayout.CENTER);
-    if (conditionPanelScrollPane != null) {
-      panel.add(conditionPanelScrollPane, BorderLayout.NORTH);
-    }
-    JPanel tableSouthPanel = new JPanel(new BorderLayout());
-    if (summaryPanelScrollPane != null) {
-      tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
-    }
-    if (filterPanelScrollPane != null) {
-      tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
-    }
-    panel.add(tableSouthPanel, BorderLayout.SOUTH);
-
-    return panel;
   }
 
   private StatusPanel statusPanel() {
@@ -1363,7 +1327,7 @@ public class EntityTablePanel extends JPanel {
   private void setConditionPanelVisible(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
-      refreshButtonToolBar().setVisible(refreshButtonVisible.isEqualTo(RefreshButtonVisible.ALWAYS) || visible);
+      refreshButtonToolBar.setVisible(refreshButtonVisible.isEqualTo(RefreshButtonVisible.ALWAYS) || visible);
       revalidate();
     }
   }
@@ -1383,23 +1347,12 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void setRefreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
-    refreshButtonToolBar().setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get());
-  }
-
-  private JToolBar refreshButtonToolBar() {
-    if (refreshButtonToolBar == null) {
-      refreshButtonToolBar = createRefreshButtonToolBar();
-    }
-
-    return refreshButtonToolBar;
+    refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get());
   }
 
   private void setupComponents() {
     if (table == null) {
       table = createTable();
-    }
-    if (conditionRefreshControl == null) {
-      conditionRefreshControl = createConditionRefreshControl();
     }
     if (conditionPanel == null) {
       conditionPanel = createConditionPanel(conditionPanelFactory);
@@ -1414,9 +1367,8 @@ public class EntityTablePanel extends JPanel {
       summaryPanel = createSummaryPanel();
       summaryPanelScrollPane = createSummaryPanelScrollPane();
     }
-    tablePanel = createTablePanel();
+    tablePanel = new TablePanel();
     tableModel.columnModel().columns().forEach(this::configureColumn);
-    refreshButtonToolBar();
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
     filterPanelVisibleState.addValidator(new PanelAvailableValidator(filterPanel, "filter"));
     summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
@@ -2051,6 +2003,44 @@ public class EntityTablePanel extends JPanel {
       }
 
       return builder.toString();
+    }
+  }
+
+  private final class TablePanel extends JPanel {
+
+    private TablePanel() {
+      super(new BorderLayout());
+      add(tableScrollPane, BorderLayout.CENTER);
+      if (conditionPanelScrollPane != null) {
+        add(conditionPanelScrollPane, BorderLayout.NORTH);
+      }
+      JPanel tableSouthPanel = new JPanel(new BorderLayout());
+      if (summaryPanelScrollPane != null) {
+        tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
+      }
+      if (filterPanelScrollPane != null) {
+        tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
+      }
+      add(tableSouthPanel, BorderLayout.SOUTH);
+    }
+  }
+
+  private final class SouthPanel extends JPanel {
+
+    private SouthPanel() {
+      super(new BorderLayout());
+      add(Components.splitPane()
+              .continuousLayout(true)
+              .leftComponent(Components.panel(new GridBagLayout())
+                      .add(table.searchField(), createHorizontalFillConstraints())
+                      .build())
+              .rightComponent(statusPanel())
+              .build(), BorderLayout.CENTER);
+      add(refreshButtonToolBar, BorderLayout.WEST);
+      JToolBar southToolBar = createToolBar();
+      if (southToolBar != null) {
+        add(southToolBar, BorderLayout.EAST);
+      }
     }
   }
 
