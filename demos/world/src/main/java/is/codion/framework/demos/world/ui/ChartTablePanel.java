@@ -27,6 +27,7 @@ import org.jfree.data.general.PieDataset;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
@@ -40,7 +41,12 @@ abstract class ChartTablePanel extends EntityTablePanel {
 
   protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
                             String chartTitle) {
-    super(tableModel);
+    this(tableModel, chartDataset, chartTitle, config -> {});
+  }
+
+  protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
+                            String chartTitle, Consumer<Config> configuration) {
+    super(tableModel, configuration);
     setPreferredSize(new Dimension(200, 200));
     chartPanel = createPieChartPanel(this, chartDataset, chartTitle);
   }

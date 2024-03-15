@@ -259,8 +259,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   private EntityPanel createPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) throws Exception {
-    return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, PanelLayout.class)
-            .newInstance(entityModel, editPanel, tablePanel, panelLayout);
+    Consumer<EntityPanel.Config> configure = config -> config.panelLayout(panelLayout);
+
+    return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, Consumer.class)
+            .newInstance(entityModel, editPanel, tablePanel, configure);
   }
 
   private EntityEditPanel createEditPanel(SwingEntityEditModel editModel) {

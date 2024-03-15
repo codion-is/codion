@@ -36,8 +36,9 @@ import java.awt.Dimension;
 final class CountryTablePanel extends EntityTablePanel {
 
   CountryTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-    configure().editableAttributes().remove(Country.CAPITAL_FK);
+    super(tableModel, config ->
+            config.editable(attributes ->
+                    attributes.remove(Country.CAPITAL_FK)));
   }
 
   @Override

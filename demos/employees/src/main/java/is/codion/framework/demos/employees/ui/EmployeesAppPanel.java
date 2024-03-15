@@ -67,7 +67,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
     EntityPanel departmentPanel = new EntityPanel(departmentModel,
             new DepartmentEditPanel(departmentModel.editModel()),
             new DepartmentTablePanel(departmentModel.tableModel()),
-            splitPaneResizeWeight(0.4));
+            config -> config.panelLayout(splitPaneResizeWeight(0.4)));
     departmentPanel.addDetailPanel(employeePanel);
 
     return singletonList(departmentPanel);
@@ -87,8 +87,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
     SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, applicationModel().connectionProvider());
     tableModel.editModel().readOnly().set(true);
-    EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-    tablePanel.configure().includePopupMenu(false);
+    EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
+            config -> config.includePopupMenu(false));
 
     Dialogs.componentDialog(tablePanel.initialize())
             .owner(this)

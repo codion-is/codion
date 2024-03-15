@@ -22,12 +22,16 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Map;
@@ -36,6 +40,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
@@ -126,14 +131,35 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
     componentPanel.components().forEach((column, panel) -> panel.advanced().set(advancedView));
   }
 
-  private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(
-          FilteredTableColumnModel<C> columnModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+  private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(FilteredTableColumnModel<C> columnModel,
+                                                                   ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     return columnModel.columns().stream()
             .map(column -> conditionModel.conditionModels().get(column.getIdentifier()))
             .filter(Objects::nonNull)
-            .map(conditionPanelFactory::createConditionPanel)
+            .map(columnConditionModel -> createConditionPanel(conditionPanelFactory, columnConditionModel,
+                    columnModel.column(columnConditionModel.columnIdentifier())))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .collect(Collectors.toMap(conditionPanel -> conditionPanel.model().columnIdentifier(), Function.identity()));
+  }
+
+  private Optional<ColumnConditionPanel<C, ?>> createConditionPanel(ColumnConditionPanel.Factory<C> conditionPanelFactory,
+                                                                    ColumnConditionModel<C, ?> columnConditionModel,
+                                                                    FilteredTableColumn<C> column) {
+    return conditionPanelFactory.createConditionPanel(columnConditionModel)
+            .map(conditionPanel -> configureHorizontalAlignment(conditionPanel, column.getCellRenderer()));
+  }
+
+  private ColumnConditionPanel<C, ?> configureHorizontalAlignment(ColumnConditionPanel<C, ?> columnConditionPanel,
+                                                                  TableCellRenderer cellRenderer) {
+    if (cellRenderer instanceof DefaultTableCellRenderer) {
+      int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+      Stream.of(columnConditionPanel.equalField(), columnConditionPanel.lowerBoundField(), columnConditionPanel.upperBoundField())
+              .filter(JTextField.class::isInstance)
+              .map(JTextField.class::cast)
+              .forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
+    }
+
+    return columnConditionPanel;
   }
 }

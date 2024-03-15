@@ -22,6 +22,7 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.ContinentModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 
@@ -43,9 +44,11 @@ final class ContinentPanel extends EntityPanel {
 
   ContinentPanel(SwingEntityModel continentModel) {
     super(continentModel, new ContinentTablePanel(continentModel.tableModel()),
-            new ContinentPanelLayout());
-    countryPanel = new EntityPanel(continentModel.detailModel(Country.TYPE));
-    countryPanel.tablePanel().configure().includeConditionPanel(false);
+            config -> config.panelLayout(new ContinentPanelLayout()));
+    SwingEntityModel countryModel = continentModel.detailModel(Country.TYPE);
+    countryPanel = new EntityPanel(countryModel,
+            new EntityTablePanel(countryModel.tableModel(),
+                    config -> config.includeConditionPanel(false)));
   }
 
   private static final class ContinentPanelLayout implements PanelLayout {

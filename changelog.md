@@ -8,6 +8,7 @@ Codion Change Log
 - DefaultFilteredTableModel bug fixed, did not trigger dataChanged events when removing items by index.
 ### is.codion.swing.common.ui
 - ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
+- FilteredTableConditionPanel, now handles configuring the horizontal alignment of condition text fields according to the column cell renderer.
 ### is.codion.framework.i18n
 - FrameworkMessages, confirm update and confirm insert messages improved.
 - FrameworkMessages, no search results message improved.
@@ -20,6 +21,11 @@ Codion Change Log
 - EntityEditComponentPanel.excludeComponentsFromSelection() replaced with ValueSet based excludeComponentFromSelection().
 - EntityComponents, range validation no longer added to number fields by default.
 - EntityDialogs.DefaultEntityEditDialogBuilder.InputValidator now also uses the entity validator when validating input.
+- EntityTablePanel refactored.
+- EntityTablePanel, settings now configured in a constructor lambda.
+- EntityPanel, settings now configured in a constructor lambda.
+- EntityTablePanel.Settings.editableAttributes() renamed editable().
+- EntityPanel.Settings and EntityTablePanel.Settings renamed Config.
 
 ## 0.17.31
 ### is.codion.common

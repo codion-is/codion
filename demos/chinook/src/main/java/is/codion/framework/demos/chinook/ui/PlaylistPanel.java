@@ -21,7 +21,8 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.TabbedPanelLayout;
+
+import static is.codion.swing.framework.ui.TabbedPanelLayout.splitPaneResizeWeight;
 
 public final class PlaylistPanel extends EntityPanel {
 
@@ -29,7 +30,7 @@ public final class PlaylistPanel extends EntityPanel {
     super(playlistModel,
             new PlaylistEditPanel(playlistModel.editModel()),
             new PlaylistTablePanel(playlistModel.tableModel()),
-            TabbedPanelLayout.splitPaneResizeWeight(0.25));
+            config -> config.panelLayout(splitPaneResizeWeight(0.25)));
 
     SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
     EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,
