@@ -696,32 +696,32 @@ public class EntityTablePanel extends JPanel {
 
   protected void setupKeyboardActions() {
     control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(SELECT_FILTER_PANEL).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     control(TableControl.PRINT).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(PRINT).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(PRINT).get())
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
@@ -1253,7 +1253,7 @@ public class EntityTablePanel extends JPanel {
               .enable(table);
     }
     control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
-            KeyEvents.builder(settings.keyboardShortcuts.keyStroke(DELETE_SELECTED).get())
+            KeyEvents.builder(settings.shortcuts.keyStroke(DELETE_SELECTED).get())
                     .action(control)
                     .enable(table));
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
@@ -1410,7 +1410,7 @@ public class EntityTablePanel extends JPanel {
     JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     tableScrollPane.setComponentPopupMenu(popupMenu);
-    KeyEvents.builder(settings.keyboardShortcuts.keyStroke(DISPLAY_POPUP_MENU).get())
+    KeyEvents.builder(settings.shortcuts.keyStroke(DISPLAY_POPUP_MENU).get())
             .action(Control.control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
@@ -1701,7 +1701,7 @@ public class EntityTablePanel extends JPanel {
    */
   public static final class Settings {
 
-    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+    private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
     private final ValueSet<Attribute<?>> editable;
 
     private EntityConditionPanelFactory conditionPanelFactory;
@@ -1722,7 +1722,7 @@ public class EntityTablePanel extends JPanel {
               .map(AttributeDefinition::attribute)
               .collect(toSet()));
       this.editable.addValidator(new EditMenuAttributeValidator(tableModel));
-      Stream.of(KeyboardShortcut.values()).forEach(keyboardShortcuts::keyStroke);
+      Stream.of(KeyboardShortcut.values()).forEach(shortcuts::keyStroke);
     }
 
     public Settings conditionPanelFactory(EntityConditionPanelFactory conditionPanelFactory) {
@@ -1822,11 +1822,11 @@ public class EntityTablePanel extends JPanel {
     }
 
     /**
-     * @param keyboardShortcuts provides this tables {@link KeyboardShortcuts} instance.
+     * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
      * @return this Settings instance
      */
-    public Settings keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> keyboardShortcuts) {
-      requireNonNull(keyboardShortcuts).accept(this.keyboardShortcuts);
+    public Settings keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
+      requireNonNull(shortcuts).accept(this.shortcuts);
       return this;
     }
 
