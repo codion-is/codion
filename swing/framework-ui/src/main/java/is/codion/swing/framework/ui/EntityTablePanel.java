@@ -379,7 +379,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the SwingEntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(tableModel, settings -> {});
+    this(tableModel, s -> {});
   }
 
   /**

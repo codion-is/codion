@@ -23,6 +23,7 @@ Codion Change Log
 - EntityDialogs.DefaultEntityEditDialogBuilder.InputValidator now also uses the entity validator when validating input.
 - EntityTablePanel refactored.
 - EntityTablePanel, settings now configured in a constructor lambda.
+- EntityPanel, settings now configured in a constructor lambda.
 
 ## 0.17.31
 ### is.codion.common

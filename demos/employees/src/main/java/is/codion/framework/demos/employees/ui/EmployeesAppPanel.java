@@ -52,7 +52,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
     EntityPanel departmentPanel = new EntityPanel(departmentModel,
             new DepartmentEditPanel(departmentModel.editModel()),
             new DepartmentTablePanel(departmentModel.tableModel()),
-            splitPaneResizeWeight(0.4));
+            settings -> settings.panelLayout(splitPaneResizeWeight(0.4)));
     departmentPanel.addDetailPanel(employeePanel);
 
     return singletonList(departmentPanel);

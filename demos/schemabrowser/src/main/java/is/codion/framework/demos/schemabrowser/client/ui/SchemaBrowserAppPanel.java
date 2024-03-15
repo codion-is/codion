@@ -17,11 +17,12 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.TabbedPanelLayout;
 
 import javax.swing.JTable;
 import java.util.Collections;
 import java.util.List;
+
+import static is.codion.swing.framework.ui.TabbedPanelLayout.splitPaneResizeWeight;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
@@ -38,7 +39,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
     EntityPanel schemaPanel = new EntityPanel(schemaModel,
-            TabbedPanelLayout.splitPaneResizeWeight(0.3));
+            settings -> settings.panelLayout(splitPaneResizeWeight(0.3)));
     EntityPanel tablePanel = new EntityPanel(tableModel);
     EntityPanel columnPanel = new EntityPanel(columnModel);
     EntityPanel constraintPanel = new EntityPanel(constraintModel);

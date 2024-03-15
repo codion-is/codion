@@ -15,10 +15,10 @@ public final class InvoicePanel extends EntityPanel {
     super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
             new EntityTablePanel(invoiceModel.tableModel(), settings -> settings
                     .editableAttributes(attributes -> attributes.remove(Invoice.TOTAL))),
-            TabbedPanelLayout.builder()
+            settings -> settings.panelLayout(TabbedPanelLayout.builder()
                     .includeDetailTabbedPane(false)
                     .includeDetailControls(false)
-                    .build());
+                    .build()));
     addDetailPanel(invoiceLinePanel);
   }
 }

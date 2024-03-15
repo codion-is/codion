@@ -237,6 +237,8 @@ public class EntityPanel extends JPanel {
     NAVIGATE_LEFT
   }
 
+  private static final Consumer<Settings> NO_SETTINGS = s -> {};
+
   /**
    * Specifies the mapping between {@link PanelState} instances: From HIDDEN to EMBEDDED to WINDOW back to HIDDEN
    */
@@ -254,7 +256,7 @@ public class EntityPanel extends JPanel {
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
-  private final Settings settings;
+  private final Settings settings = new Settings();
 
   private String description;
   private EntityPanel parentPanel;
@@ -274,16 +276,16 @@ public class EntityPanel extends JPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(requireNonNull(entityModel), TabbedPanelLayout.builder().build());
+    this(requireNonNull(entityModel), NO_SETTINGS);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
-   * @param panelLayout the detail panel layout
+   * @param settings provides access to the panel settings
    */
-  public EntityPanel(SwingEntityModel entityModel, PanelLayout panelLayout) {
-    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, panelLayout);
+  public EntityPanel(SwingEntityModel entityModel, Consumer<Settings> settings) {
+    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, settings);
   }
 
   /**
@@ -292,17 +294,17 @@ public class EntityPanel extends JPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(requireNonNull(entityModel), editPanel, TabbedPanelLayout.builder().build());
+    this(requireNonNull(entityModel), editPanel, NO_SETTINGS);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
-   * @param panelLayout the detail panel layout
+   * @param settings provides access to the panel settings
    */
-  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, PanelLayout panelLayout) {
-    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, panelLayout);
+  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, Consumer<Settings> settings) {
+    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, settings);
   }
 
   /**
@@ -311,17 +313,17 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel) {
-    this(entityModel, tablePanel, TabbedPanelLayout.builder().build());
+    this(entityModel, tablePanel, NO_SETTINGS);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
-   * @param panelLayout the detail panel layout
+   * @param settings provides access to the panel settings
    */
-  public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, PanelLayout panelLayout) {
-    this(entityModel, null, tablePanel, panelLayout);
+  public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, Consumer<Settings> settings) {
+    this(entityModel, null, tablePanel, settings);
   }
 
   /**
@@ -331,7 +333,7 @@ public class EntityPanel extends JPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
-    this(entityModel, editPanel, tablePanel, TabbedPanelLayout.builder().build());
+    this(entityModel, editPanel, tablePanel, NO_SETTINGS);
   }
 
   /**
@@ -339,21 +341,20 @@ public class EntityPanel extends JPanel {
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    * @param tablePanel the table panel
-   * @param panelLayout the detail panel layout
+   * @param settings provides access to the panel settings
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
-                     PanelLayout panelLayout) {
+                     Consumer<Settings> settings) {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
-    this.settings = new Settings();
-    settings.panelLayout = panelLayout;//todo
+    requireNonNull(settings).accept(this.settings);
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
     this.caption = Value.value(defaultCaption, defaultCaption);
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
-    this.detailController = panelLayout.detailController().orElse(new NullDetailController());
+    this.detailController = this.settings.panelLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -1237,7 +1238,7 @@ public class EntityPanel extends JPanel {
   /**
    * Contains configuration settings for a {@link EntityPanel} which must be set before the panel is initialized.
    */
-  public final class Settings {
+  public static final class Settings {
 
     private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
@@ -1250,11 +1251,13 @@ public class EntityPanel extends JPanel {
     private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 
     private Settings() {
-      Value.Validator<KeyStroke> keyboardShortcutValidator = keystroke -> throwIfInitialized();
-      Stream.of(KeyboardShortcut.values()).forEach(keyboardShortcut ->
-              keyboardShortcuts.keyStroke(keyboardShortcut).addValidator(keyboardShortcutValidator));
+      Stream.of(KeyboardShortcut.values()).forEach(keyboardShortcuts::keyStroke);
     }
 
+    /**
+     * @param panelLayout the panel layout
+     * @return this Settings instance
+     */
     public Settings panelLayout(PanelLayout panelLayout) {
       this.panelLayout = requireNonNull(panelLayout);
       return this;
@@ -1263,11 +1266,9 @@ public class EntityPanel extends JPanel {
     /**
      * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
      * @return this Settings instance
-     * @throws IllegalStateException if the panel has been initialized
      * @see #TOOLBAR_CONTROLS
      */
     public Settings toolbarControls(boolean toolbarControls) {
-      throwIfInitialized();
       this.toolbarControls = toolbarControls;
       return this;
     }
@@ -1293,11 +1294,9 @@ public class EntityPanel extends JPanel {
      * </pre>
      * @param controlComponentConstraints the controls component layout constraints (BorderLayout constraints)
      * @return this Settings instance
-     * @throws IllegalStateException if the panel has been initialized
      * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
      */
     public Settings controlComponentConstraints(String controlComponentConstraints) {
-      throwIfInitialized();
       switch (requireNonNull(controlComponentConstraints)) {
         case BorderLayout.SOUTH:
         case BorderLayout.NORTH:
@@ -1314,10 +1313,8 @@ public class EntityPanel extends JPanel {
     /**
      * @param includeToggleEditPanelControl true if a control for toggling the edit panel should be included
      * @return this Settings instance
-     * @throws IllegalStateException if the panel has been initialized
      */
     public Settings includeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
-      throwIfInitialized();
       this.includeToggleEditPanelControl = includeToggleEditPanelControl;
       return this;
     }
@@ -1325,31 +1322,28 @@ public class EntityPanel extends JPanel {
     /**
      * @param includeControls true if the edit an table panel controls should be included
      * @return this Settings instance
-     * @throws IllegalStateException if the panel has been initialized
      */
     public Settings includeControls(boolean includeControls) {
-      throwIfInitialized();
       this.includeControls = includeControls;
       return this;
     }
 
     /**
      * @param useKeyboardNavigation true if keyboard navigation should be enabled
-     * @throws IllegalStateException if the panel has been initialized
      * @return this Settings instance
      */
     public Settings useKeyboardNavigation(boolean useKeyboardNavigation) {
-      throwIfInitialized();
       this.useKeyboardNavigation = useKeyboardNavigation;
       return this;
     }
 
     /**
-     * @param shortcut the keyboard shortcut key
-     * @return the Value controlling the keyStroke for the given keyboard shortcut key
+     * @param keyboardShortcuts provides this tables {@link KeyboardShortcuts} instance.
+     * @return this Settings instance
      */
-    public Value<KeyStroke> keyStroke(KeyboardShortcut shortcut) {
-      return keyboardShortcuts.keyStroke(shortcut);
+    public Settings keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> keyboardShortcuts) {
+      requireNonNull(keyboardShortcuts).accept(this.keyboardShortcuts);
+      return this;
     }
   }
 

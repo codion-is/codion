@@ -29,7 +29,7 @@ final class ContinentPanel extends EntityPanel {
 
   ContinentPanel(SwingEntityModel continentModel) {
     super(continentModel, new ContinentTablePanel(continentModel.tableModel()),
-            new ContinentPanelLayout());
+            settings -> settings.panelLayout(new ContinentPanelLayout()));
     countryPanel = new EntityPanel(continentModel.detailModel(Country.TYPE),
             new EntityTablePanel(continentModel.tableModel(),
                     settings -> settings.includeConditionPanel(false)));
