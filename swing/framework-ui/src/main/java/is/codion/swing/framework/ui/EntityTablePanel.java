@@ -55,11 +55,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
@@ -1229,7 +1227,7 @@ public class EntityTablePanel extends JPanel {
 
   private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
     return conditionPanelFactory == null || !settings.includeConditionPanel ?
-            null : configureHorizontalAlignment(filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory));
+            null : filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
   }
 
   private JScrollPane createConditionPanelScrollPane() {
@@ -1360,7 +1358,7 @@ public class EntityTablePanel extends JPanel {
     tableScrollPane = new JScrollPane(table);
     conditionPanelScrollPane = createConditionPanelScrollPane();
     if (settings.includeFilterPanel) {
-      filterPanel = configureHorizontalAlignment(table.filterPanel());
+      filterPanel = table.filterPanel();
       filterPanelScrollPane = createFilterPanelScrollPane();
     }
     if (settings.includeSummaryPanel) {
@@ -1552,14 +1550,6 @@ public class EntityTablePanel extends JPanel {
     return false;
   }
 
-  private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
-    if (tableConditionPanel != null) {
-      tableConditionPanel.conditionPanels().forEach(this::configureHorizontalAlignment);
-    }
-
-    return tableConditionPanel;
-  }
-
   private Map<TableControl, Value<Control>> createControlsMap() {
     Value.Validator<Control> controlValueValidator = control -> throwIfInitialized();
 
@@ -1576,11 +1566,6 @@ public class EntityTablePanel extends JPanel {
     DeleteConfirmer defaultDeleteConfirmer = new DeleteConfirmer();
 
     return Value.value(defaultDeleteConfirmer, defaultDeleteConfirmer);
-  }
-
-  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
-    configureHorizontalAlignment(columnConditionPanel,
-            tableModel.columnModel().column(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
   }
 
   private final class DeleteCommand implements Control.Command {
@@ -1602,17 +1587,6 @@ public class EntityTablePanel extends JPanel {
     private void onException(Throwable exception) {
       LOG.error(exception.getMessage(), exception);
       EntityTablePanel.this.onException(exception);
-    }
-  }
-
-  private static void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
-                                                   TableCellRenderer cellRenderer) {
-    if (cellRenderer instanceof DefaultTableCellRenderer) {
-      int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-      Stream.of(columnConditionPanel.equalField(), columnConditionPanel.lowerBoundField(), columnConditionPanel.upperBoundField())
-              .filter(JTextField.class::isInstance)
-              .map(JTextField.class::cast)
-              .forEach(textField -> textField.setHorizontalAlignment(horizontalAlignment));
     }
   }
 

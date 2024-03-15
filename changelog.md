@@ -8,6 +8,7 @@ Codion Change Log
 - DefaultFilteredTableModel bug fixed, did not trigger dataChanged events when removing items by index.
 ### is.codion.swing.common.ui
 - ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
+- FilteredTableConditionPanel, now handles configuring the horizontal alignment of condition text fields according to the column cell renderer.
 ### is.codion.framework.i18n
 - FrameworkMessages, confirm update and confirm insert messages improved.
 - FrameworkMessages, no search results message improved.
