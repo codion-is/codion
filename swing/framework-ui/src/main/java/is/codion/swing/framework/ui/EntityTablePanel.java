@@ -365,7 +365,6 @@ public class EntityTablePanel extends JPanel {
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
   private JScrollPane conditionPanelScrollPane;
-  private FilteredTableConditionPanel<Attribute<?>> filterPanel;
   private JScrollPane filterPanelScrollPane;
   private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
   private JScrollPane summaryPanelScrollPane;
@@ -384,11 +383,11 @@ public class EntityTablePanel extends JPanel {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the SwingEntityTableModel instance
-   * @param conditionPanelFactory the condition panel factory, if any
+   * @param conditionPanelFactory the condition panel factory
    */
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.conditionPanelFactory = conditionPanelFactory;
+    this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.conditionRefreshControl = createConditionRefreshControl();
     this.refreshButtonToolBar = createRefreshButtonToolBar();
     this.settings = new Settings();
@@ -420,7 +419,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final FilteredTableConditionPanel<Attribute<?>> conditionPanel() {
     if (conditionPanel == null) {
-      conditionPanel = createConditionPanel(conditionPanelFactory);
+      conditionPanel = createConditionPanel();
       if (conditionPanel == null) {
         throw new IllegalStateException("No condition panel is available");
       }
@@ -516,7 +515,7 @@ public class EntityTablePanel extends JPanel {
    * Toggles the condition panel through the states hidden, visible and advanced
    */
   public final void toggleConditionPanel() {
-    if (conditionPanel != null) {
+    if (conditionPanelScrollPane != null) {
       toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advanced(), conditionPanelVisibleState);
     }
   }
@@ -525,8 +524,8 @@ public class EntityTablePanel extends JPanel {
    * Toggles the filter panel through the states hidden, visible and advanced
    */
   public final void toggleFilterPanel() {
-    if (filterPanel != null) {
-      toggleConditionPanel(filterPanelScrollPane, filterPanel.advanced(), filterPanelVisibleState);
+    if (filterPanelScrollPane != null) {
+      toggleConditionPanel(filterPanelScrollPane, table.filterPanel().advanced(), filterPanelVisibleState);
     }
   }
 
@@ -545,7 +544,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void selectFilterPanel() {
     if (settings.includeFilterPanel) {
-      selectConditionPanel(filterPanel, filterPanelScrollPane, filterPanel.advanced(),
+      selectConditionPanel(table.filterPanel(), filterPanelScrollPane, table.filterPanel().advanced(),
               filterPanelVisibleState, tableModel, this, FrameworkMessages.selectFilterField());
     }
   }
@@ -652,7 +651,7 @@ public class EntityTablePanel extends JPanel {
         setupComponents();
         setupStandardControls();
         setupControls();
-        setupTable();
+        addTablePopupMenu();
         layoutPanel(tablePanel, settings.includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisible(conditionPanelVisibleState.get());
         setFilterPanelVisible(filterPanelVisibleState.get());
@@ -814,7 +813,7 @@ public class EntityTablePanel extends JPanel {
       addConditionControls(popupControls);
       separatorRequired.set(true);
     }
-    if (settings.includeFilterPanel && filterPanel != null) {
+    if (settings.includeFilterPanel) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1225,34 +1224,8 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
-    return conditionPanelFactory == null || !settings.includeConditionPanel ?
-            null : filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
-  }
-
-  private JScrollPane createConditionPanelScrollPane() {
-    return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
-  }
-
-  private JScrollPane createFilterPanelScrollPane() {
-    return filterPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, filterPanel);
-  }
-
-  private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> createSummaryPanel() {
-    Map<Attribute<?>, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
-    if (columnSummaryPanels.isEmpty()) {
-      return null;
-    }
-
-    return filteredTableColumnComponentPanel(tableModel.columnModel(), columnSummaryPanels);
-  }
-
-  private JScrollPane createSummaryPanelScrollPane() {
-    if (summaryPanel == null) {
-      return null;
-    }
-
-    return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
+  private FilteredTableConditionPanel<Attribute<?>> createConditionPanel() {
+    return settings.includeConditionPanel ? filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory) : null;
   }
 
   private StatusPanel statusPanel() {
@@ -1290,9 +1263,9 @@ public class EntityTablePanel extends JPanel {
         }
       });
     }
-    if (filterPanel != null) {
-      filterPanel.addFocusGainedListener(table::scrollToColumn);
-      filterPanel.advanced().addDataListener(advanced -> {
+    if (settings.includeFilterPanel) {
+      table.filterPanel().addFocusGainedListener(table::scrollToColumn);
+      table.filterPanel().advanced().addDataListener(advanced -> {
         if (filterPanelVisibleState.get()) {
           revalidate();
         }
@@ -1352,23 +1325,11 @@ public class EntityTablePanel extends JPanel {
     if (table == null) {
       table = createTable();
     }
-    if (conditionPanel == null) {
-      conditionPanel = createConditionPanel(conditionPanelFactory);
-    }
     tableScrollPane = new JScrollPane(table);
-    conditionPanelScrollPane = createConditionPanelScrollPane();
-    if (settings.includeFilterPanel) {
-      filterPanel = table.filterPanel();
-      filterPanelScrollPane = createFilterPanelScrollPane();
-    }
-    if (settings.includeSummaryPanel) {
-      summaryPanel = createSummaryPanel();
-      summaryPanelScrollPane = createSummaryPanelScrollPane();
-    }
     tablePanel = new TablePanel();
     tableModel.columnModel().columns().forEach(this::configureColumn);
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
-    filterPanelVisibleState.addValidator(new PanelAvailableValidator(filterPanel, "filter"));
+    filterPanelVisibleState.addValidator(new PanelAvailableValidator(table.filterPanel(), "filter"));
     summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
   }
 
@@ -1397,7 +1358,7 @@ public class EntityTablePanel extends JPanel {
       controls.get(TableControl.TOGGLE_CONDITION_PANEL).mapNull(this::createToggleConditionPanelControl);
       controls.get(TableControl.SELECT_CONDITION_PANEL).mapNull(this::createSelectConditionPanelControl);
     }
-    if (settings.includeFilterPanel && filterPanel != null) {
+    if (settings.includeFilterPanel) {
       controls.get(TableControl.FILTER_PANEL_VISIBLE).mapNull(this::createFilterPanelControl);
       controls.get(TableControl.TOGGLE_FILTER_PANEL).mapNull(this::createToggleFilterPanelControl);
       controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(this::createSelectFilterPanelControl);
@@ -1420,13 +1381,6 @@ public class EntityTablePanel extends JPanel {
             .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
   }
 
-  private void setupTable() {
-    tableModel.columnModel().columns().forEach(this::configureColumn);
-    if (settings.includePopupMenu) {
-      addTablePopupMenu();
-    }
-  }
-
   private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
     TableCellEditor tableCellEditor = createTableCellEditor(column.getIdentifier());
     if (tableCellEditor != null) {
@@ -1436,6 +1390,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void addTablePopupMenu() {
+    if (!settings.includePopupMenu) {
+      return;
+    }
     Controls popupControls = createPopupMenuControls(settings.additionalPopupControls);
     if (popupControls == null || popupControls.empty()) {
       return;
@@ -1484,7 +1441,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().filter())
             .build();
     control(TableControl.FILTER_PANEL_VISIBLE).optional().ifPresent(filterControls::add);
-    Controls filterPanelControls = filterPanel.controls();
+    Controls filterPanelControls = table.filterPanel().controls();
     if (filterPanelControls.notEmpty()) {
       filterControls.addAll(filterPanelControls);
     }
@@ -1646,17 +1603,6 @@ public class EntityTablePanel extends JPanel {
       }
       popupControls.addSeparator();
     });
-  }
-
-  private static Map<Attribute<?>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
-    Map<Attribute<?>, JPanel> components = new HashMap<>();
-    tableModel.columnModel().columns().forEach(column ->
-            tableModel.summaryModel().summaryModel(column.getIdentifier())
-                    .ifPresent(columnSummaryModel ->
-                            components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel,
-                                    ((FilteredTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
-
-    return components;
   }
 
   private static JScrollPane createHiddenLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
@@ -1984,18 +1930,47 @@ public class EntityTablePanel extends JPanel {
 
     private TablePanel() {
       super(new BorderLayout());
-      add(tableScrollPane, BorderLayout.CENTER);
-      if (conditionPanelScrollPane != null) {
+      if (settings.includeConditionPanel) {
+        if (conditionPanel == null) {
+          conditionPanel = createConditionPanel();
+        }
+        conditionPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
         add(conditionPanelScrollPane, BorderLayout.NORTH);
       }
       JPanel tableSouthPanel = new JPanel(new BorderLayout());
-      if (summaryPanelScrollPane != null) {
-        tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
+      if (settings.includeSummaryPanel) {
+        summaryPanel = createSummaryPanel();
+        if (summaryPanel != null) {
+          summaryPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
+          tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
+        }
       }
-      if (filterPanelScrollPane != null) {
+      if (settings.includeFilterPanel) {
+        filterPanelScrollPane = createHiddenLinkedScrollPane(tableScrollPane, table.filterPanel());
         tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
       }
+      add(tableScrollPane, BorderLayout.CENTER);
       add(tableSouthPanel, BorderLayout.SOUTH);
+    }
+
+    private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> createSummaryPanel() {
+      Map<Attribute<?>, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+      if (columnSummaryPanels.isEmpty()) {
+        return null;
+      }
+
+      return filteredTableColumnComponentPanel(tableModel.columnModel(), columnSummaryPanels);
+    }
+
+    private Map<Attribute<?>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
+      Map<Attribute<?>, JPanel> components = new HashMap<>();
+      tableModel.columnModel().columns().forEach(column ->
+              tableModel.summaryModel().summaryModel(column.getIdentifier())
+                      .ifPresent(columnSummaryModel ->
+                              components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel,
+                                      ((FilteredTableCellRenderer) column.getCellRenderer()).horizontalAlignment()))));
+
+      return components;
     }
   }
 
