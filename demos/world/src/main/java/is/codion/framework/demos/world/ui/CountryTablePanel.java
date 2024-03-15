@@ -22,7 +22,7 @@ final class CountryTablePanel extends EntityTablePanel {
 
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel, settings ->
-            settings.editableAttributes(attributes ->
+            settings.editable(attributes ->
                     attributes.remove(Country.CAPITAL_FK)));
   }
 

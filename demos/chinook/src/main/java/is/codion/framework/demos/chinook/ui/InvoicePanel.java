@@ -14,7 +14,7 @@ public final class InvoicePanel extends EntityPanel {
   public InvoicePanel(SwingEntityModel invoiceModel, EntityPanel invoiceLinePanel) {
     super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
             new EntityTablePanel(invoiceModel.tableModel(), settings -> settings
-                    .editableAttributes(attributes -> attributes.remove(Invoice.TOTAL))),
+                    .editable(attributes -> attributes.remove(Invoice.TOTAL))),
             settings -> settings.panelLayout(TabbedPanelLayout.builder()
                     .includeDetailTabbedPane(false)
                     .includeDetailControls(false)

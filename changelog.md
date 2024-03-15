@@ -24,6 +24,7 @@ Codion Change Log
 - EntityTablePanel refactored.
 - EntityTablePanel, settings now configured in a constructor lambda.
 - EntityPanel, settings now configured in a constructor lambda.
+- EntityTablePanel.Settings.editableAttributes() renamed editable().
 
 ## 0.17.31
 ### is.codion.common

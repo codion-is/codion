@@ -1024,7 +1024,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
-    settings.editableAttributes.get().stream()
+    settings.editable.get().stream()
             .map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
             .sorted(AttributeDefinition.definitionComparator())
             .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelected(attributeDefinition.attribute()))
@@ -1191,7 +1191,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeEditSelectedControls() {
-    return !settings.editableAttributes.empty() &&
+    return !settings.editable.empty() &&
             !tableModel.editModel().readOnly().get() &&
             tableModel.editModel().updateEnabled().get();
   }
@@ -1702,7 +1702,7 @@ public class EntityTablePanel extends JPanel {
   public static final class Settings {
 
     private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
-    private final ValueSet<Attribute<?>> editableAttributes;
+    private final ValueSet<Attribute<?>> editable;
 
     private EntityConditionPanelFactory conditionPanelFactory;
     private boolean includeSouthPanel = true;
@@ -1718,10 +1718,10 @@ public class EntityTablePanel extends JPanel {
 
     private Settings(SwingEntityTableModel tableModel) {
       this.conditionPanelFactory = new EntityConditionPanelFactory(requireNonNull(tableModel).entityDefinition());
-      this.editableAttributes = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
+      this.editable = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
               .map(AttributeDefinition::attribute)
               .collect(toSet()));
-      this.editableAttributes.addValidator(new EditMenuAttributeValidator(tableModel));
+      this.editable.addValidator(new EditMenuAttributeValidator(tableModel));
       Stream.of(KeyboardShortcut.values()).forEach(keyboardShortcuts::keyStroke);
     }
 
@@ -1831,12 +1831,11 @@ public class EntityTablePanel extends JPanel {
     }
 
     /**
-     *
-     * @param editableAttributes provides this tables editable attribute value set
+     * @param attributes provides this tables editable attribute value set
      * @return this Settings instance
      */
-    public Settings editableAttributes(Consumer<ValueSet<Attribute<?>>> editableAttributes) {
-      requireNonNull(editableAttributes).accept(this.editableAttributes);
+    public Settings editable(Consumer<ValueSet<Attribute<?>>> attributes) {
+      requireNonNull(attributes).accept(this.editable);
       return this;
     }
 

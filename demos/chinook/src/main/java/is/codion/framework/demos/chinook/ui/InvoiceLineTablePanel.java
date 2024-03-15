@@ -16,7 +16,7 @@ public final class InvoiceLineTablePanel extends EntityTablePanel {
     super(tableModel, settings -> settings
             .includeSouthPanel(false)
             .includeConditionPanel(false)
-            .editableAttributes(attributes -> attributes.remove(InvoiceLine.INVOICE_FK)));
+            .editable(attributes -> attributes.remove(InvoiceLine.INVOICE_FK)));
     setEditComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory());
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     table().getModel().columnModel().visible(InvoiceLine.INVOICE_FK).set(false);
