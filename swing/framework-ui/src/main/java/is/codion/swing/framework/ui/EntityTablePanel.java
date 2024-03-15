@@ -12,6 +12,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -391,7 +392,7 @@ public class EntityTablePanel extends JPanel {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionRefreshControl = createConditionRefreshControl();
     this.refreshButtonToolBar = createRefreshButtonToolBar();
-    this.configuration = new Config(tableModel);
+    this.configuration = new Config(tableModel.entityDefinition());
     this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
     requireNonNull(configuration).accept(this.configuration);
   }
@@ -868,13 +869,13 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Creates a TableCellEditor for the given attribute, returns null if no editor is available,
-   * such as for non-updatable attributes.
+   * such as for non-editable attributes.
    * @param attribute the attribute
    * @return a TableCellEditor for the given attribute, null in case none is available
+   * @see Config#editable(Consumer)
    */
   protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
-    AttributeDefinition<?> attributeDefinition = tableModel.entityDefinition().attributes().definition(attribute);
-    if (attribute instanceof ColumnDefinition && !((ColumnDefinition<?>) attributeDefinition).updatable()) {
+    if (!configuration.editable.contains(attribute)) {
       return null;
     }
     if (nonUpdatableForeignKey(attribute)) {
@@ -1008,7 +1009,7 @@ public class EntityTablePanel extends JPanel {
    * for the selected entities. These controls are enabled as long as the selection is not empty
    * and {@link EntityEditModel#updateEnabled()} is enabled.
    * @return the edit controls
-   * @see #excludeFromEditMenu(Attribute)
+   * @see Config#editable(Consumer)
    * @see EntityEditModel#updateEnabled()
    */
   private Controls createEditSelectedControls() {
@@ -1331,10 +1332,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void setupComponents() {
-    if (table == null) {
-      table = createTable();
-    }
-    tableScrollPane = new JScrollPane(table);
+    tableScrollPane = new JScrollPane(table());
     tablePanel = new TablePanel();
     tableModel.columnModel().columns().forEach(this::configureColumn);
     conditionPanelVisibleState.addValidator(new PanelAvailableValidator(conditionPanel, "condition"));
@@ -1716,13 +1714,12 @@ public class EntityTablePanel extends JPanel {
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 
-    private Config(SwingEntityTableModel tableModel) {
-      this.conditionPanelFactory = new EntityConditionPanelFactory(requireNonNull(tableModel).entityDefinition());
-      this.editable = valueSet(tableModel.entityDefinition().attributes().updatable().stream()
+    private Config(EntityDefinition entityDefinition) {
+      this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
+      this.editable = valueSet(entityDefinition.attributes().updatable().stream()
               .map(AttributeDefinition::attribute)
               .collect(toSet()));
-      this.editable.addValidator(new EditMenuAttributeValidator(tableModel));
-      Stream.of(KeyboardShortcut.values()).forEach(shortcuts::keyStroke);
+      this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
     }
 
     public Config conditionPanelFactory(EntityConditionPanelFactory conditionPanelFactory) {
@@ -1841,16 +1838,16 @@ public class EntityTablePanel extends JPanel {
 
     private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
 
-      private final SwingEntityTableModel tableModel;
+      private final EntityDefinition entityDefinition;
 
-      private EditMenuAttributeValidator(SwingEntityTableModel tableModel) {
-        this.tableModel = tableModel;
+      private EditMenuAttributeValidator(EntityDefinition entityDefinition) {
+        this.entityDefinition = entityDefinition;
       }
 
       @Override
       public void validate(Set<Attribute<?>> attributes) {
         //validate that the attributes exists
-        attributes.forEach(attribute -> tableModel.entityDefinition().attributes().definition(attribute));
+        attributes.forEach(attribute -> entityDefinition.attributes().definition(attribute));
       }
     }
   }

@@ -52,7 +52,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -1250,9 +1249,7 @@ public class EntityPanel extends JPanel {
     private boolean includeControls = INCLUDE_CONTROLS.get();
     private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 
-    private Config() {
-      Stream.of(KeyboardShortcut.values()).forEach(shortcuts::keyStroke);
-    }
+    private Config() {}
 
     /**
      * @param panelLayout the panel layout
