@@ -178,7 +178,7 @@ dependencyResolutionManagement {
             version("jcommon", "1.0.24")
             version("http.client", "4.5.14")
             version("junit", "5.10.2")
-            version("sslcontext.kickstart", "8.3.2")
+            version("sslcontext.kickstart", "8.3.3")
             version("flatlaf", "3.4")
             version("ikonli", "2.6.0")
             version("javalin", "4.6.7")
