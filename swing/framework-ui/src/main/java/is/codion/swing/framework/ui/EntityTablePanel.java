@@ -1171,14 +1171,6 @@ public class EntityTablePanel extends JPanel {
     return configuration.includeConditionPanel ? filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), configuration.conditionPanelFactory) : null;
   }
 
-  private StatusPanel statusPanel() {
-    if (statusPanel == null) {
-      statusPanel = new StatusPanel();
-    }
-
-    return statusPanel;
-  }
-
   private void bindEvents() {
     if (configuration.includeEntityMenu) {
       KeyEvents.builder(VK_V)
@@ -2015,6 +2007,14 @@ public class EntityTablePanel extends JPanel {
       if (southToolBar != null) {
         add(southToolBar, BorderLayout.EAST);
       }
+    }
+
+    private StatusPanel statusPanel() {
+      if (statusPanel == null) {
+        statusPanel = new StatusPanel();
+      }
+
+      return statusPanel;
     }
   }
 
