@@ -77,11 +77,10 @@ final class LookupTablePanel extends EntityTablePanel {
   private JDialog mapKitDialog;
 
   LookupTablePanel(SwingEntityTableModel lookupModel) {
-    super(lookupModel);
+    super(lookupModel, config -> config.showRefreshProgressBar(true));
     columnSelectionPanelVisible.addDataListener(this::setColumnSelectionPanelVisible);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     conditionPanelVisible().set(true);
-    showRefreshProgressBar().set(true);
     bindEvents();
   }
 

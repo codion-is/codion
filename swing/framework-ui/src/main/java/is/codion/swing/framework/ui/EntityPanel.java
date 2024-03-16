@@ -270,7 +270,7 @@ public class EntityPanel extends JPanel {
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
-  private final Config configuration = new Config();
+  private final Config configuration;
 
   private String description;
   private EntityPanel parentPanel;
@@ -361,7 +361,7 @@ public class EntityPanel extends JPanel {
                      Consumer<Config> configuration) {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
-    requireNonNull(configuration).accept(this.configuration);
+    this.configuration = configure(configuration);
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
     this.caption = Value.value(defaultCaption, defaultCaption);
@@ -417,17 +417,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Provides a way to configure settings before the panel is initialized.
-   * @return the {@link Config} instance
-   * @throws IllegalStateException in case the panel has already been initialized
-   */
-  public final Config configure() {
-    throwIfInitialized();
-
-    return configuration;
-  }
-
-  /**
    * @return the detail panel controller
    * @param <T> the detail panel controller type
    */
@@ -437,6 +426,8 @@ public class EntityPanel extends JPanel {
 
   /**
    * @param detailPanels the detail panels
+   * @throws IllegalStateException if the panel has already been initialized
+   * @throws IllegalArgumentException if this panel already contains a given detail panel
    */
   public final void addDetailPanels(EntityPanel... detailPanels) {
     requireNonNull(detailPanels, "detailPanels");
@@ -448,12 +439,13 @@ public class EntityPanel extends JPanel {
   /**
    * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
    * @param detailPanel the detail panel to add
-   * @throws IllegalStateException if the panel has been initialized or if it already contains the given detail panel
+   * @throws IllegalStateException if the panel has already been initialized
+   * @throws IllegalArgumentException if this panel already contains the given detail panel
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
     throwIfInitialized();
     if (detailPanels.contains(requireNonNull(detailPanel))) {
-      throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
+      throw new IllegalArgumentException("Panel already contains detail panel: " + detailPanel);
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
@@ -1144,6 +1136,13 @@ public class EntityPanel extends JPanel {
     }
   }
 
+  private static Config configure(Consumer<Config> configuration) {
+    Config config = new Config();
+    requireNonNull(configuration).accept(config);
+
+    return new Config(config);
+  }
+
   private final class ShowHiddenEditPanel implements Control.Command {
 
     @Override
@@ -1254,7 +1253,7 @@ public class EntityPanel extends JPanel {
    */
   public static final class Config {
 
-    private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
+    private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
     private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
     private boolean toolbarControls = TOOLBAR_CONTROLS.get();
@@ -1264,7 +1263,19 @@ public class EntityPanel extends JPanel {
     private boolean includeControls = INCLUDE_CONTROLS.get();
     private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 
-    private Config() {}
+    private Config() {
+      this.shortcuts = KEYBOARD_SHORTCUTS.copy();
+    }
+
+    private Config(Config config) {
+      this.shortcuts = config.shortcuts.copy();
+      this.panelLayout = config.panelLayout;
+      this.toolbarControls = config.toolbarControls;
+      this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
+      this.controlComponentConstraints = config.controlComponentConstraints;
+      this.includeControls = config.includeControls;
+      this.useKeyboardNavigation = config.useKeyboardNavigation;
+    }
 
     /**
      * @param panelLayout the panel layout

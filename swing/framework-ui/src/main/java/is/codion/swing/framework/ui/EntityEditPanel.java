@@ -45,11 +45,12 @@ import javax.swing.JOptionPane;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -119,15 +120,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
-  private final Set<EditControl> editControls;
+  private static final Consumer<Config> NO_CONFIGURATION = c -> {};
+
+  private final Config configuration;
   private final Map<EditControl, Value<Control>> controls;
   private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
   private final EnumMap<Confirmer.Action, Value<Confirmer>> confirmers;
-  private final State clearAfterInsert = State.state(true);
-  private final State requestFocusAfterInsert = State.state(true);
-  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
 
   private boolean initialized = false;
 
@@ -136,7 +134,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(SwingEntityEditModel editModel) {
-    this(editModel, DEFAULT_EDIT_CONTROLS);
+    this(editModel, NO_CONFIGURATION);
   }
 
   /**
@@ -145,32 +143,30 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param entityComponents the entity components instance to use when creating components
    */
   public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
-    this(editModel, entityComponents, DEFAULT_EDIT_CONTROLS);
+    this(editModel, entityComponents, NO_CONFIGURATION);
   }
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
-   * @param editControls if specified only controls with those keys are initialized,
-   * null or an empty array will result in no controls being initialized
+   * @param configuration provides access to the panel configuration
    */
-  public EntityEditPanel(SwingEntityEditModel editModel, EditControl... editControls) {
-    this(editModel, new EntityComponents(editModel.entityDefinition()), editControls);
+  public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> configuration) {
+    this(editModel, new EntityComponents(editModel.entityDefinition()), configuration);
   }
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    * @param entityComponents the entity components instance to use when creating components
-   * @param editControls if specified only controls with those keys are initialized,
-   * null or an empty array will result in no controls being initialized
+   * @param configuration provides access to the panel configuration
    */
-  public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, EditControl... editControls) {
+  public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
     super(editModel, entityComponents);
     if (USE_FOCUS_ACTIVATION.get()) {
       ACTIVE_STATE_GROUP.add(active);
     }
-    this.editControls = validateControlCodes(editControls);
+    this.configuration = configure(configuration);
     this.controls = createControlsMap();
     this.confirmers = createConfirmersMap();
     if (editModel.exists().not().get()) {
@@ -198,28 +194,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final void clearAndRequestFocus() {
     editModel().setDefaults();
     requestInitialFocus();
-  }
-
-  /**
-   * @return the State controlling whether the UI should be cleared after insert has been performed
-   */
-  public final State clearAfterInsert() {
-    return clearAfterInsert;
-  }
-
-  /**
-   * @return the State controlling whether the UI should request focus after insert has been performed
-   * @see #requestInitialFocus()
-   */
-  public final State requestFocusAfterInsert() {
-    return requestFocusAfterInsert;
-  }
-
-  /**
-   * @return the Value controlling the action to take on a referential integrity error on delete
-   */
-  public final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling() {
-    return referentialIntegrityErrorHandling;
   }
 
   /**
@@ -302,10 +276,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final boolean insert() {
     try {
       editModel().insert();
-      if (clearAfterInsert.get()) {
+      if (configuration.clearAfterInsert) {
         editModel().setDefaults();
       }
-      if (requestFocusAfterInsert.get()) {
+      if (configuration.requestFocusAfterInsert) {
         requestAfterInsertFocus();
       }
 
@@ -453,11 +427,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * performed and the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @see #referentialIntegrityErrorHandling()
+   * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (exception.operation() == Operation.DELETE && referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
+    if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
       displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
@@ -523,19 +497,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (!editModel().readOnly().get()) {
       setupEditControls();
     }
-    if (editControls.contains(EditControl.CLEAR)) {
+    if (configuration.editControls.contains(EditControl.CLEAR)) {
       controls.get(EditControl.CLEAR).mapNull(this::createClearControl);
     }
   }
 
   private void setupEditControls() {
-    if (editModel().insertEnabled().get() && editControls.contains(EditControl.INSERT)) {
+    if (editModel().insertEnabled().get() && configuration.editControls.contains(EditControl.INSERT)) {
       controls.get(EditControl.INSERT).mapNull(this::createInsertControl);
     }
-    if (editModel().updateEnabled().get() && editControls.contains(EditControl.UPDATE)) {
+    if (editModel().updateEnabled().get() && configuration.editControls.contains(EditControl.UPDATE)) {
       controls.get(EditControl.UPDATE).mapNull(this::createUpdateControl);
     }
-    if (editModel().deleteEnabled().get() && editControls.contains(EditControl.DELETE)) {
+    if (editModel().deleteEnabled().get() && configuration.editControls.contains(EditControl.DELETE)) {
       controls.get(EditControl.DELETE).mapNull(this::createDeleteControl);
     }
   }
@@ -633,15 +607,81 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return enumMap;
   }
 
-  private static Set<EditControl> validateControlCodes(EditControl[] editControls) {
-    if (editControls == null) {
-      return emptySet();
-    }
-    for (EditControl editControl : editControls) {
-      requireNonNull(editControl, "controlCode");
+  private static Config configure(Consumer<Config> configuration) {
+    Config config = new Config();
+    requireNonNull(configuration).accept(config);
+
+    return new Config(config);
+  }
+
+  public static final class Config {
+
+    private final Set<EditControl> editControls;
+
+    private boolean clearAfterInsert = true;
+    private boolean requestFocusAfterInsert = true;
+    private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
+            ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+
+    private Config() {
+      this.editControls = new HashSet<>(Arrays.asList(DEFAULT_EDIT_CONTROLS));
     }
 
-    return new LinkedHashSet<>(Arrays.asList(editControls));
+    private Config(Config config) {
+      this.editControls = new HashSet<>(config.editControls);
+      this.clearAfterInsert = config.clearAfterInsert;
+      this.requestFocusAfterInsert = config.requestFocusAfterInsert;
+      this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
+    }
+
+    /**
+     * @param editControls if specified only controls with those keys are initialized, null or an empty array will result in no controls being initialized
+     * @return this Config instance
+     */
+    public Config editControls(EditControl... editControls) {
+      this.editControls.clear();
+      this.editControls.addAll(validateControlCodes(editControls));
+      return this;
+    }
+
+    /**
+     * @param clearAfterInsert controls whether the UI should be cleared after insert has been performed
+     * @return this Config instance
+     */
+    public Config clearAfterInsert(boolean clearAfterInsert) {
+      this.clearAfterInsert = clearAfterInsert;
+      return this;
+    }
+
+    /**
+     * @param requestFocusAfterInsert controls whether the UI should request focus after insert has been performed
+     * @return this Config instance
+     * @see EntityEditComponentPanel#requestInitialFocus()
+     */
+    public Config requestFocusAfterInsert(boolean requestFocusAfterInsert) {
+      this.requestFocusAfterInsert = requestFocusAfterInsert;
+      return this;
+    }
+
+    /**
+     * @param referentialIntegrityErrorHandling controls which action to take on a referential integrity error on delete
+     * @return this Config instance
+     */
+    public Config referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+      this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
+      return this;
+    }
+
+    private static Set<EditControl> validateControlCodes(EditControl[] editControls) {
+      if (editControls == null) {
+        return emptySet();
+      }
+      for (EditControl editControl : editControls) {
+        requireNonNull(editControl, "controlCode");
+      }
+
+      return new HashSet<>(Arrays.asList(editControls));
+    }
   }
 
   /**
@@ -693,10 +733,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     private void afterInsert(Collection<Entity> insertedEntities, EntityEditModel.Insert insert) {
       insert.notifyAfterInsert(insertedEntities);
-      if (clearAfterInsert.get()) {
+      if (configuration.clearAfterInsert) {
         editModel().setDefaults();
       }
-      if (requestFocusAfterInsert.get()) {
+      if (configuration.requestFocusAfterInsert) {
         requestAfterInsertFocus();
       }
     }

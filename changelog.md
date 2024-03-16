@@ -9,9 +9,12 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
 - FilteredTableConditionPanel, now handles configuring the horizontal alignment of condition text fields according to the column cell renderer.
+- FontSizeSelectionDialogBuilder.selectFontSize() now returns OptionalInt.
 ### is.codion.framework.i18n
 - FrameworkMessages, confirm update and confirm insert messages improved.
 - FrameworkMessages, no search results message improved.
+### is.codion.framework.db.core
+- EntityConnection.Select.limit(), offset() and fetchDepth() now return OptionalInt.
 ### is.codion.swing.framework.ui
 - EntitySearchField.selectorFactory() now Value based.
 - EntitySearchField.searchIndicator() now Value based.
@@ -26,6 +29,15 @@ Codion Change Log
 - EntityPanel, settings now configured in a constructor lambda.
 - EntityTablePanel.Settings.editableAttributes() renamed editable().
 - EntityPanel.Settings and EntityTablePanel.Settings renamed Config.
+- EntityPanel.configure() removed.
+- EntityPanel.addDetailPanel() exceptions improved, test added.
+- EntityPanel, EntityTablePanel, configuration instance now defensively copied.
+- EntityTablePanel.setEditComponentFactory() and setTableCellEditorFactory() moved to Config.
+- EntityTablePanel.referentialIntegrityErrorHandling() moved to Config.
+- EntityTablePanel.refreshButtonVisible() moved to Config.
+- EntityTablePanel.statusMessage() moved to Config.
+- EntityTablePanel.showRefreshProgressBar() moved to Config.
+- EntityEditPanel.Config added.
 
 ## 0.17.31
 ### is.codion.common

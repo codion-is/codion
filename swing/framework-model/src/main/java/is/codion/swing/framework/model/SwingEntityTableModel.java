@@ -1067,7 +1067,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     return Select.where(conditionModel.where(Conjunction.AND))
             .having(conditionModel.having(Conjunction.AND))
             .attributes(selectAttributes())
-            .limit(limit().optional().orElse(-1))
+            .limit(limit().get())
             .orderBy(orderBy())
             .build();
   }

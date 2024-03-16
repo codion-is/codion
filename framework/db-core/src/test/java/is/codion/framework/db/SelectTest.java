@@ -26,8 +26,7 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SelectTest {
 
@@ -36,12 +35,14 @@ public final class SelectTest {
     Select select = Select.where(Department.LOCATION.equalTo("New York"))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
-    assertEquals(-1, select.limit());
+    assertFalse(select.limit().isPresent());
 
     select = Select.all(Department.TYPE)
             .limit(10)
             .build();
-    assertEquals(10, select.limit());
+    assertEquals(10, select.limit().orElse(-1));
+
+    assertThrows(IllegalArgumentException.class, () -> Select.all(Department.TYPE).queryTimeout(-1));
   }
 
   @Test

@@ -99,6 +99,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
@@ -360,19 +361,11 @@ public class EntityTablePanel extends JPanel {
   private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
-  private final Value<RefreshButtonVisible> refreshButtonVisible = Value.value(
-          RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE,
-          RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
   private final Map<TableControl, Value<Control>> controls = createControlsMap();
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
   private final Config configuration;
   private final SwingEntityTableModel tableModel;
   private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
-  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
   private final Control conditionRefreshControl;
   private final JToolBar refreshButtonToolBar;
   private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -406,10 +399,8 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionRefreshControl = createConditionRefreshControl();
+    this.configuration = configure(tableModel.entityDefinition(), configuration);
     this.refreshButtonToolBar = createRefreshButtonToolBar();
-    this.configuration = new Config(tableModel.entityDefinition());
-    this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
-    requireNonNull(configuration).accept(this.configuration);
   }
 
   /**
@@ -447,13 +438,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return the Value controlling the refresh button visible setting
-   */
-  public final Value<RefreshButtonVisible> refreshButtonVisible() {
-    return refreshButtonVisible;
-  }
-
-  /**
    * @return the state controlling whether the condition panel is visible
    */
   public final State conditionPanelVisible() {
@@ -472,50 +456,6 @@ public class EntityTablePanel extends JPanel {
    */
   public final State summaryPanelVisible() {
     return summaryPanelVisibleState;
-  }
-
-  /**
-   * @return the state controlling whether an indeterminate progress bar should be shown while the model is refreshing
-   * @see #SHOW_REFRESH_PROGRESS_BAR
-   */
-  public final State showRefreshProgressBar() {
-    return statusPanel().showRefreshProgressBar;
-  }
-
-  /**
-   * @return the value containing the function for creating the table status message
-   * @see #statusMessage()
-   */
-  public final Value<Function<SwingEntityTableModel, String>> statusMessage() {
-    return statusPanel().statusMessageFunction;
-  }
-
-  /**
-   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelected(Attribute)}.
-   * @param attribute the attribute
-   * @param componentFactory the component factory
-   * @param <T> the value type
-   * @param <A> the attribute type
-   * @param <C> the component type
-   */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setEditComponentFactory(A attribute,
-                                                                                              EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().attributes().definition(attribute);
-    editComponentFactories.put(attribute, requireNonNull(componentFactory));
-  }
-
-  /**
-   * Sets the table cell editor component factory for the given attribute.
-   * @param attribute the attribute
-   * @param componentFactory the component factory
-   * @param <T> the value type
-   * @param <A> the attribute type
-   * @param <C> the component type
-   */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorFactory(A attribute,
-                                                                                                EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().attributes().definition(attribute);
-    cellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -554,13 +494,6 @@ public class EntityTablePanel extends JPanel {
       selectConditionPanel(table.filterPanel(), filterPanelScrollPane, table.filterPanel().advanced(),
               filterPanelVisibleState, tableModel, this, FrameworkMessages.selectFilterField());
     }
-  }
-
-  /**
-   * @return the Value controlling the action to take on a referential integrity error on delete
-   */
-  public final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling() {
-    return referentialIntegrityErrorHandling;
   }
 
   /**
@@ -610,7 +543,7 @@ public class EntityTablePanel extends JPanel {
    * assigning the value to the attribute
    * @param attributeToEdit the attribute which value to edit
    * @param <T> the attribute value type
-   * @see #setEditComponentFactory(Attribute, EntityComponentFactory)
+   * @see Config#editComponentFactory(Attribute, EntityComponentFactory)
    */
   public final <T> void editSelected(Attribute<T> attributeToEdit) {
     requireNonNull(attributeToEdit);
@@ -960,11 +893,11 @@ public class EntityTablePanel extends JPanel {
    * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @see #referentialIntegrityErrorHandling()
+   * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
+    if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
@@ -995,7 +928,7 @@ public class EntityTablePanel extends JPanel {
   protected <T> EntityDialogs.EditDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
     return EntityDialogs.editDialog(tableModel.editModel(), attribute)
             .owner(this)
-            .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attribute));
+            .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) configuration.editComponentFactories.get(attribute));
   }
 
   /**
@@ -1231,7 +1164,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
-    return ((EntityComponentFactory<T, Attribute<T>, ?>) cellEditorComponentFactories.computeIfAbsent(attribute, a ->
+    return ((EntityComponentFactory<T, Attribute<T>, ?>) configuration.cellEditorComponentFactories.computeIfAbsent(attribute, a ->
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).componentValue(attribute, tableModel.editModel(), initialValue);
   }
 
@@ -1245,20 +1178,12 @@ public class EntityTablePanel extends JPanel {
             .action(conditionRefreshControl)
             .floatable(false)
             .rollover(false)
-            .visible(false)//made visible when condition panel is visible
+            .visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get())
             .build();
   }
 
   private FilteredTableConditionPanel<Attribute<?>> createConditionPanel() {
     return configuration.includeConditionPanel ? filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), configuration.conditionPanelFactory) : null;
-  }
-
-  private StatusPanel statusPanel() {
-    if (statusPanel == null) {
-      statusPanel = new StatusPanel();
-    }
-
-    return statusPanel;
   }
 
   private void bindEvents() {
@@ -1323,7 +1248,7 @@ public class EntityTablePanel extends JPanel {
   private void setConditionPanelVisible(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
-      refreshButtonToolBar.setVisible(refreshButtonVisible.isEqualTo(RefreshButtonVisible.ALWAYS) || visible);
+      refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
       revalidate();
     }
   }
@@ -1340,10 +1265,6 @@ public class EntityTablePanel extends JPanel {
       summaryPanelScrollPane.setVisible(visible);
       revalidate();
     }
-  }
-
-  private void setRefreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
-    refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get());
   }
 
   private void setupComponents() {
@@ -1532,7 +1453,7 @@ public class EntityTablePanel extends JPanel {
 
     return Stream.of(TableControl.values())
             .collect(toMap(Function.identity(), controlCode -> {
-              Value<Control> value = Value.value();
+              Value<Control> value = value();
               value.addValidator(controlValueValidator);
 
               return value;
@@ -1542,7 +1463,7 @@ public class EntityTablePanel extends JPanel {
   private Value<Confirmer> createDeleteConfirmer() {
     DeleteConfirmer defaultDeleteConfirmer = new DeleteConfirmer();
 
-    return Value.value(defaultDeleteConfirmer, defaultDeleteConfirmer);
+    return value(defaultDeleteConfirmer, defaultDeleteConfirmer);
   }
 
   private void throwIfInitialized() {
@@ -1652,6 +1573,13 @@ public class EntityTablePanel extends JPanel {
     return new Point(x, y + table.getRowHeight() / 2);
   }
 
+  private static Config configure(EntityDefinition entityDefinition, Consumer<Config> configuration) {
+    Config config = new Config(entityDefinition);
+    requireNonNull(configuration).accept(config);
+
+    return new Config(config);
+  }
+
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
       case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
@@ -1714,8 +1642,12 @@ public class EntityTablePanel extends JPanel {
    */
   public static final class Config {
 
-    private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
+    private final EntityDefinition entityDefinition;
+
+    private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
     private final ValueSet<Attribute<?>> editable;
+    private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
+    private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
 
     private EntityConditionPanelFactory conditionPanelFactory;
     private boolean includeSouthPanel = true;
@@ -1728,15 +1660,52 @@ public class EntityTablePanel extends JPanel {
     private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
+    private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
+    private RefreshButtonVisible refreshButtonVisible;
+    private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
+    private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 
     private Config(EntityDefinition entityDefinition) {
+      this.entityDefinition = entityDefinition;
+      this.shortcuts = KEYBOARD_SHORTCUTS.copy();
       this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
       this.editable = valueSet(entityDefinition.attributes().updatable().stream()
               .map(AttributeDefinition::attribute)
               .collect(toSet()));
       this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
+      this.editComponentFactories = new HashMap<>();
+      this.cellEditorComponentFactories = new HashMap<>();
+      this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+      this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
     }
 
+    private Config(Config config) {
+      this.entityDefinition = config.entityDefinition;
+      this.shortcuts = config.shortcuts.copy();
+      this.editable = valueSet(config.editable.get());
+      this.conditionPanelFactory = config.conditionPanelFactory;
+      this.includeSouthPanel = config.includeSouthPanel;
+      this.includeConditionPanel = config.includeConditionPanel;
+      this.includeFilterPanel = config.includeFilterPanel;
+      this.includeSummaryPanel = config.includeSummaryPanel;
+      this.includeClearControl = config.includeClearControl;
+      this.includeLimitMenu = config.includeLimitMenu;
+      this.includeEntityMenu = config.includeEntityMenu;
+      this.includePopupMenu = config.includePopupMenu;
+      this.includeSelectionModeControl = config.includeSelectionModeControl;
+      this.columnSelection = config.columnSelection;
+      this.editComponentFactories = new HashMap<>(config.editComponentFactories);
+      this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
+      this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
+      this.refreshButtonVisible = config.refreshButtonVisible;
+      this.statusMessage = config.statusMessage;
+      this.showRefreshProgressBar = config.showRefreshProgressBar;
+    }
+
+    /**
+     * @param conditionPanelFactory the condition panel factory
+     * @return this Config instance
+     */
     public Config conditionPanelFactory(EntityConditionPanelFactory conditionPanelFactory) {
       this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
       return this;
@@ -1848,6 +1817,75 @@ public class EntityTablePanel extends JPanel {
      */
     public Config editable(Consumer<ValueSet<Attribute<?>>> attributes) {
       requireNonNull(attributes).accept(this.editable);
+      return this;
+    }
+
+    /**
+     * Sets the component factory for the given attribute, used when editing entities via {@link EntityTablePanel#editSelected(Attribute)}.
+     * @param attribute the attribute
+     * @param componentFactory the component factory
+     * @param <T> the value type
+     * @param <A> the attribute type
+     * @param <C> the component type
+     * @return this Config instance
+     */
+    public <T, A extends Attribute<T>, C extends JComponent> Config editComponentFactory(A attribute,
+                                                                                         EntityComponentFactory<T, A, C> componentFactory) {
+      entityDefinition.attributes().definition(attribute);
+      editComponentFactories.put(attribute, requireNonNull(componentFactory));
+      return this;
+    }
+
+    /**
+     * Sets the table cell editor component factory for the given attribute.
+     * @param attribute the attribute
+     * @param componentFactory the component factory
+     * @param <T> the value type
+     * @param <A> the attribute type
+     * @param <C> the component type
+     * @return this Config instance
+     */
+    public <T, A extends Attribute<T>, C extends JComponent> Config tableCellEditorFactory(A attribute,
+                                                                                           EntityComponentFactory<T, A, C> componentFactory) {
+      entityDefinition.attributes().definition(attribute);
+      cellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
+      return this;
+    }
+
+    /**
+     * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
+     * @return this Config instance
+     */
+    public Config referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+      this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
+      return this;
+    }
+
+    /**
+     * @param refreshButtonVisible the refresh button visible setting
+     * @return this Config instance
+     */
+    public Config refreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
+      this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
+      return this;
+    }
+
+    /**
+     * @param statusMessage the function used for creating the table status message
+     * @return this Config instance
+     */
+    public Config statusMessage(Function<SwingEntityTableModel, String> statusMessage) {
+      this.statusMessage = requireNonNull(statusMessage);
+      return this;
+    }
+
+    /**
+     * @param showRefreshProgressBar controls whether an indeterminate progress bar should be shown while the model is refreshing
+     * @return this Config instance
+     * @see #SHOW_REFRESH_PROGRESS_BAR
+     */
+    public Config showRefreshProgressBar(boolean showRefreshProgressBar) {
+      this.showRefreshProgressBar = showRefreshProgressBar;
       return this;
     }
 
@@ -1985,6 +2023,14 @@ public class EntityTablePanel extends JPanel {
         add(southToolBar, BorderLayout.EAST);
       }
     }
+
+    private StatusPanel statusPanel() {
+      if (statusPanel == null) {
+        statusPanel = new StatusPanel();
+      }
+
+      return statusPanel;
+    }
   }
 
   private final class StatusPanel extends JPanel {
@@ -1992,10 +2038,7 @@ public class EntityTablePanel extends JPanel {
     private static final String STATUS = "status";
     private static final String REFRESHING = "refreshing";
 
-    private final Value<String> statusMessage = Value.value("", "");
-    private final Value<Function<SwingEntityTableModel, String>> statusMessageFunction =
-            Value.value(DEFAULT_STATUS_MESSAGE, DEFAULT_STATUS_MESSAGE);
-    private final State showRefreshProgressBar = State.state(SHOW_REFRESH_PROGRESS_BAR.get());
+    private final Value<String> statusMessage = value("", "");
 
     private StatusPanel() {
       super(new CardLayout());
@@ -2005,7 +2048,7 @@ public class EntityTablePanel extends JPanel {
       add(createRefreshingProgressPanel(), REFRESHING);
       CardLayout layout = (CardLayout) getLayout();
       tableModel.refresher().observer().addDataListener(isRefreshing -> {
-        if (showRefreshProgressBar.get()) {
+        if (configuration.showRefreshProgressBar) {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });
@@ -2013,7 +2056,6 @@ public class EntityTablePanel extends JPanel {
         setComponentPopupMenu(createPopupMenu());
       }
       Runnable statusListener = this::updateStatusMessage;
-      statusMessageFunction.addListener(statusListener);
       tableModel.selectionModel().addSelectionListener(statusListener);
       tableModel.addDataChangedListener(statusListener);
       updateStatusMessage();
@@ -2051,7 +2093,7 @@ public class EntityTablePanel extends JPanel {
     }
 
     private void updateStatusMessage() {
-      statusMessage.set(statusMessageFunction.get().apply(tableModel));
+      statusMessage.set(configuration.statusMessage.apply(tableModel));
     }
   }
 }

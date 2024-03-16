@@ -37,7 +37,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
@@ -75,7 +75,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
   }
 
   @Override
-  public Optional<Integer> selectFontSize() {
+  public OptionalInt selectFontSize() {
     ResourceBundle resourceBundle = ResourceBundle.getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName());
     int currentFontSize = Integer.parseInt(UserPreferences.getUserPreference(userPreferencePropertyName, "100"));
     FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(currentFontSize);
@@ -86,10 +86,10 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
             .onOk(() -> okPressed.set(true))
             .show();
     if (okPressed.get()) {
-      return Optional.of(fontSizeSelectionPanel.selectedFontSize());
+      return OptionalInt.of(fontSizeSelectionPanel.selectedFontSize());
     }
 
-    return Optional.empty();
+    return OptionalInt.empty();
   }
 
   private static final class FontSizeSelectionPanel extends JPanel {

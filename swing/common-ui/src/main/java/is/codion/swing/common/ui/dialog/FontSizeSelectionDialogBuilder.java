@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JComponent;
-import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Builds a dialog for selecting the font size.
@@ -38,7 +38,7 @@ public interface FontSizeSelectionDialogBuilder {
    * Displays a dialog allowing the user the select a font size multiplier.
    * @return the selected font size multiplier, an empty Optional if cancelled
    */
-  Optional<Integer> selectFontSize();
+  OptionalInt selectFontSize();
 
   /**
    * Creates a {@link Control} for selecting the font size.

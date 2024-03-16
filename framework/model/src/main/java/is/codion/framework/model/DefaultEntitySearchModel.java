@@ -210,7 +210,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     return Select.where(createCombinedCondition(conditions))
-            .limit(limit.isNull() ? -1 : limit.get())
+            .limit(limit.get())
             .build();
   }
 

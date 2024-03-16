@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultInsertEntities implements Insert {
+final class DefaultInsert implements Insert {
 
   private final EntityConnection connection;
   private final Iterator<Entity> entityIterator;
@@ -38,7 +38,7 @@ final class DefaultInsertEntities implements Insert {
   private final Consumer<Integer> progressReporter;
   private final Consumer<Collection<Entity.Key>> onInsert;
 
-  DefaultInsertEntities(DefaultBuilder builder) {
+  DefaultInsert(DefaultBuilder builder) {
     this.connection = builder.connection;
     this.entityIterator = builder.entityIterator;
     this.batchSize = builder.batchSize;
@@ -108,7 +108,7 @@ final class DefaultInsertEntities implements Insert {
 
     @Override
     public Insert build() {
-      return new DefaultInsertEntities(this);
+      return new DefaultInsert(this);
     }
   }
 }

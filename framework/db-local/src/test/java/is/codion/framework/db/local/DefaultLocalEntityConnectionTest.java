@@ -449,7 +449,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, departments.size());
     departments = connection.select(selectBuilder.limit(3).build());
     assertEquals(3, departments.size());
-    departments = connection.select(selectBuilder.limit(-1).build());
+    departments = connection.select(selectBuilder.limit(null).build());
     assertEquals(4, departments.size());
   }
 

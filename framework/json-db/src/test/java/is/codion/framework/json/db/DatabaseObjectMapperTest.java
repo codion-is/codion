@@ -66,7 +66,7 @@ public final class DatabaseObjectMapperTest {
     assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
     assertEquals(select.limit(), readCondition.limit());
     assertEquals(select.offset(), readCondition.offset());
-    assertEquals(select.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));
+    assertEquals(select.fetchDepth().orElse(-1), readCondition.fetchDepth().orElse(-1));
     for (ForeignKey foreignKey : entities.definition(select.where().entityType()).foreignKeys().get()) {
       assertEquals(select.foreignKeyFetchDepths().get(foreignKey), readCondition.foreignKeyFetchDepths().get(foreignKey));
     }

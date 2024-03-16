@@ -42,8 +42,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
 
   public CustomerTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-    refreshButtonVisible().set(RefreshButtonVisible.ALWAYS);
+    super(tableModel, config -> config
+            .refreshButtonVisible(RefreshButtonVisible.ALWAYS));
   }
 
   @Override

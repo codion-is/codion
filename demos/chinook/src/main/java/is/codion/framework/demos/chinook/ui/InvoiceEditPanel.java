@@ -48,9 +48,8 @@ public final class InvoiceEditPanel extends EntityEditPanel {
   private final EntityPanel invoiceLinePanel;
 
   public InvoiceEditPanel(SwingEntityEditModel editModel, EntityPanel invoiceLinePanel) {
-    super(editModel);
+    super(editModel, config -> config.clearAfterInsert(false));
     this.invoiceLinePanel = invoiceLinePanel;
-    clearAfterInsert().set(false);
   }
 
   @Override

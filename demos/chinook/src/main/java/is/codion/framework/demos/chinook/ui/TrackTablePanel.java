@@ -45,9 +45,9 @@ public final class TrackTablePanel extends EntityTablePanel {
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
 
   public TrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-    setEditComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false));
-    setTableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true));
+    super(tableModel, config -> config
+            .editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
+            .tableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true)));
   }
 
   @Override

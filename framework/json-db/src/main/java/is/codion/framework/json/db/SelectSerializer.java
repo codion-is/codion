@@ -63,11 +63,13 @@ final class SelectSerializer extends StdSerializer<Select> {
       }
       generator.writeEndArray();
     }
-    if (select.limit() != 0) {
-      generator.writeObjectField("limit", select.limit());
+    int limit = select.limit().orElse(-1);
+    if (limit != -1) {
+      generator.writeObjectField("limit", limit);
     }
-    if (select.offset() != 0) {
-      generator.writeObjectField("offset", select.offset());
+    int offset = select.offset().orElse(-1);
+    if (offset != -1) {
+      generator.writeObjectField("offset", offset);
     }
     if (select.forUpdate()) {
       generator.writeObjectField("forUpdate", select.forUpdate());
@@ -75,8 +77,8 @@ final class SelectSerializer extends StdSerializer<Select> {
     if (select.queryTimeout() != 0) {
       generator.writeObjectField("queryTimeout", select.queryTimeout());
     }
-    Integer conditionFetchDepth = select.fetchDepth().orElse(null);
-    if (conditionFetchDepth != null) {
+    int conditionFetchDepth = select.fetchDepth().orElse(-1);
+    if (conditionFetchDepth != -1) {
       generator.writeObjectField("fetchDepth", conditionFetchDepth);
     }
     Map<ForeignKey, Integer> foreignKeyFetchDepths = select.foreignKeyFetchDepths();

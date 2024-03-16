@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -414,11 +415,11 @@ public interface EntityConnection extends AutoCloseable {
    * @return a new {@link Copy.Builder} instance
    */
   static Copy.Builder copyEntities(EntityConnection source, EntityConnection destination) {
-    return new DefaultCopyEntities.DefaultBuilder(source, destination);
+    return new DefaultCopy.DefaultBuilder(source, destination);
   }
 
   /**
-   * Creates a new {@link Insert} instance the given entities, with a default batch size of 100.
+   * Creates a new {@link Insert} instance based on the given iterator, with a default batch size of 100.
    * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
    * Call {@link Insert#execute()} to perform the insert operation.
    * @param connection the entity connection to use when inserting
@@ -426,7 +427,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return a new {@link Insert.Builder} instance
    */
   static Insert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
-    return new DefaultInsertEntities.DefaultBuilder(connection, entities);
+    return new DefaultInsert.DefaultBuilder(connection, entities);
   }
 
   /**
@@ -559,14 +560,14 @@ public interface EntityConnection extends AutoCloseable {
     Optional<OrderBy> orderBy();
 
     /**
-     * @return the limit to use for the given condition, -1 for no limit
+     * @return the limit to use for the given condition, an empty Optional for no limit
      */
-    int limit();
+    OptionalInt limit();
 
     /**
-     * @return the offset to use for the given condition, -1 for no offset
+     * @return the offset to use for the given condition, an empty Optional for no offset
      */
-    int offset();
+    OptionalInt offset();
 
     /**
      * @return true if this select should lock the result for update
@@ -581,15 +582,15 @@ public interface EntityConnection extends AutoCloseable {
     /**
      * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
      */
-    Optional<Integer> fetchDepth();
+    OptionalInt fetchDepth();
 
     /**
-     * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
-     * should be fetched, -1 no limit and an empty Optional if unspecified (use default).
+     * Returns the number of levels of foreign key values to fetch, with 0 meaning the referenced entity
+     * should not be fetched, -1 no limit and an empty Optional if the global limit should be used ({@link #fetchDepth()}).
      * @param foreignKey the foreign key
      * @return the number of levels of foreign key values to fetch
      */
-    Optional<Integer> fetchDepth(ForeignKey foreignKey);
+    OptionalInt fetchDepth(ForeignKey foreignKey);
 
     /**
      * Returns a map containing the number of levels of foreign key values to fetch per foreign key,
@@ -617,16 +618,16 @@ public interface EntityConnection extends AutoCloseable {
       Builder orderBy(OrderBy orderBy);
 
       /**
-       * @param limit the limit to use for this condition, -1 for no limit
+       * @param limit the limit to use for this condition, null for no limit
        * @return this builder instance
        */
-      Builder limit(int limit);
+      Builder limit(Integer limit);
 
       /**
-       * @param offset the offset to use for this condition
+       * @param offset the offset to use for this condition, null for no offset
        * @return this builder instance
        */
-      Builder offset(int offset);
+      Builder offset(Integer offset);
 
       /**
        * Marks the Select instance as a for update query, this means the resulting rows
