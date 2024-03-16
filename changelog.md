@@ -34,6 +34,7 @@ Codion Change Log
 - EntityPanel, EntityTablePanel, configuration instance now defensively copied.
 - EntityTablePanel.setEditComponentFactory() and setTableCellEditorFactory() moved to Config.
 - EntityTablePanel.referentialIntegrityErrorHandling() moved to Config.
+- EntityTablePanel.refreshButtonVisible() moved to Config.
 
 ## 0.17.31
 ### is.codion.common
