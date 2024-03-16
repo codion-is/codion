@@ -898,7 +898,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (configuration.referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
+    if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
@@ -1179,7 +1179,7 @@ public class EntityTablePanel extends JPanel {
             .action(conditionRefreshControl)
             .floatable(false)
             .rollover(false)
-            .visible(configuration.refreshButtonVisible.isEqualTo(RefreshButtonVisible.ALWAYS) || conditionPanelVisibleState.get())
+            .visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get())
             .build();
   }
 
@@ -1257,7 +1257,7 @@ public class EntityTablePanel extends JPanel {
   private void setConditionPanelVisible(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
-      refreshButtonToolBar.setVisible(configuration.refreshButtonVisible.isEqualTo(RefreshButtonVisible.ALWAYS) || visible);
+      refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
       revalidate();
     }
   }
@@ -1657,8 +1657,6 @@ public class EntityTablePanel extends JPanel {
     private final ValueSet<Attribute<?>> editable;
     private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
     private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
-    private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling;
-    private final Value<RefreshButtonVisible> refreshButtonVisible;
 
     private EntityConditionPanelFactory conditionPanelFactory;
     private boolean includeSouthPanel = true;
@@ -1671,6 +1669,8 @@ public class EntityTablePanel extends JPanel {
     private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
     private boolean includeSelectionModeControl = false;
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
+    private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
+    private RefreshButtonVisible refreshButtonVisible;
 
     private Config(EntityDefinition entityDefinition) {
       this.entityDefinition = entityDefinition;
@@ -1682,12 +1682,8 @@ public class EntityTablePanel extends JPanel {
       this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
       this.editComponentFactories = new HashMap<>();
       this.cellEditorComponentFactories = new HashMap<>();
-      this.referentialIntegrityErrorHandling = value(
-              ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
-              ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
-      this.refreshButtonVisible = value(
-              RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE,
-              RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
+      this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+      this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
     }
 
     private Config(Config config) {
@@ -1707,8 +1703,8 @@ public class EntityTablePanel extends JPanel {
       this.columnSelection = config.columnSelection;
       this.editComponentFactories = new HashMap<>(config.editComponentFactories);
       this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
-      this.referentialIntegrityErrorHandling = value(config.referentialIntegrityErrorHandling.get());
-      this.refreshButtonVisible = value(config.refreshButtonVisible.get());
+      this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
+      this.refreshButtonVisible = config.refreshButtonVisible;
     }
 
     /**
@@ -1866,7 +1862,7 @@ public class EntityTablePanel extends JPanel {
      * @return this Config instance
      */
     public Config referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
-      this.referentialIntegrityErrorHandling.set(requireNonNull(referentialIntegrityErrorHandling));
+      this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
       return this;
     }
 
@@ -1875,7 +1871,7 @@ public class EntityTablePanel extends JPanel {
      * @return this Config instance
      */
     public Config refreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
-      this.refreshButtonVisible.set(refreshButtonVisible);
+      this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
       return this;
     }
 
