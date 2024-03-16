@@ -84,6 +84,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
@@ -345,7 +346,7 @@ public class EntityTablePanel extends JPanel {
   private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
   private final State summaryPanelVisibleState = State.state();
-  private final Value<RefreshButtonVisible> refreshButtonVisible = Value.value(
+  private final Value<RefreshButtonVisible> refreshButtonVisible = value(
           RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE,
           RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
@@ -353,9 +354,6 @@ public class EntityTablePanel extends JPanel {
   private final Config configuration;
   private final SwingEntityTableModel tableModel;
   private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
-  private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling = Value.value(
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
-          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
   private final Control conditionRefreshControl;
   private final JToolBar refreshButtonToolBar;
   private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -508,13 +506,6 @@ public class EntityTablePanel extends JPanel {
       selectConditionPanel(table.filterPanel(), filterPanelScrollPane, table.filterPanel().advanced(),
               filterPanelVisibleState, tableModel, this, FrameworkMessages.selectFilterField());
     }
-  }
-
-  /**
-   * @return the Value controlling the action to take on a referential integrity error on delete
-   */
-  public final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling() {
-    return referentialIntegrityErrorHandling;
   }
 
   /**
@@ -914,11 +905,11 @@ public class EntityTablePanel extends JPanel {
    * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @see #referentialIntegrityErrorHandling()
+   * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    if (referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
+    if (configuration.referentialIntegrityErrorHandling.isEqualTo(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES)) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
@@ -1486,7 +1477,7 @@ public class EntityTablePanel extends JPanel {
 
     return Stream.of(TableControl.values())
             .collect(toMap(Function.identity(), controlCode -> {
-              Value<Control> value = Value.value();
+              Value<Control> value = value();
               value.addValidator(controlValueValidator);
 
               return value;
@@ -1496,7 +1487,7 @@ public class EntityTablePanel extends JPanel {
   private Value<Confirmer> createDeleteConfirmer() {
     DeleteConfirmer defaultDeleteConfirmer = new DeleteConfirmer();
 
-    return Value.value(defaultDeleteConfirmer, defaultDeleteConfirmer);
+    return value(defaultDeleteConfirmer, defaultDeleteConfirmer);
   }
 
   private void throwIfInitialized() {
@@ -1681,6 +1672,7 @@ public class EntityTablePanel extends JPanel {
     private final ValueSet<Attribute<?>> editable;
     private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
     private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
+    private final Value<ReferentialIntegrityErrorHandling> referentialIntegrityErrorHandling;
 
     private EntityConditionPanelFactory conditionPanelFactory;
     private boolean includeSouthPanel = true;
@@ -1704,6 +1696,9 @@ public class EntityTablePanel extends JPanel {
       this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
       this.editComponentFactories = new HashMap<>();
       this.cellEditorComponentFactories = new HashMap<>();
+      this.referentialIntegrityErrorHandling = value(
+              ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get(),
+              ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get());
     }
 
     private Config(Config config) {
@@ -1723,6 +1718,7 @@ public class EntityTablePanel extends JPanel {
       this.columnSelection = config.columnSelection;
       this.editComponentFactories = new HashMap<>(config.editComponentFactories);
       this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
+      this.referentialIntegrityErrorHandling = value(config.referentialIntegrityErrorHandling.get());
     }
 
     /**
@@ -1875,6 +1871,15 @@ public class EntityTablePanel extends JPanel {
       return this;
     }
 
+    /**
+     * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
+     * @return this Config instance
+     */
+    public Config referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+      this.referentialIntegrityErrorHandling.set(requireNonNull(referentialIntegrityErrorHandling));
+      return this;
+    }
+
     private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
 
       private final EntityDefinition entityDefinition;
@@ -2016,9 +2021,9 @@ public class EntityTablePanel extends JPanel {
     private static final String STATUS = "status";
     private static final String REFRESHING = "refreshing";
 
-    private final Value<String> statusMessage = Value.value("", "");
+    private final Value<String> statusMessage = value("", "");
     private final Value<Function<SwingEntityTableModel, String>> statusMessageFunction =
-            Value.value(DEFAULT_STATUS_MESSAGE, DEFAULT_STATUS_MESSAGE);
+            value(DEFAULT_STATUS_MESSAGE, DEFAULT_STATUS_MESSAGE);
     private final State showRefreshProgressBar = State.state(SHOW_REFRESH_PROGRESS_BAR.get());
 
     private StatusPanel() {
