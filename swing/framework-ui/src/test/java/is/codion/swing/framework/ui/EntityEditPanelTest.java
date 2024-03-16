@@ -48,9 +48,6 @@ public final class EntityEditPanelTest {
     assertFalse(editModel.exists().get());
     assertEquals(7, editPanel.attributes().size());
 
-    editPanel.clearAfterInsert().set(true);
-    editPanel.requestFocusAfterInsert().set(true);
-
     assertNotNull(editPanel.control(EditControl.INSERT));
     assertNotNull(editPanel.control(EditControl.UPDATE));
     assertNotNull(editPanel.control(EditControl.DELETE));

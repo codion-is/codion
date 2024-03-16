@@ -116,7 +116,7 @@ public final class NotesDemo {
 
     private NoteEditPanel(NoteEditModel editModel) {
       // CLEAR is the only standard control we require, for clearing the UI
-      super(editModel, EditControl.CLEAR);
+      super(editModel, config -> config.editControls(EditControl.CLEAR));
     }
 
     @Override

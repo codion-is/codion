@@ -37,6 +37,7 @@ Codion Change Log
 - EntityTablePanel.refreshButtonVisible() moved to Config.
 - EntityTablePanel.statusMessage() moved to Config.
 - EntityTablePanel.showRefreshProgressBar() moved to Config.
+- EntityEditPanel.Config added.
 
 ## 0.17.31
 ### is.codion.common
