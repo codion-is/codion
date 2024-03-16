@@ -444,14 +444,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return the state controlling whether an indeterminate progress bar should be shown while the model is refreshing
-   * @see #SHOW_REFRESH_PROGRESS_BAR
-   */
-  public final State showRefreshProgressBar() {
-    return statusPanel().showRefreshProgressBar;
-  }
-
-  /**
    * Toggles the condition panel through the states hidden, visible and advanced
    */
   public final void toggleConditionPanel() {
@@ -1664,6 +1656,7 @@ public class EntityTablePanel extends JPanel {
     private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
     private RefreshButtonVisible refreshButtonVisible;
     private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
+    private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 
     private Config(EntityDefinition entityDefinition) {
       this.entityDefinition = entityDefinition;
@@ -1699,6 +1692,7 @@ public class EntityTablePanel extends JPanel {
       this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
       this.refreshButtonVisible = config.refreshButtonVisible;
       this.statusMessage = config.statusMessage;
+      this.showRefreshProgressBar = config.showRefreshProgressBar;
     }
 
     /**
@@ -1878,6 +1872,16 @@ public class EntityTablePanel extends JPanel {
       return this;
     }
 
+    /**
+     * @param showRefreshProgressBar controls whether an indeterminate progress bar should be shown while the model is refreshing
+     * @return this Config instance
+     * @see #SHOW_REFRESH_PROGRESS_BAR
+     */
+    public Config showRefreshProgressBar(boolean showRefreshProgressBar) {
+      this.showRefreshProgressBar = showRefreshProgressBar;
+      return this;
+    }
+
     private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
 
       private final EntityDefinition entityDefinition;
@@ -2020,7 +2024,6 @@ public class EntityTablePanel extends JPanel {
     private static final String REFRESHING = "refreshing";
 
     private final Value<String> statusMessage = value("", "");
-    private final State showRefreshProgressBar = State.state(SHOW_REFRESH_PROGRESS_BAR.get());
 
     private StatusPanel() {
       super(new CardLayout());
@@ -2030,7 +2033,7 @@ public class EntityTablePanel extends JPanel {
       add(createRefreshingProgressPanel(), REFRESHING);
       CardLayout layout = (CardLayout) getLayout();
       tableModel.refresher().observer().addDataListener(isRefreshing -> {
-        if (showRefreshProgressBar.get()) {
+        if (configuration.showRefreshProgressBar) {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });

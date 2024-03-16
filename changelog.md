@@ -36,6 +36,7 @@ Codion Change Log
 - EntityTablePanel.referentialIntegrityErrorHandling() moved to Config.
 - EntityTablePanel.refreshButtonVisible() moved to Config.
 - EntityTablePanel.statusMessage() moved to Config.
+- EntityTablePanel.showRefreshProgressBar() moved to Config.
 
 ## 0.17.31
 ### is.codion.common
