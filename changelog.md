@@ -27,6 +27,7 @@ Codion Change Log
 - EntityTablePanel.Settings.editableAttributes() renamed editable().
 - EntityPanel.Settings and EntityTablePanel.Settings renamed Config.
 - EntityPanel.configure() removed.
+- EntityPanel.addDetailPanel() exceptions improved, test added.
 
 ## 0.17.31
 ### is.codion.common

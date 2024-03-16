@@ -411,6 +411,8 @@ public class EntityPanel extends JPanel {
 
   /**
    * @param detailPanels the detail panels
+   * @throws IllegalStateException if the panel has already been initialized
+   * @throws IllegalArgumentException if this panel already contains a given detail panel
    */
   public final void addDetailPanels(EntityPanel... detailPanels) {
     requireNonNull(detailPanels, "detailPanels");
@@ -422,12 +424,13 @@ public class EntityPanel extends JPanel {
   /**
    * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
    * @param detailPanel the detail panel to add
-   * @throws IllegalStateException if the panel has been initialized or if it already contains the given detail panel
+   * @throws IllegalStateException if the panel has already been initialized
+   * @throws IllegalArgumentException if this panel already contains the given detail panel
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
     throwIfInitialized();
     if (detailPanels.contains(requireNonNull(detailPanel))) {
-      throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
+      throw new IllegalArgumentException("Panel already contains detail panel: " + detailPanel);
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
