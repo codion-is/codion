@@ -31,6 +31,7 @@ Codion Change Log
 - EntityPanel.Settings and EntityTablePanel.Settings renamed Config.
 - EntityPanel.configure() removed.
 - EntityPanel.addDetailPanel() exceptions improved, test added.
+- EntityPanel, EntityTablePanel, configuration instance now defensively copied.
 
 ## 0.17.31
 ### is.codion.common

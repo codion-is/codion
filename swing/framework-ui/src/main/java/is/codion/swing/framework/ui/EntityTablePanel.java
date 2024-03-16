@@ -392,9 +392,8 @@ public class EntityTablePanel extends JPanel {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionRefreshControl = createConditionRefreshControl();
     this.refreshButtonToolBar = createRefreshButtonToolBar();
-    this.configuration = new Config(tableModel.entityDefinition());
     this.refreshButtonVisible.addDataListener(this::setRefreshButtonVisible);
-    requireNonNull(configuration).accept(this.configuration);
+    this.configuration = configure(tableModel.entityDefinition(), configuration);
   }
 
   /**
@@ -1637,6 +1636,13 @@ public class EntityTablePanel extends JPanel {
     return new Point(x, y + table.getRowHeight() / 2);
   }
 
+  private static Config configure(EntityDefinition entityDefinition, Consumer<Config> configuration) {
+    Config config = new Config(entityDefinition);
+    requireNonNull(configuration).accept(config);
+
+    return new Config(config);
+  }
+
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
       case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
@@ -1699,7 +1705,7 @@ public class EntityTablePanel extends JPanel {
    */
   public static final class Config {
 
-    private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
+    private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
     private final ValueSet<Attribute<?>> editable;
 
     private EntityConditionPanelFactory conditionPanelFactory;
@@ -1715,6 +1721,7 @@ public class EntityTablePanel extends JPanel {
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 
     private Config(EntityDefinition entityDefinition) {
+      this.shortcuts = KEYBOARD_SHORTCUTS.copy();
       this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
       this.editable = valueSet(entityDefinition.attributes().updatable().stream()
               .map(AttributeDefinition::attribute)
@@ -1722,6 +1729,26 @@ public class EntityTablePanel extends JPanel {
       this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
     }
 
+    private Config(Config config) {
+      this.shortcuts = config.shortcuts.copy();
+      this.editable = valueSet(config.editable.get());
+      this.conditionPanelFactory = config.conditionPanelFactory;
+      this.includeSouthPanel = config.includeSouthPanel;
+      this.includeConditionPanel = config.includeConditionPanel;
+      this.includeFilterPanel = config.includeFilterPanel;
+      this.includeSummaryPanel = config.includeSummaryPanel;
+      this.includeClearControl = config.includeClearControl;
+      this.includeLimitMenu = config.includeLimitMenu;
+      this.includeEntityMenu = config.includeEntityMenu;
+      this.includePopupMenu = config.includePopupMenu;
+      this.includeSelectionModeControl = config.includeSelectionModeControl;
+      this.columnSelection = config.columnSelection;
+    }
+
+    /**
+     * @param conditionPanelFactory the condition panel factory
+     * @return this Config instance
+     */
     public Config conditionPanelFactory(EntityConditionPanelFactory conditionPanelFactory) {
       this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
       return this;

@@ -255,7 +255,7 @@ public class EntityPanel extends JPanel {
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
-  private final Config configuration = new Config();
+  private final Config configuration;
 
   private String description;
   private EntityPanel parentPanel;
@@ -346,7 +346,7 @@ public class EntityPanel extends JPanel {
                      Consumer<Config> configuration) {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
-    requireNonNull(configuration).accept(this.configuration);
+    this.configuration = configure(configuration);
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
     this.caption = Value.value(defaultCaption, defaultCaption);
@@ -1121,6 +1121,13 @@ public class EntityPanel extends JPanel {
     }
   }
 
+  private static Config configure(Consumer<Config> configuration) {
+    Config config = new Config();
+    requireNonNull(configuration).accept(config);
+
+    return new Config(config);
+  }
+
   private final class ShowHiddenEditPanel implements Control.Command {
 
     @Override
@@ -1231,7 +1238,7 @@ public class EntityPanel extends JPanel {
    */
   public static final class Config {
 
-    private final KeyboardShortcuts<KeyboardShortcut> shortcuts = KEYBOARD_SHORTCUTS.copy();
+    private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
     private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
     private boolean toolbarControls = TOOLBAR_CONTROLS.get();
@@ -1241,7 +1248,19 @@ public class EntityPanel extends JPanel {
     private boolean includeControls = INCLUDE_CONTROLS.get();
     private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 
-    private Config() {}
+    private Config() {
+      this.shortcuts = KEYBOARD_SHORTCUTS.copy();
+    }
+
+    private Config(Config config) {
+      this.shortcuts = config.shortcuts.copy();
+      this.panelLayout = config.panelLayout;
+      this.toolbarControls = config.toolbarControls;
+      this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
+      this.controlComponentConstraints = config.controlComponentConstraints;
+      this.includeControls = config.includeControls;
+      this.useKeyboardNavigation = config.useKeyboardNavigation;
+    }
 
     /**
      * @param panelLayout the panel layout
