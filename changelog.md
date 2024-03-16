@@ -32,6 +32,7 @@ Codion Change Log
 - EntityPanel.configure() removed.
 - EntityPanel.addDetailPanel() exceptions improved, test added.
 - EntityPanel, EntityTablePanel, configuration instance now defensively copied.
+- EntityTablePanel.setEditComponentFactory() and setTableCellEditorFactory() moved to Config.
 
 ## 0.17.31
 ### is.codion.common

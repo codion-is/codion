@@ -11,9 +11,9 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
+    super(tableModel, config -> config
+            .editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory()));
     configureTrackConditionPanel();
-    setEditComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }
 
   private void configureTrackConditionPanel() {

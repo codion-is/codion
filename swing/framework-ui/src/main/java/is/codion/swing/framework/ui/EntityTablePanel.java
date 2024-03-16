@@ -350,8 +350,6 @@ public class EntityTablePanel extends JPanel {
           RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
   private final Map<TableControl, Value<Control>> controls = createControlsMap();
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories = new HashMap<>();
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories = new HashMap<>();
   private final Config configuration;
   private final SwingEntityTableModel tableModel;
   private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
@@ -472,34 +470,6 @@ public class EntityTablePanel extends JPanel {
    */
   public final Value<Function<SwingEntityTableModel, String>> statusMessage() {
     return statusPanel().statusMessageFunction;
-  }
-
-  /**
-   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelected(Attribute)}.
-   * @param attribute the attribute
-   * @param componentFactory the component factory
-   * @param <T> the value type
-   * @param <A> the attribute type
-   * @param <C> the component type
-   */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setEditComponentFactory(A attribute,
-                                                                                              EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().attributes().definition(attribute);
-    editComponentFactories.put(attribute, requireNonNull(componentFactory));
-  }
-
-  /**
-   * Sets the table cell editor component factory for the given attribute.
-   * @param attribute the attribute
-   * @param componentFactory the component factory
-   * @param <T> the value type
-   * @param <A> the attribute type
-   * @param <C> the component type
-   */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorFactory(A attribute,
-                                                                                                EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().attributes().definition(attribute);
-    cellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -979,7 +949,7 @@ public class EntityTablePanel extends JPanel {
   protected <T> EntityDialogs.EditDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
     return EntityDialogs.editDialog(tableModel.editModel(), attribute)
             .owner(this)
-            .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) editComponentFactories.get(attribute));
+            .componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) configuration.editComponentFactories.get(attribute));
   }
 
   /**
@@ -1215,7 +1185,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
-    return ((EntityComponentFactory<T, Attribute<T>, ?>) cellEditorComponentFactories.computeIfAbsent(attribute, a ->
+    return ((EntityComponentFactory<T, Attribute<T>, ?>) configuration.cellEditorComponentFactories.computeIfAbsent(attribute, a ->
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).componentValue(attribute, tableModel.editModel(), initialValue);
   }
 
@@ -1705,8 +1675,12 @@ public class EntityTablePanel extends JPanel {
    */
   public static final class Config {
 
+    private final EntityDefinition entityDefinition;
+
     private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
     private final ValueSet<Attribute<?>> editable;
+    private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
+    private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
 
     private EntityConditionPanelFactory conditionPanelFactory;
     private boolean includeSouthPanel = true;
@@ -1721,15 +1695,19 @@ public class EntityTablePanel extends JPanel {
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 
     private Config(EntityDefinition entityDefinition) {
+      this.entityDefinition = entityDefinition;
       this.shortcuts = KEYBOARD_SHORTCUTS.copy();
       this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
       this.editable = valueSet(entityDefinition.attributes().updatable().stream()
               .map(AttributeDefinition::attribute)
               .collect(toSet()));
       this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
+      this.editComponentFactories = new HashMap<>();
+      this.cellEditorComponentFactories = new HashMap<>();
     }
 
     private Config(Config config) {
+      this.entityDefinition = config.entityDefinition;
       this.shortcuts = config.shortcuts.copy();
       this.editable = valueSet(config.editable.get());
       this.conditionPanelFactory = config.conditionPanelFactory;
@@ -1743,6 +1721,8 @@ public class EntityTablePanel extends JPanel {
       this.includePopupMenu = config.includePopupMenu;
       this.includeSelectionModeControl = config.includeSelectionModeControl;
       this.columnSelection = config.columnSelection;
+      this.editComponentFactories = new HashMap<>(config.editComponentFactories);
+      this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
     }
 
     /**
@@ -1860,6 +1840,38 @@ public class EntityTablePanel extends JPanel {
      */
     public Config editable(Consumer<ValueSet<Attribute<?>>> attributes) {
       requireNonNull(attributes).accept(this.editable);
+      return this;
+    }
+
+    /**
+     * Sets the component factory for the given attribute, used when editing entities via {@link EntityTablePanel#editSelected(Attribute)}.
+     * @param attribute the attribute
+     * @param componentFactory the component factory
+     * @param <T> the value type
+     * @param <A> the attribute type
+     * @param <C> the component type
+     * @return this Config instance
+     */
+    public <T, A extends Attribute<T>, C extends JComponent> Config editComponentFactory(A attribute,
+                                                                                         EntityComponentFactory<T, A, C> componentFactory) {
+      entityDefinition.attributes().definition(attribute);
+      editComponentFactories.put(attribute, requireNonNull(componentFactory));
+      return this;
+    }
+
+    /**
+     * Sets the table cell editor component factory for the given attribute.
+     * @param attribute the attribute
+     * @param componentFactory the component factory
+     * @param <T> the value type
+     * @param <A> the attribute type
+     * @param <C> the component type
+     * @return this Config instance
+     */
+    public <T, A extends Attribute<T>, C extends JComponent> Config tableCellEditorFactory(A attribute,
+                                                                                           EntityComponentFactory<T, A, C> componentFactory) {
+      entityDefinition.attributes().definition(attribute);
+      cellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
       return this;
     }
 
