@@ -402,17 +402,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Provides a way to configure settings before the panel is initialized.
-   * @return the {@link Config} instance
-   * @throws IllegalStateException in case the panel has already been initialized
-   */
-  public final Config configure() {
-    throwIfInitialized();
-
-    return configuration;
-  }
-
-  /**
    * @return the detail panel controller
    * @param <T> the detail panel controller type
    */

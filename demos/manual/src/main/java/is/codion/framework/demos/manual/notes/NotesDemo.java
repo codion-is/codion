@@ -190,10 +190,10 @@ public final class NotesDemo {
     private NotePanel(NoteModel noteModel) {
       super(noteModel,
               new NoteEditPanel(noteModel.editModel()),
-              new NoteTablePanel(noteModel.tableModel()));
-      // No need to include the default control buttons since
-      // we added the CLEAR control button to the edit panel
-      configure().includeControls(false);
+              new NoteTablePanel(noteModel.tableModel()), config -> config
+                      // No need to include the default control buttons since
+                      // we added the CLEAR control button to the edit panel
+                      .includeControls(false));
     }
 
     @Override
