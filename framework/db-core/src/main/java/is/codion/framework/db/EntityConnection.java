@@ -400,11 +400,11 @@ public interface EntityConnection extends AutoCloseable {
    * @return a new {@link Copy.Builder} instance
    */
   static Copy.Builder copyEntities(EntityConnection source, EntityConnection destination) {
-    return new DefaultCopyEntities.DefaultBuilder(source, destination);
+    return new DefaultCopy.DefaultBuilder(source, destination);
   }
 
   /**
-   * Creates a new {@link Insert} instance the given entities, with a default batch size of 100.
+   * Creates a new {@link Insert} instance based on the given iterator, with a default batch size of 100.
    * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
    * Call {@link Insert#execute()} to perform the insert operation.
    * @param connection the entity connection to use when inserting
@@ -412,7 +412,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return a new {@link Insert.Builder} instance
    */
   static Insert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
-    return new DefaultInsertEntities.DefaultBuilder(connection, entities);
+    return new DefaultInsert.DefaultBuilder(connection, entities);
   }
 
   /**

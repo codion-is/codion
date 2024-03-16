@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultCopyEntities implements Copy {
+final class DefaultCopy implements Copy {
 
   private final EntityConnection source;
   private final EntityConnection destination;
@@ -28,7 +28,7 @@ final class DefaultCopyEntities implements Copy {
   private final int batchSize;
   private final boolean includePrimaryKeys;
 
-  DefaultCopyEntities(DefaultBuilder builder) {
+  DefaultCopy(DefaultBuilder builder) {
     this.source = builder.source;
     this.destination = builder.destination;
     this.entityTypes.addAll(builder.entityTypes);
@@ -50,7 +50,7 @@ final class DefaultCopyEntities implements Copy {
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearPrimaryKey);
       }
-      new DefaultInsertEntities.DefaultBuilder(destination, entities.iterator())
+      new DefaultInsert.DefaultBuilder(destination, entities.iterator())
               .batchSize(batchSize)
               .execute();
     }
@@ -95,7 +95,7 @@ final class DefaultCopyEntities implements Copy {
     @Override
     public Builder condition(Condition condition) {
       if (!entityTypes.contains(requireNonNull(condition).entityType())) {
-        throw new IllegalArgumentException("CopyEntities.Builder does not contain entityType: " + condition.entityType());
+        throw new IllegalArgumentException("Copy.Builder does not contain entityType: " + condition.entityType());
       }
       this.conditions.put(condition.entityType(), condition);
       return this;
@@ -108,7 +108,7 @@ final class DefaultCopyEntities implements Copy {
 
     @Override
     public Copy build() {
-      return new DefaultCopyEntities(this);
+      return new DefaultCopy(this);
     }
   }
 }
