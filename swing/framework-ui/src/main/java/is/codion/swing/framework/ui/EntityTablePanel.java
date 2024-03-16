@@ -452,14 +452,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return the value containing the function for creating the table status message
-   * @see #statusMessage()
-   */
-  public final Value<Function<SwingEntityTableModel, String>> statusMessage() {
-    return statusPanel().statusMessageFunction;
-  }
-
-  /**
    * Toggles the condition panel through the states hidden, visible and advanced
    */
   public final void toggleConditionPanel() {
@@ -1671,6 +1663,7 @@ public class EntityTablePanel extends JPanel {
     private ColumnSelection columnSelection = COLUMN_SELECTION.get();
     private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
     private RefreshButtonVisible refreshButtonVisible;
+    private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
 
     private Config(EntityDefinition entityDefinition) {
       this.entityDefinition = entityDefinition;
@@ -1705,6 +1698,7 @@ public class EntityTablePanel extends JPanel {
       this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
       this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
       this.refreshButtonVisible = config.refreshButtonVisible;
+      this.statusMessage = config.statusMessage;
     }
 
     /**
@@ -1875,6 +1869,15 @@ public class EntityTablePanel extends JPanel {
       return this;
     }
 
+    /**
+     * @param statusMessage the function used for creating the table status message
+     * @return this Config instance
+     */
+    public Config statusMessage(Function<SwingEntityTableModel, String> statusMessage) {
+      this.statusMessage = requireNonNull(statusMessage);
+      return this;
+    }
+
     private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
 
       private final EntityDefinition entityDefinition;
@@ -2017,8 +2020,6 @@ public class EntityTablePanel extends JPanel {
     private static final String REFRESHING = "refreshing";
 
     private final Value<String> statusMessage = value("", "");
-    private final Value<Function<SwingEntityTableModel, String>> statusMessageFunction =
-            value(DEFAULT_STATUS_MESSAGE, DEFAULT_STATUS_MESSAGE);
     private final State showRefreshProgressBar = State.state(SHOW_REFRESH_PROGRESS_BAR.get());
 
     private StatusPanel() {
@@ -2037,7 +2038,6 @@ public class EntityTablePanel extends JPanel {
         setComponentPopupMenu(createPopupMenu());
       }
       Runnable statusListener = this::updateStatusMessage;
-      statusMessageFunction.addListener(statusListener);
       tableModel.selectionModel().addSelectionListener(statusListener);
       tableModel.addDataChangedListener(statusListener);
       updateStatusMessage();
@@ -2075,7 +2075,7 @@ public class EntityTablePanel extends JPanel {
     }
 
     private void updateStatusMessage() {
-      statusMessage.set(statusMessageFunction.get().apply(tableModel));
+      statusMessage.set(configuration.statusMessage.apply(tableModel));
     }
   }
 }
