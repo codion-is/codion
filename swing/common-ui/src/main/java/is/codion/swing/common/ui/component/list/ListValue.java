@@ -9,7 +9,7 @@ import javax.swing.JList;
 import javax.swing.ListModel;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 
 final class ListValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
@@ -32,20 +32,19 @@ final class ListValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
   static <T> void selectValues(JList<T> list, Set<T> valueSet) {
     list.setSelectedIndices(valueSet.stream()
             .map(value -> indexOf(list, value))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .mapToInt(Integer::intValue)
+            .filter(OptionalInt::isPresent)
+            .mapToInt(OptionalInt::getAsInt)
             .toArray());
   }
 
-  private static <T> Optional<Integer> indexOf(JList<T> list, T element) {
+  private static <T> OptionalInt indexOf(JList<T> list, T element) {
     ListModel<T> model = list.getModel();
     for (int i = 0; i < model.getSize(); i++) {
       if (Objects.equals(model.getElementAt(i), element)) {
-        return Optional.of(i);
+        return OptionalInt.of(i);
       }
     }
 
-    return Optional.empty();
+    return OptionalInt.empty();
   }
 }

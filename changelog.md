@@ -9,9 +9,12 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ComponentBuilder implementations, lambdas replaced with static classes to prevent memory leaks.
 - FilteredTableConditionPanel, now handles configuring the horizontal alignment of condition text fields according to the column cell renderer.
+- FontSizeSelectionDialogBuilder.selectFontSize() now returns OptionalInt.
 ### is.codion.framework.i18n
 - FrameworkMessages, confirm update and confirm insert messages improved.
 - FrameworkMessages, no search results message improved.
+### is.codion.framework.db.core
+- EntityConnection.Select.limit(), offset() and fetchDepth() now return OptionalInt.
 ### is.codion.swing.framework.ui
 - EntitySearchField.selectorFactory() now Value based.
 - EntitySearchField.searchIndicator() now Value based.

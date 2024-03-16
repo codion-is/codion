@@ -101,12 +101,8 @@ final class SelectQueries {
       havingCondition(select.having());
       select.orderBy().ifPresent(this::setOrderBy);
       forUpdate(select.forUpdate());
-      if (select.limit() >= 0) {
-        limit(select.limit());
-        if (select.offset() >= 0) {
-          offset(select.offset());
-        }
-      }
+      select.limit().ifPresent(this::limit);
+      select.offset().ifPresent(this::offset);
 
       return this;
     }

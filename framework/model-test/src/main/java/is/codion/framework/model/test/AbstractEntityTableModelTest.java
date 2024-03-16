@@ -255,7 +255,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     commissionConditionModel.enabled().set(false);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
-    tableModel.limit().set(-1);
+    tableModel.limit().set(null);
     tableModel.refresh();
     assertEquals(16, tableModel.getRowCount());
   }

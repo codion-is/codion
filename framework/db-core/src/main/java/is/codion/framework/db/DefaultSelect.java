@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -32,8 +33,8 @@ final class DefaultSelect implements Select, Serializable {
   private final OrderBy orderBy;
   private final Integer fetchDepth;
   private final boolean forUpdate;
-  private final int limit;
-  private final int offset;
+  private final Integer limit;
+  private final Integer offset;
   private final int queryTimeout;
 
   private DefaultSelect(DefaultBuilder builder) {
@@ -67,13 +68,13 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
-  public int limit() {
-    return limit;
+  public OptionalInt limit() {
+    return limit == null ? OptionalInt.empty() : OptionalInt.of(limit);
   }
 
   @Override
-  public int offset() {
-    return offset;
+  public OptionalInt offset() {
+    return offset == null ? OptionalInt.empty() : OptionalInt.of(offset);
   }
 
   @Override
@@ -82,15 +83,15 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
-  public Optional<Integer> fetchDepth() {
-    return Optional.ofNullable(fetchDepth);
+  public OptionalInt fetchDepth() {
+    return fetchDepth == null ? OptionalInt.empty() : OptionalInt.of(fetchDepth);
   }
 
   @Override
-  public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
+  public OptionalInt fetchDepth(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     if (foreignKeyFetchDepths().containsKey(foreignKey)) {
-      return Optional.of(foreignKeyFetchDepths.get(foreignKey));
+      return OptionalInt.of(foreignKeyFetchDepths.get(foreignKey));
     }
 
     return fetchDepth();
@@ -162,8 +163,8 @@ final class DefaultSelect implements Select, Serializable {
     private OrderBy orderBy;
     private Integer fetchDepth;
     private boolean forUpdate;
-    private int limit = -1;
-    private int offset = -1;
+    private Integer limit;
+    private Integer offset;
     private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
     DefaultBuilder(Condition where) {
@@ -178,13 +179,13 @@ final class DefaultSelect implements Select, Serializable {
     }
 
     @Override
-    public Builder limit(int limit) {
+    public Builder limit(Integer limit) {
       this.limit = limit;
       return this;
     }
 
     @Override
-    public Builder offset(int offset) {
+    public Builder offset(Integer offset) {
       this.offset = offset;
       return this;
     }
@@ -226,6 +227,9 @@ final class DefaultSelect implements Select, Serializable {
 
     @Override
     public Builder queryTimeout(int queryTimeout) {
+      if (queryTimeout < 0) {
+        throw new IllegalArgumentException("Query timeout must be greater than or equal to 0");
+      }
       this.queryTimeout = queryTimeout;
       return this;
     }
