@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
-import static is.codion.swing.framework.ui.TabbedDetailLayout.detailPanelState;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.panelState;
 import static is.codion.swing.framework.ui.TabbedDetailLayout.splitPaneResizeWeight;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
@@ -44,7 +44,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
             new ProductEditPanel(productModel.editModel()));
     EntityPanel itemPanel = new EntityPanel(itemModel,
             new ItemEditPanel(itemModel.editModel()),
-            config -> config.detailLayout(detailPanelState(PanelState.HIDDEN)));
+            config -> config.detailLayout(panelState(PanelState.HIDDEN)));
     EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
             new TagItemEditPanel(tagItemModel.editModel()));
 
@@ -74,12 +74,12 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
                             .editPanel(ItemEditPanel.class)
                             .detailPanel(EntityPanel.builder(TagItem.TYPE)
                                     .editPanel(TagItemEditPanel.class))
-                            .detailLayout(detailPanelState(PanelState.HIDDEN))),
+                            .detailLayout(panelState(PanelState.HIDDEN))),
             EntityPanel.builder(tagModelBuilder)
                     .editPanel(TagEditPanel.class)
                     .detailPanel(EntityPanel.builder(TagItem.TYPE)
                             .editPanel(TagItemEditPanel.class))
-                    .detailLayout(detailPanelState(PanelState.HIDDEN)));
+                    .detailLayout(panelState(PanelState.HIDDEN)));
   }
 
   public static void main(String[] args) {

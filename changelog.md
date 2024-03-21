@@ -5,6 +5,7 @@ Codion Change Log
 - EntityPanel, initialization refactored.
 ### is.codion.swing.framework.ui
 - EntityPanel, initialization refactored further, PanelLayout renamed DetailLayout, now only handles laying out entity panels containing one or more detail panels.
+- TabbedDetailLayout, bunch of renaming due to recent changes.
 
 ## 0.17.32
 ### is.codion.common.core
