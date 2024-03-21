@@ -259,12 +259,6 @@ public class EntityPanel extends JPanel {
 
   private boolean initialized = false;
 
-  static {
-    if (EntityEditPanel.USE_FOCUS_ACTIVATION.get()) {
-      KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusActivationListener());
-    }
-  }
-
   /**
    * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
@@ -1180,36 +1174,6 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private static class FocusActivationListener implements PropertyChangeListener {
-    @Override
-    public void propertyChange(PropertyChangeEvent changeEvent) {
-      Component focusedComponent = (Component) changeEvent.getNewValue();
-      EntityPanel entityPanelParent = entityPanel(focusedComponent);
-      if (entityPanelParent != null) {
-        if (entityPanelParent.containsEditPanel()) {
-          entityPanelParent.editPanel().active().set(true);
-        }
-      }
-      else {
-        EntityEditPanel editPanelParent = parentOfType(EntityEditPanel.class, focusedComponent);
-        if (editPanelParent != null) {
-          editPanelParent.active().set(true);
-        }
-      }
-    }
-
-    private static EntityPanel entityPanel(Component focusedComponent) {
-      if (focusedComponent instanceof JTabbedPane) {
-        Component selectedComponent = ((JTabbedPane) focusedComponent).getSelectedComponent();
-        if (selectedComponent instanceof EntityPanel) {
-          return (EntityPanel) selectedComponent;
-        }
-      }
-
-      return parentOfType(EntityPanel.class, focusedComponent);
-    }
-  }
-
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
       case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
@@ -1324,7 +1288,7 @@ public class EntityPanel extends JPanel {
     }
 
     /**
-     * @param includeControls true if the edit an table panel controls should be included
+     * @param includeControls true if the edit and table panel controls should be included
      * @return this Config instance
      */
     public Config includeControls(boolean includeControls) {

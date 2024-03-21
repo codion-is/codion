@@ -27,6 +27,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -39,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -109,7 +115,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private final Config configuration;
   private final Map<EditControl, Value<Control>> controls;
-  private final State active = State.state(!USE_FOCUS_ACTIVATION.get());
+  private final State active;
   private final EnumMap<Confirmer.Action, Value<Confirmer>> confirmers;
 
   private boolean initialized = false;
@@ -148,12 +154,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
     super(editModel, entityComponents);
-    if (USE_FOCUS_ACTIVATION.get()) {
-      ACTIVE_STATE_GROUP.add(active);
-    }
     this.configuration = configure(configuration);
+    this.active = State.state(!this.configuration.focusActivation);
     this.controls = createControlsMap();
     this.confirmers = createConfirmersMap();
+    setupFocusActivation();
     if (editModel.exists().not().get()) {
       editModel.setDefaults();
     }
@@ -563,6 +568,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     });
   }
 
+  private void setupFocusActivation() {
+    if (configuration.focusActivation) {
+      ACTIVE_STATE_GROUP.add(active);
+      KeyboardFocusManager.getCurrentKeyboardFocusManager()
+              .addPropertyChangeListener("focusOwner", new FocusActivationListener());
+    }
+  }
+
   private void showEntityMenu() {
     new EntityPopupMenu(editModel().entity(), editModel().connectionProvider().connection()).show(this, 0, 0);
   }
@@ -605,6 +618,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     private boolean clearAfterInsert = true;
     private boolean requestFocusAfterInsert = true;
+    private boolean focusActivation = USE_FOCUS_ACTIVATION.get();
     private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
             ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
@@ -617,6 +631,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       this.clearAfterInsert = config.clearAfterInsert;
       this.requestFocusAfterInsert = config.requestFocusAfterInsert;
       this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
+      this.focusActivation = config.focusActivation;
     }
 
     /**
@@ -654,6 +669,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
      */
     public Config referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
       this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
+      return this;
+    }
+
+    /**
+     * @param focusActivation true if the edit panel should be activated when it or its parent EntityPanel receives focus
+     * @return this Config instance
+     * @see #USE_FOCUS_ACTIVATION
+     */
+    public Config focusActivation(boolean focusActivation) {
+      this.focusActivation = focusActivation;
       return this;
     }
 
@@ -783,6 +808,41 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private void onException(Throwable exception) {
       LOG.error(exception.getMessage(), exception);
       EntityEditPanel.this.onException(exception);
+    }
+  }
+
+  private class FocusActivationListener implements PropertyChangeListener {
+
+    @Override
+    public void propertyChange(PropertyChangeEvent changeEvent) {
+      Component focusedComponent = (Component) changeEvent.getNewValue();
+      if (focusedComponent != null) {
+        EntityEditPanel editPanel = null;
+        EntityPanel entityPanel = entityPanel(focusedComponent);
+        if (entityPanel != null) {
+          if (entityPanel.containsEditPanel()) {
+            editPanel = entityPanel.editPanel();
+          }
+        }
+        else {
+          editPanel = parentOfType(EntityEditPanel.class, focusedComponent);
+        }
+
+        if (editPanel == EntityEditPanel.this && configuration.focusActivation) {
+          editPanel.active.set(true);
+        }
+      }
+    }
+
+    private EntityPanel entityPanel(Component focusedComponent) {
+      if (focusedComponent instanceof JTabbedPane) {
+        Component selectedComponent = ((JTabbedPane) focusedComponent).getSelectedComponent();
+        if (selectedComponent instanceof EntityPanel) {
+          return (EntityPanel) selectedComponent;
+        }
+      }
+
+      return parentOfType(EntityPanel.class, focusedComponent);
     }
   }
 

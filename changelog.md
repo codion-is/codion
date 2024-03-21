@@ -10,6 +10,7 @@ Codion Change Log
 - TabbedDetailLayout resizing bug fixed.
 - WindowDetailLayout added, used in SchemaBrowser demo.
 - EntityPanel.description() now Value based, for consistency.
+- EntityEditPanel.Config.focusActivation added, related refactoring.
 
 ## 0.17.32
 ### is.codion.common.core
