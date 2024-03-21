@@ -264,7 +264,7 @@ public final class TabbedDetailLayout implements DetailLayout {
   private JComponent layoutPanel(EntityPanel entityPanel) {
     splitPane = createSplitPane(entityPanel.editControlTablePanel());
     tabbedPane = createTabbedPane(entityPanel.detailPanels());
-    setupResizing(entityPanel);
+    entityPanel.detailPanels().forEach(this::setupResizing);
     setupControls(entityPanel);
     initializePanelState();
 
