@@ -148,8 +148,15 @@ public final class TabbedDetailLayout implements DetailLayout {
   }
 
   @Override
-  public <T extends EntityPanel.DetailController> Optional<T> detailController() {
-    return Optional.of((T) detailController);
+  public void select(EntityPanel entityPanel) {
+    detailController.select(requireNonNull(entityPanel));
+  }
+
+  @Override
+  public Value<PanelState> panelState(EntityPanel detailPanel) {
+    requireNonNull(detailPanel);
+
+    return detailController.panelState();
   }
 
   /**
@@ -240,7 +247,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
   private void initializePanelState() {
     selectedDetailPanel().ifPresent(selectedDetailPanel -> {
-      Value<PanelState> detailPanelStateValue = detailController.panelState(selectedDetailPanel);
+      Value<PanelState> detailPanelStateValue = detailController.panelState();
       if (detailPanelStateValue.isNotEqualTo(panelState)) {
         detailPanelStateValue.set(panelState);
       }
@@ -342,16 +349,16 @@ public final class TabbedDetailLayout implements DetailLayout {
     public void mouseReleased(MouseEvent e) {
       selectedDetailPanel().ifPresent(selectedDetailPanel -> {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-          detailController.panelState(selectedDetailPanel).map(panelState -> panelState == WINDOW ? EMBEDDED : WINDOW);
+          detailController.panelState().map(panelState -> panelState == WINDOW ? EMBEDDED : WINDOW);
         }
         else if (e.getButton() == MouseEvent.BUTTON2) {
-          detailController.panelState(selectedDetailPanel).map(panelState -> panelState == EMBEDDED ? HIDDEN : EMBEDDED);
+          detailController.panelState().map(panelState -> panelState == EMBEDDED ? HIDDEN : EMBEDDED);
         }
       });
     }
   }
 
-  private final class TabbedDetailController implements EntityPanel.DetailController {
+  private final class TabbedDetailController {
 
     /**
      * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
@@ -362,9 +369,7 @@ public final class TabbedDetailLayout implements DetailLayout {
       panelState.addListener(this::updateDetailState);
     }
 
-    @Override
-    public void select(EntityPanel detailPanel) {
-      requireNonNull(detailPanel);
+    private void select(EntityPanel detailPanel) {
       if (tabbedPane != null) {
         tabbedPane.setFocusable(true);
         tabbedPane.setSelectedComponent(detailPanel);
@@ -373,10 +378,7 @@ public final class TabbedDetailLayout implements DetailLayout {
       activateDetailModelLink(detailPanel.model());
     }
 
-    @Override
-    public Value<PanelState> panelState(EntityPanel detailPanel) {
-      requireNonNull(detailPanel);
-
+    private Value<PanelState> panelState() {
       return panelState;
     }
 

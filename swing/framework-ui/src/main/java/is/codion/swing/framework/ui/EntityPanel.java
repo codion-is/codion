@@ -250,7 +250,6 @@ public class EntityPanel extends JPanel {
   private final JPanel editControlPanel;
   private final JPanel editControlTablePanel;
   private final Event<EntityPanel> activateEvent = Event.event();
-  private final DetailController detailController;
   private final Value<String> caption;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
@@ -355,7 +354,6 @@ public class EntityPanel extends JPanel {
     this.tablePanel = tablePanel;
     this.editControlPanel = createEditControlPanel();
     this.editControlTablePanel = createEditControlTablePanel();
-    this.detailController = this.configuration.detailLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -404,14 +402,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return the detail panel controller
-   * @param <T> the detail panel controller type
-   */
-  public final <T extends DetailController> T detailController() {
-    return (T) detailController;
-  }
-
-  /**
    * @param detailPanels the detail panels
    * @throws IllegalStateException if the panel has already been initialized
    * @throws IllegalArgumentException if this panel already contains a given detail panel
@@ -436,7 +426,7 @@ public class EntityPanel extends JPanel {
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addActivateListener(detailController::select);
+    detailPanel.addActivateListener(configuration.detailLayout::select);
   }
 
   /**
@@ -1385,7 +1375,7 @@ public class EntityPanel extends JPanel {
   /**
    * Handles the layout of a EntityPanel with one or more detail panels.
    */
-  public interface DetailLayout {
+  public interface DetailLayout extends Selector {
 
     /**
      * Updates the UI of all associated components.
@@ -1402,12 +1392,12 @@ public class EntityPanel extends JPanel {
     JComponent layout(EntityPanel entityPanel);
 
     /**
-     * @return the {@link DetailController} provided by this {@link DetailLayout}
-     * @param <T> the detail panel controller type
+     * Note that the detail panel state may be shared between detail panels,
+     * as they may be displayed in a shared window.
+     * @param detailPanel the detail panel
+     * @return the value controlling the state of the given detail panel
      */
-    default <T extends DetailController> Optional<T> detailController() {
-      return Optional.empty();
-    }
+    Value<PanelState> panelState(EntityPanel detailPanel);
   }
 
   /**
@@ -1421,20 +1411,6 @@ public class EntityPanel extends JPanel {
      * @param entityPanel the entity panel to select
      */
     void select(EntityPanel entityPanel);
-  }
-
-  /**
-   * Controls the detail panels of a entity panel
-   */
-  public interface DetailController extends Selector {
-
-    /**
-     * Note that the detail panel state may be shared between detail panels,
-     * as they may be displayed in a shared window.
-     * @param detailPanel the detail panel
-     * @return the value controlling the state of the given detail panel
-     */
-    Value<PanelState> panelState(EntityPanel detailPanel);
   }
 
   /**
@@ -1555,29 +1531,6 @@ public class EntityPanel extends JPanel {
     @Override
     public void mouseClicked(MouseEvent e) {
       editPanel.requestAfterUpdateFocus();
-    }
-  }
-
-  private static final class NullDetailController implements DetailController {
-
-    private final Value<PanelState> panelState = Value.value(HIDDEN);
-
-    private NullDetailController() {
-      panelState.addValidator(value -> {
-        if (value != HIDDEN) {
-          throw new IllegalArgumentException("No detail controller available, can not set the detail panel state");
-        }
-      });
-    }
-
-    @Override
-    public void select(EntityPanel entityPanel) {}
-
-    @Override
-    public Value<PanelState> panelState(EntityPanel detailPanel) {
-      requireNonNull(detailPanel);
-
-      return panelState;
     }
   }
 
