@@ -29,7 +29,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -76,7 +75,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
   private JDialog mapKitDialog;
 
-  LookupTablePanel(SwingEntityTableModel lookupModel) {
+  LookupTablePanel(LookupTableModel lookupModel) {
     super(lookupModel, config -> config.showRefreshProgressBar(true));
     columnSelectionPanelVisible.addDataListener(this::setColumnSelectionPanelVisible);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

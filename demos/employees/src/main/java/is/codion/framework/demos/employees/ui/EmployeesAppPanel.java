@@ -43,7 +43,7 @@ import java.util.List;
 
 import static is.codion.common.Text.textFileContents;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
-import static is.codion.swing.framework.ui.TabbedPanelLayout.splitPaneResizeWeight;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.splitPaneResizeWeight;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.singletonList;
 
@@ -67,7 +67,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
     EntityPanel departmentPanel = new EntityPanel(departmentModel,
             new DepartmentEditPanel(departmentModel.editModel()),
             new DepartmentTablePanel(departmentModel.tableModel()),
-            config -> config.panelLayout(splitPaneResizeWeight(0.4)));
+            config -> config.detailLayout(splitPaneResizeWeight(0.4)));
     departmentPanel.addDetailPanel(employeePanel);
 
     return singletonList(departmentPanel);

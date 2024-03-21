@@ -262,10 +262,9 @@ public class EntityPanel extends JPanel {
   private final List<EntityPanel> detailPanels = new ArrayList<>();
   private final EntityEditPanel editPanel;
   private final EntityTablePanel tablePanel;
-  private final JPanel editControlPanel = new JPanel(borderLayout());
-  private final JPanel editControlTablePanel = new JPanel(borderLayout());
+  private final JPanel editControlPanel;
+  private final JPanel editControlTablePanel;
   private final Event<EntityPanel> activateEvent = Event.event();
-  private final DetailController detailController;
   private final Value<String> caption;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
@@ -368,7 +367,8 @@ public class EntityPanel extends JPanel {
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
-    this.detailController = this.configuration.panelLayout.detailController().orElse(new NullDetailController());
+    this.editControlPanel = createEditControlPanel();
+    this.editControlTablePanel = createEditControlTablePanel();
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -380,7 +380,7 @@ public class EntityPanel extends JPanel {
       Utilities.updateUI(detailPanels);
     }
     if (configuration != null) {
-      configuration.panelLayout.updateUI();
+      configuration.detailLayout.updateUI();
     }
   }
 
@@ -417,14 +417,6 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return the detail panel controller
-   * @param <T> the detail panel controller type
-   */
-  public final <T extends DetailController> T detailController() {
-    return (T) detailController;
-  }
-
-  /**
    * @param detailPanels the detail panels
    * @throws IllegalStateException if the panel has already been initialized
    * @throws IllegalArgumentException if this panel already contains a given detail panel
@@ -449,7 +441,7 @@ public class EntityPanel extends JPanel {
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addActivateListener(detailController::select);
+    detailPanel.addActivateListener(configuration.detailLayout::select);
   }
 
   /**
@@ -461,7 +453,11 @@ public class EntityPanel extends JPanel {
   public final <T extends EntityPanel> T initialize() {
     if (!initialized) {
       try {
+        setupToggleEditPanelControl();
         initializeUI();
+        initializeEditPanel();
+        initializeTablePanel();
+        setupKeyboardActions();
       }
       finally {
         initialized = true;
@@ -736,15 +732,12 @@ public class EntityPanel extends JPanel {
 
   /**
    * Initializes this EntityPanels UI.
-   * @see #panelLayout()
+   * @see #detailLayout()
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
-    setupToggleEditPanelControl();
-    panelLayout().layout(this);
-    initializeTablePanel();
-    initializeEditPanel();
-    setupKeyboardActions();
+    setLayout(borderLayout());
+    add(mainComponent(), BorderLayout.CENTER);
   }
 
   /**
@@ -755,7 +748,7 @@ public class EntityPanel extends JPanel {
    * @see Config#controlComponentConstraints(String)
    */
   protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
-    return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
+    return panel(new FlowLayout(configuration.horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
             .add(editPanel)
             .build();
   }
@@ -968,10 +961,7 @@ public class EntityPanel extends JPanel {
   protected final void initializeEditPanel() {
     if (editPanel != null) {
       editPanel.initialize();
-      editControlPanel.setMinimumSize(new Dimension(0, 0));
-      editControlPanel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
       editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
-      editControlPanel.addMouseListener(new ActivateOnMouseClickListener());
       if (configuration.includeControls) {
         JComponent controlComponent = createControlComponent(createControls());
         if (controlComponent != null) {
@@ -987,11 +977,38 @@ public class EntityPanel extends JPanel {
    */
   protected final void initializeTablePanel() {
     if (tablePanel != null) {
-      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
       tablePanel.table().doubleClickAction().mapNull(() -> Control.control(new ShowHiddenEditPanel()));
       tablePanel.initialize();
       tablePanel.setMinimumSize(new Dimension(0, 0));
     }
+  }
+
+  private JPanel createEditControlPanel() {
+    if (editPanel == null) {
+      return null;
+    }
+
+    JPanel panel = new JPanel(borderLayout());
+    panel.setMinimumSize(new Dimension(0, 0));
+    panel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
+    panel.addMouseListener(new ActivateOnMouseClickListener());
+
+    return panel;
+  }
+
+  private JPanel createEditControlTablePanel() {
+    if (tablePanel == null) {
+      return null;
+    }
+
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(tablePanel, BorderLayout.CENTER);
+
+    return panel;
+  }
+
+  private JComponent mainComponent() {
+    return detailPanels.isEmpty() ? editControlTablePanel : detailLayout().layout(this);
   }
 
   final void setParentPanel(EntityPanel parentPanel) {
@@ -1009,8 +1026,8 @@ public class EntityPanel extends JPanel {
     this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
   }
 
-  final <T extends PanelLayout> T panelLayout() {
-    return (T) configuration.panelLayout;
+  final <T extends DetailLayout> T detailLayout() {
+    return (T) configuration.detailLayout;
   }
 
   static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
@@ -1027,12 +1044,12 @@ public class EntityPanel extends JPanel {
 
   private JToolBar createControlToolbar(Controls controls) {
     return toolBar(controls)
-            .orientation(horizontalControlLayout() ? HORIZONTAL : VERTICAL)
+            .orientation(configuration.horizontalControlLayout() ? HORIZONTAL : VERTICAL)
             .build();
   }
 
   private JPanel createControlPanel(Controls controls) {
-    if (horizontalControlLayout()) {
+    if (configuration.horizontalControlLayout()) {
       return flowLayoutPanel(FlowLayout.CENTER)
               .add(buttonPanel(controls)
                       .toggleButtonType(CHECKBOX)
@@ -1048,11 +1065,6 @@ public class EntityPanel extends JPanel {
                     .toggleButtonType(CHECKBOX)
                     .build())
             .build();
-  }
-
-  private boolean horizontalControlLayout() {
-    return configuration.controlComponentConstraints.equals(BorderLayout.SOUTH) ||
-            configuration.controlComponentConstraints.equals(BorderLayout.NORTH);
   }
 
   private void setupToggleEditPanelControl() {
@@ -1255,7 +1267,7 @@ public class EntityPanel extends JPanel {
 
     private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
-    private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
+    private DetailLayout detailLayout = TabbedDetailLayout.builder().build();
     private boolean toolbarControls = TOOLBAR_CONTROLS.get();
     private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
     private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
@@ -1269,7 +1281,7 @@ public class EntityPanel extends JPanel {
 
     private Config(Config config) {
       this.shortcuts = config.shortcuts.copy();
-      this.panelLayout = config.panelLayout;
+      this.detailLayout = config.detailLayout;
       this.toolbarControls = config.toolbarControls;
       this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
       this.controlComponentConstraints = config.controlComponentConstraints;
@@ -1278,11 +1290,11 @@ public class EntityPanel extends JPanel {
     }
 
     /**
-     * @param panelLayout the panel layout
+     * @param detailLayout the detail panel layout
      * @return this Config instance
      */
-    public Config panelLayout(PanelLayout panelLayout) {
-      this.panelLayout = requireNonNull(panelLayout);
+    public Config detailLayout(DetailLayout detailLayout) {
+      this.detailLayout = requireNonNull(detailLayout);
       return this;
     }
 
@@ -1368,12 +1380,17 @@ public class EntityPanel extends JPanel {
       requireNonNull(shortcuts).accept(this.shortcuts);
       return this;
     }
+
+    private boolean horizontalControlLayout() {
+      return controlComponentConstraints.equals(BorderLayout.SOUTH) ||
+              controlComponentConstraints.equals(BorderLayout.NORTH);
+    }
   }
 
   /**
-   * Handles the layout of a EntityPanel
+   * Handles the layout of a EntityPanel with one or more detail panels.
    */
-  public interface PanelLayout {
+  public interface DetailLayout extends Selector {
 
     /**
      * Updates the UI of all associated components.
@@ -1383,18 +1400,19 @@ public class EntityPanel extends JPanel {
     default void updateUI() {}
 
     /**
-     * Lays out the panel and adds any layout or detail panel related controls to this panel
+     * Creates and lays out the component to use as the main component of the given entity panel, including its detail panels.
      * @param entityPanel the panel to lay out and configure
+     * @return the main component
      */
-    void layout(EntityPanel entityPanel);
+    JComponent layout(EntityPanel entityPanel);
 
     /**
-     * @return the {@link DetailController} provided by this {@link PanelLayout}
-     * @param <T> the detail panel controller type
+     * Note that the detail panel state may be shared between detail panels,
+     * as they may be displayed in a shared window.
+     * @param detailPanel the detail panel
+     * @return the value controlling the state of the given detail panel
      */
-    default <T extends DetailController> Optional<T> detailController() {
-      return Optional.empty();
-    }
+    Value<PanelState> panelState(EntityPanel detailPanel);
   }
 
   /**
@@ -1408,20 +1426,6 @@ public class EntityPanel extends JPanel {
      * @param entityPanel the entity panel to select
      */
     void select(EntityPanel entityPanel);
-  }
-
-  /**
-   * Controls the detail panels of a entity panel
-   */
-  public interface DetailController extends Selector {
-
-    /**
-     * Note that the detail panel state may be shared between detail panels,
-     * as they may be displayed in a shared window.
-     * @param detailPanel the detail panel
-     * @return the value controlling the state of the given detail panel
-     */
-    Value<PanelState> panelState(EntityPanel detailPanel);
   }
 
   /**
@@ -1473,10 +1477,10 @@ public class EntityPanel extends JPanel {
     Builder filterPanelVisible(boolean filterPanelVisible);
 
     /**
-     * @param panelLayout the panel layout to use
+     * @param detailLayout the detail panel layout to use
      * @return this builder instane
      */
-    Builder layout(PanelLayout panelLayout);
+    Builder detailLayout(DetailLayout detailLayout);
 
     /**
      * @param preferredSize the preferred panel size
@@ -1542,29 +1546,6 @@ public class EntityPanel extends JPanel {
     @Override
     public void mouseClicked(MouseEvent e) {
       editPanel.requestAfterUpdateFocus();
-    }
-  }
-
-  private static final class NullDetailController implements DetailController {
-
-    private final Value<PanelState> panelState = Value.value(HIDDEN);
-
-    private NullDetailController() {
-      panelState.addValidator(value -> {
-        if (value != HIDDEN) {
-          throw new IllegalArgumentException("No detail controller available, can not set the detail panel state");
-        }
-      });
-    }
-
-    @Override
-    public void select(EntityPanel entityPanel) {}
-
-    @Override
-    public Value<PanelState> panelState(EntityPanel detailPanel) {
-      requireNonNull(detailPanel);
-
-      return panelState;
     }
   }
 

@@ -20,7 +20,6 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.ContinentModel;
-import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -33,6 +32,7 @@ import java.awt.Dimension;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createBarChartPanel;
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
+import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_1;
@@ -40,65 +40,56 @@ import static java.awt.event.KeyEvent.VK_2;
 
 final class ContinentPanel extends EntityPanel {
 
-  private final EntityPanel countryPanel;
-
-  ContinentPanel(SwingEntityModel continentModel) {
-    super(continentModel, new ContinentTablePanel(continentModel.tableModel()),
-            config -> config.panelLayout(new ContinentPanelLayout()));
-    SwingEntityModel countryModel = continentModel.detailModel(Country.TYPE);
-    countryPanel = new EntityPanel(countryModel,
-            new EntityTablePanel(countryModel.tableModel(),
-                    config -> config.includeConditionPanel(false)));
+  ContinentPanel(ContinentModel continentModel) {
+    super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
   }
 
-  private static final class ContinentPanelLayout implements PanelLayout {
+  @Override
+  protected void initializeUI() {
+    ContinentModel model = model();
 
-    @Override
-    public void layout(EntityPanel entityPanel) {
-      ContinentPanel continentPanel = (ContinentPanel) entityPanel;
-      ContinentModel model = entityPanel.model();
+    ChartPanel populationChartPanel = createPieChartPanel(this, model.populationDataset(), "Population");
+    ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.surfaceAreaDataset(), "Surface area");
+    ChartPanel gnpChartPanel = createPieChartPanel(this, model.gnpDataset(), "GNP");
+    ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
+    lifeExpectancyChartPanel.setPreferredSize(new Dimension(lifeExpectancyChartPanel.getPreferredSize().width, 120));
 
-      ChartPanel populationChartPanel = createPieChartPanel(entityPanel, model.populationDataset(), "Population");
-      ChartPanel surfaceAreaChartPanel = createPieChartPanel(entityPanel, model.surfaceAreaDataset(), "Surface area");
-      ChartPanel gnpChartPanel = createPieChartPanel(entityPanel, model.gnpDataset(), "GNP");
-      ChartPanel lifeExpectancyChartPanel = createBarChartPanel(entityPanel, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
-      lifeExpectancyChartPanel.setPreferredSize(new Dimension(lifeExpectancyChartPanel.getPreferredSize().width, 120));
+    Dimension pieChartSize = new Dimension(260, 260);
+    populationChartPanel.setPreferredSize(pieChartSize);
+    surfaceAreaChartPanel.setPreferredSize(pieChartSize);
+    gnpChartPanel.setPreferredSize(pieChartSize);
 
-      Dimension pieChartSize = new Dimension(260, 260);
-      populationChartPanel.setPreferredSize(pieChartSize);
-      surfaceAreaChartPanel.setPreferredSize(pieChartSize);
-      gnpChartPanel.setPreferredSize(pieChartSize);
+    JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
+            .add(populationChartPanel)
+            .add(surfaceAreaChartPanel)
+            .add(gnpChartPanel)
+            .build();
 
-      JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
-              .add(populationChartPanel)
-              .add(surfaceAreaChartPanel)
-              .add(gnpChartPanel)
-              .build();
+    JPanel chartPanel = borderLayoutPanel()
+            .northComponent(lifeExpectancyChartPanel)
+            .centerComponent(pieChartChartPanel)
+            .build();
 
-      JPanel chartPanel = borderLayoutPanel()
-              .northComponent(lifeExpectancyChartPanel)
-              .centerComponent(pieChartChartPanel)
-              .build();
+    EntityTablePanel countryTablePanel =
+            new EntityTablePanel(model.detailModel(Country.TYPE).tableModel(),
+                    config -> config.includeConditionPanel(false));
+    setPreferredHeight(countryTablePanel, 300);
 
-      continentPanel.countryPanel.initialize();
-      continentPanel.countryPanel.setPreferredSize(new Dimension(continentPanel.countryPanel.getPreferredSize().width, 100));
+    JTabbedPane tabbedPane = tabbedPane()
+            .tabBuilder("Charts", chartPanel)
+            .mnemonic(VK_1)
+            .add()
+            .tabBuilder("Countries", countryTablePanel.initialize())
+            .mnemonic(VK_2)
+            .add()
+            .build();
 
-      JTabbedPane tabbedPane = tabbedPane()
-              .tabBuilder("Charts", chartPanel)
-              .mnemonic(VK_1)
-              .add()
-              .tabBuilder("Countries", continentPanel.countryPanel)
-              .mnemonic(VK_2)
-              .add()
-              .build();
+    setLayout(borderLayout());
 
-      continentPanel.setLayout(borderLayout());
+    add(tablePanel().initialize(), BorderLayout.CENTER);
+    add(tabbedPane, BorderLayout.SOUTH);
 
-      continentPanel.add(continentPanel.editControlTablePanel(), BorderLayout.CENTER);
-      continentPanel.add(tabbedPane, BorderLayout.SOUTH);
-
-      continentPanel.setupKeyboardActions();
-      continentPanel.setupNavigation();
-    }
+    setupKeyboardActions();
+    setupNavigation();
   }
 }

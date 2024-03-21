@@ -37,7 +37,7 @@ import javax.swing.JTable;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.swing.framework.ui.TabbedPanelLayout.splitPaneResizeWeight;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.splitPaneResizeWeight;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
@@ -54,7 +54,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
     EntityPanel schemaPanel = new EntityPanel(schemaModel,
-            config -> config.panelLayout(splitPaneResizeWeight(0.3)));
+            config -> config.detailLayout(splitPaneResizeWeight(0.3)));
     EntityPanel tablePanel = new EntityPanel(tableModel);
     EntityPanel columnPanel = new EntityPanel(columnModel);
     EntityPanel constraintPanel = new EntityPanel(constraintModel);

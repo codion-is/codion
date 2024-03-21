@@ -56,7 +56,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.framework.ui.TabbedPanelLayout.detailPanelState;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.panelState;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -102,7 +102,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(genreModelBuilder)
                     .editPanel(GenreEditPanel.class)
                     .detailPanel(trackPanelBuilder)
-                    .layout(detailPanelState(PanelState.HIDDEN));
+                    .detailLayout(panelState(PanelState.HIDDEN));
 
     SwingEntityModel.Builder mediaTypeModelBuilder =
             SwingEntityModel.builder(MediaType.TYPE)
@@ -112,7 +112,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(mediaTypeModelBuilder)
                     .editPanel(MediaTypeEditPanel.class)
                     .detailPanel(trackPanelBuilder)
-                    .layout(detailPanelState(PanelState.HIDDEN));
+                    .detailLayout(panelState(PanelState.HIDDEN));
 
     EntityPanel.Builder artistPanelBuilder =
             EntityPanel.builder(Artist.TYPE)
@@ -131,7 +131,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(employeeModelBuilder)
                     .editPanel(EmployeeEditPanel.class)
                     .detailPanel(customerPanelBuilder)
-                    .layout(detailPanelState(PanelState.HIDDEN))
+                    .detailLayout(panelState(PanelState.HIDDEN))
                     .preferredSize(new Dimension(1000, 500));
 
     return Arrays.asList(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);
