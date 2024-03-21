@@ -8,6 +8,7 @@ Codion Change Log
 - TabbedDetailLayout, bunch of renaming due to recent changes.
 - DetailController merged with DetailLayout.
 - TabbedDetailLayout resizing bug fixed.
+- WindowDetailLayout added, used in SchemaBrowser demo.
 
 ## 0.17.32
 ### is.codion.common.core

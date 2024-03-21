@@ -1187,12 +1187,7 @@ public class EntityPanel extends JPanel {
     }
 
     private Optional<EntityPanel> activeDetailPanel() {
-      Collection<EntityPanel> activeDetailPanels = activeDetailPanels();
-      if (!activeDetailPanels.isEmpty()) {
-        return Optional.of(activeDetailPanels.iterator().next());
-      }
-
-      return Optional.empty();
+      return activeDetailPanels().stream().findFirst();
     }
   }
 

@@ -6,6 +6,8 @@ dependencies {
     implementation project(":codion-swing-framework-ui")
     implementation project(":codion-swing-framework-model-tools")
 
+    implementation(libs.flatlaf.intellij.themes)
+
     runtimeOnly project(":codion-plugin-logback-proxy")
 
     runtimeOnly project(":codion-framework-db-local")
