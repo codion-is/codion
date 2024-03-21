@@ -349,10 +349,10 @@ public final class TabbedDetailLayout implements DetailLayout {
     public void mouseReleased(MouseEvent e) {
       selectedDetailPanel().ifPresent(selectedDetailPanel -> {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-          detailController.panelState().map(panelState -> panelState == WINDOW ? EMBEDDED : WINDOW);
+          detailController.panelState().map(state -> state == WINDOW ? EMBEDDED : WINDOW);
         }
         else if (e.getButton() == MouseEvent.BUTTON2) {
-          detailController.panelState().map(panelState -> panelState == EMBEDDED ? HIDDEN : EMBEDDED);
+          detailController.panelState().map(state -> state == EMBEDDED ? HIDDEN : EMBEDDED);
         }
       });
     }
