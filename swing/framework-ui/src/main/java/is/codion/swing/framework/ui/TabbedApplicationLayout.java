@@ -71,7 +71,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 
   private void addTab(EntityPanel entityPanel) {
     applicationTabPane.addTab(entityPanel.caption().get(), entityPanel);
-    applicationTabPane.setToolTipTextAt(applicationTabPane.getTabCount() - 1, entityPanel.getDescription());
+    applicationTabPane.setToolTipTextAt(applicationTabPane.getTabCount() - 1, entityPanel.description().get());
   }
 
   private final class InitializeSelectedPanelListener implements ChangeListener {

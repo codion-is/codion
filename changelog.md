@@ -9,6 +9,7 @@ Codion Change Log
 - DetailController merged with DetailLayout.
 - TabbedDetailLayout resizing bug fixed.
 - WindowDetailLayout added, used in SchemaBrowser demo.
+- EntityPanel.description() now Value based, for consistency.
 
 ## 0.17.32
 ### is.codion.common.core

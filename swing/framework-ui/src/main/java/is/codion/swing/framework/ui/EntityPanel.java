@@ -29,7 +29,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -43,8 +42,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -53,7 +50,6 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
@@ -251,12 +247,12 @@ public class EntityPanel extends JPanel {
   private final JPanel editControlTablePanel;
   private final Event<EntityPanel> activateEvent = Event.event();
   private final Value<String> caption;
+  private final Value<String> description;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
   private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
   private final Config configuration;
 
-  private String description;
   private EntityPanel parentPanel;
   private EntityPanel previousSiblingPanel;
   private EntityPanel nextSiblingPanel;
@@ -349,7 +345,7 @@ public class EntityPanel extends JPanel {
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
     this.caption = Value.value(defaultCaption, defaultCaption);
-    this.description = entityModel.editModel().entityDefinition().description();
+    this.description = Value.value(entityModel.editModel().entityDefinition().description());
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
     this.editControlPanel = createEditControlPanel();
@@ -580,17 +576,10 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Sets the description text to use in f.ex. tool tips for tabbed panes
-   * @param description the description
+   * Setting this description Value to null reverts back to the default entity description.
+   * @return a Value for the description used when presenting this entity panel
    */
-  public final void setDescription(String description) {
-    this.description = description;
-  }
-
-  /**
-   * @return the description
-   */
-  public final String getDescription() {
+  public final Value<String> description() {
     return description;
   }
 
