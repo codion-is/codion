@@ -303,7 +303,7 @@ public final class TabbedDetailLayout implements DetailLayout {
             .changeListener(e -> selectedDetailPanel().ifPresent(EntityPanel::activate))
             .onBuild(tabbedPane -> tabbedPane.setFocusCycleRoot(true));
     detailPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
-            .toolTipText(detailPanel.getDescription())
+            .toolTipText(detailPanel.description().get())
             .add());
     if (includeControls) {
       builder.mouseListener(new TabbedPaneMouseReleasedListener());
