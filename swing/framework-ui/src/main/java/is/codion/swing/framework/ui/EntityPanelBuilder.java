@@ -8,7 +8,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
+import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
@@ -32,7 +32,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private Dimension preferredSize;
   private boolean conditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
   private boolean filterPanelVisible = EntityTablePanel.FILTER_PANEL_VISIBLE.get();
-  private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
+  private DetailLayout detailLayout = TabbedDetailLayout.builder().build();
 
   private Class<? extends EntityPanel> panelClass;
   private Class<? extends EntityTablePanel> tablePanelClass;
@@ -98,8 +98,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder layout(PanelLayout panelLayout) {
-    this.panelLayout = requireNonNull(panelLayout);
+  public EntityPanel.Builder detailLayout(DetailLayout detailLayout) {
+    this.detailLayout = requireNonNull(detailLayout);
     return this;
   }
 
@@ -244,7 +244,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   private EntityPanel createPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) throws Exception {
-    Consumer<EntityPanel.Config> configure = config -> config.panelLayout(panelLayout);
+    Consumer<EntityPanel.Config> configure = config -> config.detailLayout(detailLayout);
 
     return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, Consumer.class)
             .newInstance(entityModel, editPanel, tablePanel, configure);

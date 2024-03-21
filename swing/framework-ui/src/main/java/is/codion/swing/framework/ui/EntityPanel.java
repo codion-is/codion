@@ -355,7 +355,7 @@ public class EntityPanel extends JPanel {
     this.tablePanel = tablePanel;
     this.editControlPanel = createEditControlPanel();
     this.editControlTablePanel = createEditControlTablePanel();
-    this.detailController = this.configuration.panelLayout.detailController().orElse(new NullDetailController());
+    this.detailController = this.configuration.detailLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -367,7 +367,7 @@ public class EntityPanel extends JPanel {
       Utilities.updateUI(detailPanels);
     }
     if (configuration != null) {
-      configuration.panelLayout.updateUI();
+      configuration.detailLayout.updateUI();
     }
   }
 
@@ -727,12 +727,12 @@ public class EntityPanel extends JPanel {
 
   /**
    * Initializes this EntityPanels UI.
-   * @see #panelLayout()
+   * @see #detailLayout()
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
     setLayout(borderLayout());
-    add(panelLayout().mainComponent(this), BorderLayout.CENTER);
+    add(mainComponent(), BorderLayout.CENTER);
   }
 
   /**
@@ -1002,6 +1002,10 @@ public class EntityPanel extends JPanel {
     return panel;
   }
 
+  private JComponent mainComponent() {
+    return detailPanels.isEmpty() ? editControlTablePanel : detailLayout().layout(this);
+  }
+
   final void setParentPanel(EntityPanel parentPanel) {
     if (this.parentPanel != null) {
       throw new IllegalStateException("Parent panel has already been set for " + this);
@@ -1017,8 +1021,8 @@ public class EntityPanel extends JPanel {
     this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
   }
 
-  final <T extends PanelLayout> T panelLayout() {
-    return (T) configuration.panelLayout;
+  final <T extends DetailLayout> T detailLayout() {
+    return (T) configuration.detailLayout;
   }
 
   static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
@@ -1258,7 +1262,7 @@ public class EntityPanel extends JPanel {
 
     private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
-    private PanelLayout panelLayout = TabbedPanelLayout.builder().build();
+    private DetailLayout detailLayout = TabbedDetailLayout.builder().build();
     private boolean toolbarControls = TOOLBAR_CONTROLS.get();
     private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
     private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
@@ -1272,7 +1276,7 @@ public class EntityPanel extends JPanel {
 
     private Config(Config config) {
       this.shortcuts = config.shortcuts.copy();
-      this.panelLayout = config.panelLayout;
+      this.detailLayout = config.detailLayout;
       this.toolbarControls = config.toolbarControls;
       this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
       this.controlComponentConstraints = config.controlComponentConstraints;
@@ -1281,11 +1285,11 @@ public class EntityPanel extends JPanel {
     }
 
     /**
-     * @param panelLayout the panel layout
+     * @param detailLayout the detail panel layout
      * @return this Config instance
      */
-    public Config panelLayout(PanelLayout panelLayout) {
-      this.panelLayout = requireNonNull(panelLayout);
+    public Config detailLayout(DetailLayout detailLayout) {
+      this.detailLayout = requireNonNull(detailLayout);
       return this;
     }
 
@@ -1379,9 +1383,9 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Handles the layout of a EntityPanel
+   * Handles the layout of a EntityPanel with one or more detail panels.
    */
-  public interface PanelLayout {
+  public interface DetailLayout {
 
     /**
      * Updates the UI of all associated components.
@@ -1391,14 +1395,14 @@ public class EntityPanel extends JPanel {
     default void updateUI() {}
 
     /**
-     * Returns the component to use as the main component of the given entity panel.
+     * Creates and lays out the component to use as the main component of the given entity panel, including its detail panels.
      * @param entityPanel the panel to lay out and configure
      * @return the main component
      */
-    JComponent mainComponent(EntityPanel entityPanel);
+    JComponent layout(EntityPanel entityPanel);
 
     /**
-     * @return the {@link DetailController} provided by this {@link PanelLayout}
+     * @return the {@link DetailController} provided by this {@link DetailLayout}
      * @param <T> the detail panel controller type
      */
     default <T extends DetailController> Optional<T> detailController() {
@@ -1482,10 +1486,10 @@ public class EntityPanel extends JPanel {
     Builder filterPanelVisible(boolean filterPanelVisible);
 
     /**
-     * @param panelLayout the panel layout to use
+     * @param detailLayout the detail panel layout to use
      * @return this builder instane
      */
-    Builder layout(PanelLayout panelLayout);
+    Builder detailLayout(DetailLayout detailLayout);
 
     /**
      * @param preferredSize the preferred panel size

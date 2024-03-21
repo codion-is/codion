@@ -17,7 +17,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
+import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -47,8 +47,8 @@ import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.LEFT;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.RIGHT;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcut.RESIZE_LEFT;
-import static is.codion.swing.framework.ui.TabbedPanelLayout.KeyboardShortcut.RESIZE_RIGHT;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.KeyboardShortcut.RESIZE_LEFT;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.KeyboardShortcut.RESIZE_RIGHT;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -58,7 +58,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 /**
- * A {@link PanelLayout} implementation based on a JTabbedPane.<br>
+ * A {@link DetailLayout} implementation based on a JTabbedPane.<br>
  * <pre>
  * The default layout is as follows:
  * __________________________________
@@ -72,7 +72,7 @@ import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
  * |__________________|_____________|
  * </pre>
  */
-public final class TabbedPanelLayout implements PanelLayout {
+public final class TabbedDetailLayout implements DetailLayout {
 
   /**
    * Specifies whether actions to hide detail panels or show them in a dialog should be available to the user,
@@ -83,13 +83,13 @@ public final class TabbedPanelLayout implements PanelLayout {
   public static final PropertyValue<Boolean> INCLUDE_DETAIL_CONTROLS =
           Configuration.booleanValue("is.codion.swing.framework.ui.TabbedPanelLayout.includeDetailControls", true);
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedPanelLayout.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedDetailLayout.class.getName());
 
   /**
    * The default keyboard shortcut keyStrokes.
    */
   public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-          keyboardShortcuts(KeyboardShortcut.class, TabbedPanelLayout::defaultKeyStroke);
+          keyboardShortcuts(KeyboardShortcut.class, TabbedDetailLayout::defaultKeyStroke);
 
   /**
    * The available keyboard shortcuts.
@@ -110,19 +110,20 @@ public final class TabbedPanelLayout implements PanelLayout {
   private static final double DEFAULT_SPLIT_PANE_RESIZE_WEIGHT = 0.5;
   private static final int DETAIL_WINDOW_OFFSET = 38;//titlebar height
   private static final double DETAIL_WINDOW_SIZE_RATIO = 0.66;
+
   private final TabbedDetailController detailController;
+  private final boolean includeDetailTabbedPane;
+  private final boolean includeDetailPanelControls;
+  private final double splitPaneResizeWeight;
+  private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
 
   private EntityPanel entityPanel;
   private JTabbedPane detailPanelTabbedPane;
   private JSplitPane detailPanelSplitPane;
   private Window detailPanelWindow;
   private PanelState detailPanelState = EMBEDDED;
-  private final boolean includeDetailTabbedPane;
-  private final boolean includeDetailPanelControls;
-  private final double splitPaneResizeWeight;
-  private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
 
-  private TabbedPanelLayout(DefaultBuilder builder) {
+  private TabbedDetailLayout(DefaultBuilder builder) {
     this.detailPanelState = builder.detailPanelState;
     this.includeDetailTabbedPane = builder.includeDetailTabbedPane;
     this.includeDetailPanelControls = builder.includeDetailControls;
@@ -137,7 +138,7 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   @Override
-  public JComponent mainComponent(EntityPanel entityPanel) {
+  public JComponent layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
     if (!includeDetailTabbedPane || entityPanel.detailPanels().isEmpty()) {
       return entityPanel.editControlTablePanel();
@@ -153,29 +154,29 @@ public final class TabbedPanelLayout implements PanelLayout {
 
   /**
    * @param detailPanelState the detail panel state
-   * @return a new {@link TabbedPanelLayout} with the given detail panel state
+   * @return a new {@link TabbedDetailLayout} with the given detail panel state
    */
-  public static TabbedPanelLayout detailPanelState(PanelState detailPanelState) {
+  public static TabbedDetailLayout detailPanelState(PanelState detailPanelState) {
     return builder().detailPanelState(detailPanelState).build();
   }
 
   /**
    * @param splitPaneResizeWeight the split pane resize weight
-   * @return a new {@link TabbedPanelLayout} with the given split pane resize weight
+   * @return a new {@link TabbedDetailLayout} with the given split pane resize weight
    */
-  public static TabbedPanelLayout splitPaneResizeWeight(double splitPaneResizeWeight) {
+  public static TabbedDetailLayout splitPaneResizeWeight(double splitPaneResizeWeight) {
     return builder().splitPaneResizeWeight(splitPaneResizeWeight).build();
   }
 
   /**
-   * @return a new {@link TabbedPanelLayout.Builder} instance
+   * @return a new {@link TabbedDetailLayout.Builder} instance
    */
   public static Builder builder() {
     return new DefaultBuilder();
   }
 
   /**
-   * Builds a {@link TabbedPanelLayout}.
+   * Builds a {@link TabbedDetailLayout}.
    */
   public interface Builder {
 
@@ -211,9 +212,9 @@ public final class TabbedPanelLayout implements PanelLayout {
     Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
 
     /**
-     * @return a new {@link TabbedPanelLayout} instance based on this builder
+     * @return a new {@link TabbedDetailLayout} instance based on this builder
      */
-    TabbedPanelLayout build();
+    TabbedDetailLayout build();
   }
 
   private void setupResizing(EntityPanel entityPanel) {
@@ -315,7 +316,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     private static void resizePanel(EntityPanel panel, EntityPanel.Direction direction) {
-      TabbedPanelLayout detailPanelLayout = panel.panelLayout();
+      TabbedDetailLayout detailPanelLayout = panel.detailLayout();
       JSplitPane splitPane = detailPanelLayout.detailPanelSplitPane;
       switch (requireNonNull(direction)) {
         case RIGHT:
@@ -591,8 +592,8 @@ public final class TabbedPanelLayout implements PanelLayout {
     }
 
     @Override
-    public TabbedPanelLayout build() {
-      return new TabbedPanelLayout(this);
+    public TabbedDetailLayout build() {
+      return new TabbedDetailLayout(this);
     }
   }
 }
