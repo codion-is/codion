@@ -2,6 +2,7 @@ Codion Change Log
 ==================
 
 ## 0.17.33-SNAPSHOT
+- EntityPanel, initialization refactored.
 
 ## 0.17.32
 ### is.codion.common.core

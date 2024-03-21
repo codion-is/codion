@@ -28,7 +28,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
@@ -45,7 +44,6 @@ import static is.codion.swing.common.ui.component.Components.tabbedPane;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.LEFT;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.RIGHT;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
@@ -139,13 +137,13 @@ public final class TabbedPanelLayout implements PanelLayout {
   }
 
   @Override
-  public void layout(EntityPanel entityPanel) {
+  public JComponent mainComponent(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
-    entityPanel.setLayout(borderLayout());
-    entityPanel.add(createCenterComponent(), BorderLayout.CENTER);
-    setupResizing();
-    setupControls();
-    initializeDetailPanelState();
+    if (!includeDetailTabbedPane || entityPanel.detailPanels().isEmpty()) {
+      return entityPanel.editControlTablePanel();
+    }
+
+    return createDetailPanelSplitPane(entityPanel);
   }
 
   @Override
@@ -218,7 +216,7 @@ public final class TabbedPanelLayout implements PanelLayout {
     TabbedPanelLayout build();
   }
 
-  private void setupResizing() {
+  private void setupResizing(EntityPanel entityPanel) {
     entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeHorizontally(entityPanel, RIGHT)));
@@ -227,7 +225,7 @@ public final class TabbedPanelLayout implements PanelLayout {
             .action(new ResizeHorizontally(entityPanel, LEFT)));
   }
 
-  private void setupControls() {
+  private void setupControls(EntityPanel entityPanel) {
     if (entityPanel.containsTablePanel()) {
       EntityTablePanel tablePanel = entityPanel.tablePanel();
       Controls controls = Controls.controls();
@@ -255,15 +253,14 @@ public final class TabbedPanelLayout implements PanelLayout {
     return Optional.ofNullable(detailPanelTabbedPane == null ? null : (EntityPanel) detailPanelTabbedPane.getSelectedComponent());
   }
 
-  private JComponent createCenterComponent() {
-    if (includeDetailTabbedPane && !entityPanel.detailPanels().isEmpty()) {
-      detailPanelSplitPane = createTableDetailSplitPane(entityPanel.editControlTablePanel());
-      detailPanelTabbedPane = createDetailTabbedPane(entityPanel.detailPanels());
+  private JComponent createDetailPanelSplitPane(EntityPanel entityPanel) {
+    detailPanelSplitPane = createTableDetailSplitPane(entityPanel.editControlTablePanel());
+    detailPanelTabbedPane = createDetailTabbedPane(entityPanel.detailPanels());
+    setupResizing(entityPanel);
+    setupControls(entityPanel);
+    initializeDetailPanelState();
 
-      return detailPanelSplitPane;
-    }
-
-    return entityPanel.editControlTablePanel();
+    return detailPanelSplitPane;
   }
 
   private JSplitPane createTableDetailSplitPane(JPanel editControlTablePanel) {

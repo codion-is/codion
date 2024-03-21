@@ -247,8 +247,8 @@ public class EntityPanel extends JPanel {
   private final List<EntityPanel> detailPanels = new ArrayList<>();
   private final EntityEditPanel editPanel;
   private final EntityTablePanel tablePanel;
-  private final JPanel editControlPanel = new JPanel(borderLayout());
-  private final JPanel editControlTablePanel = new JPanel(borderLayout());
+  private final JPanel editControlPanel;
+  private final JPanel editControlTablePanel;
   private final Event<EntityPanel> activateEvent = Event.event();
   private final DetailController detailController;
   private final Value<String> caption;
@@ -353,6 +353,8 @@ public class EntityPanel extends JPanel {
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
+    this.editControlPanel = createEditControlPanel();
+    this.editControlTablePanel = createEditControlTablePanel();
     this.detailController = this.configuration.panelLayout.detailController().orElse(new NullDetailController());
     editPanelState.addListener(this::updateEditPanelState);
   }
@@ -446,7 +448,11 @@ public class EntityPanel extends JPanel {
   public final <T extends EntityPanel> T initialize() {
     if (!initialized) {
       try {
+        setupToggleEditPanelControl();
         initializeUI();
+        initializeEditPanel();
+        initializeTablePanel();
+        setupKeyboardActions();
       }
       finally {
         initialized = true;
@@ -725,11 +731,8 @@ public class EntityPanel extends JPanel {
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
-    setupToggleEditPanelControl();
-    panelLayout().layout(this);
-    initializeTablePanel();
-    initializeEditPanel();
-    setupKeyboardActions();
+    setLayout(borderLayout());
+    add(panelLayout().mainComponent(this), BorderLayout.CENTER);
   }
 
   /**
@@ -740,7 +743,7 @@ public class EntityPanel extends JPanel {
    * @see Config#controlComponentConstraints(String)
    */
   protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
-    return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
+    return panel(new FlowLayout(configuration.horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
             .add(editPanel)
             .build();
   }
@@ -953,10 +956,7 @@ public class EntityPanel extends JPanel {
   protected final void initializeEditPanel() {
     if (editPanel != null) {
       editPanel.initialize();
-      editControlPanel.setMinimumSize(new Dimension(0, 0));
-      editControlPanel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
       editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
-      editControlPanel.addMouseListener(new ActivateOnMouseClickListener());
       if (configuration.includeControls) {
         JComponent controlComponent = createControlComponent(createControls());
         if (controlComponent != null) {
@@ -972,11 +972,34 @@ public class EntityPanel extends JPanel {
    */
   protected final void initializeTablePanel() {
     if (tablePanel != null) {
-      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
       tablePanel.table().doubleClickAction().mapNull(() -> Control.control(new ShowHiddenEditPanel()));
       tablePanel.initialize();
       tablePanel.setMinimumSize(new Dimension(0, 0));
     }
+  }
+
+  private JPanel createEditControlPanel() {
+    if (editPanel == null) {
+      return null;
+    }
+
+    JPanel panel = new JPanel(borderLayout());
+    panel.setMinimumSize(new Dimension(0, 0));
+    panel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
+    panel.addMouseListener(new ActivateOnMouseClickListener());
+
+    return panel;
+  }
+
+  private JPanel createEditControlTablePanel() {
+    if (tablePanel == null) {
+      return null;
+    }
+
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(tablePanel, BorderLayout.CENTER);
+
+    return panel;
   }
 
   final void setParentPanel(EntityPanel parentPanel) {
@@ -1012,12 +1035,12 @@ public class EntityPanel extends JPanel {
 
   private JToolBar createControlToolbar(Controls controls) {
     return toolBar(controls)
-            .orientation(horizontalControlLayout() ? HORIZONTAL : VERTICAL)
+            .orientation(configuration.horizontalControlLayout() ? HORIZONTAL : VERTICAL)
             .build();
   }
 
   private JPanel createControlPanel(Controls controls) {
-    if (horizontalControlLayout()) {
+    if (configuration.horizontalControlLayout()) {
       return flowLayoutPanel(FlowLayout.CENTER)
               .add(buttonPanel(controls)
                       .toggleButtonType(CHECKBOX)
@@ -1033,11 +1056,6 @@ public class EntityPanel extends JPanel {
                     .toggleButtonType(CHECKBOX)
                     .build())
             .build();
-  }
-
-  private boolean horizontalControlLayout() {
-    return configuration.controlComponentConstraints.equals(BorderLayout.SOUTH) ||
-            configuration.controlComponentConstraints.equals(BorderLayout.NORTH);
   }
 
   private void setupToggleEditPanelControl() {
@@ -1353,6 +1371,11 @@ public class EntityPanel extends JPanel {
       requireNonNull(shortcuts).accept(this.shortcuts);
       return this;
     }
+
+    private boolean horizontalControlLayout() {
+      return controlComponentConstraints.equals(BorderLayout.SOUTH) ||
+              controlComponentConstraints.equals(BorderLayout.NORTH);
+    }
   }
 
   /**
@@ -1368,10 +1391,11 @@ public class EntityPanel extends JPanel {
     default void updateUI() {}
 
     /**
-     * Lays out the panel and adds any layout or detail panel related controls to this panel
+     * Returns the component to use as the main component of the given entity panel.
      * @param entityPanel the panel to lay out and configure
+     * @return the main component
      */
-    void layout(EntityPanel entityPanel);
+    JComponent mainComponent(EntityPanel entityPanel);
 
     /**
      * @return the {@link DetailController} provided by this {@link PanelLayout}
