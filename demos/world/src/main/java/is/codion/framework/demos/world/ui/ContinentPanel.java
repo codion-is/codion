@@ -5,8 +5,6 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.ContinentModel;
-import is.codion.swing.common.ui.Sizes;
-import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -19,6 +17,7 @@ import java.awt.Dimension;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createBarChartPanel;
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
+import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_1;
@@ -26,14 +25,8 @@ import static java.awt.event.KeyEvent.VK_2;
 
 final class ContinentPanel extends EntityPanel {
 
-  private final EntityPanel countryPanel;
-
-  ContinentPanel(SwingEntityModel continentModel) {
+  ContinentPanel(ContinentModel continentModel) {
     super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
-    SwingEntityModel countryModel = continentModel.detailModel(Country.TYPE);
-    countryPanel = new EntityPanel(countryModel,
-            new EntityTablePanel(countryModel.tableModel(),
-                    config -> config.includeConditionPanel(false)));
   }
 
   @Override
@@ -62,23 +55,23 @@ final class ContinentPanel extends EntityPanel {
             .centerComponent(pieChartChartPanel)
             .build();
 
-    countryPanel.initialize();
-    Sizes.setPreferredHeight(countryPanel, 300);
+    EntityTablePanel countryTablePanel =
+            new EntityTablePanel(model.detailModel(Country.TYPE).tableModel(),
+                    config -> config.includeConditionPanel(false));
+    setPreferredHeight(countryTablePanel, 300);
 
     JTabbedPane tabbedPane = tabbedPane()
             .tabBuilder("Charts", chartPanel)
             .mnemonic(VK_1)
             .add()
-            .tabBuilder("Countries", countryPanel)
+            .tabBuilder("Countries", countryTablePanel.initialize())
             .mnemonic(VK_2)
             .add()
             .build();
 
-    initializeTablePanel();
-
     setLayout(borderLayout());
 
-    add(editControlTablePanel(), BorderLayout.CENTER);
+    add(tablePanel().initialize(), BorderLayout.CENTER);
     add(tabbedPane, BorderLayout.SOUTH);
 
     setupKeyboardActions();

@@ -9,6 +9,7 @@ import is.codion.framework.demos.world.domain.api.World;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
+import is.codion.framework.demos.world.model.ContinentModel;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -45,7 +46,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     CountryModel countryModel = applicationModel().entityModel(Country.TYPE);
     CountryPanel countryPanel = new CountryPanel(countryModel);
 
-    SwingEntityModel continentModel = applicationModel().entityModel(Continent.TYPE);
+    ContinentModel continentModel = applicationModel().entityModel(Continent.TYPE);
     ContinentPanel continentPanel = new ContinentPanel(continentModel);
 
     SwingEntityModel lookupModel = applicationModel().entityModel(Lookup.TYPE);
