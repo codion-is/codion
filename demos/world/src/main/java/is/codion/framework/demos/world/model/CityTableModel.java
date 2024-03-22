@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -11,14 +10,13 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -44,32 +42,16 @@ public final class CityTableModel extends SwingEntityTableModel {
     return chartDataset;
   }
 
+  public PopulateLocationTask populateLocationTask() {
+    return new PopulateLocationTask();
+  }
+
   public void addDisplayLocationListener(Consumer<Collection<Entity>> listener) {
     displayLocationEvent.addDataListener(listener);
   }
 
   public StateObserver citiesWithoutLocationSelected() {
     return citiesWithoutLocationSelected.observer();
-  }
-
-  public void populateLocationForSelected(ProgressReporter<String> progressReporter,
-                                          StateObserver cancelPopulateLocation)
-          throws IOException, DatabaseException, ValidationException {
-    Collection<Entity> updatedCities = new ArrayList<>();
-    Collection<Entity> selectedCitiesWithoutLocation = selectionModel().getSelectedItems().stream()
-            .filter(city -> city.isNull(City.LOCATION))
-            .collect(toList());
-    CityEditModel editModel = editModel();
-    Iterator<Entity> citiesWithoutLocation = selectedCitiesWithoutLocation.iterator();
-    while (citiesWithoutLocation.hasNext() && !cancelPopulateLocation.get()) {
-      Entity city = citiesWithoutLocation.next();
-      progressReporter.publish(city.get(City.COUNTRY_FK).get(Country.NAME) + " - " + city.get(City.NAME));
-      editModel.populateLocation(city);
-      updatedCities.add(city);
-      progressReporter.report(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
-      displayLocationEvent.accept(singletonList(city));
-    }
-    displayLocationEvent.accept(selectionModel().getSelectedItems());
   }
 
   private void refreshChartDataset() {
@@ -81,5 +63,47 @@ public final class CityTableModel extends SwingEntityTableModel {
   private void updateCitiesWithoutLocationSelected() {
     citiesWithoutLocationSelected.set(selectionModel().getSelectedItems().stream()
             .anyMatch(city -> city.isNull(City.LOCATION)));
+  }
+
+  public final class PopulateLocationTask implements ProgressTask<Void, String> {
+
+    private final State cancelled = State.state();
+    private final Collection<Entity> cities;
+
+    private PopulateLocationTask() {
+      cities = selectionModel().getSelectedItems().stream()
+              .filter(city -> city.isNull(City.LOCATION))
+              .collect(toList());
+    }
+
+    public int maximumProgress() {
+      return cities.size();
+    }
+
+    public StateObserver working() {
+      return cancelled.not();
+    }
+
+    public void cancel() {
+      cancelled.set(true);
+    }
+
+    @Override
+    public Void execute(ProgressReporter<String> progressReporter) throws Exception {
+      Collection<Entity> updatedCities = new ArrayList<>();
+      CityEditModel editModel = editModel();
+      Iterator<Entity> citiesIterator = cities.iterator();
+      while (citiesIterator.hasNext() && !cancelled.get()) {
+        Entity city = citiesIterator.next();
+        progressReporter.publish(city.get(City.COUNTRY_FK).get(Country.NAME) + " - " + city.get(City.NAME));
+        editModel.populateLocation(city);
+        updatedCities.add(city);
+        progressReporter.report(updatedCities.size());
+        displayLocationEvent.accept(singletonList(city));
+      }
+      displayLocationEvent.accept(selectionModel().getSelectedItems());
+
+      return null;
+    }
   }
 }
