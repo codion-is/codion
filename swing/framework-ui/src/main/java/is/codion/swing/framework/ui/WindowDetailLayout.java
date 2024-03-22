@@ -64,9 +64,11 @@ public final class WindowDetailLayout implements DetailLayout {
   @Override
   public JComponent layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
-    entityPanel.detailPanels().forEach(detailPanel ->
-            panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
-    setupControls(entityPanel);
+    if (!entityPanel.detailPanels().isEmpty()) {
+      entityPanel.detailPanels().forEach(detailPanel ->
+              panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
+      setupControls(entityPanel);
+    }
 
     return entityPanel.editControlTablePanel();
   }

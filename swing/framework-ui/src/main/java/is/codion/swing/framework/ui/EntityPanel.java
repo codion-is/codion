@@ -445,7 +445,7 @@ public class EntityPanel extends JPanel {
   /**
    * @param <T> the edit panel type
    * @return the edit panel
-   * @throws IllegalStateException in case no edit panel is avilable
+   * @throws IllegalStateException in case no edit panel is available
    * @see #containsEditPanel()
    */
   public final <T extends EntityEditPanel> T editPanel() {
@@ -466,7 +466,7 @@ public class EntityPanel extends JPanel {
   /**
    * @param <T> the table panel type
    * @return the table panel
-   * @throws IllegalStateException in case no table panel is avilable
+   * @throws IllegalStateException in case no table panel is available
    * @see #containsTablePanel()
    */
   public final <T extends EntityTablePanel> T tablePanel() {
@@ -987,7 +987,7 @@ public class EntityPanel extends JPanel {
       editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     }
 
-    return detailPanels.isEmpty() ? editControlTablePanel : detailLayout().layout(this);
+    return detailLayout().layout(this);
   }
 
   final void setParentPanel(EntityPanel parentPanel) {
@@ -1345,6 +1345,7 @@ public class EntityPanel extends JPanel {
 
     /**
      * Creates and lays out the component to use as the main component of the given entity panel, including its detail panels.
+     * In case of no detail panels, this method should return the {@link EntityPanel#editControlTablePanel()}.
      * @param entityPanel the panel to lay out and configure
      * @return the main component
      */

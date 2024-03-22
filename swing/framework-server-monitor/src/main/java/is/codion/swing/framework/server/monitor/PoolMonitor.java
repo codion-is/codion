@@ -39,7 +39,7 @@ public final class PoolMonitor {
   }
 
   /**
-   * @return the avilable {@link ConnectionPoolMonitor} instances
+   * @return the available {@link ConnectionPoolMonitor} instances
    */
   public Collection<ConnectionPoolMonitor> connectionPoolInstanceMonitors() {
     return connectionPoolMonitors;
