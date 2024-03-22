@@ -761,6 +761,14 @@ public class EntityPanel extends JPanel {
   }
 
   /**
+   * Returns the base panel containing the edit panel and controls.
+   * @return the edit base panel
+   */
+  protected final JPanel editControlPanel() {
+    return editControlPanel;
+  }
+
+  /**
    * Returns the base panel containing the edit and table panels (north, center).
    * @return the edit and table base panel
    */
@@ -929,7 +937,6 @@ public class EntityPanel extends JPanel {
   protected final void initializeEditPanel() {
     if (editPanel != null) {
       editPanel.initialize();
-      editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
       if (configuration.includeControls) {
         JComponent controlComponent = createControlComponent(createControls());
         if (controlComponent != null) {
@@ -969,13 +976,17 @@ public class EntityPanel extends JPanel {
       return null;
     }
 
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(tablePanel, BorderLayout.CENTER);
-
-    return panel;
+    return new JPanel(new BorderLayout());
   }
 
   private JComponent mainComponent() {
+    if (editPanel != null) {
+      editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
+    }
+    if (tablePanel != null) {
+      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
+    }
+
     return detailPanels.isEmpty() ? editControlTablePanel : detailLayout().layout(this);
   }
 
