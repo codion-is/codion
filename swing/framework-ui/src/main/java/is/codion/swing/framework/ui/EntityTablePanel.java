@@ -2055,9 +2055,8 @@ public class EntityTablePanel extends JPanel {
       if (configuration.includeLimitMenu) {
         setComponentPopupMenu(createPopupMenu());
       }
-      Runnable statusListener = this::updateStatusMessage;
-      tableModel.selectionModel().addSelectionListener(statusListener);
-      tableModel.addDataChangedListener(statusListener);
+      tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
+      tableModel.addDataChangedListener(this::updateStatusMessage);
       updateStatusMessage();
     }
 

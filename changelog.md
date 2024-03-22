@@ -11,6 +11,8 @@ Codion Change Log
 - WindowDetailLayout added, used in SchemaBrowser demo.
 - EntityPanel.description() now Value based, for consistency.
 - EntityEditPanel.Config.focusActivation added, related refactoring.
+- EntityPanel, initialization refactored for easier customization.
+- EntityTablePanel, status message now updated dynamically while the selection is being adjusted.
 
 ## 0.17.32
 ### is.codion.common.core

@@ -239,13 +239,13 @@ public final class TabbedDetailLayout implements DetailLayout {
     TabbedDetailLayout build();
   }
 
-  private void setupResizing(EntityPanel entityPanel) {
-    entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
+  private void setupResizing(EntityPanel detailPanel) {
+    detailPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeHorizontally(entityPanel, RIGHT)));
-    entityPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
+            .action(new ResizeHorizontally(detailPanel, RIGHT)));
+    detailPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeHorizontally(entityPanel, LEFT)));
+            .action(new ResizeHorizontally(detailPanel, LEFT)));
   }
 
   private void setupControls(EntityPanel entityPanel) {
