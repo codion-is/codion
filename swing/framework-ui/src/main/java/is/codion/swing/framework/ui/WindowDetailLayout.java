@@ -70,7 +70,7 @@ public final class WindowDetailLayout implements DetailLayout {
       setupControls(entityPanel);
     }
 
-    return entityPanel.editControlTablePanel();
+    return entityPanel.mainPanel();
   }
 
   @Override

@@ -629,11 +629,11 @@ public class EntityPanel extends JPanel {
   /**
    * Initializes this EntityPanels UI.
    * @see #detailLayout()
-   * @see #editControlTablePanel()
+   * @see #mainPanel()
    */
   protected void initializeUI() {
     setLayout(borderLayout());
-    add(mainComponent(), BorderLayout.CENTER);
+    add(detailLayout().layout(this), BorderLayout.CENTER);
   }
 
   /**
@@ -689,19 +689,24 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns the base panel containing the edit panel and controls.
-   * @return the edit base panel
+   * @return the main panel containing the table, edit and control panels
+   * @throws IllegalStateException in case no edit or table panel is available
    */
-  protected final JPanel editControlPanel() {
-    return editControlPanel;
-  }
+  protected final JPanel mainPanel() {
+    if (editPanel != null && editControlPanel.getComponents().length == 0) {
+      editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
+    }
+    if (tablePanel != null && editControlTablePanel.getComponents().length == 0) {
+      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
+    }
+    if (editControlTablePanel != null) {
+      return editControlTablePanel;
+    }
+    if (editControlPanel != null) {
+      return editControlPanel;
+    }
 
-  /**
-   * Returns the base panel containing the edit and table panels (north, center).
-   * @return the edit and table base panel
-   */
-  protected final JPanel editControlTablePanel() {
-    return editControlTablePanel;
+    throw new IllegalStateException("No edit or table panel available in: " + this);
   }
 
   /**
@@ -891,12 +896,11 @@ public class EntityPanel extends JPanel {
       return null;
     }
 
-    JPanel panel = new JPanel(borderLayout());
-    panel.setMinimumSize(new Dimension(0, 0));
-    panel.setBorder(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0));
-    panel.addMouseListener(new ActivateOnMouseClickListener());
-
-    return panel;
+    return borderLayoutPanel()
+            .minimumSize(new Dimension(0, 0))
+            .border(createEmptyBorder(Layouts.GAP.get(), 0, Layouts.GAP.get(), 0))
+            .mouseListener(new ActivateOnMouseClickListener())
+            .build();
   }
 
   private JPanel createEditControlTablePanel() {
@@ -904,18 +908,7 @@ public class EntityPanel extends JPanel {
       return null;
     }
 
-    return new JPanel(new BorderLayout());
-  }
-
-  private JComponent mainComponent() {
-    if (editPanel != null) {
-      editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
-    }
-    if (tablePanel != null) {
-      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
-    }
-
-    return detailLayout().layout(this);
+    return borderLayoutPanel().build();
   }
 
   final void setParentPanel(EntityPanel parentPanel) {
@@ -1345,7 +1338,7 @@ public class EntityPanel extends JPanel {
 
     /**
      * Creates and lays out the component to use as the main component of the given entity panel, including its detail panels.
-     * In case of no detail panels, this method should return the {@link EntityPanel#editControlTablePanel()}.
+     * In case of no detail panels, this method should return the {@link EntityPanel#mainPanel()}.
      * @param entityPanel the panel to lay out and configure
      * @return the main component
      */

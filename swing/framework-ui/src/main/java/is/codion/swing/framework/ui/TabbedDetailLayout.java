@@ -141,7 +141,7 @@ public final class TabbedDetailLayout implements DetailLayout {
   public JComponent layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
     if (!includeTabbedPane || entityPanel.detailPanels().isEmpty()) {
-      return entityPanel.editControlTablePanel();
+      return entityPanel.mainPanel();
     }
 
     return layoutPanel(entityPanel);
@@ -262,7 +262,7 @@ public final class TabbedDetailLayout implements DetailLayout {
   }
 
   private JComponent layoutPanel(EntityPanel entityPanel) {
-    splitPane = createSplitPane(entityPanel.editControlTablePanel());
+    splitPane = createSplitPane(entityPanel.mainPanel());
     tabbedPane = createTabbedPane(entityPanel.detailPanels());
     entityPanel.detailPanels().forEach(this::setupResizing);
     setupControls(entityPanel);
