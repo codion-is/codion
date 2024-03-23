@@ -229,11 +229,7 @@ tasks.register("tagRelease") {
 }
 
 boolean hasPublicationProperties() {
-    return project.hasProperty("artifactoryUsername") &&
-            project.hasProperty("artifactoryPassword") &&
-            project.hasProperty("artifactorySnapshotUrl") &&
-            project.hasProperty("artifactoryReleaseUrl") &&
-            project.hasProperty("sonatypeUsername") &&
+    return project.hasProperty("sonatypeUsername") &&
             project.hasProperty("sonatypePassword") &&
             project.hasProperty("signing.keyId") &&
             project.hasProperty("signing.password") &&
