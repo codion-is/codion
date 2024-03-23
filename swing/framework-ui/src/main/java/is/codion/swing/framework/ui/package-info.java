@@ -7,9 +7,9 @@
  * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#MODIFIED_INDICATOR}<br>
  * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#MODIFIED_INDICATOR_UNDERLINE_STYLE}<br>
  * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#DEFAULT_TEXT_FIELD_COLUMNS}<br>
- * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_SAVE_CAPTION}<br>
- * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_FOCUS_ACTIVATION}<br>
- * {@link is.codion.swing.framework.ui.EntityEditPanel#INCLUDE_ENTITY_MENU}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_SAVE_CAPTION}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#USE_KEYBOARD_NAVIGATION}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#DISPOSE_EDIT_DIALOG_ON_ESCAPE}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#INCLUDE_TOGGLE_EDIT_PANEL_CONTROL}<br>
