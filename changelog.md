@@ -20,6 +20,7 @@ Codion Change Log
 - EntityEditPanel, static configuration values moved to Config.
 - EntityTablePanel.Config.SUMMARY_PANEL_VISIBLE configuration value added.
 - EntityPanel.editControlPanel() and editControlTablePanel() replaced with mainPanel(), related refactoring.
+- EntityEditComponentPanel.excludeComponentFromSelection() replaced with selectableComponents().
 
 ## 0.17.32
 ### is.codion.common.core

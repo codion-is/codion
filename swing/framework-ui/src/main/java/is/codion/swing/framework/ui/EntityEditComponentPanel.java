@@ -10,6 +10,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -119,7 +120,7 @@ public class EntityEditComponentPanel extends JPanel {
   private final EntityComponents entityComponents;
   private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
   private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
-  private final ValueSet<Attribute<?>> excludeComponentFromSelection = ValueSet.valueSet();
+  private final ValueSet<Attribute<?>> selectableComponents;
   private final Value<JComponent> focusedInputComponent = Value.value();
 
   private final Value<JComponent> initialFocusComponent = Value.value();
@@ -152,8 +153,8 @@ public class EntityEditComponentPanel extends JPanel {
     if (!editModel.entityType().equals(entityComponents.entityDefinition().entityType())) {
       throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().entityType());
     }
-    excludeComponentFromSelection.addValidator(attributes -> attributes.forEach(attribute ->
-            requireNonNull(attribute, "Excluded component attribute may not be null")));
+    selectableComponents = ValueSet.valueSet(new HashSet<>(editModel.entityDefinition().attributes().get()));
+    selectableComponents.addValidator(new SelectableComponentValidator(editModel.entityDefinition()));
     addFocusedComponentListener();
   }
 
@@ -271,7 +272,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Displays a dialog allowing the user the select an input component which should receive the keyboard focus.
    * If only one input component is available then that component is selected automatically.
    * If no component is available, f.ex. when the panel is not visible, this method does nothing.
-   * @see #excludeComponentFromSelection()
+   * @see #selectableComponents()
    * @see #requestComponentFocus(Attribute)
    */
   public final void selectInputComponent() {
@@ -291,26 +292,13 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
-   * this returns all (non-excluded) attributes that have an associated component in this panel
-   * that is enabled, displayable, visible and focusable.
-   * @see #excludeComponentFromSelection()
-   * @see #component(Attribute)
-   */
-  public final Collection<Attribute<?>> selectComponentAttributes() {
-    return components.keySet().stream()
-            .filter(attribute -> !excludeComponentFromSelection.contains(attribute))
-            .filter(attribute -> componentSelectable(component(attribute).get()))
-            .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
-  }
-
-  /**
-   * Specifies the attributes that should be excluded when presenting a component selection list.
-   * @return the {@link ValueSet} specifying attributes that should be excluded from component selection
+   * Specifies the attributes that should be included when presenting a component selection list.
+   * Remove an attribute to exclude it from component selection.
+   * @return the {@link ValueSet} specifying attributes that should be included in component selection
    * @see #selectInputComponent()
    */
-  public final ValueSet<Attribute<?>> excludeComponentFromSelection() {
-    return excludeComponentFromSelection;
+  public final ValueSet<Attribute<?>> selectableComponents() {
+    return selectableComponents;
   }
 
   /**
@@ -907,6 +895,20 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
+   * this returns all (non-excluded) attributes that have an associated component in this panel
+   * that is enabled, displayable, visible and focusable.
+   * @see #selectableComponents()
+   * @see #component(Attribute)
+   */
+  private Collection<Attribute<?>> selectComponentAttributes() {
+    return components.keySet().stream()
+            .filter(selectableComponents::contains)
+            .filter(attribute -> componentSelectable(component(attribute).get()))
+            .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
+  }
+
+  /**
    * Returns true if this component can be selected, that is,
    * if it is non-null, displayable, visible, focusable and enabled.
    * @param component the component
@@ -916,8 +918,8 @@ public class EntityEditComponentPanel extends JPanel {
     return component != null &&
             component.isDisplayable() &&
             component.isVisible() &&
-            focusable(component) &&
-            component.isEnabled();
+            component.isEnabled() &&
+            focusable(component);
   }
 
   private static boolean focusable(JComponent component) {
@@ -1091,6 +1093,20 @@ public class EntityEditComponentPanel extends JPanel {
       Map<TextAttribute, Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
       attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
       label.setFont(font.deriveFont(attributes));
+    }
+  }
+
+  private static final class SelectableComponentValidator implements Value.Validator<Set<Attribute<?>>> {
+
+    private final EntityDefinition definition;
+
+    private SelectableComponentValidator(EntityDefinition definition) {
+      this.definition = definition;
+    }
+
+    @Override
+    public void validate(Set<Attribute<?>> attributes) {
+      attributes.forEach(attribute -> definition.attributes().definition(attribute));
     }
   }
 }
