@@ -94,9 +94,9 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
   // tag::main[]
   public static void main(String[] args) {
-    EntityPanel.TOOLBAR_CONTROLS.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
+    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
     EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
             .applicationName("Employees")
             .domainType(Employees.DOMAIN)

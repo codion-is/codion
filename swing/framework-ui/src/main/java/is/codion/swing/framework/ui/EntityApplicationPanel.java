@@ -629,7 +629,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Displays the panel provided by the given builder in a frame or dialog,
-   * depending on {@link EntityPanel#USE_FRAME_PANEL_DISPLAY}.
+   * depending on {@link EntityPanel.Config#USE_FRAME_PANEL_DISPLAY}.
    * @param panelBuilder the entity panel builder
    */
   protected final void displayEntityPanel(EntityPanel.Builder panelBuilder) {
@@ -638,11 +638,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Displays the given panel in a frame or dialog,
-   * depending on {@link EntityPanel#USE_FRAME_PANEL_DISPLAY}.
+   * depending on {@link EntityPanel.Config#USE_FRAME_PANEL_DISPLAY}.
    * @param entityPanel the entity panel
    */
   protected final void displayEntityPanel(EntityPanel entityPanel) {
-    if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
+    if (EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get()) {
       displayEntityPanelFrame(entityPanel);
     }
     else {

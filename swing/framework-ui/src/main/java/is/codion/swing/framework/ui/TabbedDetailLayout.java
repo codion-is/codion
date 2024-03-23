@@ -502,7 +502,7 @@ public final class TabbedDetailLayout implements DetailLayout {
     }
 
     private Window createDetailWindow() {
-      if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
+      if (EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get()) {
         return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
                 .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)

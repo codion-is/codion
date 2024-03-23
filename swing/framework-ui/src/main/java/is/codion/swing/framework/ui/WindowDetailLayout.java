@@ -204,7 +204,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
   private static final class DefaultBuilder implements Builder {
 
-    private WindowType windowType = EntityPanel.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
+    private WindowType windowType = EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
 
     @Override
     public Builder windowType(WindowType windowType) {

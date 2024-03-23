@@ -87,72 +87,6 @@ public class EntityPanel extends JPanel {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
   /**
-   * Indicates whether keyboard navigation will be enabled<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
-
-  /**
-   * Indicates whether entity edit panel dialogs should be closed on escape<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
-
-  /**
-   * Specifies whether a control for toggling the edit panel is available to the user<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeToggleEditPanelControl", true);
-
-  /**
-   * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarControls", false);
-
-  /**
-   * Specifies whether detail and edit panels should be displayed in a frame instead of the default dialog<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> USE_FRAME_PANEL_DISPLAY =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFramePanelDisplay", false);
-
-  /**
-   * Specifies where the control panel should be placed in a BorderLayout<br>
-   * Value type: Boolean<br>
-   * Default value: {@link BorderLayout#EAST}
-   * @see #TOOLBAR_CONTROLS
-   */
-  public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
-          Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlPanelConstraints", BorderLayout.EAST);
-
-  /**
-   * Specifies where the control toolbar should be placed in a BorderLayout<br>
-   * Value type: Boolean<br>
-   * Default value: BorderLayout.WEST
-   * @see #TOOLBAR_CONTROLS
-   */
-  public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
-          Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlToolbarConstraints", BorderLayout.WEST);
-
-  /**
-   * Specifies whether entity panels should include controls by default<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeControls", true);
-
-  /**
    * The possible states of a detail or edit panel.
    */
   public enum PanelState {
@@ -165,12 +99,6 @@ public class EntityPanel extends JPanel {
   public enum Direction {
     UP, DOWN, RIGHT, LEFT
   }
-
-  /**
-   * The default keyboard shortcut keyStrokes.
-   */
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-          keyboardShortcuts(KeyboardShortcut.class, EntityPanel::defaultKeyStroke);
 
   /**
    * The keyboard shortcuts available for {@link EntityPanel}s.
@@ -249,7 +177,7 @@ public class EntityPanel extends JPanel {
   private final Value<String> caption;
   private final Value<String> description;
   private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
-  private final State disposeEditDialogOnEscape = State.state(DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
+  private final State disposeEditDialogOnEscape = State.state(Config.DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
   private final Config configuration;
 
@@ -619,7 +547,7 @@ public class EntityPanel extends JPanel {
 
   /**
    * @return the State controlling whtether the edit dialog is disposed of on ESC
-   * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
+   * @see Config#DISPOSE_EDIT_DIALOG_ON_ESCAPE
    */
   public final State disposeEditDialogOnEscape() {
     return disposeEditDialogOnEscape;
@@ -728,9 +656,9 @@ public class EntityPanel extends JPanel {
    * @return the component containing the edit and table panel controls, null if no controls are available
    * @see EntityEditPanel#controls()
    * @see #createControls()
-   * @see EntityPanel#TOOLBAR_CONTROLS
-   * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
-   * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
+   * @see Config#TOOLBAR_CONTROLS
+   * @see Config#CONTROL_PANEL_CONSTRAINTS
+   * @see Config#CONTROL_TOOLBAR_CONSTRAINTS
    * @see Config#includeControls(boolean)
    */
   protected JComponent createControlComponent(Controls controls) {
@@ -1102,7 +1030,7 @@ public class EntityPanel extends JPanel {
             .border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
             .centerComponent(editControlPanel)
             .build();
-    if (USE_FRAME_PANEL_DISPLAY.get()) {
+    if (Config.USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(basePanel)
               .locationRelativeTo(tablePanel == null ? this : tablePanel)
               .title(caption.get())
@@ -1185,29 +1113,82 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-    switch (shortcut) {
-      case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
-      case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
-      case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-      case REQUEST_SEARCH_FIELD_FOCUS: return keyStroke(VK_F, CTRL_DOWN_MASK);
-      case REQUEST_EDIT_PANEL_FOCUS: return keyStroke(VK_E, CTRL_DOWN_MASK);
-      case SELECT_INPUT_FIELD: return keyStroke(VK_I, CTRL_DOWN_MASK);
-      case TOGGLE_EDIT_PANEL: return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case NAVIGATE_UP: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case NAVIGATE_DOWN: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      default: throw new IllegalArgumentException();
-    }
-  }
-
   /**
    * Contains configuration settings for a {@link EntityPanel} which must be set before the panel is initialized.
    */
   public static final class Config {
+
+    /**
+     * Indicates whether keyboard navigation will be enabled<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
+
+    /**
+     * Indicates whether entity edit panel dialogs should be closed on escape<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
+
+    /**
+     * Specifies whether a control for toggling the edit panel is available to the user<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeToggleEditPanelControl", true);
+
+    /**
+     * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarControls", false);
+
+    /**
+     * Specifies whether detail and edit panels should be displayed in a frame instead of the default dialog<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> USE_FRAME_PANEL_DISPLAY =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFramePanelDisplay", false);
+
+    /**
+     * Specifies where the control panel should be placed in a BorderLayout<br>
+     * Value type: Boolean<br>
+     * Default value: {@link BorderLayout#EAST}
+     * @see #TOOLBAR_CONTROLS
+     */
+    public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
+            Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlPanelConstraints", BorderLayout.EAST);
+
+    /**
+     * Specifies where the control toolbar should be placed in a BorderLayout<br>
+     * Value type: Boolean<br>
+     * Default value: BorderLayout.WEST
+     * @see #TOOLBAR_CONTROLS
+     */
+    public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
+            Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlToolbarConstraints", BorderLayout.WEST);
+
+    /**
+     * Specifies whether entity panels should include controls by default<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeControls", true);
+
+    /**
+     * The default keyboard shortcut keyStrokes.
+     */
+    public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+            keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
 
     private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
@@ -1328,6 +1309,25 @@ public class EntityPanel extends JPanel {
     private boolean horizontalControlLayout() {
       return controlComponentConstraints.equals(BorderLayout.SOUTH) ||
               controlComponentConstraints.equals(BorderLayout.NORTH);
+    }
+
+    private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
+        case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
+        case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
+        case REQUEST_SEARCH_FIELD_FOCUS: return keyStroke(VK_F, CTRL_DOWN_MASK);
+        case REQUEST_EDIT_PANEL_FOCUS: return keyStroke(VK_E, CTRL_DOWN_MASK);
+        case SELECT_INPUT_FIELD: return keyStroke(VK_I, CTRL_DOWN_MASK);
+        case TOGGLE_EDIT_PANEL: return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_UP: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_DOWN: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        default: throw new IllegalArgumentException();
+      }
     }
   }
 

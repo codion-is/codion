@@ -159,8 +159,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
     EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
-    EntityPanel.TOOLBAR_CONTROLS.set(true);
-    EntityPanel.USE_FRAME_PANEL_DISPLAY.set(true);
+    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+    EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.set(true);
     // Add a CTRL modifier to the DELETE key shortcut for table panels
     EntityTablePanel.Config.KEYBOARD_SHORTCUTS.keyStroke(EntityTablePanel.KeyboardShortcut.DELETE_SELECTED)
             .map(keyStroke -> keyStroke(keyStroke.getKeyCode(), CTRL_DOWN_MASK));
