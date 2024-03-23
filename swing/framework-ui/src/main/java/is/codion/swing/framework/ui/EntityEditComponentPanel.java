@@ -138,7 +138,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param editModel the edit model
    */
   protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
-    this(editModel, new EntityComponents(editModel.entityDefinition()));
+    this(editModel, new EntityComponents(requireNonNull(editModel, "editModel").entityDefinition()));
   }
 
   /**
@@ -201,7 +201,7 @@ public class EntityEditComponentPanel extends JPanel {
             .filter(entry -> entry.getValue().get() == component)
             .findFirst()
             .map(Map.Entry::getKey)
-            .orElseThrow(() -> new IllegalArgumentException("No attribute associated with this component"));
+            .orElseThrow(() -> new IllegalArgumentException("No attribute is associated with this component"));
   }
 
   /**

@@ -153,7 +153,7 @@ public final class WindowDetailLayout implements DetailLayout {
     private final EntityPanel detailPanel;
 
     private Window window;
-    private boolean packed = false;
+    private boolean initialized = false;
 
     private DetailWindow(EntityPanel detailPanel) {
       this.detailPanel = detailPanel;
@@ -167,9 +167,10 @@ public final class WindowDetailLayout implements DetailLayout {
       }
       if (panelState == WINDOW) {
         detailPanel.initialize();
-        if (!packed) {
+        if (!initialized) {
           window.pack();
-          packed = true;
+          detailPanel.requestInitialFocus();
+          initialized = true;
         }
         window.setVisible(true);
         window.toFront();
