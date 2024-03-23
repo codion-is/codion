@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -48,6 +49,11 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public boolean addAll(T... values) {
+    return addAll(asList(values));
+  }
+
+  @Override
+  public boolean addAll(Collection<T> values) {
     requireNonNull(values);
     synchronized (this.values) {
       Set<T> newValues = new LinkedHashSet<>(this.values);
@@ -74,6 +80,11 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public boolean removeAll(T... values) {
+    return removeAll(asList(values));
+  }
+
+  @Override
+  public boolean removeAll(Collection<T> values) {
     requireNonNull(values);
     synchronized (this.values) {
       Set<T> newValues = new LinkedHashSet<>(this.values);

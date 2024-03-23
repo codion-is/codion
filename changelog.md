@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.33-SNAPSHOT
+### is.codion.common.core
+- ValueSet.addAll() and removeAll() overloaded with Collection parameter.
 ### is.codion.swing.framework.ui
 - EntityPanel, initialization refactored.
 - EntityPanel, initialization refactored further, PanelLayout renamed DetailLayout, now only handles laying out entity panels containing one or more detail panels.
