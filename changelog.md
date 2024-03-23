@@ -13,6 +13,7 @@ Codion Change Log
 - EntityEditPanel.Config.focusActivation added, related refactoring.
 - EntityPanel, initialization refactored for easier customization.
 - EntityTablePanel, status message now updated dynamically while the selection is being adjusted.
+- EntityTablePanel, static configuration values moved to Config.
 
 ## 0.17.32
 ### is.codion.common.core
