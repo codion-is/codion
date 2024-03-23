@@ -59,9 +59,10 @@ public final class EntityEditComponentPanelTest {
   }
 
   @Test
-  void excludeComponentFromSelection() {
+  void selectableComponents() {
     SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
     EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
-    assertThrows(NullPointerException.class, () -> componentPanel.excludeComponentFromSelection().add(null));
+    assertThrows(NullPointerException.class, () -> componentPanel.selectableComponents().add(null));
+    assertThrows(IllegalArgumentException.class, () -> componentPanel.selectableComponents().add(Department.NAME));
   }
 }

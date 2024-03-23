@@ -174,13 +174,13 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
     EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
-    EntityPanel.TOOLBAR_CONTROLS.set(true);
-    EntityPanel.USE_FRAME_PANEL_DISPLAY.set(true);
+    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+    EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.set(true);
     // Add a CTRL modifier to the DELETE key shortcut for table panels
-    EntityTablePanel.KEYBOARD_SHORTCUTS.keyStroke(EntityTablePanel.KeyboardShortcut.DELETE_SELECTED)
+    EntityTablePanel.Config.KEYBOARD_SHORTCUTS.keyStroke(EntityTablePanel.KeyboardShortcut.DELETE_SELECTED)
             .map(keyStroke -> keyStroke(keyStroke.getKeyCode(), CTRL_DOWN_MASK));
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    EntityTablePanel.COLUMN_SELECTION.set(EntityTablePanel.ColumnSelection.MENU);
+    EntityTablePanel.Config.COLUMN_SELECTION.set(EntityTablePanel.ColumnSelection.MENU);
     FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING

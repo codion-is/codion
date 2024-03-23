@@ -207,7 +207,7 @@ public final class ClientTutorial {
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    EntityPanel.TOOLBAR_CONTROLS.set(true);
+    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
             .applicationModelFactory(ApplicationModel::new)

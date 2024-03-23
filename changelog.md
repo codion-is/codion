@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.33-SNAPSHOT
+### is.codion.common.core
+- ValueSet.addAll() and removeAll() overloaded with Collection parameter.
 ### is.codion.swing.framework.ui
 - EntityPanel, initialization refactored.
 - EntityPanel, initialization refactored further, PanelLayout renamed DetailLayout, now only handles laying out entity panels containing one or more detail panels.
@@ -13,6 +15,13 @@ Codion Change Log
 - EntityEditPanel.Config.focusActivation added, related refactoring.
 - EntityPanel, initialization refactored for easier customization.
 - EntityTablePanel, status message now updated dynamically while the selection is being adjusted.
+- EntityTablePanel, static configuration values moved to Config.
+- EntityPanel, static configuration values moved to Config.
+- EntityEditPanel, static configuration values moved to Config.
+- EntityTablePanel.Config.SUMMARY_PANEL_VISIBLE configuration value added.
+- EntityPanel.editControlPanel() and editControlTablePanel() replaced with mainPanel(), related refactoring.
+- EntityEditComponentPanel.excludeComponentFromSelection() replaced with selectableComponents().
+- WindowDetailLayout now requests initial focus when the window is initialized.
 
 ## 0.17.32
 ### is.codion.common.core

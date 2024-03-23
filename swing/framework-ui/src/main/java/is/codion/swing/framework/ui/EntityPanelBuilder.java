@@ -45,8 +45,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private String caption;
   private boolean refreshWhenInitialized = true;
   private Dimension preferredSize;
-  private boolean conditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
-  private boolean filterPanelVisible = EntityTablePanel.FILTER_PANEL_VISIBLE.get();
+  private boolean conditionPanelVisible = EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.get();
+  private boolean filterPanelVisible = EntityTablePanel.Config.FILTER_PANEL_VISIBLE.get();
   private DetailLayout detailLayout = TabbedDetailLayout.builder().build();
 
   private Class<? extends EntityPanel> panelClass;

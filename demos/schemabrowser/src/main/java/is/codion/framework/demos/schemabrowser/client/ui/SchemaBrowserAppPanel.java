@@ -82,7 +82,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
+    EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.set(true);
     EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
             .applicationName("Schema Browser")
             .domainType(SchemaBrowser.DOMAIN)

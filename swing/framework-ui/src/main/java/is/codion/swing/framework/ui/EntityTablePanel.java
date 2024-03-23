@@ -156,109 +156,6 @@ public class EntityTablePanel extends JPanel {
   private static final ResourceBundle EDIT_PANEL_MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
 
   /**
-   * Specifies whether table condition panels should be visible or not by default<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> CONDITION_PANEL_VISIBLE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.conditionPanelVisible", false);
-
-  /**
-   * Specifies whether table filter panels should be visible or not by default<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> FILTER_PANEL_VISIBLE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
-
-  /**
-   * Specifies whether to include the default popup menu on entity tables<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includePopupMenu", true);
-
-  /**
-   * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
-
-  /**
-   * Specifies whether to include a 'Clear' control in the popup menu.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
-
-  /**
-   * Specifies whether to include a condition panel.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeConditionPanel", true);
-
-  /**
-   * Specifies whether to include a filter panel.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
-
-  /**
-   * Specifies whether to include a summary panel.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeSummaryPanel", true);
-
-  /**
-   * Specifies whether to include a popup menu for configuring the table model limit.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeLimitMenu", false);
-
-  /**
-   * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.showRefreshProgressBar", false);
-
-  /**
-   * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
-   * Value type: Boolean<br>
-   * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
-   */
-  public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
-          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.refreshButtonVisible",
-                  RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
-
-  /**
-   * Specifies how column selection is presented to the user.<br>
-   * Value type: {@link ColumnSelection}<br>
-   * Default value: {@link ColumnSelection#DIALOG}
-   */
-  public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
-          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
-
-  /**
-   * The default keyboard shortcut keyStrokes.
-   */
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-          keyboardShortcuts(KeyboardShortcut.class, EntityTablePanel::defaultKeyStroke);
-
-  /**
    * The keyboard shortcuts available for {@link EntityTablePanel}s.
    * Note that changing the shortcut keystroke after the panel
    * has been initialized has no effect.
@@ -358,9 +255,9 @@ public class EntityTablePanel extends JPanel {
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
   private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
-  private final State conditionPanelVisibleState = State.state(CONDITION_PANEL_VISIBLE.get());
-  private final State filterPanelVisibleState = State.state(FILTER_PANEL_VISIBLE.get());
-  private final State summaryPanelVisibleState = State.state();
+  private final State conditionPanelVisibleState = State.state(Config.CONDITION_PANEL_VISIBLE.get());
+  private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
+  private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
 
   private final Map<TableControl, Value<Control>> controls = createControlsMap();
   private final Config configuration;
@@ -1580,20 +1477,6 @@ public class EntityTablePanel extends JPanel {
     return new Config(config);
   }
 
-  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-    switch (shortcut) {
-      case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
-      case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
-      case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-      case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case PRINT: return keyStroke(VK_P, CTRL_DOWN_MASK);
-      case DELETE_SELECTED: return keyStroke(VK_DELETE);
-      case DISPLAY_POPUP_MENU: return keyStroke(VK_G, CTRL_DOWN_MASK);
-      default: throw new IllegalArgumentException();
-    }
-  }
-
   private final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
 
     @Override
@@ -1641,6 +1524,117 @@ public class EntityTablePanel extends JPanel {
    * Contains configuration settings for a {@link EntityTablePanel} which must be set before the panel is initialized.
    */
   public static final class Config {
+
+    /**
+     * Specifies whether table condition panels should be visible or not by default<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> CONDITION_PANEL_VISIBLE =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.conditionPanelVisible", false);
+
+    /**
+     * Specifies whether table filter panels should be visible or not by default<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> FILTER_PANEL_VISIBLE =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
+
+    /**
+     * Specifies whether table summary panel should be visible or not by default<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> SUMMARY_PANEL_VISIBLE =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.summaryPanelVisible", false);
+
+    /**
+     * Specifies whether to include the default popup menu on entity tables<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includePopupMenu", true);
+
+    /**
+     * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
+
+    /**
+     * Specifies whether to include a 'Clear' control in the popup menu.<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
+
+    /**
+     * Specifies whether to include a condition panel.<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_CONDITION_PANEL =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeConditionPanel", true);
+
+    /**
+     * Specifies whether to include a filter panel.<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
+
+    /**
+     * Specifies whether to include a summary panel.<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_SUMMARY_PANEL =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeSummaryPanel", true);
+
+    /**
+     * Specifies whether to include a popup menu for configuring the table model limit.<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeLimitMenu", false);
+
+    /**
+     * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.showRefreshProgressBar", false);
+
+    /**
+     * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
+     * Value type: Boolean<br>
+     * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
+     */
+    public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
+            Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.refreshButtonVisible",
+                    RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
+
+    /**
+     * Specifies how column selection is presented to the user.<br>
+     * Value type: {@link ColumnSelection}<br>
+     * Default value: {@link ColumnSelection#DIALOG}
+     */
+    public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
+            Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+
+    /**
+     * The default keyboard shortcut keyStrokes.
+     */
+    public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+            keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
 
     private final EntityDefinition entityDefinition;
 
@@ -1901,6 +1895,20 @@ public class EntityTablePanel extends JPanel {
       public void validate(Set<Attribute<?>> attributes) {
         //validate that the attributes exists
         attributes.forEach(attribute -> entityDefinition.attributes().definition(attribute));
+      }
+    }
+
+    private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+      switch (shortcut) {
+        case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
+        case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
+        case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
+        case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case PRINT: return keyStroke(VK_P, CTRL_DOWN_MASK);
+        case DELETE_SELECTED: return keyStroke(VK_DELETE);
+        case DISPLAY_POPUP_MENU: return keyStroke(VK_G, CTRL_DOWN_MASK);
+        default: throw new IllegalArgumentException();
       }
     }
   }

@@ -85,30 +85,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
   /**
-   * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
-
-  /**
-   * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveCaption", false);
-
-  /**
-   * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.includeEntityMenu", true);
-
-  /**
    * The standard controls available in a edit panel
    */
   public enum EditControl {
@@ -555,7 +531,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private Control createInsertControl() {
-    boolean useSaveCaption = USE_SAVE_CAPTION.get();
+    boolean useSaveCaption = Config.USE_SAVE_CAPTION.get();
     char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(new InsertCommand())
@@ -568,7 +544,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void bindEvents() {
-    if (INCLUDE_ENTITY_MENU.get()) {
+    if (Config.INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -627,7 +603,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return new Config(config);
   }
 
+  /**
+   * Contains configuration settings for a {@link EntityEditPanel} which must be set before the panel is initialized.
+   */
   public static final class Config {
+
+    /**
+     * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveCaption", false);
+    /**
+     * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V.<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.includeEntityMenu", true);
+
+    /**
+     * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
 
     private final Set<EditControl> editControls;
 

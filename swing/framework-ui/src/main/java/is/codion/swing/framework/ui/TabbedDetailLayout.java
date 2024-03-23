@@ -156,7 +156,7 @@ public final class TabbedDetailLayout implements DetailLayout {
   public JComponent layout(EntityPanel entityPanel) {
     this.entityPanel = requireNonNull(entityPanel);
     if (!includeTabbedPane || entityPanel.detailPanels().isEmpty()) {
-      return entityPanel.editControlTablePanel();
+      return entityPanel.mainPanel();
     }
 
     return layoutPanel(entityPanel);
@@ -277,7 +277,7 @@ public final class TabbedDetailLayout implements DetailLayout {
   }
 
   private JComponent layoutPanel(EntityPanel entityPanel) {
-    splitPane = createSplitPane(entityPanel.editControlTablePanel());
+    splitPane = createSplitPane(entityPanel.mainPanel());
     tabbedPane = createTabbedPane(entityPanel.detailPanels());
     entityPanel.detailPanels().forEach(this::setupResizing);
     setupControls(entityPanel);
@@ -517,7 +517,7 @@ public final class TabbedDetailLayout implements DetailLayout {
     }
 
     private Window createDetailWindow() {
-      if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
+      if (EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get()) {
         return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
                 .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)

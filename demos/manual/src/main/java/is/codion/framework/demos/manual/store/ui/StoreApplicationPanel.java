@@ -72,7 +72,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 
   public static void main(String[] args) {
     Locale.setDefault(new Locale("en", "EN"));
-    EntityPanel.TOOLBAR_CONTROLS.set(true);
+    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)

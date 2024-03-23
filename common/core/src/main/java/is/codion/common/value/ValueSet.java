@@ -50,6 +50,13 @@ public interface ValueSet<T> extends Value<Set<T>> {
   boolean addAll(T... values);
 
   /**
+   * Adds the given values to this set, returns true unless the set already contained all the values.
+   * @param values the values to add
+   * @return true if a value was added
+   */
+  boolean addAll(Collection<T> values);
+
+  /**
    * Removes a value from this set, returns true if the set contained the value before removing.
    * @param value the value to remove
    * @return true if the value was removed
@@ -62,6 +69,13 @@ public interface ValueSet<T> extends Value<Set<T>> {
    * @return true if value was removed
    */
   boolean removeAll(T... values);
+
+  /**
+   * Removes the given values from this set, returns true if the set contained one or more of the values.
+   * @param values the values to remove
+   * @return true if value was removed
+   */
+  boolean removeAll(Collection<T> values);
 
   /**
    * Returns true if this set contains the specified element

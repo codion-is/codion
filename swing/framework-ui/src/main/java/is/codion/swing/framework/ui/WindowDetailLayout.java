@@ -85,7 +85,7 @@ public final class WindowDetailLayout implements DetailLayout {
       setupControls(entityPanel);
     }
 
-    return entityPanel.editControlTablePanel();
+    return entityPanel.mainPanel();
   }
 
   @Override
@@ -168,7 +168,7 @@ public final class WindowDetailLayout implements DetailLayout {
     private final EntityPanel detailPanel;
 
     private Window window;
-    private boolean packed = false;
+    private boolean initialized = false;
 
     private DetailWindow(EntityPanel detailPanel) {
       this.detailPanel = detailPanel;
@@ -182,9 +182,10 @@ public final class WindowDetailLayout implements DetailLayout {
       }
       if (panelState == WINDOW) {
         detailPanel.initialize();
-        if (!packed) {
+        if (!initialized) {
           window.pack();
-          packed = true;
+          detailPanel.requestInitialFocus();
+          initialized = true;
         }
         window.setVisible(true);
         window.toFront();
@@ -219,7 +220,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
   private static final class DefaultBuilder implements Builder {
 
-    private WindowType windowType = EntityPanel.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
+    private WindowType windowType = EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
 
     @Override
     public Builder windowType(WindowType windowType) {
