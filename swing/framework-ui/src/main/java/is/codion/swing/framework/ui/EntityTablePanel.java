@@ -242,7 +242,7 @@ public class EntityTablePanel extends JPanel {
 
   private final State conditionPanelVisibleState = State.state(Config.CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
-  private final State summaryPanelVisibleState = State.state();
+  private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
 
   private final Map<TableControl, Value<Control>> controls = createControlsMap();
   private final Config configuration;
@@ -1525,6 +1525,14 @@ public class EntityTablePanel extends JPanel {
      */
     public static final PropertyValue<Boolean> FILTER_PANEL_VISIBLE =
             Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.filterPanelVisible", false);
+
+    /**
+     * Specifies whether table summary panel should be visible or not by default<br>
+     * Value type: Boolean<br>
+     * Default value: false
+     */
+    public static final PropertyValue<Boolean> SUMMARY_PANEL_VISIBLE =
+            Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.summaryPanelVisible", false);
 
     /**
      * Specifies whether to include the default popup menu on entity tables<br>

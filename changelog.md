@@ -16,6 +16,7 @@ Codion Change Log
 - EntityTablePanel, static configuration values moved to Config.
 - EntityPanel, static configuration values moved to Config.
 - EntityEditPanel, static configuration values moved to Config.
+- EntityTablePanel.Config.SUMMARY_PANEL_VISIBLE configuration value added.
 
 ## 0.17.32
 ### is.codion.common.core

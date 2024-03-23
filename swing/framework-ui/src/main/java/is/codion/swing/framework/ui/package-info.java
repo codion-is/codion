@@ -18,12 +18,15 @@
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_TOOLBAR_CONSTRAINTS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#USE_FRAME_PANEL_DISPLAY}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#CONDITION_PANEL_VISIBLE}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#FILTER_PANEL_VISIBLE}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#SUMMARY_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_POPUP_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_ENTITY_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CLEAR_CONTROL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_LIMIT_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_BUTTON_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#COLUMN_SELECTION}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CONDITION_PANEL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_FILTER_PANEL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_SUMMARY_PANEL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#SHOW_REFRESH_PROGRESS_BAR}<br>
