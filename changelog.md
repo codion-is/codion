@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.33-SNAPSHOT
+## 0.17.33
 ### is.codion.common.core
 - ValueSet.addAll() and removeAll() overloaded with Collection parameter.
 ### is.codion.swing.framework.ui
@@ -22,6 +22,7 @@ Codion Change Log
 - EntityPanel.editControlPanel() and editControlTablePanel() replaced with mainPanel(), related refactoring.
 - EntityEditComponentPanel.excludeComponentFromSelection() replaced with selectableComponents().
 - WindowDetailLayout now requests initial focus when the window is initialized.
+- EntityEditComponentPanel, minor refactoring + javadoc improvements.
 
 ## 0.17.32
 ### is.codion.common.core

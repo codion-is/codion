@@ -824,12 +824,12 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |update|Update|Uppfæra
 |===
 
-=== is/codion/swing/framework/ui/TabbedPanelLayout.java
+=== is/codion/swing/framework/ui/TabbedDetailLayout.java
 
 [source]
 ----
-is/codion/swing/framework/ui/TabbedPanelLayout.properties
-is/codion/swing/framework/ui/TabbedPanelLayout_is_IS.properties
+is/codion/swing/framework/ui/TabbedDetailLayout.properties
+is/codion/swing/framework/ui/TabbedDetailLayout_is_IS.properties
 ----
 [cols="1,1,1"]
 |===
