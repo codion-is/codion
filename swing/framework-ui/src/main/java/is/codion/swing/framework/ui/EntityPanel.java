@@ -484,6 +484,14 @@ public class EntityPanel extends JPanel {
             .anyMatch(detailPanel -> detailPanel.entityModel.entityType().equals(entityType));
   }
 
+  /**
+   * Selects the given detail panel if it is available
+   * @param detailPanel the detail panel to select
+   */
+  public final void selectDetailPanel(EntityPanel detailPanel) {
+    detailLayout().select(requireNonNull(detailPanel));
+  }
+
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + caption.get();
@@ -891,6 +899,14 @@ public class EntityPanel extends JPanel {
     }
   }
 
+  /**
+   * @return the detail layout used by this panel
+   * @param <T> the detail layout type
+   */
+  protected final <T extends DetailLayout> T detailLayout() {
+    return (T) configuration.detailLayout;
+  }
+
   private JPanel createEditControlPanel() {
     if (editPanel == null) {
       return null;
@@ -924,10 +940,6 @@ public class EntityPanel extends JPanel {
 
   final void setNextSiblingPanel(EntityPanel nextSiblingPanel) {
     this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
-  }
-
-  final <T extends DetailLayout> T detailLayout() {
-    return (T) configuration.detailLayout;
   }
 
   static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
