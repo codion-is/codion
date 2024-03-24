@@ -1,6 +1,6 @@
 # Contributing to Codion
 
-Thank you for you wanting to contribute, here's what you need to know before proceding.
+Thank you for you wanting to contribute, here's what you need to know before proceeding.
 
 ## Code contributions
 
@@ -9,6 +9,10 @@ Codion may be dual-licenced at some point, so in order to accept code contributi
 ## Bug reports
 
 Bug reports are most welcome and appreciated, please specify the version of Codion you are using and be as detailed as possible. Please provide a [SSCCE](http://sscce.org) if at all possible.
+
+## Translations
+
+There is a lot of translation work available for those who are interested, for an overview of localized messages see the technical/i18n section of the documentation.
 
 ## Documentation requests
 
