@@ -85,7 +85,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 
 /**
- * A base class for entity edit panels, providing components for editing entities.
+ * A base class for entity edit panels, managing the components used for editing entities.
  */
 public class EntityEditComponentPanel extends JPanel {
 
@@ -109,7 +109,7 @@ public class EntityEditComponentPanel extends JPanel {
           Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
   /**
-   * Specifies the default number of columns in text fields created by this component panel<br>
+   * Specifies the default number of text field columns<br>
    * Value type: Integer<br>
    * Default value: 12
    */
@@ -151,7 +151,8 @@ public class EntityEditComponentPanel extends JPanel {
     this.editModel = requireNonNull(editModel, "editModel");
     this.entityComponents = requireNonNull(entityComponents, "entityComponents");
     if (!editModel.entityType().equals(entityComponents.entityDefinition().entityType())) {
-      throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().entityType());
+      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() +
+              ", entityComponents: " + entityComponents.entityDefinition().entityType());
     }
     selectableComponents = ValueSet.valueSet(new HashSet<>(editModel.entityDefinition().attributes().get()));
     selectableComponents.addValidator(new SelectableComponentValidator(editModel.entityDefinition()));
@@ -334,7 +335,7 @@ public class EntityEditComponentPanel extends JPanel {
    * This applies to all components created by this edit component panel as well as
    * components set via {@link #component(Attribute)} as long
    * as the component has a JLabel associated with its 'labeledBy' client property.
-   * Note that this has no effect on components that have already been created.
+   * Note that changing this has no effect on components that have already been created.
    * @return the State controlling whether components display an indicator if the value is modified
    * @see #MODIFIED_INDICATOR
    * @see JLabel#setLabelFor(Component)
@@ -345,7 +346,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * If set to true then components created subsequently will transfer focus on enter, otherwise not.
-   * Note that this has no effect on components that have already been created.
+   * Note that changing this has no effect on components that have already been created.
    * @return the State controlling whether components transfer focus on enter
    * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
    */
@@ -1035,11 +1036,7 @@ public class EntityEditComponentPanel extends JPanel {
     @Override
     public void accept(C component) {
       componentBuilders.remove(attribute);
-      setComponent(attribute, component);
-    }
-
-    private void setComponent(Attribute<?> attribute, JComponent component) {
-      components.computeIfAbsent(requireNonNull(attribute), k -> Value.value()).set(requireNonNull(component));
+      components.computeIfAbsent(attribute, k -> Value.value()).set(component);
       if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
         editModel.modified(attribute).addDataListener(new ModifiedIndicator(component));
       }
@@ -1067,7 +1064,7 @@ public class EntityEditComponentPanel extends JPanel {
   private static final class ModifiedIndicator implements Consumer<Boolean> {
 
     private static final String LABELED_BY_PROPERTY = "labeledBy";
-    private static final Integer UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.get();
+    private static final int UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.get();
 
     private final JComponent component;
 
