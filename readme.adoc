@@ -537,7 +537,7 @@ connection.close();
 
 == Localization
 
-Localized messages are available in English (default) and Icelandic. There are a whole lot of {url-technical}/technical/technical.html#_internationalization_i18n[localized messages] so if you are interested in providing translations that would be much appreciated. This i18n page can be generated with the following Gradle target.
+Localized messages are available in English (default) and Icelandic. There are a whole lot of {url-technical}/technical.html#_internationalization_i18n[localized messages] so if you are interested in providing translations that would be much appreciated. This i18n page can be generated with the following Gradle target.
 
 [source,shell]
 ----
