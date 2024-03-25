@@ -85,10 +85,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     INSERT, UPDATE, DELETE, CLEAR
   }
 
-  private static final EditControl[] DEFAULT_EDIT_CONTROLS = {
-          EditControl.INSERT, EditControl.UPDATE, EditControl.DELETE, EditControl.CLEAR
-  };
-
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
@@ -618,7 +614,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 
     private Config() {
-      this.editControls = new HashSet<>(Arrays.asList(DEFAULT_EDIT_CONTROLS));
+      this.editControls = new HashSet<>(Arrays.asList(EditControl.values()));
     }
 
     private Config(Config config) {
