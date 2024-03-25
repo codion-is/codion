@@ -27,7 +27,8 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EntityPanelBuilderTest {
 
@@ -54,29 +55,29 @@ public class EntityPanelBuilderTest {
 
   @Test
   void testDetailPanelBuilder() {
-    SwingEntityModel.Builder customerModelBuilder = SwingEntityModel.builder(Department.TYPE);
-    SwingEntityModel.Builder invoiceModelBuilder = SwingEntityModel.builder(Employee.TYPE);
+    SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE);
+    SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE);
 
-    customerModelBuilder.detailModel(invoiceModelBuilder);
+    departmentModelBuilder.detailModel(employeeModelBuilder);
 
-    SwingEntityModel customerModel = customerModelBuilder.build(CONNECTION_PROVIDER);
+    SwingEntityModel departmentModel = departmentModelBuilder.build(CONNECTION_PROVIDER);
 
-    final String customerCaption = "A department caption";
-    EntityPanel.Builder customerPanelBuilder = EntityPanel.builder(Department.TYPE)
-            .caption(customerCaption);
-    EntityPanel.Builder invoicePanelBuilder = EntityPanel.builder(Employee.TYPE)
+    String departmentCaption = "A department caption";
+    EntityPanel.Builder departmentPanelBuilder = EntityPanel.builder(Department.TYPE)
+            .caption(departmentCaption);
+    EntityPanel.Builder employeePanelBuilder = EntityPanel.builder(Employee.TYPE)
             .caption("empCaption");
 
-    customerPanelBuilder.detailPanel(invoicePanelBuilder);
+    departmentPanelBuilder.detailPanel(employeePanelBuilder);
 
-    EntityPanel customerPanel = customerPanelBuilder.build(customerModel);
-    assertEquals(customerCaption, customerPanel.caption().get());
-    assertTrue(customerPanel.containsDetailPanel(Employee.TYPE));
-    EntityPanel invoicePanel = customerPanel.detailPanel(Employee.TYPE);
-    assertEquals("empCaption", invoicePanel.caption().get());
-    assertEquals(1, customerPanel.detailPanels().size());
+    EntityPanel departmentPanel = departmentPanelBuilder.build(departmentModel);
+    assertEquals(departmentCaption, departmentPanel.caption().get());
+    assertThrows(IllegalArgumentException.class, () -> departmentPanel.detailPanel(Department.TYPE));
+    EntityPanel employeePanel = departmentPanel.detailPanel(Employee.TYPE);
+    assertEquals("empCaption", employeePanel.caption().get());
+    assertEquals(1, departmentPanel.detailPanels().size());
 
-    assertEquals(customerModel, customerPanel.model());
-    assertEquals(customerModel.detailModel(Employee.TYPE), invoicePanel.model());
+    assertEquals(departmentModel, departmentPanel.model());
+    assertEquals(departmentModel.detailModel(Employee.TYPE), employeePanel.model());
   }
 }

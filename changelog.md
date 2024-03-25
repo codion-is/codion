@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.17.34-SNAPSHOT
 ### is.codion.swing.framework.ui
 - EntityPanel.detailLayout() now protected instead of package private.
+- EntityPanel.selectDetailPanel() removed for now.
+- EntityPanel.containsDetailPanel() removed.
+- EntityPanel.detailPanel(entityType) refactored, error message improved.
 
 ## 0.17.33
 ### is.codion.common.core

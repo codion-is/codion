@@ -452,7 +452,8 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return the currently visible/active detail EntityPanels, if any
+   * Returns the detail panels which models are active.
+   * @return the currently active detail EntityPanels, if any
    */
   public final Collection<EntityPanel> activeDetailPanels() {
     Collection<SwingEntityModel> activeDetailModels = entityModel.activeDetailModels();
@@ -463,21 +464,18 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * Returns the detail panel for the given {@code entityType}, if one is available
+   * Returns the first detail panel based on the given {@code entityType}
    * @param <T> the entity panel type
    * @param entityType the entityType of the detail panel to retrieve
    * @return the detail panel of the given type
-   * @throws IllegalArgumentException in case the panel was not found
+   * @throws IllegalArgumentException in case a panel based on the given entityType was not found
    */
   public final <T extends EntityPanel> T detailPanel(EntityType entityType) {
     requireNonNull(entityType);
-    for (EntityPanel detailPanel : detailPanels) {
-      if (detailPanel.entityModel.entityType().equals(entityType)) {
-        return (T) detailPanel;
-      }
-    }
-
-    throw new IllegalArgumentException("Detail panel for entity: " + entityType + " not found in panel: " + getClass());
+    return (T) detailPanels.stream()
+            .filter(detailPanel -> detailPanel.model().entityType().equals(entityType))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Detail panel for entity: " + entityType + " not found in panel: " + this));
   }
 
   /**
@@ -486,25 +484,6 @@ public class EntityPanel extends JPanel {
    */
   public final Collection<EntityPanel> detailPanels() {
     return unmodifiableCollection(detailPanels);
-  }
-
-  /**
-   * Returns true if this panel contains a detail panel for the given {@code entityType}
-   * @param entityType the entityType
-   * @return true if a detail panel for the given entityType is found
-   */
-  public final boolean containsDetailPanel(EntityType entityType) {
-    requireNonNull(entityType);
-    return detailPanels.stream()
-            .anyMatch(detailPanel -> detailPanel.entityModel.entityType().equals(entityType));
-  }
-
-  /**
-   * Selects the given detail panel if it is available
-   * @param detailPanel the detail panel to select
-   */
-  public final void selectDetailPanel(EntityPanel detailPanel) {
-    detailLayout().select(requireNonNull(detailPanel));
   }
 
   @Override
