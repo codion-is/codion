@@ -49,7 +49,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -80,10 +79,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
   private static final ResourceBundle TABLE_PANEL_MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
-  private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
-  private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
-  private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
-
   /**
    * The standard controls available in a edit panel
    */
@@ -107,7 +102,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private final Config configuration;
   private final Map<EditControl, Value<Control>> controls;
   private final State active;
-  private final EnumMap<Confirmer.Action, Value<Confirmer>> confirmers;
 
   private boolean initialized = false;
 
@@ -148,7 +142,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     this.configuration = configure(configuration);
     this.active = State.state(!this.configuration.focusActivation);
     this.controls = createControlsMap();
-    this.confirmers = createConfirmersMap();
     setupFocusActivation();
     if (editModel.exists().not().get()) {
       editModel.setDefaults();
@@ -175,15 +168,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public final void clearAndRequestFocus() {
     editModel().setDefaults();
     requestInitialFocus();
-  }
-
-  /**
-   * Controls the confirmer to use for the given action, the default confirmer is used if this is set to null.
-   * @param action the confirmation action
-   * @return the {@link Value} controlling the given confirmer
-   */
-  public final Value<Confirmer> confirmer(Confirmer.Action action) {
-    return confirmers.get(requireNonNull(action));
   }
 
   /**
@@ -236,11 +220,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * Performs insert on the active entity after asking for confirmation using the {@link Confirmer}
-   * associated with the {@link Confirmer.Action#INSERT} action.
+   * specified via {@link Config#insertConfirmer(Confirmer)}.
    * Note that the default insert {@link Confirmer} simply returns true, so in order to implement
-   * a insert confirmation you must set the {@link Confirmer} via {@link #confirmer(Confirmer.Action)}.
+   * a insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
    * @return true in case of successful insert, false otherwise
-   * @see #confirmer(Confirmer.Action)
+   * @see Config#insertConfirmer(Confirmer)
    */
   public final boolean insertWithConfirmation() {
     if (confirmInsert()) {
@@ -280,9 +264,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * Performs delete on the active entity after asking for confirmation using the {@link Confirmer}
-   * associated with the {@link Confirmer.Action#DELETE} action.
+   * specified via {@link Config#deleteConfirmer(Confirmer)}.
    * @return true if the delete operation was successful
-   * @see #confirmer(Confirmer.Action)
+   * @see Config#deleteConfirmer(Confirmer)
    */
   public final boolean deleteWithConfirmation() {
     if (confirmDelete()) {
@@ -317,9 +301,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * Performs update on the active entity after asking for confirmation using the {@link Confirmer}
-   * associated with the {@link Confirmer.Action#UPDATE} action.
+   * specified via {@link Config#updateConfirmer(Confirmer)}.
    * @return true if the update operation was successful
-   * @see #confirmer(Confirmer.Action)
+   * @see Config#updateConfirmer(Confirmer)
    */
   public final boolean updateWithConfirmation() {
     if (confirmUpdate()) {
@@ -362,26 +346,23 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * @return true if confirmed
-   * @see #confirmer(Confirmer.Action)
    */
   protected final boolean confirmInsert() {
-    return confirmers.get(Confirmer.Action.INSERT).get().confirm(this);
+    return configuration.insertConfirmer.confirm(this);
   }
 
   /**
    * @return true if confirmed
-   * @see #confirmer(Confirmer.Action)
    */
   protected final boolean confirmUpdate() {
-    return confirmers.get(Confirmer.Action.UPDATE).get().confirm(this);
+    return configuration.updateConfirmer.confirm(this);
   }
 
   /**
    * @return true if confirmed
-   * @see #confirmer(Confirmer.Action)
    */
   protected final boolean confirmDelete() {
-    return confirmers.get(Confirmer.Action.DELETE).get().confirm(this);
+    return configuration.deleteConfirmer.confirm(this);
   }
 
   /**
@@ -587,15 +568,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             })));
   }
 
-  private static EnumMap<Confirmer.Action, Value<Confirmer>> createConfirmersMap() {
-    EnumMap<Confirmer.Action, Value<Confirmer>> enumMap = new EnumMap<>(Confirmer.Action.class);
-    enumMap.put(Confirmer.Action.INSERT, Value.value(DEFAULT_INSERT_CONFIRMER, DEFAULT_INSERT_CONFIRMER));
-    enumMap.put(Confirmer.Action.UPDATE, Value.value(DEFAULT_UPDATE_CONFIRMER, DEFAULT_UPDATE_CONFIRMER));
-    enumMap.put(Confirmer.Action.DELETE, Value.value(DEFAULT_DELETE_CONFIRMER, DEFAULT_DELETE_CONFIRMER));
-
-    return enumMap;
-  }
-
   private static Config configure(Consumer<Config> configuration) {
     Config config = new Config();
     requireNonNull(configuration).accept(config);
@@ -607,6 +579,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Contains configuration settings for a {@link EntityEditPanel} which must be set before the panel is initialized.
    */
   public static final class Config {
+
+    private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
+    private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
+    private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
     /**
      * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)<br>
@@ -638,6 +614,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private boolean focusActivation = USE_FOCUS_ACTIVATION.get();
     private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
             ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+    private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
+    private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
+    private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 
     private Config() {
       this.editControls = new HashSet<>(Arrays.asList(DEFAULT_EDIT_CONTROLS));
@@ -649,6 +628,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       this.requestFocusAfterInsert = config.requestFocusAfterInsert;
       this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
       this.focusActivation = config.focusActivation;
+      this.insertConfirmer = config.insertConfirmer;
+      this.updateConfirmer = config.updateConfirmer;
+      this.deleteConfirmer = config.deleteConfirmer;
     }
 
     /**
@@ -699,6 +681,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       return this;
     }
 
+    /**
+     * @param insertConfirmer the insert confirmer
+     * @return this Config instance
+     */
+    public Config insertConfirmer(Confirmer insertConfirmer) {
+      this.insertConfirmer = requireNonNull(insertConfirmer);
+      return this;
+    }
+
+    /**
+     * @param deleteConfirmer the delete confirmer
+     * @return this Config instance
+     */
+    public Config deleteConfirmer(Confirmer deleteConfirmer) {
+      this.deleteConfirmer = requireNonNull(deleteConfirmer);
+      return this;
+    }
+
+    /**
+     * @param updateConfirmer the update confirmer
+     * @return this Config instance
+     */
+    public Config updateConfirmer(Confirmer updateConfirmer) {
+      this.updateConfirmer = requireNonNull(updateConfirmer);
+      return this;
+    }
+
     private static Set<EditControl> validateControlCodes(EditControl[] editControls) {
       if (editControls == null) {
         return emptySet();
@@ -715,13 +724,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Handles displaying confirmation messages for common actions to the user.
    */
   public interface Confirmer {
-
-    /**
-     * The actions meriting user confirmation
-     */
-    enum Action {
-      INSERT, UPDATE, DELETE
-    }
 
     /**
      * Returns true if the action is confirmed, presents an OK/Cancel confirm dialog to the user if required.

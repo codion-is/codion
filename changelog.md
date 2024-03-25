@@ -9,6 +9,7 @@ Codion Change Log
 - EntityPanel.detailPanel(entityType) refactored, error message improved.
 - EntityPanel bug fixed, editControlTablePanel was not created in case of no table panel, renamed mainPanel, tests added.
 - TabbedDetailLayout, static factory methods removed.
+- EntityEditPanel, confirmers moved to Config.
 
 ## 0.17.33
 ### is.codion.common.core
