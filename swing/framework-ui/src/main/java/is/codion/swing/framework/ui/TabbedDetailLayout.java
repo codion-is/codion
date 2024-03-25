@@ -175,22 +175,6 @@ public final class TabbedDetailLayout implements DetailLayout {
   }
 
   /**
-   * @param panelState the initial detail panel state
-   * @return a new {@link TabbedDetailLayout} with the given detail panel state
-   */
-  public static TabbedDetailLayout panelState(PanelState panelState) {
-    return builder().panelState(panelState).build();
-  }
-
-  /**
-   * @param splitPaneResizeWeight the split pane resize weight
-   * @return a new {@link TabbedDetailLayout} with the given split pane resize weight
-   */
-  public static TabbedDetailLayout splitPaneResizeWeight(double splitPaneResizeWeight) {
-    return builder().splitPaneResizeWeight(splitPaneResizeWeight).build();
-  }
-
-  /**
    * @return a new {@link TabbedDetailLayout.Builder} instance
    */
   public static Builder builder() {

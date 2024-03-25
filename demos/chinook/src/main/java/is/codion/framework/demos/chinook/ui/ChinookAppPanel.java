@@ -35,6 +35,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import is.codion.swing.framework.ui.TabbedDetailLayout;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
@@ -56,7 +57,6 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.framework.ui.TabbedDetailLayout.panelState;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -102,7 +102,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(genreModelBuilder)
                     .editPanel(GenreEditPanel.class)
                     .detailPanel(trackPanelBuilder)
-                    .detailLayout(panelState(PanelState.HIDDEN));
+                    .detailLayout(TabbedDetailLayout.builder()
+                            .panelState(PanelState.HIDDEN)
+                            .build());
 
     SwingEntityModel.Builder mediaTypeModelBuilder =
             SwingEntityModel.builder(MediaType.TYPE)
@@ -112,7 +114,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(mediaTypeModelBuilder)
                     .editPanel(MediaTypeEditPanel.class)
                     .detailPanel(trackPanelBuilder)
-                    .detailLayout(panelState(PanelState.HIDDEN));
+                    .detailLayout(TabbedDetailLayout.builder()
+                            .panelState(PanelState.HIDDEN)
+                            .build());
 
     EntityPanel.Builder artistPanelBuilder =
             EntityPanel.builder(Artist.TYPE)
@@ -131,7 +135,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(employeeModelBuilder)
                     .editPanel(EmployeeEditPanel.class)
                     .detailPanel(customerPanelBuilder)
-                    .detailLayout(panelState(PanelState.HIDDEN))
+                    .detailLayout(TabbedDetailLayout.builder()
+                            .panelState(PanelState.HIDDEN)
+                            .build())
                     .preferredSize(new Dimension(1000, 500));
 
     return Arrays.asList(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);

@@ -33,6 +33,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
@@ -41,7 +42,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.swing.framework.ui.TabbedDetailLayout.splitPaneResizeWeight;
 import static is.codion.swing.framework.ui.WindowDetailLayout.windowDetailLayout;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
@@ -61,7 +61,9 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
     EntityPanel schemaPanel = new EntityPanel(schemaModel,
-            config -> config.detailLayout(splitPaneResizeWeight(0.3)));
+            config -> config.detailLayout(TabbedDetailLayout.builder()
+                    .splitPaneResizeWeight(0.3)
+                    .build()));
     EntityPanel tablePanel = new EntityPanel(tableModel,
             config -> config.detailLayout(windowDetailLayout()));
     EntityPanel columnPanel = new EntityPanel(columnModel);
