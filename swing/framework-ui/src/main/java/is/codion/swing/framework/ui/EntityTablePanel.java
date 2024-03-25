@@ -788,7 +788,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(exception);
     if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
-              this, MESSAGES.getString("unknown_dependent_records"));
+              this, EDIT_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
       displayException(exception);

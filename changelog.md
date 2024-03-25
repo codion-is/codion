@@ -11,6 +11,7 @@ Codion Change Log
 - TabbedDetailLayout, static factory methods removed.
 - EntityEditPanel, confirmers moved to Config.
 - EntityTablePanel, deleteConfirmer moved to Config.
+- EntityTablePanel, unknown_dependent_records i18n message moved to EntityEditPanel.
 
 ## 0.17.33
 ### is.codion.common.core

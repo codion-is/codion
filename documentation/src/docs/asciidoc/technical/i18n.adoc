@@ -705,6 +705,7 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 
 |deleting|Deleting|Eyði
 |inserting|Inserting|Vista
+|unknown_dependent_records|This record has unknown dependencies|Færslan á sér óþekktar tengdar færslur
 |updating|Updating|Uppfæri
 |===
 
@@ -748,7 +749,6 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 |show_condition_panel|Show Condition Panel|Sýna Leitarflöt
 |show_filter_panel|Show Filter Panel|Sýna Sýjunarflöt
 |toggle_summary_tip|Toggle Summary View|Sýna/fela samantekt
-|unknown_dependent_records|This record has unknown dependencies|Færslan á sér óþekktar tengdar færslur
 |===
 
 === is/codion/swing/framework/ui/KeyboardShortcutsPanel.java

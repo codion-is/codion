@@ -77,7 +77,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
-  private static final ResourceBundle TABLE_PANEL_MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   /**
    * The standard controls available in a edit panel
@@ -395,7 +394,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(exception);
     if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
       displayDependenciesDialog(singletonList(editModel().entity()), editModel().connectionProvider(),
-              this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
+              this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
       super.onException(exception);
