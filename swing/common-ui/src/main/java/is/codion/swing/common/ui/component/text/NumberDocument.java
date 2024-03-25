@@ -439,7 +439,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
       @Override
       public void validate(T value) {
         if (!withinRange(value)) {
-          throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
+          throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + minimumValue + " - " + maximumValue);
         }
       }
 
