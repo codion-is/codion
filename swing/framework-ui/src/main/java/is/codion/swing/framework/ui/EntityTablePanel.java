@@ -38,6 +38,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
@@ -262,7 +263,6 @@ public class EntityTablePanel extends JPanel {
   private final Map<TableControl, Value<Control>> controls = createControlsMap();
   private final Config configuration;
   private final SwingEntityTableModel tableModel;
-  private final Value<Confirmer> deleteConfirmer = createDeleteConfirmer();
   private final Control conditionRefreshControl;
   private final JToolBar refreshButtonToolBar;
   private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -296,7 +296,7 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.conditionRefreshControl = createConditionRefreshControl();
-    this.configuration = configure(tableModel.entityDefinition(), configuration);
+    this.configuration = configure(tableModel, configuration);
     this.refreshButtonToolBar = createRefreshButtonToolBar();
   }
 
@@ -411,14 +411,6 @@ public class EntityTablePanel extends JPanel {
     this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
   }
 
-  /**
-   * If set to null the default delete confirmer is used.
-   * @return the {@link Value} controlling the delete confirmer
-   */
-  public final Value<Confirmer> deleteConfirmer() {
-    return deleteConfirmer;
-  }
-
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + tableModel.entityType();
@@ -461,9 +453,9 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Deletes the entities selected in the underlying table model after asking for confirmation using
-   * the {@link Confirmer} set via {@link #deleteConfirmer()}.
+   * the confirmer specified via {@link Config#deleteConfirmer(Confirmer)}
    * @return true if the delete operation was successful
-   * @see #deleteConfirmer()
+   * @see Config#deleteConfirmer(Confirmer)
    */
   public final boolean deleteSelectedWithConfirmation() {
     if (confirmDelete()) {
@@ -843,10 +835,10 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @return true if confirmed
-   * @see #deleteConfirmer()
+   * @see Config#deleteConfirmer(Confirmer)
    */
   protected final boolean confirmDelete() {
-    return deleteConfirmer.get().confirm(this);
+    return configuration.deleteConfirmer.confirm(this);
   }
 
   /**
@@ -1357,12 +1349,6 @@ public class EntityTablePanel extends JPanel {
             }));
   }
 
-  private Value<Confirmer> createDeleteConfirmer() {
-    DeleteConfirmer defaultDeleteConfirmer = new DeleteConfirmer();
-
-    return value(defaultDeleteConfirmer, defaultDeleteConfirmer);
-  }
-
   private void throwIfInitialized() {
     if (initialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
@@ -1470,8 +1456,8 @@ public class EntityTablePanel extends JPanel {
     return new Point(x, y + table.getRowHeight() / 2);
   }
 
-  private static Config configure(EntityDefinition entityDefinition, Consumer<Config> configuration) {
-    Config config = new Config(entityDefinition);
+  private static Config configure(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
+    Config config = new Config(tableModel);
     requireNonNull(configuration).accept(config);
 
     return new Config(config);
@@ -1511,12 +1497,18 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private final class DeleteConfirmer implements Confirmer {
+  private static final class DeleteConfirmer implements Confirmer {
+
+    private final FilteredTableSelectionModel<?> selectionModel;
+
+    private DeleteConfirmer(FilteredTableSelectionModel<?> selectionModel) {
+      this.selectionModel = selectionModel;
+    }
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
       return confirm(dialogOwner, FrameworkMessages.confirmDeleteSelected(
-              tableModel.selectionModel().selectionCount()), FrameworkMessages.delete());
+              selectionModel.selectionCount()), FrameworkMessages.delete());
     }
   }
 
@@ -1658,9 +1650,10 @@ public class EntityTablePanel extends JPanel {
     private RefreshButtonVisible refreshButtonVisible;
     private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
     private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
+    private Confirmer deleteConfirmer;
 
-    private Config(EntityDefinition entityDefinition) {
-      this.entityDefinition = entityDefinition;
+    private Config(SwingEntityTableModel tableModel) {
+      this.entityDefinition = tableModel.entityDefinition();
       this.shortcuts = KEYBOARD_SHORTCUTS.copy();
       this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
       this.editable = valueSet(entityDefinition.attributes().updatable().stream()
@@ -1671,6 +1664,7 @@ public class EntityTablePanel extends JPanel {
       this.cellEditorComponentFactories = new HashMap<>();
       this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
       this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
+      this.deleteConfirmer = new DeleteConfirmer(tableModel.selectionModel());
     }
 
     private Config(Config config) {
@@ -1694,6 +1688,7 @@ public class EntityTablePanel extends JPanel {
       this.refreshButtonVisible = config.refreshButtonVisible;
       this.statusMessage = config.statusMessage;
       this.showRefreshProgressBar = config.showRefreshProgressBar;
+      this.deleteConfirmer = config.deleteConfirmer;
     }
 
     /**
@@ -1811,6 +1806,15 @@ public class EntityTablePanel extends JPanel {
      */
     public Config editable(Consumer<ValueSet<Attribute<?>>> attributes) {
       requireNonNull(attributes).accept(this.editable);
+      return this;
+    }
+
+    /**
+     * @param deleteConfirmer the delete confirmer
+     * @return this Config instance
+     */
+    public Config deleteConfirmer(Confirmer deleteConfirmer) {
+      this.deleteConfirmer = requireNonNull(deleteConfirmer);
       return this;
     }
 

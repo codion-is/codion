@@ -27,7 +27,9 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 public final class PlaylistTrackEditPanel extends EntityEditPanel {
 
   public PlaylistTrackEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
+    super(editModel, config -> config
+            // No confirmation needed when deleting
+            .deleteConfirmer(dialogOwner -> true));
   }
 
   @Override

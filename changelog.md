@@ -10,6 +10,7 @@ Codion Change Log
 - EntityPanel bug fixed, editControlTablePanel was not created in case of no table panel, renamed mainPanel, tests added.
 - TabbedDetailLayout, static factory methods removed.
 - EntityEditPanel, confirmers moved to Config.
+- EntityTablePanel, deleteConfirmer moved to Config.
 
 ## 0.17.33
 ### is.codion.common.core
@@ -103,7 +104,7 @@ Codion Change Log
 - EntityTablePanel.table now initialized lazily.
 - EntityTablePanel.delete(), deleteWithConfirmation() and editSelectedEntities() renamed deleteSelected(), deleteSelectedWithConfirmation() and editSelected() respectively.
 - EntityTablePanel.printTable() removed.
-- EntityTablePanel.setReferentialIntegrityErrorHandling() replaced with Value based referentialIntegrityErrorHandling(). 
+- EntityTablePanel.setReferentialIntegrityErrorHandling() replaced with Value based referentialIntegrityErrorHandling().
 ### is.codion.swing.framework.server.monitor
 - ServerMonitor and ServerMonitorPanel, tables migrated from plain JTable to FilteredTable.
 
@@ -224,7 +225,7 @@ Codion Change Log
 ### is.codion.common.core
 - Value, default implementations added for accept() and map().
 ### is.codion.framework.domain
-- DefaultEntityDefinition.validatePrimaryKeyAttributes(), key column indexes now sorted before being displayed in error message. 
+- DefaultEntityDefinition.validatePrimaryKeyAttributes(), key column indexes now sorted before being displayed in error message.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.delete(keys) bug fixed, maximum number of parameters taken into account.
 - DefaultLocalEntityConnection.update() now throws UpdateException in case of unmodified entities.
@@ -387,7 +388,7 @@ Codion Change Log
 - AbstractEntityEditModel, edit event notifications now handled by afterInsert/afterUpdate/afterDelete events.
 - AbstractEntityEditModel.insert() no longer calls save() on the entity being inserted, since exists() relies on the original primary key value and is used during validation.
 ### is.codion.swing.framework.model
-- SwingEntityTreeModel.refreshSelect() bug fixed, now handles root nodes correctly.  
+- SwingEntityTreeModel.refreshSelect() bug fixed, now handles root nodes correctly.
 - SwingEntityTreeModel removed, unused and buggy, may revisit at some point.
 ### is.codion.swing.framework.ui
 - EntityEditPanel now overrides EntityEditComponentPanel.onException() and propagates the exception to the correct exception handler.
