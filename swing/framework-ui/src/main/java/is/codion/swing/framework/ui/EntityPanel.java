@@ -187,7 +187,7 @@ public class EntityPanel extends JPanel {
   private final EntityEditPanel editPanel;
   private final EntityTablePanel tablePanel;
   private final JPanel editControlPanel;
-  private final JPanel editControlTablePanel;
+  private final JPanel mainPanel;
   private final Event<EntityPanel> activateEvent = Event.event();
   private final Value<String> caption;
   private final Value<String> description;
@@ -286,14 +286,14 @@ public class EntityPanel extends JPanel {
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
     this.editControlPanel = createEditControlPanel();
-    this.editControlTablePanel = createEditControlTablePanel();
+    this.mainPanel = borderLayoutPanel().build();
     editPanelState.addListener(this::updateEditPanelState);
   }
 
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(editControlPanel, editControlTablePanel, tablePanel, editPanel);
+    Utilities.updateUI(editControlPanel, mainPanel, tablePanel, editPanel);
     if (detailPanels != null) {
       Utilities.updateUI(detailPanels);
     }
@@ -692,23 +692,16 @@ public class EntityPanel extends JPanel {
 
   /**
    * @return the main panel containing the table, edit and control panels
-   * @throws IllegalStateException in case no edit or table panel is available
    */
   protected final JPanel mainPanel() {
     if (editPanel != null && editControlPanel.getComponents().length == 0) {
       editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     }
-    if (tablePanel != null && editControlTablePanel.getComponents().length == 0) {
-      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
-    }
-    if (editControlTablePanel != null) {
-      return editControlTablePanel;
-    }
-    if (editControlPanel != null) {
-      return editControlPanel;
+    if (tablePanel != null && mainPanel.getComponents().length == 0) {
+      mainPanel.add(tablePanel, BorderLayout.CENTER);
     }
 
-    throw new IllegalStateException("No edit or table panel available in: " + this);
+    return mainPanel;
   }
 
   /**
@@ -913,14 +906,6 @@ public class EntityPanel extends JPanel {
             .build();
   }
 
-  private JPanel createEditControlTablePanel() {
-    if (tablePanel == null) {
-      return null;
-    }
-
-    return borderLayoutPanel().build();
-  }
-
   final void setParentPanel(EntityPanel parentPanel) {
     if (this.parentPanel != null) {
       throw new IllegalStateException("Parent panel has already been set for " + this);
@@ -1007,10 +992,10 @@ public class EntityPanel extends JPanel {
       }
     }
     if (editPanelState.isEqualTo(EMBEDDED)) {
-      editControlTablePanel.add(editControlPanel, BorderLayout.NORTH);
+      mainPanel.add(editControlPanel, BorderLayout.NORTH);
     }
     else if (editPanelState.isEqualTo(HIDDEN)) {
-      editControlTablePanel.remove(editControlPanel);
+      mainPanel.remove(editControlPanel);
     }
     else {
       createEditWindow().setVisible(true);
