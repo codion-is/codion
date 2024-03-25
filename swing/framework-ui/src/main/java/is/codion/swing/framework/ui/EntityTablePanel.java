@@ -254,7 +254,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
-  private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
   private final State conditionPanelVisibleState = State.state(Config.CONDITION_PANEL_VISIBLE.get());
   private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
@@ -1627,6 +1626,8 @@ public class EntityTablePanel extends JPanel {
      */
     public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
             keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
+
+    private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
     private final EntityDefinition entityDefinition;
 

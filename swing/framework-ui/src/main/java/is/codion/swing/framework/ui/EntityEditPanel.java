@@ -579,10 +579,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public static final class Config {
 
-    private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
-    private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
-    private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
-
     /**
      * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)<br>
      * Value type: Boolean<br>
@@ -605,6 +601,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
      */
     public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
             Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
+
+    private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
+    private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
+    private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
     private final Set<EditControl> editControls;
 
