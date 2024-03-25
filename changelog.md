@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.34-SNAPSHOT
+### is.codion.framework.i18n
+- FrameworkMessages.confirmDeleteSelected() removed.
 ### is.codion.swing.framework.ui
 - EntityPanel.detailLayout() now protected instead of package private.
 - EntityPanel.selectDetailPanel() removed for now.

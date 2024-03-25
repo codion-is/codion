@@ -884,7 +884,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return confirm(dialogOwner, FrameworkMessages.confirmDelete(), FrameworkMessages.delete());
+      return confirm(dialogOwner, FrameworkMessages.confirmDelete(1), FrameworkMessages.delete());
     }
   }
 }

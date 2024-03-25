@@ -254,8 +254,7 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |add|Add|Vista
 |add_mnemonic|A|V
 |add_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
-|confirm_delete|Delete record?|Eyða færslu?
-|confirm_delete_selected|Delete {0, choice, 1#record\|1<{0, number, integer} records}?|Eyða {0, choice, 1#færslu\|1<{0, number, integer} færslum}?
+|confirm_delete|Delete {0, choice, 1#record\|1<{0, number, integer} records}?|Eyða {0, choice, 1#færslu\|1<{0, number, integer} færslum}?
 |confirm_exit|Are you sure you want to close the application?|Ertu viss um að þú viljir hætta?
 |confirm_exit_title|Exit?|Hætta?
 |confirm_insert|Insert record?|Vista færslu?

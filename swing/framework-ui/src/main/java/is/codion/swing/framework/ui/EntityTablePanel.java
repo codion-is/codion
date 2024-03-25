@@ -1506,7 +1506,7 @@ public class EntityTablePanel extends JPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return confirm(dialogOwner, FrameworkMessages.confirmDeleteSelected(
+      return confirm(dialogOwner, FrameworkMessages.confirmDelete(
               selectionModel.selectionCount()), FrameworkMessages.delete());
     }
   }

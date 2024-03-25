@@ -59,7 +59,6 @@ public final class FrameworkMessages {
   private static final String UNSAVED_DATA_WARNING = "unsaved_data_warning";
   private static final String UNSAVED_DATA_WARNING_TITLE = "unsaved_data_warning_title";
   private static final String CONFIRM_UPDATE = "confirm_update";
-  private static final String CONFIRM_DELETE_SELECTED = "confirm_delete_selected";
   private static final String CONFIRM_DELETE = "confirm_delete";
   private static final String CONFIRM_INSERT = "confirm_insert";
   private static final String SHOW = "show";
@@ -289,18 +288,11 @@ public final class FrameworkMessages {
   }
 
   /**
-   * @param selectionCount the number of selected records
+   * @param count the number of records about to be deleted
    * @return confirm delete selected
    */
-  public static String confirmDeleteSelected(int selectionCount) {
-    return format(get(CONFIRM_DELETE_SELECTED), selectionCount);
-  }
-
-  /**
-   * @return confirm delete
-   */
-  public static String confirmDelete() {
-    return get(CONFIRM_DELETE);
+  public static String confirmDelete(int count) {
+    return format(get(CONFIRM_DELETE), count);
   }
 
   /**
