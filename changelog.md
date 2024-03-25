@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.34-SNAPSHOT
+### is.codion.swing.framework.ui
+- EntityPanel.detailLayout() now protected instead of package private.
 
 ## 0.17.33
 ### is.codion.common.core
