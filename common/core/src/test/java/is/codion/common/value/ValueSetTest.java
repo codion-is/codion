@@ -102,6 +102,7 @@ public class ValueSetTest {
     assertNull(value.get());
 
     assertTrue(valueSet.addAll(1, 2, 3));
+    valueSet.forEach(i -> {});
     assertFalse(observer.containsAll(asList(1, 2, 4)));
     assertTrue(observer.containsAll(asList(1, 2, 3)));
     assertFalse(valueSet.addAll(1, 2, 3));

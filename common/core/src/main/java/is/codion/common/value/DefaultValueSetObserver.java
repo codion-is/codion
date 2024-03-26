@@ -19,12 +19,20 @@
 package is.codion.common.value;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
 final class DefaultValueSetObserver<T> extends DefaultValueObserver<Set<T>> implements ValueSetObserver<T> {
 
   DefaultValueSetObserver(ValueSet<T> valueSet) {
     super(valueSet);
+  }
+
+  @Override
+  public Iterator<T> iterator() {
+    ValueSet<T> valueSet = value();
+
+    return valueSet.iterator();
   }
 
   @Override

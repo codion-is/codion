@@ -25,7 +25,7 @@ import java.util.Set;
  * A read only value set observer
  * @param <T> the type of the values
  */
-public interface ValueSetObserver<T> extends ValueObserver<Set<T>> {
+public interface ValueSetObserver<T> extends ValueObserver<Set<T>>, Iterable<T> {
 
   /**
    * Returns true if this set contains the specified element

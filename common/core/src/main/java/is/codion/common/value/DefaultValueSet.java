@@ -19,6 +19,7 @@
 package is.codion.common.value;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -35,6 +36,11 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   DefaultValueSet(Set<T> initialValues, Notify notify) {
     super(emptySet(), notify);
     set(requireNonNull(initialValues, "initialValues"));
+  }
+
+  @Override
+  public Iterator<T> iterator() {
+    return get().iterator();
   }
 
   @Override
