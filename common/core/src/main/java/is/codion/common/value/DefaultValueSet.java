@@ -147,6 +147,13 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
+  public int size() {
+    synchronized (this.values) {
+      return values.size();
+    }
+  }
+
+  @Override
   public void clear() {
     synchronized (this.values) {
       set(emptySet());

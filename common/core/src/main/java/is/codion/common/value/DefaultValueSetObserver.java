@@ -62,4 +62,11 @@ final class DefaultValueSetObserver<T> extends DefaultValueObserver<Set<T>> impl
 
     return valueSet.notEmpty();
   }
+
+  @Override
+  public int size() {
+    ValueSet<T> valueSet = value();
+
+    return valueSet.size();
+  }
 }

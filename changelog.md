@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - ValueSetObserver added, related refactoring.
 - ValueSetObserver now extends Iterable.
+- ValueSetObserver.size() added.
 ### is.codion.framework.i18n
 - FrameworkMessages.confirmDeleteSelected() removed.
 ### is.codion.swing.framework.ui

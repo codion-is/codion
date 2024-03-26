@@ -50,4 +50,9 @@ public interface ValueSetObserver<T> extends ValueObserver<Set<T>>, Iterable<T> 
    * @return true if this value set is not empty
    */
   boolean notEmpty();
+
+  /**
+   * @return the number of elements in this value set
+   */
+  int size();
 }
