@@ -103,11 +103,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void testDetailModels() throws DatabaseException, ValidationException {
-    Model departmentModel = createDepartmentModel();
+  public void testDetailModels() throws Exception {
     assertEquals(1, departmentModel.activeDetailModels().size());
     departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).active().set(false);
     assertTrue(departmentModel.activeDetailModels().empty());
+    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).active().set(true);
   }
 
   @Test
