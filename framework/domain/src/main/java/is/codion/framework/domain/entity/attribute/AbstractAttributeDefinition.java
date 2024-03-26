@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.Rounder;
 import is.codion.common.Text;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
@@ -344,7 +343,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   @Override
   public final T prepareValue(T value) {
     if (value instanceof Double) {
-      return (T) Rounder.roundDouble((Double) value, maximumFractionDigits(), decimalRoundingMode);
+      return (T) round((Double) value, maximumFractionDigits(), decimalRoundingMode);
     }
     if (value instanceof BigDecimal) {
       return (T) ((BigDecimal) value).setScale(maximumFractionDigits(), decimalRoundingMode).stripTrailingZeros();
@@ -404,6 +403,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     }
 
     return null;
+  }
+
+  private static Double round(Double value, int places, RoundingMode roundingMode) {
+    return value == null ? null : new BigDecimal(Double.toString(value))
+            .setScale(places, requireNonNull(roundingMode)).doubleValue();
   }
 
   static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
