@@ -47,7 +47,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.Executor;
@@ -68,7 +67,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractHttpEntityConnection.class);
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName());
 
   static final Executor DEFAULT_EXECUTOR = newFixedThreadPool(getRuntime().availableProcessors() + 1, new DaemonThreadFactory());
 
