@@ -27,7 +27,7 @@ import java.util.Set;
  * A factory class for {@link ValueSet} instances.
  * @param <T> the value type
  */
-public interface ValueSet<T> extends Value<Set<T>> {
+public interface ValueSet<T> extends Value<Set<T>>, ValueSetObserver<T> {
 
   /**
    * Sets the values. Note that duplicates are quietly dropped.
@@ -78,30 +78,6 @@ public interface ValueSet<T> extends Value<Set<T>> {
   boolean removeAll(Collection<T> values);
 
   /**
-   * Returns true if this set contains the specified element
-   * @param value the element
-   * @return true if this set contains the specified element
-   */
-  boolean contains(T value);
-
-  /**
-   * Returns true if this set contains all of the elements of the specified collection
-   * @param values the elements to check
-   * @return true if this set contains all of the elements of the specified collection
-   */
-  boolean containsAll(Collection<T> values);
-
-  /**
-   * @return true if this value set is empty
-   */
-  boolean empty();
-
-  /**
-   * @return true if this value set is not empty
-   */
-  boolean notEmpty();
-
-  /**
    * Clears all values from this ValueSet.
    */
   void clear();
@@ -114,6 +90,13 @@ public interface ValueSet<T> extends Value<Set<T>> {
    * @return a single item value based on this value set
    */
   Value<T> value();
+
+  /**
+   * Returns a {@link ValueSetObserver} notified each time this value changes.
+   * @return a {@link ValueSetObserver} for this value
+   */
+  @Override
+  ValueSetObserver<T> observer();
 
   /**
    * Creates a new empty {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.

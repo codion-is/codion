@@ -164,6 +164,16 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
+  public ValueSetObserver<T> observer() {
+    return (ValueSetObserver<T>) super.observer();
+  }
+
+  @Override
+  protected ValueObserver<Set<T>> createObserver() {
+    return new DefaultValueSetObserver<>(this);
+  }
+
+  @Override
   protected void setValue(Set<T> values) {
     synchronized (this.values) {
       this.values.clear();

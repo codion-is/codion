@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultValueObserver<T> implements ValueObserver<T> {
+class DefaultValueObserver<T> implements ValueObserver<T> {
 
   private final Value<T> value;
 
@@ -31,52 +31,56 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   }
 
   @Override
-  public T get() {
+  public final T get() {
     return value.get();
   }
 
   @Override
-  public boolean nullable() {
+  public final boolean nullable() {
     return value.nullable();
   }
 
   @Override
-  public boolean addListener(Runnable listener) {
+  public final boolean addListener(Runnable listener) {
     return value.addListener(listener);
   }
 
   @Override
-  public boolean removeListener(Runnable listener) {
+  public final boolean removeListener(Runnable listener) {
     return value.removeListener(listener);
   }
 
   @Override
-  public boolean addDataListener(Consumer<? super T> listener) {
+  public final boolean addDataListener(Consumer<? super T> listener) {
     return value.addDataListener(listener);
   }
 
   @Override
-  public boolean removeDataListener(Consumer<? super T> listener) {
+  public final boolean removeDataListener(Consumer<? super T> listener) {
     return value.removeDataListener(listener);
   }
 
   @Override
-  public boolean addWeakListener(Runnable listener) {
+  public final boolean addWeakListener(Runnable listener) {
     return value.addWeakListener(listener);
   }
 
   @Override
-  public boolean removeWeakListener(Runnable listener) {
+  public final boolean removeWeakListener(Runnable listener) {
     return value.removeWeakListener(listener);
   }
 
   @Override
-  public boolean addWeakDataListener(Consumer<? super T> listener) {
+  public final boolean addWeakDataListener(Consumer<? super T> listener) {
     return value.addWeakDataListener(listener);
   }
 
   @Override
-  public boolean removeWeakDataListener(Consumer<? super T> listener) {
+  public final boolean removeWeakDataListener(Consumer<? super T> listener) {
     return value.removeWeakDataListener(listener);
+  }
+
+  protected final <V extends Value<T>> V value() {
+    return (V) value;
   }
 }

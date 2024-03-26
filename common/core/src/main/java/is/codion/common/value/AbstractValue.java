@@ -94,9 +94,9 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final synchronized ValueObserver<T> observer() {
+  public synchronized ValueObserver<T> observer() {
     if (observer == null) {
-      observer = new DefaultValueObserver<>(this);
+      observer = createObserver();
     }
 
     return observer;
@@ -247,6 +247,13 @@ public abstract class AbstractValue<T> implements Value<T> {
     if (changeEvent != null) {
       changeEvent.accept(get());
     }
+  }
+
+  /**
+   * @return a new {@link ValueObserver} instance representing this value
+   */
+  protected ValueObserver<T> createObserver() {
+    return new DefaultValueObserver<>(this);
   }
 
   final Set<Value<T>> linkedValues() {

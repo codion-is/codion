@@ -34,12 +34,13 @@ public class ValueSetTest {
   @Test
   void valueSet() {
     ValueSet<Integer> valueSet = ValueSet.valueSet();
-    assertTrue(valueSet.empty());
-    assertFalse(valueSet.notEmpty());
+    ValueSetObserver<Integer> observer = valueSet.observer();
+    assertTrue(observer.empty());
+    assertFalse(observer.notEmpty());
 
-    assertFalse(valueSet.nullable());
-    assertFalse(valueSet.isNull());
-    assertTrue(valueSet.optional().isPresent());
+    assertFalse(observer.nullable());
+    assertFalse(observer.isNull());
+    assertTrue(observer.optional().isPresent());
 
     assertTrue(valueSet.add(1));
     assertFalse(valueSet.add(1));
@@ -51,10 +52,11 @@ public class ValueSetTest {
     initialValues.add(2);
 
     valueSet = ValueSet.valueSet(initialValues);
-    assertFalse(valueSet.empty());
-    assertTrue(valueSet.notEmpty());
-    assertEquals(initialValues, valueSet.get());
-    assertTrue(valueSet.isEqualTo(initialValues));
+    observer = valueSet.observer();
+    assertFalse(observer.empty());
+    assertTrue(observer.notEmpty());
+    assertEquals(initialValues, observer.get());
+    assertTrue(observer.isEqualTo(initialValues));
 
     assertFalse(valueSet.add(1));
     assertFalse(valueSet.add(2));
@@ -68,8 +70,8 @@ public class ValueSetTest {
     assertTrue(valueSet.add(3));
 
     valueSet.clear();
-    assertTrue(valueSet.empty());
-    assertFalse(valueSet.notEmpty());
+    assertTrue(observer.empty());
+    assertFalse(observer.notEmpty());
     assertTrue(valueSet.add(3));
     assertFalse(valueSet.removeAll(1, 2));
 
@@ -89,9 +91,9 @@ public class ValueSetTest {
     Value<Integer> value = valueSet.value();
 
     value.set(1);
-    assertTrue(valueSet.contains(1));
+    assertTrue(observer.contains(1));
     value.set(null);
-    assertTrue(valueSet.empty());
+    assertTrue(observer.empty());
 
     valueSet.set(Collections.singleton(2));
     assertEquals(2, value.get());
@@ -100,8 +102,8 @@ public class ValueSetTest {
     assertNull(value.get());
 
     assertTrue(valueSet.addAll(1, 2, 3));
-    assertFalse(valueSet.containsAll(asList(1, 2, 4)));
-    assertTrue(valueSet.containsAll(asList(1, 2, 3)));
+    assertFalse(observer.containsAll(asList(1, 2, 4)));
+    assertTrue(observer.containsAll(asList(1, 2, 3)));
     assertFalse(valueSet.addAll(1, 2, 3));
     assertTrue(valueSet.removeAll(1, 2));
     assertFalse(valueSet.removeAll(1, 2));
