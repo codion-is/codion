@@ -46,7 +46,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   public static final PropertyValue<Integer> TAB_PLACEMENT =
           Configuration.integerValue("is.codion.swing.framework.ui.TabbedApplicationLayout.tabPlacement", SwingConstants.TOP);
 
-  private JTabbedPane applicationTabPane;
+  private JTabbedPane tabbedPane;
 
   /**
    * Sets the layout to a {@link BorderLayout} and lays out the given application panel, by adding all root entity panels to a tabbed pane.
@@ -56,10 +56,10 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   @Override
   public void layout(EntityApplicationPanel<?> applicationPanel) {
     requireNonNull(applicationPanel);
-    if (applicationTabPane != null) {
+    if (tabbedPane != null) {
       throw new IllegalStateException("EntityApplicationPanel has already been laid out: " + applicationPanel);
     }
-    applicationTabPane = Components.tabbedPane()
+    tabbedPane = Components.tabbedPane()
           .tabPlacement(TAB_PLACEMENT.get())
           .focusable(false)
           .changeListener(new InitializeSelectedPanelListener())
@@ -69,32 +69,39 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     applicationPanel.add(borderLayoutPanel(new BorderLayout())
-            .centerComponent(applicationTabPane)
+            .centerComponent(tabbedPane)
             .build(), BorderLayout.CENTER);
   }
 
   @Override
   public final void select(EntityPanel entityPanel) {
     requireNonNull(entityPanel);
-    if (applicationTabPane == null) {
+    if (tabbedPane == null) {
       throw new IllegalStateException("EntityApplicationPanel has not been laid out");
     }
-    if (applicationTabPane.indexOfComponent(entityPanel) != -1) {
-      applicationTabPane.setSelectedComponent(entityPanel);
+    if (tabbedPane.indexOfComponent(entityPanel) != -1) {
+      tabbedPane.setSelectedComponent(entityPanel);
     }
   }
 
+  /**
+   * @return the application tabbed pane
+   */
+  public final JTabbedPane tabbedPane() {
+    return tabbedPane;
+  }
+
   private void addTab(EntityPanel entityPanel) {
-    applicationTabPane.addTab(entityPanel.caption().get(), entityPanel);
-    applicationTabPane.setToolTipTextAt(applicationTabPane.getTabCount() - 1, entityPanel.description().get());
+    tabbedPane.addTab(entityPanel.caption().get(), entityPanel);
+    tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, entityPanel.description().get());
   }
 
   private final class InitializeSelectedPanelListener implements ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-      if (applicationTabPane.getTabCount() > 0) {
-        ((EntityPanel) applicationTabPane.getSelectedComponent()).activate();
+      if (tabbedPane.getTabCount() > 0) {
+        ((EntityPanel) tabbedPane.getSelectedComponent()).activate();
       }
     }
   }
