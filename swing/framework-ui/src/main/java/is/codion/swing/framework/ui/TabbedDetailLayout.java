@@ -154,7 +154,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 
   @Override
   public JComponent layout(EntityPanel entityPanel) {
-    this.entityPanel = requireNonNull(entityPanel);
+    requireNonNull(entityPanel);
+    if (this.entityPanel != null) {
+      throw new IllegalStateException("EntityPanel has already been laid out: " + entityPanel);
+    }
+    this.entityPanel = entityPanel;
     if (!includeTabbedPane || entityPanel.detailPanels().isEmpty()) {
       return entityPanel.mainPanel();
     }

@@ -1020,6 +1020,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     /**
      * Lays out the given application panel
      * @param applicationPanel the application panel
+     * @throws IllegalStateException in case the panel has already been laid out
      */
     void layout(EntityApplicationPanel<?> applicationPanel);
 

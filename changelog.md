@@ -20,6 +20,9 @@ Codion Change Log
 - EntityEditPanel, confirmers moved to Config.
 - EntityTablePanel, deleteConfirmer moved to Config.
 - EntityTablePanel, unknown_dependent_records i18n message moved to EntityEditPanel.
+- EntityPanel.DetailLayout.layout() now throws exception in case the panel has already been laid out.
+- EntityApplicationPanel.ApplicationLayout.layout() now throws exception in case the panel has already been laid out.
+- EntityApplicationPanel.ApplicationLayout.applicationTabPane() removed.
 
 ## 0.17.33
 ### is.codion.common.core

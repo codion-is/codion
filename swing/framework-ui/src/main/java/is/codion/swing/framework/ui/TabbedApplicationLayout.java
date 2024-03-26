@@ -46,20 +46,24 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   public static final PropertyValue<Integer> TAB_PLACEMENT =
           Configuration.integerValue("is.codion.swing.framework.ui.TabbedApplicationLayout.tabPlacement", SwingConstants.TOP);
 
-  private final JTabbedPane applicationTabPane = Components.tabbedPane()
-          .tabPlacement(TAB_PLACEMENT.get())
-          .focusable(false)
-          .changeListener(new InitializeSelectedPanelListener())
-          .build();
+  private JTabbedPane applicationTabPane;
 
   /**
    * Sets the layout to a {@link BorderLayout} and lays out the given application panel, by adding all root entity panels to a tabbed pane.
    * Note that this method is responsible for initializing any visible entity panels using {@link EntityPanel#initialize()}.
-   * @param applicationPanel the application panel to lay out
+   * @param applicationPanel the application panel to layout
    */
   @Override
   public void layout(EntityApplicationPanel<?> applicationPanel) {
     requireNonNull(applicationPanel);
+    if (applicationTabPane != null) {
+      throw new IllegalStateException("EntityApplicationPanel has already been laid out: " + applicationPanel);
+    }
+    applicationTabPane = Components.tabbedPane()
+          .tabPlacement(TAB_PLACEMENT.get())
+          .focusable(false)
+          .changeListener(new InitializeSelectedPanelListener())
+          .build();
     applicationPanel.entityPanels().forEach(this::addTab);//InitializeSelectedPanelListener initializes first panel
     applicationPanel.setBorder(createEmptyBorder(0, Layouts.GAP.get(), 0, Layouts.GAP.get()));
     applicationPanel.setLayout(new BorderLayout());
@@ -72,16 +76,12 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
   @Override
   public final void select(EntityPanel entityPanel) {
     requireNonNull(entityPanel);
+    if (applicationTabPane == null) {
+      throw new IllegalStateException("EntityApplicationPanel has not been laid out");
+    }
     if (applicationTabPane.indexOfComponent(entityPanel) != -1) {
       applicationTabPane.setSelectedComponent(entityPanel);
     }
-  }
-
-  /**
-   * @return the application tab pane
-   */
-  public final JTabbedPane applicationTabPane() {
-    return applicationTabPane;
   }
 
   private void addTab(EntityPanel entityPanel) {

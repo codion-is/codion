@@ -1330,6 +1330,7 @@ public class EntityPanel extends JPanel {
      * In case of no detail panels, this method should return the {@link EntityPanel#mainPanel()}.
      * @param entityPanel the panel to lay out and configure
      * @return the main component
+     * @throws IllegalStateException in case the panel has already been laid out
      */
     JComponent layout(EntityPanel entityPanel);
 
