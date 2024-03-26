@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.value.ValueSetObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -27,7 +28,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
@@ -84,9 +84,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   boolean containsTableModel();
 
   /**
-   * @return an unmodifiable collection containing the active detail models, that is, those that should respond to master model events
+   * @return the active detail models, that is, those that should respond to master model events
    */
-  Collection<M> activeDetailModels();
+  ValueSetObserver<M> activeDetailModels();
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
@@ -187,14 +187,4 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Remember to call super.savePreferences() when overriding.
    */
   void savePreferences();
-
-  /**
-   * @param listener notified each time the active detail models change
-   */
-  void addActiveDetailModelsListener(Consumer<Collection<M>> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeActiveDetailModelsListener(Consumer<Collection<M>> listener);
 }

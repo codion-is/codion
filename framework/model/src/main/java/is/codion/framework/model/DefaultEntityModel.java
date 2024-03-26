@@ -18,7 +18,8 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.Event;
+import is.codion.common.value.ValueSet;
+import is.codion.common.value.ValueSetObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -50,7 +51,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private final E editModel;
   private final T tableModel;
   private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
-  private final Event<Collection<M>> activeDetailModelsEvent = Event.event();
+  private final ValueSet<M> activeDetailModels = ValueSet.valueSet();
 
   /**
    * Instantiates a new DefaultEntityModel, without a table model
@@ -200,21 +201,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final Collection<M> activeDetailModels() {
-    return detailModels.values().stream()
-            .filter(detailModelLink -> detailModelLink.active().get())
-            .map(DetailModelLink::detailModel)
-            .collect(Collectors.toList());
-  }
-
-  @Override
-  public final void addActiveDetailModelsListener(Consumer<Collection<M>> listener) {
-    activeDetailModelsEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeActiveDetailModelsListener(Consumer<Collection<M>> listener) {
-    activeDetailModelsEvent.removeDataListener(listener);
+  public final ValueSetObserver<M> activeDetailModels() {
+    return activeDetailModels.observer();
   }
 
   @Override
@@ -244,10 +232,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void onMasterSelectionChanged() {
-    Collection<M> activeDetailModels = activeDetailModels();
-    if (!activeDetailModels.isEmpty()) {
+    if (!activeDetailModels().empty()) {
       List<Entity> activeEntities = activeEntities();
-      for (M detailModel : activeDetailModels) {
+      for (M detailModel : activeDetailModels()) {
         detailModels.get(detailModel).onSelection(activeEntities);
       }
     }
@@ -298,7 +285,10 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
     @Override
     public void accept(Boolean active) {
-      activeDetailModelsEvent.accept(activeDetailModels());
+      activeDetailModels.set(detailModels.values().stream()
+            .filter(detailModelLink -> detailModelLink.active().get())
+            .map(DetailModelLink::detailModel)
+            .collect(Collectors.toList()));
       if (active) {
         detailModelLink.onSelection(activeEntities());
       }

@@ -456,10 +456,8 @@ public class EntityPanel extends JPanel {
    * @return the currently active detail EntityPanels, if any
    */
   public final Collection<EntityPanel> activeDetailPanels() {
-    Collection<SwingEntityModel> activeDetailModels = entityModel.activeDetailModels();
-
     return detailPanels.stream()
-            .filter(detailPanel -> activeDetailModels.contains(detailPanel.entityModel))
+            .filter(detailPanel -> entityModel.activeDetailModels().contains(detailPanel.entityModel))
             .collect(toList());
   }
 
