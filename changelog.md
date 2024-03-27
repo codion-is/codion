@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.34-SNAPSHOT
+## 0.17.34
 ### is.codion.common.core
 - ValueSetObserver added, related refactoring.
 - ValueSetObserver now extends Iterable.
