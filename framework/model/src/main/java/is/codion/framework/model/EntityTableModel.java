@@ -193,7 +193,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Returns the Value controlling the maximum number of rows to fetch via the underlying query the next time
-   * this table model is refreshed, a value of -1 means all rows should be fetched
+   * this table model is refreshed, a null value means all rows should be fetched
    * @return the value controlling the limit
    */
   Value<Integer> limit();
