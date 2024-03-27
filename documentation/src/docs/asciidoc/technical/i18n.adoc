@@ -467,7 +467,7 @@ is/codion/swing/common/ui/component/text/NumberDocument$NumberParsingDocumentFil
 |===
 |key|default|is_IS
 
-|value_outside_range|Value outside allowed range:|Gildi utan leyfilegs bils:
+|value_outside_range|Value outside allowed range|Gildi utan leyfilegs bils
 |===
 
 === is/codion/swing/common/ui/component/text/SearchHighlighter.java
@@ -495,7 +495,7 @@ is/codion/swing/common/ui/component/text/StringLengthValidator_is_IS.properties
 |===
 |key|default|is_IS
 
-|length_exceeds_maximum|Text length may not exceed:|Texti má ekki vera lengri en:
+|length_exceeds_maximum|Text length may not exceed|Texti má ekki vera lengri en
 |===
 
 === is/codion/swing/common/ui/component/text/TemporalField.java
