@@ -32,36 +32,36 @@ import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 
 public final class TestAuthenticator implements Authenticator {
 
-  private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = User.parse("scott:tiger");
+	private final Map<String, String> users = new HashMap<>();
+	private final User databaseUser = User.parse("scott:tiger");
 
-  public TestAuthenticator() {
-    users.put("scott", "tiger");
-    users.put("john", "hello");
-    users.put("helen", "juno");
-  }
+	public TestAuthenticator() {
+		users.put("scott", "tiger");
+		users.put("john", "hello");
+		users.put("helen", "juno");
+	}
 
-  @Override
-  public Optional<String> clientTypeId() {
-    return Optional.of("TestAuthenticator");
-  }
+	@Override
+	public Optional<String> clientTypeId() {
+		return Optional.of("TestAuthenticator");
+	}
 
-  @Override
-  public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
-    authenticateUser(remoteClient.user());
+	@Override
+	public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
+		authenticateUser(remoteClient.user());
 
-    return remoteClient(remoteClient.connectionRequest(), databaseUser, remoteClient.clientHost());
-  }
+		return remoteClient(remoteClient.connectionRequest(), databaseUser, remoteClient.clientHost());
+	}
 
-  @Override
-  public void close() {
-    users.clear();
-  }
+	@Override
+	public void close() {
+		users.clear();
+	}
 
-  private void authenticateUser(User user) throws ServerAuthenticationException {
-    String password = users.get(user.username());
-    if (password == null || !Arrays.equals(password.toCharArray(), user.password())) {
-      throw new ServerAuthenticationException("Wrong username or password");
-    }
-  }
+	private void authenticateUser(User user) throws ServerAuthenticationException {
+		String password = users.get(user.username());
+		if (password == null || !Arrays.equals(password.toCharArray(), user.password())) {
+			throw new ServerAuthenticationException("Wrong username or password");
+		}
+	}
 }

@@ -31,20 +31,20 @@ import static java.util.stream.Collectors.joining;
  */
 final class DefaultStringFactory implements Function<Entity, String>, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  @Override
-  public String apply(Entity entity) {
-    return new StringBuilder(entity.entityType().name())
-            .append(entity.definition().attributes().definitions().stream()
-                    .map(AttributeDefinition::attribute)
-                    .filter(entity::contains)
-                    .map(attribute -> toString(entity, attribute))
-                    .collect(joining(", ", ": ", "")))
-            .toString();
-  }
+	@Override
+	public String apply(Entity entity) {
+		return new StringBuilder(entity.entityType().name())
+						.append(entity.definition().attributes().definitions().stream()
+										.map(AttributeDefinition::attribute)
+										.filter(entity::contains)
+										.map(attribute -> toString(entity, attribute))
+										.collect(joining(", ", ": ", "")))
+						.toString();
+	}
 
-  private static String toString(Entity entity, Attribute<?> attribute) {
-    return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.string(attribute));
-  }
+	private static String toString(Entity entity, Attribute<?> attribute) {
+		return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.string(attribute));
+	}
 }

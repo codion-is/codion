@@ -34,37 +34,37 @@ import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.
 // tag::loadTest[]
 public final class UpdateEmployee implements Performer<EmployeesAppModel> {
 
-  private final Random random = new Random();
+	private final Random random = new Random();
 
-  @Override
-  public void perform(EmployeesAppModel application) throws Exception {
-    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
-    selectRandomRow(departmentModel.tableModel());
-    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
-    if (employeeModel.tableModel().getRowCount() > 0) {
-      EntityConnection connection = employeeModel.connection();
-      connection.beginTransaction();
-      try {
-        selectRandomRow(employeeModel.tableModel());
-        Entity selected = employeeModel.tableModel().selectionModel().getSelectedItem();
-        randomize(application.entities(), selected, null);
-        employeeModel.editModel().set(selected);
-        employeeModel.editModel().update();
-        selectRandomRow(employeeModel.tableModel());
-        selected = employeeModel.tableModel().selectionModel().getSelectedItem();
-        randomize(application.entities(), selected, null);
-        employeeModel.editModel().set(selected);
-        employeeModel.editModel().update();
-      }
-      finally {
-        if (random.nextBoolean()) {
-          connection.rollbackTransaction();
-        }
-        else {
-          connection.commitTransaction();
-        }
-      }
-    }
-  }
+	@Override
+	public void perform(EmployeesAppModel application) throws Exception {
+		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
+		selectRandomRow(departmentModel.tableModel());
+		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
+		if (employeeModel.tableModel().getRowCount() > 0) {
+			EntityConnection connection = employeeModel.connection();
+			connection.beginTransaction();
+			try {
+				selectRandomRow(employeeModel.tableModel());
+				Entity selected = employeeModel.tableModel().selectionModel().getSelectedItem();
+				randomize(application.entities(), selected, null);
+				employeeModel.editModel().set(selected);
+				employeeModel.editModel().update();
+				selectRandomRow(employeeModel.tableModel());
+				selected = employeeModel.tableModel().selectionModel().getSelectedItem();
+				randomize(application.entities(), selected, null);
+				employeeModel.editModel().set(selected);
+				employeeModel.editModel().update();
+			}
+			finally {
+				if (random.nextBoolean()) {
+					connection.rollbackTransaction();
+				}
+				else {
+					connection.commitTransaction();
+				}
+			}
+		}
+	}
 }
 // end::loadTest[]

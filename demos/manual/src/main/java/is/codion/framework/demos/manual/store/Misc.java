@@ -43,62 +43,62 @@ import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 
 public final class Misc {
 
-  static void jasperReports() throws DatabaseException, ReportException {
-    EntityConnectionProvider connectionProvider =
-            EntityConnectionProvider.builder()
-                    .domainType(Store.DOMAIN)
-                    .user(User.parse("scott:tiger"))
-                    .clientTypeId("StoreMisc")
-                    .build();
+	static void jasperReports() throws DatabaseException, ReportException {
+		EntityConnectionProvider connectionProvider =
+						EntityConnectionProvider.builder()
+										.domainType(Store.DOMAIN)
+										.user(User.parse("scott:tiger"))
+										.clientTypeId("StoreMisc")
+										.build();
 
-    // tag::jasperReportDataSource[]
-    EntityConnection connection = connectionProvider.connection();
+		// tag::jasperReportDataSource[]
+		EntityConnection connection = connectionProvider.connection();
 
-    EntityDefinition customerDefinition =
-            connection.entities().definition(Customer.TYPE);
+		EntityDefinition customerDefinition =
+						connection.entities().definition(Customer.TYPE);
 
-    Iterator<Entity> customerIterator =
-            connection.select(all(Customer.TYPE)).iterator();
+		Iterator<Entity> customerIterator =
+						connection.select(all(Customer.TYPE)).iterator();
 
-    JasperReportsDataSource<Entity> dataSource =
-            new JasperReportsDataSource<>(customerIterator,
-                    (entity, reportField) ->
-                            entity.get(customerDefinition.attributes().get(reportField.getName())));
+		JasperReportsDataSource<Entity> dataSource =
+						new JasperReportsDataSource<>(customerIterator,
+										(entity, reportField) ->
+														entity.get(customerDefinition.attributes().get(reportField.getName())));
 
-    JRReport customerReport = fileReport("reports/customer.jasper");
+		JRReport customerReport = fileReport("reports/customer.jasper");
 
-    JasperPrint jasperPrint = JasperReports.fillReport(customerReport, dataSource);
-    // end::jasperReportDataSource[]
-  }
+		JasperPrint jasperPrint = JasperReports.fillReport(customerReport, dataSource);
+		// end::jasperReportDataSource[]
+	}
 
-  public static void main(String[] args) throws DatabaseException, ValidationException {
-    // tag::editModel[]
-    EntityConnectionProvider connectionProvider =
-            EntityConnectionProvider.builder()
-                    .domainType(Store.DOMAIN)
-                    .user(User.parse("scott:tiger"))
-                    .clientTypeId("StoreMisc")
-                    .build();
+	public static void main(String[] args) throws DatabaseException, ValidationException {
+		// tag::editModel[]
+		EntityConnectionProvider connectionProvider =
+						EntityConnectionProvider.builder()
+										.domainType(Store.DOMAIN)
+										.user(User.parse("scott:tiger"))
+										.clientTypeId("StoreMisc")
+										.build();
 
-    CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
+		CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-    editModel.put(Customer.ID, UUID.randomUUID().toString());
-    editModel.put(Customer.FIRST_NAME, "Björn");
-    editModel.put(Customer.LAST_NAME, "Sigurðsson");
-    editModel.put(Customer.ACTIVE, true);
+		editModel.put(Customer.ID, UUID.randomUUID().toString());
+		editModel.put(Customer.FIRST_NAME, "Björn");
+		editModel.put(Customer.LAST_NAME, "Sigurðsson");
+		editModel.put(Customer.ACTIVE, true);
 
-    //inserts and returns the inserted entity
-    Entity customer = editModel.insert();
+		//inserts and returns the inserted entity
+		Entity customer = editModel.insert();
 
-    //modify some values
-    editModel.put(Customer.FIRST_NAME, "John");
-    editModel.put(Customer.LAST_NAME, "Doe");
+		//modify some values
+		editModel.put(Customer.FIRST_NAME, "John");
+		editModel.put(Customer.LAST_NAME, "Doe");
 
-    //updates and returns the updated entity
-    customer = editModel.update();
+		//updates and returns the updated entity
+		customer = editModel.update();
 
-    //deletes the active entity
-    editModel.delete();
-    // end::editModel[]
-  }
+		//deletes the active entity
+		editModel.delete();
+		// end::editModel[]
+	}
 }

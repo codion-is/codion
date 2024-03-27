@@ -26,22 +26,22 @@ import is.codion.framework.model.DefaultEntityApplicationModel;
  * A Swing implementation of {@link is.codion.framework.model.EntityApplicationModel}
  */
 public class SwingEntityApplicationModel
-        extends DefaultEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+				extends DefaultEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  /**
-   * Instantiates a new {@link SwingEntityApplicationModel}
-   * @param connectionProvider the connection provider
-   */
-  public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider) {
-    this(connectionProvider, null);
-  }
+	/**
+	 * Instantiates a new {@link SwingEntityApplicationModel}
+	 * @param connectionProvider the connection provider
+	 */
+	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider) {
+		this(connectionProvider, null);
+	}
 
-  /**
-   * Instantiates a new {@link SwingEntityApplicationModel}
-   * @param connectionProvider the connection provider
-   * @param version the application version
-   */
-  public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
-    super(connectionProvider, version);
-  }
+	/**
+	 * Instantiates a new {@link SwingEntityApplicationModel}
+	 * @param connectionProvider the connection provider
+	 * @param version the application version
+	 */
+	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
+		super(connectionProvider, version);
+	}
 }

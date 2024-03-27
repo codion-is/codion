@@ -25,8 +25,8 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 // tag::customerEditModel[]
 public class CustomerEditModel extends SwingEntityEditModel {
 
-  public CustomerEditModel(EntityConnectionProvider connectionProvider) {
-    super(Customer.TYPE, connectionProvider);
-  }
+	public CustomerEditModel(EntityConnectionProvider connectionProvider) {
+		super(Customer.TYPE, connectionProvider);
+	}
 }
 // end::customerEditModel[]

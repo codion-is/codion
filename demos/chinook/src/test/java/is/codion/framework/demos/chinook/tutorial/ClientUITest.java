@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
  */
 public final class ClientUITest {
 
-  @Test
-  void test() {
-    ClientUI.main(new String[0]);
-  }
+	@Test
+	void test() {
+		ClientUI.main(new String[0]);
+	}
 }

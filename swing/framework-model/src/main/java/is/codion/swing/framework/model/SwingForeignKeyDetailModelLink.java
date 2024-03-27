@@ -26,11 +26,11 @@ import is.codion.framework.model.DefaultForeignKeyDetailModelLink;
  */
 public class SwingForeignKeyDetailModelLink extends DefaultForeignKeyDetailModelLink<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  /**
-   * @param detailModel the detail model
-   * @param foreignKey the foreign key to base this link on
-   */
-  public SwingForeignKeyDetailModelLink(SwingEntityModel detailModel, ForeignKey foreignKey) {
-    super(detailModel, foreignKey);
-  }
+	/**
+	 * @param detailModel the detail model
+	 * @param foreignKey the foreign key to base this link on
+	 */
+	public SwingForeignKeyDetailModelLink(SwingEntityModel detailModel, ForeignKey foreignKey) {
+		super(detailModel, foreignKey);
+	}
 }

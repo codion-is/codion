@@ -25,19 +25,19 @@ import static is.codion.swing.common.ui.component.button.PersistMenuCheckBoxMenu
 
 final class PersistMenuRadioButtonMenuItem extends JRadioButtonMenuItem {
 
-  private final ToggleMenuItemBuilder.PersistMenu persistMenu;
+	private final ToggleMenuItemBuilder.PersistMenu persistMenu;
 
-  PersistMenuRadioButtonMenuItem(ToggleMenuItemBuilder.PersistMenu persistMenu) {
-    this.persistMenu = persistMenu;
-  }
+	PersistMenuRadioButtonMenuItem(ToggleMenuItemBuilder.PersistMenu persistMenu) {
+		this.persistMenu = persistMenu;
+	}
 
-  @Override
-  protected void processMouseEvent(MouseEvent e) {
-    if (e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e.isControlDown(), persistMenu)) {
-      setSelected(!isSelected());
-    }
-    else {
-      super.processMouseEvent(e);
-    }
-  }
+	@Override
+	protected void processMouseEvent(MouseEvent e) {
+		if (e.getID() == MouseEvent.MOUSE_RELEASED && persistMenu(e.isControlDown(), persistMenu)) {
+			setSelected(!isSelected());
+		}
+		else {
+			super.processMouseEvent(e);
+		}
+	}
 }

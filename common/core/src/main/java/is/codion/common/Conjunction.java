@@ -22,5 +22,5 @@ package is.codion.common;
  * AND / OR
  */
 public enum Conjunction {
-  AND, OR
+	AND, OR
 }

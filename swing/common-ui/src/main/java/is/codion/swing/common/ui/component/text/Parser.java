@@ -24,32 +24,32 @@ package is.codion.swing.common.ui.component.text;
  */
 public interface Parser<T> {
 
-  /**
-   * Parses a value from the given text
-   * @param text the text to parse
-   * @return a parse result
-   */
-  ParseResult<T> parse(String text);
+	/**
+	 * Parses a value from the given text
+	 * @param text the text to parse
+	 * @return a parse result
+	 */
+	ParseResult<T> parse(String text);
 
-  /**
-   * The result of parsing a value from a String
-   * @param <T> the resulting value type
-   */
-  interface ParseResult<T> {
+	/**
+	 * The result of parsing a value from a String
+	 * @param <T> the resulting value type
+	 */
+	interface ParseResult<T> {
 
-    /**
-     * @return the text being parsed
-     */
-    String text();
+		/**
+		 * @return the text being parsed
+		 */
+		String text();
 
-    /**
-     * @return the parsed value
-     */
-    T value();
+		/**
+		 * @return the parsed value
+		 */
+		T value();
 
-    /**
-     * @return true if the parsing was successful
-     */
-    boolean successful();
-  }
+		/**
+		 * @return true if the parsing was successful
+		 */
+		boolean successful();
+	}
 }

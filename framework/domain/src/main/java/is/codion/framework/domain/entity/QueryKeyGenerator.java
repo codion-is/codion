@@ -28,22 +28,22 @@ import static java.util.Objects.requireNonNull;
 
 final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
 
-  private final String query;
+	private final String query;
 
-  QueryKeyGenerator(String query) {
-    this.query = requireNonNull(query, "query");
-  }
+	QueryKeyGenerator(String query) {
+		this.query = requireNonNull(query, "query");
+	}
 
-  @Override
-  public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-    ColumnDefinition<?> columnDefinition = entity.definition().primaryKey().definitions().get(0);
-    if (entity.isNull(columnDefinition.attribute())) {
-      selectAndPopulate(entity, columnDefinition, connection);
-    }
-  }
+	@Override
+	public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
+		ColumnDefinition<?> columnDefinition = entity.definition().primaryKey().definitions().get(0);
+		if (entity.isNull(columnDefinition.attribute())) {
+			selectAndPopulate(entity, columnDefinition, connection);
+		}
+	}
 
-  @Override
-  protected String query(Database database) {
-    return query;
-  }
+	@Override
+	protected String query(Database database) {
+		return query;
+	}
 }

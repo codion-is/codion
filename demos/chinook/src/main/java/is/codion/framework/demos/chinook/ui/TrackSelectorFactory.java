@@ -34,16 +34,16 @@ import static javax.swing.SortOrder.ASCENDING;
 
 final class TrackSelectorFactory implements Function<EntitySearchModel, Selector> {
 
-  @Override
-  public TableSelector apply(EntitySearchModel searchModel) {
-    TableSelector selector = tableSelector(searchModel);
-    FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
-    tableModel.columnModel().setVisibleColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
-    tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
-    tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
-    tableModel.sortModel().addSortOrder(Track.NAME, ASCENDING);
-    selector.preferredSize(new Dimension(500, 300));
+	@Override
+	public TableSelector apply(EntitySearchModel searchModel) {
+		TableSelector selector = tableSelector(searchModel);
+		FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
+		tableModel.columnModel().setVisibleColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
+		tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
+		tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
+		tableModel.sortModel().addSortOrder(Track.NAME, ASCENDING);
+		selector.preferredSize(new Dimension(500, 300));
 
-    return selector;
-  }
+		return selector;
+	}
 }

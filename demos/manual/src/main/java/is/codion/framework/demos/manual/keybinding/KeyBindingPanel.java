@@ -49,44 +49,44 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
  */
 public final class KeyBindingPanel extends JPanel {
 
-  private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
-  private final KeyBindingModel keyBindingModel;
-  private final FilteredTable<KeyBinding, Integer> table;
-  private final JComboBox<String> componentComboBox;
+	private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
+	private final KeyBindingModel keyBindingModel;
+	private final FilteredTable<KeyBinding, Integer> table;
+	private final JComboBox<String> componentComboBox;
 
-  public KeyBindingPanel() {
-    super(borderLayout());
-    this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
-    this.table = FilteredTable.builder(keyBindingModel.tableModel()).build();
-    this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
-            .preferredHeight(preferredTextFieldHeight())
-            .preferredWidth(200)
-            .build();
-    setBorder(emptyBorder());
-    add(flexibleGridLayoutPanel(1, 4)
-            .add(label("Look & Feel")
-                    .horizontalAlignment(SwingConstants.RIGHT)
-                    .preferredWidth(100)
-                    .build())
-            .add(lookAndFeelComboBox)
-            .add(label("Component")
-                    .horizontalAlignment(SwingConstants.RIGHT)
-                    .preferredWidth(100)
-                    .build())
-            .add(componentComboBox)
-            .build(), BorderLayout.NORTH);
-    add(new JScrollPane(table), BorderLayout.CENTER);
-    add(table.searchField(), BorderLayout.SOUTH);
-  }
+	public KeyBindingPanel() {
+		super(borderLayout());
+		this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
+		this.table = FilteredTable.builder(keyBindingModel.tableModel()).build();
+		this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
+						.preferredHeight(preferredTextFieldHeight())
+						.preferredWidth(200)
+						.build();
+		setBorder(emptyBorder());
+		add(flexibleGridLayoutPanel(1, 4)
+						.add(label("Look & Feel")
+										.horizontalAlignment(SwingConstants.RIGHT)
+										.preferredWidth(100)
+										.build())
+						.add(lookAndFeelComboBox)
+						.add(label("Component")
+										.horizontalAlignment(SwingConstants.RIGHT)
+										.preferredWidth(100)
+										.build())
+						.add(componentComboBox)
+						.build(), BorderLayout.NORTH);
+		add(new JScrollPane(table), BorderLayout.CENTER);
+		add(table.searchField(), BorderLayout.SOUTH);
+	}
 
-  public static void main(String[] args) {
-    System.setProperty("sun.awt.disablegrab", "true");
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
-            .title("Key Bindings")
-            .defaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-            .centerFrame(true)
-            .show());
-  }
+	public static void main(String[] args) {
+		System.setProperty("sun.awt.disablegrab", "true");
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
+						.title("Key Bindings")
+						.defaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+						.centerFrame(true)
+						.show());
+	}
 }

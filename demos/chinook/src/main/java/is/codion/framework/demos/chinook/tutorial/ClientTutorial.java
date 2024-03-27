@@ -58,164 +58,164 @@ import static java.util.Collections.singletonList;
  */
 public final class ClientTutorial {
 
-  public static final class Chinook extends DefaultDomain {
+	public static final class Chinook extends DefaultDomain {
 
-    static final DomainType DOMAIN = domainType(Chinook.class);
+		static final DomainType DOMAIN = domainType(Chinook.class);
 
-    public interface Artist {
-      EntityType TYPE = DOMAIN.entityType("chinook.artist");
+		public interface Artist {
+			EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
-      Column<Integer> ID = TYPE.integerColumn("artistid");
-      Column<String> NAME = TYPE.stringColumn("name");
-      Column<Integer> NUMBER_OF_ALBUMS = TYPE.integerColumn("number_of_albums");
-    }
+			Column<Integer> ID = TYPE.integerColumn("artistid");
+			Column<String> NAME = TYPE.stringColumn("name");
+			Column<Integer> NUMBER_OF_ALBUMS = TYPE.integerColumn("number_of_albums");
+		}
 
-    public interface Album {
-      EntityType TYPE = DOMAIN.entityType("chinook.album");
+		public interface Album {
+			EntityType TYPE = DOMAIN.entityType("chinook.album");
 
-      Column<Integer> ID = TYPE.integerColumn("albumid");
-      Column<String> TITLE = TYPE.stringColumn("title");
-      Column<Integer> ARTIST_ID = TYPE.integerColumn("artistid");
+			Column<Integer> ID = TYPE.integerColumn("albumid");
+			Column<String> TITLE = TYPE.stringColumn("title");
+			Column<Integer> ARTIST_ID = TYPE.integerColumn("artistid");
 
-      ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
-    }
+			ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
+		}
 
-    public Chinook() {
-      super(DOMAIN);
-      add(Artist.TYPE.define(
-                      Artist.ID.define()
-                              .primaryKey(),
-                      Artist.NAME.define()
-                              .column()
-                              .caption("Name")
-                              .searchable(true)
-                              .nullable(false)
-                              .maximumLength(120),
-                      Artist.NUMBER_OF_ALBUMS.define()
-                              .subquery("SELECT COUNT(*) FROM chinook.album " +
-                                      "WHERE album.artistid = artist.artistid")
-                              .caption("Albums"))
-              .keyGenerator(automatic("chinook.artist"))
-              .stringFactory(Artist.NAME)
-              .caption("Artists"));
+		public Chinook() {
+			super(DOMAIN);
+			add(Artist.TYPE.define(
+											Artist.ID.define()
+															.primaryKey(),
+											Artist.NAME.define()
+															.column()
+															.caption("Name")
+															.searchable(true)
+															.nullable(false)
+															.maximumLength(120),
+											Artist.NUMBER_OF_ALBUMS.define()
+															.subquery("SELECT COUNT(*) FROM chinook.album " +
+																			"WHERE album.artistid = artist.artistid")
+															.caption("Albums"))
+							.keyGenerator(automatic("chinook.artist"))
+							.stringFactory(Artist.NAME)
+							.caption("Artists"));
 
-      add(Album.TYPE.define(
-                      Album.ID.define()
-                              .primaryKey(),
-                      Album.ARTIST_ID.define()
-                              .column()
-                              .nullable(false),
-                      Album.ARTIST_FK.define()
-                              .foreignKey()
-                              .caption("Artist"),
-                      Album.TITLE.define()
-                              .column()
-                              .caption("Title")
-                              .nullable(false)
-                              .maximumLength(160))
-              .keyGenerator(automatic("chinook.artist"))
-              .stringFactory(StringFactory.builder()
-                      .value(Album.ARTIST_FK)
-                      .text(" - ")
-                      .value(Album.TITLE)
-                      .build())
-              .caption("Albums"));
-    }
-  }
+			add(Album.TYPE.define(
+											Album.ID.define()
+															.primaryKey(),
+											Album.ARTIST_ID.define()
+															.column()
+															.nullable(false),
+											Album.ARTIST_FK.define()
+															.foreignKey()
+															.caption("Artist"),
+											Album.TITLE.define()
+															.column()
+															.caption("Title")
+															.nullable(false)
+															.maximumLength(160))
+							.keyGenerator(automatic("chinook.artist"))
+							.stringFactory(StringFactory.builder()
+											.value(Album.ARTIST_FK)
+											.text(" - ")
+											.value(Album.TITLE)
+											.build())
+							.caption("Albums"));
+		}
+	}
 
-  private static final class ArtistEditPanel extends EntityEditPanel {
+	private static final class ArtistEditPanel extends EntityEditPanel {
 
-    private ArtistEditPanel(SwingEntityEditModel editModel) {
-      super(editModel);
-    }
+		private ArtistEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
+		}
 
-    @Override
-    protected void initializeUI() {
-      initialFocusAttribute().set(Artist.NAME);
-      createTextField(Artist.NAME)
-              .columns(15);
-      addInputPanel(Artist.NAME);
-    }
-  }
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(Artist.NAME);
+			createTextField(Artist.NAME)
+							.columns(15);
+			addInputPanel(Artist.NAME);
+		}
+	}
 
-  private static final class AlbumEditPanel extends EntityEditPanel {
+	private static final class AlbumEditPanel extends EntityEditPanel {
 
-    private AlbumEditPanel(SwingEntityEditModel editModel) {
-      super(editModel);
-    }
+		private AlbumEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
+		}
 
-    @Override
-    protected void initializeUI() {
-      initialFocusAttribute().set(Album.ARTIST_FK);
-      createForeignKeySearchField(Album.ARTIST_FK)
-              .columns(15);
-      createTextField(Album.TITLE)
-              .action(control(EditControl.INSERT).get())
-              .columns(15);
-      setLayout(gridLayout(2, 1));
-      addInputPanel(Album.ARTIST_FK);
-      addInputPanel(Album.TITLE);
-    }
-  }
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(Album.ARTIST_FK);
+			createForeignKeySearchField(Album.ARTIST_FK)
+							.columns(15);
+			createTextField(Album.TITLE)
+							.action(control(EditControl.INSERT).get())
+							.columns(15);
+			setLayout(gridLayout(2, 1));
+			addInputPanel(Album.ARTIST_FK);
+			addInputPanel(Album.TITLE);
+		}
+	}
 
-  private static final class ApplicationModel extends SwingEntityApplicationModel {
+	private static final class ApplicationModel extends SwingEntityApplicationModel {
 
-    private ApplicationModel(EntityConnectionProvider connectionProvider) {
-      super(connectionProvider);
-      SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
-      SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
-      artistModel.addDetailModel(albumModel);
-      artistModel.tableModel().refresh();
+		private ApplicationModel(EntityConnectionProvider connectionProvider) {
+			super(connectionProvider);
+			SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+			SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
+			artistModel.addDetailModel(albumModel);
+			artistModel.tableModel().refresh();
 
-      addEntityModel(artistModel);
-    }
-  }
+			addEntityModel(artistModel);
+		}
+	}
 
-  private static final class ApplicationPanel extends EntityApplicationPanel<ApplicationModel> {
+	private static final class ApplicationPanel extends EntityApplicationPanel<ApplicationModel> {
 
-    private ApplicationPanel(ApplicationModel applicationModel) {
-      super(applicationModel);
-    }
+		private ApplicationPanel(ApplicationModel applicationModel) {
+			super(applicationModel);
+		}
 
-    @Override
-    protected List<EntityPanel> createEntityPanels() {
-      SwingEntityModel artistModel = applicationModel().entityModel(Artist.TYPE);
-      SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
-      EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
-      EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
-      artistPanel.addDetailPanel(albumPanel);
+		@Override
+		protected List<EntityPanel> createEntityPanels() {
+			SwingEntityModel artistModel = applicationModel().entityModel(Artist.TYPE);
+			SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
+			EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
+			EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
+			artistPanel.addDetailPanel(albumPanel);
 
-      return singletonList(artistPanel);
-    }
-  }
+			return singletonList(artistPanel);
+		}
+	}
 
-  private static final class LocalConnectionProviderFactory implements ConnectionProviderFactory {
+	private static final class LocalConnectionProviderFactory implements ConnectionProviderFactory {
 
-    @Override
-    public EntityConnectionProvider createConnectionProvider(User user, DomainType domainType,
-                                                             String clientTypeId, Version clientVersion) {
-      return LocalEntityConnectionProvider.builder()
-              .user(user)
-              .domain(new Chinook())
-              .clientTypeId(clientTypeId)
-              .build();
-    }
-  }
+		@Override
+		public EntityConnectionProvider createConnectionProvider(User user, DomainType domainType,
+																														 String clientTypeId, Version clientVersion) {
+			return LocalEntityConnectionProvider.builder()
+							.user(user)
+							.domain(new Chinook())
+							.clientTypeId(clientTypeId)
+							.build();
+		}
+	}
 
-  public static void main(String[] args) {
-    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-    FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
-            .applicationModelFactory(ApplicationModel::new)
-            .applicationPanelFactory(ApplicationPanel::new)
-            .connectionProviderFactory(new LocalConnectionProviderFactory())
-            .defaultLookAndFeelClassName("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme")
-            .applicationName("Artists and Albums")
-            .defaultLoginUser(User.parse("scott:tiger"))
-            .start();
-  }
+	public static void main(String[] args) {
+		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+		FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
+						.applicationModelFactory(ApplicationModel::new)
+						.applicationPanelFactory(ApplicationPanel::new)
+						.connectionProviderFactory(new LocalConnectionProviderFactory())
+						.defaultLookAndFeelClassName("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme")
+						.applicationName("Artists and Albums")
+						.defaultLoginUser(User.parse("scott:tiger"))
+						.start();
+	}
 }

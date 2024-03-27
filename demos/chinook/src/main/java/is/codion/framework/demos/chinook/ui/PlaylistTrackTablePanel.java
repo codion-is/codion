@@ -25,17 +25,17 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
-  public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, config -> config
-            .editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
-            // No confirmation needed when deleting
-            .deleteConfirmer(dialogOwner -> true));
-    configureTrackConditionPanel();
-  }
+	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, config -> config
+						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
+						// No confirmation needed when deleting
+						.deleteConfirmer(dialogOwner -> true));
+		configureTrackConditionPanel();
+	}
 
-  private void configureTrackConditionPanel() {
-    conditionPanel().conditionPanel(PlaylistTrack.TRACK_FK)
-            .map(conditionPanel -> (EntitySearchField) conditionPanel.equalField())
-            .ifPresent(equalField -> equalField.selectorFactory().set(new TrackSelectorFactory()));
-  }
+	private void configureTrackConditionPanel() {
+		conditionPanel().conditionPanel(PlaylistTrack.TRACK_FK)
+						.map(conditionPanel -> (EntitySearchField) conditionPanel.equalField())
+						.ifPresent(equalField -> equalField.selectorFactory().set(new TrackSelectorFactory()));
+	}
 }

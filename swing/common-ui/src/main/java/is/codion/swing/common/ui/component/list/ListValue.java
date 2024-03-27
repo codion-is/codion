@@ -29,37 +29,37 @@ import java.util.Set;
 
 final class ListValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
 
-  ListValue(JList<T> list) {
-    super(list);
-    list.addListSelectionListener(e -> notifyListeners());
-  }
+	ListValue(JList<T> list) {
+		super(list);
+		list.addListSelectionListener(e -> notifyListeners());
+	}
 
-  @Override
-  protected Set<T> getComponentValue() {
-    return new HashSet<>(component().getSelectedValuesList());
-  }
+	@Override
+	protected Set<T> getComponentValue() {
+		return new HashSet<>(component().getSelectedValuesList());
+	}
 
-  @Override
-  protected void setComponentValue(Set<T> value) {
-    selectValues(component(), value);
-  }
+	@Override
+	protected void setComponentValue(Set<T> value) {
+		selectValues(component(), value);
+	}
 
-  static <T> void selectValues(JList<T> list, Set<T> valueSet) {
-    list.setSelectedIndices(valueSet.stream()
-            .map(value -> indexOf(list, value))
-            .filter(OptionalInt::isPresent)
-            .mapToInt(OptionalInt::getAsInt)
-            .toArray());
-  }
+	static <T> void selectValues(JList<T> list, Set<T> valueSet) {
+		list.setSelectedIndices(valueSet.stream()
+						.map(value -> indexOf(list, value))
+						.filter(OptionalInt::isPresent)
+						.mapToInt(OptionalInt::getAsInt)
+						.toArray());
+	}
 
-  private static <T> OptionalInt indexOf(JList<T> list, T element) {
-    ListModel<T> model = list.getModel();
-    for (int i = 0; i < model.getSize(); i++) {
-      if (Objects.equals(model.getElementAt(i), element)) {
-        return OptionalInt.of(i);
-      }
-    }
+	private static <T> OptionalInt indexOf(JList<T> list, T element) {
+		ListModel<T> model = list.getModel();
+		for (int i = 0; i < model.getSize(); i++) {
+			if (Objects.equals(model.getElementAt(i), element)) {
+				return OptionalInt.of(i);
+			}
+		}
 
-    return OptionalInt.empty();
-  }
+		return OptionalInt.empty();
+	}
 }

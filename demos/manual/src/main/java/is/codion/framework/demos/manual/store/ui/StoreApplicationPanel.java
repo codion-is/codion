@@ -37,49 +37,49 @@ import java.util.Locale;
 // tag::storeAppPanel[]
 public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicationModel> {
 
-  public StoreApplicationPanel(StoreApplicationModel applicationModel) {
-    super(applicationModel);
-  }
+	public StoreApplicationPanel(StoreApplicationModel applicationModel) {
+		super(applicationModel);
+	}
 
-  @Override
-  protected List<EntityPanel> createEntityPanels() {
-    CustomerModel customerModel =
-            applicationModel().entityModel(Customer.TYPE);
-    CustomerAddressModel customerAddressModel =
-            customerModel.detailModel(CustomerAddress.TYPE);
+	@Override
+	protected List<EntityPanel> createEntityPanels() {
+		CustomerModel customerModel =
+						applicationModel().entityModel(Customer.TYPE);
+		CustomerAddressModel customerAddressModel =
+						customerModel.detailModel(CustomerAddress.TYPE);
 
-    EntityPanel customerPanel = new EntityPanel(customerModel,
-            new CustomerEditPanel(customerModel.editModel()),
-            new CustomerTablePanel(customerModel.tableModel()));
-    EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
-            new CustomerAddressEditPanel(customerAddressModel.editModel()));
+		EntityPanel customerPanel = new EntityPanel(customerModel,
+						new CustomerEditPanel(customerModel.editModel()),
+						new CustomerTablePanel(customerModel.tableModel()));
+		EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
+						new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
-    customerPanel.addDetailPanel(customerAddressPanel);
+		customerPanel.addDetailPanel(customerAddressPanel);
 
-    return Collections.singletonList(customerPanel);
-  }
+		return Collections.singletonList(customerPanel);
+	}
 
-  // tag::createSupportEntityPanelBuilders[]
-  @Override
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
-    EntityPanel.Builder addressPanelBuilder =
-            EntityPanel.builder(Address.TYPE)
-                    .editPanel(AddressEditPanel.class);
+	// tag::createSupportEntityPanelBuilders[]
+	@Override
+	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+		EntityPanel.Builder addressPanelBuilder =
+						EntityPanel.builder(Address.TYPE)
+										.editPanel(AddressEditPanel.class);
 
-    return Collections.singletonList(addressPanelBuilder);
-  }
-  // end::createSupportEntityPanelBuilders[]
+		return Collections.singletonList(addressPanelBuilder);
+	}
+	// end::createSupportEntityPanelBuilders[]
 
-  public static void main(String[] args) {
-    Locale.setDefault(new Locale("en", "EN"));
-    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-    ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
-            .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
-            .applicationName("Store")
-            .domainType(Store.DOMAIN)
-            .defaultLoginUser(User.parse("scott:tiger"))
-            .start();
-  }
+	public static void main(String[] args) {
+		Locale.setDefault(new Locale("en", "EN"));
+		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
+						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
+		EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
+						.applicationName("Store")
+						.domainType(Store.DOMAIN)
+						.defaultLoginUser(User.parse("scott:tiger"))
+						.start();
+	}
 }
 // end::storeAppPanel[]

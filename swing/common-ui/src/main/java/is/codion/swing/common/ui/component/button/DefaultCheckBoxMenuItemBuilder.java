@@ -23,14 +23,14 @@ import is.codion.common.value.Value;
 import javax.swing.JCheckBoxMenuItem;
 
 final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JCheckBoxMenuItem, B>
-        implements CheckBoxMenuItemBuilder<B> {
+				implements CheckBoxMenuItemBuilder<B> {
 
-  DefaultCheckBoxMenuItemBuilder(Value<Boolean> linkedValue) {
-    super(linkedValue);
-  }
+	DefaultCheckBoxMenuItemBuilder(Value<Boolean> linkedValue) {
+		super(linkedValue);
+	}
 
-  @Override
-  protected JCheckBoxMenuItem createMenuItem(PersistMenu persistMenu) {
-    return new PersistMenuCheckBoxMenuItem(persistMenu);
-  }
+	@Override
+	protected JCheckBoxMenuItem createMenuItem(PersistMenu persistMenu) {
+		return new PersistMenuCheckBoxMenuItem(persistMenu);
+	}
 }

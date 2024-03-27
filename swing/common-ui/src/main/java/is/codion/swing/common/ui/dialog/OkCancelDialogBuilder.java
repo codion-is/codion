@@ -29,45 +29,45 @@ import javax.swing.Action;
  */
 public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialogBuilder> {
 
-  /**
-   * Note that this is overridden by {@link #okAction(Action)}.
-   * @param okEnabled the state observer controlling the ok enabled state
-   * @return this builder instance
-   * @throws IllegalStateException in case an ok action has already been set
-   */
-  OkCancelDialogBuilder okEnabled(StateObserver okEnabled);
+	/**
+	 * Note that this is overridden by {@link #okAction(Action)}.
+	 * @param okEnabled the state observer controlling the ok enabled state
+	 * @return this builder instance
+	 * @throws IllegalStateException in case an ok action has already been set
+	 */
+	OkCancelDialogBuilder okEnabled(StateObserver okEnabled);
 
-  /**
-   * Note that this is overridden by {@link #cancelAction(Action)}.
-   * @param cancelEnabled the state observer controlling the cancel enabled state
-   * @return this builder instance
-   * @throws IllegalStateException in case a cancel action has already been set
-   */
-  OkCancelDialogBuilder cancelEnabled(StateObserver cancelEnabled);
+	/**
+	 * Note that this is overridden by {@link #cancelAction(Action)}.
+	 * @param cancelEnabled the state observer controlling the cancel enabled state
+	 * @return this builder instance
+	 * @throws IllegalStateException in case a cancel action has already been set
+	 */
+	OkCancelDialogBuilder cancelEnabled(StateObserver cancelEnabled);
 
-  /**
-   * @param onOk called on ok pressed, before the dialog has been disposed
-   * @return this builder instance
-   * @throws IllegalStateException in case an ok action has already been set
-   */
-  OkCancelDialogBuilder onOk(Runnable onOk);
+	/**
+	 * @param onOk called on ok pressed, before the dialog has been disposed
+	 * @return this builder instance
+	 * @throws IllegalStateException in case an ok action has already been set
+	 */
+	OkCancelDialogBuilder onOk(Runnable onOk);
 
-  /**
-   * @param onCancel called on cancel pressed, before the dialog has been disposed
-   * @return this builder instance
-   * @throws IllegalStateException in case a cancel action has already been set
-   */
-  OkCancelDialogBuilder onCancel(Runnable onCancel);
+	/**
+	 * @param onCancel called on cancel pressed, before the dialog has been disposed
+	 * @return this builder instance
+	 * @throws IllegalStateException in case a cancel action has already been set
+	 */
+	OkCancelDialogBuilder onCancel(Runnable onCancel);
 
-  /**
-   * @param okAction the action for the OK button, this action must dispose the dialog
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder okAction(Action okAction);
+	/**
+	 * @param okAction the action for the OK button, this action must dispose the dialog
+	 * @return this builder instance
+	 */
+	OkCancelDialogBuilder okAction(Action okAction);
 
-  /**
-   * @param cancelAction the action for the Cancel button
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder cancelAction(Action cancelAction);
+	/**
+	 * @param cancelAction the action for the Cancel button
+	 * @return this builder instance
+	 */
+	OkCancelDialogBuilder cancelAction(Action cancelAction);
 }

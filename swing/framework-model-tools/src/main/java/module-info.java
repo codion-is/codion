@@ -22,11 +22,11 @@
  * {@link is.codion.swing.framework.model.tools.generator.DomainGeneratorModel}<br>
  */
 module is.codion.swing.framework.model.tools {
-  requires org.slf4j;
-  requires transitive is.codion.swing.common.model.tools;
-  requires transitive is.codion.swing.framework.model;
+	requires org.slf4j;
+	requires transitive is.codion.swing.common.model.tools;
+	requires transitive is.codion.swing.framework.model;
 
-  exports is.codion.swing.framework.model.tools.generator;
-  exports is.codion.swing.framework.model.tools.loadtest;
-  exports is.codion.swing.framework.model.tools.metadata;
+	exports is.codion.swing.framework.model.tools.generator;
+	exports is.codion.swing.framework.model.tools.loadtest;
+	exports is.codion.swing.framework.model.tools.metadata;
 }

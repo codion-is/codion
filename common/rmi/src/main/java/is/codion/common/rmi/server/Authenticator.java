@@ -30,50 +30,50 @@ import java.util.ServiceLoader;
  */
 public interface Authenticator {
 
-  /**
-   * Returns the the id of the client type for which to use this authenticator.
-   * If none is specified, this authenticator is shared between all clients.
-   * @return the String identifying the client type for which to use this authenticator or an empty optional in case this authenticator should be shared
-   */
-  default Optional<String> clientTypeId() {
-    return Optional.empty();
-  }
+	/**
+	 * Returns the the id of the client type for which to use this authenticator.
+	 * If none is specified, this authenticator is shared between all clients.
+	 * @return the String identifying the client type for which to use this authenticator or an empty optional in case this authenticator should be shared
+	 */
+	default Optional<String> clientTypeId() {
+		return Optional.empty();
+	}
 
-  /**
-   * Performs login validation for the user specified by the remote client
-   * and returns a remote client with the same clientId and user but possibly
-   * a different databaseUser to propagate to further login procedures
-   * @param remoteClient the client
-   * @return a new client with the same clientId but not necessarily the same user or databaseUser
-   * @throws LoginException in case the login fails
-   * @see RemoteClient#databaseUser()
-   */
-  RemoteClient login(RemoteClient remoteClient) throws LoginException;
+	/**
+	 * Performs login validation for the user specified by the remote client
+	 * and returns a remote client with the same clientId and user but possibly
+	 * a different databaseUser to propagate to further login procedures
+	 * @param remoteClient the client
+	 * @return a new client with the same clientId but not necessarily the same user or databaseUser
+	 * @throws LoginException in case the login fails
+	 * @see RemoteClient#databaseUser()
+	 */
+	RemoteClient login(RemoteClient remoteClient) throws LoginException;
 
-  /**
-   * Called after the given client has been disconnected
-   * @param remoteClient the remote client
-   */
-  default void logout(RemoteClient remoteClient) {}
+	/**
+	 * Called after the given client has been disconnected
+	 * @param remoteClient the remote client
+	 */
+	default void logout(RemoteClient remoteClient) {}
 
-  /**
-   * Disposes of all resources used by this authenticator, after a call to this
-   * method the authenticator should be regarded as unusable.
-   * This method should be called by a server using this authenticator on shutdown,
-   * giving the authenticator a chance to release resources in an orderly manner.
-   * Any exception thrown by this method is ignored.
-   */
-  default void close() {}
+	/**
+	 * Disposes of all resources used by this authenticator, after a call to this
+	 * method the authenticator should be regarded as unusable.
+	 * This method should be called by a server using this authenticator on shutdown,
+	 * giving the authenticator a chance to release resources in an orderly manner.
+	 * Any exception thrown by this method is ignored.
+	 */
+	default void close() {}
 
-  /**
-   * @return a list containing all the authenticators registered with {@link ServiceLoader}.
-   */
-  static List<Authenticator> authenticators() {
-    List<Authenticator> authenticators = new ArrayList<>();
-    for (Authenticator authenticator : ServiceLoader.load(Authenticator.class)) {
-      authenticators.add(authenticator);
-    }
+	/**
+	 * @return a list containing all the authenticators registered with {@link ServiceLoader}.
+	 */
+	static List<Authenticator> authenticators() {
+		List<Authenticator> authenticators = new ArrayList<>();
+		for (Authenticator authenticator : ServiceLoader.load(Authenticator.class)) {
+			authenticators.add(authenticator);
+		}
 
-    return authenticators;
-  }
+		return authenticators;
+	}
 }

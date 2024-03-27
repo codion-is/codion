@@ -25,13 +25,13 @@ import is.codion.framework.domain.entity.attribute.Attribute;
  */
 public class LengthValidationException extends ValidationException {
 
-  /**
-   * Instantiates a new LengthValidationException
-   * @param attribute the attribute
-   * @param value the value that exceeds the allowed length
-   * @param message the message
-   */
-  public LengthValidationException(Attribute<?> attribute, Object value, String message) {
-    super(attribute, value, message);
-  }
+	/**
+	 * Instantiates a new LengthValidationException
+	 * @param attribute the attribute
+	 * @param value the value that exceeds the allowed length
+	 * @param message the message
+	 */
+	public LengthValidationException(Attribute<?> attribute, Object value, String message) {
+		super(attribute, value, message);
+	}
 }

@@ -24,25 +24,25 @@ import javax.swing.JFormattedTextField;
 
 final class MaskedTextFieldValue<T> extends AbstractComponentValue<T, JFormattedTextField> {
 
-  MaskedTextFieldValue(JFormattedTextField component) {
-    super(component);
-    component.addPropertyChangeListener("value", event -> notifyListeners());
-  }
+	MaskedTextFieldValue(JFormattedTextField component) {
+		super(component);
+		component.addPropertyChangeListener("value", event -> notifyListeners());
+	}
 
-  @Override
-  protected T getComponentValue() {
-    return (T) component().getValue();
-  }
+	@Override
+	protected T getComponentValue() {
+		return (T) component().getValue();
+	}
 
-  @Override
-  protected void setComponentValue(T value) {
-    if (value == null) {
-      // otherwise the caret goes all the way to the
-      // end the next time the field gains focus
-      component().setText("");
-    }
-    else {
-      component().setValue(value);
-    }
-  }
+	@Override
+	protected void setComponentValue(T value) {
+		if (value == null) {
+			// otherwise the caret goes all the way to the
+			// end the next time the field gains focus
+			component().setText("");
+		}
+		else {
+			component().setValue(value);
+		}
+	}
 }

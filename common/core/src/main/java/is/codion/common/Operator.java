@@ -25,24 +25,24 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  EQUAL,
-  NOT_EQUAL,
-  LESS_THAN,
-  LESS_THAN_OR_EQUAL,
-  GREATER_THAN,
-  GREATER_THAN_OR_EQUAL,
-  BETWEEN_EXCLUSIVE,
-  BETWEEN,
-  NOT_BETWEEN_EXCLUSIVE,
-  NOT_BETWEEN;
+	EQUAL,
+	NOT_EQUAL,
+	LESS_THAN,
+	LESS_THAN_OR_EQUAL,
+	GREATER_THAN,
+	GREATER_THAN_OR_EQUAL,
+	BETWEEN_EXCLUSIVE,
+	BETWEEN,
+	NOT_BETWEEN_EXCLUSIVE,
+	NOT_BETWEEN;
 
-  private final String description;
+	private final String description;
 
-  Operator() {
-    this.description = ResourceBundle.getBundle(Operator.class.getName()).getString(name().toLowerCase());
-  }
+	Operator() {
+		this.description = ResourceBundle.getBundle(Operator.class.getName()).getString(name().toLowerCase());
+	}
 
-  public String description() {
-    return description;
-  }
+	public String description() {
+		return description;
+	}
 }

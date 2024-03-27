@@ -31,113 +31,113 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueSetTest {
 
-  @Test
-  void valueSet() {
-    ValueSet<Integer> valueSet = ValueSet.valueSet();
-    ValueSetObserver<Integer> observer = valueSet.observer();
-    assertTrue(observer.empty());
-    assertFalse(observer.notEmpty());
+	@Test
+	void valueSet() {
+		ValueSet<Integer> valueSet = ValueSet.valueSet();
+		ValueSetObserver<Integer> observer = valueSet.observer();
+		assertTrue(observer.empty());
+		assertFalse(observer.notEmpty());
 
-    assertFalse(observer.nullable());
-    assertFalse(observer.isNull());
-    assertTrue(observer.optional().isPresent());
+		assertFalse(observer.nullable());
+		assertFalse(observer.isNull());
+		assertTrue(observer.optional().isPresent());
 
-    assertTrue(valueSet.add(1));
-    assertFalse(valueSet.add(1));
-    assertTrue(valueSet.remove(1));
-    assertFalse(valueSet.remove(1));
+		assertTrue(valueSet.add(1));
+		assertFalse(valueSet.add(1));
+		assertTrue(valueSet.remove(1));
+		assertFalse(valueSet.remove(1));
 
-    Set<Integer> initialValues = new HashSet<>();
-    initialValues.add(1);
-    initialValues.add(2);
+		Set<Integer> initialValues = new HashSet<>();
+		initialValues.add(1);
+		initialValues.add(2);
 
-    valueSet = ValueSet.valueSet(initialValues);
-    observer = valueSet.observer();
-    assertFalse(observer.empty());
-    assertTrue(observer.notEmpty());
-    assertEquals(initialValues, observer.get());
-    assertTrue(observer.isEqualTo(initialValues));
+		valueSet = ValueSet.valueSet(initialValues);
+		observer = valueSet.observer();
+		assertFalse(observer.empty());
+		assertTrue(observer.notEmpty());
+		assertEquals(initialValues, observer.get());
+		assertTrue(observer.isEqualTo(initialValues));
 
-    assertFalse(valueSet.add(1));
-    assertFalse(valueSet.add(2));
-    assertTrue(valueSet.add(3));
-    assertTrue(valueSet.remove(1));
-    assertTrue(valueSet.remove(2));
+		assertFalse(valueSet.add(1));
+		assertFalse(valueSet.add(2));
+		assertTrue(valueSet.add(3));
+		assertTrue(valueSet.remove(1));
+		assertTrue(valueSet.remove(2));
 
-    valueSet.set(initialValues);
-    assertTrue(valueSet.remove(1));
-    assertTrue(valueSet.remove(2));
-    assertTrue(valueSet.add(3));
+		valueSet.set(initialValues);
+		assertTrue(valueSet.remove(1));
+		assertTrue(valueSet.remove(2));
+		assertTrue(valueSet.add(3));
 
-    valueSet.clear();
-    assertTrue(observer.empty());
-    assertFalse(observer.notEmpty());
-    assertTrue(valueSet.add(3));
-    assertFalse(valueSet.removeAll(1, 2));
+		valueSet.clear();
+		assertTrue(observer.empty());
+		assertFalse(observer.notEmpty());
+		assertTrue(valueSet.add(3));
+		assertFalse(valueSet.removeAll(1, 2));
 
-    assertTrue(valueSet.add(null));
-    assertFalse(valueSet.add(null));
-    assertTrue(valueSet.remove(null));
+		assertTrue(valueSet.add(null));
+		assertFalse(valueSet.add(null));
+		assertTrue(valueSet.remove(null));
 
-    valueSet.clear();
-    valueSet.addAll(1, 2);
+		valueSet.clear();
+		valueSet.addAll(1, 2);
 
-    valueSet.set(null);
-    assertTrue(valueSet.add(1));
-    assertTrue(valueSet.add(2));
+		valueSet.set(null);
+		assertTrue(valueSet.add(1));
+		assertTrue(valueSet.add(2));
 
-    valueSet.clear();
+		valueSet.clear();
 
-    Value<Integer> value = valueSet.value();
+		Value<Integer> value = valueSet.value();
 
-    value.set(1);
-    assertTrue(observer.contains(1));
-    value.set(null);
-    assertTrue(observer.empty());
+		value.set(1);
+		assertTrue(observer.contains(1));
+		value.set(null);
+		assertTrue(observer.empty());
 
-    valueSet.set(Collections.singleton(2));
-    assertEquals(2, value.get());
+		valueSet.set(Collections.singleton(2));
+		assertEquals(2, value.get());
 
-    valueSet.clear();
-    assertNull(value.get());
+		valueSet.clear();
+		assertNull(value.get());
 
-    assertTrue(valueSet.addAll(1, 2, 3));
-    assertEquals(3, observer.size());
-    valueSet.forEach(i -> {});
-    assertFalse(observer.containsAll(asList(1, 2, 4)));
-    assertTrue(observer.containsAll(asList(1, 2, 3)));
-    assertFalse(valueSet.addAll(1, 2, 3));
-    assertTrue(valueSet.removeAll(1, 2));
-    assertFalse(valueSet.removeAll(1, 2));
-    assertTrue(valueSet.removeAll(2, 3));
-  }
+		assertTrue(valueSet.addAll(1, 2, 3));
+		assertEquals(3, observer.size());
+		valueSet.forEach(i -> {});
+		assertFalse(observer.containsAll(asList(1, 2, 4)));
+		assertTrue(observer.containsAll(asList(1, 2, 3)));
+		assertFalse(valueSet.addAll(1, 2, 3));
+		assertTrue(valueSet.removeAll(1, 2));
+		assertFalse(valueSet.removeAll(1, 2));
+		assertTrue(valueSet.removeAll(2, 3));
+	}
 
-  @Test
-  void valueSetEvents() {
-    ValueSet<Integer> valueSet = ValueSet.valueSet();
-    Value<Integer> value = valueSet.value();
+	@Test
+	void valueSetEvents() {
+		ValueSet<Integer> valueSet = ValueSet.valueSet();
+		Value<Integer> value = valueSet.value();
 
-    AtomicInteger valueEventCounter = new AtomicInteger();
-    Consumer<Integer> listener = integer -> valueEventCounter.incrementAndGet();
-    value.addDataListener(listener);
+		AtomicInteger valueEventCounter = new AtomicInteger();
+		Consumer<Integer> listener = integer -> valueEventCounter.incrementAndGet();
+		value.addDataListener(listener);
 
-    AtomicInteger valueSetEventCounter = new AtomicInteger();
-    Consumer<Set<Integer>> setListener = integers -> valueSetEventCounter.incrementAndGet();
-    valueSet.addDataListener(setListener);
+		AtomicInteger valueSetEventCounter = new AtomicInteger();
+		Consumer<Set<Integer>> setListener = integers -> valueSetEventCounter.incrementAndGet();
+		valueSet.addDataListener(setListener);
 
-    valueSet.add(1);
+		valueSet.add(1);
 
-    assertEquals(1, valueEventCounter.get());
-    assertEquals(1, valueSetEventCounter.get());
+		assertEquals(1, valueEventCounter.get());
+		assertEquals(1, valueSetEventCounter.get());
 
-    value.set(2);
+		value.set(2);
 
-    assertEquals(2, valueEventCounter.get());
-    assertEquals(2, valueSetEventCounter.get());
+		assertEquals(2, valueEventCounter.get());
+		assertEquals(2, valueSetEventCounter.get());
 
-    valueSet.clear();
+		valueSet.clear();
 
-    assertEquals(3, valueEventCounter.get());
-    assertEquals(3, valueSetEventCounter.get());
-  }
+		assertEquals(3, valueEventCounter.get());
+		assertEquals(3, valueSetEventCounter.get());
+	}
 }

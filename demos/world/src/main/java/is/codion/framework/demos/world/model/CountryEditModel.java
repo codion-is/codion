@@ -33,40 +33,40 @@ import java.util.Objects;
 
 public final class CountryEditModel extends SwingEntityEditModel {
 
-  private final Value<Double> averageCityPopulation = Value.value();
+	private final Value<Double> averageCityPopulation = Value.value();
 
-  CountryEditModel(EntityConnectionProvider connectionProvider) {
-    super(Country.TYPE, connectionProvider);
-    initializeComboBoxModels(Country.CAPITAL_FK);
-    addEntityListener(country -> averageCityPopulation.set(averageCityPopulation(country)));
-  }
+	CountryEditModel(EntityConnectionProvider connectionProvider) {
+		super(Country.TYPE, connectionProvider);
+		initializeComboBoxModels(Country.CAPITAL_FK);
+		addEntityListener(country -> averageCityPopulation.set(averageCityPopulation(country)));
+	}
 
-  @Override
-  public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
-    EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
-    if (foreignKey.equals(Country.CAPITAL_FK)) {
-      //only show cities for currently selected country
-      addEntityListener(country ->
-              comboBoxModel.includeCondition().set(city ->
-                      country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
-    }
+	@Override
+	public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
+		EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
+		if (foreignKey.equals(Country.CAPITAL_FK)) {
+			//only show cities for currently selected country
+			addEntityListener(country ->
+							comboBoxModel.includeCondition().set(city ->
+											country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
+		}
 
-    return comboBoxModel;
-  }
+		return comboBoxModel;
+	}
 
-  public ValueObserver<Double> averageCityPopulation() {
-    return averageCityPopulation.observer();
-  }
+	public ValueObserver<Double> averageCityPopulation() {
+		return averageCityPopulation.observer();
+	}
 
-  private Double averageCityPopulation(Entity country) {
-    if (country == null) {
-      return null;
-    }
-    try {
-      return connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	private Double averageCityPopulation(Entity country) {
+		if (country == null) {
+			return null;
+		}
+		try {
+			return connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

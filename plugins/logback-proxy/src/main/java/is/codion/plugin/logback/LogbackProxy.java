@@ -42,37 +42,37 @@ import static java.util.Spliterators.spliteratorUnknownSize;
  */
 public final class LogbackProxy implements LoggerProxy {
 
-  @Override
-  public Object getLogLevel() {
-    return ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).getLevel();
-  }
+	@Override
+	public Object getLogLevel() {
+		return ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).getLevel();
+	}
 
-  @Override
-  public void setLogLevel(Object logLevel) {
-    if (!(logLevel instanceof Level)) {
-      throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
-    }
-    ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel((Level) logLevel);
-  }
+	@Override
+	public void setLogLevel(Object logLevel) {
+		if (!(logLevel instanceof Level)) {
+			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
+		}
+		((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel((Level) logLevel);
+	}
 
-  @Override
-  public List<Object> levels() {
-    return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
-  }
+	@Override
+	public List<Object> levels() {
+		return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
+	}
 
-  @Override
-  public Collection<String> files() {
-    LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+	@Override
+	public Collection<String> files() {
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    return context.getLoggerList().stream()
-            .flatMap(LogbackProxy::appenders)
-            .filter(FileAppender.class::isInstance)
-            .map(FileAppender.class::cast)
-            .map(FileAppender::getFile)
-            .collect(Collectors.toList());
-  }
+		return context.getLoggerList().stream()
+						.flatMap(LogbackProxy::appenders)
+						.filter(FileAppender.class::isInstance)
+						.map(FileAppender.class::cast)
+						.map(FileAppender::getFile)
+						.collect(Collectors.toList());
+	}
 
-  private static Stream<Appender<ILoggingEvent>> appenders(Logger logger) {
-    return StreamSupport.stream(spliteratorUnknownSize(logger.iteratorForAppenders(), 0), false);
-  }
+	private static Stream<Appender<ILoggingEvent>> appenders(Logger logger) {
+		return StreamSupport.stream(spliteratorUnknownSize(logger.iteratorForAppenders(), 0), false);
+	}
 }

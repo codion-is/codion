@@ -40,30 +40,30 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
  */
 public final class MultiPanelDemo {
 
-  public static void main(String[] args) {
-    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+	public static void main(String[] args) {
+		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-    LocalEntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
-            .domain(new ChinookImpl())
-            .user(User.parse("scott:tiger"))
-            .build();
+		LocalEntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+						.domain(new ChinookImpl())
+						.user(User.parse("scott:tiger"))
+						.build();
 
-    SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
-    employeeModel.tableModel().refresh();
+		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
+		employeeModel.tableModel().refresh();
 
-    JPanel basePanel = new JPanel(gridLayout(2, 2));
-    for (int i = 0; i < 4; i++) {
-      EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.editModel()));
-      employeePanel.tablePanel().conditionPanelVisible().set(true);
-      employeePanel.initialize();
-      basePanel.add(employeePanel);
-    }
+		JPanel basePanel = new JPanel(gridLayout(2, 2));
+		for (int i = 0; i < 4; i++) {
+			EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.editModel()));
+			employeePanel.tablePanel().conditionPanelVisible().set(true);
+			employeePanel.initialize();
+			basePanel.add(employeePanel);
+		}
 
-    Dialogs.componentDialog(basePanel)
-            .title("Multi Panel Demo")
-            .disposeOnEscape(false)
-            .show()
-            .dispose();
-  }
+		Dialogs.componentDialog(basePanel)
+						.title("Multi Panel Demo")
+						.disposeOnEscape(false)
+						.show()
+						.dispose();
+	}
 }

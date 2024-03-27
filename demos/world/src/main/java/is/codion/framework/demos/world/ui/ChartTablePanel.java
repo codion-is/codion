@@ -37,32 +37,32 @@ import static java.awt.event.KeyEvent.VK_2;
 
 abstract class ChartTablePanel extends EntityTablePanel {
 
-  private final ChartPanel chartPanel;
+	private final ChartPanel chartPanel;
 
-  protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
-                            String chartTitle) {
-    this(tableModel, chartDataset, chartTitle, config -> {});
-  }
+	protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
+														String chartTitle) {
+		this(tableModel, chartDataset, chartTitle, config -> {});
+	}
 
-  protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
-                            String chartTitle, Consumer<Config> configuration) {
-    super(tableModel, configuration);
-    setPreferredSize(new Dimension(200, 200));
-    chartPanel = createPieChartPanel(this, chartDataset, chartTitle);
-  }
+	protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
+														String chartTitle, Consumer<Config> configuration) {
+		super(tableModel, configuration);
+		setPreferredSize(new Dimension(200, 200));
+		chartPanel = createPieChartPanel(this, chartDataset, chartTitle);
+	}
 
-  @Override
-  protected final void layoutPanel(JComponent tableComponent, JPanel southPanel) {
-    super.layoutPanel(tabbedPane()
-            .tabBuilder("Table", borderLayoutPanel()
-                    .centerComponent(tableComponent)
-                    .southComponent(southPanel)
-                    .build())
-            .mnemonic(VK_1)
-            .add()
-            .tabBuilder("Chart", chartPanel)
-            .mnemonic(VK_2)
-            .add()
-            .build(), southPanel);
-  }
+	@Override
+	protected final void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+		super.layoutPanel(tabbedPane()
+						.tabBuilder("Table", borderLayoutPanel()
+										.centerComponent(tableComponent)
+										.southComponent(southPanel)
+										.build())
+						.mnemonic(VK_1)
+						.add()
+						.tabBuilder("Chart", chartPanel)
+						.mnemonic(VK_2)
+						.add()
+						.build(), southPanel);
+	}
 }

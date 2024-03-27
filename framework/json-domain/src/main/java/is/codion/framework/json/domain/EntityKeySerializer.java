@@ -31,31 +31,31 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
+	private final EntityObjectMapper entityObjectMapper;
 
-  EntityKeySerializer(EntityObjectMapper entityObjectMapper) {
-    super(Entity.Key.class);
-    this.entityObjectMapper = entityObjectMapper;
-  }
+	EntityKeySerializer(EntityObjectMapper entityObjectMapper) {
+		super(Entity.Key.class);
+		this.entityObjectMapper = entityObjectMapper;
+	}
 
-  @Override
-  public void serialize(Entity.Key key, JsonGenerator generator, SerializerProvider provider) throws IOException {
-    requireNonNull(key, "key");
-    generator.writeStartObject();
-    generator.writeStringField("entityType", key.entityType().name());
-    generator.writeFieldName("values");
-    writeValues(key, generator);
-    generator.writeEndObject();
-  }
+	@Override
+	public void serialize(Entity.Key key, JsonGenerator generator, SerializerProvider provider) throws IOException {
+		requireNonNull(key, "key");
+		generator.writeStartObject();
+		generator.writeStringField("entityType", key.entityType().name());
+		generator.writeFieldName("values");
+		writeValues(key, generator);
+		generator.writeEndObject();
+	}
 
-  private void writeValues(Entity.Key key, JsonGenerator generator) throws IOException {
-    generator.writeStartObject();
-    for (Column<?> column : key.columns()) {
-      generator.writeFieldName(column.name());
-      entityObjectMapper.writeValue(generator, key.get(column));
-    }
-    generator.writeEndObject();
-  }
+	private void writeValues(Entity.Key key, JsonGenerator generator) throws IOException {
+		generator.writeStartObject();
+		for (Column<?> column : key.columns()) {
+			generator.writeFieldName(column.name());
+			entityObjectMapper.writeValue(generator, key.get(column));
+		}
+		generator.writeEndObject();
+	}
 }

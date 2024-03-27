@@ -30,37 +30,37 @@ import static java.util.Objects.requireNonNull;
  * @see LocalEntityConnectionProvider#builder()
  */
 public final class DefaultLocalEntityConnectionProviderBuilder
-        extends AbstractBuilder<LocalEntityConnectionProvider, LocalEntityConnectionProvider.Builder>
-        implements LocalEntityConnectionProvider.Builder {
+				extends AbstractBuilder<LocalEntityConnectionProvider, LocalEntityConnectionProvider.Builder>
+				implements LocalEntityConnectionProvider.Builder {
 
-  Domain domain;
-  Database database;
-  int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
+	Domain domain;
+	Database database;
+	int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
 
-  public DefaultLocalEntityConnectionProviderBuilder() {
-    super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-  }
+	public DefaultLocalEntityConnectionProviderBuilder() {
+		super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+	}
 
-  @Override
-  public LocalEntityConnectionProvider.Builder database(Database database) {
-    this.database = requireNonNull(database);
-    return this;
-  }
+	@Override
+	public LocalEntityConnectionProvider.Builder database(Database database) {
+		this.database = requireNonNull(database);
+		return this;
+	}
 
-  @Override
-  public LocalEntityConnectionProvider.Builder domain(Domain domain) {
-    this.domain = requireNonNull(domain);
-    return domainType(domain.type());
-  }
+	@Override
+	public LocalEntityConnectionProvider.Builder domain(Domain domain) {
+		this.domain = requireNonNull(domain);
+		return domainType(domain.type());
+	}
 
-  @Override
-  public LocalEntityConnectionProvider.Builder defaultQueryTimeout(int defaultQueryTimeout) {
-    this.defaultQueryTimeout = defaultQueryTimeout;
-    return this;
-  }
+	@Override
+	public LocalEntityConnectionProvider.Builder defaultQueryTimeout(int defaultQueryTimeout) {
+		this.defaultQueryTimeout = defaultQueryTimeout;
+		return this;
+	}
 
-  @Override
-  public LocalEntityConnectionProvider build() {
-    return new DefaultLocalEntityConnectionProvider(this);
-  }
+	@Override
+	public LocalEntityConnectionProvider build() {
+		return new DefaultLocalEntityConnectionProvider(this);
+	}
 }

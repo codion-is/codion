@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class LogosTest {
 
-  @Test
-  void test() {
-    assertNotNull(Logos.logoBlack());
-    assertNotNull(Logos.logoTransparent());
-    assertNotNull(Logos.logoRed());
-  }
+	@Test
+	void test() {
+		assertNotNull(Logos.logoBlack());
+		assertNotNull(Logos.logoTransparent());
+		assertNotNull(Logos.logoRed());
+	}
 }

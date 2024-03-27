@@ -29,23 +29,23 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ReferentialIntegrityException extends DatabaseException {
 
-  private final Operation operation;
+	private final Operation operation;
 
-  /**
-   * Instantiates a new {@link ReferentialIntegrityException}
-   * @param cause the underlying cause
-   * @param message the error message
-   * @param operation the operation causing this exception
-   */
-  public ReferentialIntegrityException(SQLException cause, String message, Operation operation) {
-    super(cause, message);
-    this.operation = requireNonNull(operation);
-  }
+	/**
+	 * Instantiates a new {@link ReferentialIntegrityException}
+	 * @param cause the underlying cause
+	 * @param message the error message
+	 * @param operation the operation causing this exception
+	 */
+	public ReferentialIntegrityException(SQLException cause, String message, Operation operation) {
+		super(cause, message);
+		this.operation = requireNonNull(operation);
+	}
 
-  /**
-   * @return the {@link Operation} causing this exception
-   */
-  public Operation operation() {
-    return operation;
-  }
+	/**
+	 * @return the {@link Operation} causing this exception
+	 */
+	public Operation operation() {
+		return operation;
+	}
 }

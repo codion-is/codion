@@ -28,12 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultClientLogTest {
 
-  @Test
-  void clientLog() {
-    UUID uuid = UUID.randomUUID();
-    ClientLog log = ClientLog.clientLog(uuid, emptyList());
-    assertEquals(uuid, log.clientId());
-    assertEquals(uuid.hashCode(), log.hashCode());
-    assertTrue(log.entries().isEmpty());
-  }
+	@Test
+	void clientLog() {
+		UUID uuid = UUID.randomUUID();
+		ClientLog log = ClientLog.clientLog(uuid, emptyList());
+		assertEquals(uuid, log.clientId());
+		assertEquals(uuid.hashCode(), log.hashCode());
+		assertTrue(log.entries().isEmpty());
+	}
 }

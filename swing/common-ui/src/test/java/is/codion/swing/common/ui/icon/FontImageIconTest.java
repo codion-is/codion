@@ -25,13 +25,13 @@ import java.awt.Color;
 
 public final class FontImageIconTest {
 
-  @Test
-  void builder() {
-    FontImageIcon.builder(Foundation.FOUNDATION)
-            .size(42)
-            .color(Color.PINK)
-            .imageIconFactory(new FontImageIcon.ImageIconFactory() {})
-            .iconPainter(new FontImageIcon.IconPainter() {})
-            .build();
-  }
+	@Test
+	void builder() {
+		FontImageIcon.builder(Foundation.FOUNDATION)
+						.size(42)
+						.color(Color.PINK)
+						.imageIconFactory(new FontImageIcon.ImageIconFactory() {})
+						.iconPainter(new FontImageIcon.IconPainter() {})
+						.build();
+	}
 }

@@ -37,110 +37,110 @@ import java.util.Properties;
  */
 public final class HikariConnectionPoolFactory implements ConnectionPoolFactory {
 
-  /**
-   * Creates a HikariCP based connection pool wrapper
-   * @param connectionFactory the connection factory
-   * @param user the user
-   * @return a connection pool
-   */
-  @Override
-  public ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) {
-    return new HikariConnectionPoolWrapper(connectionFactory, user);
-  }
+	/**
+	 * Creates a HikariCP based connection pool wrapper
+	 * @param connectionFactory the connection factory
+	 * @param user the user
+	 * @return a connection pool
+	 */
+	@Override
+	public ConnectionPoolWrapper createConnectionPool(ConnectionFactory connectionFactory, User user) {
+		return new HikariConnectionPoolWrapper(connectionFactory, user);
+	}
 
-  private static final class HikariConnectionPoolWrapper extends AbstractConnectionPoolWrapper<HikariPool> {
+	private static final class HikariConnectionPoolWrapper extends AbstractConnectionPoolWrapper<HikariPool> {
 
-    private final HikariConfig config = new HikariConfig();
+		private final HikariConfig config = new HikariConfig();
 
-    private HikariConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
-      super(connectionFactory, user, new DriverDataSource(connectionFactory.url(), null,
-              new Properties(), user.username(), String.valueOf(user.password())));
-      config.setJdbcUrl(connectionFactory.url());
-      config.setAutoCommit(false);
-      config.setUsername(user.username());
-      config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
-      config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
-      config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get());
-      config.setDataSource(poolDataSource());
-      setPool(new HikariPool(config));
-    }
+		private HikariConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
+			super(connectionFactory, user, new DriverDataSource(connectionFactory.url(), null,
+							new Properties(), user.username(), String.valueOf(user.password())));
+			config.setJdbcUrl(connectionFactory.url());
+			config.setAutoCommit(false);
+			config.setUsername(user.username());
+			config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+			config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
+			config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get());
+			config.setDataSource(poolDataSource());
+			setPool(new HikariPool(config));
+		}
 
-    @Override
-    public void close() {
-      try {
-        getPool().shutdown();
-      }
-      catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
+		@Override
+		public void close() {
+			try {
+				getPool().shutdown();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
 
-    @Override
-    public int getCleanupInterval() {
-      return 0;
-    }
+		@Override
+		public int getCleanupInterval() {
+			return 0;
+		}
 
-    @Override
-    public void setCleanupInterval(int poolCleanupInterval) {/*non-configurable, com.zaxxer.hikari.housekeeping.periodMs*/}
+		@Override
+		public void setCleanupInterval(int poolCleanupInterval) {/*non-configurable, com.zaxxer.hikari.housekeeping.periodMs*/}
 
-    @Override
-    public int getIdleConnectionTimeout() {
-      return (int) config.getIdleTimeout();
-    }
+		@Override
+		public int getIdleConnectionTimeout() {
+			return (int) config.getIdleTimeout();
+		}
 
-    @Override
-    public void setIdleConnectionTimeout(int idleConnectionTimeout) {
-      config.setIdleTimeout(idleConnectionTimeout);
-    }
+		@Override
+		public void setIdleConnectionTimeout(int idleConnectionTimeout) {
+			config.setIdleTimeout(idleConnectionTimeout);
+		}
 
-    @Override
-    public int getMinimumPoolSize() {
-      return config.getMinimumIdle();
-    }
+		@Override
+		public int getMinimumPoolSize() {
+			return config.getMinimumIdle();
+		}
 
-    @Override
-    public void setMinimumPoolSize(int minimumPoolSize) {
-      config.setMinimumIdle(minimumPoolSize);
-    }
+		@Override
+		public void setMinimumPoolSize(int minimumPoolSize) {
+			config.setMinimumIdle(minimumPoolSize);
+		}
 
-    @Override
-    public int getMaximumPoolSize() {
-      return config.getMaximumPoolSize();
-    }
+		@Override
+		public int getMaximumPoolSize() {
+			return config.getMaximumPoolSize();
+		}
 
-    @Override
-    public void setMaximumPoolSize(int maximumPoolSize) {
-      config.setMaximumPoolSize(maximumPoolSize);
-    }
+		@Override
+		public void setMaximumPoolSize(int maximumPoolSize) {
+			config.setMaximumPoolSize(maximumPoolSize);
+		}
 
-    @Override
-    protected int available() {
-      return getPool().getIdleConnections();
-    }
+		@Override
+		protected int available() {
+			return getPool().getIdleConnections();
+		}
 
-    @Override
-    protected int inUse() {
-      return getPool().getActiveConnections();
-    }
+		@Override
+		protected int inUse() {
+			return getPool().getActiveConnections();
+		}
 
-    @Override
-    public int getMaximumCheckOutTime() {
-      return (int) config.getConnectionTimeout();
-    }
+		@Override
+		public int getMaximumCheckOutTime() {
+			return (int) config.getConnectionTimeout();
+		}
 
-    @Override
-    public void setMaximumCheckOutTime(int maximumCheckOutTime) {
-      config.setConnectionTimeout(maximumCheckOutTime);
-    }
+		@Override
+		public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+			config.setConnectionTimeout(maximumCheckOutTime);
+		}
 
-    @Override
-    protected Connection fetchConnection() throws SQLException {
-      return getPool().getConnection();
-    }
+		@Override
+		protected Connection fetchConnection() throws SQLException {
+			return getPool().getConnection();
+		}
 
-    @Override
-    protected int waiting() {
-      return getPool().getThreadsAwaitingConnection();
-    }
-  }
+		@Override
+		protected int waiting() {
+			return getPool().getThreadsAwaitingConnection();
+		}
+	}
 }

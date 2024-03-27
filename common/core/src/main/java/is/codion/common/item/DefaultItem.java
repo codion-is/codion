@@ -22,22 +22,22 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultItem<T> extends AbstractItem<T> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  static final Item<?> NULL_ITEM = new DefaultItem<>(null, "");
+	static final Item<?> NULL_ITEM = new DefaultItem<>(null, "");
 
-  private final String caption;
+	private final String caption;
 
-  DefaultItem(T value, String caption) {
-    super(value);
-    this.caption = requireNonNull(caption, "caption");
-  }
+	DefaultItem(T value, String caption) {
+		super(value);
+		this.caption = requireNonNull(caption, "caption");
+	}
 
-  /**
-   * @return the caption
-   */
-  @Override
-  public String caption() {
-    return caption;
-  }
+	/**
+	 * @return the caption
+	 */
+	@Override
+	public String caption() {
+		return caption;
+	}
 }

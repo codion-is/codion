@@ -26,15 +26,15 @@ import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 public final class InvoicePanel extends EntityPanel {
 
-  public InvoicePanel(SwingEntityModel invoiceModel, EntityPanel invoiceLinePanel) {
-    super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
-            new EntityTablePanel(invoiceModel.tableModel(), config -> config
-                    .editable(attributes -> attributes.remove(Invoice.TOTAL))),
-            config -> config
-                    .detailLayout(TabbedDetailLayout.builder()
-                            .includeTabbedPane(false)
-                            .includeControls(false)
-                            .build()));
-    addDetailPanel(invoiceLinePanel);
-  }
+	public InvoicePanel(SwingEntityModel invoiceModel, EntityPanel invoiceLinePanel) {
+		super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
+						new EntityTablePanel(invoiceModel.tableModel(), config -> config
+										.editable(attributes -> attributes.remove(Invoice.TOTAL))),
+						config -> config
+										.detailLayout(TabbedDetailLayout.builder()
+														.includeTabbedPane(false)
+														.includeControls(false)
+														.build()));
+		addDetailPanel(invoiceLinePanel);
+	}
 }

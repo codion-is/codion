@@ -35,94 +35,94 @@ import java.util.List;
 
 class ManualDomainModel {
 
-  // tag::storeApi[]
-  public interface Store {
+	// tag::storeApi[]
+	public interface Store {
 
-    DomainType DOMAIN = DomainType.domainType("Store");
+		DomainType DOMAIN = DomainType.domainType("Store");
 
-    interface City {
-      EntityType TYPE = DOMAIN.entityType("store.city"); //<1>
+		interface City {
+			EntityType TYPE = DOMAIN.entityType("store.city"); //<1>
 
-      Column<Integer> ID = TYPE.integerColumn("id"); //<2>
-      Column<String> NAME = TYPE.stringColumn("name");
-    }
+			Column<Integer> ID = TYPE.integerColumn("id"); //<2>
+			Column<String> NAME = TYPE.stringColumn("name");
+		}
 
-    interface Customer {
-      EntityType TYPE = DOMAIN.entityType("store.customer");
+		interface Customer {
+			EntityType TYPE = DOMAIN.entityType("store.customer");
 
-      Column<Integer> ID = TYPE.integerColumn("id");
-      Column<String> NAME = TYPE.stringColumn("name");
-      Column<Integer> CITY_ID = TYPE.integerColumn("city_id");
+			Column<Integer> ID = TYPE.integerColumn("id");
+			Column<String> NAME = TYPE.stringColumn("name");
+			Column<Integer> CITY_ID = TYPE.integerColumn("city_id");
 
-      ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);
-    }
-  }
+			ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);
+		}
+	}
 
-  // end::storeApi[]
-  // tag::storeImpl[]
-  public static class StoreImpl extends DefaultDomain {
+	// end::storeApi[]
+	// tag::storeImpl[]
+	public static class StoreImpl extends DefaultDomain {
 
-    public StoreImpl() {
-      super(Store.DOMAIN); //<1>
-      city();
-      customer();
-    }
+		public StoreImpl() {
+			super(Store.DOMAIN); //<1>
+			city();
+			customer();
+		}
 
-    void city() {
-      add(City.TYPE.define(
-                      City.ID.define()
-                              .primaryKey(),
-                      City.NAME.define()
-                              .column()
-                              .caption("Name")
-                              .nullable(false))
-              .keyGenerator(KeyGenerator.identity())
-              .caption("Cities"));
-    }
+		void city() {
+			add(City.TYPE.define(
+											City.ID.define()
+															.primaryKey(),
+											City.NAME.define()
+															.column()
+															.caption("Name")
+															.nullable(false))
+							.keyGenerator(KeyGenerator.identity())
+							.caption("Cities"));
+		}
 
-    void customer() {
-      add(Customer.TYPE.define(
-                      Customer.ID.define()
-                              .primaryKey(),
-                      Customer.NAME.define()
-                              .column()
-                              .caption("Name")
-                              .maximumLength(42),
-                      Customer.CITY_ID.define()
-                              .column(),
-                      Customer.CITY_FK.define()
-                              .foreignKey()
-                              .caption("City"))
-              .keyGenerator(KeyGenerator.identity())
-              .caption("Customers"));
-    }
-  }
-  // end::storeImpl[]
+		void customer() {
+			add(Customer.TYPE.define(
+											Customer.ID.define()
+															.primaryKey(),
+											Customer.NAME.define()
+															.column()
+															.caption("Name")
+															.maximumLength(42),
+											Customer.CITY_ID.define()
+															.column(),
+											Customer.CITY_FK.define()
+															.foreignKey()
+															.caption("City"))
+							.keyGenerator(KeyGenerator.identity())
+							.caption("Customers"));
+		}
+	}
+	// end::storeImpl[]
 
-  void usage() {
-    // tag::domainUsage[]
-    Domain store = new StoreImpl();
+	void usage() {
+		// tag::domainUsage[]
+		Domain store = new StoreImpl();
 
-    Entities entities = store.entities();
+		Entities entities = store.entities();
 
-    Entity city = entities.builder(City.TYPE)
-            .with(City.NAME, "Reykjavík")
-            .build();
+		Entity city = entities.builder(City.TYPE)
+						.with(City.NAME, "Reykjavík")
+						.build();
 
-    Entity.Key customerKey = entities.keyBuilder(Customer.TYPE)
-            .with(Customer.ID, 42)
-            .build();
+		Entity.Key customerKey = entities.keyBuilder(Customer.TYPE)
+						.with(Customer.ID, 42)
+						.build();
 
-    Entity customer = Entity.builder(customerKey)
-            .with(Customer.NAME, "John")
-            .with(Customer.CITY_FK, city)
-            .build();
+		Entity customer = Entity.builder(customerKey)
+						.with(Customer.NAME, "John")
+						.with(Customer.CITY_FK, city)
+						.build();
 
-    EntityDefinition customerDefinition = entities.definition(Customer.TYPE);
+		EntityDefinition customerDefinition = entities.definition(Customer.TYPE);
 
-    EntityDefinition cityDefinition = customerDefinition.foreignKeys().referencedBy(Customer.CITY_FK);
+		EntityDefinition cityDefinition = customerDefinition.foreignKeys().referencedBy(Customer.CITY_FK);
 
-    List<Column<?>> cityPrimaryKeyColumns = cityDefinition.primaryKey().columns();
-    // end::domainUsage[]
-  }
+		List<Column<?>> cityPrimaryKeyColumns = cityDefinition.primaryKey().columns();
+		// end::domainUsage[]
+	}
 }

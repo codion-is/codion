@@ -22,42 +22,42 @@ import org.kordamp.ikonli.Ikon;
 
 enum FrameworkIkon implements Ikon {
 
-  FILTER("fr-filter", '\uf14b'),
-  SEARCH("fr-search", '\uf16c'),
-  ADD("fr-add", '\uf17f'),
-  DELETE("fr-delete", '\uf204'),
-  UPDATE("fr-update", '\uf1ac'),
-  COPY("fr-copy", '\uf180'),
-  REFRESH("fr-refresh", '\uf1a5'),
-  CLEAR("fr-clear", '\uf18e'),
-  UP("fr-up", '\uf10c'),
-  DOWN("fr-down", '\uf109'),
-  DETAIL("fr-detail", '\uf18a'),
-  PRINT("fr-print", '\uf19f'),
-  EDIT("fr-edit", '\uf184'),
-  SUMMARY("fr-summary", 'Σ'),
-  EDIT_PANEL("fr-edit-panel", '\uf168'),
-  DEPENDENCIES("fr-dependencies", '\uf1ad'),
-  SETTINGS("fr-settings", '\uf214'),
-  CALENDAR("fr-calendar", '\uf124'),
-  EDIT_TEXT("fr-edit-text", '\uf129'),
-  LOGO("fr-logo", '\uf208');
+	FILTER("fr-filter", '\uf14b'),
+	SEARCH("fr-search", '\uf16c'),
+	ADD("fr-add", '\uf17f'),
+	DELETE("fr-delete", '\uf204'),
+	UPDATE("fr-update", '\uf1ac'),
+	COPY("fr-copy", '\uf180'),
+	REFRESH("fr-refresh", '\uf1a5'),
+	CLEAR("fr-clear", '\uf18e'),
+	UP("fr-up", '\uf10c'),
+	DOWN("fr-down", '\uf109'),
+	DETAIL("fr-detail", '\uf18a'),
+	PRINT("fr-print", '\uf19f'),
+	EDIT("fr-edit", '\uf184'),
+	SUMMARY("fr-summary", 'Σ'),
+	EDIT_PANEL("fr-edit-panel", '\uf168'),
+	DEPENDENCIES("fr-dependencies", '\uf1ad'),
+	SETTINGS("fr-settings", '\uf214'),
+	CALENDAR("fr-calendar", '\uf124'),
+	EDIT_TEXT("fr-edit-text", '\uf129'),
+	LOGO("fr-logo", '\uf208');
 
-  private final String description;
-  private final char code;
+	private final String description;
+	private final char code;
 
-  FrameworkIkon(String description, char code) {
-    this.description = description;
-    this.code = code;
-  }
+	FrameworkIkon(String description, char code) {
+		this.description = description;
+		this.code = code;
+	}
 
-  @Override
-  public String getDescription() {
-    return description;
-  }
+	@Override
+	public String getDescription() {
+		return description;
+	}
 
-  @Override
-  public int getCode() {
-    return code;
-  }
+	@Override
+	public int getCode() {
+		return code;
+	}
 }

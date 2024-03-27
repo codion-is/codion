@@ -28,40 +28,40 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LocalEntityConnectionProviderTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  @Test
-  void test() {
-    LocalEntityConnectionProvider provider = LocalEntityConnectionProvider.builder()
-            .user(UNIT_TEST_USER)
-            .domain(new TestDomain())
-            .build();
+	@Test
+	void test() {
+		LocalEntityConnectionProvider provider = LocalEntityConnectionProvider.builder()
+						.user(UNIT_TEST_USER)
+						.domain(new TestDomain())
+						.build();
 
-    assertNotNull(provider.database());
+		assertNotNull(provider.database());
 
-    EntityConnection firstConnection = provider.connection();
-    assertNotNull(firstConnection);
-    assertTrue(firstConnection.connected());
-    provider.close();
+		EntityConnection firstConnection = provider.connection();
+		assertNotNull(firstConnection);
+		assertTrue(firstConnection.connected());
+		provider.close();
 
-    EntityConnection secondConnection = provider.connection();
-    assertNotNull(secondConnection);
-    assertNotSame(firstConnection, secondConnection);
-    assertTrue(secondConnection.connected());
-    provider.close();
-  }
+		EntityConnection secondConnection = provider.connection();
+		assertNotNull(secondConnection);
+		assertNotSame(firstConnection, secondConnection);
+		assertTrue(secondConnection.connected());
+		provider.close();
+	}
 
-  @Test
-  void entityConnectionProviderBuilder() {
-    String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
-    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-            .domainType(TestDomain.DOMAIN)
-            .user(User.parse("scott:tiger"))
-            .build();
-    assertTrue(connectionProvider instanceof LocalEntityConnectionProvider);
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, connectionProvider.connectionType());
-    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
-  }
+	@Test
+	void entityConnectionProviderBuilder() {
+		String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+		EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+						.domainType(TestDomain.DOMAIN)
+						.user(User.parse("scott:tiger"))
+						.build();
+		assertTrue(connectionProvider instanceof LocalEntityConnectionProvider);
+		assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, connectionProvider.connectionType());
+		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
+	}
 }

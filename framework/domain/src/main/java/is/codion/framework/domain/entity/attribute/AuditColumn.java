@@ -20,10 +20,10 @@ package is.codion.framework.domain.entity.attribute;
 
 public interface AuditColumn {
 
-  /**
-   * The possible audit actions
-   */
-  enum AuditAction {
-    INSERT, UPDATE
-  }
+	/**
+	 * The possible audit actions
+	 */
+	enum AuditAction {
+		INSERT, UPDATE
+	}
 }

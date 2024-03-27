@@ -42,126 +42,126 @@ import static org.junit.jupiter.api.Assertions.*;
  * @param <TableModel> the {@link EntityTableModel} type
  */
 public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
-        EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
+				EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .user(UNIT_TEST_USER)
-          .domain(new TestDomain())
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.user(UNIT_TEST_USER)
+					.domain(new TestDomain())
+					.build();
 
-  private final EntityConnectionProvider connectionProvider;
+	private final EntityConnectionProvider connectionProvider;
 
-  protected AbstractEntityApplicationModelTest() {
-    this.connectionProvider = CONNECTION_PROVIDER;
-  }
+	protected AbstractEntityApplicationModelTest() {
+		this.connectionProvider = CONNECTION_PROVIDER;
+	}
 
-  @Test
-  public void test() {
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    Model deptModel = createDepartmentModel();
-    model.addEntityModel(deptModel);
-    assertThrows(IllegalArgumentException.class, () -> model.addEntityModel(deptModel));
-    assertNotNull(model.entityModel(Department.TYPE));
-    assertEquals(1, model.entityModels().size());
-    assertEquals(UNIT_TEST_USER, model.user());
+	@Test
+	public void test() {
+		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		Model deptModel = createDepartmentModel();
+		model.addEntityModel(deptModel);
+		assertThrows(IllegalArgumentException.class, () -> model.addEntityModel(deptModel));
+		assertNotNull(model.entityModel(Department.TYPE));
+		assertEquals(1, model.entityModels().size());
+		assertEquals(UNIT_TEST_USER, model.user());
 
-    assertThrows(IllegalArgumentException.class, () -> model.entityModel(Employee.TYPE));
-    if (!deptModel.containsTableModel()) {
-      return;
-    }
-    deptModel.detailModel(Employee.TYPE).tableModel().conditionRequired().set(false);
-    model.refresh();
-    assertTrue(deptModel.tableModel().getRowCount() > 0);
-  }
+		assertThrows(IllegalArgumentException.class, () -> model.entityModel(Employee.TYPE));
+		if (!deptModel.containsTableModel()) {
+			return;
+		}
+		deptModel.detailModel(Employee.TYPE).tableModel().conditionRequired().set(false);
+		model.refresh();
+		assertTrue(deptModel.tableModel().getRowCount() > 0);
+	}
 
-  @Test
-  public void constructorNullConnectionProvider() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel<>(null));
-  }
+	@Test
+	public void constructorNullConnectionProvider() {
+		assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel<>(null));
+	}
 
-  @Test
-  public void entityModelByEntityTypeNotFound() {
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    assertThrows(IllegalArgumentException.class, () -> model.entityModel(Department.TYPE));
-  }
+	@Test
+	public void entityModelByEntityTypeNotFound() {
+		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		assertThrows(IllegalArgumentException.class, () -> model.entityModel(Department.TYPE));
+	}
 
-  @Test
-  public void entityModelByEntityType() {
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    Model departmentModel = createDepartmentModel();
-    model.addEntityModel(departmentModel);
-    assertEquals(departmentModel, model.entityModel(Department.TYPE));
-  }
+	@Test
+	public void entityModelByEntityType() {
+		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		Model departmentModel = createDepartmentModel();
+		model.addEntityModel(departmentModel);
+		assertEquals(departmentModel, model.entityModel(Department.TYPE));
+	}
 
-  @Test
-  public void entityModelByClass() {
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    Model departmentModel = createDepartmentModel();
-    assertThrows(IllegalArgumentException.class, () -> model.entityModel((Class<? extends Model>) departmentModel.getClass()));
-    model.addEntityModels(departmentModel);
-    assertEquals(departmentModel, model.entityModel((Class<? extends Model>) departmentModel.getClass()));
-  }
+	@Test
+	public void entityModelByClass() {
+		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		Model departmentModel = createDepartmentModel();
+		assertThrows(IllegalArgumentException.class, () -> model.entityModel((Class<? extends Model>) departmentModel.getClass()));
+		model.addEntityModels(departmentModel);
+		assertEquals(departmentModel, model.entityModel((Class<? extends Model>) departmentModel.getClass()));
+	}
 
-  @Test
-  public void containsEntityModel() {
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    Model departmentModel = createDepartmentModel();
-    model.addEntityModel(departmentModel);
+	@Test
+	public void containsEntityModel() {
+		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		Model departmentModel = createDepartmentModel();
+		model.addEntityModel(departmentModel);
 
-    assertTrue(model.containsEntityModel(Department.TYPE));
-    assertTrue(model.containsEntityModel((Class<? extends Model>) departmentModel.getClass()));
-    assertTrue(model.containsEntityModel(departmentModel));
+		assertTrue(model.containsEntityModel(Department.TYPE));
+		assertTrue(model.containsEntityModel((Class<? extends Model>) departmentModel.getClass()));
+		assertTrue(model.containsEntityModel(departmentModel));
 
-    assertFalse(model.containsEntityModel(Employee.TYPE));
-    Model detailModel = departmentModel.detailModel(Employee.TYPE);
-    assertFalse(model.containsEntityModel(detailModel));
-  }
+		assertFalse(model.containsEntityModel(Employee.TYPE));
+		Model detailModel = departmentModel.detailModel(Employee.TYPE);
+		assertFalse(model.containsEntityModel(detailModel));
+	}
 
-  @Test
-  public void containsUnsavedData() {
-    Model deptModel = createDepartmentModel();
-    if (!deptModel.containsTableModel()) {
-      return;
-    }
+	@Test
+	public void containsUnsavedData() {
+		Model deptModel = createDepartmentModel();
+		if (!deptModel.containsTableModel()) {
+			return;
+		}
 
-    Model empModel = deptModel.detailModel(Employee.TYPE);
-    deptModel.detailModelLink(empModel).active().set(true);
+		Model empModel = deptModel.detailModel(Employee.TYPE);
+		deptModel.detailModelLink(empModel).active().set(true);
 
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    model.addEntityModel(deptModel);
+		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		model.addEntityModel(deptModel);
 
-    assertFalse(model.containsUnsavedData());
+		assertFalse(model.containsUnsavedData());
 
-    model.refresh();
+		model.refresh();
 
-    deptModel.tableModel().selectionModel().setSelectedIndex(0);
-    empModel.tableModel().selectionModel().setSelectedIndex(0);
+		deptModel.tableModel().selectionModel().setSelectedIndex(0);
+		empModel.tableModel().selectionModel().setSelectedIndex(0);
 
-    String name = empModel.editModel().get(Employee.NAME);
-    empModel.editModel().put(Employee.NAME, "Darri");
-    assertTrue(model.containsUnsavedData());
+		String name = empModel.editModel().get(Employee.NAME);
+		empModel.editModel().put(Employee.NAME, "Darri");
+		assertTrue(model.containsUnsavedData());
 
-    empModel.editModel().put(Employee.NAME, name);
-    assertFalse(model.containsUnsavedData());
+		empModel.editModel().put(Employee.NAME, name);
+		assertFalse(model.containsUnsavedData());
 
-    name = deptModel.editModel().get(Department.NAME);
-    deptModel.editModel().put(Department.NAME, "Darri");
-    assertTrue(model.containsUnsavedData());
+		name = deptModel.editModel().get(Department.NAME);
+		deptModel.editModel().put(Department.NAME, "Darri");
+		assertTrue(model.containsUnsavedData());
 
-    deptModel.editModel().put(Department.NAME, name);
-    assertFalse(model.containsUnsavedData());
-  }
+		deptModel.editModel().put(Department.NAME, name);
+		assertFalse(model.containsUnsavedData());
+	}
 
-  protected final EntityConnectionProvider connectionProvider() {
-    return connectionProvider;
-  }
+	protected final EntityConnectionProvider connectionProvider() {
+		return connectionProvider;
+	}
 
-  /**
-   * @return a EntityModel based on the department entity
-   * @see Department#TYPE
-   */
-  protected abstract Model createDepartmentModel();
+	/**
+	 * @return a EntityModel based on the department entity
+	 * @see Department#TYPE
+	 */
+	protected abstract Model createDepartmentModel();
 }

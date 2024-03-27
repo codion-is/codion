@@ -31,29 +31,29 @@ import java.util.Map;
 
 final class UpdateSerializer extends StdSerializer<Update> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
+	private final EntityObjectMapper entityObjectMapper;
 
-  UpdateSerializer(EntityObjectMapper entityObjectMapper) {
-    super(Update.class);
-    this.entityObjectMapper = entityObjectMapper;
-  }
+	UpdateSerializer(EntityObjectMapper entityObjectMapper) {
+		super(Update.class);
+		this.entityObjectMapper = entityObjectMapper;
+	}
 
-  @Override
-  public void serialize(Update update, JsonGenerator generator,
-                        SerializerProvider provider) throws IOException {
-    generator.writeStartObject();
-    generator.writeStringField("entityType", update.where().entityType().name());
-    generator.writeFieldName("condition");
-    entityObjectMapper.serializeCondition(update.where(), generator);
-    generator.writeFieldName("values");
-    generator.writeStartObject();
-    for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
-      generator.writeFieldName(columnValue.getKey().name());
-      entityObjectMapper.writeValue(generator, columnValue.getValue());
-    }
-    generator.writeEndObject();
-    generator.writeEndObject();
-  }
+	@Override
+	public void serialize(Update update, JsonGenerator generator,
+												SerializerProvider provider) throws IOException {
+		generator.writeStartObject();
+		generator.writeStringField("entityType", update.where().entityType().name());
+		generator.writeFieldName("condition");
+		entityObjectMapper.serializeCondition(update.where(), generator);
+		generator.writeFieldName("values");
+		generator.writeStartObject();
+		for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
+			generator.writeFieldName(columnValue.getKey().name());
+			entityObjectMapper.writeValue(generator, columnValue.getValue());
+		}
+		generator.writeEndObject();
+		generator.writeEndObject();
+	}
 }

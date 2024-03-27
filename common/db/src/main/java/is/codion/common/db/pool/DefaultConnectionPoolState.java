@@ -25,39 +25,39 @@ import java.io.Serializable;
  */
 final class DefaultConnectionPoolState implements ConnectionPoolState, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private long timestamp;
-  private int size = -1;
-  private int inUse = -1;
-  private int waiting = -1;
+	private long timestamp;
+	private int size = -1;
+	private int inUse = -1;
+	private int waiting = -1;
 
-  DefaultConnectionPoolState set(long timestamp, int size, int inUse, int waiting) {
-    this.timestamp = timestamp;
-    this.size = size;
-    this.inUse = inUse;
-    this.waiting = waiting;
+	DefaultConnectionPoolState set(long timestamp, int size, int inUse, int waiting) {
+		this.timestamp = timestamp;
+		this.size = size;
+		this.inUse = inUse;
+		this.waiting = waiting;
 
-    return this;
-  }
+		return this;
+	}
 
-  @Override
-  public int size() {
-    return size;
-  }
+	@Override
+	public int size() {
+		return size;
+	}
 
-  @Override
-  public int inUse() {
-    return inUse;
-  }
+	@Override
+	public int inUse() {
+		return inUse;
+	}
 
-  @Override
-  public int waiting() {
-    return waiting;
-  }
+	@Override
+	public int waiting() {
+		return waiting;
+	}
 
-  @Override
-  public long timestamp() {
-    return timestamp;
-  }
+	@Override
+	public long timestamp() {
+		return timestamp;
+	}
 }

@@ -33,27 +33,27 @@ import java.io.IOException;
 
 final class CountDeserializer extends StdDeserializer<Count> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
+	private final EntityObjectMapper entityObjectMapper;
 
-  CountDeserializer(EntityObjectMapper entityObjectMapper) {
-    super(Count.class);
-    this.entityObjectMapper = entityObjectMapper;
-  }
+	CountDeserializer(EntityObjectMapper entityObjectMapper) {
+		super(Count.class);
+		this.entityObjectMapper = entityObjectMapper;
+	}
 
-  @Override
-  public Count deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
-    JsonNode jsonNode = parser.getCodec().readTree(parser);
-    EntityType entityType = entityObjectMapper.entities().domainType().entityType(jsonNode.get("entityType").asText());
-    EntityDefinition definition = entityObjectMapper.entities().definition(entityType);
-    JsonNode whereNode = jsonNode.get("where");
-    Condition where = entityObjectMapper.deserializeCondition(definition, whereNode);
-    JsonNode havingNode = jsonNode.get("having");
-    Condition having = entityObjectMapper.deserializeCondition(definition, havingNode);
+	@Override
+	public Count deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+		JsonNode jsonNode = parser.getCodec().readTree(parser);
+		EntityType entityType = entityObjectMapper.entities().domainType().entityType(jsonNode.get("entityType").asText());
+		EntityDefinition definition = entityObjectMapper.entities().definition(entityType);
+		JsonNode whereNode = jsonNode.get("where");
+		Condition where = entityObjectMapper.deserializeCondition(definition, whereNode);
+		JsonNode havingNode = jsonNode.get("having");
+		Condition having = entityObjectMapper.deserializeCondition(definition, havingNode);
 
-    return Count.builder(where)
-            .having(having)
-            .build();
-  }
+		return Count.builder(where)
+						.having(having)
+						.build();
+	}
 }

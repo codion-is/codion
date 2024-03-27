@@ -36,36 +36,36 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.r
 
 public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 
-  @Override
-  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
-    EntityConnection connection = connectionProvider.connection();
-    Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
-    List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));
-    if (!invoiceIds.isEmpty()) {
-      Entity invoice = connection.selectSingle(Invoice.ID.equalTo(invoiceIds.get(RANDOM.nextInt(invoiceIds.size()))));
-      Collection<Entity> invoiceLines = connection.select(InvoiceLine.INVOICE_FK.equalTo(invoice));
-      invoiceLines.forEach(invoiceLine ->
-              invoiceLine.put(InvoiceLine.QUANTITY, RANDOM.nextInt(4) + 1));
-      updateInvoiceLines(invoiceLines.stream()
-              .filter(Entity::modified)
-              .collect(Collectors.toList()), connection);
-    }
-  }
+	@Override
+	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+		EntityConnection connection = connectionProvider.connection();
+		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
+		List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));
+		if (!invoiceIds.isEmpty()) {
+			Entity invoice = connection.selectSingle(Invoice.ID.equalTo(invoiceIds.get(RANDOM.nextInt(invoiceIds.size()))));
+			Collection<Entity> invoiceLines = connection.select(InvoiceLine.INVOICE_FK.equalTo(invoice));
+			invoiceLines.forEach(invoiceLine ->
+							invoiceLine.put(InvoiceLine.QUANTITY, RANDOM.nextInt(4) + 1));
+			updateInvoiceLines(invoiceLines.stream()
+							.filter(Entity::modified)
+							.collect(Collectors.toList()), connection);
+		}
+	}
 
-  private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      Collection<Entity> updated = connection.updateSelect(invoiceLines);
-      connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));
-      connection.commitTransaction();
-    }
-    catch (DatabaseException e) {
-      connection.rollbackTransaction();
-      throw e;
-    }
-    catch (Exception e) {
-      connection.rollbackTransaction();
-      throw new RuntimeException(e);
-    }
-  }
+	private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+		connection.beginTransaction();
+		try {
+			Collection<Entity> updated = connection.updateSelect(invoiceLines);
+			connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));
+			connection.commitTransaction();
+		}
+		catch (DatabaseException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+	}
 }

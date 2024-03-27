@@ -36,100 +36,100 @@ import java.util.function.Consumer;
  */
 public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
 
-  /**
-   * @param indeterminate true if the progress bar should be indeterminate
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> indeterminate(boolean indeterminate);
+	/**
+	 * @param indeterminate true if the progress bar should be indeterminate
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> indeterminate(boolean indeterminate);
 
-  /**
-   * Note that calling this method renders the progress bar determinate
-   * @param maximumProgress the maximum progress, 100 by default
-   * @return this Builder instance
-   * @see #indeterminate(boolean)
-   */
-  ProgressWorkerDialogBuilder<T, V> maximumProgress(int maximumProgress);
+	/**
+	 * Note that calling this method renders the progress bar determinate
+	 * @param maximumProgress the maximum progress, 100 by default
+	 * @return this Builder instance
+	 * @see #indeterminate(boolean)
+	 */
+	ProgressWorkerDialogBuilder<T, V> maximumProgress(int maximumProgress);
 
-  /**
-   * @param stringPainted the string painted status of the progress bar
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> stringPainted(boolean stringPainted);
+	/**
+	 * @param stringPainted the string painted status of the progress bar
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> stringPainted(boolean stringPainted);
 
-  /**
-   * @param border the border to add around the progress bar
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> border(Border border);
+	/**
+	 * @param border the border to add around the progress bar
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> border(Border border);
 
-  /**
-   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel);
+	/**
+	 * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel);
 
-  /**
-   * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel);
+	/**
+	 * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel);
 
-  /**
-   * @param eastPanel if specified this panel will be added to the BorderLayout.EAST position of the dialog
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel);
+	/**
+	 * @param eastPanel if specified this panel will be added to the BorderLayout.EAST position of the dialog
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel);
 
-  /**
-   * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> controls(Controls controls);
+	/**
+	 * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> controls(Controls controls);
 
-  /**
-   * @param progressBarSize the size of the progress bar
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
+	/**
+	 * @param progressBarSize the size of the progress bar
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
 
-  /**
-   * @param onResult executed on the EDT after a successful run
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult);
+	/**
+	 * @param onResult executed on the EDT after a successful run
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult);
 
-  /**
-   * @param onResult executed on the EDT after a successful run
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);
+	/**
+	 * @param onResult executed on the EDT after a successful run
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);
 
-  /**
-   * @param resultMessage if specified then this message is displayed after the task has successfully run
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage);
+	/**
+	 * @param resultMessage if specified then this message is displayed after the task has successfully run
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage);
 
-  /**
-   * @param onException the exception handler
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> onException(Consumer<Throwable> onException);
+	/**
+	 * @param onException the exception handler
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> onException(Consumer<Throwable> onException);
 
-  /**
-   * @param exceptionTitle the title of the exception dialog
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> onException(String exceptionTitle);
+	/**
+	 * @param exceptionTitle the title of the exception dialog
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> onException(String exceptionTitle);
 
-  /**
-   * Builds and executes a new {@link ProgressWorker} based on this builder
-   * @return a {@link ProgressWorker} based on this builder
-   */
-  ProgressWorker<T, V> execute();
+	/**
+	 * Builds and executes a new {@link ProgressWorker} based on this builder
+	 * @return a {@link ProgressWorker} based on this builder
+	 */
+	ProgressWorker<T, V> execute();
 
-  /**
-   * @return a {@link ProgressWorker} based on this builder
-   */
-  ProgressWorker<T, V> build();
+	/**
+	 * @return a {@link ProgressWorker} based on this builder
+	 */
+	ProgressWorker<T, V> build();
 }

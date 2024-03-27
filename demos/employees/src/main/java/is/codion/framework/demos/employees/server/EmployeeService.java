@@ -27,5 +27,5 @@ import java.util.Collection;
 
 public interface EmployeeService extends Remote {
 
-  Collection<Entity> employees() throws RemoteException, DatabaseException;
+	Collection<Entity> employees() throws RemoteException, DatabaseException;
 }

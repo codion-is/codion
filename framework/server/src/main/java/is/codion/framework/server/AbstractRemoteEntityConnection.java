@@ -44,125 +44,125 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);
 
-  /**
-   * A Proxy for logging method calls
-   */
-  protected final transient EntityConnection connectionProxy;
+	/**
+	 * A Proxy for logging method calls
+	 */
+	protected final transient EntityConnection connectionProxy;
 
-  /**
-   * The proxy connection handler
-   */
-  private final transient LocalConnectionHandler connectionHandler;
+	/**
+	 * The proxy connection handler
+	 */
+	private final transient LocalConnectionHandler connectionHandler;
 
-  /**
-   * An event triggered when this connection is disconnected
-   */
-  private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Event.event();
+	/**
+	 * An event triggered when this connection is disconnected
+	 */
+	private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Event.event();
 
-  /**
-   * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
-   * @param domain the domain model
-   * @param database defines the underlying database
-   * @param remoteClient information about the client requesting the connection
-   * @param port the port to use when exporting this remote connection
-   * @param clientSocketFactory the client socket factory to use, null for default
-   * @param serverSocketFactory the server socket factory to use, null for default
-   * @throws RemoteException in case of an exception
-   * @throws DatabaseException in case a database connection can not be established, for example
-   * if a wrong username or password is provided
-   */
-  protected AbstractRemoteEntityConnection(Domain domain, Database database,
-                                           RemoteClient remoteClient, int port,
-                                           RMIClientSocketFactory clientSocketFactory,
-                                           RMIServerSocketFactory serverSocketFactory)
-          throws DatabaseException, RemoteException {
-    super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
-    this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
-            new Class[] {EntityConnection.class}, connectionHandler);
-  }
+	/**
+	 * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
+	 * @param domain the domain model
+	 * @param database defines the underlying database
+	 * @param remoteClient information about the client requesting the connection
+	 * @param port the port to use when exporting this remote connection
+	 * @param clientSocketFactory the client socket factory to use, null for default
+	 * @param serverSocketFactory the server socket factory to use, null for default
+	 * @throws RemoteException in case of an exception
+	 * @throws DatabaseException in case a database connection can not be established, for example
+	 * if a wrong username or password is provided
+	 */
+	protected AbstractRemoteEntityConnection(Domain domain, Database database,
+																					 RemoteClient remoteClient, int port,
+																					 RMIClientSocketFactory clientSocketFactory,
+																					 RMIServerSocketFactory serverSocketFactory)
+					throws DatabaseException, RemoteException {
+		super(port, clientSocketFactory, serverSocketFactory);
+		this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
+		this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+						new Class[] {EntityConnection.class}, connectionHandler);
+	}
 
-  /**
-   * @return the user this connection is using
-   */
-  public final User user() {
-    return connectionHandler.remoteClient().user();
-  }
+	/**
+	 * @return the user this connection is using
+	 */
+	public final User user() {
+		return connectionHandler.remoteClient().user();
+	}
 
-  /**
-   * @return true if this connection is connected
-   */
-  public final boolean connected() {
-    synchronized (connectionProxy) {
-      return connectionHandler.connected();
-    }
-  }
+	/**
+	 * @return true if this connection is connected
+	 */
+	public final boolean connected() {
+		synchronized (connectionProxy) {
+			return connectionHandler.connected();
+		}
+	}
 
-  /**
-   * Disconnects this connection
-   */
-  public final void close() {
-    synchronized (connectionProxy) {
-      if (connectionHandler.closed()) {
-        return;
-      }
-      try {
-        UnicastRemoteObject.unexportObject(this, true);
-      }
-      catch (NoSuchObjectException e) {
-        LOG.error(e.getMessage(), e);
-      }
-      connectionHandler.close();
-    }
-    disconnectedEvent.accept(this);
-  }
+	/**
+	 * Disconnects this connection
+	 */
+	public final void close() {
+		synchronized (connectionProxy) {
+			if (connectionHandler.closed()) {
+				return;
+			}
+			try {
+				UnicastRemoteObject.unexportObject(this, true);
+			}
+			catch (NoSuchObjectException e) {
+				LOG.error(e.getMessage(), e);
+			}
+			connectionHandler.close();
+		}
+		disconnectedEvent.accept(this);
+	}
 
-  /**
-   * @return the remote client using this remote connection
-   */
-  final RemoteClient remoteClient() {
-    return connectionHandler.remoteClient();
-  }
+	/**
+	 * @return the remote client using this remote connection
+	 */
+	final RemoteClient remoteClient() {
+		return connectionHandler.remoteClient();
+	}
 
-  /**
-   * @return a ClientLog instance containing information about this connection's recent activity
-   */
-  final ClientLog clientLog() {
-    return connectionHandler.clientLog();
-  }
+	/**
+	 * @return a ClientLog instance containing information about this connection's recent activity
+	 */
+	final ClientLog clientLog() {
+		return connectionHandler.clientLog();
+	}
 
-  /**
-   * @param timeout the number of milliseconds
-   * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
-   */
-  final boolean hasBeenInactive(int timeout) {
-    return System.currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
-  }
+	/**
+	 * @param timeout the number of milliseconds
+	 * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
+	 */
+	final boolean hasBeenInactive(int timeout) {
+		return System.currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
+	}
 
-  final void setLoggingEnabled(boolean status) {
-    connectionHandler.methodLogger().setEnabled(status);
-  }
+	final void setLoggingEnabled(boolean status) {
+		connectionHandler.methodLogger().setEnabled(status);
+	}
 
-  final boolean isLoggingEnabled() {
-    return connectionHandler.methodLogger().isEnabled();
-  }
+	final boolean isLoggingEnabled() {
+		return connectionHandler.methodLogger().isEnabled();
+	}
 
-  /**
-   * @return true during a remote method call
-   */
-  final boolean active() {
-    return connectionHandler.active();
-  }
+	/**
+	 * @return true during a remote method call
+	 */
+	final boolean active() {
+		return connectionHandler.active();
+	}
 
-  final void addDisconnectListener(Consumer<AbstractRemoteEntityConnection> listener) {
-    disconnectedEvent.addDataListener(listener);
-  }
+	final void addDisconnectListener(Consumer<AbstractRemoteEntityConnection> listener) {
+		disconnectedEvent.addDataListener(listener);
+	}
 
-  static int requestsPerSecond() {
-    return LocalConnectionHandler.REQUEST_COUNTER.requestsPerSecond();
-  }
+	static int requestsPerSecond() {
+		return LocalConnectionHandler.REQUEST_COUNTER.requestsPerSecond();
+	}
 }

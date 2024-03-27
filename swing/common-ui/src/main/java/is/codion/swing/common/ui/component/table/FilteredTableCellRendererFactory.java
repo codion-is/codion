@@ -27,9 +27,9 @@ import javax.swing.table.TableCellRenderer;
  */
 public interface FilteredTableCellRendererFactory<C> {
 
-  /**
-   * @param column the column
-   * @return a {@link TableCellRenderer} instance for the given column
-   */
-  TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column);
+	/**
+	 * @param column the column
+	 * @return a {@link TableCellRenderer} instance for the given column
+	 */
+	TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column);
 }

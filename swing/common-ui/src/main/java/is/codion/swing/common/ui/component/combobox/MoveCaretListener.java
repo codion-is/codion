@@ -25,17 +25,17 @@ import java.util.function.Consumer;
 
 final class MoveCaretListener<T> implements Consumer<T> {
 
-  private final JComboBox<?> comboBox;
+	private final JComboBox<?> comboBox;
 
-  MoveCaretListener(JComboBox<T> comboBox) {
-    this.comboBox = comboBox;
-  }
+	MoveCaretListener(JComboBox<T> comboBox) {
+		this.comboBox = comboBox;
+	}
 
-  @Override
-  public void accept(Object selectedItem) {
-    Component editorComponent = comboBox.getEditor().getEditorComponent();
-    if (selectedItem != null && editorComponent instanceof JTextComponent) {
-      ((JTextComponent) editorComponent).setCaretPosition(0);
-    }
-  }
+	@Override
+	public void accept(Object selectedItem) {
+		Component editorComponent = comboBox.getEditor().getEditorComponent();
+		if (selectedItem != null && editorComponent instanceof JTextComponent) {
+			((JTextComponent) editorComponent).setCaretPosition(0);
+		}
+	}
 }

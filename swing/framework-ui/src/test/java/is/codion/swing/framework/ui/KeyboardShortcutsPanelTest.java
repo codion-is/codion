@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 public final class KeyboardShortcutsPanelTest {
 
-  @Test
-  void constructor() {
-    new KeyboardShortcutsPanel();
-  }
+	@Test
+	void constructor() {
+		new KeyboardShortcutsPanel();
+	}
 }

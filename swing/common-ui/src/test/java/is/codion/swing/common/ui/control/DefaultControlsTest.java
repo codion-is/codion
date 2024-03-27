@@ -25,47 +25,47 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {
 
-  @Test
-  void test() {
-    Control one = Control.control(() -> {});
-    Control two = Control.control(() -> {});
-    Controls list = Controls.builder().name("list").controls(one, two).build();
-    assertThrows(NullPointerException.class, () -> list.add(null));
-    assertThrows(NullPointerException.class, () -> list.addAt(0, null));
-    list.remove(null);
-    assertFalse(nullOrEmpty(list.getName()));
-    assertNull(list.getSmallIcon());
-    assertEquals("list", list.getName());
-    Controls list1 = Controls.controls();
-    assertTrue(nullOrEmpty(list1.getName()));
-    assertEquals("", list1.getName());
-    Controls list2 = Controls.builder().control(two).build();
-    list2.setName("list");
-    assertFalse(nullOrEmpty(list2.getName()));
-    assertEquals("list", list2.getName());
-    list2.addAt(0, one);
-    list2.addSeparatorAt(1);
+	@Test
+	void test() {
+		Control one = Control.control(() -> {});
+		Control two = Control.control(() -> {});
+		Controls list = Controls.builder().name("list").controls(one, two).build();
+		assertThrows(NullPointerException.class, () -> list.add(null));
+		assertThrows(NullPointerException.class, () -> list.addAt(0, null));
+		list.remove(null);
+		assertFalse(nullOrEmpty(list.getName()));
+		assertNull(list.getSmallIcon());
+		assertEquals("list", list.getName());
+		Controls list1 = Controls.controls();
+		assertTrue(nullOrEmpty(list1.getName()));
+		assertEquals("", list1.getName());
+		Controls list2 = Controls.builder().control(two).build();
+		list2.setName("list");
+		assertFalse(nullOrEmpty(list2.getName()));
+		assertEquals("list", list2.getName());
+		list2.addAt(0, one);
+		list2.addSeparatorAt(1);
 
-    assertEquals(one, list2.get(0));
-    assertSame(Controls.SEPARATOR, list2.get(1));
-    assertEquals(two, list2.get(2));
+		assertEquals(one, list2.get(0));
+		assertSame(Controls.SEPARATOR, list2.get(1));
+		assertEquals(two, list2.get(2));
 
-    assertTrue(list2.actions().contains(one));
-    assertTrue(list2.actions().contains(two));
-    assertEquals(3, list2.size());
-    list2.addSeparator();
-    assertEquals(4, list2.size());
+		assertTrue(list2.actions().contains(one));
+		assertTrue(list2.actions().contains(two));
+		assertEquals(3, list2.size());
+		list2.addSeparator();
+		assertEquals(4, list2.size());
 
-    list2.remove(two);
-    assertFalse(list2.actions().contains(two));
+		list2.remove(two);
+		assertFalse(list2.actions().contains(two));
 
-    list2.removeAll();
-    assertFalse(list2.actions().contains(one));
-    assertTrue(list2.empty());
-    assertFalse(list2.notEmpty());
+		list2.removeAll();
+		assertFalse(list2.actions().contains(one));
+		assertTrue(list2.empty());
+		assertFalse(list2.notEmpty());
 
-    assertThrows(UnsupportedOperationException.class, () -> list.setEnabled(false));
-    assertThrows(IllegalArgumentException.class, () -> list.putValue("enabled", false));
-    assertThrows(IllegalArgumentException.class, () -> Control.builder(() -> {}).value("enabled", false));
-  }
+		assertThrows(UnsupportedOperationException.class, () -> list.setEnabled(false));
+		assertThrows(IllegalArgumentException.class, () -> list.putValue("enabled", false));
+		assertThrows(IllegalArgumentException.class, () -> Control.builder(() -> {}).value("enabled", false));
+	}
 }

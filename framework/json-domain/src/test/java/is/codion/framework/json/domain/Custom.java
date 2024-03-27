@@ -20,9 +20,9 @@ package is.codion.framework.json.domain;
 
 public final class Custom {
 
-  public final String value;
+	public final String value;
 
-  Custom(String value) {
-    this.value = value;
-  }
+	Custom(String value) {
+		this.value = value;
+	}
 }

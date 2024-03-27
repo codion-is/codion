@@ -28,15 +28,15 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Db2DatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "com.ibm.db2.jcc";
+	private static final String DRIVER_PACKAGE = "com.ibm.db2.jcc";
 
-  @Override
-  public boolean driverCompatible(String driverClassName) {
-    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
-  }
+	@Override
+	public boolean driverCompatible(String driverClassName) {
+		return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
+	}
 
-  @Override
-  public Database createDatabase(String url) {
-    return new Db2Database(url);
-  }
+	@Override
+	public Database createDatabase(String url) {
+		return new Db2Database(url);
+	}
 }

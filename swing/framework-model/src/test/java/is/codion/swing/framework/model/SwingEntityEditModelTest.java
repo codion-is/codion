@@ -40,97 +40,97 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingEntityEditModelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  private SwingEntityEditModel employeeEditModel;
+	private SwingEntityEditModel employeeEditModel;
 
-  @BeforeEach
-  void setUp() {
-    employeeEditModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-  }
+	@BeforeEach
+	void setUp() {
+		employeeEditModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+	}
 
-  @Test
-  void comboBoxModel() {
-    FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
-    model.includeNull().set(true);
-    model.nullItem().set("null");
-    assertNotNull(model);
-    assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));
-    employeeEditModel.refreshComboBoxModels();
-    employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
-    employeeEditModel.refreshComboBoxModels();
-    employeeEditModel.comboBoxModel(Employee.JOB).clear();
-    assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
-  }
+	@Test
+	void comboBoxModel() {
+		FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
+		model.includeNull().set(true);
+		model.nullItem().set("null");
+		assertNotNull(model);
+		assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));
+		employeeEditModel.refreshComboBoxModels();
+		employeeEditModel.clearComboBoxModels();
+		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
+		employeeEditModel.refreshComboBoxModels();
+		employeeEditModel.comboBoxModel(Employee.JOB).clear();
+		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
+	}
 
-  @Test
-  void foreignKeyComboBoxModel() {
-    EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
-    assertNotNull(model);
-    assertTrue(model.cleared());
-    assertTrue(model.items().isEmpty());
-    employeeEditModel.refreshComboBoxModels();
-    assertFalse(model.cleared());
-    assertFalse(model.items().isEmpty());
-    employeeEditModel.clearComboBoxModels();
-    assertTrue(model.cleared());
-    assertTrue(model.items().isEmpty());
-    assertSame(model, employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK));
-  }
+	@Test
+	void foreignKeyComboBoxModel() {
+		EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
+		assertNotNull(model);
+		assertTrue(model.cleared());
+		assertTrue(model.items().isEmpty());
+		employeeEditModel.refreshComboBoxModels();
+		assertFalse(model.cleared());
+		assertFalse(model.items().isEmpty());
+		employeeEditModel.clearComboBoxModels();
+		assertTrue(model.cleared());
+		assertTrue(model.items().isEmpty());
+		assertSame(model, employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK));
+	}
 
-  @Test
-  void createForeignKeyComboBoxModel() {
-    EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(Employee.DEPARTMENT_FK);
-    assertNotNull(model);
-    assertTrue(model.cleared());
-    assertTrue(model.items().isEmpty());
-    ForeignKeyDefinition deptForeignKey = employeeEditModel.entities()
-            .definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK);
-    assertEquals(deptForeignKey.attribute().referencedType(), model.entityType());
-    model.refresh();
-    for (Entity department : model.items()) {
-      assertTrue(department.contains(Department.ID));
-      assertTrue(department.contains(Department.NAME));
-      assertFalse(department.contains(Department.LOCATION));
-    }
-  }
+	@Test
+	void createForeignKeyComboBoxModel() {
+		EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(Employee.DEPARTMENT_FK);
+		assertNotNull(model);
+		assertTrue(model.cleared());
+		assertTrue(model.items().isEmpty());
+		ForeignKeyDefinition deptForeignKey = employeeEditModel.entities()
+						.definition(Employee.TYPE).foreignKeys().definition(Employee.DEPARTMENT_FK);
+		assertEquals(deptForeignKey.attribute().referencedType(), model.entityType());
+		model.refresh();
+		for (Entity department : model.items()) {
+			assertTrue(department.contains(Department.ID));
+			assertTrue(department.contains(Department.NAME));
+			assertFalse(department.contains(Department.LOCATION));
+		}
+	}
 
-  @Test
-  void replace() throws DatabaseException {
-    Entity blake = employeeEditModel.connection()
-            .selectSingle(Employee.NAME.equalTo("BLAKE"));
-    employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
-    employeeEditModel.refreshComboBoxModels();
-    assertNotSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
-            .find(blake.primaryKey()).orElse(null), blake);
-    employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
-    assertSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
-            .find(blake.primaryKey()).orElse(null), blake);
-  }
+	@Test
+	void replace() throws DatabaseException {
+		Entity blake = employeeEditModel.connection()
+						.selectSingle(Employee.NAME.equalTo("BLAKE"));
+		employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
+		employeeEditModel.refreshComboBoxModels();
+		assertNotSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
+						.find(blake.primaryKey()).orElse(null), blake);
+		employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
+		assertSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
+						.find(blake.primaryKey()).orElse(null), blake);
+	}
 
-  @Test
-  void initializeComboBoxModels() {
-    employeeEditModel.initializeComboBoxModels(Employee.DEPARTMENT_FK, Employee.MGR_FK, Employee.JOB);
-    assertFalse(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
-    assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).cleared());
-    assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK).cleared());
-  }
+	@Test
+	void initializeComboBoxModels() {
+		employeeEditModel.initializeComboBoxModels(Employee.DEPARTMENT_FK, Employee.MGR_FK, Employee.JOB);
+		assertFalse(employeeEditModel.comboBoxModel(Employee.JOB).cleared());
+		assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).cleared());
+		assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK).cleared());
+	}
 
-  @Test
-  void enumComboBoxModel() {
-    SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
-    FilteredComboBoxModel<EnumType> comboBoxModel = editModel.comboBoxModel(EnumEntity.ENUM_TYPE);
-    comboBoxModel.refresh();
-    assertEquals(4, comboBoxModel.getSize());
-    for (EnumType enumType : EnumType.values()) {
-      assertTrue(comboBoxModel.containsItem(enumType));
-    }
-  }
+	@Test
+	void enumComboBoxModel() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
+		FilteredComboBoxModel<EnumType> comboBoxModel = editModel.comboBoxModel(EnumEntity.ENUM_TYPE);
+		comboBoxModel.refresh();
+		assertEquals(4, comboBoxModel.getSize());
+		for (EnumType enumType : EnumType.values()) {
+			assertTrue(comboBoxModel.containsItem(enumType));
+		}
+	}
 }

@@ -26,15 +26,15 @@ import org.junit.jupiter.api.Test;
 
 public class WorldAppPanelTest extends EntityApplicationPanelTestUnit<WorldAppModel> {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  public WorldAppPanelTest() {
-    super(WorldAppModel.class, WorldAppPanel.class, UNIT_TEST_USER);
-  }
+	public WorldAppPanelTest() {
+		super(WorldAppModel.class, WorldAppPanel.class, UNIT_TEST_USER);
+	}
 
-  @Test
-  void initialize() {
-    testInitialize();
-  }
+	@Test
+	void initialize() {
+		testInitialize();
+	}
 }

@@ -27,24 +27,24 @@ import javax.swing.SwingConstants;
 
 final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox, CheckBoxBuilder> implements CheckBoxBuilder {
 
-  private boolean nullable = false;
+	private boolean nullable = false;
 
-  DefaultCheckBoxBuilder(Value<Boolean> linkedValue) {
-    super(linkedValue);
-    if (linkedValue != null && linkedValue.nullable()) {
-      nullable = true;
-    }
-    horizontalAlignment(SwingConstants.LEADING);
-  }
+	DefaultCheckBoxBuilder(Value<Boolean> linkedValue) {
+		super(linkedValue);
+		if (linkedValue != null && linkedValue.nullable()) {
+			nullable = true;
+		}
+		horizontalAlignment(SwingConstants.LEADING);
+	}
 
-  @Override
-  public CheckBoxBuilder nullable(boolean nullable) {
-    this.nullable = nullable;
-    return this;
-  }
+	@Override
+	public CheckBoxBuilder nullable(boolean nullable) {
+		this.nullable = nullable;
+		return this;
+	}
 
-  @Override
-  protected JToggleButton createToggleButton() {
-    return nullable ? new NullableCheckBox(new NullableToggleButtonModel()) : new JCheckBox();
-  }
+	@Override
+	protected JToggleButton createToggleButton() {
+		return nullable ? new NullableCheckBox(new NullableToggleButtonModel()) : new JCheckBox();
+	}
 }

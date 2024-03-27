@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
 
 public final class ApplicationPanelTest {
 
-  @Test
-  void create() {
-    new ApplicationPanel(new ApplicationModel());
-  }
+	@Test
+	void create() {
+		new ApplicationPanel(new ApplicationModel());
+	}
 }

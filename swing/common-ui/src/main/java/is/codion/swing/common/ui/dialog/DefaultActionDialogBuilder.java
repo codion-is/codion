@@ -51,190 +51,190 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends AbstractDialogBuilder<B> implements ActionDialogBuilder<B> {
 
-  private final Controls controls = Controls.controls();
-  private final JComponent component;
+	private final Controls controls = Controls.controls();
+	private final JComponent component;
 
-  private Action defaultAction;
-  private Action escapeAction;
-  private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 5, 10);
-  private int buttonPanelConstraints = FlowLayout.TRAILING;
-  private boolean modal = true;
-  private boolean resizable = true;
-  private Dimension size;
-  private Consumer<JDialog> onShown;
+	private Action defaultAction;
+	private Action escapeAction;
+	private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 5, 10);
+	private int buttonPanelConstraints = FlowLayout.TRAILING;
+	private boolean modal = true;
+	private boolean resizable = true;
+	private Dimension size;
+	private Consumer<JDialog> onShown;
 
-  DefaultActionDialogBuilder(JComponent component) {
-    this.component = requireNonNull(component);
-  }
+	DefaultActionDialogBuilder(JComponent component) {
+		this.component = requireNonNull(component);
+	}
 
-  @Override
-  public B action(Action action) {
-    controls.add(action);
-    return (B) this;
-  }
+	@Override
+	public B action(Action action) {
+		controls.add(action);
+		return (B) this;
+	}
 
-  @Override
-  public B defaultAction(Action defaultAction) {
-    this.defaultAction = requireNonNull(defaultAction);
-    if (!controls.actions().contains(defaultAction)) {
-      controls.add(defaultAction);
-    }
-    return (B) this;
-  }
+	@Override
+	public B defaultAction(Action defaultAction) {
+		this.defaultAction = requireNonNull(defaultAction);
+		if (!controls.actions().contains(defaultAction)) {
+			controls.add(defaultAction);
+		}
+		return (B) this;
+	}
 
-  @Override
-  public B escapeAction(Action escapeAction) {
-    this.escapeAction = requireNonNull(escapeAction);
-    if (!controls.actions().contains(escapeAction)) {
-      controls.add(escapeAction);
-    }
-    return (B) this;
-  }
+	@Override
+	public B escapeAction(Action escapeAction) {
+		this.escapeAction = requireNonNull(escapeAction);
+		if (!controls.actions().contains(escapeAction)) {
+			controls.add(escapeAction);
+		}
+		return (B) this;
+	}
 
-  @Override
-  public final B modal(boolean modal) {
-    this.modal = modal;
-    return (B) this;
-  }
+	@Override
+	public final B modal(boolean modal) {
+		this.modal = modal;
+		return (B) this;
+	}
 
-  @Override
-  public final B resizable(boolean resizable) {
-    this.resizable = resizable;
-    return (B) this;
-  }
+	@Override
+	public final B resizable(boolean resizable) {
+		this.resizable = resizable;
+		return (B) this;
+	}
 
-  @Override
-  public final B size(Dimension size) {
-    this.size = requireNonNull(size);
-    return (B) this;
-  }
+	@Override
+	public final B size(Dimension size) {
+		this.size = requireNonNull(size);
+		return (B) this;
+	}
 
-  @Override
-  public final B buttonPanelConstraints(int buttonPanelConstraints) {
-    this.buttonPanelConstraints = buttonPanelConstraints;
-    return (B) this;
-  }
+	@Override
+	public final B buttonPanelConstraints(int buttonPanelConstraints) {
+		this.buttonPanelConstraints = buttonPanelConstraints;
+		return (B) this;
+	}
 
-  @Override
-  public final B buttonPanelBorder(Border buttonPanelBorder) {
-    this.buttonPanelBorder = requireNonNull(buttonPanelBorder);
-    return (B) this;
-  }
+	@Override
+	public final B buttonPanelBorder(Border buttonPanelBorder) {
+		this.buttonPanelBorder = requireNonNull(buttonPanelBorder);
+		return (B) this;
+	}
 
-  @Override
-  public final B onShown(Consumer<JDialog> onShown) {
-    this.onShown = onShown;
-    return (B) this;
-  }
+	@Override
+	public final B onShown(Consumer<JDialog> onShown) {
+		this.onShown = onShown;
+		return (B) this;
+	}
 
-  @Override
-  public final JDialog show() {
-    JDialog dialog = build();
-    dialog.setVisible(true);
+	@Override
+	public final JDialog show() {
+		JDialog dialog = build();
+		dialog.setVisible(true);
 
-    return dialog;
-  }
+		return dialog;
+	}
 
-  @Override
-  public JDialog build() {
-    if (controls.empty()) {
-      throw new IllegalStateException("No controls have been specified");
-    }
+	@Override
+	public JDialog build() {
+		if (controls.empty()) {
+			throw new IllegalStateException("No controls have been specified");
+		}
 
-    JPanel buttonPanel = ButtonPanelBuilder.builder(controls).build();
-    JPanel panel = BorderLayoutPanelBuilder.builder(new BorderLayout())
-            .centerComponent(component)
-            .southComponent(PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
-                    .add(buttonPanel)
-                    .border(buttonPanelBorder)
-                    .build())
-            .build();
+		JPanel buttonPanel = ButtonPanelBuilder.builder(controls).build();
+		JPanel panel = BorderLayoutPanelBuilder.builder(new BorderLayout())
+						.centerComponent(component)
+						.southComponent(PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
+										.add(buttonPanel)
+										.border(buttonPanelBorder)
+										.build())
+						.build();
 
-    JDialog dialog = createDialog(owner, titleProvider, icon, panel, size, locationRelativeTo,
-            location, modal, resizable, onShown, keyEventBuilders);
-    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    if (defaultAction != null) {
-      Arrays.stream(buttonPanel.getComponents())
-              .filter(new IsButton())
-              .map(new CastToButton())
-              .filter(new IsButtonAction(defaultAction))
-              .findFirst()
-              .ifPresent(new SetDefaultButton(dialog));
-    }
-    if (escapeAction != null) {
-      dialog.addWindowListener(new EscapeOnWindowClosingListener(escapeAction));
-      KeyEvents.builder(VK_ESCAPE)
-              .condition(WHEN_IN_FOCUSED_WINDOW)
-              .action(escapeAction)
-              .enable(dialog.getRootPane());
-    }
+		JDialog dialog = createDialog(owner, titleProvider, icon, panel, size, locationRelativeTo,
+						location, modal, resizable, onShown, keyEventBuilders);
+		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		if (defaultAction != null) {
+			Arrays.stream(buttonPanel.getComponents())
+							.filter(new IsButton())
+							.map(new CastToButton())
+							.filter(new IsButtonAction(defaultAction))
+							.findFirst()
+							.ifPresent(new SetDefaultButton(dialog));
+		}
+		if (escapeAction != null) {
+			dialog.addWindowListener(new EscapeOnWindowClosingListener(escapeAction));
+			KeyEvents.builder(VK_ESCAPE)
+							.condition(WHEN_IN_FOCUSED_WINDOW)
+							.action(escapeAction)
+							.enable(dialog.getRootPane());
+		}
 
-    return dialog;
-  }
+		return dialog;
+	}
 
-  protected final Controls controls() {
-    return controls;
-  }
+	protected final Controls controls() {
+		return controls;
+	}
 
-  protected final JComponent component() {
-    return component;
-  }
+	protected final JComponent component() {
+		return component;
+	}
 
-  private static final class EscapeOnWindowClosingListener extends WindowAdapter {
+	private static final class EscapeOnWindowClosingListener extends WindowAdapter {
 
-    private final Action escapeAction;
+		private final Action escapeAction;
 
-    private EscapeOnWindowClosingListener(Action escapeAction) {
-      this.escapeAction = escapeAction;
-    }
+		private EscapeOnWindowClosingListener(Action escapeAction) {
+			this.escapeAction = escapeAction;
+		}
 
-    @Override
-    public void windowClosing(WindowEvent e) {
-      escapeAction.actionPerformed(null);
-    }
-  }
+		@Override
+		public void windowClosing(WindowEvent e) {
+			escapeAction.actionPerformed(null);
+		}
+	}
 
-  private static final class IsButton implements Predicate<Component> {
+	private static final class IsButton implements Predicate<Component> {
 
-    @Override
-    public boolean test(Component component) {
-      return component instanceof JButton;
-    }
-  }
+		@Override
+		public boolean test(Component component) {
+			return component instanceof JButton;
+		}
+	}
 
-  private static final class CastToButton implements Function<Component, JButton> {
+	private static final class CastToButton implements Function<Component, JButton> {
 
-    @Override
-    public JButton apply(Component component) {
-      return (JButton) component;
-    }
-  }
+		@Override
+		public JButton apply(Component component) {
+			return (JButton) component;
+		}
+	}
 
-  private static final class IsButtonAction implements Predicate<JButton> {
+	private static final class IsButtonAction implements Predicate<JButton> {
 
-    private final Action defaultAction;
+		private final Action defaultAction;
 
-    private IsButtonAction(Action defaultAction) {
-      this.defaultAction = defaultAction;
-    }
+		private IsButtonAction(Action defaultAction) {
+			this.defaultAction = defaultAction;
+		}
 
-    @Override
-    public boolean test(JButton button) {
-      return button.getAction() == defaultAction;
-    }
-  }
+		@Override
+		public boolean test(JButton button) {
+			return button.getAction() == defaultAction;
+		}
+	}
 
-  private static final class SetDefaultButton implements Consumer<JButton> {
+	private static final class SetDefaultButton implements Consumer<JButton> {
 
-    private final JDialog dialog;
+		private final JDialog dialog;
 
-    private SetDefaultButton(JDialog dialog) {
-      this.dialog = dialog;
-    }
+		private SetDefaultButton(JDialog dialog) {
+			this.dialog = dialog;
+		}
 
-    @Override
-    public void accept(JButton button) {
-      dialog.getRootPane().setDefaultButton(button);
-    }
-  }
+		@Override
+		public void accept(JButton button) {
+			dialog.getRootPane().setDefaultButton(button);
+		}
+	}
 }

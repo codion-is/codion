@@ -25,11 +25,11 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface VetSpecialty {
-  EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty");
+	EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty");
 
-  Column<Integer> VET = TYPE.integerColumn("vet");
-  Column<Integer> SPECIALTY = TYPE.integerColumn("specialty");
+	Column<Integer> VET = TYPE.integerColumn("vet");
+	Column<Integer> SPECIALTY = TYPE.integerColumn("specialty");
 
-  ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VET, Vet.ID);
-  ForeignKey SPECIALTY_FK = TYPE.foreignKey("specialty_fk", SPECIALTY, Specialty.ID);
+	ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VET, Vet.ID);
+	ForeignKey SPECIALTY_FK = TYPE.foreignKey("specialty_fk", SPECIALTY, Specialty.ID);
 }

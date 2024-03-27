@@ -22,19 +22,19 @@ import javax.swing.JTextField;
 
 final class CharacterFieldValue extends AbstractTextComponentValue<Character, JTextField> {
 
-  CharacterFieldValue(JTextField textField, UpdateOn updateOn) {
-    super(textField, null, updateOn);
-  }
+	CharacterFieldValue(JTextField textField, UpdateOn updateOn) {
+		super(textField, null, updateOn);
+	}
 
-  @Override
-  protected Character getComponentValue() {
-    String string = component().getText();
+	@Override
+	protected Character getComponentValue() {
+		String string = component().getText();
 
-    return string.isEmpty() ? null : string.charAt(0);
-  }
+		return string.isEmpty() ? null : string.charAt(0);
+	}
 
-  @Override
-  protected void setComponentValue(Character value) {
-    component().setText(value == null ? "" : String.valueOf(value));
-  }
+	@Override
+	protected void setComponentValue(Character value) {
+		component().setText(value == null ? "" : String.valueOf(value));
+	}
 }

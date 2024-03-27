@@ -28,25 +28,25 @@ import java.sql.Connection;
  */
 public interface ConnectionFactory {
 
-  /**
-   * Returns the jdbc database url for this connection factory.
-   * @return the jdbc database url for this connection factory.
-   */
-  String url();
+	/**
+	 * Returns the jdbc database url for this connection factory.
+	 * @return the jdbc database url for this connection factory.
+	 */
+	String url();
 
-  /**
-   * Creates a connection for the given user.
-   * @param user the user for which to create a connection
-   * @return a new JDBC connection
-   * @throws DatabaseException in case of a connection error
-   * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
-   */
-  Connection createConnection(User user) throws DatabaseException;
+	/**
+	 * Creates a connection for the given user.
+	 * @param user the user for which to create a connection
+	 * @return a new JDBC connection
+	 * @throws DatabaseException in case of a connection error
+	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
+	 */
+	Connection createConnection(User user) throws DatabaseException;
 
-  /**
-   * Validates the given connection.
-   * @param connection the connection to validate
-   * @return true if the connection is valid
-   */
-  boolean connectionValid(Connection connection);
+	/**
+	 * Validates the given connection.
+	 * @param connection the connection to validate
+	 * @return true if the connection is valid
+	 */
+	boolean connectionValid(Connection connection);
 }

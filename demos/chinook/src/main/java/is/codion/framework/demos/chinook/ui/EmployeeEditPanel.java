@@ -30,73 +30,73 @@ import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 public final class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeeEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public EmployeeEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Employee.FIRSTNAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Employee.FIRSTNAME);
 
-    createTextField(Employee.FIRSTNAME)
-            .columns(6);
-    createTextField(Employee.LASTNAME)
-            .columns(6);
-    createTemporalFieldPanel(Employee.BIRTHDATE)
-            .columns(6);
-    createTemporalFieldPanel(Employee.HIREDATE)
-            .columns(6);
-    createTextField(Employee.TITLE)
-            .columns(8);
-    createTextField(Employee.ADDRESS);
-    createTextField(Employee.CITY)
-            .columns(8);
-    createTextField(Employee.POSTALCODE)
-            .columns(4);
-    createTextField(Employee.STATE)
-            .columns(4)
-            .upperCase(true);
-    createTextField(Employee.COUNTRY)
-            .columns(8);
-    createTextField(Employee.PHONE)
-            .columns(12);
-    createTextField(Employee.FAX)
-            .columns(12);
-    createTextField(Employee.EMAIL)
-            .columns(12);
-    createForeignKeyComboBox(Employee.REPORTSTO_FK)
-            .preferredWidth(120);
+		createTextField(Employee.FIRSTNAME)
+						.columns(6);
+		createTextField(Employee.LASTNAME)
+						.columns(6);
+		createTemporalFieldPanel(Employee.BIRTHDATE)
+						.columns(6);
+		createTemporalFieldPanel(Employee.HIREDATE)
+						.columns(6);
+		createTextField(Employee.TITLE)
+						.columns(8);
+		createTextField(Employee.ADDRESS);
+		createTextField(Employee.CITY)
+						.columns(8);
+		createTextField(Employee.POSTALCODE)
+						.columns(4);
+		createTextField(Employee.STATE)
+						.columns(4)
+						.upperCase(true);
+		createTextField(Employee.COUNTRY)
+						.columns(8);
+		createTextField(Employee.PHONE)
+						.columns(12);
+		createTextField(Employee.FAX)
+						.columns(12);
+		createTextField(Employee.EMAIL)
+						.columns(12);
+		createForeignKeyComboBox(Employee.REPORTSTO_FK)
+						.preferredWidth(120);
 
-    JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
-            .add(createInputPanel(Employee.FIRSTNAME))
-            .add(createInputPanel(Employee.LASTNAME))
-            .build();
+		JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
+						.add(createInputPanel(Employee.FIRSTNAME))
+						.add(createInputPanel(Employee.LASTNAME))
+						.build();
 
-    JPanel birthHireDatePanel = gridLayoutPanel(1, 2)
-            .add(createInputPanel(Employee.BIRTHDATE))
-            .add(createInputPanel(Employee.HIREDATE))
-            .build();
+		JPanel birthHireDatePanel = gridLayoutPanel(1, 2)
+						.add(createInputPanel(Employee.BIRTHDATE))
+						.add(createInputPanel(Employee.HIREDATE))
+						.build();
 
-    JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
-            .add(createInputPanel(Employee.CITY))
-            .add(createInputPanel(Employee.POSTALCODE))
-            .build();
+		JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
+						.add(createInputPanel(Employee.CITY))
+						.add(createInputPanel(Employee.POSTALCODE))
+						.build();
 
-    JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
-            .add(createInputPanel(Employee.STATE))
-            .add(createInputPanel(Employee.COUNTRY))
-            .build();
+		JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
+						.add(createInputPanel(Employee.STATE))
+						.add(createInputPanel(Employee.COUNTRY))
+						.build();
 
-    setLayout(flexibleGridLayout(4, 3));
-    add(firstLastNamePanel);
-    add(birthHireDatePanel);
-    addInputPanel(Employee.TITLE);
-    addInputPanel(Employee.ADDRESS);
-    add(cityPostalCodePanel);
-    add(stateCountryPanel);
-    addInputPanel(Employee.PHONE);
-    addInputPanel(Employee.FAX);
-    addInputPanel(Employee.EMAIL);
-    addInputPanel(Employee.REPORTSTO_FK);
-  }
+		setLayout(flexibleGridLayout(4, 3));
+		add(firstLastNamePanel);
+		add(birthHireDatePanel);
+		addInputPanel(Employee.TITLE);
+		addInputPanel(Employee.ADDRESS);
+		add(cityPostalCodePanel);
+		add(stateCountryPanel);
+		addInputPanel(Employee.PHONE);
+		addInputPanel(Employee.FAX);
+		addInputPanel(Employee.EMAIL);
+		addInputPanel(Employee.REPORTSTO_FK);
+	}
 }

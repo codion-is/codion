@@ -22,12 +22,12 @@ import org.junit.jupiter.api.Test;
 
 public final class MemoryTest {
 
-  @Test
-  void test() {
-    Memory.allocatedMemory();
-    Memory.freeMemory();
-    Memory.maxMemory();
-    Memory.usedMemory();
-    Memory.memoryUsage();
-  }
+	@Test
+	void test() {
+		Memory.allocatedMemory();
+		Memory.freeMemory();
+		Memory.maxMemory();
+		Memory.usedMemory();
+		Memory.memoryUsage();
+	}
 }

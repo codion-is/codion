@@ -25,14 +25,14 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
 
 final class DefaultListSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ListSpinnerBuilder<T>>
-        implements ListSpinnerBuilder<T> {
+				implements ListSpinnerBuilder<T> {
 
-  DefaultListSpinnerBuilder(SpinnerListModel spinnerModel, Value<T> linkedValue) {
-    super(spinnerModel, linkedValue);
-  }
+	DefaultListSpinnerBuilder(SpinnerListModel spinnerModel, Value<T> linkedValue) {
+		super(spinnerModel, linkedValue);
+	}
 
-  @Override
-  protected ComponentValue<T, JSpinner> createComponentValue(JSpinner component) {
-    return new SpinnerListValue<>(component);
-  }
+	@Override
+	protected ComponentValue<T, JSpinner> createComponentValue(JSpinner component) {
+		return new SpinnerListValue<>(component);
+	}
 }

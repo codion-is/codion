@@ -27,22 +27,22 @@ import org.jfree.data.general.PieDataset;
 
 public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
-  private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
+	private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
 
-  CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
-    super(CountryLanguage.TYPE, connectionProvider);
-    editModel().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
-    refresher().addRefreshListener(this::refreshChartDataset);
-  }
+	CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
+		super(CountryLanguage.TYPE, connectionProvider);
+		editModel().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
+		refresher().addRefreshListener(this::refreshChartDataset);
+	}
 
-  public PieDataset<String> chartDataset() {
-    return chartDataset;
-  }
+	public PieDataset<String> chartDataset() {
+		return chartDataset;
+	}
 
-  private void refreshChartDataset() {
-    chartDataset.clear();
-    visibleItems().forEach(countryLanguage ->
-            chartDataset.setValue(countryLanguage.get(CountryLanguage.LANGUAGE),
-                    countryLanguage.get(CountryLanguage.NO_OF_SPEAKERS)));
-  }
+	private void refreshChartDataset() {
+		chartDataset.clear();
+		visibleItems().forEach(countryLanguage ->
+						chartDataset.setValue(countryLanguage.get(CountryLanguage.LANGUAGE),
+										countryLanguage.get(CountryLanguage.NO_OF_SPEAKERS)));
+	}
 }

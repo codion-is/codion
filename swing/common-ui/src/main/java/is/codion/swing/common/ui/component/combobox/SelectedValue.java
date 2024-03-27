@@ -28,38 +28,38 @@ import java.awt.event.ItemListener;
 
 final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentValue<T, C> {
 
-  SelectedValue(C comboBox) {
-    super(comboBox);
-    if (comboBox.getModel() instanceof FilteredComboBoxModel) {
-      //ItemListener does not get notified when null values are selected/deselected
-      ((FilteredComboBoxModel<T>) comboBox.getModel()).addSelectionListener(selected -> notifyListeners());
-    }
-    else {
-      comboBox.addItemListener(new NotifyOnItemSelectedListener());
-    }
-  }
+	SelectedValue(C comboBox) {
+		super(comboBox);
+		if (comboBox.getModel() instanceof FilteredComboBoxModel) {
+			//ItemListener does not get notified when null values are selected/deselected
+			((FilteredComboBoxModel<T>) comboBox.getModel()).addSelectionListener(selected -> notifyListeners());
+		}
+		else {
+			comboBox.addItemListener(new NotifyOnItemSelectedListener());
+		}
+	}
 
-  @Override
-  protected T getComponentValue() {
-    ComboBoxModel<T> comboBoxModel = component().getModel();
-    if (comboBoxModel instanceof FilteredComboBoxModel) {
-      return ((FilteredComboBoxModel<T>) comboBoxModel).selectedValue();
-    }
+	@Override
+	protected T getComponentValue() {
+		ComboBoxModel<T> comboBoxModel = component().getModel();
+		if (comboBoxModel instanceof FilteredComboBoxModel) {
+			return ((FilteredComboBoxModel<T>) comboBoxModel).selectedValue();
+		}
 
-    return (T) comboBoxModel.getSelectedItem();
-  }
+		return (T) comboBoxModel.getSelectedItem();
+	}
 
-  @Override
-  protected void setComponentValue(T value) {
-    component().getModel().setSelectedItem(value);
-  }
+	@Override
+	protected void setComponentValue(T value) {
+		component().getModel().setSelectedItem(value);
+	}
 
-  private final class NotifyOnItemSelectedListener implements ItemListener {
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-        notifyListeners();
-      }
-    }
-  }
+	private final class NotifyOnItemSelectedListener implements ItemListener {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				notifyListeners();
+			}
+		}
+	}
 }

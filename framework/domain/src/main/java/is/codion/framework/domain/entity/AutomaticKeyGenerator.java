@@ -28,24 +28,24 @@ import static java.util.Objects.requireNonNull;
 
 final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
 
-  private final String valueSource;
+	private final String valueSource;
 
-  AutomaticKeyGenerator(String valueSource) {
-    this.valueSource = requireNonNull(valueSource, "valueSource");
-  }
+	AutomaticKeyGenerator(String valueSource) {
+		this.valueSource = requireNonNull(valueSource, "valueSource");
+	}
 
-  @Override
-  public boolean inserted() {
-    return false;
-  }
+	@Override
+	public boolean inserted() {
+		return false;
+	}
 
-  @Override
-  public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
-    selectAndPopulate(entity, entity.definition().primaryKey().definitions().get(0), connection);
-  }
+	@Override
+	public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
+		selectAndPopulate(entity, entity.definition().primaryKey().definitions().get(0), connection);
+	}
 
-  @Override
-  protected String query(Database database) {
-    return database.autoIncrementQuery(valueSource);
-  }
+	@Override
+	protected String query(Database database) {
+		return database.autoIncrementQuery(valueSource);
+	}
 }

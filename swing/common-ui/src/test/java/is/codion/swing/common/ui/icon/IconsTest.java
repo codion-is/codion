@@ -28,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class IconsTest {
 
-  @Test
-  void test() {
-    Icons icons = Icons.icons();
-    assertThrows(IllegalArgumentException.class, () -> icons.icon(Foundation.ALERT));
-    icons.add(Foundation.ALERT, Foundation.FOUNDATION);
-    assertThrows(IllegalArgumentException.class, () -> icons.add(Foundation.FOUNDATION));
-    assertNotNull(icons.icon(Foundation.ALERT));
-    assertNotNull(icons.icon(Foundation.FOUNDATION));
-    Icons.ICON_COLOR.set(Color.RED);
-  }
+	@Test
+	void test() {
+		Icons icons = Icons.icons();
+		assertThrows(IllegalArgumentException.class, () -> icons.icon(Foundation.ALERT));
+		icons.add(Foundation.ALERT, Foundation.FOUNDATION);
+		assertThrows(IllegalArgumentException.class, () -> icons.add(Foundation.FOUNDATION));
+		assertNotNull(icons.icon(Foundation.ALERT));
+		assertNotNull(icons.icon(Foundation.FOUNDATION));
+		Icons.ICON_COLOR.set(Color.RED);
+	}
 }

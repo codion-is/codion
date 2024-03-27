@@ -36,19 +36,19 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.r
 
 public final class RaisePrices implements Performer<EntityConnectionProvider> {
 
-  private static final BigDecimal PRICE_INCREASE = BigDecimal.valueOf(0.01);
+	private static final BigDecimal PRICE_INCREASE = BigDecimal.valueOf(0.01);
 
-  @Override
-  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
-    EntityConnection connection = connectionProvider.connection();
-    Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
-    List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
-            .limit(1)
-            .build());
-    if (!albums.isEmpty()) {
-      List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(albums.get(0)));
-      Collection<Long> trackIds = Entity.values(Track.ID, tracks);
-      connection.execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, PRICE_INCREASE));
-    }
-  }
+	@Override
+	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+		EntityConnection connection = connectionProvider.connection();
+		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
+		List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
+						.limit(1)
+						.build());
+		if (!albums.isEmpty()) {
+			List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(albums.get(0)));
+			Collection<Long> trackIds = Entity.values(Track.ID, tracks);
+			connection.execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, PRICE_INCREASE));
+		}
+	}
 }

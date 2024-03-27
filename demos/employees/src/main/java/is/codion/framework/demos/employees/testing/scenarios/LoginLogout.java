@@ -26,16 +26,16 @@ import java.util.Random;
 // tag::loadTest[]
 public final class LoginLogout implements Performer<EmployeesAppModel> {
 
-  final Random random = new Random();
+	final Random random = new Random();
 
-  @Override
-  public void perform(EmployeesAppModel application) {
-    try {
-      application.connectionProvider().close();
-      Thread.sleep(random.nextInt(1500));
-      application.connectionProvider().connection();
-    }
-    catch (InterruptedException ignored) {/*ignored*/}
-  }
+	@Override
+	public void perform(EmployeesAppModel application) {
+		try {
+			application.connectionProvider().close();
+			Thread.sleep(random.nextInt(1500));
+			application.connectionProvider().connection();
+		}
+		catch (InterruptedException ignored) {/*ignored*/}
+	}
 }
 // end::loadTest[]

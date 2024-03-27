@@ -86,462 +86,462 @@ import static org.jfree.chart.ChartFactory.createXYStepChart;
  */
 public final class LoadTestPanel<T> extends JPanel {
 
-  private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
-  private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-  private static final int USER_COLUMNS = 6;
-  private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
-  private static final int SPINNER_STEP_SIZE = 10;
-  private static final double RESIZE_WEIGHT = 0.8;
-  private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
-  private static final String DEFAULT_TITLE = "Codion LoadTest";
+	private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
+	private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
+	private static final int USER_COLUMNS = 6;
+	private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
+	private static final int SPINNER_STEP_SIZE = 10;
+	private static final double RESIZE_WEIGHT = 0.8;
+	private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
+	private static final String DEFAULT_TITLE = "Codion LoadTest";
 
-  private final LoadTestModel<T> loadTestModel;
-  private final LoadTest<T> loadTest;
-  private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
+	private final LoadTestModel<T> loadTestModel;
+	private final LoadTest<T> loadTest;
+	private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
 
-  static {
-    FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
-            .ifPresent(LookAndFeelProvider::enable);
-  }
+	static {
+		FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
+						.ifPresent(LookAndFeelProvider::enable);
+	}
 
-  private boolean exiting;
+	private boolean exiting;
 
-  private LoadTestPanel(LoadTestModel<T> loadTestModel) {
-    this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
-    this.loadTest = loadTestModel.loadTest();
-    this.loadTestModel.applicationTableModel().refresher().addRefreshFailedListener(this::displayException);
-    initializeUI();
-  }
+	private LoadTestPanel(LoadTestModel<T> loadTestModel) {
+		this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
+		this.loadTest = loadTestModel.loadTest();
+		this.loadTestModel.applicationTableModel().refresher().addRefreshFailedListener(this::displayException);
+		initializeUI();
+	}
 
-  /**
-   * @return the load test model this panel is based on
-   */
-  public LoadTestModel<T> model() {
-    return loadTestModel;
-  }
+	/**
+	 * @return the load test model this panel is based on
+	 */
+	public LoadTestModel<T> model() {
+		return loadTestModel;
+	}
 
-  /**
-   * Displays this LoadTestPanel in a frame on the EDT.
-   */
-  public void run() {
-    SwingUtilities.invokeLater(this::showFrame);
-  }
+	/**
+	 * Displays this LoadTestPanel in a frame on the EDT.
+	 */
+	public void run() {
+		SwingUtilities.invokeLater(this::showFrame);
+	}
 
-  /**
-   * Instantiates a new {@link LoadTestPanel} instance.
-   * @param loadTestModel the LoadTestModel to base this panel on
-   * @param <T> the load test application type
-   * @return a new {@link LoadTestPanel} instance.
-   */
-  public static <T> LoadTestPanel<T> loadTestPanel(LoadTestModel<T> loadTestModel) {
-    return new LoadTestPanel<>(loadTestModel);
-  }
+	/**
+	 * Instantiates a new {@link LoadTestPanel} instance.
+	 * @param loadTestModel the LoadTestModel to base this panel on
+	 * @param <T> the load test application type
+	 * @return a new {@link LoadTestPanel} instance.
+	 */
+	public static <T> LoadTestPanel<T> loadTestPanel(LoadTestModel<T> loadTestModel) {
+		return new LoadTestPanel<>(loadTestModel);
+	}
 
-  /**
-   * Shows a frame containing this load test panel
-   * @return the frame
-   */
-  private JFrame showFrame() {
-    return frame(this)
-            .icon(logoTransparent())
-            .menuBar(menu(createMainMenuControls()).createMenuBar())
-            .title(loadTest.name().orElse(DEFAULT_TITLE))
-            .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-            .onClosing(windowEvent -> exit())
-            .size(screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
-            .centerFrame(true)
-            .show();
-  }
+	/**
+	 * Shows a frame containing this load test panel
+	 * @return the frame
+	 */
+	private JFrame showFrame() {
+		return frame(this)
+						.icon(logoTransparent())
+						.menuBar(menu(createMainMenuControls()).createMenuBar())
+						.title(loadTest.name().orElse(DEFAULT_TITLE))
+						.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+						.onClosing(windowEvent -> exit())
+						.size(screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
+						.centerFrame(true)
+						.show();
+	}
 
-  private Controls createMainMenuControls() {
-    return Controls.builder()
-            .controls(Controls.builder()
-                    .name("File")
-                    .mnemonic('F')
-                    .control(Control.builder(this::exit)
-                            .name("Exit")
-                            .mnemonic('X')))
-            .controls(Controls.builder()
-                    .name("View")
-                    .mnemonic('V')
-                    .control(lookAndFeelSelectionDialog()
-                            .owner(this)
-                            .userPreferencePropertyName(LoadTestPanel.class.getName())
-                            .createControl())
-                    .control(ToggleControl.builder(loadTestModel.collectChartData())
-                            .name("Collect chart data"))
-                    .control(Control.builder(loadTestModel::clearCharts)
-                            .name("Clear charts")))
-            .build();
-  }
+	private Controls createMainMenuControls() {
+		return Controls.builder()
+						.controls(Controls.builder()
+										.name("File")
+										.mnemonic('F')
+										.control(Control.builder(this::exit)
+														.name("Exit")
+														.mnemonic('X')))
+						.controls(Controls.builder()
+										.name("View")
+										.mnemonic('V')
+										.control(lookAndFeelSelectionDialog()
+														.owner(this)
+														.userPreferencePropertyName(LoadTestPanel.class.getName())
+														.createControl())
+										.control(ToggleControl.builder(loadTestModel.collectChartData())
+														.name("Collect chart data"))
+										.control(Control.builder(loadTestModel::clearCharts)
+														.name("Clear charts")))
+						.build();
+	}
 
-  private void initializeUI() {
-    setLayout(borderLayout());
-    int gap = Layouts.GAP.get();
-    setBorder(createEmptyBorder(gap, gap, 0, gap));
-    add(createCenterPanel(), BorderLayout.CENTER);
-    add(createSouthPanel(), BorderLayout.SOUTH);
-  }
+	private void initializeUI() {
+		setLayout(borderLayout());
+		int gap = Layouts.GAP.get();
+		setBorder(createEmptyBorder(gap, gap, 0, gap));
+		add(createCenterPanel(), BorderLayout.CENTER);
+		add(createSouthPanel(), BorderLayout.SOUTH);
+	}
 
-  private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
-    ItemRandomizerPanel<Scenario<T>> panel = itemRandomizerPanel(loadTest.scenarioChooser());
-    panel.setBorder(createTitledBorder("Usage scenarios"));
-    panel.addSelectedItemListener(this::onScenarioSelectionChanged);
+	private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
+		ItemRandomizerPanel<Scenario<T>> panel = itemRandomizerPanel(loadTest.scenarioChooser());
+		panel.setBorder(createTitledBorder("Usage scenarios"));
+		panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
-    return panel;
-  }
+		return panel;
+	}
 
-  private JPanel createAddRemoveApplicationPanel() {
-    return borderLayoutPanel()
-            .westComponent(button(Control.builder(loadTest::removeApplicationBatch)
-                    .name("-")
-                    .description("Remove application batch"))
-                    .build())
-            .centerComponent(integerField()
-                    .editable(false)
-                    .focusable(false)
-                    .horizontalAlignment(SwingConstants.CENTER)
-                    .columns(5)
-                    .linkedValue(loadTest.applicationCount())
-                    .build())
-            .eastComponent(button(Control.builder(loadTest::addApplicationBatch)
-                    .name("+")
-                    .description("Add application batch"))
-                    .build())
-            .build();
-  }
+	private JPanel createAddRemoveApplicationPanel() {
+		return borderLayoutPanel()
+						.westComponent(button(Control.builder(loadTest::removeApplicationBatch)
+										.name("-")
+										.description("Remove application batch"))
+										.build())
+						.centerComponent(integerField()
+										.editable(false)
+										.focusable(false)
+										.horizontalAlignment(SwingConstants.CENTER)
+										.columns(5)
+										.linkedValue(loadTest.applicationCount())
+										.build())
+						.eastComponent(button(Control.builder(loadTest::addApplicationBatch)
+										.name("+")
+										.description("Add application batch"))
+										.build())
+						.build();
+	}
 
-  private JPanel createCenterPanel() {
-    return borderLayoutPanel()
-            .centerComponent(tabbedPane()
-                    .tab("Applications", createApplicationsPanel())
-                    .tab("Scenarios", borderLayoutPanel()
-                            .westComponent(createScenarioPanel())
-                            .centerComponent(scenarioBase)
-                            .build())
-                    .tab("Overview", borderLayoutPanel()
-                            .centerComponent(splitPane()
-                                    .orientation(JSplitPane.VERTICAL_SPLIT)
-                                    .oneTouchExpandable(true)
-                                    .topComponent(createScenarioOverviewChartPanel())
-                                    .bottomComponent(createSouthChartPanel())
-                                    .resizeWeight(RESIZE_WEIGHT)
-                                    .build())
-                            .build())
-                    .build())
-            .build();
-  }
+	private JPanel createCenterPanel() {
+		return borderLayoutPanel()
+						.centerComponent(tabbedPane()
+										.tab("Applications", createApplicationsPanel())
+										.tab("Scenarios", borderLayoutPanel()
+														.westComponent(createScenarioPanel())
+														.centerComponent(scenarioBase)
+														.build())
+										.tab("Overview", borderLayoutPanel()
+														.centerComponent(splitPane()
+																		.orientation(JSplitPane.VERTICAL_SPLIT)
+																		.oneTouchExpandable(true)
+																		.topComponent(createScenarioOverviewChartPanel())
+																		.bottomComponent(createSouthChartPanel())
+																		.resizeWeight(RESIZE_WEIGHT)
+																		.build())
+														.build())
+										.build())
+						.build();
+	}
 
-  private JPanel createApplicationsPanel() {
-    return borderLayoutPanel()
-            .northComponent(borderLayoutPanel()
-                    .centerComponent(flowLayoutPanel(FlowLayout.LEADING)
-                            .add(new JLabel("Batch size"))
-                            .add(integerSpinner(loadTest.applicationBatchSize())
-                                    .editable(false)
-                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                                    .toolTipText("Application batch size")
-                                    .build())
-                            .add(createAddRemoveApplicationPanel())
-                            .add(createUserPanel())
-                            .add(new JLabel("Min. think time", SwingConstants.CENTER))
-                            .add(integerSpinner(loadTest.minimumThinkTime())
-                                    .stepSize(SPINNER_STEP_SIZE)
-                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                                    .build())
-                            .add(new JLabel("Max. think time", SwingConstants.CENTER))
-                            .add(integerSpinner(loadTest.maximumThinkTime())
-                                    .stepSize(SPINNER_STEP_SIZE)
-                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                                    .build())
-                            .add(toggleButton(loadTest.paused())
-                                    .text("Pause")
-                                    .mnemonic('P')
-                                    .build())
-                            .build())
-                    .eastComponent(checkBox(loadTestModel.autoRefreshApplications())
-                            .text("Automatic refresh")
-                            .build())
-                    .build())
-            .centerComponent(scrollPane(createApplicationsTable()).build())
-            .build();
-  }
+	private JPanel createApplicationsPanel() {
+		return borderLayoutPanel()
+						.northComponent(borderLayoutPanel()
+										.centerComponent(flowLayoutPanel(FlowLayout.LEADING)
+														.add(new JLabel("Batch size"))
+														.add(integerSpinner(loadTest.applicationBatchSize())
+																		.editable(false)
+																		.columns(SMALL_TEXT_FIELD_COLUMNS)
+																		.toolTipText("Application batch size")
+																		.build())
+														.add(createAddRemoveApplicationPanel())
+														.add(createUserPanel())
+														.add(new JLabel("Min. think time", SwingConstants.CENTER))
+														.add(integerSpinner(loadTest.minimumThinkTime())
+																		.stepSize(SPINNER_STEP_SIZE)
+																		.columns(SMALL_TEXT_FIELD_COLUMNS)
+																		.build())
+														.add(new JLabel("Max. think time", SwingConstants.CENTER))
+														.add(integerSpinner(loadTest.maximumThinkTime())
+																		.stepSize(SPINNER_STEP_SIZE)
+																		.columns(SMALL_TEXT_FIELD_COLUMNS)
+																		.build())
+														.add(toggleButton(loadTest.paused())
+																		.text("Pause")
+																		.mnemonic('P')
+																		.build())
+														.build())
+										.eastComponent(checkBox(loadTestModel.autoRefreshApplications())
+														.text("Automatic refresh")
+														.build())
+										.build())
+						.centerComponent(scrollPane(createApplicationsTable()).build())
+						.build();
+	}
 
-  private JPanel createUserPanel() {
-    User user = loadTest.user().get();
-    JTextField usernameField = stringField()
-            .initialValue(user == null ? null : user.username())
-            .columns(USER_COLUMNS)
-            .editable(false)
-            .build();
-    loadTest.user().addDataListener(u -> usernameField.setText(u.username()));
+	private JPanel createUserPanel() {
+		User user = loadTest.user().get();
+		JTextField usernameField = stringField()
+						.initialValue(user == null ? null : user.username())
+						.columns(USER_COLUMNS)
+						.editable(false)
+						.build();
+		loadTest.user().addDataListener(u -> usernameField.setText(u.username()));
 
-    return flexibleGridLayoutPanel(1, 3)
-            .add(new JLabel("User"))
-            .add(usernameField)
-            .add(new JButton(Control.builder(this::setUser)
-                    .name("...")
-                    .description("Set the application user")
-                    .build()))
-            .build();
-  }
+		return flexibleGridLayoutPanel(1, 3)
+						.add(new JLabel("User"))
+						.add(usernameField)
+						.add(new JButton(Control.builder(this::setUser)
+										.name("...")
+										.description("Set the application user")
+										.build()))
+						.build();
+	}
 
-  private void setUser() {
-    User user = loadTest.user().get();
-    try {
-      loadTest.user().set(Dialogs.loginDialog()
-              .owner(LoadTestPanel.this)
-              .title("User")
-              .defaultUser(user == null ? null : User.user(user.username()))
-              .show());
-    }
-    catch (CancelException ignored) {/**/}
-  }
+	private void setUser() {
+		User user = loadTest.user().get();
+		try {
+			loadTest.user().set(Dialogs.loginDialog()
+							.owner(LoadTestPanel.this)
+							.title("User")
+							.defaultUser(user == null ? null : User.user(user.username()))
+							.show());
+		}
+		catch (CancelException ignored) {/**/}
+	}
 
-  private JTabbedPane createScenarioOverviewChartPanel() {
-    return tabbedPane()
-            .tab("Scenarios run", createScenarioChartPanel())
-            .tab("Failed runs", createFailureChartPanel())
-            .build();
-  }
+	private JTabbedPane createScenarioOverviewChartPanel() {
+		return tabbedPane()
+						.tab("Scenarios run", createScenarioChartPanel())
+						.tab("Failed runs", createFailureChartPanel())
+						.build();
+	}
 
-  private ChartPanel createScenarioChartPanel() {
-    JFreeChart scenarioChart = createXYStepChart(null, null, null,
-            loadTestModel.scenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(scenarioChart);
-    ChartPanel scenarioChartPanel = new ChartPanel(scenarioChart);
-    scenarioChartPanel.setBorder(createTitledBorder("Scenarios run per second"));
+	private ChartPanel createScenarioChartPanel() {
+		JFreeChart scenarioChart = createXYStepChart(null, null, null,
+						loadTestModel.scenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
+		setColors(scenarioChart);
+		ChartPanel scenarioChartPanel = new ChartPanel(scenarioChart);
+		scenarioChartPanel.setBorder(createTitledBorder("Scenarios run per second"));
 
-    return scenarioChartPanel;
-  }
+		return scenarioChartPanel;
+	}
 
-  private ChartPanel createFailureChartPanel() {
-    JFreeChart failureChart = createXYStepChart(null, null, null,
-            loadTestModel.scenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(failureChart);
-    ChartPanel failureChartPanel = new ChartPanel(failureChart);
-    failureChartPanel.setBorder(createTitledBorder("Scenario run failures per second"));
+	private ChartPanel createFailureChartPanel() {
+		JFreeChart failureChart = createXYStepChart(null, null, null,
+						loadTestModel.scenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
+		setColors(failureChart);
+		ChartPanel failureChartPanel = new ChartPanel(failureChart);
+		failureChartPanel.setBorder(createTitledBorder("Scenario run failures per second"));
 
-    return failureChartPanel;
-  }
+		return failureChartPanel;
+	}
 
-  private JPanel createSouthChartPanel() {
-    return gridLayoutPanel(1, 4)
-            .add(createMemoryUsageChartPanel())
-            .add(createSystemLoadChartPanel())
-            .add(createThinkTimeChartPanel())
-            .add(createNumberOfApplicationsChartPanel())
-            .build();
-  }
+	private JPanel createSouthChartPanel() {
+		return gridLayoutPanel(1, 4)
+						.add(createMemoryUsageChartPanel())
+						.add(createSystemLoadChartPanel())
+						.add(createThinkTimeChartPanel())
+						.add(createNumberOfApplicationsChartPanel())
+						.build();
+	}
 
-  private ChartPanel createMemoryUsageChartPanel() {
-    JFreeChart memoryUsageChart = createXYStepChart(null, null, null,
-            loadTestModel.memoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(memoryUsageChart);
-    ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
-    memoryUsageChartPanel.setBorder(createTitledBorder("Memory usage (MB)"));
+	private ChartPanel createMemoryUsageChartPanel() {
+		JFreeChart memoryUsageChart = createXYStepChart(null, null, null,
+						loadTestModel.memoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
+		setColors(memoryUsageChart);
+		ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
+		memoryUsageChartPanel.setBorder(createTitledBorder("Memory usage (MB)"));
 
-    return memoryUsageChartPanel;
-  }
+		return memoryUsageChartPanel;
+	}
 
-  private ChartPanel createSystemLoadChartPanel() {
-    JFreeChart systemLoadChart = createXYStepChart(null, null, null,
-            loadTestModel.systemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(systemLoadChart);
-    systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
-    ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
-    systemLoadChartPanel.setBorder(createTitledBorder("System load"));
+	private ChartPanel createSystemLoadChartPanel() {
+		JFreeChart systemLoadChart = createXYStepChart(null, null, null,
+						loadTestModel.systemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
+		setColors(systemLoadChart);
+		systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
+		ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
+		systemLoadChartPanel.setBorder(createTitledBorder("System load"));
 
-    return systemLoadChartPanel;
-  }
+		return systemLoadChartPanel;
+	}
 
-  private ChartPanel createThinkTimeChartPanel() {
-    JFreeChart thinkTimeChart = createXYStepChart(null, null, null,
-            loadTestModel.thinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(thinkTimeChart);
-    ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
-    thinkTimeChartPanel.setBorder(createTitledBorder("Think time (ms)"));
+	private ChartPanel createThinkTimeChartPanel() {
+		JFreeChart thinkTimeChart = createXYStepChart(null, null, null,
+						loadTestModel.thinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
+		setColors(thinkTimeChart);
+		ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
+		thinkTimeChartPanel.setBorder(createTitledBorder("Think time (ms)"));
 
-    return thinkTimeChartPanel;
-  }
+		return thinkTimeChartPanel;
+	}
 
-  private ChartPanel createNumberOfApplicationsChartPanel() {
-    JFreeChart numberOfApplicationsChart = createXYStepChart(null, null, null,
-            loadTestModel.numberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(numberOfApplicationsChart);
-    ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
-    numberOfApplicationsChartPanel.setBorder(createTitledBorder("Application count"));
+	private ChartPanel createNumberOfApplicationsChartPanel() {
+		JFreeChart numberOfApplicationsChart = createXYStepChart(null, null, null,
+						loadTestModel.numberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
+		setColors(numberOfApplicationsChart);
+		ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
+		numberOfApplicationsChartPanel.setBorder(createTitledBorder("Application count"));
 
-    return numberOfApplicationsChartPanel;
-  }
+		return numberOfApplicationsChartPanel;
+	}
 
-  private FilteredTable<ApplicationRow, Integer> createApplicationsTable() {
-    return FilteredTable.builder(model().applicationTableModel())
-            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-            .doubleClickAction(Control.control(this::viewException))
-            .scrollToSelectedItem(false)
-            .cellRendererFactory(new ApplicationTableCellRendererFactory())
-            .popupMenuControls(table -> Controls.builder()
-                    .control(Control.builder(table.getModel()::refresh)
-                            .name("Refresh")
-                            .enabled(model().autoRefreshApplications().not()))
-                    .separator()
-                    .control(Control.builder(model()::removeSelectedApplications)
-                            .name("Remove selected"))
-                    .separator()
-                    .controls(Controls.builder()
-                            .name("Columns")
-                            .control(table.createToggleColumnsControls())
-                            .control(table.createResetColumnsControl())
-                            .control(table.createAutoResizeModeControl())
-                            .build())
-                    .build())
-            .build();
-  }
+	private FilteredTable<ApplicationRow, Integer> createApplicationsTable() {
+		return FilteredTable.builder(model().applicationTableModel())
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.doubleClickAction(Control.control(this::viewException))
+						.scrollToSelectedItem(false)
+						.cellRendererFactory(new ApplicationTableCellRendererFactory())
+						.popupMenuControls(table -> Controls.builder()
+										.control(Control.builder(table.getModel()::refresh)
+														.name("Refresh")
+														.enabled(model().autoRefreshApplications().not()))
+										.separator()
+										.control(Control.builder(model()::removeSelectedApplications)
+														.name("Remove selected"))
+										.separator()
+										.controls(Controls.builder()
+														.name("Columns")
+														.control(table.createToggleColumnsControls())
+														.control(table.createResetColumnsControl())
+														.control(table.createAutoResizeModeControl())
+														.build())
+										.build())
+						.build();
+	}
 
-  private void viewException() {
-    model().applicationTableModel().selectionModel().selectedItem().map(LoadTestPanel::exception)
-            .ifPresent(this::displayException);
-  }
+	private void viewException() {
+		model().applicationTableModel().selectionModel().selectedItem().map(LoadTestPanel::exception)
+						.ifPresent(this::displayException);
+	}
 
-  private void onScenarioSelectionChanged(List<RandomItem<Scenario<T>>> selectedScenarios) {
-    scenarioBase.removeAll();
-    selectedScenarios.forEach(scenario -> scenarioBase.add(createScenarioPanel(scenario.item())));
-    validate();
-    repaint();
-  }
+	private void onScenarioSelectionChanged(List<RandomItem<Scenario<T>>> selectedScenarios) {
+		scenarioBase.removeAll();
+		selectedScenarios.forEach(scenario -> scenarioBase.add(createScenarioPanel(scenario.item())));
+		validate();
+		repaint();
+	}
 
-  private JPanel createScenarioPanel(Scenario<T> item) {
-    return borderLayoutPanel()
-            .centerComponent(tabbedPane()
-                    .tab("Duration", createScenarioDurationChartPanel(item))
-                    .tab("Exceptions", createScenarioExceptionsPanel(item))
-                    .build())
-            .build();
-  }
+	private JPanel createScenarioPanel(Scenario<T> item) {
+		return borderLayoutPanel()
+						.centerComponent(tabbedPane()
+										.tab("Duration", createScenarioDurationChartPanel(item))
+										.tab("Exceptions", createScenarioExceptionsPanel(item))
+										.build())
+						.build();
+	}
 
-  private ChartPanel createScenarioDurationChartPanel(Scenario<T> scenario) {
-    JFreeChart scenarioDurationChart = createXYStepChart(null,
-            null, null, loadTestModel.scenarioDurationDataset(scenario.name()),
-            PlotOrientation.VERTICAL, true, true, false);
-    setColors(scenarioDurationChart);
-    ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
-    scenarioDurationChartPanel.setBorder(createEtchedBorder());
-    DeviationRenderer renderer = new DeviationRenderer();
-    renderer.setDefaultShapesVisible(false);
-    scenarioDurationChart.getXYPlot().setRenderer(renderer);
+	private ChartPanel createScenarioDurationChartPanel(Scenario<T> scenario) {
+		JFreeChart scenarioDurationChart = createXYStepChart(null,
+						null, null, loadTestModel.scenarioDurationDataset(scenario.name()),
+						PlotOrientation.VERTICAL, true, true, false);
+		setColors(scenarioDurationChart);
+		ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
+		scenarioDurationChartPanel.setBorder(createEtchedBorder());
+		DeviationRenderer renderer = new DeviationRenderer();
+		renderer.setDefaultShapesVisible(false);
+		scenarioDurationChart.getXYPlot().setRenderer(renderer);
 
-    return scenarioDurationChartPanel;
-  }
+		return scenarioDurationChartPanel;
+	}
 
-  private JPanel createScenarioExceptionsPanel(Scenario<T> scenario) {
-    JTextArea exceptionsArea = textArea()
-            .editable(false)
-            .build();
-    JButton refreshButton = button(Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
-            .name("Refresh"))
-            .build();
-    refreshButton.doClick();
+	private JPanel createScenarioExceptionsPanel(Scenario<T> scenario) {
+		JTextArea exceptionsArea = textArea()
+						.editable(false)
+						.build();
+		JButton refreshButton = button(Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
+						.name("Refresh"))
+						.build();
+		refreshButton.doClick();
 
-    JButton clearButton = button(Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
-            .name("Clear"))
-            .build();
+		JButton clearButton = button(Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
+						.name("Clear"))
+						.build();
 
-    return borderLayoutPanel()
-            .northComponent(flowLayoutPanel(FlowLayout.LEADING)
-                    .add(refreshButton)
-                    .add(clearButton)
-                    .build())
-            .centerComponent(scrollPane(exceptionsArea).build())
-            .build();
-  }
+		return borderLayoutPanel()
+						.northComponent(flowLayoutPanel(FlowLayout.LEADING)
+										.add(refreshButton)
+										.add(clearButton)
+										.build())
+						.centerComponent(scrollPane(exceptionsArea).build())
+						.build();
+	}
 
-  private void setColors(JFreeChart chart) {
-    ChartUtil.linkColors(this, chart);
-  }
+	private void setColors(JFreeChart chart) {
+		ChartUtil.linkColors(this, chart);
+	}
 
-  private synchronized void exit() {
-    if (exiting) {
-      return;
-    }
-    exiting = true;
-    JFrame frame = Utilities.parentFrame(this);
-    if (frame != null) {
-      frame.setTitle(frame.getTitle() + " - Closing...");
-    }
-    loadTest.shutdown();
-    System.exit(0);
-  }
+	private synchronized void exit() {
+		if (exiting) {
+			return;
+		}
+		exiting = true;
+		JFrame frame = Utilities.parentFrame(this);
+		if (frame != null) {
+			frame.setTitle(frame.getTitle() + " - Closing...");
+		}
+		loadTest.shutdown();
+		System.exit(0);
+	}
 
-  private void displayException(Throwable exception) {
-    Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
-  }
+	private void displayException(Throwable exception) {
+		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
+	}
 
-  private static Throwable exception(ApplicationRow application) {
-    List<Scenario.Result> results = application.results();
+	private static Throwable exception(ApplicationRow application) {
+		List<Scenario.Result> results = application.results();
 
-    return results.isEmpty() ? null : results.get(results.size() - 1).exception().orElse(null);
-  }
+		return results.isEmpty() ? null : results.get(results.size() - 1).exception().orElse(null);
+	}
 
-  private static JPanel createSouthPanel() {
-    return flowLayoutPanel(FlowLayout.TRAILING)
-            .add(new JLabel("Memory usage:"))
-            .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
-            .build();
-  }
+	private static JPanel createSouthPanel() {
+		return flowLayoutPanel(FlowLayout.TRAILING)
+						.add(new JLabel("Memory usage:"))
+						.add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
+						.build();
+	}
 
-  private final class ApplicationTableCellRendererFactory implements FilteredTableCellRendererFactory<Integer> {
+	private final class ApplicationTableCellRendererFactory implements FilteredTableCellRendererFactory<Integer> {
 
-    @Override
-    public TableCellRenderer tableCellRenderer(FilteredTableColumn<Integer> column) {
-      FilteredTableCellRenderer.Builder<ApplicationRow, Integer> builder =
-              FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
-      if (column.getIdentifier().equals(ApplicationRow.DURATION_INDEX)) {
-        builder.displayValueProvider(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
-      }
+		@Override
+		public TableCellRenderer tableCellRenderer(FilteredTableColumn<Integer> column) {
+			FilteredTableCellRenderer.Builder<ApplicationRow, Integer> builder =
+							FilteredTableCellRenderer.builder(model().applicationTableModel(), column.getIdentifier(), Integer.class);
+			if (column.getIdentifier().equals(ApplicationRow.DURATION_INDEX)) {
+				builder.displayValueProvider(duration -> duration == null ? null : DURATION_FORMAT.format(duration));
+			}
 
-      return builder.build();
-    }
-  }
+			return builder.build();
+		}
+	}
 
-  private final class ClearExceptionsCommand implements Control.Command {
+	private final class ClearExceptionsCommand implements Control.Command {
 
-    private final JTextArea exceptionsTextArea;
-    private final Scenario<?> scenario;
+		private final JTextArea exceptionsTextArea;
+		private final Scenario<?> scenario;
 
-    private ClearExceptionsCommand(JTextArea exceptionsTextArea, Scenario<?> scenario) {
-      this.exceptionsTextArea = exceptionsTextArea;
-      this.scenario = scenario;
-    }
+		private ClearExceptionsCommand(JTextArea exceptionsTextArea, Scenario<?> scenario) {
+			this.exceptionsTextArea = exceptionsTextArea;
+			this.scenario = scenario;
+		}
 
-    @Override
-    public void execute() {
-      loadTestModel.clearExceptions(scenario.name());
-      exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
-    }
-  }
+		@Override
+		public void execute() {
+			loadTestModel.clearExceptions(scenario.name());
+			exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
+		}
+	}
 
-  private final class RefreshExceptionsCommand implements Control.Command {
+	private final class RefreshExceptionsCommand implements Control.Command {
 
-    private final JTextArea exceptionsTextArea;
-    private final Scenario<?> scenario;
+		private final JTextArea exceptionsTextArea;
+		private final Scenario<?> scenario;
 
-    private RefreshExceptionsCommand(JTextArea exceptionsTextArea, Scenario<?> scenario) {
-      this.exceptionsTextArea = exceptionsTextArea;
-      this.scenario = scenario;
-    }
+		private RefreshExceptionsCommand(JTextArea exceptionsTextArea, Scenario<?> scenario) {
+			this.exceptionsTextArea = exceptionsTextArea;
+			this.scenario = scenario;
+		}
 
-    @Override
-    public void execute() {
-      exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
-      for (Throwable exception : loadTestModel.exceptions(scenario.name())) {
-        exceptionsTextArea.append(exception.getMessage());
-        exceptionsTextArea.append(Separators.LINE_SEPARATOR);
-        exceptionsTextArea.append(Separators.LINE_SEPARATOR);
-      }
-    }
-  }
+		@Override
+		public void execute() {
+			exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
+			for (Throwable exception : loadTestModel.exceptions(scenario.name())) {
+				exceptionsTextArea.append(exception.getMessage());
+				exceptionsTextArea.append(Separators.LINE_SEPARATOR);
+				exceptionsTextArea.append(Separators.LINE_SEPARATOR);
+			}
+		}
+	}
 }

@@ -26,22 +26,22 @@ import java.util.List;
 
 final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
 
-  SpinnerListValue(JSpinner spinner) {
-    super(spinner);
-    if (!(spinner.getModel() instanceof SpinnerListModel)) {
-      throw new IllegalArgumentException("Spinner model must be a SpinnerListModel");
-    }
-    spinner.getModel().addChangeListener(e -> notifyListeners());
-  }
+	SpinnerListValue(JSpinner spinner) {
+		super(spinner);
+		if (!(spinner.getModel() instanceof SpinnerListModel)) {
+			throw new IllegalArgumentException("Spinner model must be a SpinnerListModel");
+		}
+		spinner.getModel().addChangeListener(e -> notifyListeners());
+	}
 
-  @Override
-  protected T getComponentValue() {
-    return (T) component().getValue();
-  }
+	@Override
+	protected T getComponentValue() {
+		return (T) component().getValue();
+	}
 
-  @Override
-  protected void setComponentValue(T value) {
-    List<?> list = ((SpinnerListModel) component().getModel()).getList();
-    component().setValue(value == null ? (list.isEmpty() ? null : list.get(0)) : value);
-  }
+	@Override
+	protected void setComponentValue(T value) {
+		List<?> list = ((SpinnerListModel) component().getModel()).getList();
+		component().setValue(value == null ? (list.isEmpty() ? null : list.get(0)) : value);
+	}
 }

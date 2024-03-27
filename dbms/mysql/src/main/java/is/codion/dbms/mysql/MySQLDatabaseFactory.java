@@ -28,15 +28,15 @@ import static java.util.Objects.requireNonNull;
  */
 public final class MySQLDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "com.mysql";
+	private static final String DRIVER_PACKAGE = "com.mysql";
 
-  @Override
-  public boolean driverCompatible(String driverClassName) {
-    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
-  }
+	@Override
+	public boolean driverCompatible(String driverClassName) {
+		return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
+	}
 
-  @Override
-  public Database createDatabase(String url) {
-    return new MySQLDatabase(url);
-  }
+	@Override
+	public Database createDatabase(String url) {
+		return new MySQLDatabase(url);
+	}
 }

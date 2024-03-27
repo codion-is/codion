@@ -47,179 +47,179 @@ import static java.util.Objects.requireNonNull;
  * @see RemoteEntityConnectionProvider#builder()
  */
 final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnectionProvider
-        implements RemoteEntityConnectionProvider {
+				implements RemoteEntityConnectionProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
 
-  private static final String CONNECTED = "connected";
-  private static final String ENTITIES = "entities";
+	private static final String CONNECTED = "connected";
+	private static final String ENTITIES = "entities";
 
-  private Server<RemoteEntityConnection, ServerAdmin> server;
-  private String serverName;
-  private boolean truststoreResolved = false;
+	private Server<RemoteEntityConnection, ServerAdmin> server;
+	private String serverName;
+	private boolean truststoreResolved = false;
 
-  private final String hostName;
-  private final int port;
-  private final int registryPort;
-  private final String namePrefix;
+	private final String hostName;
+	private final int port;
+	private final int registryPort;
+	private final String namePrefix;
 
-  DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
-    super(builder);
-    this.hostName = requireNonNull(builder.hostName, "hostName");
-    this.port = builder.port;
-    this.registryPort = builder.registryPort;
-    this.namePrefix = builder.namePrefix;
-  }
+	DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
+		super(builder);
+		this.hostName = requireNonNull(builder.hostName, "hostName");
+		this.port = builder.port;
+		this.registryPort = builder.registryPort;
+		this.namePrefix = builder.namePrefix;
+	}
 
-  @Override
-  public String connectionType() {
-    return CONNECTION_TYPE_REMOTE;
-  }
+	@Override
+	public String connectionType() {
+		return CONNECTION_TYPE_REMOTE;
+	}
 
-  /**
-   * @return a string describing the server connection
-   */
-  @Override
-  public String description() {
-    return serverName + "@" + hostName;
-  }
+	/**
+	 * @return a string describing the server connection
+	 */
+	@Override
+	public String description() {
+		return serverName + "@" + hostName;
+	}
 
-  /**
-   * @return the name of the host of the server providing the connection
-   */
-  @Override
-  public String hostName() {
-    return hostName;
-  }
+	/**
+	 * @return the name of the host of the server providing the connection
+	 */
+	@Override
+	public String hostName() {
+		return hostName;
+	}
 
-  @Override
-  protected EntityConnection connect() {
-    if (!truststoreResolved) {
-      Clients.resolveTrustStore();
-      truststoreResolved = true;
-    }
-    try {
-      LOG.debug("Initializing connection for {}", user());
-      return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
-              new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
-                      server().connect(ConnectionRequest.builder()
-                              .user(user())
-                              .clientId(clientId())
-                              .clientTypeId(clientTypeId())
-                              .clientVersion(clientVersion())
-                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
-                              .build())));
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
+	@Override
+	protected EntityConnection connect() {
+		if (!truststoreResolved) {
+			Clients.resolveTrustStore();
+			truststoreResolved = true;
+		}
+		try {
+			LOG.debug("Initializing connection for {}", user());
+			return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+							new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
+											server().connect(ConnectionRequest.builder()
+															.user(user())
+															.clientId(clientId())
+															.clientTypeId(clientTypeId())
+															.clientVersion(clientVersion())
+															.parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
+															.build())));
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Override
-  protected void close(EntityConnection connection) {
-    try {
-      server.disconnect(clientId());
-    }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	@Override
+	protected void close(EntityConnection connection) {
+		try {
+			server.disconnect(clientId());
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  /**
-   * @return connects to and returns the Server instance
-   * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
-   * @throws java.rmi.RemoteException in case of remote exceptions
-   */
-  private Server<RemoteEntityConnection, ServerAdmin> server() throws RemoteException, NotBoundException {
-    boolean unreachable = false;
-    try {
-      if (server != null) {
-        server.serverLoad();
-      }//just to check the connection
-    }
-    catch (RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", serverName, user(), clientId());
-      unreachable = true;
-    }
-    if (server == null || unreachable) {
-      //if server is not reachable, try to reconnect once and return
-      connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
-    }
+	/**
+	 * @return connects to and returns the Server instance
+	 * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
+	 * @throws java.rmi.RemoteException in case of remote exceptions
+	 */
+	private Server<RemoteEntityConnection, ServerAdmin> server() throws RemoteException, NotBoundException {
+		boolean unreachable = false;
+		try {
+			if (server != null) {
+				server.serverLoad();
+			}//just to check the connection
+		}
+		catch (RemoteException e) {
+			LOG.info("{} was unreachable, {} - {} reconnecting...", serverName, user(), clientId());
+			unreachable = true;
+		}
+		if (server == null || unreachable) {
+			//if server is not reachable, try to reconnect once and return
+			connectToServer();
+			LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
+		}
 
-    return this.server;
-  }
+		return this.server;
+	}
 
-  private void connectToServer() throws RemoteException, NotBoundException {
-    server = Server.Locator.builder()
-            .hostName(hostName)
-            .namePrefix(namePrefix)
-            .registryPort(registryPort)
-            .port(port)
-            .build()
-            .locateServer();
-    serverName = server.serverInformation().serverName();
-  }
+	private void connectToServer() throws RemoteException, NotBoundException {
+		server = Server.Locator.builder()
+						.hostName(hostName)
+						.namePrefix(namePrefix)
+						.registryPort(registryPort)
+						.port(port)
+						.build()
+						.locateServer();
+		serverName = server.serverInformation().serverName();
+	}
 
-  private static final class RemoteEntityConnectionHandler implements InvocationHandler {
+	private static final class RemoteEntityConnectionHandler implements InvocationHandler {
 
-    private final Map<Method, Method> methodCache = new HashMap<>();
-    private final RemoteEntityConnection remoteConnection;
+		private final Map<Method, Method> methodCache = new HashMap<>();
+		private final RemoteEntityConnection remoteConnection;
 
-    private Entities entities;
+		private Entities entities;
 
-    private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
-      this.remoteConnection = remoteConnection;
-    }
+		private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
+			this.remoteConnection = remoteConnection;
+		}
 
-    @Override
-    public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
-      String methodName = method.getName();
-      if (methodName.equals(CONNECTED)) {
-        return connected();
-      }
-      if (methodName.equals(ENTITIES)) {
-        return entities();
-      }
+		@Override
+		public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+			String methodName = method.getName();
+			if (methodName.equals(CONNECTED)) {
+				return connected();
+			}
+			if (methodName.equals(ENTITIES)) {
+				return entities();
+			}
 
-      Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
-      try {
-        return remoteMethod.invoke(remoteConnection, args);
-      }
-      catch (InvocationTargetException e) {
-        LOG.error(e.getMessage(), e);
-        throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
-      }
-      catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-        throw e;
-      }
-    }
+			Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
+			try {
+				return remoteMethod.invoke(remoteConnection, args);
+			}
+			catch (InvocationTargetException e) {
+				LOG.error(e.getMessage(), e);
+				throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
+			}
+			catch (Exception e) {
+				LOG.error(e.getMessage(), e);
+				throw e;
+			}
+		}
 
-    private Object connected() throws RemoteException {
-      try {
-        return remoteConnection.connected();
-      }
-      catch (NoSuchObjectException | ConnectException e) {
-        return false;
-      }
-    }
+		private Object connected() throws RemoteException {
+			try {
+				return remoteConnection.connected();
+			}
+			catch (NoSuchObjectException | ConnectException e) {
+				return false;
+			}
+		}
 
-    private Entities entities() throws RemoteException {
-      if (entities == null) {
-        entities = remoteConnection.entities();
-      }
+		private Entities entities() throws RemoteException {
+			if (entities == null) {
+				entities = remoteConnection.entities();
+			}
 
-      return entities;
-    }
+			return entities;
+		}
 
-    private static Method remoteMethod(Method method) {
-      try {
-        return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
-      }
-      catch (NoSuchMethodException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+		private static Method remoteMethod(Method method) {
+			try {
+				return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+			}
+			catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 }

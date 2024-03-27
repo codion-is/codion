@@ -22,13 +22,13 @@
  * {@link is.codion.swing.common.model.tools.loadtest.LoadTestModel}
  */
 module is.codion.swing.common.model.tools {
-  requires org.slf4j;
-  requires org.jfree.jfreechart;
-  requires jdk.management;
-  requires transitive java.desktop;
-  requires transitive is.codion.common.db;
-  requires transitive is.codion.common.model;
-  requires transitive is.codion.swing.common.model;
+	requires org.slf4j;
+	requires org.jfree.jfreechart;
+	requires jdk.management;
+	requires transitive java.desktop;
+	requires transitive is.codion.common.db;
+	requires transitive is.codion.common.model;
+	requires transitive is.codion.swing.common.model;
 
-  exports is.codion.swing.common.model.tools.loadtest;
+	exports is.codion.swing.common.model.tools.loadtest;
 }

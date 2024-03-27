@@ -35,40 +35,40 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class InvoiceLineEditPanel extends EntityEditPanel {
 
-  private final JTextField tableSearchField;
+	private final JTextField tableSearchField;
 
-  public InvoiceLineEditPanel(SwingEntityEditModel editModel, JTextField tableSearchField) {
-    super(editModel);
-    this.tableSearchField = tableSearchField;
-    editModel.persist(InvoiceLine.TRACK_FK).set(false);
-  }
+	public InvoiceLineEditPanel(SwingEntityEditModel editModel, JTextField tableSearchField) {
+		super(editModel);
+		this.tableSearchField = tableSearchField;
+		editModel.persist(InvoiceLine.TRACK_FK).set(false);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(InvoiceLine.TRACK_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(InvoiceLine.TRACK_FK);
 
-    createForeignKeySearchField(InvoiceLine.TRACK_FK)
-            .selectorFactory(new TrackSelectorFactory())
-            .columns(15);
-    createTextField(InvoiceLine.QUANTITY)
-            .selectAllOnFocusGained(true)
-            .columns(2)
-            .action(control(EditControl.INSERT).get());
+		createForeignKeySearchField(InvoiceLine.TRACK_FK)
+						.selectorFactory(new TrackSelectorFactory())
+						.columns(15);
+		createTextField(InvoiceLine.QUANTITY)
+						.selectAllOnFocusGained(true)
+						.columns(2)
+						.action(control(EditControl.INSERT).get());
 
-    JToolBar updateToolBar = toolBar()
-            .floatable(false)
-            .action(control(EditControl.UPDATE).get())
-            .preferredHeight(preferredTextFieldHeight())
-            .build();
+		JToolBar updateToolBar = toolBar()
+						.floatable(false)
+						.action(control(EditControl.UPDATE).get())
+						.preferredHeight(preferredTextFieldHeight())
+						.build();
 
-    JPanel centerPanel = flexibleGridLayoutPanel(1, 0)
-            .add(createInputPanel(InvoiceLine.TRACK_FK))
-            .add(createInputPanel(InvoiceLine.QUANTITY))
-            .add(createInputPanel(new JLabel(" "), updateToolBar))
-            .add(createInputPanel(new JLabel(" "), tableSearchField))
-            .build();
+		JPanel centerPanel = flexibleGridLayoutPanel(1, 0)
+						.add(createInputPanel(InvoiceLine.TRACK_FK))
+						.add(createInputPanel(InvoiceLine.QUANTITY))
+						.add(createInputPanel(new JLabel(" "), updateToolBar))
+						.add(createInputPanel(new JLabel(" "), tableSearchField))
+						.build();
 
-    setLayout(borderLayout());
-    add(centerPanel, BorderLayout.CENTER);
-  }
+		setLayout(borderLayout());
+		add(centerPanel, BorderLayout.CENTER);
+	}
 }

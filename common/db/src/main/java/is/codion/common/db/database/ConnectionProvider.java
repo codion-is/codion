@@ -35,19 +35,19 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ConnectionProvider {
 
-  /**
-   * Returns a JDBC {@link Connection} instance based on the given database and user.
-   * @param user the user
-   * @param url the jdbc url
-   * @return a JDBC {@link Connection} instance
-   * @throws SQLException in case of an exception
-   * @throws NullPointerException in case user or url is null
-   */
-  default Connection connection(User user, String url) throws SQLException {
-    Properties connectionProperties = new Properties();
-    connectionProperties.put(Database.USER_PROPERTY, requireNonNull(user, "user").username());
-    connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.password()));
+	/**
+	 * Returns a JDBC {@link Connection} instance based on the given database and user.
+	 * @param user the user
+	 * @param url the jdbc url
+	 * @return a JDBC {@link Connection} instance
+	 * @throws SQLException in case of an exception
+	 * @throws NullPointerException in case user or url is null
+	 */
+	default Connection connection(User user, String url) throws SQLException {
+		Properties connectionProperties = new Properties();
+		connectionProperties.put(Database.USER_PROPERTY, requireNonNull(user, "user").username());
+		connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.password()));
 
-    return DriverManager.getConnection(requireNonNull(url, "url"), connectionProperties);
-  }
+		return DriverManager.getConnection(requireNonNull(url, "url"), connectionProperties);
+	}
 }

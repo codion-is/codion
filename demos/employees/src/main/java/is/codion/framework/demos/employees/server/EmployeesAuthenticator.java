@@ -30,36 +30,36 @@ import java.util.Optional;
 
 public final class EmployeesAuthenticator implements Authenticator {
 
-  private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = User.parse("scott:tiger");
+	private final Map<String, String> users = new HashMap<>();
+	private final User databaseUser = User.parse("scott:tiger");
 
-  public EmployeesAuthenticator() {
-    users.put("scott", "tiger");
-    users.put("john", "hello");
-    users.put("helen", "juno");
-  }
+	public EmployeesAuthenticator() {
+		users.put("scott", "tiger");
+		users.put("john", "hello");
+		users.put("helen", "juno");
+	}
 
-  @Override
-  public Optional<String> clientTypeId() {
-    return Optional.of("is.codion.framework.demos.employees.ui.EmployeesAppPanel");
-  }
+	@Override
+	public Optional<String> clientTypeId() {
+		return Optional.of("is.codion.framework.demos.employees.ui.EmployeesAppPanel");
+	}
 
-  @Override
-  public RemoteClient login(RemoteClient remoteClient) throws LoginException {
-    authenticateUser(remoteClient.user());
+	@Override
+	public RemoteClient login(RemoteClient remoteClient) throws LoginException {
+		authenticateUser(remoteClient.user());
 
-    return remoteClient.withDatabaseUser(databaseUser);
-  }
+		return remoteClient.withDatabaseUser(databaseUser);
+	}
 
-  @Override
-  public void close() {
-    users.clear();
-  }
+	@Override
+	public void close() {
+		users.clear();
+	}
 
-  private void authenticateUser(User user) throws LoginException {
-    String password = users.get(user.username());
-    if (password == null || !password.equals(String.valueOf(user.password()))) {
-      throw new ServerAuthenticationException("Wrong username or password");
-    }
-  }
+	private void authenticateUser(User user) throws LoginException {
+		String password = users.get(user.username());
+		if (password == null || !password.equals(String.valueOf(user.password()))) {
+			throw new ServerAuthenticationException("Wrong username or password");
+		}
+	}
 }

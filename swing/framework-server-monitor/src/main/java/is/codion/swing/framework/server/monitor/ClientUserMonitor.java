@@ -53,342 +53,342 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClientUserMonitor {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ClientUserMonitor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ClientUserMonitor.class);
 
-  private static final int THOUSAND = 1000;
+	private static final int THOUSAND = 1000;
 
-  private static final int USERNAME_COLUMN = 0;
-  private static final int CLIENT_TYPE_COLUMN = 1;
-  private static final int CLIENT_VERSION_COLUMN = 2;
-  private static final int FRAMEWORK_VERSION_COLUMN = 3;
-  private static final int CLIENT_HOST_COLUMN = 4;
-  private static final int LAST_SEEN_COLUMN = 5;
-  private static final int CONNECTION_COUNT_COLUMN = 6;
+	private static final int USERNAME_COLUMN = 0;
+	private static final int CLIENT_TYPE_COLUMN = 1;
+	private static final int CLIENT_VERSION_COLUMN = 2;
+	private static final int FRAMEWORK_VERSION_COLUMN = 3;
+	private static final int CLIENT_HOST_COLUMN = 4;
+	private static final int LAST_SEEN_COLUMN = 5;
+	private static final int CONNECTION_COUNT_COLUMN = 6;
 
-  private final EntityServerAdmin server;
-  private final Value<Integer> idleConnectionTimeoutValue;
-  private final ClientMonitor clientMonitor;
-  private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
-          FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValueProvider())
-                  .itemSupplier(new UserHistoryItemSupplier())
-                  .mergeOnRefresh(true)
-                  .build();
+	private final EntityServerAdmin server;
+	private final Value<Integer> idleConnectionTimeoutValue;
+	private final ClientMonitor clientMonitor;
+	private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
+					FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValueProvider())
+									.itemSupplier(new UserHistoryItemSupplier())
+									.mergeOnRefresh(true)
+									.build();
 
-  private final TaskScheduler updateScheduler;
+	private final TaskScheduler updateScheduler;
 
-  /**
-   * Instantiates a new {@link ClientUserMonitor}
-   * @param server the server
-   * @param updateRate the initial statistics update rate in seconds
-   */
-  public ClientUserMonitor(EntityServerAdmin server, int updateRate) {
-    this.server = requireNonNull(server);
-    this.clientMonitor = new ClientMonitor(server);
-    this.idleConnectionTimeoutValue = Value.value(getIdleConnectionTimeout(), 0);
-    this.idleConnectionTimeoutValue.addDataListener(this::setIdleConnectionTimeout);
-    this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
-            .interval(updateRate, TimeUnit.SECONDS)
-            .start();
-  }
+	/**
+	 * Instantiates a new {@link ClientUserMonitor}
+	 * @param server the server
+	 * @param updateRate the initial statistics update rate in seconds
+	 */
+	public ClientUserMonitor(EntityServerAdmin server, int updateRate) {
+		this.server = requireNonNull(server);
+		this.clientMonitor = new ClientMonitor(server);
+		this.idleConnectionTimeoutValue = Value.value(getIdleConnectionTimeout(), 0);
+		this.idleConnectionTimeoutValue.addDataListener(this::setIdleConnectionTimeout);
+		this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
+						.interval(updateRate, TimeUnit.SECONDS)
+						.start();
+	}
 
-  /**
-   * Shuts down this monitor
-   */
-  public void shutdown() {
-    updateScheduler.stop();
-  }
+	/**
+	 * Shuts down this monitor
+	 */
+	public void shutdown() {
+		updateScheduler.stop();
+	}
 
-  public ClientMonitor clientMonitor() {
-    return clientMonitor;
-  }
+	public ClientMonitor clientMonitor() {
+		return clientMonitor;
+	}
 
-  /**
-   * @return a TableModel for displaying the user connection history
-   */
-  public FilteredTableModel<?, Integer> userHistoryTableModel() {
-    return userHistoryTableModel;
-  }
+	/**
+	 * @return a TableModel for displaying the user connection history
+	 */
+	public FilteredTableModel<?, Integer> userHistoryTableModel() {
+		return userHistoryTableModel;
+	}
 
-  /**
-   * Disconnects all users from the server
-   * @throws RemoteException in case of an exception
-   */
-  public void disconnectAll() throws RemoteException {
-    server.disconnectAllClients();
-    clientMonitor.refresh();
-  }
+	/**
+	 * Disconnects all users from the server
+	 * @throws RemoteException in case of an exception
+	 */
+	public void disconnectAll() throws RemoteException {
+		server.disconnectAllClients();
+		clientMonitor.refresh();
+	}
 
-  /**
-   * Disconnects all timed out users from the server
-   * @throws RemoteException in case of an exception
-   */
-  public void disconnectTimedOut() throws RemoteException {
-    server.disconnectTimedOutClients();
-    clientMonitor.refresh();
-  }
+	/**
+	 * Disconnects all timed out users from the server
+	 * @throws RemoteException in case of an exception
+	 */
+	public void disconnectTimedOut() throws RemoteException {
+		server.disconnectTimedOutClients();
+		clientMonitor.refresh();
+	}
 
-  /**
-   * Sets the server's connection maintenance interval
-   * @param interval the maintenance interval in seconds
-   * @throws RemoteException in case of an exception
-   */
-  public void setMaintenanceInterval(int interval) throws RemoteException {
-    server.setMaintenanceInterval(interval * THOUSAND);
-  }
+	/**
+	 * Sets the server's connection maintenance interval
+	 * @param interval the maintenance interval in seconds
+	 * @throws RemoteException in case of an exception
+	 */
+	public void setMaintenanceInterval(int interval) throws RemoteException {
+		server.setMaintenanceInterval(interval * THOUSAND);
+	}
 
-  /**
-   * @return the server's connection maintenance interval in seconds
-   * @throws RemoteException in case of an exception
-   */
-  public int getMaintenanceInterval() throws RemoteException {
-    return server.getMaintenanceInterval() / THOUSAND;
-  }
+	/**
+	 * @return the server's connection maintenance interval in seconds
+	 * @throws RemoteException in case of an exception
+	 */
+	public int getMaintenanceInterval() throws RemoteException {
+		return server.getMaintenanceInterval() / THOUSAND;
+	}
 
-  /**
-   * Resets the user connection history
-   */
-  public void resetHistory() {
-    userHistoryTableModel.clear();
-  }
+	/**
+	 * Resets the user connection history
+	 */
+	public void resetHistory() {
+		userHistoryTableModel.clear();
+	}
 
-  /**
-   * @return a Value linked to the idle connection timeout
-   */
-  public Value<Integer> idleConnectionTimeout() {
-    return idleConnectionTimeoutValue;
-  }
+	/**
+	 * @return a Value linked to the idle connection timeout
+	 */
+	public Value<Integer> idleConnectionTimeout() {
+		return idleConnectionTimeoutValue;
+	}
 
-  /**
-   * @return the value controlling the update interval
-   */
-  public Value<Integer> updateInterval() {
-    return updateScheduler.interval();
-  }
+	/**
+	 * @return the value controlling the update interval
+	 */
+	public Value<Integer> updateInterval() {
+		return updateScheduler.interval();
+	}
 
-  private int getIdleConnectionTimeout() {
-    try {
-      return server.getIdleConnectionTimeout() / THOUSAND;
-    }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	private int getIdleConnectionTimeout() {
+		try {
+			return server.getIdleConnectionTimeout() / THOUSAND;
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  /**
-   * Sets the idle client connection timeout
-   * @param idleConnectionTimeout the timeout in seconds
-   */
-  private void setIdleConnectionTimeout(int idleConnectionTimeout) {
-    if (idleConnectionTimeout < 0) {
-      throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
-    }
-    try {
-      server.setIdleConnectionTimeout(idleConnectionTimeout * THOUSAND);
-    }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	/**
+	 * Sets the idle client connection timeout
+	 * @param idleConnectionTimeout the timeout in seconds
+	 */
+	private void setIdleConnectionTimeout(int idleConnectionTimeout) {
+		if (idleConnectionTimeout < 0) {
+			throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
+		}
+		try {
+			server.setIdleConnectionTimeout(idleConnectionTimeout * THOUSAND);
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  private void refreshUserHistoryTableModel() {
-    try {
-      userHistoryTableModel.refresh();
-    }
-    catch (Exception e) {
-      LOG.error("Error while refreshing user history table model", e);
-    }
-  }
+	private void refreshUserHistoryTableModel() {
+		try {
+			userHistoryTableModel.refresh();
+		}
+		catch (Exception e) {
+			LOG.error("Error while refreshing user history table model", e);
+		}
+	}
 
-  private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
-    return asList(
-            createColumn(USERNAME_COLUMN, "Username", String.class),
-            createColumn(CLIENT_TYPE_COLUMN, "Client type", String.class),
-            createColumn(CLIENT_VERSION_COLUMN, "Client version", Version.class),
-            createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version", Version.class),
-            createColumn(CLIENT_HOST_COLUMN, "Host", String.class),
-            createColumn(LAST_SEEN_COLUMN, "Last seen", LocalDateTime.class, new LastSeenRenderer()),
-            createColumn(CONNECTION_COUNT_COLUMN, "Connections", Integer.class));
-  }
+	private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
+		return asList(
+						createColumn(USERNAME_COLUMN, "Username", String.class),
+						createColumn(CLIENT_TYPE_COLUMN, "Client type", String.class),
+						createColumn(CLIENT_VERSION_COLUMN, "Client version", Version.class),
+						createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version", Version.class),
+						createColumn(CLIENT_HOST_COLUMN, "Host", String.class),
+						createColumn(LAST_SEEN_COLUMN, "Last seen", LocalDateTime.class, new LastSeenRenderer()),
+						createColumn(CONNECTION_COUNT_COLUMN, "Connections", Integer.class));
+	}
 
-  private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue, Class<?> columnClass) {
-    return createColumn(identifier, headerValue, columnClass, null);
-  }
+	private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue, Class<?> columnClass) {
+		return createColumn(identifier, headerValue, columnClass, null);
+	}
 
-  private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
-                                                           Class<?> columnClass, TableCellRenderer cellRenderer) {
-    return FilteredTableColumn.builder(identifier)
-            .headerValue(headerValue)
-            .columnClass(columnClass)
-            .cellRenderer(cellRenderer)
-            .build();
-  }
+	private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
+																													 Class<?> columnClass, TableCellRenderer cellRenderer) {
+		return FilteredTableColumn.builder(identifier)
+						.headerValue(headerValue)
+						.columnClass(columnClass)
+						.cellRenderer(cellRenderer)
+						.build();
+	}
 
-  private final class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
+	private final class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
 
-    @Override
-    public Collection<UserInfo> get() {
-      try {
-        List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items());
-        for (RemoteClient remoteClient : server.clients()) {
-          UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
-                  remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
-                  remoteClient.clientVersion(), remoteClient.frameworkVersion());
-          int index = items.indexOf(newUserInfo);
-          if (index == -1) {
-            items.add(newUserInfo);
-          }
-          else {
-            UserInfo currentUserInfo = items.get(index);
-            currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
-            if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {
-              currentUserInfo.incrementConnectionCount();
-              currentUserInfo.setClientID(newUserInfo.getClientId());
-            }
-          }
-        }
+		@Override
+		public Collection<UserInfo> get() {
+			try {
+				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items());
+				for (RemoteClient remoteClient : server.clients()) {
+					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
+									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
+									remoteClient.clientVersion(), remoteClient.frameworkVersion());
+					int index = items.indexOf(newUserInfo);
+					if (index == -1) {
+						items.add(newUserInfo);
+					}
+					else {
+						UserInfo currentUserInfo = items.get(index);
+						currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
+						if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {
+							currentUserInfo.incrementConnectionCount();
+							currentUserInfo.setClientID(newUserInfo.getClientId());
+						}
+					}
+				}
 
-        return items;
-      }
-      catch (RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+				return items;
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-  private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
+	private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
 
-    @Override
-    public Object value(UserInfo row, Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case USERNAME_COLUMN:
-          return row.user().username();
-        case CLIENT_TYPE_COLUMN:
-          return row.clientTypeId();
-        case CLIENT_VERSION_COLUMN:
-          return row.clientVersion();
-        case FRAMEWORK_VERSION_COLUMN:
-          return row.frameworkVersion();
-        case CLIENT_HOST_COLUMN:
-          return row.clientHost();
-        case LAST_SEEN_COLUMN:
-          return row.getLastSeen();
-        case CONNECTION_COUNT_COLUMN:
-          return row.connectionCount();
-        default:
-          throw new IllegalArgumentException(columnIdentifier.toString());
-      }
-    }
-  }
+		@Override
+		public Object value(UserInfo row, Integer columnIdentifier) {
+			switch (columnIdentifier) {
+				case USERNAME_COLUMN:
+					return row.user().username();
+				case CLIENT_TYPE_COLUMN:
+					return row.clientTypeId();
+				case CLIENT_VERSION_COLUMN:
+					return row.clientVersion();
+				case FRAMEWORK_VERSION_COLUMN:
+					return row.frameworkVersion();
+				case CLIENT_HOST_COLUMN:
+					return row.clientHost();
+				case LAST_SEEN_COLUMN:
+					return row.getLastSeen();
+				case CONNECTION_COUNT_COLUMN:
+					return row.connectionCount();
+				default:
+					throw new IllegalArgumentException(columnIdentifier.toString());
+			}
+		}
+	}
 
-  private static final class UserInfo {
+	private static final class UserInfo {
 
-    private final User user;
-    private final String clientTypeId;
-    private final String clientHost;
-    private final Version clientVersion;
-    private final Version frameworkVersion;
-    private LocalDateTime lastSeen;
-    private UUID clientId;
-    private int connectionCount = 1;
+		private final User user;
+		private final String clientTypeId;
+		private final String clientHost;
+		private final Version clientVersion;
+		private final Version frameworkVersion;
+		private LocalDateTime lastSeen;
+		private UUID clientId;
+		private int connectionCount = 1;
 
-    private UserInfo(User user, String clientTypeId, String clientHost, LocalDateTime lastSeen,
-                     UUID clientId, Version clientVersion, Version frameworkVersion) {
-      this.user = user;
-      this.clientTypeId = clientTypeId;
-      this.clientHost = clientHost;
-      this.lastSeen = lastSeen;
-      this.clientId = clientId;
-      this.clientVersion = clientVersion;
-      this.frameworkVersion = frameworkVersion;
-    }
+		private UserInfo(User user, String clientTypeId, String clientHost, LocalDateTime lastSeen,
+										 UUID clientId, Version clientVersion, Version frameworkVersion) {
+			this.user = user;
+			this.clientTypeId = clientTypeId;
+			this.clientHost = clientHost;
+			this.lastSeen = lastSeen;
+			this.clientId = clientId;
+			this.clientVersion = clientVersion;
+			this.frameworkVersion = frameworkVersion;
+		}
 
-    public User user() {
-      return user;
-    }
+		public User user() {
+			return user;
+		}
 
-    public String clientTypeId() {
-      return clientTypeId;
-    }
+		public String clientTypeId() {
+			return clientTypeId;
+		}
 
-    public String clientHost() {
-      return clientHost;
-    }
+		public String clientHost() {
+			return clientHost;
+		}
 
-    public LocalDateTime getLastSeen() {
-      return lastSeen;
-    }
+		public LocalDateTime getLastSeen() {
+			return lastSeen;
+		}
 
-    public UUID getClientId() {
-      return clientId;
-    }
+		public UUID getClientId() {
+			return clientId;
+		}
 
-    public Version clientVersion() {
-      return clientVersion;
-    }
+		public Version clientVersion() {
+			return clientVersion;
+		}
 
-    public Version frameworkVersion() {
-      return frameworkVersion;
-    }
+		public Version frameworkVersion() {
+			return frameworkVersion;
+		}
 
-    public int connectionCount() {
-      return connectionCount;
-    }
+		public int connectionCount() {
+			return connectionCount;
+		}
 
-    public void setLastSeen(LocalDateTime lastSeen) {
-      this.lastSeen = lastSeen;
-    }
+		public void setLastSeen(LocalDateTime lastSeen) {
+			this.lastSeen = lastSeen;
+		}
 
-    public void setClientID(UUID clientId) {
-      this.clientId = clientId;
-    }
+		public void setClientID(UUID clientId) {
+			this.clientId = clientId;
+		}
 
-    public void incrementConnectionCount() {
-      connectionCount++;
-    }
+		public void incrementConnectionCount() {
+			connectionCount++;
+		}
 
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (!(obj instanceof UserInfo)) {
-        return false;
-      }
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (!(obj instanceof UserInfo)) {
+				return false;
+			}
 
-      UserInfo that = (UserInfo) obj;
+			UserInfo that = (UserInfo) obj;
 
-      return this.user.username().equalsIgnoreCase(that.user.username()) &&
-              this.clientTypeId.equals(that.clientTypeId) && this.clientHost.equals(that.clientHost);
-    }
+			return this.user.username().equalsIgnoreCase(that.user.username()) &&
+							this.clientTypeId.equals(that.clientTypeId) && this.clientHost.equals(that.clientHost);
+		}
 
-    @Override
-    public int hashCode() {
-      int result = user.username().toLowerCase().hashCode();
-      result = 31 * result + clientTypeId.hashCode();
-      result = 31 * result + clientHost.hashCode();
+		@Override
+		public int hashCode() {
+			int result = user.username().toLowerCase().hashCode();
+			result = 31 * result + clientTypeId.hashCode();
+			result = 31 * result + clientHost.hashCode();
 
-      return result;
-    }
+			return result;
+		}
 
-    public boolean isNewConnection(UUID clientId) {
-      return !this.clientId.equals(clientId);
-    }
-  }
+		public boolean isNewConnection(UUID clientId) {
+			return !this.clientId.equals(clientId);
+		}
+	}
 
-  private static final class LastSeenRenderer extends DefaultTableCellRenderer {
+	private static final class LastSeenRenderer extends DefaultTableCellRenderer {
 
-    private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
-            .delimiterDash().yearFourDigits().hoursMinutesSeconds()
-            .build().createFormatter();
+		private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
+						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
+						.build().createFormatter();
 
-    @Override
-    protected void setValue(Object value) {
-      if (value instanceof Temporal) {
-        super.setValue(formatter.format((Temporal) value));
-      }
-      else {
-        super.setValue(value);
-      }
-    }
-  }
+		@Override
+		protected void setValue(Object value) {
+			if (value instanceof Temporal) {
+				super.setValue(formatter.format((Temporal) value));
+			}
+			else {
+				super.setValue(value);
+			}
+		}
+	}
 }

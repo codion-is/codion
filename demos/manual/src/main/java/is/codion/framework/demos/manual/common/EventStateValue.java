@@ -32,135 +32,135 @@ import java.awt.event.ActionEvent;
 
 public final class EventStateValue {
 
-  private static void event() {
-    // tag::event[]
-    Event<String> event = Event.event();
+	private static void event() {
+		// tag::event[]
+		Event<String> event = Event.event();
 
-    // an observer handles the listeners for an Event but can not trigger it
-    EventObserver<String> observer = event.observer();
+		// an observer handles the listeners for an Event but can not trigger it
+		EventObserver<String> observer = event.observer();
 
-    // add a listener notified each time the event occurs
-    observer.addListener(() -> System.out.println("Event occurred"));
+		// add a listener notified each time the event occurs
+		observer.addListener(() -> System.out.println("Event occurred"));
 
-    event.run();//output: 'Event occurred'
+		event.run();//output: 'Event occurred'
 
-    // data can be propagated by adding a Consumer as listener
-    observer.addDataListener(data -> System.out.println("Event: " + data));
+		// data can be propagated by adding a Consumer as listener
+		observer.addDataListener(data -> System.out.println("Event: " + data));
 
-    event.accept("info");//output: 'Event: info'
+		event.accept("info");//output: 'Event: info'
 
-    // Event implements EventObserver so listeneres can be added
-    // directly without referring to the EventObserver
-    event.addListener(() -> System.out.println("Event"));
-    // end::event[]
-  }
+		// Event implements EventObserver so listeneres can be added
+		// directly without referring to the EventObserver
+		event.addListener(() -> System.out.println("Event"));
+		// end::event[]
+	}
 
-  private static void state() {
-    // tag::state[]
-    // a boolean state, false by default
-    State state = State.state();
+	private static void state() {
+		// tag::state[]
+		// a boolean state, false by default
+		State state = State.state();
 
-    // an observer handles the listeners for a State but can not modify it
-    StateObserver observer = state.observer();
-    // a not observer is always available
-    StateObserver not = state.not();
+		// an observer handles the listeners for a State but can not modify it
+		StateObserver observer = state.observer();
+		// a not observer is always available
+		StateObserver not = state.not();
 
-    // add a listener notified each time the state changes
-    observer.addListener(() -> System.out.println("State changed"));
+		// add a listener notified each time the state changes
+		observer.addListener(() -> System.out.println("State changed"));
 
-    state.set(true);//output: 'State changed'
+		state.set(true);//output: 'State changed'
 
-    observer.addDataListener(value -> System.out.println("State: " + value));
+		observer.addDataListener(value -> System.out.println("State: " + value));
 
-    state.set(false);//output: 'State: false'
+		state.set(false);//output: 'State: false'
 
-    // State extends StateObserver so listeners can be added
-    // directly without referring to the StateObserver
-    state.addListener(() -> System.out.println("State changed"));
-    // end::state[]
-  }
+		// State extends StateObserver so listeners can be added
+		// directly without referring to the StateObserver
+		state.addListener(() -> System.out.println("State changed"));
+		// end::state[]
+	}
 
-  private static void action() {
-    // tag::action[]
-    State state = State.state();
+	private static void action() {
+		// tag::action[]
+		State state = State.state();
 
-    Action action = new AbstractAction("action") {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println("Hello Action");
-      }
-    };
+		Action action = new AbstractAction("action") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Hello Action");
+			}
+		};
 
-    Utilities.linkToEnabledState(state, action);
+		Utilities.linkToEnabledState(state, action);
 
-    System.out.println(action.isEnabled());// output: false
+		System.out.println(action.isEnabled());// output: false
 
-    state.set(true);
+		state.set(true);
 
-    System.out.println(action.isEnabled());// output: true
-    // end::action[]
-  }
+		System.out.println(action.isEnabled());// output: true
+		// end::action[]
+	}
 
-  private static void control() {
-    // tag::control[]
-    State state = State.state();
+	private static void control() {
+		// tag::control[]
+		State state = State.state();
 
-    Control control = Control.builder(() ->
-                    System.out.println("Hello Control"))
-            .enabled(state)
-            .build();
+		Control control = Control.builder(() ->
+										System.out.println("Hello Control"))
+						.enabled(state)
+						.build();
 
-    System.out.println(control.isEnabled());// output: false
+		System.out.println(control.isEnabled());// output: false
 
-    state.set(true);
+		state.set(true);
 
-    System.out.println(control.isEnabled());// output: true
-    // end::control[]
-  }
+		System.out.println(control.isEnabled());// output: true
+		// end::control[]
+	}
 
-  private static void value() {
-    // tag::value[]
-    Value<Integer> value = Value.value();
+	private static void value() {
+		// tag::value[]
+		Value<Integer> value = Value.value();
 
-    value.set(2);
+		value.set(2);
 
-    Value<Integer> otherValue = Value.value();
+		Value<Integer> otherValue = Value.value();
 
-    otherValue.link(value);
+		otherValue.link(value);
 
-    System.out.println(otherValue.get());// output: 2
+		System.out.println(otherValue.get());// output: 2
 
-    otherValue.set(3);
+		otherValue.set(3);
 
-    System.out.println(value.get());// output: 3
+		System.out.println(value.get());// output: 3
 
-    value.addDataListener(System.out::println);
-    // end::value[]
-  }
+		value.addDataListener(System.out::println);
+		// end::value[]
+	}
 
-  private static void nullValue() {
-    // tag::nullValue[]
-    Integer initialValue = 42;
-    Integer nullValue = 0;
+	private static void nullValue() {
+		// tag::nullValue[]
+		Integer initialValue = 42;
+		Integer nullValue = 0;
 
-    Value<Integer> value = Value.value(initialValue, nullValue);
+		Value<Integer> value = Value.value(initialValue, nullValue);
 
-    System.out.println(value.nullable());//output: false
+		System.out.println(value.nullable());//output: false
 
-    System.out.println(value.get());// output: 42
+		System.out.println(value.get());// output: 42
 
-    value.set(null);
+		value.set(null);
 
-    System.out.println(value.get());//output: 0
-    // end::nullValue[]
-  }
+		System.out.println(value.get());//output: 0
+		// end::nullValue[]
+	}
 
-  public static void main(String[] args) {
-    event();
-    state();
-    action();
-    control();
-    value();
-    nullValue();
-  }
+	public static void main(String[] args) {
+		event();
+		state();
+		action();
+		control();
+		value();
+		nullValue();
+	}
 }

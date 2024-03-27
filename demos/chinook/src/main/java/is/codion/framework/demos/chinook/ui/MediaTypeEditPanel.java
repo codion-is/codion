@@ -26,17 +26,17 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class MediaTypeEditPanel extends EntityEditPanel {
 
-  public MediaTypeEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public MediaTypeEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(MediaType.NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(MediaType.NAME);
 
-    createTextField(MediaType.NAME);
+		createTextField(MediaType.NAME);
 
-    setLayout(gridLayout(1, 1));
-    addInputPanel(MediaType.NAME);
-  }
+		setLayout(gridLayout(1, 1));
+		addInputPanel(MediaType.NAME);
+	}
 }

@@ -28,41 +28,41 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 final class ConditionDemo {
 
-  private static void condition() {
-    // tag::condition[]
-    Condition liveAlbums =
-            Album.TITLE.like("Live%");
+	private static void condition() {
+		// tag::condition[]
+		Condition liveAlbums =
+						Album.TITLE.like("Live%");
 
-    Entity metallica = selectArtist("Metallica");
+		Entity metallica = selectArtist("Metallica");
 
-    Condition metallicaAlbums =
-            Album.ARTIST_FK.equalTo(metallica);
+		Condition metallicaAlbums =
+						Album.ARTIST_FK.equalTo(metallica);
 
-    Condition allArtistsCondition =
-            Condition.all(Artist.TYPE);
-    // end::condition[]
+		Condition allArtistsCondition =
+						Condition.all(Artist.TYPE);
+		// end::condition[]
 
-    // tag::combination[]
-    Condition liveMetallicaAlbumsCondition =
-            Condition.and(liveAlbums, metallicaAlbums);
-    // end::combination[]
+		// tag::combination[]
+		Condition liveMetallicaAlbumsCondition =
+						Condition.and(liveAlbums, metallicaAlbums);
+		// end::combination[]
 
-    // tag::select[]
-    Select selectLiveMetallicaAlbums =
-            Select.where(liveMetallicaAlbumsCondition)
-                    .orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS))
-                    .build();
-    // end::select[]
+		// tag::select[]
+		Select selectLiveMetallicaAlbums =
+						Select.where(liveMetallicaAlbumsCondition)
+										.orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS))
+										.build();
+		// end::select[]
 
-    // tag::update[]
-    Update removeLiveMetallicaAlbumCovers =
-            Update.where(liveMetallicaAlbumsCondition)
-                    .set(Album.COVER, null)
-                    .build();
-    // end::update[]
-  }
+		// tag::update[]
+		Update removeLiveMetallicaAlbumCovers =
+						Update.where(liveMetallicaAlbumsCondition)
+										.set(Album.COVER, null)
+										.build();
+		// end::update[]
+	}
 
-  private static Entity selectArtist(String artistName) {
-    return null;
-  }
+	private static Entity selectArtist(String artistName) {
+		return null;
+	}
 }

@@ -29,23 +29,23 @@ import java.io.IOException;
 
 final class CountSerializer extends StdSerializer<Count> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
+	private final EntityObjectMapper entityObjectMapper;
 
-  CountSerializer(EntityObjectMapper entityObjectMapper) {
-    super(Count.class);
-    this.entityObjectMapper = entityObjectMapper;
-  }
+	CountSerializer(EntityObjectMapper entityObjectMapper) {
+		super(Count.class);
+		this.entityObjectMapper = entityObjectMapper;
+	}
 
-  @Override
-  public void serialize(Count count, JsonGenerator generator, SerializerProvider provider) throws IOException {
-    generator.writeStartObject();
-    generator.writeStringField("entityType", count.where().entityType().name());
-    generator.writeFieldName("where");
-    entityObjectMapper.serializeCondition(count.where(), generator);
-    generator.writeFieldName("having");
-    entityObjectMapper.serializeCondition(count.having(), generator);
-    generator.writeEndObject();
-  }
+	@Override
+	public void serialize(Count count, JsonGenerator generator, SerializerProvider provider) throws IOException {
+		generator.writeStartObject();
+		generator.writeStringField("entityType", count.where().entityType().name());
+		generator.writeFieldName("where");
+		entityObjectMapper.serializeCondition(count.where(), generator);
+		generator.writeFieldName("having");
+		entityObjectMapper.serializeCondition(count.having(), generator);
+		generator.writeEndObject();
+	}
 }

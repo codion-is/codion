@@ -44,131 +44,131 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<SelectionDialogBuilder<T>>
-        implements SelectionDialogBuilder<T> {
+				implements SelectionDialogBuilder<T> {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultSelectionDialogBuilder.class.getName());
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultSelectionDialogBuilder.class.getName());
 
-  private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
+	private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
 
-  private final Collection<T> values;
-  private final Collection<T> defaultSelection = new ArrayList<>();
-  private boolean allowEmptySelection = false;
+	private final Collection<T> values;
+	private final Collection<T> defaultSelection = new ArrayList<>();
+	private boolean allowEmptySelection = false;
 
-  DefaultSelectionDialogBuilder(Collection<T> values) {
-    if (requireNonNull(values).isEmpty()) {
-      throw new IllegalArgumentException("One or more items to select from must be provided");
-    }
-    this.values = new ArrayList<>(values);
-  }
+	DefaultSelectionDialogBuilder(Collection<T> values) {
+		if (requireNonNull(values).isEmpty()) {
+			throw new IllegalArgumentException("One or more items to select from must be provided");
+		}
+		this.values = new ArrayList<>(values);
+	}
 
-  @Override
-  public SelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
-    return defaultSelection(Collections.singletonList(requireNonNull(defaultSelection)));
-  }
+	@Override
+	public SelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
+		return defaultSelection(Collections.singletonList(requireNonNull(defaultSelection)));
+	}
 
-  @Override
-  public SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection) {
-    if (!values.containsAll(requireNonNull(defaultSelection))) {
-      throw new IllegalArgumentException("defaultSelection was not found in selection items");
-    }
-    this.defaultSelection.addAll(defaultSelection);
-    return this;
-  }
+	@Override
+	public SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection) {
+		if (!values.containsAll(requireNonNull(defaultSelection))) {
+			throw new IllegalArgumentException("defaultSelection was not found in selection items");
+		}
+		this.defaultSelection.addAll(defaultSelection);
+		return this;
+	}
 
-  @Override
-  public SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection) {
-    this.allowEmptySelection = allowEmptySelection;
-    return this;
-  }
+	@Override
+	public SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection) {
+		this.allowEmptySelection = allowEmptySelection;
+		return this;
+	}
 
-  @Override
-  public Optional<T> selectSingle() {
-    return selectSingle(this);
-  }
+	@Override
+	public Optional<T> selectSingle() {
+		return selectSingle(this);
+	}
 
-  @Override
-  public Collection<T> select() {
-    return select(this, false);
-  }
+	@Override
+	public Collection<T> select() {
+		return select(this, false);
+	}
 
-  private static <T> Optional<T> selectSingle(DefaultSelectionDialogBuilder<T> builder) {
-    List<T> selected = select(builder, true);
-    if (selected.isEmpty()) {
-      return Optional.empty();
-    }
+	private static <T> Optional<T> selectSingle(DefaultSelectionDialogBuilder<T> builder) {
+		List<T> selected = select(builder, true);
+		if (selected.isEmpty()) {
+			return Optional.empty();
+		}
 
-    return Optional.of(selected.get(0));
-  }
+		return Optional.of(selected.get(0));
+	}
 
-  private static <T> List<T> select(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
-    JList<T> list = createList(builder, singleSelection);
-    Control okControl = Control.builder(() -> Utilities.parentDialog(list).dispose())
-            .enabled(builder.allowEmptySelection ? null : createSelectionNonEmptyState(list))
-            .build();
-    list.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          okControl.actionPerformed(null);
-        }
-      }
-    });
-    State cancelledState = State.state();
-    Runnable onCancel = () -> {
-      list.clearSelection();
-      cancelledState.set(true);
-    };
-    JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
-            .owner(builder.owner)
-            .locationRelativeTo(builder.locationRelativeTo)
-            .title(createTitle(builder, singleSelection))
-            .okAction(okControl)
-            .onCancel(onCancel)
-            .build();
-    if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
-      dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
-    }
-    dialog.setVisible(true);
-    if (cancelledState.get()) {
-      throw new CancelException();
-    }
+	private static <T> List<T> select(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
+		JList<T> list = createList(builder, singleSelection);
+		Control okControl = Control.builder(() -> Utilities.parentDialog(list).dispose())
+						.enabled(builder.allowEmptySelection ? null : createSelectionNonEmptyState(list))
+						.build();
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					okControl.actionPerformed(null);
+				}
+			}
+		});
+		State cancelledState = State.state();
+		Runnable onCancel = () -> {
+			list.clearSelection();
+			cancelledState.set(true);
+		};
+		JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
+						.owner(builder.owner)
+						.locationRelativeTo(builder.locationRelativeTo)
+						.title(createTitle(builder, singleSelection))
+						.okAction(okControl)
+						.onCancel(onCancel)
+						.build();
+		if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
+			dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
+		}
+		dialog.setVisible(true);
+		if (cancelledState.get()) {
+			throw new CancelException();
+		}
 
-    return list.getSelectedValuesList();
-  }
+		return list.getSelectedValuesList();
+	}
 
-  private static <T> JList<T> createList(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
-    DefaultListModel<T> listModel = new DefaultListModel<>();
-    builder.values.forEach(listModel::addElement);
-    JList<T> list = new JList<>(listModel);
-    if (singleSelection) {
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-    list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
+	private static <T> JList<T> createList(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
+		DefaultListModel<T> listModel = new DefaultListModel<>();
+		builder.values.forEach(listModel::addElement);
+		JList<T> list = new JList<>(listModel);
+		if (singleSelection) {
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		}
+		list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 
-    builder.defaultSelection.stream()
-            .mapToInt(listModel::indexOf)
-            .boxed()
-            .sorted(Collections.reverseOrder())//reverse order so that topmost item is selected last
-            .mapToInt(Integer::intValue)
-            .peek(index -> list.getSelectionModel().addSelectionInterval(index, index))
-            .min()
-            .ifPresent(list::ensureIndexIsVisible);
+		builder.defaultSelection.stream()
+						.mapToInt(listModel::indexOf)
+						.boxed()
+						.sorted(Collections.reverseOrder())//reverse order so that topmost item is selected last
+						.mapToInt(Integer::intValue)
+						.peek(index -> list.getSelectionModel().addSelectionInterval(index, index))
+						.min()
+						.ifPresent(list::ensureIndexIsVisible);
 
-    return list;
-  }
+		return list;
+	}
 
-  private static State createSelectionNonEmptyState(JList<?> list) {
-    State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
-    list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
+	private static State createSelectionNonEmptyState(JList<?> list) {
+		State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
+		list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
 
-    return selectionNonEmptyState;
-  }
+		return selectionNonEmptyState;
+	}
 
-  private static <T> String createTitle(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
-    if (singleSelection) {
-      return builder.titleProvider == null ? MESSAGES.getString("select_value") : builder.titleProvider.get();
-    }
+	private static <T> String createTitle(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
+		if (singleSelection) {
+			return builder.titleProvider == null ? MESSAGES.getString("select_value") : builder.titleProvider.get();
+		}
 
-    return builder.titleProvider == null ? MESSAGES.getString("select_values") : builder.titleProvider.get();
-  }
+		return builder.titleProvider == null ? MESSAGES.getString("select_values") : builder.titleProvider.get();
+	}
 }

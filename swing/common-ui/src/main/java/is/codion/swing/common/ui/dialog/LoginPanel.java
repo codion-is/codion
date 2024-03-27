@@ -54,165 +54,165 @@ import static java.util.Objects.requireNonNull;
  */
 final class LoginPanel extends JPanel {
 
-  static {
-    //initialize button captions
-    UiManagerDefaults.initialize();
-  }
+	static {
+		//initialize button captions
+		UiManagerDefaults.initialize();
+	}
 
-  private static final String PASSWORD_CARD = "password";
-  private static final String PROGRESS_CARD = "progress";
+	private static final String PASSWORD_CARD = "password";
+	private static final String PROGRESS_CARD = "progress";
 
-  private final JTextField usernameField;
-  private final JPasswordField passwordField;
-  private final Value<User> user = Value.value();
-  private final LoginValidator loginValidator;
-  private final ImageIcon icon;
-  private final Control okControl;
-  private final Control cancelControl;
-  private final State validating = State.state();
+	private final JTextField usernameField;
+	private final JPasswordField passwordField;
+	private final Value<User> user = Value.value();
+	private final LoginValidator loginValidator;
+	private final ImageIcon icon;
+	private final Control okControl;
+	private final Control cancelControl;
+	private final State validating = State.state();
 
-  LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
-    Value<String> usernameValue = Value.value(defaultUser == null ? null : defaultUser.username());
-    this.usernameField = TextFieldBuilder.builder(String.class, usernameValue)
-            .columns(inputFieldColumns)
-            .selectAllOnFocusGained(true)
-            .enabled(validating.not())
-            .build();
-    this.passwordField = PasswordFieldBuilder.builder()
-            .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
-            .columns(inputFieldColumns)
-            .selectAllOnFocusGained(true)
-            .build();
-    this.icon = icon;
-    this.okControl = Control.builder(this::onOkPressed)
-            .name(Messages.ok())
-            .mnemonic(Messages.okMnemonic())
-            .enabled(State.and(usernameSpecifiedState(usernameValue), validating.not()))
-            .build();
-    this.cancelControl = Control.builder(this::closeDialog)
-            .name(Messages.cancel())
-            .mnemonic(Messages.cancelMnemonic())
-            .enabled(validating.not())
-            .build();
-    this.loginValidator = requireNonNull(loginValidator);
-    initializeUI(southComponent);
-  }
+	LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
+		Value<String> usernameValue = Value.value(defaultUser == null ? null : defaultUser.username());
+		this.usernameField = TextFieldBuilder.builder(String.class, usernameValue)
+						.columns(inputFieldColumns)
+						.selectAllOnFocusGained(true)
+						.enabled(validating.not())
+						.build();
+		this.passwordField = PasswordFieldBuilder.builder()
+						.initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
+						.columns(inputFieldColumns)
+						.selectAllOnFocusGained(true)
+						.build();
+		this.icon = icon;
+		this.okControl = Control.builder(this::onOkPressed)
+						.name(Messages.ok())
+						.mnemonic(Messages.okMnemonic())
+						.enabled(State.and(usernameSpecifiedState(usernameValue), validating.not()))
+						.build();
+		this.cancelControl = Control.builder(this::closeDialog)
+						.name(Messages.cancel())
+						.mnemonic(Messages.cancelMnemonic())
+						.enabled(validating.not())
+						.build();
+		this.loginValidator = requireNonNull(loginValidator);
+		initializeUI(southComponent);
+	}
 
-  User user() {
-    return user.get();
-  }
+	User user() {
+		return user.get();
+	}
 
-  Control okControl() {
-    return okControl;
-  }
+	Control okControl() {
+		return okControl;
+	}
 
-  Control cancelControl() {
-    return cancelControl;
-  }
+	Control cancelControl() {
+		return cancelControl;
+	}
 
-  void requestInitialFocus() {
-    if (usernameField.getText().isEmpty()) {
-      usernameField.requestFocusInWindow();
-    }
-    else {
-      passwordField.requestFocusInWindow();
-    }
-  }
+	void requestInitialFocus() {
+		if (usernameField.getText().isEmpty()) {
+			usernameField.requestFocusInWindow();
+		}
+		else {
+			passwordField.requestFocusInWindow();
+		}
+	}
 
-  private void initializeUI(JComponent southComponent) {
-    setLayout(new GridBagLayout());
-    setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+	private void initializeUI(JComponent southComponent) {
+		setLayout(new GridBagLayout());
+		setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
-    GridBagConstraints constraints = createGridBagConstraints();
-    if (icon != null) {
-      add(new JLabel(icon, SwingConstants.CENTER), constraints);
-    }
-    add(createCredentialsBasePanel(southComponent), constraints);
-  }
+		GridBagConstraints constraints = createGridBagConstraints();
+		if (icon != null) {
+			add(new JLabel(icon, SwingConstants.CENTER), constraints);
+		}
+		add(createCredentialsBasePanel(southComponent), constraints);
+	}
 
-  private JPanel createCredentialsBasePanel(JComponent southComponent) {
-    JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
-    credentialsBasePanel.add(createCredentialsPanel(), BorderLayout.CENTER);
-    if (southComponent != null) {
-      credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
-    }
+	private JPanel createCredentialsBasePanel(JComponent southComponent) {
+		JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
+		credentialsBasePanel.add(createCredentialsPanel(), BorderLayout.CENTER);
+		if (southComponent != null) {
+			credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
+		}
 
-    return credentialsBasePanel;
-  }
+		return credentialsBasePanel;
+	}
 
-  private JPanel createCredentialsPanel() {
-    return PanelBuilder.builder(Layouts.flexibleGridLayout(2, 2))
-            .add(new JLabel(Messages.username(), SwingConstants.RIGHT))
-            .add(usernameField)
-            .add(new JLabel(Messages.password(), SwingConstants.RIGHT))
-            .add(createPasswordProgressPanel())
-            .build();
-  }
+	private JPanel createCredentialsPanel() {
+		return PanelBuilder.builder(Layouts.flexibleGridLayout(2, 2))
+						.add(new JLabel(Messages.username(), SwingConstants.RIGHT))
+						.add(usernameField)
+						.add(new JLabel(Messages.password(), SwingConstants.RIGHT))
+						.add(createPasswordProgressPanel())
+						.build();
+	}
 
-  private JPanel createPasswordProgressPanel() {
-    CardLayout passwordProgressLayout = new CardLayout();
-    JPanel passwordProgressPanel = PanelBuilder.builder(passwordProgressLayout)
-            .add(passwordField, PASSWORD_CARD)
-            .add(ProgressBarBuilder.builder()
-                    .preferredSize(passwordField.getPreferredSize())
-                    .build(), PROGRESS_CARD)
-            .build();
-    validating.addDataListener(isValidating ->
-            passwordProgressLayout.show(passwordProgressPanel, isValidating ? PROGRESS_CARD : PASSWORD_CARD));
+	private JPanel createPasswordProgressPanel() {
+		CardLayout passwordProgressLayout = new CardLayout();
+		JPanel passwordProgressPanel = PanelBuilder.builder(passwordProgressLayout)
+						.add(passwordField, PASSWORD_CARD)
+						.add(ProgressBarBuilder.builder()
+										.preferredSize(passwordField.getPreferredSize())
+										.build(), PROGRESS_CARD)
+						.build();
+		validating.addDataListener(isValidating ->
+						passwordProgressLayout.show(passwordProgressPanel, isValidating ? PROGRESS_CARD : PASSWORD_CARD));
 
-    return passwordProgressPanel;
-  }
+		return passwordProgressPanel;
+	}
 
-  private void onOkPressed() {
-    ProgressWorker.builder(this::validateLogin)
-            .onStarted(this::onValidationStarted)
-            .onResult(this::onValidationSuccess)
-            .onException(this::onValidationFailure)
-            .execute();
-  }
+	private void onOkPressed() {
+		ProgressWorker.builder(this::validateLogin)
+						.onStarted(this::onValidationStarted)
+						.onResult(this::onValidationSuccess)
+						.onException(this::onValidationFailure)
+						.execute();
+	}
 
-  private User validateLogin() throws Exception {
-    User currentUser = User.user(usernameField.getText(), passwordField.getPassword());
-    loginValidator.validate(currentUser);
+	private User validateLogin() throws Exception {
+		User currentUser = User.user(usernameField.getText(), passwordField.getPassword());
+		loginValidator.validate(currentUser);
 
-    return currentUser;
-  }
+		return currentUser;
+	}
 
-  private void onValidationStarted() {
-    validating.set(true);
-  }
+	private void onValidationStarted() {
+		validating.set(true);
+	}
 
-  private void onValidationSuccess(User user) {
-    this.user.set(user);
-    validating.set(false);
-    closeDialog();
-  }
+	private void onValidationSuccess(User user) {
+		this.user.set(user);
+		validating.set(false);
+		closeDialog();
+	}
 
-  private void onValidationFailure(Throwable exception) {
-    user.set(null);
-    validating.set(false);
-    new DefaultExceptionDialogBuilder()
-            .owner(Utilities.parentWindow(this))
-            .show(exception);
-    requestInitialFocus();
-  }
+	private void onValidationFailure(Throwable exception) {
+		user.set(null);
+		validating.set(false);
+		new DefaultExceptionDialogBuilder()
+						.owner(Utilities.parentWindow(this))
+						.show(exception);
+		requestInitialFocus();
+	}
 
-  private void closeDialog() {
-    Utilities.disposeParentWindow(this);
-  }
+	private void closeDialog() {
+		Utilities.disposeParentWindow(this);
+	}
 
-  private static State usernameSpecifiedState(Value<String> usernameValue) {
-    State usernameSpecified = State.state(usernameValue.isNotNull());
-    usernameValue.addDataListener(username -> usernameSpecified.set(username != null));
+	private static State usernameSpecifiedState(Value<String> usernameValue) {
+		State usernameSpecified = State.state(usernameValue.isNotNull());
+		usernameValue.addDataListener(username -> usernameSpecified.set(username != null));
 
-    return usernameSpecified;
-  }
+		return usernameSpecified;
+	}
 
-  private static GridBagConstraints createGridBagConstraints() {
-    GridBagConstraints constraints = new GridBagConstraints();
-    int insets = Layouts.GAP.get();
-    constraints.insets = new Insets(insets, insets, insets, insets);
+	private static GridBagConstraints createGridBagConstraints() {
+		GridBagConstraints constraints = new GridBagConstraints();
+		int insets = Layouts.GAP.get();
+		constraints.insets = new Insets(insets, insets, insets, insets);
 
-    return constraints;
-  }
+		return constraints;
+	}
 }

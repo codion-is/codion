@@ -31,48 +31,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class SelectQueriesTest {
 
-  private final TestDomain testDomain = new TestDomain();
-  private final SelectQueries queries = new SelectQueries(Database.instance());
+	private final TestDomain testDomain = new TestDomain();
+	private final SelectQueries queries = new SelectQueries(Database.instance());
 
-  @Test
-  void builder() {
-    SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(Query.TYPE))
-            .entitySelectQuery();
-    assertEquals("SELECT empno, ename\nFROM employees.employee e\nORDER BY ename", builder.build());
+	@Test
+	void builder() {
+		SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(Query.TYPE))
+						.entitySelectQuery();
+		assertEquals("SELECT empno, ename\nFROM employees.employee e\nORDER BY ename", builder.build());
 
-    builder.columns("empno");
-    assertEquals("SELECT empno\nFROM employees.employee e\nORDER BY ename", builder.build());
+		builder.columns("empno");
+		assertEquals("SELECT empno\nFROM employees.employee e\nORDER BY ename", builder.build());
 
-    builder.forUpdate(true);
-    assertEquals("SELECT empno\nFROM employees.employee\nORDER BY ename\nFOR UPDATE NOWAIT", builder.build());
+		builder.forUpdate(true);
+		assertEquals("SELECT empno\nFROM employees.employee\nORDER BY ename\nFOR UPDATE NOWAIT", builder.build());
 
-    builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
-            .entitySelectQuery();
-    assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10", builder.build());
+		builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
+						.entitySelectQuery();
+		assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10", builder.build());
 
-    builder.orderBy("ename");
-    assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10\nORDER BY ename", builder.build());
+		builder.orderBy("ename");
+		assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10\nORDER BY ename", builder.build());
 
-    builder = queries.builder(testDomain.entities().definition(QueryFromClause.TYPE))
-            .entitySelectQuery();
-    assertEquals("SELECT empno, ename\nFROM employees.employee\nORDER BY ename", builder.build());
-  }
+		builder = queries.builder(testDomain.entities().definition(QueryFromClause.TYPE))
+						.entitySelectQuery();
+		assertEquals("SELECT empno, ename\nFROM employees.employee\nORDER BY ename", builder.build());
+	}
 
-  @Test
-  void select() {
-    SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
-            .entitySelectQuery();
-    assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10", builder.build());
+	@Test
+	void select() {
+		SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
+						.entitySelectQuery();
+		assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10", builder.build());
 
-    Select select = Select.where(QueryColumnsWhereClause.ENAME.equalTo("SCOTT"))
-            .attributes(QueryColumnsWhereClause.ENAME)
-            .having(QueryColumnsWhereClause.EMPNO.equalTo(4))
-            .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
-            .build();
-    builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
-            .select(select);
+		Select select = Select.where(QueryColumnsWhereClause.ENAME.equalTo("SCOTT"))
+						.attributes(QueryColumnsWhereClause.ENAME)
+						.having(QueryColumnsWhereClause.EMPNO.equalTo(4))
+						.orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
+						.build();
+		builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
+						.select(select);
 
-    //select should not affect columns when the columns are hardcoded in the entity query
-    assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10\nAND ename = ?\nHAVING empno = ?\nORDER BY empno DESC", builder.build());
-  }
+		//select should not affect columns when the columns are hardcoded in the entity query
+		assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10\nAND ename = ?\nHAVING empno = ?\nORDER BY empno DESC", builder.build());
+	}
 }

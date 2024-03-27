@@ -23,11 +23,11 @@ package is.codion.common.db.exception;
  */
 public final class DeleteException extends DatabaseException {
 
-  /**
-   * Instantiates a new {@link DeleteException}
-   * @param message the message
-   */
-  public DeleteException(String message) {
-    super(message);
-  }
+	/**
+	 * Instantiates a new {@link DeleteException}
+	 * @param message the message
+	 */
+	public DeleteException(String message) {
+		super(message);
+	}
 }

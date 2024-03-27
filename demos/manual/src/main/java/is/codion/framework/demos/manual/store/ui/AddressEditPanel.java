@@ -27,22 +27,22 @@ import java.awt.GridLayout;
 // tag::addressEditPanel[]
 public class AddressEditPanel extends EntityEditPanel {
 
-  public AddressEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public AddressEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Address.STREET);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Address.STREET);
 
-    createTextField(Address.STREET).columns(25);
-    createTextField(Address.CITY).columns(25);
-    createCheckBox(Address.VALID);
+		createTextField(Address.STREET).columns(25);
+		createTextField(Address.CITY).columns(25);
+		createCheckBox(Address.VALID);
 
-    setLayout(new GridLayout(3, 1, 5, 5));
-    addInputPanel(Address.STREET);
-    addInputPanel(Address.CITY);
-    addInputPanel(Address.VALID);
-  }
+		setLayout(new GridLayout(3, 1, 5, 5));
+		addInputPanel(Address.STREET);
+		addInputPanel(Address.CITY);
+		addInputPanel(Address.VALID);
+	}
 }
 // end::addressEditPanel[]

@@ -58,162 +58,162 @@ import static javax.swing.BorderFactory.createEtchedBorder;
  */
 final class CoverArtPanel extends JPanel {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CoverArtPanel.class.getName());
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CoverArtPanel.class.getName());
 
-  private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);
-  private static final Dimension DIALOG_SIZE = new Dimension(400, 400);
-  private static final FileNameExtensionFilter IMAGE_FILE_FILTER =
-          new FileNameExtensionFilter(BUNDLE.getString("images"),
-                  new String[] {"jpg", "jpeg", "png", "bmp", "gif"});
+	private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);
+	private static final Dimension DIALOG_SIZE = new Dimension(400, 400);
+	private static final FileNameExtensionFilter IMAGE_FILE_FILTER =
+					new FileNameExtensionFilter(BUNDLE.getString("images"),
+									new String[] {"jpg", "jpeg", "png", "bmp", "gif"});
 
-  private final JPanel basePanel;
-  private final NavigableImagePanel imagePanel;
-  private final Value<byte[]> imageBytes;
-  private final State imageSelected;
-  private final State embedded = State.state(true);
+	private final JPanel basePanel;
+	private final NavigableImagePanel imagePanel;
+	private final Value<byte[]> imageBytes;
+	private final State imageSelected;
+	private final State embedded = State.state(true);
 
-  /**
-   * @param imageBytes the image bytes value to base this panel on.
-   */
-  CoverArtPanel(Value<byte[]> imageBytes) {
-    super(borderLayout());
-    this.imageBytes = imageBytes;
-    this.imageSelected = State.state(imageBytes.isNotNull());
-    this.imagePanel = createImagePanel();
-    this.basePanel = createPanel();
-    add(basePanel, BorderLayout.CENTER);
-    bindEvents();
-  }
+	/**
+	 * @param imageBytes the image bytes value to base this panel on.
+	 */
+	CoverArtPanel(Value<byte[]> imageBytes) {
+		super(borderLayout());
+		this.imageBytes = imageBytes;
+		this.imageSelected = State.state(imageBytes.isNotNull());
+		this.imagePanel = createImagePanel();
+		this.basePanel = createPanel();
+		add(basePanel, BorderLayout.CENTER);
+		bindEvents();
+	}
 
-  private JPanel createPanel() {
-    return borderLayoutPanel()
-            .preferredSize(EMBEDDED_SIZE)
-            .centerComponent(imagePanel)
-            .southComponent(borderLayoutPanel()
-                    .eastComponent(buttonPanel(Controls.builder()
-                            .control(Control.builder(this::selectCover)
-                                    .smallIcon(FrameworkIcons.instance().icon(Foundation.PLUS)))
-                            .control(Control.builder(this::removeCover)
-                                    .smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
-                                    .enabled(imageSelected)))
-                            .buttonGap(0)
-                            .border(createEmptyBorder(0, 0, Layouts.GAP.get(), 0))
-                            .build())
-                    .build())
-            .build();
-  }
+	private JPanel createPanel() {
+		return borderLayoutPanel()
+						.preferredSize(EMBEDDED_SIZE)
+						.centerComponent(imagePanel)
+						.southComponent(borderLayoutPanel()
+										.eastComponent(buttonPanel(Controls.builder()
+														.control(Control.builder(this::selectCover)
+																		.smallIcon(FrameworkIcons.instance().icon(Foundation.PLUS)))
+														.control(Control.builder(this::removeCover)
+																		.smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
+																		.enabled(imageSelected)))
+														.buttonGap(0)
+														.border(createEmptyBorder(0, 0, Layouts.GAP.get(), 0))
+														.build())
+										.build())
+						.build();
+	}
 
-  private void bindEvents() {
-    imageBytes.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
-    imageBytes.addDataListener(imageBytes -> imageSelected.set(imageBytes != null));
-    embedded.addDataListener(this::setEmbedded);
-    imagePanel.addMouseListener(new EmbeddingMouseListener());
-  }
+	private void bindEvents() {
+		imageBytes.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
+		imageBytes.addDataListener(imageBytes -> imageSelected.set(imageBytes != null));
+		embedded.addDataListener(this::setEmbedded);
+		imagePanel.addMouseListener(new EmbeddingMouseListener());
+	}
 
-  private void selectCover() throws IOException {
-    File coverFile = Dialogs.fileSelectionDialog()
-            .owner(this)
-            .title(BUNDLE.getString("select_image"))
-            .fileFilter(IMAGE_FILE_FILTER)
-            .selectFile();
-    imageBytes.set(Files.readAllBytes(coverFile.toPath()));
-  }
+	private void selectCover() throws IOException {
+		File coverFile = Dialogs.fileSelectionDialog()
+						.owner(this)
+						.title(BUNDLE.getString("select_image"))
+						.fileFilter(IMAGE_FILE_FILTER)
+						.selectFile();
+		imageBytes.set(Files.readAllBytes(coverFile.toPath()));
+	}
 
-  private void removeCover() {
-    imageBytes.set(null);
-  }
+	private void removeCover() {
+		imageBytes.set(null);
+	}
 
-  private void setEmbedded(boolean embedded) {
-    configureImagePanel(embedded);
-    if (embedded) {
-      embed();
-    }
-    else {
-      displayInDialog();
-    }
-  }
+	private void setEmbedded(boolean embedded) {
+		configureImagePanel(embedded);
+		if (embedded) {
+			embed();
+		}
+		else {
+			displayInDialog();
+		}
+	}
 
-  private void embed() {
-    Utilities.disposeParentWindow(basePanel);
-    basePanel.setSize(EMBEDDED_SIZE);
-    imagePanel.resetView();
-    add(basePanel, BorderLayout.CENTER);
-    revalidate();
-    repaint();
-  }
+	private void embed() {
+		Utilities.disposeParentWindow(basePanel);
+		basePanel.setSize(EMBEDDED_SIZE);
+		imagePanel.resetView();
+		add(basePanel, BorderLayout.CENTER);
+		revalidate();
+		repaint();
+	}
 
-  private void displayInDialog() {
-    remove(basePanel);
-    revalidate();
-    repaint();
-    Dialogs.componentDialog(basePanel)
-            .owner(this)
-            .modal(false)
-            .title(BUNDLE.getString("cover"))
-            .onClosed(windowEvent -> embedded.set(true))
-            .onOpened(windowEvent -> imagePanel.resetView())
-            .size(DIALOG_SIZE)
-            .show();
-  }
+	private void displayInDialog() {
+		remove(basePanel);
+		revalidate();
+		repaint();
+		Dialogs.componentDialog(basePanel)
+						.owner(this)
+						.modal(false)
+						.title(BUNDLE.getString("cover"))
+						.onClosed(windowEvent -> embedded.set(true))
+						.onOpened(windowEvent -> imagePanel.resetView())
+						.size(DIALOG_SIZE)
+						.show();
+	}
 
-  private void configureImagePanel(boolean embedded) {
-    imagePanel.setZoomDevice(embedded ? NavigableImagePanel.ZoomDevice.NONE : NavigableImagePanel.ZoomDevice.MOUSE_WHEEL);
-    imagePanel.setMoveImageEnabled(!embedded);
-  }
+	private void configureImagePanel(boolean embedded) {
+		imagePanel.setZoomDevice(embedded ? NavigableImagePanel.ZoomDevice.NONE : NavigableImagePanel.ZoomDevice.MOUSE_WHEEL);
+		imagePanel.setMoveImageEnabled(!embedded);
+	}
 
-  private NavigableImagePanel createImagePanel() {
-    NavigableImagePanel panel = new NavigableImagePanel();
-    panel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
-    panel.setNavigationImageEnabled(false);
-    panel.setMoveImageEnabled(false);
-    panel.setTransferHandler(new CoverTransferHandler());
-    panel.setBorder(createEtchedBorder());
+	private NavigableImagePanel createImagePanel() {
+		NavigableImagePanel panel = new NavigableImagePanel();
+		panel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
+		panel.setNavigationImageEnabled(false);
+		panel.setMoveImageEnabled(false);
+		panel.setTransferHandler(new CoverTransferHandler());
+		panel.setBorder(createEtchedBorder());
 
-    return panel;
-  }
+		return panel;
+	}
 
-  private static BufferedImage readImage(byte[] bytes) {
-    if (bytes == null) {
-      return null;
-    }
-    try {
-      return ImageIO.read(new ByteArrayInputStream(bytes));
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	private static BufferedImage readImage(byte[] bytes) {
+		if (bytes == null) {
+			return null;
+		}
+		try {
+			return ImageIO.read(new ByteArrayInputStream(bytes));
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  private final class EmbeddingMouseListener extends MouseAdapter {
+	private final class EmbeddingMouseListener extends MouseAdapter {
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if (e.getClickCount() == 2) {
-        embedded.set(!embedded.get());
-      }
-    }
-  }
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				embedded.set(!embedded.get());
+			}
+		}
+	}
 
-  private final class CoverTransferHandler extends FileTransferHandler {
+	private final class CoverTransferHandler extends FileTransferHandler {
 
-    @Override
-    protected boolean importFiles(Component component, List<File> files) {
-      try {
-        if (singleImage(files)) {
-          imageBytes.set(Files.readAllBytes(files.get(0).toPath()));
+		@Override
+		protected boolean importFiles(Component component, List<File> files) {
+			try {
+				if (singleImage(files)) {
+					imageBytes.set(Files.readAllBytes(files.get(0).toPath()));
 
-          return true;
-        }
+					return true;
+				}
 
-        return false;
-      }
-      catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
+				return false;
+			}
+			catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
-    private boolean singleImage(List<File> files) {
-      return files.size() == 1 && IMAGE_FILE_FILTER.accept(files.get(0));
-    }
-  }
+		private boolean singleImage(List<File> files) {
+			return files.size() == 1 && IMAGE_FILE_FILTER.accept(files.get(0));
+		}
+	}
 }

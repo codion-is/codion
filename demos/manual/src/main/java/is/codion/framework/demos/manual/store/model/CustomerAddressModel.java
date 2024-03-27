@@ -24,8 +24,8 @@ import is.codion.swing.framework.model.SwingEntityModel;
 // tag::customerAddressModel[]
 public class CustomerAddressModel extends SwingEntityModel {
 
-  public CustomerAddressModel(EntityConnectionProvider connectionProvider) {
-    super(new CustomerAddressTableModel(connectionProvider));
-  }
+	public CustomerAddressModel(EntityConnectionProvider connectionProvider) {
+		super(new CustomerAddressTableModel(connectionProvider));
+	}
 }
 // end::customerAddressModel[]

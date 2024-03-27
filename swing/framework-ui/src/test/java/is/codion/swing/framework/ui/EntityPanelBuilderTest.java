@@ -32,52 +32,52 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EntityPanelBuilderTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void setPanelClass() {
-    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .editPanel(EntityEditPanel.class).panel(EntityPanel.class));
-    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .tablePanel(EntityTablePanel.class).panel(EntityPanel.class));
+	@Test
+	void setPanelClass() {
+		assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
+						.editPanel(EntityEditPanel.class).panel(EntityPanel.class));
+		assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
+						.tablePanel(EntityTablePanel.class).panel(EntityPanel.class));
 
-    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .panel(EntityPanel.class).editPanel(EntityEditPanel.class));
-    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
-            .panel(EntityPanel.class).tablePanel(EntityTablePanel.class));
-  }
+		assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
+						.panel(EntityPanel.class).editPanel(EntityEditPanel.class));
+		assertThrows(IllegalStateException.class, () -> EntityPanel.builder(Department.TYPE)
+						.panel(EntityPanel.class).tablePanel(EntityTablePanel.class));
+	}
 
-  @Test
-  void testDetailPanelBuilder() {
-    SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE);
-    SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE);
+	@Test
+	void testDetailPanelBuilder() {
+		SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE);
+		SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE);
 
-    departmentModelBuilder.detailModel(employeeModelBuilder);
+		departmentModelBuilder.detailModel(employeeModelBuilder);
 
-    SwingEntityModel departmentModel = departmentModelBuilder.build(CONNECTION_PROVIDER);
+		SwingEntityModel departmentModel = departmentModelBuilder.build(CONNECTION_PROVIDER);
 
-    String departmentCaption = "A department caption";
-    EntityPanel.Builder departmentPanelBuilder = EntityPanel.builder(Department.TYPE)
-            .caption(departmentCaption);
-    EntityPanel.Builder employeePanelBuilder = EntityPanel.builder(Employee.TYPE)
-            .caption("empCaption");
+		String departmentCaption = "A department caption";
+		EntityPanel.Builder departmentPanelBuilder = EntityPanel.builder(Department.TYPE)
+						.caption(departmentCaption);
+		EntityPanel.Builder employeePanelBuilder = EntityPanel.builder(Employee.TYPE)
+						.caption("empCaption");
 
-    departmentPanelBuilder.detailPanel(employeePanelBuilder);
+		departmentPanelBuilder.detailPanel(employeePanelBuilder);
 
-    EntityPanel departmentPanel = departmentPanelBuilder.build(departmentModel);
-    assertEquals(departmentCaption, departmentPanel.caption().get());
-    assertThrows(IllegalArgumentException.class, () -> departmentPanel.detailPanel(Department.TYPE));
-    EntityPanel employeePanel = departmentPanel.detailPanel(Employee.TYPE);
-    assertEquals("empCaption", employeePanel.caption().get());
-    assertEquals(1, departmentPanel.detailPanels().size());
+		EntityPanel departmentPanel = departmentPanelBuilder.build(departmentModel);
+		assertEquals(departmentCaption, departmentPanel.caption().get());
+		assertThrows(IllegalArgumentException.class, () -> departmentPanel.detailPanel(Department.TYPE));
+		EntityPanel employeePanel = departmentPanel.detailPanel(Employee.TYPE);
+		assertEquals("empCaption", employeePanel.caption().get());
+		assertEquals(1, departmentPanel.detailPanels().size());
 
-    assertEquals(departmentModel, departmentPanel.model());
-    assertEquals(departmentModel.detailModel(Employee.TYPE), employeePanel.model());
-  }
+		assertEquals(departmentModel, departmentPanel.model());
+		assertEquals(departmentModel.detailModel(Employee.TYPE), employeePanel.model());
+	}
 }

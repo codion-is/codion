@@ -38,225 +38,225 @@ import java.util.UUID;
  */
 final class DefaultEntityServerAdmin extends DefaultServerAdmin implements EntityServerAdmin {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerAdmin.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerAdmin.class);
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  /**
-   * The server being administrated
-   */
-  private final EntityServer server;
+	/**
+	 * The server being administrated
+	 */
+	private final EntityServer server;
 
-  private final LoggerProxy loggerProxy = LoggerProxy.instance();
+	private final LoggerProxy loggerProxy = LoggerProxy.instance();
 
-  /**
-   * Instantiates a new DefaultEntityServerAdmin
-   * @param server the server to administer
-   * @param configuration the port on which to make the server admin available
-   * @throws RemoteException in case of an exception
-   * @throws NullPointerException in case {@code configuration} or {@code server} are not specified
-   */
-  DefaultEntityServerAdmin(EntityServer server, EntityServerConfiguration configuration) throws RemoteException {
-    super(server, configuration);
-    this.server = server;
-  }
+	/**
+	 * Instantiates a new DefaultEntityServerAdmin
+	 * @param server the server to administer
+	 * @param configuration the port on which to make the server admin available
+	 * @throws RemoteException in case of an exception
+	 * @throws NullPointerException in case {@code configuration} or {@code server} are not specified
+	 */
+	DefaultEntityServerAdmin(EntityServer server, EntityServerConfiguration configuration) throws RemoteException {
+		super(server, configuration);
+		this.server = server;
+	}
 
-  @Override
-  public String databaseUrl() {
-    return server.database().url();
-  }
+	@Override
+	public String databaseUrl() {
+		return server.database().url();
+	}
 
-  @Override
-  public Object getLogLevel() {
-    return loggerProxy.getLogLevel();
-  }
+	@Override
+	public Object getLogLevel() {
+		return loggerProxy.getLogLevel();
+	}
 
-  @Override
-  public void setLogLevel(Object level) {
-    LOG.info("setLogLevel({})", level);
-    loggerProxy.setLogLevel(level);
-  }
+	@Override
+	public void setLogLevel(Object level) {
+		LOG.info("setLogLevel({})", level);
+		loggerProxy.setLogLevel(level);
+	}
 
-  @Override
-  public int getMaintenanceInterval() {
-    return server.getMaintenanceInterval();
-  }
+	@Override
+	public int getMaintenanceInterval() {
+		return server.getMaintenanceInterval();
+	}
 
-  @Override
-  public void setMaintenanceInterval(int interval) {
-    LOG.info("setMaintenanceInterval({})", interval);
-    server.setMaintenanceInterval(interval);
-  }
+	@Override
+	public void setMaintenanceInterval(int interval) {
+		LOG.info("setMaintenanceInterval({})", interval);
+		server.setMaintenanceInterval(interval);
+	}
 
-  @Override
-  public void disconnectTimedOutClients() throws RemoteException {
-    LOG.info("disconnectTimedOutClients()");
-    server.disconnectClients(true);
-  }
+	@Override
+	public void disconnectTimedOutClients() throws RemoteException {
+		LOG.info("disconnectTimedOutClients()");
+		server.disconnectClients(true);
+	}
 
-  @Override
-  public void disconnectAllClients() throws RemoteException {
-    LOG.info("disconnectAllClients()");
-    server.disconnectClients(false);
-  }
+	@Override
+	public void disconnectAllClients() throws RemoteException {
+		LOG.info("disconnectAllClients()");
+		server.disconnectClients(false);
+	}
 
-  @Override
-  public void resetConnectionPoolStatistics(String username) {
-    LOG.info("resetConnectionPoolStatistics({})", username);
-    server.database().connectionPool(username).resetStatistics();
-  }
+	@Override
+	public void resetConnectionPoolStatistics(String username) {
+		LOG.info("resetConnectionPoolStatistics({})", username);
+		server.database().connectionPool(username).resetStatistics();
+	}
 
-  @Override
-  public boolean isCollectPoolSnapshotStatistics(String username) {
-    return server.database().connectionPool(username).isCollectSnapshotStatistics();
-  }
+	@Override
+	public boolean isCollectPoolSnapshotStatistics(String username) {
+		return server.database().connectionPool(username).isCollectSnapshotStatistics();
+	}
 
-  @Override
-  public void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) {
-    LOG.info("setCollectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
-    server.database().connectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
-  }
+	@Override
+	public void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) {
+		LOG.info("setCollectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
+		server.database().connectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
+	}
 
-  @Override
-  public boolean isCollectPoolCheckOutTimes(String username) throws RemoteException {
-    return server.database().connectionPool(username).isCollectCheckOutTimes();
-  }
+	@Override
+	public boolean isCollectPoolCheckOutTimes(String username) throws RemoteException {
+		return server.database().connectionPool(username).isCollectCheckOutTimes();
+	}
 
-  @Override
-  public void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException {
-    LOG.info("setCollectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
-    server.database().connectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
-  }
+	@Override
+	public void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException {
+		LOG.info("setCollectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
+		server.database().connectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
+	}
 
-  @Override
-  public int requestsPerSecond() {
-    return AbstractRemoteEntityConnection.requestsPerSecond();
-  }
+	@Override
+	public int requestsPerSecond() {
+		return AbstractRemoteEntityConnection.requestsPerSecond();
+	}
 
-  @Override
-  public ConnectionPoolStatistics connectionPoolStatistics(String username, long since) {
-    return server.database().connectionPool(username).statistics(since);
-  }
+	@Override
+	public ConnectionPoolStatistics connectionPoolStatistics(String username, long since) {
+		return server.database().connectionPool(username).statistics(since);
+	}
 
-  @Override
-  public Database.Statistics databaseStatistics() {
-    return server.databaseStatistics();
-  }
+	@Override
+	public Database.Statistics databaseStatistics() {
+		return server.databaseStatistics();
+	}
 
-  @Override
-  public Collection<String> connectionPoolUsernames() {
-    return server.database().connectionPoolUsernames();
-  }
+	@Override
+	public Collection<String> connectionPoolUsernames() {
+		return server.database().connectionPoolUsernames();
+	}
 
-  @Override
-  public int getConnectionPoolCleanupInterval(String username) {
-    return server.database().connectionPool(username).getCleanupInterval();
-  }
+	@Override
+	public int getConnectionPoolCleanupInterval(String username) {
+		return server.database().connectionPool(username).getCleanupInterval();
+	}
 
-  @Override
-  public void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) {
-    LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
-    server.database().connectionPool(username).setCleanupInterval(poolCleanupInterval);
-  }
+	@Override
+	public void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) {
+		LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
+		server.database().connectionPool(username).setCleanupInterval(poolCleanupInterval);
+	}
 
-  @Override
-  public int getMaximumConnectionPoolSize(String username) {
-    return server.database().connectionPool(username).getMaximumPoolSize();
-  }
+	@Override
+	public int getMaximumConnectionPoolSize(String username) {
+		return server.database().connectionPool(username).getMaximumPoolSize();
+	}
 
-  @Override
-  public void setMaximumConnectionPoolSize(String username, int value) {
-    LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
-    server.database().connectionPool(username).setMaximumPoolSize(value);
-  }
+	@Override
+	public void setMaximumConnectionPoolSize(String username, int value) {
+		LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
+		server.database().connectionPool(username).setMaximumPoolSize(value);
+	}
 
-  @Override
-  public int getMinimumConnectionPoolSize(String username) {
-    return server.database().connectionPool(username).getMinimumPoolSize();
-  }
+	@Override
+	public int getMinimumConnectionPoolSize(String username) {
+		return server.database().connectionPool(username).getMinimumPoolSize();
+	}
 
-  @Override
-  public void setMinimumConnectionPoolSize(String username, int value) {
-    LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
-    server.database().connectionPool(username).setMinimumPoolSize(value);
-  }
+	@Override
+	public void setMinimumConnectionPoolSize(String username, int value) {
+		LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
+		server.database().connectionPool(username).setMinimumPoolSize(value);
+	}
 
-  @Override
-  public int getPooledConnectionIdleTimeout(String username) {
-    return server.database().connectionPool(username).getIdleConnectionTimeout();
-  }
+	@Override
+	public int getPooledConnectionIdleTimeout(String username) {
+		return server.database().connectionPool(username).getIdleConnectionTimeout();
+	}
 
-  @Override
-  public void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
-    LOG.info("setPooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
-    server.database().connectionPool(username).setIdleConnectionTimeout(pooledConnectionIdleTimeout);
-  }
+	@Override
+	public void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
+		LOG.info("setPooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
+		server.database().connectionPool(username).setIdleConnectionTimeout(pooledConnectionIdleTimeout);
+	}
 
-  @Override
-  public int getMaximumPoolCheckOutTime(String username) {
-    return server.database().connectionPool(username).getMaximumCheckOutTime();
-  }
+	@Override
+	public int getMaximumPoolCheckOutTime(String username) {
+		return server.database().connectionPool(username).getMaximumCheckOutTime();
+	}
 
-  @Override
-  public void setMaximumPoolCheckOutTime(String username, int value) {
-    LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
-    server.database().connectionPool(username).setMaximumCheckOutTime(value);
-  }
+	@Override
+	public void setMaximumPoolCheckOutTime(String username, int value) {
+		LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
+		server.database().connectionPool(username).setMaximumCheckOutTime(value);
+	}
 
-  @Override
-  public ClientLog clientLog(UUID clientId) {
-    return server.clientLog(clientId);
-  }
+	@Override
+	public ClientLog clientLog(UUID clientId) {
+		return server.clientLog(clientId);
+	}
 
-  @Override
-  public boolean isLoggingEnabled(UUID clientId) {
-    return server.isLoggingEnabled(clientId);
-  }
+	@Override
+	public boolean isLoggingEnabled(UUID clientId) {
+		return server.isLoggingEnabled(clientId);
+	}
 
-  @Override
-  public void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
-    LOG.info("setLoggingEnabled({}, {})", clientId, loggingEnabled);
-    server.setLoggingEnabled(clientId, loggingEnabled);
-  }
+	@Override
+	public void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
+		LOG.info("setLoggingEnabled({}, {})", clientId, loggingEnabled);
+		server.setLoggingEnabled(clientId, loggingEnabled);
+	}
 
-  @Override
-  public int getIdleConnectionTimeout() {
-    return server.getIdleConnectionTimeout();
-  }
+	@Override
+	public int getIdleConnectionTimeout() {
+		return server.getIdleConnectionTimeout();
+	}
 
-  @Override
-  public void setIdleConnectionTimeout(int idleConnectionTimeout) {
-    LOG.info("setIdleConnectionTimeout({})", idleConnectionTimeout);
-    server.setIdleConnectionTimeout(idleConnectionTimeout);
-  }
+	@Override
+	public void setIdleConnectionTimeout(int idleConnectionTimeout) {
+		LOG.info("setIdleConnectionTimeout({})", idleConnectionTimeout);
+		server.setIdleConnectionTimeout(idleConnectionTimeout);
+	}
 
-  @Override
-  public Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions() {
-    Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions = new HashMap<>();
-    server.domainEntityDefinitions().forEach((domainType, domainDefinitions) ->
-            domainEntityDefinitions.put(domainType.name(), domainDefinitions));
+	@Override
+	public Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions() {
+		Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions = new HashMap<>();
+		server.domainEntityDefinitions().forEach((domainType, domainDefinitions) ->
+						domainEntityDefinitions.put(domainType.name(), domainDefinitions));
 
-    return domainEntityDefinitions;
-  }
+		return domainEntityDefinitions;
+	}
 
-  @Override
-  public Map<String, Collection<DomainReport>> domainReports() throws RemoteException {
-    Map<String, Collection<DomainReport>> domainReports = new HashMap<>();
-    server.domainReports().forEach((domainType, reports) -> domainReports.put(domainType.name(), reports));
+	@Override
+	public Map<String, Collection<DomainReport>> domainReports() throws RemoteException {
+		Map<String, Collection<DomainReport>> domainReports = new HashMap<>();
+		server.domainReports().forEach((domainType, reports) -> domainReports.put(domainType.name(), reports));
 
-    return domainReports;
-  }
+		return domainReports;
+	}
 
-  @Override
-  public Map<String, Collection<DomainOperation>> domainOperations() throws RemoteException {
-    Map<String, Collection<DomainOperation>> domainOperations = new HashMap<>();
-    server.domainOperations().forEach((domainType, operations) -> domainOperations.put(domainType.name(), operations));
+	@Override
+	public Map<String, Collection<DomainOperation>> domainOperations() throws RemoteException {
+		Map<String, Collection<DomainOperation>> domainOperations = new HashMap<>();
+		server.domainOperations().forEach((domainType, operations) -> domainOperations.put(domainType.name(), operations));
 
-    return domainOperations;
-  }
+		return domainOperations;
+	}
 
-  @Override
-  public void clearReportCache() throws RemoteException {
-    server.clearReportCache();
-  }
+	@Override
+	public void clearReportCache() throws RemoteException {
+		server.clearReportCache();
+	}
 }

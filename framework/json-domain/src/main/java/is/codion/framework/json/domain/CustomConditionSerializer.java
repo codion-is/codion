@@ -31,24 +31,24 @@ import static java.util.stream.Collectors.toList;
 
 final class CustomConditionSerializer implements Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
+	private final EntityObjectMapper entityObjectMapper;
 
-  CustomConditionSerializer(EntityObjectMapper entityObjectMapper) {
-    this.entityObjectMapper = requireNonNull(entityObjectMapper);
-  }
+	CustomConditionSerializer(EntityObjectMapper entityObjectMapper) {
+		this.entityObjectMapper = requireNonNull(entityObjectMapper);
+	}
 
-  void serialize(CustomCondition condition, JsonGenerator generator) throws IOException {
-    generator.writeStartObject();
-    generator.writeStringField("type", "custom");
-    generator.writeStringField("conditionType", condition.conditionType().name());
-    generator.writeFieldName("columns");
-    entityObjectMapper.writeValue(generator, condition.columns().stream()
-            .map(Attribute::name)
-            .collect(toList()));
-    generator.writeFieldName("values");
-    entityObjectMapper.writeValue(generator, condition.values());
-    generator.writeEndObject();
-  }
+	void serialize(CustomCondition condition, JsonGenerator generator) throws IOException {
+		generator.writeStartObject();
+		generator.writeStringField("type", "custom");
+		generator.writeStringField("conditionType", condition.conditionType().name());
+		generator.writeFieldName("columns");
+		entityObjectMapper.writeValue(generator, condition.columns().stream()
+						.map(Attribute::name)
+						.collect(toList()));
+		generator.writeFieldName("values");
+		entityObjectMapper.writeValue(generator, condition.values());
+		generator.writeEndObject();
+	}
 }

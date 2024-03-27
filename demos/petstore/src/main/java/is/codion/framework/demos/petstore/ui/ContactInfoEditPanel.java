@@ -26,21 +26,21 @@ import static is.codion.framework.demos.petstore.domain.Petstore.SellerContactIn
 
 public class ContactInfoEditPanel extends EntityEditPanel {
 
-  public ContactInfoEditPanel(SwingEntityEditModel model) {
-    super(model);
-  }
+	public ContactInfoEditPanel(SwingEntityEditModel model) {
+		super(model);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(SellerContactInfo.LAST_NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(SellerContactInfo.LAST_NAME);
 
-    createTextField(SellerContactInfo.LAST_NAME);
-    createTextField(SellerContactInfo.FIRST_NAME);
-    createTextField(SellerContactInfo.EMAIL);
+		createTextField(SellerContactInfo.LAST_NAME);
+		createTextField(SellerContactInfo.FIRST_NAME);
+		createTextField(SellerContactInfo.EMAIL);
 
-    setLayout(Layouts.flexibleGridLayout(3, 1));
-    addInputPanel(SellerContactInfo.LAST_NAME);
-    addInputPanel(SellerContactInfo.FIRST_NAME);
-    addInputPanel(SellerContactInfo.EMAIL);
-  }
+		setLayout(Layouts.flexibleGridLayout(3, 1));
+		addInputPanel(SellerContactInfo.LAST_NAME);
+		addInputPanel(SellerContactInfo.FIRST_NAME);
+		addInputPanel(SellerContactInfo.EMAIL);
+	}
 }

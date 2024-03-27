@@ -43,45 +43,45 @@ import static java.util.stream.Collectors.joining;
 
 public final class CityEditModel extends SwingEntityEditModel {
 
-  private static final String OPENSTREETMAP_ORG_SEARCH = "https://nominatim.openstreetmap.org/search?q=";
+	private static final String OPENSTREETMAP_ORG_SEARCH = "https://nominatim.openstreetmap.org/search?q=";
 
-  public CityEditModel(EntityConnectionProvider connectionProvider) {
-    super(City.TYPE, connectionProvider);
-    initializeComboBoxModels(City.COUNTRY_FK);
-  }
+	public CityEditModel(EntityConnectionProvider connectionProvider) {
+		super(City.TYPE, connectionProvider);
+		initializeComboBoxModels(City.COUNTRY_FK);
+	}
 
-  public void populateLocation() throws IOException, DatabaseException, ValidationException {
-    Location location = lookupLocation(entity())
-            .orElseThrow(() -> new RuntimeException("Location not found for city: " + entity()));
-    put(City.LOCATION, location);
-    if (modified().get()) {
-      update();
-    }
-  }
+	public void populateLocation() throws IOException, DatabaseException, ValidationException {
+		Location location = lookupLocation(entity())
+						.orElseThrow(() -> new RuntimeException("Location not found for city: " + entity()));
+		put(City.LOCATION, location);
+		if (modified().get()) {
+			update();
+		}
+	}
 
-  void populateLocation(Entity city) throws IOException, DatabaseException, ValidationException {
-    lookupLocation(city).ifPresent(location -> city.put(City.LOCATION, location));
-    if (city.modified()) {
-      update(singletonList(city));
-    }
-  }
+	void populateLocation(Entity city) throws IOException, DatabaseException, ValidationException {
+		lookupLocation(city).ifPresent(location -> city.put(City.LOCATION, location));
+		if (city.modified()) {
+			update(singletonList(city));
+		}
+	}
 
-  private static Optional<Location> lookupLocation(Entity city) throws IOException {
-    JSONArray jsonArray = toJSONArray(new URL(OPENSTREETMAP_ORG_SEARCH +
-            URLEncoder.encode(city.get(City.NAME), UTF_8.name()) + "," +
-            URLEncoder.encode(city.get(City.COUNTRY_FK).get(Country.NAME), UTF_8.name()) + "&format=json"));
-    if (!jsonArray.isEmpty()) {
-      JSONObject cityInformation = (JSONObject) jsonArray.get(0);
+	private static Optional<Location> lookupLocation(Entity city) throws IOException {
+		JSONArray jsonArray = toJSONArray(new URL(OPENSTREETMAP_ORG_SEARCH +
+						URLEncoder.encode(city.get(City.NAME), UTF_8.name()) + "," +
+						URLEncoder.encode(city.get(City.COUNTRY_FK).get(Country.NAME), UTF_8.name()) + "&format=json"));
+		if (!jsonArray.isEmpty()) {
+			JSONObject cityInformation = (JSONObject) jsonArray.get(0);
 
-      return Optional.of(new Location(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
-    }
+			return Optional.of(new Location(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
+		}
 
-    return Optional.empty();
-  }
+		return Optional.empty();
+	}
 
-  private static JSONArray toJSONArray(URL url) throws IOException {
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream(), UTF_8))) {
-      return new JSONArray(reader.lines().collect(joining()));
-    }
-  }
+	private static JSONArray toJSONArray(URL url) throws IOException {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream(), UTF_8))) {
+			return new JSONArray(reader.lines().collect(joining()));
+		}
+	}
 }

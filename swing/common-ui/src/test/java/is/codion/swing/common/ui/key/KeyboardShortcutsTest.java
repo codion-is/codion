@@ -32,40 +32,40 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class KeyboardShortcutsTest {
 
-  enum Shortcut {
-    ONE, TWO
-  }
+	enum Shortcut {
+		ONE, TWO
+	}
 
-  @Test
-  void test() {
-    assertThrows(IllegalArgumentException.class, () -> keyboardShortcuts(Shortcut.class, shortcut -> {
-      if (shortcut == Shortcut.ONE) {
-        return keyStroke(KeyEvent.VK_1);
-      }
+	@Test
+	void test() {
+		assertThrows(IllegalArgumentException.class, () -> keyboardShortcuts(Shortcut.class, shortcut -> {
+			if (shortcut == Shortcut.ONE) {
+				return keyStroke(KeyEvent.VK_1);
+			}
 
-      return null;
-    }));
+			return null;
+		}));
 
-    KeyboardShortcuts<Shortcut> shortcuts = keyboardShortcuts(Shortcut.class, shortcut -> {
-      switch (shortcut) {
-        case ONE:
-          return keyStroke(KeyEvent.VK_1);
-        case TWO:
-          return keyStroke(KeyEvent.VK_2);
-        default:
-          throw new IllegalArgumentException();
-      }
-    });
+		KeyboardShortcuts<Shortcut> shortcuts = keyboardShortcuts(Shortcut.class, shortcut -> {
+			switch (shortcut) {
+				case ONE:
+					return keyStroke(KeyEvent.VK_1);
+				case TWO:
+					return keyStroke(KeyEvent.VK_2);
+				default:
+					throw new IllegalArgumentException();
+			}
+		});
 
-    assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(Shortcut.ONE).get().getKeyCode());
-    assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(Shortcut.TWO).get().getKeyCode());
+		assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(Shortcut.ONE).get().getKeyCode());
+		assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(Shortcut.TWO).get().getKeyCode());
 
-    KeyboardShortcuts<Shortcut> copy = shortcuts.copy();
-    Stream.of(Shortcut.values()).forEach(shortcut -> {
-      Value<KeyStroke> keyStrokeValue = shortcuts.keyStroke(shortcut);
-      Value<KeyStroke> keyStrokeValueCopy = copy.keyStroke(shortcut);
-      assertNotSame(keyStrokeValue, keyStrokeValueCopy);
-      assertTrue(keyStrokeValue.isEqualTo(keyStrokeValueCopy.get()));
-    });
-  }
+		KeyboardShortcuts<Shortcut> copy = shortcuts.copy();
+		Stream.of(Shortcut.values()).forEach(shortcut -> {
+			Value<KeyStroke> keyStrokeValue = shortcuts.keyStroke(shortcut);
+			Value<KeyStroke> keyStrokeValueCopy = copy.keyStroke(shortcut);
+			assertNotSame(keyStrokeValue, keyStrokeValueCopy);
+			assertTrue(keyStrokeValue.isEqualTo(keyStrokeValueCopy.get()));
+		});
+	}
 }

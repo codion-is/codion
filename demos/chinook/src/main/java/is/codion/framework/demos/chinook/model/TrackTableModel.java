@@ -32,38 +32,38 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
-  private static final int DEFAULT_LIMIT = 1_000;
-  private static final int MAXIMUM_LIMIT = 10_000;
+	private static final int DEFAULT_LIMIT = 1_000;
+	private static final int MAXIMUM_LIMIT = 10_000;
 
-  public TrackTableModel(EntityConnectionProvider connectionProvider) {
-    super(Track.TYPE, connectionProvider);
-    editable().set(true);
-    configureLimit();
-  }
+	public TrackTableModel(EntityConnectionProvider connectionProvider) {
+		super(Track.TYPE, connectionProvider);
+		editable().set(true);
+		configureLimit();
+	}
 
-  public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
-    if (selectionModel().selectionNotEmpty().get()) {
-      Collection<Long> trackIds = Entity.values(Track.ID, selectionModel().getSelectedItems());
-      Collection<Entity> result = connection()
-              .execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
-      replace(result);
-    }
-  }
+	public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
+		if (selectionModel().selectionNotEmpty().get()) {
+			Collection<Long> trackIds = Entity.values(Track.ID, selectionModel().getSelectedItems());
+			Collection<Entity> result = connection()
+							.execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
+			replace(result);
+		}
+	}
 
-  private void configureLimit() {
-    limit().set(DEFAULT_LIMIT);
-    limit().addListener(this::refresh);
-    limit().addValidator(new LimitValidator());
-  }
+	private void configureLimit() {
+		limit().set(DEFAULT_LIMIT);
+		limit().addListener(this::refresh);
+		limit().addValidator(new LimitValidator());
+	}
 
-  private static final class LimitValidator implements Validator<Integer> {
+	private static final class LimitValidator implements Validator<Integer> {
 
-    @Override
-    public void validate(Integer value) {
-      if (value != null && value > MAXIMUM_LIMIT) {
-        // The error message is never displayed, so not required
-        throw new IllegalArgumentException();
-      }
-    }
-  }
+		@Override
+		public void validate(Integer value) {
+			if (value != null && value > MAXIMUM_LIMIT) {
+				// The error message is never displayed, so not required
+				throw new IllegalArgumentException();
+			}
+		}
+	}
 }

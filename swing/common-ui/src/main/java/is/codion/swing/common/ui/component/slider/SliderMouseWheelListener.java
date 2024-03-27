@@ -30,24 +30,24 @@ import static java.util.Objects.requireNonNull;
  */
 final class SliderMouseWheelListener implements MouseWheelListener {
 
-  private final BoundedRangeModel boundedRangeModel;
-  private final boolean reversed;
+	private final BoundedRangeModel boundedRangeModel;
+	private final boolean reversed;
 
-  /**
-   * Instantiates a new mouse wheel listener
-   * @param boundedRangeModel the model
-   * @param reversed if true then up/away decreases the value and down/towards increases it.
-   */
-  SliderMouseWheelListener(BoundedRangeModel boundedRangeModel, boolean reversed) {
-    this.boundedRangeModel = requireNonNull(boundedRangeModel);
-    this.reversed = reversed;
-  }
+	/**
+	 * Instantiates a new mouse wheel listener
+	 * @param boundedRangeModel the model
+	 * @param reversed if true then up/away decreases the value and down/towards increases it.
+	 */
+	SliderMouseWheelListener(BoundedRangeModel boundedRangeModel, boolean reversed) {
+		this.boundedRangeModel = requireNonNull(boundedRangeModel);
+		this.reversed = reversed;
+	}
 
-  @Override
-  public void mouseWheelMoved(MouseWheelEvent event) {
-    int wheelRotation = event.getWheelRotation();
-    if (wheelRotation != 0) {
-      boundedRangeModel.setValue(boundedRangeModel.getValue() + (wheelRotation * (reversed ? 1 : -1)));
-    }
-  }
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent event) {
+		int wheelRotation = event.getWheelRotation();
+		if (wheelRotation != 0) {
+			boundedRangeModel.setValue(boundedRangeModel.getValue() + (wheelRotation * (reversed ? 1 : -1)));
+		}
+	}
 }

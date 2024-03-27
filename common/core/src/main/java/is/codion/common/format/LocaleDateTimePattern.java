@@ -50,99 +50,99 @@ import java.util.Optional;
  */
 public interface LocaleDateTimePattern {
 
-  /**
-   * @return the time part of this format, null if none is available
-   */
-  Optional<String> timePattern();
+	/**
+	 * @return the time part of this format, null if none is available
+	 */
+	Optional<String> timePattern();
 
-  /**
-   * @return the date part of this format using the default Locale
-   */
-  String datePattern();
+	/**
+	 * @return the date part of this format using the default Locale
+	 */
+	String datePattern();
 
-  /**
-   * @return the date and time (if available) parts of this format using the default Locale
-   */
-  String dateTimePattern();
+	/**
+	 * @return the date and time (if available) parts of this format using the default Locale
+	 */
+	String dateTimePattern();
 
-  /**
-   * @param locale the locale
-   * @return the date part of this format
-   */
-  String datePattern(Locale locale);
+	/**
+	 * @param locale the locale
+	 * @return the date part of this format
+	 */
+	String datePattern(Locale locale);
 
-  /**
-   * @param locale the locale
-   * @return the date and time (if available) parts of this format
-   */
-  String dateTimePattern(Locale locale);
+	/**
+	 * @param locale the locale
+	 * @return the date and time (if available) parts of this format
+	 */
+	String dateTimePattern(Locale locale);
 
-  /**
-   * @return a new {@link DateTimeFormatter} instance based on this pattern
-   */
-  DateTimeFormatter createFormatter();
+	/**
+	 * @return a new {@link DateTimeFormatter} instance based on this pattern
+	 */
+	DateTimeFormatter createFormatter();
 
-  /**
-   * @return a new Builder for a {@link LocaleDateTimePattern}.
-   */
-  static Builder builder() {
-    return new DefaultLocaleDateTimePattern.DefaultBuilder();
-  }
+	/**
+	 * @return a new Builder for a {@link LocaleDateTimePattern}.
+	 */
+	static Builder builder() {
+		return new DefaultLocaleDateTimePattern.DefaultBuilder();
+	}
 
-  /**
-   * A Builder for {@link LocaleDateTimePattern}.
-   */
-  interface Builder {
+	/**
+	 * A Builder for {@link LocaleDateTimePattern}.
+	 */
+	interface Builder {
 
-    /**
-     * @param delimiter the date delimiter
-     * @return this Builder instance
-     */
-    Builder delimiter(String delimiter);
+		/**
+		 * @param delimiter the date delimiter
+		 * @return this Builder instance
+		 */
+		Builder delimiter(String delimiter);
 
-    /**
-     * @return this Builder instance
-     */
-    Builder delimiterDash();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder delimiterDash();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder delimiterDot();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder delimiterDot();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder delimiterSlash();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder delimiterSlash();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder yearTwoDigits();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder yearTwoDigits();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder yearFourDigits();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder yearFourDigits();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder hoursMinutes();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder hoursMinutes();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder hoursMinutesSeconds();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder hoursMinutesSeconds();
 
-    /**
-     * @return this Builder instance
-     */
-    Builder hoursMinutesSecondsMilliseconds();
+		/**
+		 * @return this Builder instance
+		 */
+		Builder hoursMinutesSecondsMilliseconds();
 
-    /**
-     * @return a new {@link LocaleDateTimePattern} based on this builder.
-     */
-    LocaleDateTimePattern build();
-  }
+		/**
+		 * @return a new {@link LocaleDateTimePattern} based on this builder.
+		 */
+		LocaleDateTimePattern build();
+	}
 }

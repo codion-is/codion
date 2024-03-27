@@ -53,245 +53,245 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityComboBoxPanel extends JPanel {
 
-  /**
-   * The default keyboard shortcut keyStrokes.
-   */
-  public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-          keyboardShortcuts(KeyboardShortcut.class, EntityComboBoxPanel::defaultKeyStroke);
+	/**
+	 * The default keyboard shortcut keyStrokes.
+	 */
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(KeyboardShortcut.class, EntityComboBoxPanel::defaultKeyStroke);
 
-  /**
-   * The available keyboard shortcuts.
-   */
-  public enum KeyboardShortcut {
-    /**
-     * Displays a dialog for adding a new record.
-     */
-    ADD,
-    /**
-     * Displays a dialog for editing the selected record.
-     */
-    EDIT
-  }
+	/**
+	 * The available keyboard shortcuts.
+	 */
+	public enum KeyboardShortcut {
+		/**
+		 * Displays a dialog for adding a new record.
+		 */
+		ADD,
+		/**
+		 * Displays a dialog for editing the selected record.
+		 */
+		EDIT
+	}
 
-  private final EntityComboBox comboBox;
-  private final List<AbstractButton> buttons = new ArrayList<>(0);
+	private final EntityComboBox comboBox;
+	private final List<AbstractButton> buttons = new ArrayList<>(0);
 
-  private EntityComboBoxPanel(DefaultBuilder builder) {
-    comboBox = builder.createComboBox();
-    List<Action> actions = new ArrayList<>();
-    if (builder.add) {
-      actions.add(createAddControl(comboBox, builder.editPanelSupplier,
-              builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
-    }
-    if (builder.edit) {
-      actions.add(createEditControl(comboBox, builder.editPanelSupplier,
-              builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
-    }
-    setLayout(new BorderLayout());
-    add(createButtonPanel(comboBox, builder.buttonsFocusable, builder.buttonLocation,
-            buttons, actions.toArray(new Action[0])), BorderLayout.CENTER);
-    addFocusListener(new InputFocusAdapter(comboBox));
-  }
+	private EntityComboBoxPanel(DefaultBuilder builder) {
+		comboBox = builder.createComboBox();
+		List<Action> actions = new ArrayList<>();
+		if (builder.add) {
+			actions.add(createAddControl(comboBox, builder.editPanelSupplier,
+							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
+		}
+		if (builder.edit) {
+			actions.add(createEditControl(comboBox, builder.editPanelSupplier,
+							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
+		}
+		setLayout(new BorderLayout());
+		add(createButtonPanel(comboBox, builder.buttonsFocusable, builder.buttonLocation,
+						buttons, actions.toArray(new Action[0])), BorderLayout.CENTER);
+		addFocusListener(new InputFocusAdapter(comboBox));
+	}
 
-  /**
-   * @return the {@link EntityComboBox}
-   */
-  public EntityComboBox comboBox() {
-    return comboBox;
-  }
+	/**
+	 * @return the {@link EntityComboBox}
+	 */
+	public EntityComboBox comboBox() {
+		return comboBox;
+	}
 
-  /**
-   * @param comboBoxModel the combo box model
-   * @param editPanelSupplier the edit panel supplier
-   * @return a new builder instance
-   */
-  public static ComponentBuilder<Entity, EntityComboBoxPanel, Builder> builder(EntityComboBoxModel comboBoxModel,
-                                                                               Supplier<EntityEditPanel> editPanelSupplier) {
-    return new DefaultBuilder(comboBoxModel, editPanelSupplier, null);
-  }
+	/**
+	 * @param comboBoxModel the combo box model
+	 * @param editPanelSupplier the edit panel supplier
+	 * @return a new builder instance
+	 */
+	public static ComponentBuilder<Entity, EntityComboBoxPanel, Builder> builder(EntityComboBoxModel comboBoxModel,
+																																							 Supplier<EntityEditPanel> editPanelSupplier) {
+		return new DefaultBuilder(comboBoxModel, editPanelSupplier, null);
+	}
 
-  /**
-   * @param comboBoxModel the combo box model
-   * @param editPanelSupplier the edit panel supplier
-   * @param linkedValue the linked value
-   * @return a new builder instance
-   */
-  public static ComponentBuilder<Entity, EntityComboBoxPanel, Builder> builder(EntityComboBoxModel comboBoxModel,
-                                                                               Supplier<EntityEditPanel> editPanelSupplier,
-                                                                               Value<Entity> linkedValue) {
-    return new DefaultBuilder(comboBoxModel, editPanelSupplier, requireNonNull(linkedValue));
-  }
+	/**
+	 * @param comboBoxModel the combo box model
+	 * @param editPanelSupplier the edit panel supplier
+	 * @param linkedValue the linked value
+	 * @return a new builder instance
+	 */
+	public static ComponentBuilder<Entity, EntityComboBoxPanel, Builder> builder(EntityComboBoxModel comboBoxModel,
+																																							 Supplier<EntityEditPanel> editPanelSupplier,
+																																							 Value<Entity> linkedValue) {
+		return new DefaultBuilder(comboBoxModel, editPanelSupplier, requireNonNull(linkedValue));
+	}
 
-  /**
-   * A builder for a {@link EntityComboBoxPanel}
-   */
-  public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
+	/**
+	 * A builder for a {@link EntityComboBoxPanel}
+	 */
+	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
 
-    /**
-     * @param add true if a 'Add' button should be included
-     * @return this builder instance
-     */
-    Builder add(boolean add);
+		/**
+		 * @param add true if a 'Add' button should be included
+		 * @return this builder instance
+		 */
+		Builder add(boolean add);
 
-    /**
-     * @param edit true if a 'Edit' button should be included
-     * @return this builder instance
-     */
-    Builder edit(boolean edit);
+		/**
+		 * @param edit true if a 'Edit' button should be included
+		 * @return this builder instance
+		 */
+		Builder edit(boolean edit);
 
-    /**
-     * Default false
-     * @param buttonsFocusable true if the buttons should be focusable
-     * @return this builder instance
-     */
-    Builder buttonsFocusable(boolean buttonsFocusable);
+		/**
+		 * Default false
+		 * @param buttonsFocusable true if the buttons should be focusable
+		 * @return this builder instance
+		 */
+		Builder buttonsFocusable(boolean buttonsFocusable);
 
-    /**
-     * Must be one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}.
-     * @param buttonLocation the button location
-     * @return this builder instance
-     * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
-     */
-    Builder buttonLocation(String buttonLocation);
+		/**
+		 * Must be one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}.
+		 * @param buttonLocation the button location
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
+		 */
+		Builder buttonLocation(String buttonLocation);
 
-    /**
-     * @param keyboardShortcut the keyboard shortcut key
-     * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
-     * @return this builder instance
-     */
-    Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		/**
+		 * @param keyboardShortcut the keyboard shortcut key
+		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @return this builder instance
+		 */
+		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
 
-    /**
-     * @param comboBoxPreferredWidth the preferred combo box width
-     * @return this builder instance
-     */
-    Builder comboBoxPreferredWidth(int comboBoxPreferredWidth);
+		/**
+		 * @param comboBoxPreferredWidth the preferred combo box width
+		 * @return this builder instance
+		 */
+		Builder comboBoxPreferredWidth(int comboBoxPreferredWidth);
 
-    /**
-     * @return a new {@link EntityComboBoxPanel} based on this builder
-     */
-    EntityComboBoxPanel build();
-  }
+		/**
+		 * @return a new {@link EntityComboBoxPanel} based on this builder
+		 */
+		EntityComboBoxPanel build();
+	}
 
-  private static final class InputFocusAdapter extends FocusAdapter {
+	private static final class InputFocusAdapter extends FocusAdapter {
 
-    private final EntityComboBox comboBox;
+		private final EntityComboBox comboBox;
 
-    private InputFocusAdapter(EntityComboBox comboBox) {
-      this.comboBox = comboBox;
-    }
+		private InputFocusAdapter(EntityComboBox comboBox) {
+			this.comboBox = comboBox;
+		}
 
-    @Override
-    public void focusGained(FocusEvent e) {
-      comboBox.requestFocusInWindow();
-    }
-  }
+		@Override
+		public void focusGained(FocusEvent e) {
+			comboBox.requestFocusInWindow();
+		}
+	}
 
-  private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-    switch (shortcut) {
-      case ADD:
-        return keyStroke(VK_INSERT);
-      case EDIT:
-        return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
-      default:
-        throw new IllegalArgumentException();
-    }
-  }
+	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
+		switch (shortcut) {
+			case ADD:
+				return keyStroke(VK_INSERT);
+			case EDIT:
+				return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
 
-  private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
 
-    private final ComboBoxBuilder<Entity, EntityComboBox, ?> entityComboBoxBuilder;
-    private final Supplier<EntityEditPanel> editPanelSupplier;
-    private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final ComboBoxBuilder<Entity, EntityComboBox, ?> entityComboBoxBuilder;
+		private final Supplier<EntityEditPanel> editPanelSupplier;
+		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
-    private boolean add;
-    private boolean edit;
-    private boolean buttonsFocusable;
-    private String buttonLocation = defaultButtonLocation();
+		private boolean add;
+		private boolean edit;
+		private boolean buttonsFocusable;
+		private String buttonLocation = defaultButtonLocation();
 
-    private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
-      super(linkedValue);
-      this.entityComboBoxBuilder = EntityComboBox.builder(comboBoxModel);
-      this.editPanelSupplier = requireNonNull(editPanelSupplier);
-    }
+		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
+			super(linkedValue);
+			this.entityComboBoxBuilder = EntityComboBox.builder(comboBoxModel);
+			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		}
 
-    @Override
-    public Builder add(boolean add) {
-      this.add = add;
-      return this;
-    }
+		@Override
+		public Builder add(boolean add) {
+			this.add = add;
+			return this;
+		}
 
-    @Override
-    public Builder edit(boolean edit) {
-      this.edit = edit;
-      return this;
-    }
+		@Override
+		public Builder edit(boolean edit) {
+			this.edit = edit;
+			return this;
+		}
 
-    @Override
-    public Builder buttonsFocusable(boolean buttonsFocusable) {
-      this.buttonsFocusable = buttonsFocusable;
-      return this;
-    }
+		@Override
+		public Builder buttonsFocusable(boolean buttonsFocusable) {
+			this.buttonsFocusable = buttonsFocusable;
+			return this;
+		}
 
-    @Override
-    public Builder buttonLocation(String buttonLocation) {
-      this.buttonLocation = validateButtonLocation(buttonLocation);
-      return this;
-    }
+		@Override
+		public Builder buttonLocation(String buttonLocation) {
+			this.buttonLocation = validateButtonLocation(buttonLocation);
+			return this;
+		}
 
-    @Override
-    public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-      keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
-      return this;
-    }
+		@Override
+		public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+			return this;
+		}
 
-    @Override
-    public Builder comboBoxPreferredWidth(int comboBoxPreferredWidth) {
-      entityComboBoxBuilder.preferredWidth(comboBoxPreferredWidth);
-      return this;
-    }
+		@Override
+		public Builder comboBoxPreferredWidth(int comboBoxPreferredWidth) {
+			entityComboBoxBuilder.preferredWidth(comboBoxPreferredWidth);
+			return this;
+		}
 
-    @Override
-    protected EntityComboBoxPanel createComponent() {
-      return new EntityComboBoxPanel(this);
-    }
+		@Override
+		protected EntityComboBoxPanel createComponent() {
+			return new EntityComboBoxPanel(this);
+		}
 
-    @Override
-    protected ComponentValue<Entity, EntityComboBoxPanel> createComponentValue(EntityComboBoxPanel component) {
-      return new EntityComboBoxPanelValue(component);
-    }
+		@Override
+		protected ComponentValue<Entity, EntityComboBoxPanel> createComponentValue(EntityComboBoxPanel component) {
+			return new EntityComboBoxPanelValue(component);
+		}
 
-    @Override
-    protected void enableTransferFocusOnEnter(EntityComboBoxPanel component) {
-      TransferFocusOnEnter.enable(component.comboBox());
-      component.buttons.forEach(TransferFocusOnEnter::enable);
-    }
+		@Override
+		protected void enableTransferFocusOnEnter(EntityComboBoxPanel component) {
+			TransferFocusOnEnter.enable(component.comboBox());
+			component.buttons.forEach(TransferFocusOnEnter::enable);
+		}
 
-    @Override
-    protected void setInitialValue(EntityComboBoxPanel component, Entity initialValue) {
-      component.comboBox.setSelectedItem(initialValue);
-    }
+		@Override
+		protected void setInitialValue(EntityComboBoxPanel component, Entity initialValue) {
+			component.comboBox.setSelectedItem(initialValue);
+		}
 
-    private EntityComboBox createComboBox() {
-      return entityComboBoxBuilder.clear().build();
-    }
+		private EntityComboBox createComboBox() {
+			return entityComboBoxBuilder.clear().build();
+		}
 
-    private static class EntityComboBoxPanelValue extends AbstractComponentValue<Entity, EntityComboBoxPanel> {
+		private static class EntityComboBoxPanelValue extends AbstractComponentValue<Entity, EntityComboBoxPanel> {
 
-      private EntityComboBoxPanelValue(EntityComboBoxPanel component) {
-        super(component);
-        component.comboBox.getModel().addSelectionListener(entity -> notifyListeners());
-      }
+			private EntityComboBoxPanelValue(EntityComboBoxPanel component) {
+				super(component);
+				component.comboBox.getModel().addSelectionListener(entity -> notifyListeners());
+			}
 
-      @Override
-      protected Entity getComponentValue() {
-        return component().comboBox.getModel().selectedValue();
-      }
+			@Override
+			protected Entity getComponentValue() {
+				return component().comboBox.getModel().selectedValue();
+			}
 
-      @Override
-      protected void setComponentValue(Entity entity) {
-        component().comboBox.setSelectedItem(entity);
-      }
-    }
-  }
+			@Override
+			protected void setComponentValue(Entity entity) {
+				component().comboBox.setSelectedItem(entity);
+			}
+		}
+	}
 }

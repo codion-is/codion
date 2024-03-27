@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class CompletionTest {
 
-  @Test
-  void setTwice() {
-    JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
-    assertThrows(IllegalStateException.class, () -> Completion.maximumMatch(comboBox));
-  }
+	@Test
+	void setTwice() {
+		JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
+		assertThrows(IllegalStateException.class, () -> Completion.maximumMatch(comboBox));
+	}
 }

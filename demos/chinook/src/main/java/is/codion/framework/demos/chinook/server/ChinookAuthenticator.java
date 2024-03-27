@@ -48,98 +48,98 @@ import static java.lang.String.valueOf;
  */
 public final class ChinookAuthenticator implements Authenticator {
 
-  /**
-   * The Database instance we're connecting to.
-   */
-  private final Database database = Database.instance();
+	/**
+	 * The Database instance we're connecting to.
+	 */
+	private final Database database = Database.instance();
 
-  /**
-   * The actual user credentials to return for successfully authenticated users.
-   */
-  private final User databaseUser = User.parse("scott:tiger");
+	/**
+	 * The actual user credentials to return for successfully authenticated users.
+	 */
+	private final User databaseUser = User.parse("scott:tiger");
 
-  /**
-   * The Domain containing the authentication table.
-   */
-  private final Domain domain = new Authentication();
+	/**
+	 * The Domain containing the authentication table.
+	 */
+	private final Domain domain = new Authentication();
 
-  /**
-   * The ConnectionPool used when authenticating users.
-   */
-  private final ConnectionPoolWrapper connectionPool;
+	/**
+	 * The ConnectionPool used when authenticating users.
+	 */
+	private final ConnectionPoolWrapper connectionPool;
 
-  /**
-   * The user used for authenticating.
-   */
-  private final User authenticationUser = User.user("sa");
+	/**
+	 * The user used for authenticating.
+	 */
+	private final User authenticationUser = User.user("sa");
 
-  public ChinookAuthenticator() throws DatabaseException {
-    connectionPool = ConnectionPoolFactory.instance().createConnectionPool(database, authenticationUser);
-  }
+	public ChinookAuthenticator() throws DatabaseException {
+		connectionPool = ConnectionPoolFactory.instance().createConnectionPool(database, authenticationUser);
+	}
 
-  /**
-   * Handles logins from clients with this id
-   */
-  @Override
-  public Optional<String> clientTypeId() {
-    return Optional.of("is.codion.framework.demos.chinook.ui.ChinookAppPanel");
-  }
+	/**
+	 * Handles logins from clients with this id
+	 */
+	@Override
+	public Optional<String> clientTypeId() {
+		return Optional.of("is.codion.framework.demos.chinook.ui.ChinookAppPanel");
+	}
 
-  @Override
-  public RemoteClient login(RemoteClient remoteClient) throws LoginException {
-    authenticateUser(remoteClient.user());
+	@Override
+	public RemoteClient login(RemoteClient remoteClient) throws LoginException {
+		authenticateUser(remoteClient.user());
 
-    //Create a new RemoteClient based on the one received
-    //but with the actual database user
-    return remoteClient.withDatabaseUser(databaseUser);
-  }
+		//Create a new RemoteClient based on the one received
+		//but with the actual database user
+		return remoteClient.withDatabaseUser(databaseUser);
+	}
 
-  @Override
-  public void close() {
-    connectionPool.close();
-  }
+	@Override
+	public void close() {
+		connectionPool.close();
+	}
 
-  private void authenticateUser(User user) throws LoginException {
-    try (EntityConnection connection = fetchConnectionFromPool()) {
-      int rows = connection.count(where(and(
-              Authentication.User.USERNAME
-                      .equalToIgnoreCase(user.username()),
-              Authentication.User.PASSWORD_HASH
-                      .equalTo(valueOf(user.password()).hashCode()))));
-      if (rows == 0) {
-        throw new ServerAuthenticationException("Wrong username or password");
-      }
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	private void authenticateUser(User user) throws LoginException {
+		try (EntityConnection connection = fetchConnectionFromPool()) {
+			int rows = connection.count(where(and(
+							Authentication.User.USERNAME
+											.equalToIgnoreCase(user.username()),
+							Authentication.User.PASSWORD_HASH
+											.equalTo(valueOf(user.password()).hashCode()))));
+			if (rows == 0) {
+				throw new ServerAuthenticationException("Wrong username or password");
+			}
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  private EntityConnection fetchConnectionFromPool() throws DatabaseException {
-    return localEntityConnection(database, domain, connectionPool.connection(authenticationUser));
-  }
+	private EntityConnection fetchConnectionFromPool() throws DatabaseException {
+		return localEntityConnection(database, domain, connectionPool.connection(authenticationUser));
+	}
 
-  private static final class Authentication extends DefaultDomain {
+	private static final class Authentication extends DefaultDomain {
 
-    private static final DomainType DOMAIN = domainType(Authentication.class);
+		private static final DomainType DOMAIN = domainType(Authentication.class);
 
-    interface User {
-      EntityType TYPE = DOMAIN.entityType("chinook.users");
-      Column<Integer> ID = TYPE.integerColumn("userid");
-      Column<String> USERNAME = TYPE.stringColumn("username");
-      Column<Integer> PASSWORD_HASH = TYPE.integerColumn("passwordhash");
-    }
+		interface User {
+			EntityType TYPE = DOMAIN.entityType("chinook.users");
+			Column<Integer> ID = TYPE.integerColumn("userid");
+			Column<String> USERNAME = TYPE.stringColumn("username");
+			Column<Integer> PASSWORD_HASH = TYPE.integerColumn("passwordhash");
+		}
 
-    private Authentication() {
-      super(DOMAIN);
-      add(User.TYPE.define(
-                      User.ID.define()
-                              .primaryKey(),
-                      User.USERNAME.define()
-                              .column(),
-                      User.PASSWORD_HASH.define()
-                              .column())
-              .readOnly(true));
-    }
-  }
+		private Authentication() {
+			super(DOMAIN);
+			add(User.TYPE.define(
+											User.ID.define()
+															.primaryKey(),
+											User.USERNAME.define()
+															.column(),
+											User.PASSWORD_HASH.define()
+															.column())
+							.readOnly(true));
+		}
+	}
 }

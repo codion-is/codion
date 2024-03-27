@@ -33,24 +33,24 @@ import org.junit.jupiter.api.Test;
 
 public final class DefaultEntityComponentFactoryTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  private final SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
+	private final SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
 
-  @Test
-  void test() {
-    EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
-    foreignKeyComponentFactory.componentValue(Detail.MASTER_FK, editModel, null);
-    foreignKeyComponentFactory.componentValue(Detail.DETAIL_FK, editModel, null);
+	@Test
+	void test() {
+		EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
+		foreignKeyComponentFactory.componentValue(Detail.MASTER_FK, editModel, null);
+		foreignKeyComponentFactory.componentValue(Detail.DETAIL_FK, editModel, null);
 
-    EntityComponentFactory<Integer, Attribute<Integer>, NumberField<Integer>> integerComponentFactory = new DefaultEntityComponentFactory<>();
-    integerComponentFactory.componentValue(Detail.INT, editModel, null);
-    integerComponentFactory.componentValue(Detail.INT_DERIVED, editModel, null);
-  }
+		EntityComponentFactory<Integer, Attribute<Integer>, NumberField<Integer>> integerComponentFactory = new DefaultEntityComponentFactory<>();
+		integerComponentFactory.componentValue(Detail.INT, editModel, null);
+		integerComponentFactory.componentValue(Detail.INT_DERIVED, editModel, null);
+	}
 }

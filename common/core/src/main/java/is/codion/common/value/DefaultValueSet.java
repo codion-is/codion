@@ -29,190 +29,190 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet<T> {
 
-  private final Set<T> values = new LinkedHashSet<>();
+	private final Set<T> values = new LinkedHashSet<>();
 
-  private Value<T> value;
+	private Value<T> value;
 
-  DefaultValueSet(Set<T> initialValues, Notify notify) {
-    super(emptySet(), notify);
-    set(requireNonNull(initialValues, "initialValues"));
-  }
+	DefaultValueSet(Set<T> initialValues, Notify notify) {
+		super(emptySet(), notify);
+		set(requireNonNull(initialValues, "initialValues"));
+	}
 
-  @Override
-  public Iterator<T> iterator() {
-    return get().iterator();
-  }
+	@Override
+	public Iterator<T> iterator() {
+		return get().iterator();
+	}
 
-  @Override
-  public void set(Collection<T> values) {
-    synchronized (this.values) {
-      set(values == null ? null : new LinkedHashSet<>(values));
-    }
-  }
+	@Override
+	public void set(Collection<T> values) {
+		synchronized (this.values) {
+			set(values == null ? null : new LinkedHashSet<>(values));
+		}
+	}
 
-  @Override
-  public Set<T> get() {
-    synchronized (this.values) {
-      return unmodifiableSet(new LinkedHashSet<>(values));
-    }
-  }
+	@Override
+	public Set<T> get() {
+		synchronized (this.values) {
+			return unmodifiableSet(new LinkedHashSet<>(values));
+		}
+	}
 
-  @Override
-  public boolean add(T value) {
-    synchronized (this.values) {
-      Set<T> newValues = new LinkedHashSet<>(values);
-      boolean added = newValues.add(value);
-      set(newValues);
+	@Override
+	public boolean add(T value) {
+		synchronized (this.values) {
+			Set<T> newValues = new LinkedHashSet<>(values);
+			boolean added = newValues.add(value);
+			set(newValues);
 
-      return added;
-    }
-  }
+			return added;
+		}
+	}
 
-  @Override
-  public boolean addAll(T... values) {
-    return addAll(asList(values));
-  }
+	@Override
+	public boolean addAll(T... values) {
+		return addAll(asList(values));
+	}
 
-  @Override
-  public boolean addAll(Collection<T> values) {
-    requireNonNull(values);
-    synchronized (this.values) {
-      Set<T> newValues = new LinkedHashSet<>(this.values);
-      boolean added = false;
-      for (T val : values) {
-        added = newValues.add(val) || added;
-      }
-      set(newValues);
+	@Override
+	public boolean addAll(Collection<T> values) {
+		requireNonNull(values);
+		synchronized (this.values) {
+			Set<T> newValues = new LinkedHashSet<>(this.values);
+			boolean added = false;
+			for (T val : values) {
+				added = newValues.add(val) || added;
+			}
+			set(newValues);
 
-      return added;
-    }
-  }
+			return added;
+		}
+	}
 
-  @Override
-  public boolean remove(T value) {
-    synchronized (this.values) {
-      Set<T> newValues = new LinkedHashSet<>(values);
-      boolean removed = newValues.remove(value);
-      set(newValues);
+	@Override
+	public boolean remove(T value) {
+		synchronized (this.values) {
+			Set<T> newValues = new LinkedHashSet<>(values);
+			boolean removed = newValues.remove(value);
+			set(newValues);
 
-      return removed;
-    }
-  }
+			return removed;
+		}
+	}
 
-  @Override
-  public boolean removeAll(T... values) {
-    return removeAll(asList(values));
-  }
+	@Override
+	public boolean removeAll(T... values) {
+		return removeAll(asList(values));
+	}
 
-  @Override
-  public boolean removeAll(Collection<T> values) {
-    requireNonNull(values);
-    synchronized (this.values) {
-      Set<T> newValues = new LinkedHashSet<>(this.values);
-      boolean removed = false;
-      for (T val : values) {
-        removed = newValues.remove(val) || removed;
-      }
-      set(newValues);
+	@Override
+	public boolean removeAll(Collection<T> values) {
+		requireNonNull(values);
+		synchronized (this.values) {
+			Set<T> newValues = new LinkedHashSet<>(this.values);
+			boolean removed = false;
+			for (T val : values) {
+				removed = newValues.remove(val) || removed;
+			}
+			set(newValues);
 
-      return removed;
-    }
-  }
+			return removed;
+		}
+	}
 
-  @Override
-  public boolean contains(T value) {
-    synchronized (this.values) {
-      return this.values.contains(value);
-    }
-  }
+	@Override
+	public boolean contains(T value) {
+		synchronized (this.values) {
+			return this.values.contains(value);
+		}
+	}
 
-  @Override
-  public boolean containsAll(Collection<T> values) {
-    requireNonNull(values);
-    synchronized (this.values) {
-      return this.values.containsAll(values);
-    }
-  }
+	@Override
+	public boolean containsAll(Collection<T> values) {
+		requireNonNull(values);
+		synchronized (this.values) {
+			return this.values.containsAll(values);
+		}
+	}
 
-  @Override
-  public boolean empty() {
-    synchronized (this.values) {
-      return values.isEmpty();
-    }
-  }
+	@Override
+	public boolean empty() {
+		synchronized (this.values) {
+			return values.isEmpty();
+		}
+	}
 
-  @Override
-  public boolean notEmpty() {
-    return !empty();
-  }
+	@Override
+	public boolean notEmpty() {
+		return !empty();
+	}
 
-  @Override
-  public int size() {
-    synchronized (this.values) {
-      return values.size();
-    }
-  }
+	@Override
+	public int size() {
+		synchronized (this.values) {
+			return values.size();
+		}
+	}
 
-  @Override
-  public void clear() {
-    synchronized (this.values) {
-      set(emptySet());
-    }
-  }
+	@Override
+	public void clear() {
+		synchronized (this.values) {
+			set(emptySet());
+		}
+	}
 
-  @Override
-  public Value<T> value() {
-    synchronized (this.values) {
-      if (value == null) {
-        value = new SingleValue();
-      }
+	@Override
+	public Value<T> value() {
+		synchronized (this.values) {
+			if (value == null) {
+				value = new SingleValue();
+			}
 
-      return value;
-    }
-  }
+			return value;
+		}
+	}
 
-  @Override
-  public boolean isNull() {
-    return false;
-  }
+	@Override
+	public boolean isNull() {
+		return false;
+	}
 
-  @Override
-  public synchronized ValueSetObserver<T> observer() {
-    return (ValueSetObserver<T>) super.observer();
-  }
+	@Override
+	public synchronized ValueSetObserver<T> observer() {
+		return (ValueSetObserver<T>) super.observer();
+	}
 
-  @Override
-  protected ValueObserver<Set<T>> createObserver() {
-    return new DefaultValueSetObserver<>(this);
-  }
+	@Override
+	protected ValueObserver<Set<T>> createObserver() {
+		return new DefaultValueSetObserver<>(this);
+	}
 
-  @Override
-  protected void setValue(Set<T> values) {
-    synchronized (this.values) {
-      this.values.clear();
-      this.values.addAll(values);
-    }
-  }
+	@Override
+	protected void setValue(Set<T> values) {
+		synchronized (this.values) {
+			this.values.clear();
+			this.values.addAll(values);
+		}
+	}
 
-  private class SingleValue extends AbstractValue<T> {
+	private class SingleValue extends AbstractValue<T> {
 
-    private SingleValue() {
-      super(null);
-      DefaultValueSet.this.addListener(this::notifyListeners);
-    }
+		private SingleValue() {
+			super(null);
+			DefaultValueSet.this.addListener(this::notifyListeners);
+		}
 
-    @Override
-    public T get() {
-      Set<T> set = DefaultValueSet.this.get();
+		@Override
+		public T get() {
+			Set<T> set = DefaultValueSet.this.get();
 
-      return set.isEmpty() ? null : set.iterator().next();
-    }
+			return set.isEmpty() ? null : set.iterator().next();
+		}
 
-    @Override
-    protected void setValue(T value) {
-      synchronized (DefaultValueSet.this.values) {
-        DefaultValueSet.this.set(value == null ? emptySet() : singleton(value));
-      }
-    }
-  }
+		@Override
+		protected void setValue(T value) {
+			synchronized (DefaultValueSet.this.values) {
+				DefaultValueSet.this.set(value == null ? emptySet() : singleton(value));
+			}
+		}
+	}
 }

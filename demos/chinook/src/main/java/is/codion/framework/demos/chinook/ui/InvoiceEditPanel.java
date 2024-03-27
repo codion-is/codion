@@ -45,88 +45,88 @@ import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
 
-  private final EntityPanel invoiceLinePanel;
+	private final EntityPanel invoiceLinePanel;
 
-  public InvoiceEditPanel(SwingEntityEditModel editModel, EntityPanel invoiceLinePanel) {
-    super(editModel, config -> config.clearAfterInsert(false));
-    this.invoiceLinePanel = invoiceLinePanel;
-  }
+	public InvoiceEditPanel(SwingEntityEditModel editModel, EntityPanel invoiceLinePanel) {
+		super(editModel, config -> config.clearAfterInsert(false));
+		this.invoiceLinePanel = invoiceLinePanel;
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Invoice.CUSTOMER_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Invoice.CUSTOMER_FK);
 
-    createForeignKeySearchField(Invoice.CUSTOMER_FK)
-            .columns(14)
-            .selectorFactory(new CustomerSelectorFactory());
-    createTemporalFieldPanel(Invoice.DATE)
-            .columns(6);
+		createForeignKeySearchField(Invoice.CUSTOMER_FK)
+						.columns(14)
+						.selectorFactory(new CustomerSelectorFactory());
+		createTemporalFieldPanel(Invoice.DATE)
+						.columns(6);
 
-    createTextField(Invoice.BILLINGADDRESS)
-            .columns(12)
-            .selectAllOnFocusGained(true);
+		createTextField(Invoice.BILLINGADDRESS)
+						.columns(12)
+						.selectAllOnFocusGained(true);
 
-    createTextField(Invoice.BILLINGCITY)
-            .columns(8)
-            .selectAllOnFocusGained(true);
-    createTextField(Invoice.BILLINGPOSTALCODE)
-            .columns(4)
-            .selectAllOnFocusGained(true);
+		createTextField(Invoice.BILLINGCITY)
+						.columns(8)
+						.selectAllOnFocusGained(true);
+		createTextField(Invoice.BILLINGPOSTALCODE)
+						.columns(4)
+						.selectAllOnFocusGained(true);
 
-    createTextField(Invoice.BILLINGSTATE)
-            .columns(4)
-            .selectAllOnFocusGained(true);
-    createTextField(Invoice.BILLINGCOUNTRY)
-            .columns(8)
-            .selectAllOnFocusGained(true);
+		createTextField(Invoice.BILLINGSTATE)
+						.columns(4)
+						.selectAllOnFocusGained(true);
+		createTextField(Invoice.BILLINGCOUNTRY)
+						.columns(8)
+						.selectAllOnFocusGained(true);
 
-    JPanel customerDatePanel = flexibleGridLayoutPanel(1, 2)
-            .add(createInputPanel(Invoice.CUSTOMER_FK))
-            .add(createInputPanel(Invoice.DATE))
-            .build();
+		JPanel customerDatePanel = flexibleGridLayoutPanel(1, 2)
+						.add(createInputPanel(Invoice.CUSTOMER_FK))
+						.add(createInputPanel(Invoice.DATE))
+						.build();
 
-    JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
-            .add(createInputPanel(Invoice.BILLINGCITY))
-            .add(createInputPanel(Invoice.BILLINGPOSTALCODE))
-            .build();
+		JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
+						.add(createInputPanel(Invoice.BILLINGCITY))
+						.add(createInputPanel(Invoice.BILLINGPOSTALCODE))
+						.build();
 
-    JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
-            .add(createInputPanel(Invoice.BILLINGSTATE))
-            .add(createInputPanel(Invoice.BILLINGCOUNTRY))
-            .build();
+		JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
+						.add(createInputPanel(Invoice.BILLINGSTATE))
+						.add(createInputPanel(Invoice.BILLINGCOUNTRY))
+						.build();
 
-    JPanel cityPostalCodeStateCountryPanel = gridLayoutPanel(1, 2)
-            .add(cityPostalCodePanel)
-            .add(stateCountryPanel)
-            .build();
+		JPanel cityPostalCodeStateCountryPanel = gridLayoutPanel(1, 2)
+						.add(cityPostalCodePanel)
+						.add(stateCountryPanel)
+						.build();
 
-    JPanel centerPanel = gridLayoutPanel(4, 1)
-            .add(customerDatePanel)
-            .add(createInputPanel(Invoice.BILLINGADDRESS))
-            .add(cityPostalCodeStateCountryPanel)
-            .build();
+		JPanel centerPanel = gridLayoutPanel(4, 1)
+						.add(customerDatePanel)
+						.add(createInputPanel(Invoice.BILLINGADDRESS))
+						.add(cityPostalCodeStateCountryPanel)
+						.build();
 
-    invoiceLinePanel.setBorder(createTitledBorder(editModel().entities().definition(InvoiceLine.TYPE).caption()));
-    invoiceLinePanel.initialize();
+		invoiceLinePanel.setBorder(createTitledBorder(editModel().entities().definition(InvoiceLine.TYPE).caption()));
+		invoiceLinePanel.initialize();
 
-    setLayout(borderLayout());
+		setLayout(borderLayout());
 
-    add(centerPanel, BorderLayout.CENTER);
-    add(invoiceLinePanel, BorderLayout.EAST);
-  }
+		add(centerPanel, BorderLayout.CENTER);
+		add(invoiceLinePanel, BorderLayout.EAST);
+	}
 
-  private static final class CustomerSelectorFactory implements Function<EntitySearchModel, Selector> {
+	private static final class CustomerSelectorFactory implements Function<EntitySearchModel, Selector> {
 
-    @Override
-    public Selector apply(EntitySearchModel searchModel) {
-      TableSelector selector = EntitySearchField.tableSelector(searchModel);
-      FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
-      tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
-      tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
-      tableModel.sortModel().addSortOrder(Customer.FIRSTNAME, ASCENDING);
-      selector.preferredSize(new Dimension(500, 300));
+		@Override
+		public Selector apply(EntitySearchModel searchModel) {
+			TableSelector selector = EntitySearchField.tableSelector(searchModel);
+			FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
+			tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
+			tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
+			tableModel.sortModel().addSortOrder(Customer.FIRSTNAME, ASCENDING);
+			selector.preferredSize(new Dimension(500, 300));
 
-      return selector;
-    }
-  }
+			return selector;
+		}
+	}
 }

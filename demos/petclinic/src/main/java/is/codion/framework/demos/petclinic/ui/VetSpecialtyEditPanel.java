@@ -27,26 +27,26 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
-  public VetSpecialtyEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-    defaults().foreignKeyComboBoxPreferredWidth().set(200);
-  }
+	public VetSpecialtyEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+		defaults().foreignKeyComboBoxPreferredWidth().set(200);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(VetSpecialty.VET_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(VetSpecialty.VET_FK);
 
-    createForeignKeyComboBox(VetSpecialty.VET_FK);
-    createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
-            .add(true);
+		createForeignKeyComboBox(VetSpecialty.VET_FK);
+		createForeignKeyComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)
+						.add(true);
 
-    setLayout(gridLayout(2, 1));
+		setLayout(gridLayout(2, 1));
 
-    addInputPanel(VetSpecialty.VET_FK);
-    addInputPanel(VetSpecialty.SPECIALTY_FK);
-  }
+		addInputPanel(VetSpecialty.VET_FK);
+		addInputPanel(VetSpecialty.SPECIALTY_FK);
+	}
 
-  private SpecialtyEditPanel createSpecialtyEditPanel() {
-    return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider()));
-  }
+	private SpecialtyEditPanel createSpecialtyEditPanel() {
+		return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider()));
+	}
 }

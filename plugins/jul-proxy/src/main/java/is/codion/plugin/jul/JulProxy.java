@@ -32,21 +32,21 @@ import static java.util.Arrays.asList;
  */
 public final class JulProxy implements LoggerProxy {
 
-  @Override
-  public Object getLogLevel() {
-    return LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel();
-  }
+	@Override
+	public Object getLogLevel() {
+		return LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel();
+	}
 
-  @Override
-  public void setLogLevel(Object logLevel) {
-    if (!(logLevel instanceof Level)) {
-      throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
-    }
-    LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel((Level) logLevel);
-  }
+	@Override
+	public void setLogLevel(Object logLevel) {
+		if (!(logLevel instanceof Level)) {
+			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
+		}
+		LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel((Level) logLevel);
+	}
 
-  @Override
-  public List<Object> levels() {
-    return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);
-  }
+	@Override
+	public List<Object> levels() {
+		return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);
+	}
 }

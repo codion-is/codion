@@ -30,12 +30,12 @@
  * {@link is.codion.common.model.table.TableSummaryModel}<br>
  */
 module is.codion.common.model {
-  requires org.slf4j;
-  requires java.prefs;
-  requires transitive is.codion.common.core;
+	requires org.slf4j;
+	requires java.prefs;
+	requires transitive is.codion.common.core;
 
-  exports is.codion.common.model;
-  exports is.codion.common.model.loadtest;
-  exports is.codion.common.model.randomizer;
-  exports is.codion.common.model.table;
+	exports is.codion.common.model;
+	exports is.codion.common.model.loadtest;
+	exports is.codion.common.model.randomizer;
+	exports is.codion.common.model.table;
 }

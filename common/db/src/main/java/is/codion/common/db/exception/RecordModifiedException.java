@@ -23,32 +23,32 @@ package is.codion.common.db.exception;
  */
 public final class RecordModifiedException extends UpdateException {
 
-  private final Object row;
-  private final Object modifiedRow;
+	private final Object row;
+	private final Object modifiedRow;
 
-  /**
-   * Instantiates a new RecordModifiedException
-   * @param row the row being updated
-   * @param modifiedRow the current (modified) version of the row, null if it has been deleted
-   * @param message a message describing the modification
-   */
-  public RecordModifiedException(Object row, Object modifiedRow, String message) {
-    super(message);
-    this.row = row;
-    this.modifiedRow = modifiedRow;
-  }
+	/**
+	 * Instantiates a new RecordModifiedException
+	 * @param row the row being updated
+	 * @param modifiedRow the current (modified) version of the row, null if it has been deleted
+	 * @param message a message describing the modification
+	 */
+	public RecordModifiedException(Object row, Object modifiedRow, String message) {
+		super(message);
+		this.row = row;
+		this.modifiedRow = modifiedRow;
+	}
 
-  /**
-   * @return the row being updated
-   */
-  public Object row() {
-    return row;
-  }
+	/**
+	 * @return the row being updated
+	 */
+	public Object row() {
+		return row;
+	}
 
-  /**
-   * @return the current (modified) version of the row, null if it has been deleted
-   */
-  public Object modifiedRow() {
-    return modifiedRow;
-  }
+	/**
+	 * @return the current (modified) version of the row, null if it has been deleted
+	 */
+	public Object modifiedRow() {
+		return modifiedRow;
+	}
 }

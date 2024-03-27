@@ -28,19 +28,19 @@ import java.awt.event.ActionEvent;
 
 final class DeleteNextWordAction extends AbstractAction {
 
-  @Override
-  public void actionPerformed(ActionEvent actionEvent) {
-    JTextComponent textComponent = (JTextComponent) actionEvent.getSource();
-    Document document = textComponent.getDocument();
-    int caretPosition = textComponent.getCaretPosition();
-    try {
-      int removeToPosition = textComponent instanceof JPasswordField ?
-              document.getLength() ://special handling for passwords, just remove everything after cursor
-              Utilities.getWordEnd(textComponent, caretPosition) - caretPosition;
-      document.remove(caretPosition, removeToPosition);
-    }
-    catch (BadLocationException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	@Override
+	public void actionPerformed(ActionEvent actionEvent) {
+		JTextComponent textComponent = (JTextComponent) actionEvent.getSource();
+		Document document = textComponent.getDocument();
+		int caretPosition = textComponent.getCaretPosition();
+		try {
+			int removeToPosition = textComponent instanceof JPasswordField ?
+							document.getLength() ://special handling for passwords, just remove everything after cursor
+							Utilities.getWordEnd(textComponent, caretPosition) - caretPosition;
+			document.remove(caretPosition, removeToPosition);
+		}
+		catch (BadLocationException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

@@ -34,28 +34,28 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class EntityComboBoxPanelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void test() throws DatabaseException {
-    EntityComboBoxModel model = new EntityComboBoxModel(TestDomain.Department.TYPE, CONNECTION_PROVIDER);
-    model.refresh();
-    ComponentValue<Entity, EntityComboBoxPanel> value = EntityComboBoxPanel.builder(model, () -> null)
-            .buildValue();
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
-            TestDomain.Department.NAME.equalTo("SALES"));
-    model.setSelectedItem(sales);
-    assertEquals(sales, value.get());
-    value.set(null);
-    Entity entity = model.selectedValue();
-    assertNull(entity);
-    value.set(sales);
-    assertEquals(sales, model.selectedValue());
-  }
+	@Test
+	void test() throws DatabaseException {
+		EntityComboBoxModel model = new EntityComboBoxModel(TestDomain.Department.TYPE, CONNECTION_PROVIDER);
+		model.refresh();
+		ComponentValue<Entity, EntityComboBoxPanel> value = EntityComboBoxPanel.builder(model, () -> null)
+						.buildValue();
+		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
+						TestDomain.Department.NAME.equalTo("SALES"));
+		model.setSelectedItem(sales);
+		assertEquals(sales, value.get());
+		value.set(null);
+		Entity entity = model.selectedValue();
+		assertNull(entity);
+		value.set(sales);
+		assertEquals(sales, model.selectedValue());
+	}
 }

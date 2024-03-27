@@ -28,15 +28,15 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PostgreSQLDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "org.postgresql";
+	private static final String DRIVER_PACKAGE = "org.postgresql";
 
-  @Override
-  public boolean driverCompatible(String driverClassName) {
-    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
-  }
+	@Override
+	public boolean driverCompatible(String driverClassName) {
+		return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
+	}
 
-  @Override
-  public Database createDatabase(String url) {
-    return new PostgreSQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.get());
-  }
+	@Override
+	public Database createDatabase(String url) {
+		return new PostgreSQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.get());
+	}
 }

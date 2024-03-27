@@ -35,35 +35,35 @@ import static is.codion.swing.framework.model.EntityComboBoxConditionModel.entit
  */
 public class SwingEntityConditionModelFactory extends EntityConditionModelFactory {
 
-  /**
-   * Instantiates a new {@link SwingEntityConditionModelFactory}.
-   * @param connectionProvider the connection provider
-   */
-  public SwingEntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
-  }
+	/**
+	 * Instantiates a new {@link SwingEntityConditionModelFactory}.
+	 * @param connectionProvider the connection provider
+	 */
+	public SwingEntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
+		super(connectionProvider);
+	}
 
-  @Override
-  public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
-    if (attribute instanceof ForeignKey) {
-      ForeignKey foreignKey = (ForeignKey) attribute;
-      if (definition(foreignKey.referencedType()).smallDataset()) {
-        return Optional.of(entityComboBoxConditionModel(foreignKey, createComboBoxModel(foreignKey)));
-      }
-    }
+	@Override
+	public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		if (attribute instanceof ForeignKey) {
+			ForeignKey foreignKey = (ForeignKey) attribute;
+			if (definition(foreignKey.referencedType()).smallDataset()) {
+				return Optional.of(entityComboBoxConditionModel(foreignKey, createComboBoxModel(foreignKey)));
+			}
+		}
 
-    return super.createConditionModel(attribute);
-  }
+		return super.createConditionModel(attribute);
+	}
 
-  /**
-   * Creates a combo box model based on the given foreign key
-   * @param foreignKey the foreign key
-   * @return a combo box model based on the given foreign key
-   */
-  protected EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
-    EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
-    comboBoxModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+	/**
+	 * Creates a combo box model based on the given foreign key
+	 * @param foreignKey the foreign key
+	 * @return a combo box model based on the given foreign key
+	 */
+	protected EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
+		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(foreignKey.referencedType(), connectionProvider());
+		comboBoxModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 
-    return comboBoxModel;
-  }
+		return comboBoxModel;
+	}
 }

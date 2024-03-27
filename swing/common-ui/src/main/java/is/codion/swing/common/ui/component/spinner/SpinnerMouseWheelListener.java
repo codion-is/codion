@@ -30,27 +30,27 @@ import static java.util.Objects.requireNonNull;
  */
 final class SpinnerMouseWheelListener implements MouseWheelListener {
 
-  private final SpinnerModel spinnerModel;
-  private final boolean reversed;
+	private final SpinnerModel spinnerModel;
+	private final boolean reversed;
 
-  /**
-   * Instantiates a new mouse wheel listener
-   * @param spinnerModel the spinner model
-   * @param reversed if true then up/away decreases the value and down/towards increases it.
-   */
-  SpinnerMouseWheelListener(SpinnerModel spinnerModel, boolean reversed) {
-    this.spinnerModel = requireNonNull(spinnerModel);
-    this.reversed = reversed;
-  }
+	/**
+	 * Instantiates a new mouse wheel listener
+	 * @param spinnerModel the spinner model
+	 * @param reversed if true then up/away decreases the value and down/towards increases it.
+	 */
+	SpinnerMouseWheelListener(SpinnerModel spinnerModel, boolean reversed) {
+		this.spinnerModel = requireNonNull(spinnerModel);
+		this.reversed = reversed;
+	}
 
-  @Override
-  public void mouseWheelMoved(MouseWheelEvent event) {
-    int wheelRotation = event.getWheelRotation();
-    if (wheelRotation != 0) {
-      Object newValue = (reversed ? wheelRotation > 0 : wheelRotation < 0) ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
-      if (newValue != null) {
-        spinnerModel.setValue(newValue);
-      }
-    }
-  }
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent event) {
+		int wheelRotation = event.getWheelRotation();
+		if (wheelRotation != 0) {
+			Object newValue = (reversed ? wheelRotation > 0 : wheelRotation < 0) ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
+			if (newValue != null) {
+				spinnerModel.setValue(newValue);
+			}
+		}
+	}
 }

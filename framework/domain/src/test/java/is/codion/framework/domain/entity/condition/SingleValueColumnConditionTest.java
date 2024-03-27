@@ -27,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class SingleValueColumnConditionTest {
 
-  @Test
-  void test() {
-    assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.BETWEEN));
-    assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.BETWEEN_EXCLUSIVE));
-    assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.NOT_BETWEEN));
-    assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.NOT_BETWEEN_EXCLUSIVE));
-  }
+	@Test
+	void test() {
+		assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.BETWEEN));
+		assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.BETWEEN_EXCLUSIVE));
+		assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.NOT_BETWEEN));
+		assertThrows(IllegalArgumentException.class, () -> new SingleValueColumnCondition<>(Employee.ID, 0, Operator.NOT_BETWEEN_EXCLUSIVE));
+	}
 }

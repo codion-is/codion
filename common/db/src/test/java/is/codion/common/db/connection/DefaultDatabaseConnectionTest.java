@@ -38,179 +38,179 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DefaultDatabaseConnectionTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private final Database DATABASE = Database.instance();
-  private DefaultDatabaseConnection dbConnection;
+	private final Database DATABASE = Database.instance();
+	private DefaultDatabaseConnection dbConnection;
 
-  @BeforeEach
-  void before() throws Exception {
-    dbConnection = new DefaultDatabaseConnection(DATABASE, UNIT_TEST_USER);
-  }
+	@BeforeEach
+	void before() throws Exception {
+		dbConnection = new DefaultDatabaseConnection(DATABASE, UNIT_TEST_USER);
+	}
 
-  @AfterEach
-  void after() {
-    try {
-      if (dbConnection != null) {
-        dbConnection.close();
-      }
-    }
-    catch (Exception ignored) {/*ignored*/}
-  }
+	@AfterEach
+	void after() {
+		try {
+			if (dbConnection != null) {
+				dbConnection.close();
+			}
+		}
+		catch (Exception ignored) {/*ignored*/}
+	}
 
-  @Test
-  void createConnection() throws Exception {
-    try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
-      DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
-      assertTrue(databaseConnection.connected());
-      assertNotNull(databaseConnection.user());
-      assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
-    }
-  }
+	@Test
+	void createConnection() throws Exception {
+		try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+			DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
+			assertTrue(databaseConnection.connected());
+			assertNotNull(databaseConnection.user());
+			assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
+		}
+	}
 
-  @Test
-  void createConnectionWithClosedConnection() {
-    assertThrows(DatabaseException.class, () -> {
-      try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
-        connection.close();
-        databaseConnection(DATABASE, connection);
-      }
-    });
-  }
+	@Test
+	void createConnectionWithClosedConnection() {
+		assertThrows(DatabaseException.class, () -> {
+			try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+				connection.close();
+				databaseConnection(DATABASE, connection);
+			}
+		});
+	}
 
-  @Test
-  void test() {
-    try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
-      MethodLogger methodLogger = MethodLogger.methodLogger(20);
-      methodLogger.setEnabled(true);
-      connection.setMethodLogger(methodLogger);
-      assertSame(methodLogger, connection.getMethodLogger());
-      connection.commit();
-      connection.rollback();
-      connection.toString();
-    }
-    catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	@Test
+	void test() {
+		try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+			MethodLogger methodLogger = MethodLogger.methodLogger(20);
+			methodLogger.setEnabled(true);
+			connection.setMethodLogger(methodLogger);
+			assertSame(methodLogger, connection.getMethodLogger());
+			connection.commit();
+			connection.rollback();
+			connection.toString();
+		}
+		catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Test
-  void transaction() {
-    try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
-      assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
-      connection.beginTransaction();
-      assertThrows(IllegalStateException.class, () -> connection.beginTransaction());
-      connection.commitTransaction();
-      assertThrows(IllegalStateException.class, () -> connection.commitTransaction());
-      connection.beginTransaction();
-      connection.rollbackTransaction();
-      assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	@Test
+	void transaction() {
+		try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
+			connection.beginTransaction();
+			assertThrows(IllegalStateException.class, () -> connection.beginTransaction());
+			connection.commitTransaction();
+			assertThrows(IllegalStateException.class, () -> connection.commitTransaction());
+			connection.beginTransaction();
+			connection.rollbackTransaction();
+			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Test
-  void constructorWithConnection() throws DatabaseException, SQLException {
-    Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
-    new DefaultDatabaseConnection(DATABASE, connection).close();
-    assertTrue(connection.isClosed());
-  }
+	@Test
+	void constructorWithConnection() throws DatabaseException, SQLException {
+		Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
+		new DefaultDatabaseConnection(DATABASE, connection).close();
+		assertTrue(connection.isClosed());
+	}
 
-  @Test
-  void constructorWithInvalidConnection() throws DatabaseException, SQLException {
-    Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
-    connection.close();
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
-  }
+	@Test
+	void constructorWithInvalidConnection() throws DatabaseException, SQLException {
+		Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
+		connection.close();
+		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
+	}
 
-  @Test
-  void wrongUsername() {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user("foo", "bar".toCharArray())));
-  }
+	@Test
+	void wrongUsername() {
+		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user("foo", "bar".toCharArray())));
+	}
 
-  @Test
-  void wrongPassword() {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray())));
-  }
+	@Test
+	void wrongPassword() {
+		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray())));
+	}
 
-  @Test
-  void database() {
-    assertEquals(DATABASE, dbConnection.database());
-  }
+	@Test
+	void database() {
+		assertEquals(DATABASE, dbConnection.database());
+	}
 
-  @Test
-  void user() {
-    assertEquals(dbConnection.user(), UNIT_TEST_USER);
-  }
+	@Test
+	void user() {
+		assertEquals(dbConnection.user(), UNIT_TEST_USER);
+	}
 
-  @Test
-  void close() {
-    dbConnection.close();
-    assertFalse(dbConnection.connected());
-    assertNull(dbConnection.getConnection());
-    assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
-    assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
-    assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
-    assertThrows(IllegalStateException.class, () -> dbConnection.commit());
-    assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
-  }
+	@Test
+	void close() {
+		dbConnection.close();
+		assertFalse(dbConnection.connected());
+		assertNull(dbConnection.getConnection());
+		assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
+		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
+		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
+		assertThrows(IllegalStateException.class, () -> dbConnection.commit());
+		assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
+	}
 
-  @Test
-  void getConnection() {
-    assertNotNull(dbConnection.getConnection());
-  }
+	@Test
+	void getConnection() {
+		assertNotNull(dbConnection.getConnection());
+	}
 
-  @Test
-  void beginTransactionAlreadyOpen() {
-    dbConnection.beginTransaction();
-    assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
-  }
+	@Test
+	void beginTransactionAlreadyOpen() {
+		dbConnection.beginTransaction();
+		assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
+	}
 
-  @Test
-  void commitWithinTransaction() {
-    dbConnection.beginTransaction();
-    assertThrows(IllegalStateException.class, () -> dbConnection.commit());
-  }
+	@Test
+	void commitWithinTransaction() {
+		dbConnection.beginTransaction();
+		assertThrows(IllegalStateException.class, () -> dbConnection.commit());
+	}
 
-  @Test
-  void rollbackWithinTransaction() {
-    dbConnection.beginTransaction();
-    assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
-  }
+	@Test
+	void rollbackWithinTransaction() {
+		dbConnection.beginTransaction();
+		assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
+	}
 
-  @Test
-  void commitTransactionAlreadyCommitted() {
-    dbConnection.beginTransaction();
-    dbConnection.commitTransaction();
-    assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
-  }
+	@Test
+	void commitTransactionAlreadyCommitted() {
+		dbConnection.beginTransaction();
+		dbConnection.commitTransaction();
+		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
+	}
 
-  @Test
-  void rollbackTransactionAlreadyRollbacked() {
-    dbConnection.beginTransaction();
-    dbConnection.rollbackTransaction();
-    assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
-  }
+	@Test
+	void rollbackTransactionAlreadyRollbacked() {
+		dbConnection.beginTransaction();
+		dbConnection.rollbackTransaction();
+		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
+	}
 
-  @Test
-  void commitTransaction() {
-    dbConnection.beginTransaction();
-    assertTrue(dbConnection.transactionOpen());
-    dbConnection.commitTransaction();
-    assertFalse(dbConnection.transactionOpen());
-  }
+	@Test
+	void commitTransaction() {
+		dbConnection.beginTransaction();
+		assertTrue(dbConnection.transactionOpen());
+		dbConnection.commitTransaction();
+		assertFalse(dbConnection.transactionOpen());
+	}
 
-  @Test
-  void rollbackTransaction() {
-    dbConnection.beginTransaction();
-    assertTrue(dbConnection.transactionOpen());
-    dbConnection.rollbackTransaction();
-    assertFalse(dbConnection.transactionOpen());
-  }
+	@Test
+	void rollbackTransaction() {
+		dbConnection.beginTransaction();
+		assertTrue(dbConnection.transactionOpen());
+		dbConnection.rollbackTransaction();
+		assertFalse(dbConnection.transactionOpen());
+	}
 }

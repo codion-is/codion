@@ -24,14 +24,14 @@ import static java.util.Objects.requireNonNull;
 
 final class ToggleControlBuilder<B extends Control.Builder<ToggleControl, B>> extends AbstractControlBuilder<ToggleControl, B> {
 
-  private final Value<Boolean> value;
+	private final Value<Boolean> value;
 
-  ToggleControlBuilder(Value<Boolean> value) {
-    this.value = requireNonNull(value);
-  }
+	ToggleControlBuilder(Value<Boolean> value) {
+		this.value = requireNonNull(value);
+	}
 
-  @Override
-  protected ToggleControl createControl() {
-    return new DefaultToggleControl(value, name, enabled);
-  }
+	@Override
+	protected ToggleControl createControl() {
+		return new DefaultToggleControl(value, name, enabled);
+	}
 }

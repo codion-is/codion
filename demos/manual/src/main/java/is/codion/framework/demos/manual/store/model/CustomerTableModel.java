@@ -24,8 +24,8 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 // tag::customerTableModel[]
 public class CustomerTableModel extends SwingEntityTableModel {
 
-  public CustomerTableModel(EntityConnectionProvider connectionProvider) {
-    super(new CustomerEditModel(connectionProvider));
-  }
+	public CustomerTableModel(EntityConnectionProvider connectionProvider) {
+		super(new CustomerEditModel(connectionProvider));
+	}
 }
 // end::customerTableModel[]

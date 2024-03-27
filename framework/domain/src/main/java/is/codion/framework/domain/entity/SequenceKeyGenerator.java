@@ -28,22 +28,22 @@ import static java.util.Objects.requireNonNull;
 
 final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
-  private final String sequenceName;
+	private final String sequenceName;
 
-  SequenceKeyGenerator(String sequenceName) {
-    this.sequenceName = requireNonNull(sequenceName, "sequenceName");
-  }
+	SequenceKeyGenerator(String sequenceName) {
+		this.sequenceName = requireNonNull(sequenceName, "sequenceName");
+	}
 
-  @Override
-  public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-    ColumnDefinition<?> primaryKeyColumn = entity.definition().primaryKey().definitions().get(0);
-    if (entity.isNull(primaryKeyColumn.attribute())) {
-      selectAndPopulate(entity, primaryKeyColumn, connection);
-    }
-  }
+	@Override
+	public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
+		ColumnDefinition<?> primaryKeyColumn = entity.definition().primaryKey().definitions().get(0);
+		if (entity.isNull(primaryKeyColumn.attribute())) {
+			selectAndPopulate(entity, primaryKeyColumn, connection);
+		}
+	}
 
-  @Override
-  protected String query(Database database) {
-    return database.sequenceQuery(sequenceName);
-  }
+	@Override
+	protected String query(Database database) {
+		return database.sequenceQuery(sequenceName);
+	}
 }

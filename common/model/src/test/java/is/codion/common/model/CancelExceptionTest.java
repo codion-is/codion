@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CancelExceptionTest {
 
-  @Test
-  void test() throws CancelException {
-    assertThrows(CancelException.class, () -> {throw new CancelException();});
-  }
+	@Test
+	void test() throws CancelException {
+		assertThrows(CancelException.class, () -> {throw new CancelException();});
+	}
 }

@@ -27,14 +27,14 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 
 public final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, ForeignKey, EntitySearchField> {
 
-  @Override
-  public ComponentValue<Entity, EntitySearchField> componentValue(ForeignKey foreignKey,
-                                                                  SwingEntityEditModel editModel,
-                                                                  Entity initialValue) {
-    ComponentValue<Entity, EntitySearchField> componentValue = super.componentValue(foreignKey, editModel, initialValue);
-    EntitySearchField trackSearchField = componentValue.component();
-    trackSearchField.selectorFactory().set(new TrackSelectorFactory());
+	@Override
+	public ComponentValue<Entity, EntitySearchField> componentValue(ForeignKey foreignKey,
+																																	SwingEntityEditModel editModel,
+																																	Entity initialValue) {
+		ComponentValue<Entity, EntitySearchField> componentValue = super.componentValue(foreignKey, editModel, initialValue);
+		EntitySearchField trackSearchField = componentValue.component();
+		trackSearchField.selectorFactory().set(new TrackSelectorFactory());
 
-    return componentValue;
-  }
+		return componentValue;
+	}
 }

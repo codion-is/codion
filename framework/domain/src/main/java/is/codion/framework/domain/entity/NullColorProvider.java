@@ -24,10 +24,10 @@ import java.io.Serializable;
 
 final class NullColorProvider implements ColorProvider, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  @Override
-  public Object color(Entity entity, Attribute<?> attribute) {
-    return null;
-  }
+	@Override
+	public Object color(Entity entity, Attribute<?> attribute) {
+		return null;
+	}
 }

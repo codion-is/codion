@@ -22,6 +22,6 @@ import org.junit.jupiter.api.Test;
 
 public class SchemaBrowserTest {
 
-  @Test
-  void dummyTest() {}
+	@Test
+	void dummyTest() {}
 }

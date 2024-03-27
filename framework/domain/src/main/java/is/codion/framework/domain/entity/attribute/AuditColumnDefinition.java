@@ -24,8 +24,8 @@ package is.codion.framework.domain.entity.attribute;
  */
 public interface AuditColumnDefinition<T> extends ColumnDefinition<T> {
 
-  /**
-   * @return the audit action this attribute represents
-   */
-  AuditColumn.AuditAction auditAction();
+	/**
+	 * @return the audit action this attribute represents
+	 */
+	AuditColumn.AuditAction auditAction();
 }

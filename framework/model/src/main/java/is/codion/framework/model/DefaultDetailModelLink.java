@@ -37,25 +37,25 @@ import static java.util.Objects.requireNonNull;
  * @see #onDelete(Collection)
  */
 public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
-        T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
+				T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
 
-  private final M detailModel;
-  private final State active = State.state();
+	private final M detailModel;
+	private final State active = State.state();
 
-  public DefaultDetailModelLink(M detailModel) {
-    this.detailModel = requireNonNull(detailModel, "detailModel");
-    if (detailModel.containsTableModel()) {
-      detailModel.tableModel().conditionRequired().set(true);
-    }
-  }
+	public DefaultDetailModelLink(M detailModel) {
+		this.detailModel = requireNonNull(detailModel, "detailModel");
+		if (detailModel.containsTableModel()) {
+			detailModel.tableModel().conditionRequired().set(true);
+		}
+	}
 
-  @Override
-  public final M detailModel() {
-    return detailModel;
-  }
+	@Override
+	public final M detailModel() {
+		return detailModel;
+	}
 
-  @Override
-  public final State active() {
-    return active;
-  }
+	@Override
+	public final State active() {
+		return active;
+	}
 }

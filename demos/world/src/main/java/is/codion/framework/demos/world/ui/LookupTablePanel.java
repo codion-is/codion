@@ -59,177 +59,177 @@ import static javax.swing.BorderFactory.createTitledBorder;
 
 final class LookupTablePanel extends EntityTablePanel {
 
-  private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
+	private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
 
-  private final State columnSelectionPanelVisible = State.state(true);
-  private final State mapDialogVisible = State.state();
+	private final State columnSelectionPanelVisible = State.state(true);
+	private final State mapDialogVisible = State.state();
 
-  private final Control toggleMapControl = ToggleControl.builder(mapDialogVisible)
-          .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
-          .name("Show map")
-          .build();
-  private final JScrollPane columnSelectionScrollPane = scrollPane(createColumnSelectionToolBar())
-          .verticalUnitIncrement(16)
-          .build();
-  private final JXMapKit mapKit = Maps.createMapKit();
+	private final Control toggleMapControl = ToggleControl.builder(mapDialogVisible)
+					.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
+					.name("Show map")
+					.build();
+	private final JScrollPane columnSelectionScrollPane = scrollPane(createColumnSelectionToolBar())
+					.verticalUnitIncrement(16)
+					.build();
+	private final JXMapKit mapKit = Maps.createMapKit();
 
-  private JDialog mapKitDialog;
+	private JDialog mapKitDialog;
 
-  LookupTablePanel(LookupTableModel lookupModel) {
-    super(lookupModel, config -> config.showRefreshProgressBar(true));
-    columnSelectionPanelVisible.addDataListener(this::setColumnSelectionPanelVisible);
-    table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    conditionPanelVisible().set(true);
-    bindEvents();
-  }
+	LookupTablePanel(LookupTableModel lookupModel) {
+		super(lookupModel, config -> config.showRefreshProgressBar(true));
+		columnSelectionPanelVisible.addDataListener(this::setColumnSelectionPanelVisible);
+		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		conditionPanelVisible().set(true);
+		bindEvents();
+	}
 
-  @Override
-  public void updateUI() {
-    super.updateUI();
-    Utilities.updateComponentTreeUI(mapKit);
-  }
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateComponentTreeUI(mapKit);
+	}
 
-  @Override
-  protected void setupControls() {
-    control(TableControl.CLEAR).set(Control.builder(this::clearTableAndConditions)
-            .name("Clear")
-            .mnemonic('C')
-            .smallIcon(FrameworkIcons.instance().clear())
-            .build());
-    control(TableControl.SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
-            .name("Select")
-            .build());
-  }
+	@Override
+	protected void setupControls() {
+		control(TableControl.CLEAR).set(Control.builder(this::clearTableAndConditions)
+						.name("Clear")
+						.mnemonic('C')
+						.smallIcon(FrameworkIcons.instance().clear())
+						.build());
+		control(TableControl.SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
+						.name("Select")
+						.build());
+	}
 
-  @Override
-  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-    FrameworkIcons icons = FrameworkIcons.instance();
+	@Override
+	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+		FrameworkIcons icons = FrameworkIcons.instance();
 
-    return super.createPopupMenuControls(additionalPopupMenuControls)
-            .addSeparatorAt(2)
-            .addAt(3, Controls.builder()
-                    .name("Export")
-                    .smallIcon(icons.icon(Foundation.PAGE_EXPORT))
-                    .control(Control.builder(this::exportCSV)
-                            .name("CSV..."))
-                    .control(Control.builder(this::exportJSON)
-                            .name("JSON..."))
-                    .build())
-            .addAt(4, Controls.builder()
-                    .name("Import")
-                    .smallIcon(icons.icon(Foundation.PAGE_ADD))
-                    .control(Control.builder(this::importJSON)
-                            .name("JSON..."))
-                    .build())
-            .addSeparatorAt(5)
-            .addAt(6, toggleMapControl);
-  }
+		return super.createPopupMenuControls(additionalPopupMenuControls)
+						.addSeparatorAt(2)
+						.addAt(3, Controls.builder()
+										.name("Export")
+										.smallIcon(icons.icon(Foundation.PAGE_EXPORT))
+										.control(Control.builder(this::exportCSV)
+														.name("CSV..."))
+										.control(Control.builder(this::exportJSON)
+														.name("JSON..."))
+										.build())
+						.addAt(4, Controls.builder()
+										.name("Import")
+										.smallIcon(icons.icon(Foundation.PAGE_ADD))
+										.control(Control.builder(this::importJSON)
+														.name("JSON..."))
+										.build())
+						.addSeparatorAt(5)
+						.addAt(6, toggleMapControl);
+	}
 
-  @Override
-  protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
-    return super.createToolBarControls(additionalToolBarControls)
-            .addAt(0, toggleMapControl);
-  }
+	@Override
+	protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
+		return super.createToolBarControls(additionalToolBarControls)
+						.addAt(0, toggleMapControl);
+	}
 
-  @Override
-  protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
-    super.layoutPanel(tableComponent, southPanel);
-    add(columnSelectionScrollPane, BorderLayout.EAST);
-  }
+	@Override
+	protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+		super.layoutPanel(tableComponent, southPanel);
+		add(columnSelectionScrollPane, BorderLayout.EAST);
+	}
 
-  private void bindEvents() {
-    mapDialogVisible.addDataListener(this::setMapDialogVisible);
-    tableModel().addDataChangedListener(this::displayCityLocations);
-    tableModel().selectionModel().addSelectionListener(this::displayCityLocations);
-  }
+	private void bindEvents() {
+		mapDialogVisible.addDataListener(this::setMapDialogVisible);
+		tableModel().addDataChangedListener(this::displayCityLocations);
+		tableModel().selectionModel().addSelectionListener(this::displayCityLocations);
+	}
 
-  private void displayCityLocations() {
-    if (mapKit.isShowing()) {
-      Collection<Entity> entities = tableModel().selectionModel().isSelectionEmpty() ?
-              tableModel().visibleItems() :
-              tableModel().selectionModel().getSelectedItems();
-      Maps.paintWaypoints(entities.stream()
-              .filter(entity -> entity.isNotNull(Lookup.CITY_LOCATION))
-              .map(entity -> entity.get(Lookup.CITY_LOCATION))
-              .collect(toSet()), mapKit.getMainMap());
-    }
-  }
+	private void displayCityLocations() {
+		if (mapKit.isShowing()) {
+			Collection<Entity> entities = tableModel().selectionModel().isSelectionEmpty() ?
+							tableModel().visibleItems() :
+							tableModel().selectionModel().getSelectedItems();
+			Maps.paintWaypoints(entities.stream()
+							.filter(entity -> entity.isNotNull(Lookup.CITY_LOCATION))
+							.map(entity -> entity.get(Lookup.CITY_LOCATION))
+							.collect(toSet()), mapKit.getMainMap());
+		}
+	}
 
-  private void setMapDialogVisible(boolean visible) {
-    if (mapKitDialog == null) {
-      mapKitDialog = Dialogs.componentDialog(mapKit)
-              .owner(this)
-              .modal(false)
-              .title("World Map")
-              .size(DEFAULT_MAP_SIZE)
-              .onShown(dialog -> displayCityLocations())
-              .onClosed(e -> mapDialogVisible.set(false))
-              .build();
-    }
-    mapKitDialog.setVisible(visible);
-  }
+	private void setMapDialogVisible(boolean visible) {
+		if (mapKitDialog == null) {
+			mapKitDialog = Dialogs.componentDialog(mapKit)
+							.owner(this)
+							.modal(false)
+							.title("World Map")
+							.size(DEFAULT_MAP_SIZE)
+							.onShown(dialog -> displayCityLocations())
+							.onClosed(e -> mapDialogVisible.set(false))
+							.build();
+		}
+		mapKitDialog.setVisible(visible);
+	}
 
-  private void exportCSV() {
-    export(CSV);
-  }
+	private void exportCSV() {
+		export(CSV);
+	}
 
-  private void exportJSON() {
-    export(JSON);
-  }
+	private void exportJSON() {
+		export(JSON);
+	}
 
-  private void export(ExportFormat format) {
-    File fileToSave = Dialogs.fileSelectionDialog()
-            .owner(this)
-            .selectFileToSave(format.defaultFileName());
-    LookupTableModel lookupTableModel = tableModel();
-    Dialogs.progressWorkerDialog(() -> lookupTableModel.export(fileToSave, format))
-            .owner(this)
-            .title("Exporting data")
-            .onResult("Export successful")
-            .onException("Export failed")
-            .execute();
-  }
+	private void export(ExportFormat format) {
+		File fileToSave = Dialogs.fileSelectionDialog()
+						.owner(this)
+						.selectFileToSave(format.defaultFileName());
+		LookupTableModel lookupTableModel = tableModel();
+		Dialogs.progressWorkerDialog(() -> lookupTableModel.export(fileToSave, format))
+						.owner(this)
+						.title("Exporting data")
+						.onResult("Export successful")
+						.onException("Export failed")
+						.execute();
+	}
 
-  private void importJSON() throws IOException {
-    File file = Dialogs.fileSelectionDialog()
-            .owner(this)
-            .fileFilter(new FileNameExtensionFilter("JSON", "json"))
-            .selectFile();
-    LookupTableModel tableModel = tableModel();
-    tableModel.importJSON(file);
-  }
+	private void importJSON() throws IOException {
+		File file = Dialogs.fileSelectionDialog()
+						.owner(this)
+						.fileFilter(new FileNameExtensionFilter("JSON", "json"))
+						.selectFile();
+		LookupTableModel tableModel = tableModel();
+		tableModel.importJSON(file);
+	}
 
-  private JToolBar createColumnSelectionToolBar() {
-    Controls toggleColumnsControls = table().createToggleColumnsControls();
+	private JToolBar createColumnSelectionToolBar() {
+		Controls toggleColumnsControls = table().createToggleColumnsControls();
 
-    return toolBar(Controls.controls()
-            .add(createSelectAllColumnsControl(toggleColumnsControls))
-            .addSeparator()
-            .addAll(toggleColumnsControls))
-            .floatable(false)
-            .orientation(SwingConstants.VERTICAL)
-            .toggleButtonType(ToggleButtonType.CHECKBOX)
-            .includeButtonText(true)
-            .border(createTitledBorder("Columns"))
-            .build();
-  }
+		return toolBar(Controls.controls()
+						.add(createSelectAllColumnsControl(toggleColumnsControls))
+						.addSeparator()
+						.addAll(toggleColumnsControls))
+						.floatable(false)
+						.orientation(SwingConstants.VERTICAL)
+						.toggleButtonType(ToggleButtonType.CHECKBOX)
+						.includeButtonText(true)
+						.border(createTitledBorder("Columns"))
+						.build();
+	}
 
-  private void setColumnSelectionPanelVisible(boolean visible) {
-    columnSelectionScrollPane.setVisible(visible);
-    revalidate();
-  }
+	private void setColumnSelectionPanelVisible(boolean visible) {
+		columnSelectionScrollPane.setVisible(visible);
+		revalidate();
+	}
 
-  private void clearTableAndConditions() {
-    tableModel().clear();
-    tableModel().conditionModel().clear();
-  }
+	private void clearTableAndConditions() {
+		tableModel().clear();
+		tableModel().conditionModel().clear();
+	}
 
-  private static Control createSelectAllColumnsControl(Controls toggleColumnsControls) {
-    return Control.builder(() -> toggleColumnsControls.actions().stream()
-                    .map(ToggleControl.class::cast)
-                    .forEach(toggleControl -> toggleControl.value().set(true)))
-            .name("Select all")
-            .smallIcon(FrameworkIcons.instance().icon(Foundation.CHECK))
-            .build();
-  }
+	private static Control createSelectAllColumnsControl(Controls toggleColumnsControls) {
+		return Control.builder(() -> toggleColumnsControls.actions().stream()
+										.map(ToggleControl.class::cast)
+										.forEach(toggleControl -> toggleControl.value().set(true)))
+						.name("Select all")
+						.smallIcon(FrameworkIcons.instance().icon(Foundation.CHECK))
+						.build();
+	}
 }

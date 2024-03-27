@@ -34,65 +34,65 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
-  private final Value<Summary> summary = Value.value(ColumnSummary.NONE, ColumnSummary.NONE);
-  private final Value<String> summaryText = Value.value();
-  private final State locked = State.state();
-  private final SummaryValueProvider<T> valueProvider;
-  private final List<Summary> summaries = asList(ColumnSummary.values());
+	private final Value<Summary> summary = Value.value(ColumnSummary.NONE, ColumnSummary.NONE);
+	private final Value<String> summaryText = Value.value();
+	private final State locked = State.state();
+	private final SummaryValueProvider<T> valueProvider;
+	private final List<Summary> summaries = asList(ColumnSummary.values());
 
-  DefaultColumnSummaryModel(SummaryValueProvider<T> valueProvider) {
-    this.valueProvider = requireNonNull(valueProvider);
-    this.summary.addValidator(summary -> {
-      if (locked.get()) {
-        throw new IllegalStateException("Summary model is locked");
-      }
-    });
-    this.valueProvider.addListener(this::updateSummary);
-    this.summary.addListener(this::updateSummary);
-  }
+	DefaultColumnSummaryModel(SummaryValueProvider<T> valueProvider) {
+		this.valueProvider = requireNonNull(valueProvider);
+		this.summary.addValidator(summary -> {
+			if (locked.get()) {
+				throw new IllegalStateException("Summary model is locked");
+			}
+		});
+		this.valueProvider.addListener(this::updateSummary);
+		this.summary.addListener(this::updateSummary);
+	}
 
-  @Override
-  public State locked() {
-    return locked;
-  }
+	@Override
+	public State locked() {
+		return locked;
+	}
 
-  @Override
-  public Value<Summary> summary() {
-    return summary;
-  }
+	@Override
+	public Value<Summary> summary() {
+		return summary;
+	}
 
-  @Override
-  public List<Summary> summaries() {
-    return summaries;
-  }
+	@Override
+	public List<Summary> summaries() {
+		return summaries;
+	}
 
-  @Override
-  public ValueObserver<String> summaryText() {
-    return summaryText.observer();
-  }
+	@Override
+	public ValueObserver<String> summaryText() {
+		return summaryText.observer();
+	}
 
-  private void updateSummary() {
-    summaryText.set(summary().get().summary(valueProvider));
-  }
+	private void updateSummary() {
+		summaryText.set(summary().get().summary(valueProvider));
+	}
 
-  static final class DefaultSummaryValues<T extends Number> implements ColumnSummaryModel.SummaryValues<T> {
+	static final class DefaultSummaryValues<T extends Number> implements ColumnSummaryModel.SummaryValues<T> {
 
-    private final Collection<T> values;
-    private final boolean subset;
+		private final Collection<T> values;
+		private final boolean subset;
 
-    DefaultSummaryValues(Collection<T> values, boolean subset) {
-      this.values = requireNonNull(values, "values");
-      this.subset = subset;
-    }
+		DefaultSummaryValues(Collection<T> values, boolean subset) {
+			this.values = requireNonNull(values, "values");
+			this.subset = subset;
+		}
 
-    @Override
-    public Collection<T> values() {
-      return values;
-    }
+		@Override
+		public Collection<T> values() {
+			return values;
+		}
 
-    @Override
-    public boolean subset() {
-      return subset;
-    }
-  }
+		@Override
+		public boolean subset() {
+			return subset;
+		}
+	}
 }

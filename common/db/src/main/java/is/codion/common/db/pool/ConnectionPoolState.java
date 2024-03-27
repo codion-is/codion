@@ -23,23 +23,23 @@ package is.codion.common.db.pool;
  */
 public interface ConnectionPoolState {
 
-  /**
-   * @return the total number of connections being managed by the pool
-   */
-  int size();
+	/**
+	 * @return the total number of connections being managed by the pool
+	 */
+	int size();
 
-  /**
-   * @return the number of connections currently in use
-   */
-  int inUse();
+	/**
+	 * @return the number of connections currently in use
+	 */
+	int inUse();
 
-  /**
-   * @return the number of pending requests
-   */
-  int waiting();
+	/**
+	 * @return the number of pending requests
+	 */
+	int waiting();
 
-  /**
-   * @return the timestamp associated with this pool state
-   */
-  long timestamp();
+	/**
+	 * @return the timestamp associated with this pool state
+	 */
+	long timestamp();
 }

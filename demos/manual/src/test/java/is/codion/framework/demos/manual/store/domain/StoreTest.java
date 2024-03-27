@@ -28,22 +28,22 @@ import org.junit.jupiter.api.Test;
 
 public final class StoreTest extends EntityTestUnit {
 
-  public StoreTest() {
-    super(new Store());
-  }
+	public StoreTest() {
+		super(new Store());
+	}
 
-  @Test
-  void customer() throws DatabaseException {
-    test(Customer.TYPE);
-  }
+	@Test
+	void customer() throws DatabaseException {
+		test(Customer.TYPE);
+	}
 
-  @Test
-  void address() throws DatabaseException {
-    test(Address.TYPE);
-  }
+	@Test
+	void address() throws DatabaseException {
+		test(Address.TYPE);
+	}
 
-  @Test
-  void customerAddress() throws Exception {
-    test(CustomerAddress.TYPE);
-  }
+	@Test
+	void customerAddress() throws Exception {
+		test(CustomerAddress.TYPE);
+	}
 }

@@ -30,29 +30,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class KeyEventsTest {
 
-  @Test
-  void addRemoveKeyEvent() {
-    JTextField textField = new JTextField();
-    final String actionName = "testing";
-    Control control = Control.builder(() -> {}).name(actionName).build();
-    assertNull(textField.getActionMap().get(actionName));
-    KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
-    builder.enable(textField);
-    assertNotNull(textField.getActionMap().get(actionName));
-    builder.disable(textField);
-    assertNull(textField.getActionMap().get(actionName));
-  }
+	@Test
+	void addRemoveKeyEvent() {
+		JTextField textField = new JTextField();
+		final String actionName = "testing";
+		Control control = Control.builder(() -> {}).name(actionName).build();
+		assertNull(textField.getActionMap().get(actionName));
+		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
+		builder.enable(textField);
+		assertNotNull(textField.getActionMap().get(actionName));
+		builder.disable(textField);
+		assertNull(textField.getActionMap().get(actionName));
+	}
 
-  @Test
-  void addKeyEventWithoutName() {
-    JComboBox<String> comboBox = new JComboBox<>();
-    KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(Control.control(() -> {})).onKeyRelease(true);
-    builder.enable(comboBox);
-    builder.disable(comboBox);
-  }
+	@Test
+	void addKeyEventWithoutName() {
+		JComboBox<String> comboBox = new JComboBox<>();
+		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(Control.control(() -> {})).onKeyRelease(true);
+		builder.enable(comboBox);
+		builder.disable(comboBox);
+	}
 
-  @Test
-  void actionMissing() {
-    assertThrows(IllegalStateException.class, () -> KeyEvents.builder(VK_ENTER).enable(new JTextField()));
-  }
+	@Test
+	void actionMissing() {
+		assertThrows(IllegalStateException.class, () -> KeyEvents.builder(VK_ENTER).enable(new JTextField()));
+	}
 }

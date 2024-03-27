@@ -34,102 +34,102 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Entity> implements ForeignKeyDefinition {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final Set<Column<?>> readOnlyColumns;
-  private final List<Attribute<?>> attributes;
-  private final int fetchDepth;
-  private final boolean soft;
+	private final Set<Column<?>> readOnlyColumns;
+	private final List<Attribute<?>> attributes;
+	private final int fetchDepth;
+	private final boolean soft;
 
-  private DefaultForeignKeyDefinition(DefaultForeignKeyDefinitionBuilder builder) {
-    super(builder);
-    this.readOnlyColumns = builder.readOnlyColumns;
-    this.attributes = builder.attributes;
-    this.fetchDepth = builder.fetchDepth;
-    this.soft = builder.soft;
-  }
+	private DefaultForeignKeyDefinition(DefaultForeignKeyDefinitionBuilder builder) {
+		super(builder);
+		this.readOnlyColumns = builder.readOnlyColumns;
+		this.attributes = builder.attributes;
+		this.fetchDepth = builder.fetchDepth;
+		this.soft = builder.soft;
+	}
 
-  @Override
-  public ForeignKey attribute() {
-    return (ForeignKey) super.attribute();
-  }
+	@Override
+	public ForeignKey attribute() {
+		return (ForeignKey) super.attribute();
+	}
 
-  @Override
-  public int fetchDepth() {
-    return fetchDepth;
-  }
+	@Override
+	public int fetchDepth() {
+		return fetchDepth;
+	}
 
-  @Override
-  public boolean soft() {
-    return soft;
-  }
+	@Override
+	public boolean soft() {
+		return soft;
+	}
 
-  @Override
-  public boolean readOnly(Column<?> referenceColumn) {
-    return readOnlyColumns.contains(referenceColumn);
-  }
+	@Override
+	public boolean readOnly(Column<?> referenceColumn) {
+		return readOnlyColumns.contains(referenceColumn);
+	}
 
-  @Override
-  public List<Reference<?>> references() {
-    return this.attribute().references();
-  }
+	@Override
+	public List<Reference<?>> references() {
+		return this.attribute().references();
+	}
 
-  @Override
-  public List<Attribute<?>> attributes() {
-    return attributes;
-  }
+	@Override
+	public List<Attribute<?>> attributes() {
+		return attributes;
+	}
 
-  static final class DefaultForeignKeyDefinitionBuilder extends AbstractAttributeDefinitionBuilder<Entity, ForeignKeyDefinition.Builder>
-          implements ForeignKeyDefinition.Builder {
+	static final class DefaultForeignKeyDefinitionBuilder extends AbstractAttributeDefinitionBuilder<Entity, ForeignKeyDefinition.Builder>
+					implements ForeignKeyDefinition.Builder {
 
-    private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
-    private final EntityType referencedEntityType;
-    private final int fetchDepth;
-    private final boolean soft;
+		private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
+		private final EntityType referencedEntityType;
+		private final int fetchDepth;
+		private final boolean soft;
 
-    private List<Attribute<?>> attributes = emptyList();
+		private List<Attribute<?>> attributes = emptyList();
 
-    DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, int fetchDepth, boolean soft) {
-      super(foreignKey);
-      if (fetchDepth < -1) {
-        throw new IllegalArgumentException("Fetch depth must be at least -1: " + foreignKey);
-      }
-      this.referencedEntityType = foreignKey.referencedType();
-      this.soft = soft;
-      this.fetchDepth = fetchDepth;
-    }
+		DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, int fetchDepth, boolean soft) {
+			super(foreignKey);
+			if (fetchDepth < -1) {
+				throw new IllegalArgumentException("Fetch depth must be at least -1: " + foreignKey);
+			}
+			this.referencedEntityType = foreignKey.referencedType();
+			this.soft = soft;
+			this.fetchDepth = fetchDepth;
+		}
 
-    @Override
-    public ForeignKeyDefinition build() {
-      return new DefaultForeignKeyDefinition(this);
-    }
+		@Override
+		public ForeignKeyDefinition build() {
+			return new DefaultForeignKeyDefinition(this);
+		}
 
-    @Override
-    public ForeignKeyDefinition.Builder readOnly(Column<?> referenceColumn) {
-      if (((ForeignKey) attribute).reference(referenceColumn) == null) {
-        throw new IllegalArgumentException("Column " + referenceColumn + " is not part of foreign key: " + attribute);
-      }
-      this.readOnlyColumns.add(referenceColumn);
-      return this;
-    }
+		@Override
+		public ForeignKeyDefinition.Builder readOnly(Column<?> referenceColumn) {
+			if (((ForeignKey) attribute).reference(referenceColumn) == null) {
+				throw new IllegalArgumentException("Column " + referenceColumn + " is not part of foreign key: " + attribute);
+			}
+			this.readOnlyColumns.add(referenceColumn);
+			return this;
+		}
 
-    @Override
-    public ForeignKeyDefinition.Builder attributes(Attribute<?>... attributes) {
-      Set<Attribute<?>> attributeSet = new HashSet<>();
-      for (Attribute<?> attribute : requireNonNull(attributes)) {
-        if (!attribute.entityType().equals(referencedEntityType)) {
-          throw new IllegalArgumentException("Attribute must be part of the referenced entity");
-        }
-        attributeSet.add(attribute);
-      }
-      this.attributes = unmodifiableList(new ArrayList<>(attributeSet));
+		@Override
+		public ForeignKeyDefinition.Builder attributes(Attribute<?>... attributes) {
+			Set<Attribute<?>> attributeSet = new HashSet<>();
+			for (Attribute<?> attribute : requireNonNull(attributes)) {
+				if (!attribute.entityType().equals(referencedEntityType)) {
+					throw new IllegalArgumentException("Attribute must be part of the referenced entity");
+				}
+				attributeSet.add(attribute);
+			}
+			this.attributes = unmodifiableList(new ArrayList<>(attributeSet));
 
-      return this;
-    }
+			return this;
+		}
 
-    @Override
-    public ForeignKeyDefinition.Builder comparator(Comparator<Entity> comparator) {
-      throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
-    }
-  }
+		@Override
+		public ForeignKeyDefinition.Builder comparator(Comparator<Entity> comparator) {
+			throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
+		}
+	}
 }

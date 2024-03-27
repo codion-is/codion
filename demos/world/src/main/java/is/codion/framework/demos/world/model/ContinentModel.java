@@ -36,73 +36,73 @@ import java.util.Collection;
 
 public final class ContinentModel extends SwingEntityModel {
 
-  private final DefaultPieDataset<String> surfaceAreaDataset = new DefaultPieDataset<>();
-  private final DefaultPieDataset<String> populationDataset = new DefaultPieDataset<>();
-  private final DefaultPieDataset<String> gnpDataset = new DefaultPieDataset<>();
-  private final DefaultCategoryDataset lifeExpectancyDataset = new DefaultCategoryDataset();
+	private final DefaultPieDataset<String> surfaceAreaDataset = new DefaultPieDataset<>();
+	private final DefaultPieDataset<String> populationDataset = new DefaultPieDataset<>();
+	private final DefaultPieDataset<String> gnpDataset = new DefaultPieDataset<>();
+	private final DefaultCategoryDataset lifeExpectancyDataset = new DefaultCategoryDataset();
 
-  ContinentModel(EntityConnectionProvider connectionProvider) {
-    super(Continent.TYPE, connectionProvider);
-    tableModel().refresher().addRefreshListener(this::refreshChartDatasets);
-    CountryModel countryModel = new CountryModel(connectionProvider);
-    addDetailModel(new CountryModelLink(countryModel)).active().set(true);
-  }
+	ContinentModel(EntityConnectionProvider connectionProvider) {
+		super(Continent.TYPE, connectionProvider);
+		tableModel().refresher().addRefreshListener(this::refreshChartDatasets);
+		CountryModel countryModel = new CountryModel(connectionProvider);
+		addDetailModel(new CountryModelLink(countryModel)).active().set(true);
+	}
 
-  public PieDataset<String> populationDataset() {
-    return populationDataset;
-  }
+	public PieDataset<String> populationDataset() {
+		return populationDataset;
+	}
 
-  public PieDataset<String> surfaceAreaDataset() {
-    return surfaceAreaDataset;
-  }
+	public PieDataset<String> surfaceAreaDataset() {
+		return surfaceAreaDataset;
+	}
 
-  public PieDataset<String> gnpDataset() {
-    return gnpDataset;
-  }
+	public PieDataset<String> gnpDataset() {
+		return gnpDataset;
+	}
 
-  public CategoryDataset lifeExpectancyDataset() {
-    return lifeExpectancyDataset;
-  }
+	public CategoryDataset lifeExpectancyDataset() {
+		return lifeExpectancyDataset;
+	}
 
-  private void refreshChartDatasets() {
-    populationDataset.clear();
-    surfaceAreaDataset.clear();
-    gnpDataset.clear();
-    lifeExpectancyDataset.clear();
-    tableModel().items().forEach(continent -> {
-      String contientName = continent.get(Continent.NAME);
-      populationDataset.setValue(contientName, continent.get(Continent.POPULATION));
-      surfaceAreaDataset.setValue(contientName, continent.get(Continent.SURFACE_AREA));
-      gnpDataset.setValue(contientName, continent.get(Continent.GNP));
-      lifeExpectancyDataset.addValue(continent.get(Continent.MIN_LIFE_EXPECTANCY), "Lowest", contientName);
-      lifeExpectancyDataset.addValue(continent.get(Continent.MAX_LIFE_EXPECTANCY), "Highest", contientName);
-    });
-  }
+	private void refreshChartDatasets() {
+		populationDataset.clear();
+		surfaceAreaDataset.clear();
+		gnpDataset.clear();
+		lifeExpectancyDataset.clear();
+		tableModel().items().forEach(continent -> {
+			String contientName = continent.get(Continent.NAME);
+			populationDataset.setValue(contientName, continent.get(Continent.POPULATION));
+			surfaceAreaDataset.setValue(contientName, continent.get(Continent.SURFACE_AREA));
+			gnpDataset.setValue(contientName, continent.get(Continent.GNP));
+			lifeExpectancyDataset.addValue(continent.get(Continent.MIN_LIFE_EXPECTANCY), "Lowest", contientName);
+			lifeExpectancyDataset.addValue(continent.get(Continent.MAX_LIFE_EXPECTANCY), "Highest", contientName);
+		});
+	}
 
-  private static final class CountryModel extends SwingEntityModel {
+	private static final class CountryModel extends SwingEntityModel {
 
-    private CountryModel(EntityConnectionProvider connectionProvider) {
-      super(Country.TYPE, connectionProvider);
-      editModel().readOnly().set(true);
-      ColumnConditionModel<?, ?> continentConditionModel =
-              tableModel().conditionModel().conditionModel(Country.CONTINENT);
-      continentConditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
-      continentConditionModel.caseSensitive().set(true);
-    }
-  }
+		private CountryModel(EntityConnectionProvider connectionProvider) {
+			super(Country.TYPE, connectionProvider);
+			editModel().readOnly().set(true);
+			ColumnConditionModel<?, ?> continentConditionModel =
+							tableModel().conditionModel().conditionModel(Country.CONTINENT);
+			continentConditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
+			continentConditionModel.caseSensitive().set(true);
+		}
+	}
 
-  private static final class CountryModelLink extends SwingDetailModelLink {
+	private static final class CountryModelLink extends SwingDetailModelLink {
 
-    private CountryModelLink(SwingEntityModel detailModel) {
-      super(detailModel);
-    }
+		private CountryModelLink(SwingEntityModel detailModel) {
+			super(detailModel);
+		}
 
-    @Override
-    public void onSelection(Collection<Entity> selectedEntities) {
-      Collection<String> continentNames = Entity.values(Continent.NAME, selectedEntities);
-      if (detailModel().tableModel().conditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
-        detailModel().tableModel().refresh();
-      }
-    }
-  }
+		@Override
+		public void onSelection(Collection<Entity> selectedEntities) {
+			Collection<String> continentNames = Entity.values(Continent.NAME, selectedEntities);
+			if (detailModel().tableModel().conditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
+				detailModel().tableModel().refresh();
+			}
+		}
+	}
 }

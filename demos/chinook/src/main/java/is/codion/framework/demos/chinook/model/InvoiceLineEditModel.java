@@ -33,80 +33,80 @@ import java.util.function.Consumer;
 
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
-  private final Event<Collection<Entity>> totalsUpdatedEvent = Event.event();
+	private final Event<Collection<Entity>> totalsUpdatedEvent = Event.event();
 
-  public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
-    super(InvoiceLine.TYPE, connectionProvider);
-    addEditListener(InvoiceLine.TRACK_FK, this::setUnitPrice);
-  }
+	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
+		super(InvoiceLine.TYPE, connectionProvider);
+		addEditListener(InvoiceLine.TRACK_FK, this::setUnitPrice);
+	}
 
-  void addTotalsUpdatedListener(Consumer<Collection<Entity>> listener) {
-    totalsUpdatedEvent.addDataListener(listener);
-  }
+	void addTotalsUpdatedListener(Consumer<Collection<Entity>> listener) {
+		totalsUpdatedEvent.addDataListener(listener);
+	}
 
-  @Override
-  protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      Collection<Entity> inserted = connection.insertSelect(entities);
-      updateTotals(entities, connection);
-      connection.commitTransaction();
+	@Override
+	protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+		connection.beginTransaction();
+		try {
+			Collection<Entity> inserted = connection.insertSelect(entities);
+			updateTotals(entities, connection);
+			connection.commitTransaction();
 
-      return inserted;
-    }
-    catch (DatabaseException e) {
-      connection.rollbackTransaction();
-      throw e;
-    }
-    catch (Exception e) {
-      connection.rollbackTransaction();
-      throw new RuntimeException(e);
-    }
-  }
+			return inserted;
+		}
+		catch (DatabaseException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Override
-  protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      Collection<Entity> updated = connection.updateSelect(entities);
-      updateTotals(entities, connection);
-      connection.commitTransaction();
+	@Override
+	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+		connection.beginTransaction();
+		try {
+			Collection<Entity> updated = connection.updateSelect(entities);
+			updateTotals(entities, connection);
+			connection.commitTransaction();
 
-      return updated;
-    }
-    catch (DatabaseException e) {
-      connection.rollbackTransaction();
-      throw e;
-    }
-    catch (Exception e) {
-      connection.rollbackTransaction();
-      throw new RuntimeException(e);
-    }
-  }
+			return updated;
+		}
+		catch (DatabaseException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Override
-  protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      connection.delete(Entity.primaryKeys(entities));
-      updateTotals(entities, connection);
-      connection.commitTransaction();
-    }
-    catch (DatabaseException e) {
-      connection.rollbackTransaction();
-      throw e;
-    }
-    catch (Exception e) {
-      connection.rollbackTransaction();
-      throw new RuntimeException(e);
-    }
-  }
+	@Override
+	protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+		connection.beginTransaction();
+		try {
+			connection.delete(Entity.primaryKeys(entities));
+			updateTotals(entities, connection);
+			connection.commitTransaction();
+		}
+		catch (DatabaseException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+	}
 
-  private void setUnitPrice(Entity track) {
-    put(InvoiceLine.UNITPRICE, track == null ? null : track.get(Track.UNITPRICE));
-  }
+	private void setUnitPrice(Entity track) {
+		put(InvoiceLine.UNITPRICE, track == null ? null : track.get(Track.UNITPRICE));
+	}
 
-  private void updateTotals(Collection<Entity> invoices, EntityConnection connection) throws DatabaseException {
-    totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoices)));
-  }
+	private void updateTotals(Collection<Entity> invoices, EntityConnection connection) throws DatabaseException {
+		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoices)));
+	}
 }

@@ -39,174 +39,174 @@ import static is.codion.swing.common.ui.component.text.TextComponents.preferredT
 import static java.util.Objects.requireNonNull;
 
 public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
-        implements ComboBoxBuilder<T, C, B> {
+				implements ComboBoxBuilder<T, C, B> {
 
-  protected final ComboBoxModel<T> comboBoxModel;
+	protected final ComboBoxModel<T> comboBoxModel;
 
-  private final List<ItemListener> itemListeners = new ArrayList<>();
+	private final List<ItemListener> itemListeners = new ArrayList<>();
 
-  private boolean editable = false;
-  private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
-  private ListCellRenderer<T> renderer;
-  private ComboBoxEditor editor;
-  private boolean mouseWheelScrolling = true;
-  private boolean mouseWheelScrollingWithWrapAround = false;
-  private int maximumRowCount = -1;
-  private boolean moveCaretToFrontOnSelection = true;
-  private int popupWidth = 0;
+	private boolean editable = false;
+	private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
+	private ListCellRenderer<T> renderer;
+	private ComboBoxEditor editor;
+	private boolean mouseWheelScrolling = true;
+	private boolean mouseWheelScrollingWithWrapAround = false;
+	private int maximumRowCount = -1;
+	private boolean moveCaretToFrontOnSelection = true;
+	private int popupWidth = 0;
 
-  protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
-    super(linkedValue);
-    this.comboBoxModel = requireNonNull(comboBoxModel);
-    preferredHeight(preferredTextFieldHeight());
-    if (comboBoxModel instanceof FilteredComboBoxModel) {
-      popupMenuControl(comboBox -> Control.builder(new RefreshCommand((FilteredComboBoxModel<?>) comboBoxModel))
-              .name(Messages.refresh())
-              .build());
-    }
-  }
+	protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
+		super(linkedValue);
+		this.comboBoxModel = requireNonNull(comboBoxModel);
+		preferredHeight(preferredTextFieldHeight());
+		if (comboBoxModel instanceof FilteredComboBoxModel) {
+			popupMenuControl(comboBox -> Control.builder(new RefreshCommand((FilteredComboBoxModel<?>) comboBoxModel))
+							.name(Messages.refresh())
+							.build());
+		}
+	}
 
-  @Override
-  public final B editable(boolean editable) {
-    this.editable = editable;
-    return (B) this;
-  }
+	@Override
+	public final B editable(boolean editable) {
+		this.editable = editable;
+		return (B) this;
+	}
 
-  @Override
-  public final B completionMode(Completion.Mode completionMode) {
-    this.completionMode = requireNonNull(completionMode);
-    return (B) this;
-  }
+	@Override
+	public final B completionMode(Completion.Mode completionMode) {
+		this.completionMode = requireNonNull(completionMode);
+		return (B) this;
+	}
 
-  @Override
-  public final B renderer(ListCellRenderer<T> renderer) {
-    this.renderer = requireNonNull(renderer);
-    return (B) this;
-  }
+	@Override
+	public final B renderer(ListCellRenderer<T> renderer) {
+		this.renderer = requireNonNull(renderer);
+		return (B) this;
+	}
 
-  @Override
-  public final B editor(ComboBoxEditor editor) {
-    this.editor = requireNonNull(editor);
-    return (B) this;
-  }
+	@Override
+	public final B editor(ComboBoxEditor editor) {
+		this.editor = requireNonNull(editor);
+		return (B) this;
+	}
 
-  @Override
-  public final B mouseWheelScrolling(boolean mouseWheelScrolling) {
-    this.mouseWheelScrolling = mouseWheelScrolling;
-    if (mouseWheelScrolling) {
-      this.mouseWheelScrollingWithWrapAround = false;
-    }
-    return (B) this;
-  }
+	@Override
+	public final B mouseWheelScrolling(boolean mouseWheelScrolling) {
+		this.mouseWheelScrolling = mouseWheelScrolling;
+		if (mouseWheelScrolling) {
+			this.mouseWheelScrollingWithWrapAround = false;
+		}
+		return (B) this;
+	}
 
-  @Override
-  public final B mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround) {
-    this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
-    if (mouseWheelScrollingWithWrapAround) {
-      this.mouseWheelScrolling = false;
-    }
-    return (B) this;
-  }
+	@Override
+	public final B mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround) {
+		this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
+		if (mouseWheelScrollingWithWrapAround) {
+			this.mouseWheelScrolling = false;
+		}
+		return (B) this;
+	}
 
-  @Override
-  public final B maximumRowCount(int maximumRowCount) {
-    this.maximumRowCount = maximumRowCount;
-    return (B) this;
-  }
+	@Override
+	public final B maximumRowCount(int maximumRowCount) {
+		this.maximumRowCount = maximumRowCount;
+		return (B) this;
+	}
 
-  @Override
-  public final B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection) {
-    this.moveCaretToFrontOnSelection = moveCaretToFrontOnSelection;
-    return (B) this;
-  }
+	@Override
+	public final B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection) {
+		this.moveCaretToFrontOnSelection = moveCaretToFrontOnSelection;
+		return (B) this;
+	}
 
-  @Override
-  public final B popupWidth(int popupWidth) {
-    this.popupWidth = popupWidth;
-    return (B) this;
-  }
+	@Override
+	public final B popupWidth(int popupWidth) {
+		this.popupWidth = popupWidth;
+		return (B) this;
+	}
 
-  @Override
-  public final B itemListener(ItemListener itemListener) {
-    this.itemListeners.add(requireNonNull(itemListener));
-    return (B) this;
-  }
+	@Override
+	public final B itemListener(ItemListener itemListener) {
+		this.itemListeners.add(requireNonNull(itemListener));
+		return (B) this;
+	}
 
-  @Override
-  protected final C createComponent() {
-    C comboBox = createComboBox();
-    if (editable) {
-      comboBox.setEditable(true);
-    }
-    if (!editable && editor == null) {
-      Completion.enable(comboBox, completionMode);
-    }
-    if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
-      ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
-    }
-    if (renderer != null) {
-      comboBox.setRenderer(renderer);
-    }
-    if (editor != null) {
-      comboBox.setEditor(editor);
-    }
-    if (mouseWheelScrolling) {
-      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, false));
-    }
-    if (mouseWheelScrollingWithWrapAround) {
-      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, true));
-    }
-    if (maximumRowCount >= 0) {
-      comboBox.setMaximumRowCount(maximumRowCount);
-    }
-    itemListeners.forEach(new AddItemListener(comboBox));
-    if (Utilities.systemOrCrossPlatformLookAndFeelEnabled()) {
-      new SteppedComboBoxUI(comboBox, popupWidth);
-    }
-    comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
+	@Override
+	protected final C createComponent() {
+		C comboBox = createComboBox();
+		if (editable) {
+			comboBox.setEditable(true);
+		}
+		if (!editable && editor == null) {
+			Completion.enable(comboBox, completionMode);
+		}
+		if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
+			((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
+		}
+		if (renderer != null) {
+			comboBox.setRenderer(renderer);
+		}
+		if (editor != null) {
+			comboBox.setEditor(editor);
+		}
+		if (mouseWheelScrolling) {
+			comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, false));
+		}
+		if (mouseWheelScrollingWithWrapAround) {
+			comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, true));
+		}
+		if (maximumRowCount >= 0) {
+			comboBox.setMaximumRowCount(maximumRowCount);
+		}
+		itemListeners.forEach(new AddItemListener(comboBox));
+		if (Utilities.systemOrCrossPlatformLookAndFeelEnabled()) {
+			new SteppedComboBoxUI(comboBox, popupWidth);
+		}
+		comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
 
-    return comboBox;
-  }
+		return comboBox;
+	}
 
-  @Override
-  protected final ComponentValue<T, C> createComponentValue(C component) {
-    return new SelectedValue<>(component);
-  }
+	@Override
+	protected final ComponentValue<T, C> createComponentValue(C component) {
+		return new SelectedValue<>(component);
+	}
 
-  @Override
-  protected final void setInitialValue(C component, T initialValue) {
-    component.setSelectedItem(initialValue);
-  }
+	@Override
+	protected final void setInitialValue(C component, T initialValue) {
+		component.setSelectedItem(initialValue);
+	}
 
-  protected C createComboBox() {
-    return (C) new FocusableComboBox<>(comboBoxModel);
-  }
+	protected C createComboBox() {
+		return (C) new FocusableComboBox<>(comboBoxModel);
+	}
 
-  private static final class AddItemListener implements Consumer<ItemListener> {
+	private static final class AddItemListener implements Consumer<ItemListener> {
 
-    private final JComboBox<?> comboBox;
+		private final JComboBox<?> comboBox;
 
-    private AddItemListener(JComboBox<?> comboBox) {
-      this.comboBox = comboBox;
-    }
+		private AddItemListener(JComboBox<?> comboBox) {
+			this.comboBox = comboBox;
+		}
 
-    @Override
-    public void accept(ItemListener listener) {
-      comboBox.addItemListener(listener);
-    }
-  }
+		@Override
+		public void accept(ItemListener listener) {
+			comboBox.addItemListener(listener);
+		}
+	}
 
-  private static final class RefreshCommand implements Control.Command {
+	private static final class RefreshCommand implements Control.Command {
 
-    private final FilteredComboBoxModel<?> comboBoxModel;
+		private final FilteredComboBoxModel<?> comboBoxModel;
 
-    private RefreshCommand(FilteredComboBoxModel<?> comboBoxModel) {
-      this.comboBoxModel = comboBoxModel;
-    }
+		private RefreshCommand(FilteredComboBoxModel<?> comboBoxModel) {
+			this.comboBoxModel = comboBoxModel;
+		}
 
-    @Override
-    public void execute() {
-      comboBoxModel.refresh();
-    }
-  }
+		@Override
+		public void execute() {
+			comboBoxModel.refresh();
+		}
+	}
 }

@@ -24,11 +24,11 @@ package is.codion.common.rmi.server.exception;
  */
 public final class ServerAuthenticationException extends LoginException {
 
-  /**
-   * Instantiates a new {@link ServerAuthenticationException}
-   * @param message the exception message
-   */
-  public ServerAuthenticationException(String message) {
-    super(message);
-  }
+	/**
+	 * Instantiates a new {@link ServerAuthenticationException}
+	 * @param message the exception message
+	 */
+	public ServerAuthenticationException(String message) {
+		super(message);
+	}
 }

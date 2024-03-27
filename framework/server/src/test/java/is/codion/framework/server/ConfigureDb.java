@@ -30,30 +30,30 @@ import java.sql.SQLException;
 
 public final class ConfigureDb extends DefaultDomain {
 
-  private static final DomainType DOMAIN = DomainType.domainType(ConfigureDb.class);
+	private static final DomainType DOMAIN = DomainType.domainType(ConfigureDb.class);
 
-  public ConfigureDb() {
-    super(DOMAIN);
-    configured();
-  }
+	public ConfigureDb() {
+		super(DOMAIN);
+		configured();
+	}
 
-  interface Configured {
-    EntityType TYPE = DOMAIN.entityType("employees.configured");
-    Column<Integer> ID = TYPE.integerColumn("id");
-  }
+	interface Configured {
+		EntityType TYPE = DOMAIN.entityType("employees.configured");
+		Column<Integer> ID = TYPE.integerColumn("id");
+	}
 
-  void configured() {
-    add(Configured.TYPE.define(Configured.ID.define().primaryKey()));
-  }
+	void configured() {
+		add(Configured.TYPE.define(Configured.ID.define().primaryKey()));
+	}
 
-  @Override
-  public void configureDatabase(Database database) throws DatabaseException {
-    try {
-      database.createConnection(User.parse("sa")).createStatement()
-              .execute("create table employees.configured(id integer)");
-    }
-    catch (SQLException e) {
-      throw new DatabaseException(e);
-    }
-  }
+	@Override
+	public void configureDatabase(Database database) throws DatabaseException {
+		try {
+			database.createConnection(User.parse("sa")).createStatement()
+							.execute("create table employees.configured(id integer)");
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
 }

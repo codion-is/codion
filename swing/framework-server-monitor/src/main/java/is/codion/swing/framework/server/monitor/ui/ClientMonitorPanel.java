@@ -48,119 +48,119 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
  */
 public final class ClientMonitorPanel extends JPanel {
 
-  private final ClientMonitor model;
-  private final FilteredTable<RemoteClient, Integer> clientInstanceTable;
-  private final JScrollPane filterScrollPane;
-  private final JScrollPane clientInstanceScroller;
-  private final State advancedFilterState = State.state();
+	private final ClientMonitor model;
+	private final FilteredTable<RemoteClient, Integer> clientInstanceTable;
+	private final JScrollPane filterScrollPane;
+	private final JScrollPane clientInstanceScroller;
+	private final State advancedFilterState = State.state();
 
-  /**
-   * Instantiates a new ClientMonitorPanel
-   * @param model the model
-   */
-  public ClientMonitorPanel(ClientMonitor model) {
-    this.model = model;
-    clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel())
-            .popupMenu(this::createPopupMenu)
-            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-            .build();
-    clientInstanceScroller = scrollPane(clientInstanceTable)
-            .border(BorderFactory.createTitledBorder("Clients"))
-            .build();
-    filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filterPanel());
-    advancedFilterState.addDataListener(this::toggleAdvancedFilters);
-    initializeUI();
-  }
+	/**
+	 * Instantiates a new ClientMonitorPanel
+	 * @param model the model
+	 */
+	public ClientMonitorPanel(ClientMonitor model) {
+		this.model = model;
+		clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel())
+						.popupMenu(this::createPopupMenu)
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.build();
+		clientInstanceScroller = scrollPane(clientInstanceTable)
+						.border(BorderFactory.createTitledBorder("Clients"))
+						.build();
+		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filterPanel());
+		advancedFilterState.addDataListener(this::toggleAdvancedFilters);
+		initializeUI();
+	}
 
-  public ClientMonitor model() {
-    return model;
-  }
+	public ClientMonitor model() {
+		return model;
+	}
 
-  public void refresh() {
-    model.refresh();
-  }
+	public void refresh() {
+		model.refresh();
+	}
 
-  private void initializeUI() {
-    JPanel clientInstanceBase = borderLayoutPanel()
-            .northComponent(filterScrollPane)
-            .centerComponent(clientInstanceScroller)
-            .southComponent(borderLayoutPanel()
-                    .southComponent(borderLayoutPanel()
-                            .centerComponent(clientInstanceTable.searchField())
-                            .eastComponent(flexibleGridLayoutPanel(1, 2)
-                                    .add(checkBox(advancedFilterState)
-                                            .text("Advanced filters")
-                                            .build())
-                                    .add(button(control(this::refresh))
-                                            .text("Refresh")
-                                            .build())
-                                    .build())
-                            .build())
-                    .build())
-            .build();
+	private void initializeUI() {
+		JPanel clientInstanceBase = borderLayoutPanel()
+						.northComponent(filterScrollPane)
+						.centerComponent(clientInstanceScroller)
+						.southComponent(borderLayoutPanel()
+										.southComponent(borderLayoutPanel()
+														.centerComponent(clientInstanceTable.searchField())
+														.eastComponent(flexibleGridLayoutPanel(1, 2)
+																		.add(checkBox(advancedFilterState)
+																						.text("Advanced filters")
+																						.build())
+																		.add(button(control(this::refresh))
+																						.text("Refresh")
+																						.build())
+																		.build())
+														.build())
+										.build())
+						.build();
 
-    JPanel clientInstancePanel = borderLayoutPanel().build();
-    JSplitPane splitPane = splitPane()
-            .orientation(JSplitPane.HORIZONTAL_SPLIT)
-            .oneTouchExpandable(true)
-            .continuousLayout(true)
-            .leftComponent(clientInstanceBase)
-            .rightComponent(clientInstancePanel)
-            .build();
+		JPanel clientInstancePanel = borderLayoutPanel().build();
+		JSplitPane splitPane = splitPane()
+						.orientation(JSplitPane.HORIZONTAL_SPLIT)
+						.oneTouchExpandable(true)
+						.continuousLayout(true)
+						.leftComponent(clientInstanceBase)
+						.rightComponent(clientInstancePanel)
+						.build();
 
-    model.clientInstanceTableModel().selectionModel().addSelectedItemListener(remoteClient -> {
-      clientInstancePanel.removeAll();
-      try {
-        if (model != null && remoteClient != null) {
-          ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.server(), remoteClient));
-          clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
-        }
-        revalidate();
-        repaint();
-      }
-      catch (RemoteException ex) {
-        throw new RuntimeException(ex);
-      }
-    });
-    setLayout(borderLayout());
-    add(splitPane, BorderLayout.CENTER);
-  }
+		model.clientInstanceTableModel().selectionModel().addSelectedItemListener(remoteClient -> {
+			clientInstancePanel.removeAll();
+			try {
+				if (model != null && remoteClient != null) {
+					ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.server(), remoteClient));
+					clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
+				}
+				revalidate();
+				repaint();
+			}
+			catch (RemoteException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+		setLayout(borderLayout());
+		add(splitPane, BorderLayout.CENTER);
+	}
 
-  private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Integer> table) {
-    return menu(Controls.builder()
-            .control(Control.builder(this::disconnect)
-                    .name("Disconnect")
-                    .enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
-            .separator()
-            .controls(Controls.builder()
-                    .name("Columns")
-                    .control(table.createToggleColumnsControls())
-                    .control(table.createResetColumnsControl())
-                    .control(table.createAutoResizeModeControl())
-                    .build())
-            .build())
-            .createPopupMenu();
-  }
+	private JPopupMenu createPopupMenu(FilteredTable<RemoteClient, Integer> table) {
+		return menu(Controls.builder()
+						.control(Control.builder(this::disconnect)
+										.name("Disconnect")
+										.enabled(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
+						.separator()
+						.controls(Controls.builder()
+										.name("Columns")
+										.control(table.createToggleColumnsControls())
+										.control(table.createResetColumnsControl())
+										.control(table.createAutoResizeModeControl())
+										.build())
+						.build())
+						.createPopupMenu();
+	}
 
-  private void disconnect() throws RemoteException {
-    for (RemoteClient remoteClient : model.clientInstanceTableModel().selectionModel().getSelectedItems()) {
-      model.server().disconnect(remoteClient.clientId());
-      model.clientInstanceTableModel().removeItem(remoteClient);
-    }
-  }
+	private void disconnect() throws RemoteException {
+		for (RemoteClient remoteClient : model.clientInstanceTableModel().selectionModel().getSelectedItems()) {
+			model.server().disconnect(remoteClient.clientId());
+			model.clientInstanceTableModel().removeItem(remoteClient);
+		}
+	}
 
-  private void toggleAdvancedFilters(Boolean advanced) {
-    clientInstanceTable.filterPanel().advanced().set(advanced);
-    revalidate();
-  }
+	private void toggleAdvancedFilters(Boolean advanced) {
+		clientInstanceTable.filterPanel().advanced().set(advanced);
+		revalidate();
+	}
 
-  private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
-    return Components.scrollPane(panelToScroll)
-            .horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
-            .verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-            .onBuild(scrollPane -> linkBoundedRangeModels(
-                    parentScrollPane.getHorizontalScrollBar().getModel(),
-                    scrollPane.getHorizontalScrollBar().getModel()))
-            .build();
-  }
+	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
+		return Components.scrollPane(panelToScroll)
+						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
+						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
+						.onBuild(scrollPane -> linkBoundedRangeModels(
+										parentScrollPane.getHorizontalScrollBar().getModel(),
+										scrollPane.getHorizontalScrollBar().getModel()))
+						.build();
+	}
 }

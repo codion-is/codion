@@ -26,172 +26,172 @@ import java.util.function.Function;
 
 final class DefaultState implements State {
 
-  private final Value<Boolean> value;
+	private final Value<Boolean> value;
 
-  private DefaultStateObserver observer;
+	private DefaultStateObserver observer;
 
-  DefaultState(boolean value) {
-    this.value = Value.value(value, false);
-    this.value.addDataListener(new Notifier());
-  }
+	DefaultState(boolean value) {
+		this.value = Value.value(value, false);
+		this.value.addDataListener(new Notifier());
+	}
 
-  @Override
-  public String toString() {
-    return Boolean.toString(value.get());
-  }
+	@Override
+	public String toString() {
+		return Boolean.toString(value.get());
+	}
 
-  @Override
-  public Boolean get() {
-    synchronized (this.value) {
-      return this.value.get();
-    }
-  }
+	@Override
+	public Boolean get() {
+		synchronized (this.value) {
+			return this.value.get();
+		}
+	}
 
-  @Override
-  public boolean set(Boolean value) {
-    synchronized (this.value) {
-      return this.value.set(value);
-    }
-  }
+	@Override
+	public boolean set(Boolean value) {
+		synchronized (this.value) {
+			return this.value.set(value);
+		}
+	}
 
-  @Override
-  public boolean map(Function<Boolean, Boolean> mapper) {
-    synchronized (this.value) {
-      return this.value.map(mapper);
-    }
-  }
+	@Override
+	public boolean map(Function<Boolean, Boolean> mapper) {
+		synchronized (this.value) {
+			return this.value.map(mapper);
+		}
+	}
 
-  @Override
-  public StateObserver observer() {
-    synchronized (this.value) {
-      if (observer == null) {
-        observer = new DefaultStateObserver(this, false);
-      }
+	@Override
+	public StateObserver observer() {
+		synchronized (this.value) {
+			if (observer == null) {
+				observer = new DefaultStateObserver(this, false);
+			}
 
-      return observer;
-    }
-  }
+			return observer;
+		}
+	}
 
-  @Override
-  public StateObserver not() {
-    return observer().not();
-  }
+	@Override
+	public StateObserver not() {
+		return observer().not();
+	}
 
-  @Override
-  public void link(Value<Boolean> originalValue) {
-    this.value.link(originalValue);
-  }
+	@Override
+	public void link(Value<Boolean> originalValue) {
+		this.value.link(originalValue);
+	}
 
-  @Override
-  public void unlink(Value<Boolean> originalValue) {
-    this.value.unlink(originalValue);
-  }
+	@Override
+	public void unlink(Value<Boolean> originalValue) {
+		this.value.unlink(originalValue);
+	}
 
-  @Override
-  public void link(ValueObserver<Boolean> originalValue) {
-    this.value.link(originalValue);
-  }
+	@Override
+	public void link(ValueObserver<Boolean> originalValue) {
+		this.value.link(originalValue);
+	}
 
-  @Override
-  public void unlink(ValueObserver<Boolean> originalValue) {
-    this.value.unlink(originalValue);
-  }
+	@Override
+	public void unlink(ValueObserver<Boolean> originalValue) {
+		this.value.unlink(originalValue);
+	}
 
-  @Override
-  public boolean addValidator(Validator<Boolean> validator) {
-    return this.value.addValidator(validator);
-  }
+	@Override
+	public boolean addValidator(Validator<Boolean> validator) {
+		return this.value.addValidator(validator);
+	}
 
-  @Override
-  public boolean removeValidator(Validator<Boolean> validator) {
-    return this.value.removeValidator(validator);
-  }
+	@Override
+	public boolean removeValidator(Validator<Boolean> validator) {
+		return this.value.removeValidator(validator);
+	}
 
-  @Override
-  public void validate(Boolean value) {
-    this.value.validate(value);
-  }
+	@Override
+	public void validate(Boolean value) {
+		this.value.validate(value);
+	}
 
-  @Override
-  public boolean isNull() {
-    return false;
-  }
+	@Override
+	public boolean isNull() {
+		return false;
+	}
 
-  @Override
-  public boolean isNotNull() {
-    return true;
-  }
+	@Override
+	public boolean isNotNull() {
+		return true;
+	}
 
-  @Override
-  public boolean nullable() {
-    return false;
-  }
+	@Override
+	public boolean nullable() {
+		return false;
+	}
 
-  @Override
-  public boolean addListener(Runnable listener) {
-    return observer().addListener(listener);
-  }
+	@Override
+	public boolean addListener(Runnable listener) {
+		return observer().addListener(listener);
+	}
 
-  @Override
-  public boolean removeListener(Runnable listener) {
-    if (observer != null) {
-      return observer.removeListener(listener);
-    }
+	@Override
+	public boolean removeListener(Runnable listener) {
+		if (observer != null) {
+			return observer.removeListener(listener);
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  @Override
-  public boolean addDataListener(Consumer<? super Boolean> listener) {
-    return observer().addDataListener(listener);
-  }
+	@Override
+	public boolean addDataListener(Consumer<? super Boolean> listener) {
+		return observer().addDataListener(listener);
+	}
 
-  @Override
-  public boolean removeDataListener(Consumer<? super Boolean> listener) {
-    if (observer != null) {
-      return observer.removeDataListener(listener);
-    }
+	@Override
+	public boolean removeDataListener(Consumer<? super Boolean> listener) {
+		if (observer != null) {
+			return observer.removeDataListener(listener);
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  @Override
-  public boolean addWeakListener(Runnable listener) {
-    return observer().addWeakListener(listener);
-  }
+	@Override
+	public boolean addWeakListener(Runnable listener) {
+		return observer().addWeakListener(listener);
+	}
 
-  @Override
-  public boolean removeWeakListener(Runnable listener) {
-    if (observer != null) {
-      return observer.removeWeakListener(listener);
-    }
+	@Override
+	public boolean removeWeakListener(Runnable listener) {
+		if (observer != null) {
+			return observer.removeWeakListener(listener);
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  @Override
-  public boolean addWeakDataListener(Consumer<? super Boolean> listener) {
-    return observer().addWeakDataListener(listener);
-  }
+	@Override
+	public boolean addWeakDataListener(Consumer<? super Boolean> listener) {
+		return observer().addWeakDataListener(listener);
+	}
 
-  @Override
-  public boolean removeWeakDataListener(Consumer<? super Boolean> listener) {
-    if (observer != null) {
-      return observer.removeWeakDataListener(listener);
-    }
+	@Override
+	public boolean removeWeakDataListener(Consumer<? super Boolean> listener) {
+		if (observer != null) {
+			return observer.removeWeakDataListener(listener);
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  private final class Notifier implements Consumer<Boolean> {
+	private final class Notifier implements Consumer<Boolean> {
 
-    @Override
-    public void accept(Boolean value) {
-      synchronized (DefaultState.this.value) {
-        if (observer != null) {
-          observer.notifyObservers(value, !value);
-        }
-      }
-    }
-  }
+		@Override
+		public void accept(Boolean value) {
+			synchronized (DefaultState.this.value) {
+				if (observer != null) {
+					observer.notifyObservers(value, !value);
+				}
+			}
+		}
+	}
 }

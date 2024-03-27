@@ -35,48 +35,48 @@ import static java.util.Collections.singletonList;
 
 public class JasperReportsDataSourceTest {
 
-  private static final Entities ENTITIES = new TestDomain().entities();
+	private static final Entities ENTITIES = new TestDomain().entities();
 
-  @Test
-  void iterator() throws Exception {
-    Entity department = ENTITIES.builder(Department.TYPE)
-            .with(Department.ID, 10)
-            .with(Department.NAME, "name")
-            .with(Department.LOCATION, "none")
-            .build();
-    EntityDefinition definition = ENTITIES.definition(Department.TYPE);
-    List<Entity> entities = singletonList(department);
-    JasperReportsDataSource<Entity> source =
-            new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
-                    entity.get(definition.attributes().get(field.getName())));
-    while (source.next()) {
-      JRField field = new TestField(Department.NAME.name());
-      source.getFieldValue(field);
-    }
-  }
+	@Test
+	void iterator() throws Exception {
+		Entity department = ENTITIES.builder(Department.TYPE)
+						.with(Department.ID, 10)
+						.with(Department.NAME, "name")
+						.with(Department.LOCATION, "none")
+						.build();
+		EntityDefinition definition = ENTITIES.definition(Department.TYPE);
+		List<Entity> entities = singletonList(department);
+		JasperReportsDataSource<Entity> source =
+						new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
+										entity.get(definition.attributes().get(field.getName())));
+		while (source.next()) {
+			JRField field = new TestField(Department.NAME.name());
+			source.getFieldValue(field);
+		}
+	}
 
-  private static class TestField implements JRField {
-    private final String name;
-    TestField(String name) {this.name = name;}
-    @Override
-    public String getName() {return name;}
-    @Override
-    public String getDescription() {return null;}
-    @Override
-    public void setDescription(String s) {}
-    @Override
-    public Class<String> getValueClass() {return null;}
-    @Override
-    public String getValueClassName() {return null;}
-    @Override
-    public boolean hasProperties() {return false;}
-    @Override
-    public JRPropertiesMap getPropertiesMap() {return null;}
-    @Override
-    public JRPropertiesHolder getParentProperties() {return null;}
-    @Override
-    public Object clone() {return null;}
-    @Override
-    public JRPropertyExpression[] getPropertyExpressions() {return new JRPropertyExpression[0];}
-  }
+	private static class TestField implements JRField {
+		private final String name;
+		TestField(String name) {this.name = name;}
+		@Override
+		public String getName() {return name;}
+		@Override
+		public String getDescription() {return null;}
+		@Override
+		public void setDescription(String s) {}
+		@Override
+		public Class<String> getValueClass() {return null;}
+		@Override
+		public String getValueClassName() {return null;}
+		@Override
+		public boolean hasProperties() {return false;}
+		@Override
+		public JRPropertiesMap getPropertiesMap() {return null;}
+		@Override
+		public JRPropertiesHolder getParentProperties() {return null;}
+		@Override
+		public Object clone() {return null;}
+		@Override
+		public JRPropertyExpression[] getPropertyExpressions() {return new JRPropertyExpression[0];}
+	}
 }

@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
  */
 public final class EventStateValueTest {
 
-  @Test
-  void test() {
-    EventStateValue.main(new String[0]);
-  }
+	@Test
+	void test() {
+		EventStateValue.main(new String[0]);
+	}
 }

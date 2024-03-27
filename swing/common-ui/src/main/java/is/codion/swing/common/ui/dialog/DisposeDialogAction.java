@@ -28,32 +28,32 @@ import java.util.function.Supplier;
 
 final class DisposeDialogAction extends AbstractAction {
 
-  private final Supplier<JDialog> dialogSupplier;
-  private final Consumer<State> confirmCloseListener;
+	private final Supplier<JDialog> dialogSupplier;
+	private final Consumer<State> confirmCloseListener;
 
-  DisposeDialogAction(Supplier<JDialog> dialogSupplier, Consumer<State> confirmCloseListener) {
-    super("DisposeDialogAction");
-    this.dialogSupplier = dialogSupplier;
-    this.confirmCloseListener = confirmCloseListener;
-  }
+	DisposeDialogAction(Supplier<JDialog> dialogSupplier, Consumer<State> confirmCloseListener) {
+		super("DisposeDialogAction");
+		this.dialogSupplier = dialogSupplier;
+		this.confirmCloseListener = confirmCloseListener;
+	}
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    closeIfConfirmed(dialogSupplier.get(), confirmCloseListener);
-  }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		closeIfConfirmed(dialogSupplier.get(), confirmCloseListener);
+	}
 
-  static void closeIfConfirmed(JDialog dialog, Consumer<State> confirmCloseListener) {
-    if (dialog != null) {
-      if (confirmCloseListener == null) {
-        dialog.dispose();
-      }
-      else {
-        State confirmClose = State.state();
-        confirmCloseListener.accept(confirmClose);
-        if (confirmClose.get()) {
-          dialog.dispose();
-        }
-      }
-    }
-  }
+	static void closeIfConfirmed(JDialog dialog, Consumer<State> confirmCloseListener) {
+		if (dialog != null) {
+			if (confirmCloseListener == null) {
+				dialog.dispose();
+			}
+			else {
+				State confirmClose = State.state();
+				confirmCloseListener.accept(confirmClose);
+				if (confirmClose.get()) {
+					dialog.dispose();
+				}
+			}
+		}
+	}
 }

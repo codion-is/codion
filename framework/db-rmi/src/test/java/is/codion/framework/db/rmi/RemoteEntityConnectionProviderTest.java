@@ -51,75 +51,75 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class RemoteEntityConnectionProviderTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  @Test
-  void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
-    EntityServerConfiguration configuration = configure();
+	@Test
+	void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
+		EntityServerConfiguration configuration = configure();
 
-    String serverName = configuration.serverName();
-    EntityServer.startServer(configuration);
-    Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
-            LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(serverName);
-    EntityServerAdmin admin = server.serverAdmin(User.parse("scott:tiger"));
+		String serverName = configuration.serverName();
+		EntityServer.startServer(configuration);
+		Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(serverName);
+		EntityServerAdmin admin = server.serverAdmin(User.parse("scott:tiger"));
 
-    RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
-            .hostName(Clients.SERVER_HOSTNAME.get())
-            .port(configuration.port())
-            .registryPort(configuration.registryPort())
-            .clientTypeId("RemoteEntityConnectionProviderTest")
-            .domainType(TestDomain.DOMAIN)
-            .user(User.parse("scott:tiger"))
-            .build();
+		RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
+						.hostName(Clients.SERVER_HOSTNAME.get())
+						.port(configuration.port())
+						.registryPort(configuration.registryPort())
+						.clientTypeId("RemoteEntityConnectionProviderTest")
+						.domainType(TestDomain.DOMAIN)
+						.user(User.parse("scott:tiger"))
+						.build();
 
-    EntityConnection connection = provider.connection();
-    connection.select(all(Department.TYPE));
+		EntityConnection connection = provider.connection();
+		connection.select(all(Department.TYPE));
 
-    assertThrows(DatabaseException.class, () -> connection.delete(Employee.NAME.equalTo("JONES")));
+		assertThrows(DatabaseException.class, () -> connection.delete(Employee.NAME.equalTo("JONES")));
 
-    admin.shutdown();
+		admin.shutdown();
 
-    assertFalse(connection.connected());
+		assertFalse(connection.connected());
 
-    provider.close();
+		provider.close();
 
-    assertFalse(provider.connectionValid());
+		assertFalse(provider.connectionValid());
 
-    assertThrows(RuntimeException.class, provider::connection);
-  }
+		assertThrows(RuntimeException.class, provider::connection);
+	}
 
-  @Test
-  void entityConnectionProviderBuilder() {
-    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    try {
-      EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-              .domainType(DomainType.domainType("entityConnectionProviderBuilder"))
-              .clientTypeId("test")
-              .user(UNIT_TEST_USER)
-              .build();
-      assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
-      assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.connectionType());
-    }
-    finally {
-      EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);
-    }
-  }
+	@Test
+	void entityConnectionProviderBuilder() {
+		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
+		try {
+			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+							.domainType(DomainType.domainType("entityConnectionProviderBuilder"))
+							.clientTypeId("test")
+							.user(UNIT_TEST_USER)
+							.build();
+			assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
+			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.connectionType());
+		}
+		finally {
+			EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);
+		}
+	}
 
-  private static EntityServerConfiguration configure() {
-    Clients.SERVER_HOSTNAME.set("localhost");
-    Clients.TRUSTSTORE.set("../server/src/main/config/truststore.jks");
-    Clients.resolveTrustStore();
-    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    ServerConfiguration.KEYSTORE.set("../server/src/main/config/keystore.jks");
-    ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
+	private static EntityServerConfiguration configure() {
+		Clients.SERVER_HOSTNAME.set("localhost");
+		Clients.TRUSTSTORE.set("../server/src/main/config/truststore.jks");
+		Clients.resolveTrustStore();
+		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+		ServerConfiguration.KEYSTORE.set("../server/src/main/config/keystore.jks");
+		ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
 
-    return EntityServerConfiguration.builder(3223, 3221)
-            .adminPort(3223)
-            .adminUser(User.parse("scott:tiger"))
-            .database(Database.instance())
-            .domainClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
-            .sslEnabled(true)
-            .build();
-  }
+		return EntityServerConfiguration.builder(3223, 3221)
+						.adminPort(3223)
+						.adminUser(User.parse("scott:tiger"))
+						.database(Database.instance())
+						.domainClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
+						.sslEnabled(true)
+						.build();
+	}
 }

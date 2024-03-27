@@ -1,4 +1,4 @@
-<code_scheme name="codion" version="173">
+<code_scheme name="darri.codestyle" version="173">
     <JavaCodeStyleSettings>
         <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99"/>
         <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
@@ -36,6 +36,7 @@
         <indentOptions>
             <option name="INDENT_SIZE" value="2"/>
             <option name="TAB_SIZE" value="2"/>
+            <option name="USE_TAB_CHARACTER" value="true"/>
         </indentOptions>
     </codeStyleSettings>
 </code_scheme>

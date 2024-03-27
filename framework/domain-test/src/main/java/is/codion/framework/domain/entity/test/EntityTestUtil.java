@@ -53,226 +53,226 @@ import static java.util.stream.Collectors.toList;
  */
 public final class EntityTestUtil {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityTestUtil.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EntityTestUtil.class);
 
-  private static final int MININUM_RANDOM_NUMBER = -10_000;
-  private static final int MAXIMUM_RANDOM_NUMBER = 10_000;
-  private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
-  private static final Random RANDOM = new Random();
+	private static final int MININUM_RANDOM_NUMBER = -10_000;
+	private static final int MAXIMUM_RANDOM_NUMBER = 10_000;
+	private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
+	private static final Random RANDOM = new Random();
 
-  private EntityTestUtil() {}
+	private EntityTestUtil() {}
 
-  /**
-   * @param entities the domain model entities
-   * @param entityType the entityType
-   * @param referenceEntities entities referenced by the given foreign key
-   * @return an Entity instance containing randomized values, based on the attribute definitions
-   */
-  public static Entity createRandomEntity(Entities entities, EntityType entityType,
-                                          Map<ForeignKey, Entity> referenceEntities) {
-    return createEntity(entities, entityType, definition -> createRandomValue(definition, referenceEntities));
-  }
+	/**
+	 * @param entities the domain model entities
+	 * @param entityType the entityType
+	 * @param referenceEntities entities referenced by the given foreign key
+	 * @return an Entity instance containing randomized values, based on the attribute definitions
+	 */
+	public static Entity createRandomEntity(Entities entities, EntityType entityType,
+																					Map<ForeignKey, Entity> referenceEntities) {
+		return createEntity(entities, entityType, definition -> createRandomValue(definition, referenceEntities));
+	}
 
-  /**
-   * @param entities the domain model entities
-   * @param entityType the entityType
-   * @param valueProvider the value provider
-   * @return an Entity instance with insertable attributes populated with values provided by the given value provider
-   */
-  public static Entity createEntity(Entities entities, EntityType entityType, Function<AttributeDefinition<?>, Object> valueProvider) {
-    requireNonNull(entities);
-    requireNonNull(entityType);
-    Entity entity = entities.entity(entityType);
-    populateEntity(entity, insertableColumnDefinitions(entities.definition(entityType)), valueProvider);
+	/**
+	 * @param entities the domain model entities
+	 * @param entityType the entityType
+	 * @param valueProvider the value provider
+	 * @return an Entity instance with insertable attributes populated with values provided by the given value provider
+	 */
+	public static Entity createEntity(Entities entities, EntityType entityType, Function<AttributeDefinition<?>, Object> valueProvider) {
+		requireNonNull(entities);
+		requireNonNull(entityType);
+		Entity entity = entities.entity(entityType);
+		populateEntity(entity, insertableColumnDefinitions(entities.definition(entityType)), valueProvider);
 
-    return entity;
-  }
+		return entity;
+	}
 
-  /**
-   * Randomizes updatable attribute values in the given entity, note that if a foreign key entity is not provided
-   * the respective foreign key value in not modified
-   * @param entities the domain model entities
-   * @param entity the entity to randomize
-   * @param foreignKeyEntities the entities referenced via foreign keys
-   */
-  public static void randomize(Entities entities, Entity entity, Map<ForeignKey, Entity> foreignKeyEntities) {
-    requireNonNull(entities);
-    requireNonNull(entity);
-    populateEntity(entity,
-            updatableColumnDefinitions(entity.definition()),
-            attributeDefinition -> createRandomValue(attributeDefinition, foreignKeyEntities));
-  }
+	/**
+	 * Randomizes updatable attribute values in the given entity, note that if a foreign key entity is not provided
+	 * the respective foreign key value in not modified
+	 * @param entities the domain model entities
+	 * @param entity the entity to randomize
+	 * @param foreignKeyEntities the entities referenced via foreign keys
+	 */
+	public static void randomize(Entities entities, Entity entity, Map<ForeignKey, Entity> foreignKeyEntities) {
+		requireNonNull(entities);
+		requireNonNull(entity);
+		populateEntity(entity,
+						updatableColumnDefinitions(entity.definition()),
+						attributeDefinition -> createRandomValue(attributeDefinition, foreignKeyEntities));
+	}
 
-  /**
-   * Creates a random value for the given attribute.
-   * @param attributeDefinition the attribute definition
-   * @param referenceEntities entities referenced by the given attribute
-   * @param <T> the attribute value type
-   * @return a random value
-   */
-  public static <T> T createRandomValue(AttributeDefinition<T> attributeDefinition, Map<ForeignKey, Entity> referenceEntities) {
-    requireNonNull(attributeDefinition, "attributeDefinition");
-    try {
-      if (attributeDefinition instanceof ForeignKeyDefinition) {
-        return (T) referenceEntity(((ForeignKeyDefinition) attributeDefinition).attribute(), referenceEntities);
-      }
-      if (!attributeDefinition.items().isEmpty()) {
-        return randomItem(attributeDefinition);
-      }
-      Attribute<?> attribute = attributeDefinition.attribute();
-      if (attribute.type().isBoolean()) {
-        return (T) Boolean.valueOf(RANDOM.nextBoolean());
-      }
-      if (attribute.type().isCharacter()) {
-        return (T) Character.valueOf((char) RANDOM.nextInt());
-      }
-      if (attribute.type().isLocalDate()) {
-        return (T) LocalDate.now();
-      }
-      if (attribute.type().isLocalDateTime()) {
-        return (T) LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-      }
-      if (attribute.type().isOffsetDateTime()) {
-        return (T) OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-      }
-      if (attribute.type().isLocalTime()) {
-        return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-      }
-      if (attribute.type().isDouble()) {
-        return (T) Double.valueOf(randomDouble(attributeDefinition));
-      }
-      if (attribute.type().isBigDecimal()) {
-        return (T) BigDecimal.valueOf(randomDouble(attributeDefinition));
-      }
-      if (attribute.type().isInteger()) {
-        return (T) Integer.valueOf(randomInteger(attributeDefinition));
-      }
-      if (attribute.type().isLong()) {
-        return (T) Long.valueOf(randomLong(attributeDefinition));
-      }
-      if (attribute.type().isShort()) {
-        return (T) Short.valueOf(randomShort(attributeDefinition));
-      }
-      if (attribute.type().isString()) {
-        return (T) randomString(attributeDefinition);
-      }
-      if (attribute.type().isByteArray()) {
-        return (T) randomBlob(attributeDefinition);
-      }
-      if (attribute.type().isEnum()) {
-        return randomEnum(attribute);
-      }
+	/**
+	 * Creates a random value for the given attribute.
+	 * @param attributeDefinition the attribute definition
+	 * @param referenceEntities entities referenced by the given attribute
+	 * @param <T> the attribute value type
+	 * @return a random value
+	 */
+	public static <T> T createRandomValue(AttributeDefinition<T> attributeDefinition, Map<ForeignKey, Entity> referenceEntities) {
+		requireNonNull(attributeDefinition, "attributeDefinition");
+		try {
+			if (attributeDefinition instanceof ForeignKeyDefinition) {
+				return (T) referenceEntity(((ForeignKeyDefinition) attributeDefinition).attribute(), referenceEntities);
+			}
+			if (!attributeDefinition.items().isEmpty()) {
+				return randomItem(attributeDefinition);
+			}
+			Attribute<?> attribute = attributeDefinition.attribute();
+			if (attribute.type().isBoolean()) {
+				return (T) Boolean.valueOf(RANDOM.nextBoolean());
+			}
+			if (attribute.type().isCharacter()) {
+				return (T) Character.valueOf((char) RANDOM.nextInt());
+			}
+			if (attribute.type().isLocalDate()) {
+				return (T) LocalDate.now();
+			}
+			if (attribute.type().isLocalDateTime()) {
+				return (T) LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+			}
+			if (attribute.type().isOffsetDateTime()) {
+				return (T) OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+			}
+			if (attribute.type().isLocalTime()) {
+				return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+			}
+			if (attribute.type().isDouble()) {
+				return (T) Double.valueOf(randomDouble(attributeDefinition));
+			}
+			if (attribute.type().isBigDecimal()) {
+				return (T) BigDecimal.valueOf(randomDouble(attributeDefinition));
+			}
+			if (attribute.type().isInteger()) {
+				return (T) Integer.valueOf(randomInteger(attributeDefinition));
+			}
+			if (attribute.type().isLong()) {
+				return (T) Long.valueOf(randomLong(attributeDefinition));
+			}
+			if (attribute.type().isShort()) {
+				return (T) Short.valueOf(randomShort(attributeDefinition));
+			}
+			if (attribute.type().isString()) {
+				return (T) randomString(attributeDefinition);
+			}
+			if (attribute.type().isByteArray()) {
+				return (T) randomBlob(attributeDefinition);
+			}
+			if (attribute.type().isEnum()) {
+				return randomEnum(attribute);
+			}
 
-      return null;
-    }
-    catch (RuntimeException e) {
-      LOG.error("Exception while creating random value for: " + attributeDefinition.attribute(), e);
-      throw e;
-    }
-  }
+			return null;
+		}
+		catch (RuntimeException e) {
+			LOG.error("Exception while creating random value for: " + attributeDefinition.attribute(), e);
+			throw e;
+		}
+	}
 
-  private static void populateEntity(Entity entity, Collection<ColumnDefinition<?>> columnDefinitions,
-                                     Function<AttributeDefinition<?>, Object> valueProvider) {
-    requireNonNull(valueProvider, "valueProvider");
-    EntityDefinition definition = entity.definition();
-    for (ColumnDefinition<?> columnDefinition : columnDefinitions) {
-      if (!definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute())) {
-        entity.put((Attribute<Object>) columnDefinition.attribute(), valueProvider.apply(columnDefinition));
-      }
-    }
-    for (ForeignKeyDefinition foreignKeyDefinition : entity.definition().foreignKeys().definitions()) {
-      Entity value = (Entity) valueProvider.apply(foreignKeyDefinition);
-      if (value != null) {
-        entity.put(foreignKeyDefinition.attribute(), value);
-      }
-    }
-  }
+	private static void populateEntity(Entity entity, Collection<ColumnDefinition<?>> columnDefinitions,
+																		 Function<AttributeDefinition<?>, Object> valueProvider) {
+		requireNonNull(valueProvider, "valueProvider");
+		EntityDefinition definition = entity.definition();
+		for (ColumnDefinition<?> columnDefinition : columnDefinitions) {
+			if (!definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute())) {
+				entity.put((Attribute<Object>) columnDefinition.attribute(), valueProvider.apply(columnDefinition));
+			}
+		}
+		for (ForeignKeyDefinition foreignKeyDefinition : entity.definition().foreignKeys().definitions()) {
+			Entity value = (Entity) valueProvider.apply(foreignKeyDefinition);
+			if (value != null) {
+				entity.put(foreignKeyDefinition.attribute(), value);
+			}
+		}
+	}
 
-  private static List<ColumnDefinition<?>> insertableColumnDefinitions(EntityDefinition entityDefinition) {
-    return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.insertable() && (!entityDefinition.primaryKey().generated() || !column.primaryKey()))
-            .collect(toList());
-  }
+	private static List<ColumnDefinition<?>> insertableColumnDefinitions(EntityDefinition entityDefinition) {
+		return entityDefinition.columns().definitions().stream()
+						.filter(column -> column.insertable() && (!entityDefinition.primaryKey().generated() || !column.primaryKey()))
+						.collect(toList());
+	}
 
-  private static List<ColumnDefinition<?>> updatableColumnDefinitions(EntityDefinition entityDefinition) {
-    return entityDefinition.columns().definitions().stream()
-            .filter(column -> column.updatable() && !column.primaryKey())
-            .collect(toList());
-  }
+	private static List<ColumnDefinition<?>> updatableColumnDefinitions(EntityDefinition entityDefinition) {
+		return entityDefinition.columns().definitions().stream()
+						.filter(column -> column.updatable() && !column.primaryKey())
+						.collect(toList());
+	}
 
-  private static String randomString(AttributeDefinition<?> attributeDefinition) {
-    int length = attributeDefinition.maximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : attributeDefinition.maximumLength();
+	private static String randomString(AttributeDefinition<?> attributeDefinition) {
+		int length = attributeDefinition.maximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : attributeDefinition.maximumLength();
 
-    return Text.randomString(length, length);
-  }
+		return Text.randomString(length, length);
+	}
 
-  private static byte[] randomBlob(AttributeDefinition<?> attributeDefinition) {
-    if (attributeDefinition.attribute().type().isByteArray() &&
-            attributeDefinition instanceof ColumnDefinition &&
-            !((ColumnDefinition<?>) attributeDefinition).lazy()) {
-      return randomBlob(1024);
-    }
+	private static byte[] randomBlob(AttributeDefinition<?> attributeDefinition) {
+		if (attributeDefinition.attribute().type().isByteArray() &&
+						attributeDefinition instanceof ColumnDefinition &&
+						!((ColumnDefinition<?>) attributeDefinition).lazy()) {
+			return randomBlob(1024);
+		}
 
-    return null;
-  }
+		return null;
+	}
 
-  private static byte[] randomBlob(int numberOfBytes) {
-    byte[] bytes = new byte[numberOfBytes];
-    RANDOM.nextBytes(bytes);
+	private static byte[] randomBlob(int numberOfBytes) {
+		byte[] bytes = new byte[numberOfBytes];
+		RANDOM.nextBytes(bytes);
 
-    return bytes;
-  }
+		return bytes;
+	}
 
-  private static <T> T randomEnum(Attribute<?> attribute) {
-    Object[] enumConstants = attribute.type().valueClass().getEnumConstants();
+	private static <T> T randomEnum(Attribute<?> attribute) {
+		Object[] enumConstants = attribute.type().valueClass().getEnumConstants();
 
-    return (T) enumConstants[RANDOM.nextInt(enumConstants.length)];
-  }
+		return (T) enumConstants[RANDOM.nextInt(enumConstants.length)];
+	}
 
-  private static Entity referenceEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> referenceEntities) {
-    return referenceEntities == null ? null : referenceEntities.get(foreignKey);
-  }
+	private static Entity referenceEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> referenceEntities) {
+		return referenceEntities == null ? null : referenceEntities.get(foreignKey);
+	}
 
-  private static <T> T randomItem(AttributeDefinition<T> attributeDefinition) {
-    List<Item<T>> items = attributeDefinition.items();
-    Item<T> item = items.get(RANDOM.nextInt(items.size()));
+	private static <T> T randomItem(AttributeDefinition<T> attributeDefinition) {
+		List<Item<T>> items = attributeDefinition.items();
+		Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
-    return item.get();
-  }
+		return item.get();
+	}
 
-  private static int randomInteger(AttributeDefinition<?> attributeDefinition) {
-    int min = attributeDefinition.minimumValue() == null ?
-            MININUM_RANDOM_NUMBER : Math.max(attributeDefinition.minimumValue().intValue(), MININUM_RANDOM_NUMBER);
-    int max = attributeDefinition.maximumValue() == null ?
-            MAXIMUM_RANDOM_NUMBER : Math.min(attributeDefinition.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
+	private static int randomInteger(AttributeDefinition<?> attributeDefinition) {
+		int min = attributeDefinition.minimumValue() == null ?
+						MININUM_RANDOM_NUMBER : Math.max(attributeDefinition.minimumValue().intValue(), MININUM_RANDOM_NUMBER);
+		int max = attributeDefinition.maximumValue() == null ?
+						MAXIMUM_RANDOM_NUMBER : Math.min(attributeDefinition.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
 
-    return RANDOM.nextInt((max - min) + 1) + min;
-  }
+		return RANDOM.nextInt((max - min) + 1) + min;
+	}
 
-  private static long randomLong(AttributeDefinition<?> attributeDefinition) {
-    long min = attributeDefinition.minimumValue() == null ?
-            MININUM_RANDOM_NUMBER : Math.max(attributeDefinition.minimumValue().longValue(), MININUM_RANDOM_NUMBER);
-    long max = attributeDefinition.maximumValue() == null ?
-            MAXIMUM_RANDOM_NUMBER : Math.min(attributeDefinition.maximumValue().longValue(), MAXIMUM_RANDOM_NUMBER);
+	private static long randomLong(AttributeDefinition<?> attributeDefinition) {
+		long min = attributeDefinition.minimumValue() == null ?
+						MININUM_RANDOM_NUMBER : Math.max(attributeDefinition.minimumValue().longValue(), MININUM_RANDOM_NUMBER);
+		long max = attributeDefinition.maximumValue() == null ?
+						MAXIMUM_RANDOM_NUMBER : Math.min(attributeDefinition.maximumValue().longValue(), MAXIMUM_RANDOM_NUMBER);
 
-    return RANDOM.nextLong() % (max - min) + min;
-  }
+		return RANDOM.nextLong() % (max - min) + min;
+	}
 
-  private static short randomShort(AttributeDefinition<?> attributeDefinition) {
-    short min = attributeDefinition.minimumValue() == null ?
-            MININUM_RANDOM_NUMBER : (short) Math.max(attributeDefinition.minimumValue().intValue(), MININUM_RANDOM_NUMBER);
-    short max = attributeDefinition.maximumValue() == null ?
-            MAXIMUM_RANDOM_NUMBER : (short) Math.min(attributeDefinition.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
+	private static short randomShort(AttributeDefinition<?> attributeDefinition) {
+		short min = attributeDefinition.minimumValue() == null ?
+						MININUM_RANDOM_NUMBER : (short) Math.max(attributeDefinition.minimumValue().intValue(), MININUM_RANDOM_NUMBER);
+		short max = attributeDefinition.maximumValue() == null ?
+						MAXIMUM_RANDOM_NUMBER : (short) Math.min(attributeDefinition.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
 
-    return (short) (RANDOM.nextInt((max - min) + 1) + min);
-  }
+		return (short) (RANDOM.nextInt((max - min) + 1) + min);
+	}
 
-  private static double randomDouble(AttributeDefinition<?> attributeDefinition) {
-    double min = attributeDefinition.minimumValue() == null ?
-            MININUM_RANDOM_NUMBER : Math.max(attributeDefinition.minimumValue().doubleValue(), MININUM_RANDOM_NUMBER);
-    double max = attributeDefinition.maximumValue() == null ?
-            MAXIMUM_RANDOM_NUMBER : Math.min(attributeDefinition.maximumValue().doubleValue(), MAXIMUM_RANDOM_NUMBER);
+	private static double randomDouble(AttributeDefinition<?> attributeDefinition) {
+		double min = attributeDefinition.minimumValue() == null ?
+						MININUM_RANDOM_NUMBER : Math.max(attributeDefinition.minimumValue().doubleValue(), MININUM_RANDOM_NUMBER);
+		double max = attributeDefinition.maximumValue() == null ?
+						MAXIMUM_RANDOM_NUMBER : Math.min(attributeDefinition.maximumValue().doubleValue(), MAXIMUM_RANDOM_NUMBER);
 
-    return RANDOM.nextDouble() * (max - min) + min;
-  }
+		return RANDOM.nextDouble() * (max - min) + min;
+	}
 }

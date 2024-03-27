@@ -29,17 +29,17 @@ import static is.codion.manual.swing.common.model.component.table.FilteredTableM
 
 final class FilteredTableDemo {
 
-  static void demo() {
-    // tag::filteredTable[]
-    // See FilteredTableModel example
-    FilteredTableModel<TableRow, Integer> tableModel = createFilteredTableModel();
+	static void demo() {
+		// tag::filteredTable[]
+		// See FilteredTableModel example
+		FilteredTableModel<TableRow, Integer> tableModel = createFilteredTableModel();
 
-    FilteredTable<TableRow, Integer> filteredTable = FilteredTable.builder(tableModel)
-            .doubleClickAction(Control.control(() ->
-                    tableModel.selectionModel().selectedItem()
-                            .ifPresent(System.out::println)))
-            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-            .build();
-    // end::filteredTable[]
-  }
+		FilteredTable<TableRow, Integer> filteredTable = FilteredTable.builder(tableModel)
+						.doubleClickAction(Control.control(() ->
+										tableModel.selectionModel().selectedItem()
+														.ifPresent(System.out::println)))
+						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+						.build();
+		// end::filteredTable[]
+	}
 }

@@ -39,41 +39,41 @@ import java.util.Map;
 // tag::constructor[]
 public class DepartmentTablePanel extends EntityTablePanel {
 
-  public DepartmentTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-  }
-  // end::constructor[]
+	public DepartmentTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel);
+	}
+	// end::constructor[]
 
-  // tag::viewEmployeeReport[]
-  public void viewEmployeeReport() throws Exception {
-    Collection<Integer> departmentNumbers =
-            Entity.distinct(Department.DEPARTMENT_NO,
-                    tableModel().selectionModel().getSelectedItems());
-    Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("DEPTNO", departmentNumbers);
+	// tag::viewEmployeeReport[]
+	public void viewEmployeeReport() throws Exception {
+		Collection<Integer> departmentNumbers =
+						Entity.distinct(Department.DEPARTMENT_NO,
+										tableModel().selectionModel().getSelectedItems());
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", departmentNumbers);
 
-    JasperPrint employeeReport = tableModel().connection()
-            .report(Employee.EMPLOYEE_REPORT, reportParameters);
+		JasperPrint employeeReport = tableModel().connection()
+						.report(Employee.EMPLOYEE_REPORT, reportParameters);
 
-    Dialogs.componentDialog(new JRViewer(employeeReport))
-            .owner(this)
-            .modal(false)
-            .size(new Dimension(800, 600))
-            .show();
-  }
-  // end::viewEmployeeReport[]
+		Dialogs.componentDialog(new JRViewer(employeeReport))
+						.owner(this)
+						.modal(false)
+						.size(new Dimension(800, 600))
+						.show();
+	}
+	// end::viewEmployeeReport[]
 
-  // tag::createPrintMenuControls[]
-  @Override
-  protected Controls createPrintMenuControls() {
-    StateObserver selectionNotEmpty =
-            tableModel().selectionModel().selectionNotEmpty();
+	// tag::createPrintMenuControls[]
+	@Override
+	protected Controls createPrintMenuControls() {
+		StateObserver selectionNotEmpty =
+						tableModel().selectionModel().selectionNotEmpty();
 
-    return super.createPrintMenuControls()
-            .add(Control.builder(this::viewEmployeeReport)
-                    .name("Employee Report")
-                    .enabled(selectionNotEmpty)
-                    .build());
-  }
+		return super.createPrintMenuControls()
+						.add(Control.builder(this::viewEmployeeReport)
+										.name("Employee Report")
+										.enabled(selectionNotEmpty)
+										.build());
+	}
 }
 // end::createPrintMenuControls[]

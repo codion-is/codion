@@ -36,64 +36,64 @@ import static java.util.Objects.requireNonNull;
 
 final class EntitySerializer extends StdSerializer<Entity> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private boolean includeForeignKeyValues = true;
-  private boolean includeNullValues = true;
+	private boolean includeForeignKeyValues = true;
+	private boolean includeNullValues = true;
 
-  private final EntityObjectMapper mapper;
+	private final EntityObjectMapper mapper;
 
-  EntitySerializer(EntityObjectMapper mapper) {
-    super(Entity.class);
-    this.mapper = mapper;
-  }
+	EntitySerializer(EntityObjectMapper mapper) {
+		super(Entity.class);
+		this.mapper = mapper;
+	}
 
-  @Override
-  public void serialize(Entity entity, JsonGenerator generator, SerializerProvider provider) throws IOException {
-    requireNonNull(entity, "entity");
-    generator.writeStartObject();
-    generator.writeStringField("entityType", entity.entityType().name());
-    generator.writeFieldName("values");
-    writeValues(entity, generator, entity.entrySet());
-    if (entity.modified()) {
-      generator.writeFieldName("originalValues");
-      writeValues(entity, generator, entity.originalEntrySet());
-    }
-    if (!entity.mutable()) {
-      generator.writeBooleanField("immutable", Boolean.TRUE);
-    }
-    generator.writeEndObject();
-  }
+	@Override
+	public void serialize(Entity entity, JsonGenerator generator, SerializerProvider provider) throws IOException {
+		requireNonNull(entity, "entity");
+		generator.writeStartObject();
+		generator.writeStringField("entityType", entity.entityType().name());
+		generator.writeFieldName("values");
+		writeValues(entity, generator, entity.entrySet());
+		if (entity.modified()) {
+			generator.writeFieldName("originalValues");
+			writeValues(entity, generator, entity.originalEntrySet());
+		}
+		if (!entity.mutable()) {
+			generator.writeBooleanField("immutable", Boolean.TRUE);
+		}
+		generator.writeEndObject();
+	}
 
-  void setIncludeForeignKeyValues(boolean includeForeignKeyValues) {
-    this.includeForeignKeyValues = includeForeignKeyValues;
-  }
+	void setIncludeForeignKeyValues(boolean includeForeignKeyValues) {
+		this.includeForeignKeyValues = includeForeignKeyValues;
+	}
 
-  void setIncludeNullValues(boolean includeNullValues) {
-    this.includeNullValues = includeNullValues;
-  }
+	void setIncludeNullValues(boolean includeNullValues) {
+		this.includeNullValues = includeNullValues;
+	}
 
-  private void writeValues(Entity entity, JsonGenerator generator, Set<Map.Entry<Attribute<?>, Object>> entrySet) throws IOException {
-    generator.writeStartObject();
-    EntityDefinition definition = entity.definition();
-    for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
-      AttributeDefinition<?> attributeDefinition = definition.attributes().definition(entry.getKey());
-      if (include(attributeDefinition, entity)) {
-        generator.writeFieldName(attributeDefinition.attribute().name());
-        mapper.writeValue(generator, entry.getValue());
-      }
-    }
-    generator.writeEndObject();
-  }
+	private void writeValues(Entity entity, JsonGenerator generator, Set<Map.Entry<Attribute<?>, Object>> entrySet) throws IOException {
+		generator.writeStartObject();
+		EntityDefinition definition = entity.definition();
+		for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
+			AttributeDefinition<?> attributeDefinition = definition.attributes().definition(entry.getKey());
+			if (include(attributeDefinition, entity)) {
+				generator.writeFieldName(attributeDefinition.attribute().name());
+				mapper.writeValue(generator, entry.getValue());
+			}
+		}
+		generator.writeEndObject();
+	}
 
-  private boolean include(AttributeDefinition<?> attributeDefinition, Entity entity) {
-    if (!includeForeignKeyValues && attributeDefinition instanceof ForeignKeyDefinition) {
-      return false;
-    }
-    if (!includeNullValues && entity.isNull(attributeDefinition.attribute())) {
-      return false;
-    }
+	private boolean include(AttributeDefinition<?> attributeDefinition, Entity entity) {
+		if (!includeForeignKeyValues && attributeDefinition instanceof ForeignKeyDefinition) {
+			return false;
+		}
+		if (!includeNullValues && entity.isNull(attributeDefinition.attribute())) {
+			return false;
+		}
 
-    return true;
-  }
+		return true;
+	}
 }

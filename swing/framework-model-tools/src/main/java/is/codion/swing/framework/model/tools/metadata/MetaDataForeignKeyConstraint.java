@@ -26,22 +26,22 @@ import static java.util.Objects.requireNonNull;
 
 public final class MetaDataForeignKeyConstraint {
 
-  private final MetaDataTable referencedTable;
-  private final Map<MetaDataColumn, MetaDataColumn> references = new LinkedHashMap<>();
+	private final MetaDataTable referencedTable;
+	private final Map<MetaDataColumn, MetaDataColumn> references = new LinkedHashMap<>();
 
-  MetaDataForeignKeyConstraint(MetaDataTable referencedTable) {
-    this.referencedTable = requireNonNull(referencedTable);
-  }
+	MetaDataForeignKeyConstraint(MetaDataTable referencedTable) {
+		this.referencedTable = requireNonNull(referencedTable);
+	}
 
-  public MetaDataTable referencedTable() {
-    return referencedTable;
-  }
+	public MetaDataTable referencedTable() {
+		return referencedTable;
+	}
 
-  public Map<MetaDataColumn, MetaDataColumn> references() {
-    return Collections.unmodifiableMap(references);
-  }
+	public Map<MetaDataColumn, MetaDataColumn> references() {
+		return Collections.unmodifiableMap(references);
+	}
 
-  void addReference(MetaDataColumn fkColumn, MetaDataColumn pkColumn) {
-    references.put(fkColumn, pkColumn);
-  }
+	void addReference(MetaDataColumn fkColumn, MetaDataColumn pkColumn) {
+		references.put(fkColumn, pkColumn);
+	}
 }

@@ -42,59 +42,59 @@ import static is.codion.swing.common.ui.component.Components.bigDecimalField;
 
 public final class TrackTablePanel extends EntityTablePanel {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
 
-  public TrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, config -> config
-            .editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
-            .tableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true))
-            .includeLimitMenu(true));
-  }
+	public TrackTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, config -> config
+						.editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
+						.tableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true))
+						.includeLimitMenu(true));
+	}
 
-  @Override
-  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-    return super.createPopupMenuControls(additionalPopupMenuControls)
-            .addAt(0, Control.builder(this::raisePriceOfSelected)
-                    .name(BUNDLE.getString("raise_price") + "...")
-                    .enabled(tableModel().selectionModel().selectionNotEmpty())
-                    .build())
-            .addSeparatorAt(1);
-  }
+	@Override
+	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+		return super.createPopupMenuControls(additionalPopupMenuControls)
+						.addAt(0, Control.builder(this::raisePriceOfSelected)
+										.name(BUNDLE.getString("raise_price") + "...")
+										.enabled(tableModel().selectionModel().selectionNotEmpty())
+										.build())
+						.addSeparatorAt(1);
+	}
 
-  private void raisePriceOfSelected() throws DatabaseException {
-    TrackTableModel tableModel = tableModel();
-    tableModel.raisePriceOfSelected(getAmountFromUser());
-  }
+	private void raisePriceOfSelected() throws DatabaseException {
+		TrackTableModel tableModel = tableModel();
+		tableModel.raisePriceOfSelected(getAmountFromUser());
+	}
 
-  private BigDecimal getAmountFromUser() {
-    ComponentValue<BigDecimal, NumberField<BigDecimal>> amountValue =
-            bigDecimalField()
-                    .buildValue();
+	private BigDecimal getAmountFromUser() {
+		ComponentValue<BigDecimal, NumberField<BigDecimal>> amountValue =
+						bigDecimalField()
+										.buildValue();
 
-    return Dialogs.inputDialog(amountValue)
-            .owner(this)
-            .title(BUNDLE.getString("amount"))
-            .inputValidator(Objects::nonNull)
-            .show();
-  }
+		return Dialogs.inputDialog(amountValue)
+						.owner(this)
+						.title(BUNDLE.getString("amount"))
+						.inputValidator(Objects::nonNull)
+						.show();
+	}
 
-  private static final class MinutesSecondsComponentFactory
-          extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanel> {
+	private static final class MinutesSecondsComponentFactory
+					extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanel> {
 
-    private final boolean horizontal;
+		private final boolean horizontal;
 
-    private MinutesSecondsComponentFactory(boolean horizontal) {
-      this.horizontal = horizontal;
-    }
+		private MinutesSecondsComponentFactory(boolean horizontal) {
+			this.horizontal = horizontal;
+		}
 
-    @Override
-    public ComponentValue<Integer, MinutesSecondsPanel> componentValue(Attribute<Integer> attribute,
-                                                                       SwingEntityEditModel editModel,
-                                                                       Integer initialValue) {
-      MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(horizontal);
-      minutesSecondsPanelValue.set(initialValue);
+		@Override
+		public ComponentValue<Integer, MinutesSecondsPanel> componentValue(Attribute<Integer> attribute,
+																																			 SwingEntityEditModel editModel,
+																																			 Integer initialValue) {
+			MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(horizontal);
+			minutesSecondsPanelValue.set(initialValue);
 
-      return minutesSecondsPanelValue;
-    }
-  }
+			return minutesSecondsPanelValue;
+		}
+	}
 }

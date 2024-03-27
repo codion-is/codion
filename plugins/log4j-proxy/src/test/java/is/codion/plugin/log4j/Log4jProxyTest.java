@@ -24,12 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class Log4jProxyTest {
 
-  @Test
-  void test() {
-    Log4jProxy proxy = new Log4jProxy();
-    proxy.getLogLevel();
-    proxy.setLogLevel(proxy.levels().get(2));
-    assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
-    proxy.files();
-  }
+	@Test
+	void test() {
+		Log4jProxy proxy = new Log4jProxy();
+		proxy.getLogLevel();
+		proxy.setLogLevel(proxy.levels().get(2));
+		assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
+		proxy.files();
+	}
 }

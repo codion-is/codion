@@ -49,157 +49,157 @@ import static java.util.Objects.requireNonNull;
  */
 public class NullableCheckBox extends JCheckBox {
 
-  /**
-   * Instantiates a new NullableCheckBox with no caption.
-   */
-  public NullableCheckBox() {
-    this(new NullableToggleButtonModel());
-  }
+	/**
+	 * Instantiates a new NullableCheckBox with no caption.
+	 */
+	public NullableCheckBox() {
+		this(new NullableToggleButtonModel());
+	}
 
-  /**
-   * Instantiates a new NullableCheckBox with no caption.
-   * @param model the model
-   */
-  public NullableCheckBox(NullableToggleButtonModel model) {
-    this(model, null);
-  }
+	/**
+	 * Instantiates a new NullableCheckBox with no caption.
+	 * @param model the model
+	 */
+	public NullableCheckBox(NullableToggleButtonModel model) {
+		this(model, null);
+	}
 
-  /**
-   * Instantiates a new NullableCheckBox.
-   * @param model the model
-   * @param text the caption text, if any
-   */
-  public NullableCheckBox(NullableToggleButtonModel model, String text) {
-    this(model, text, null);
-  }
+	/**
+	 * Instantiates a new NullableCheckBox.
+	 * @param model the model
+	 * @param text the caption text, if any
+	 */
+	public NullableCheckBox(NullableToggleButtonModel model, String text) {
+		this(model, text, null);
+	}
 
-  /**
-   * Instantiates a new NullableCheckBox.
-   * @param model the model
-   * @param text the caption text, if any
-   * @param icon the icon, if any
-   */
-  public NullableCheckBox(NullableToggleButtonModel model, String text, Icon icon) {
-    super(text, icon);
-    super.setModel(requireNonNull(model, "model"));
-    setIcon(new NullableIcon());
-    addMouseListener(new NullableMouseListener());
-    KeyEvents.builder(VK_SPACE)
-            .action(new NextStateAction(model))
-            .enable(this);
-  }
+	/**
+	 * Instantiates a new NullableCheckBox.
+	 * @param model the model
+	 * @param text the caption text, if any
+	 * @param icon the icon, if any
+	 */
+	public NullableCheckBox(NullableToggleButtonModel model, String text, Icon icon) {
+		super(text, icon);
+		super.setModel(requireNonNull(model, "model"));
+		setIcon(new NullableIcon());
+		addMouseListener(new NullableMouseListener());
+		KeyEvents.builder(VK_SPACE)
+						.action(new NextStateAction(model))
+						.enable(this);
+	}
 
-  @Override
-  public void updateUI() {
-    super.updateUI();
-    setIcon(new NullableIcon());
-  }
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		setIcon(new NullableIcon());
+	}
 
-  /**
-   * Returns the current state, null, false or true
-   * @return the current state
-   */
-  public final Boolean getState() {
-    return getNullableModel().getState();
-  }
+	/**
+	 * Returns the current state, null, false or true
+	 * @return the current state
+	 */
+	public final Boolean getState() {
+		return getNullableModel().getState();
+	}
 
-  /**
-   * @return the underlying button model
-   */
-  public final NullableToggleButtonModel getNullableModel() {
-    return (NullableToggleButtonModel) getModel();
-  }
+	/**
+	 * @return the underlying button model
+	 */
+	public final NullableToggleButtonModel getNullableModel() {
+		return (NullableToggleButtonModel) getModel();
+	}
 
-  /**
-   * Disabled.
-   * @param model the model
-   * @throws UnsupportedOperationException always
-   */
-  @Override
-  public final void setModel(ButtonModel model) {
-    if (getModel() instanceof NullableToggleButtonModel) {
-      throw new UnsupportedOperationException("Setting the model of a NullableCheckBox after construction is not supported");
-    }
-    super.setModel(model);
-  }
+	/**
+	 * Disabled.
+	 * @param model the model
+	 * @throws UnsupportedOperationException always
+	 */
+	@Override
+	public final void setModel(ButtonModel model) {
+		if (getModel() instanceof NullableToggleButtonModel) {
+			throw new UnsupportedOperationException("Setting the model of a NullableCheckBox after construction is not supported");
+		}
+		super.setModel(model);
+	}
 
-  /**
-   * Finalize this one since we call it in the constructor
-   * @param listener the listener
-   */
-  @Override
-  public final synchronized void addMouseListener(MouseListener listener) {
-    super.addMouseListener(listener);
-  }
+	/**
+	 * Finalize this one since we call it in the constructor
+	 * @param listener the listener
+	 */
+	@Override
+	public final synchronized void addMouseListener(MouseListener listener) {
+		super.addMouseListener(listener);
+	}
 
-  @Override
-  public final void setIcon(Icon defaultIcon) {
-    super.setIcon(defaultIcon);
-  }
+	@Override
+	public final void setIcon(Icon defaultIcon) {
+		super.setIcon(defaultIcon);
+	}
 
-  private final class NullableMouseListener extends MouseAdapter {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if (isEnabled() && (e == null || notModified(e))) {
-        getNullableModel().nextState();
-      }
-    }
+	private final class NullableMouseListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (isEnabled() && (e == null || notModified(e))) {
+				getNullableModel().nextState();
+			}
+		}
 
-    private boolean notModified(MouseEvent e) {
-      return !e.isAltDown() && !e.isControlDown() && !e.isShiftDown() &&
-              !e.isAltGraphDown() && !e.isMetaDown() && !e.isPopupTrigger();
-    }
-  }
+		private boolean notModified(MouseEvent e) {
+			return !e.isAltDown() && !e.isControlDown() && !e.isShiftDown() &&
+							!e.isAltGraphDown() && !e.isMetaDown() && !e.isPopupTrigger();
+		}
+	}
 
-  private final class NullableIcon implements Icon {
+	private final class NullableIcon implements Icon {
 
-    private final Icon icon = UIManager.getIcon("CheckBox.icon");
-    private final boolean flatLaf = getUI().getClass().getSimpleName().startsWith("Flat");
+		private final Icon icon = UIManager.getIcon("CheckBox.icon");
+		private final boolean flatLaf = getUI().getClass().getSimpleName().startsWith("Flat");
 
-    @Override
-    public void paintIcon(Component component, Graphics graphics, int x, int y) {
-      icon.paintIcon(component, graphics, x, y);
-      if (getNullableModel().getState() != null) {
-        return;
-      }
+		@Override
+		public void paintIcon(Component component, Graphics graphics, int x, int y) {
+			icon.paintIcon(component, graphics, x, y);
+			if (getNullableModel().getState() != null) {
+				return;
+			}
 
-      double width = getIconWidth() / 3d;
-      double height = getIconHeight() / 3d;
+			double width = getIconWidth() / 3d;
+			double height = getIconHeight() / 3d;
 
-      //todo remove x/y adjustment hack for FlatLaf
-      double xCorner = (x + width) + (flatLaf ? 0.5 : 0);
-      double yCorner = (y + height) - (flatLaf ? 0.25 : 0);
+			//todo remove x/y adjustment hack for FlatLaf
+			double xCorner = (x + width) + (flatLaf ? 0.5 : 0);
+			double yCorner = (y + height) - (flatLaf ? 0.25 : 0);
 
-      Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, width, height);
+			Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, width, height);
 
-      Graphics2D graphics2D = (Graphics2D) graphics;
-      graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
-      graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      graphics2D.fill(rectangle);
-    }
+			Graphics2D graphics2D = (Graphics2D) graphics;
+			graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
+			graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			graphics2D.fill(rectangle);
+		}
 
-    @Override
-    public int getIconWidth() {
-      return icon.getIconWidth();
-    }
+		@Override
+		public int getIconWidth() {
+			return icon.getIconWidth();
+		}
 
-    @Override
-    public int getIconHeight() {
-      return icon.getIconHeight();
-    }
-  }
+		@Override
+		public int getIconHeight() {
+			return icon.getIconHeight();
+		}
+	}
 
-  private static final class NextStateAction extends AbstractAction {
+	private static final class NextStateAction extends AbstractAction {
 
-    private final NullableToggleButtonModel model;
+		private final NullableToggleButtonModel model;
 
-    private NextStateAction(NullableToggleButtonModel model) {
-      this.model = model;
-    }
+		private NextStateAction(NullableToggleButtonModel model) {
+			this.model = model;
+		}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      model.nextState();
-    }
-  }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			model.nextState();
+		}
+	}
 }

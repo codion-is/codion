@@ -27,25 +27,25 @@ import static java.util.Objects.requireNonNull;
 
 final class ClassPathJRReport extends AbstractJRReport {
 
-  private final Class<?> resourceClass;
+	private final Class<?> resourceClass;
 
-  ClassPathJRReport(Class<?> resourceClass, String reportPath) {
-    super(reportPath, true);
-    this.resourceClass = requireNonNull(resourceClass);
-  }
+	ClassPathJRReport(Class<?> resourceClass, String reportPath) {
+		super(reportPath, true);
+		this.resourceClass = requireNonNull(resourceClass);
+	}
 
-  @Override
-  public JasperReport load() throws ReportException {
-    try {
-      return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
-    }
-    catch (Exception e) {
-      throw new ReportException("Unable to load report '" + reportPath + "' from classpath", e);
-    }
-  }
+	@Override
+	public JasperReport load() throws ReportException {
+		try {
+			return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
+		}
+		catch (Exception e) {
+			throw new ReportException("Unable to load report '" + reportPath + "' from classpath", e);
+		}
+	}
 
-  @Override
-  protected String fullReportPath() {
-    return resourceClass.getName() + " " + reportPath;
-  }
+	@Override
+	protected String fullReportPath() {
+		return resourceClass.getName() + " " + reportPath;
+	}
 }

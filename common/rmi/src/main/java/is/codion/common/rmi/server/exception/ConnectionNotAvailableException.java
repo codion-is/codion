@@ -25,12 +25,12 @@ import java.util.ResourceBundle;
  */
 public final class ConnectionNotAvailableException extends ServerException {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionNotAvailableException.class.getName());
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionNotAvailableException.class.getName());
 
-  /**
-   * Instantiates a new {@link ConnectionNotAvailableException}
-   */
-  public ConnectionNotAvailableException() {
-    super(MESSAGES.getString("connection_not_available"));
-  }
+	/**
+	 * Instantiates a new {@link ConnectionNotAvailableException}
+	 */
+	public ConnectionNotAvailableException() {
+		super(MESSAGES.getString("connection_not_available"));
+	}
 }

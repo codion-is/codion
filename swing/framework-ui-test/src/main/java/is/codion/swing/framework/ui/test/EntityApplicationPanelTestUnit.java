@@ -29,33 +29,33 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationModel> {
 
-  private final Class<M> modelClass;
-  private final Class<? extends EntityApplicationPanel<M>> panelClass;
-  private final User user;
+	private final Class<M> modelClass;
+	private final Class<? extends EntityApplicationPanel<M>> panelClass;
+	private final User user;
 
-  /**
-   * Instantiates a new entity application panel test unit
-   * @param modelClass the application model class
-   * @param panelClass the application panel class
-   * @param user the user
-   */
-  protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass, User user) {
-    this.modelClass = requireNonNull(modelClass, "modelClass");
-    this.panelClass = requireNonNull(panelClass, "panelClass");
-    this.user = requireNonNull(user, "user");
-  }
+	/**
+	 * Instantiates a new entity application panel test unit
+	 * @param modelClass the application model class
+	 * @param panelClass the application panel class
+	 * @param user the user
+	 */
+	protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass, User user) {
+		this.modelClass = requireNonNull(modelClass, "modelClass");
+		this.panelClass = requireNonNull(panelClass, "panelClass");
+		this.user = requireNonNull(user, "user");
+	}
 
-  /**
-   * Instantiates the panel and initializes it
-   */
-  protected final void testInitialize() {
-    EntityApplicationPanel.builder(modelClass, panelClass)
-            .automaticLoginUser(user)
-            .saveDefaultUsername(false)
-            .setUncaughtExceptionHandler(false)
-            .displayStartupDialog(false)
-            .displayFrame(false)
-            .onApplicationStarted(applicationPanel -> applicationPanel.applicationModel().connectionProvider().close())
-            .start(false);
-  }
+	/**
+	 * Instantiates the panel and initializes it
+	 */
+	protected final void testInitialize() {
+		EntityApplicationPanel.builder(modelClass, panelClass)
+						.automaticLoginUser(user)
+						.saveDefaultUsername(false)
+						.setUncaughtExceptionHandler(false)
+						.displayStartupDialog(false)
+						.displayFrame(false)
+						.onApplicationStarted(applicationPanel -> applicationPanel.applicationModel().connectionProvider().close())
+						.start(false);
+	}
 }

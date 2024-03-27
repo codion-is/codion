@@ -20,11 +20,11 @@
  * Java Util Logging implementation of {@link is.codion.common.logging.LoggerProxy}.
  */
 module is.codion.plugin.jul.proxy {
-  requires java.logging;
-  requires is.codion.common.core;
+	requires java.logging;
+	requires is.codion.common.core;
 
-  exports is.codion.plugin.jul;
+	exports is.codion.plugin.jul;
 
-  provides is.codion.common.logging.LoggerProxy
-          with is.codion.plugin.jul.JulProxy;
+	provides is.codion.common.logging.LoggerProxy
+					with is.codion.plugin.jul.JulProxy;
 }

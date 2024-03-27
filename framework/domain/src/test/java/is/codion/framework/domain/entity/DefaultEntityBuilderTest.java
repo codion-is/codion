@@ -33,76 +33,76 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityBuilderTest {
 
-  private static final Entities ENTITIES = new TestDomain().entities();
+	private static final Entities ENTITIES = new TestDomain().entities();
 
-  @Test
-  void valueOrder() {
-    Entity department = ENTITIES.builder(Department.TYPE)
-            .with(Department.ID, 10)
-            .with(Department.NAME, "Test")
-            .build();
-    Entity employee = ENTITIES.builder(Employee.TYPE)
-            .with(Employee.DEPARTMENT_NO, 2)
-            //overwrites the department no. value from above
-            //with the one in the department entity
-            .with(Employee.DEPARTMENT_FK, department)
-            .build();
+	@Test
+	void valueOrder() {
+		Entity department = ENTITIES.builder(Department.TYPE)
+						.with(Department.ID, 10)
+						.with(Department.NAME, "Test")
+						.build();
+		Entity employee = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.DEPARTMENT_NO, 2)
+						//overwrites the department no. value from above
+						//with the one in the department entity
+						.with(Employee.DEPARTMENT_FK, department)
+						.build();
 
-    assertEquals(10, employee.get(Employee.DEPARTMENT_NO));
-    assertNotNull(employee.get(Employee.DEPARTMENT_FK));
+		assertEquals(10, employee.get(Employee.DEPARTMENT_NO));
+		assertNotNull(employee.get(Employee.DEPARTMENT_FK));
 
-    employee = ENTITIES.builder(Employee.TYPE)
-            .with(Employee.DEPARTMENT_FK, department)
-            //overwrites the department no. value from the department entity
-            //with this one and removes the foreign key entity, since it's now invalid
-            .with(Employee.DEPARTMENT_NO, 2)
-            .build();
+		employee = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.DEPARTMENT_FK, department)
+						//overwrites the department no. value from the department entity
+						//with this one and removes the foreign key entity, since it's now invalid
+						.with(Employee.DEPARTMENT_NO, 2)
+						.build();
 
-    assertEquals(2, employee.get(Employee.DEPARTMENT_NO));
-    assertNull(employee.get(Employee.DEPARTMENT_FK));
-  }
+		assertEquals(2, employee.get(Employee.DEPARTMENT_NO));
+		assertNull(employee.get(Employee.DEPARTMENT_FK));
+	}
 
-  @Test
-  void defaultValues() {
-    DomainType domainType = domainType("domainType");
-    EntityType entityType = domainType.entityType("entityWithDefaultValues");
-    Column<Integer> id = entityType.integerColumn("id");
-    Column<String> name = entityType.stringColumn("name");
-    Column<Integer> value = entityType.integerColumn("value");
-    Attribute<Integer> derivedValue = entityType.integerAttribute("derivedValue");
+	@Test
+	void defaultValues() {
+		DomainType domainType = domainType("domainType");
+		EntityType entityType = domainType.entityType("entityWithDefaultValues");
+		Column<Integer> id = entityType.integerColumn("id");
+		Column<String> name = entityType.stringColumn("name");
+		Column<Integer> value = entityType.integerColumn("value");
+		Attribute<Integer> derivedValue = entityType.integerAttribute("derivedValue");
 
-    class TestDomain extends DefaultDomain {
-      public TestDomain() {
-        super(domainType);
-        add(entityType.define(
-                        id.define()
-                                .primaryKey(),
-                        name.define()
-                                .column()
-                                .defaultValue("DefName"),
-                        value.define()
-                                .column()
-                                .defaultValue(42),
-                        derivedValue.define()
-                                .derived(sourceValues -> {
-                                  Integer sourceValue = sourceValues.get(value);
+		class TestDomain extends DefaultDomain {
+			public TestDomain() {
+				super(domainType);
+				add(entityType.define(
+												id.define()
+																.primaryKey(),
+												name.define()
+																.column()
+																.defaultValue("DefName"),
+												value.define()
+																.column()
+																.defaultValue(42),
+												derivedValue.define()
+																.derived(sourceValues -> {
+																	Integer sourceValue = sourceValues.get(value);
 
-                                  return sourceValue == null ? null : sourceValue + 1;
-                                }, value))
-                .tableName("tableName"));
-      }
-    }
-    Entities entities = new TestDomain().entities();
+																	return sourceValue == null ? null : sourceValue + 1;
+																}, value))
+								.tableName("tableName"));
+			}
+		}
+		Entities entities = new TestDomain().entities();
 
-    assertThrows(IllegalArgumentException.class, () -> entities.builder(entityType)
-            .with(derivedValue, -42));
+		assertThrows(IllegalArgumentException.class, () -> entities.builder(entityType)
+						.with(derivedValue, -42));
 
-    Entity entity = entities.builder(entityType)
-            .withDefaultValues()
-            .build();
-    assertFalse(entity.contains(id));
-    assertEquals("DefName", entity.get(name));
-    assertEquals(42, entity.get(value));
-    assertEquals(43, entity.get(derivedValue));
-  }
+		Entity entity = entities.builder(entityType)
+						.withDefaultValues()
+						.build();
+		assertFalse(entity.contains(id));
+		assertEquals("DefName", entity.get(name));
+		assertEquals(42, entity.get(value));
+		assertEquals(43, entity.get(derivedValue));
+	}
 }

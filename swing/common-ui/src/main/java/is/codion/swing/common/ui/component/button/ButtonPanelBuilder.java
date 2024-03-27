@@ -30,41 +30,41 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPanelBuilder> {
 
-  /**
-   * Default is {@link is.codion.swing.common.ui.layout.Layouts#GAP}.
-   * @param buttonGap the gap between buttons in pixels
-   * @return this builder instance
-   */
-  ButtonPanelBuilder buttonGap(int buttonGap);
+	/**
+	 * Default is {@link is.codion.swing.common.ui.layout.Layouts#GAP}.
+	 * @param buttonGap the gap between buttons in pixels
+	 * @return this builder instance
+	 */
+	ButtonPanelBuilder buttonGap(int buttonGap);
 
-  /**
-   * @return a new button panel builder
-   */
-  static ButtonPanelBuilder builder() {
-    return new DefaultButtonPanelBuilder((Controls) null);
-  }
+	/**
+	 * @return a new button panel builder
+	 */
+	static ButtonPanelBuilder builder() {
+		return new DefaultButtonPanelBuilder((Controls) null);
+	}
 
-  /**
-   * @param actions the actions
-   * @return a new button panel builder
-   */
-  static ButtonPanelBuilder builder(Action... actions) {
-    return new DefaultButtonPanelBuilder(requireNonNull(actions));
-  }
+	/**
+	 * @param actions the actions
+	 * @return a new button panel builder
+	 */
+	static ButtonPanelBuilder builder(Action... actions) {
+		return new DefaultButtonPanelBuilder(requireNonNull(actions));
+	}
 
-  /**
-   * @param controls the controls
-   * @return a new button panel builder
-   */
-  static ButtonPanelBuilder builder(Controls controls) {
-    return new DefaultButtonPanelBuilder(requireNonNull(controls));
-  }
+	/**
+	 * @param controls the controls
+	 * @return a new button panel builder
+	 */
+	static ButtonPanelBuilder builder(Controls controls) {
+		return new DefaultButtonPanelBuilder(requireNonNull(controls));
+	}
 
-  /**
-   * @param controlsBuilder the controls builder
-   * @return a new button panel builder
-   */
-  static ButtonPanelBuilder builder(Controls.Builder controlsBuilder) {
-    return builder(requireNonNull(controlsBuilder).build());
-  }
+	/**
+	 * @param controlsBuilder the controls builder
+	 * @return a new button panel builder
+	 */
+	static ButtonPanelBuilder builder(Controls.Builder controlsBuilder) {
+		return builder(requireNonNull(controlsBuilder).build());
+	}
 }

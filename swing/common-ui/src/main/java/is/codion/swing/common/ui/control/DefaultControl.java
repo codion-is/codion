@@ -27,24 +27,24 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultControl extends AbstractControl {
 
-  private final Command command;
+	private final Command command;
 
-  DefaultControl(Command command, String name, StateObserver enabled) {
-    super(name, enabled);
-    this.command = requireNonNull(command);
-  }
+	DefaultControl(Command command, String name, StateObserver enabled) {
+		super(name, enabled);
+		this.command = requireNonNull(command);
+	}
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    try {
-      command.execute();
-    }
-    catch (CancelException ce) {/*Operation cancelled*/}
-    catch (RuntimeException re) {
-      throw re;
-    }
-    catch (Exception ex) {
-      throw new RuntimeException(ex);
-    }
-  }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		try {
+			command.execute();
+		}
+		catch (CancelException ce) {/*Operation cancelled*/}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 }

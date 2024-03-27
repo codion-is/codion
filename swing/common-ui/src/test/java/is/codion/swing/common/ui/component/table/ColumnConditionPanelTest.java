@@ -27,22 +27,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ColumnConditionPanelTest {
 
-  @Test
-  void test() {
-    final String key = "key";
-    ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
-    ColumnConditionPanel<String, String> panel = columnConditionPanel(model).orElse(null);
-    assertEquals(model, panel.model());
-    assertNotNull(panel.equalField());
-    assertNotNull(panel.upperBoundField());
-    assertNotNull(panel.lowerBoundField());
-    assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String, String>columnConditionPanel(null, null));
-  }
+	@Test
+	void test() {
+		final String key = "key";
+		ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
+		ColumnConditionPanel<String, String> panel = columnConditionPanel(model).orElse(null);
+		assertEquals(model, panel.model());
+		assertNotNull(panel.equalField());
+		assertNotNull(panel.upperBoundField());
+		assertNotNull(panel.lowerBoundField());
+		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String, String>columnConditionPanel(null, null));
+	}
 
-  @Test
-  void lockedModel() {
-    ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
-    model.locked().set(true);
-    columnConditionPanel(model);
-  }
+	@Test
+	void lockedModel() {
+		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
+		model.locked().set(true);
+		columnConditionPanel(model);
+	}
 }

@@ -27,24 +27,24 @@ import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 final class CountryPanel extends EntityPanel {
 
-  CountryPanel(CountryModel countryModel) {
-    super(countryModel,
-            new CountryEditPanel(countryModel.editModel()),
-            new CountryTablePanel(countryModel.tableModel()),
-            config -> config.detailLayout(TabbedDetailLayout.builder()
-                    .splitPaneResizeWeight(0.7)
-                    .build()));
+	CountryPanel(CountryModel countryModel) {
+		super(countryModel,
+						new CountryEditPanel(countryModel.editModel()),
+						new CountryTablePanel(countryModel.tableModel()),
+						config -> config.detailLayout(TabbedDetailLayout.builder()
+										.splitPaneResizeWeight(0.7)
+										.build()));
 
-    SwingEntityModel cityModel = countryModel.detailModel(City.TYPE);
-    EntityPanel cityPanel = new EntityPanel(cityModel,
-            new CityEditPanel(cityModel.tableModel()),
-            new CityTablePanel(cityModel.tableModel()));
+		SwingEntityModel cityModel = countryModel.detailModel(City.TYPE);
+		EntityPanel cityPanel = new EntityPanel(cityModel,
+						new CityEditPanel(cityModel.tableModel()),
+						new CityTablePanel(cityModel.tableModel()));
 
-    SwingEntityModel countryLanguageModel = countryModel.detailModel(CountryLanguage.TYPE);
-    EntityPanel countryLanguagePanel = new EntityPanel(countryLanguageModel,
-            new CountryLanguageEditPanel(countryLanguageModel.editModel()),
-            new CountryLanguageTablePanel(countryLanguageModel.tableModel()));
+		SwingEntityModel countryLanguageModel = countryModel.detailModel(CountryLanguage.TYPE);
+		EntityPanel countryLanguagePanel = new EntityPanel(countryLanguageModel,
+						new CountryLanguageEditPanel(countryLanguageModel.editModel()),
+						new CountryLanguageTablePanel(countryLanguageModel.tableModel()));
 
-    addDetailPanels(cityPanel, countryLanguagePanel);
-  }
+		addDetailPanels(cityPanel, countryLanguagePanel);
+	}
 }

@@ -34,53 +34,53 @@ import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 // tag::constructor[]
 public class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeeEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
-  // end::constructor[]
+	public EmployeeEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
+	// end::constructor[]
 
-  // tag::initializeUI[]
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Employee.NAME);
+	// tag::initializeUI[]
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Employee.NAME);
 
-    createTextField(Employee.NAME)
-            .columns(8);
-    createItemComboBox(Employee.JOB);
-    createForeignKeyComboBox(Employee.MANAGER_FK);
-    createTextField(Employee.SALARY)
-            .columns(5);
-    createTextField(Employee.COMMISSION)
-            .columns(5);
-    createTemporalFieldPanel(Employee.HIREDATE)
-            .columns(6);
+		createTextField(Employee.NAME)
+						.columns(8);
+		createItemComboBox(Employee.JOB);
+		createForeignKeyComboBox(Employee.MANAGER_FK);
+		createTextField(Employee.SALARY)
+						.columns(5);
+		createTextField(Employee.COMMISSION)
+						.columns(5);
+		createTemporalFieldPanel(Employee.HIREDATE)
+						.columns(6);
 
-    setLayout(flexibleGridLayout(0, 3));
+		setLayout(flexibleGridLayout(0, 3));
 
-    addInputPanel(Employee.NAME);
-    addInputPanel(Employee.DEPARTMENT_FK, createDepartmentPanel());
-    addInputPanel(Employee.JOB);
+		addInputPanel(Employee.NAME);
+		addInputPanel(Employee.DEPARTMENT_FK, createDepartmentPanel());
+		addInputPanel(Employee.JOB);
 
-    addInputPanel(Employee.MANAGER_FK);
-    add(gridLayoutPanel(1, 2)
-            .add(createInputPanel(Employee.SALARY))
-            .add(createInputPanel(Employee.COMMISSION))
-            .build());
-    addInputPanel(Employee.HIREDATE);
-  }
+		addInputPanel(Employee.MANAGER_FK);
+		add(gridLayoutPanel(1, 2)
+						.add(createInputPanel(Employee.SALARY))
+						.add(createInputPanel(Employee.COMMISSION))
+						.build());
+		addInputPanel(Employee.HIREDATE);
+	}
 
-  private JPanel createDepartmentPanel() {
-    EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
-    NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPARTMENT_NO)
-            .transferFocusOnEnter(true)
-            .build();
+	private JPanel createDepartmentPanel() {
+		EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
+		NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPARTMENT_NO)
+						.transferFocusOnEnter(true)
+						.build();
 
-    component(Employee.DEPARTMENT_FK).set(departmentNumberField);
+		component(Employee.DEPARTMENT_FK).set(departmentNumberField);
 
-    return Components.borderLayoutPanel()
-            .westComponent(departmentNumberField)
-            .centerComponent(departmentBox)
-            .build();
-  }
+		return Components.borderLayoutPanel()
+						.westComponent(departmentNumberField)
+						.centerComponent(departmentBox)
+						.build();
+	}
 }
 // end::initializeUI[]

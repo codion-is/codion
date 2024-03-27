@@ -26,46 +26,46 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public class ItemEditPanel extends EntityEditPanel {
 
-  public ItemEditPanel(SwingEntityEditModel model) {
-    super(model);
-    defaults().textFieldColumns().set(14);
-    defaults().foreignKeyComboBoxPreferredWidth().set(180);
-  }
+	public ItemEditPanel(SwingEntityEditModel model) {
+		super(model);
+		defaults().textFieldColumns().set(14);
+		defaults().foreignKeyComboBoxPreferredWidth().set(180);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Item.PRODUCT_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Item.PRODUCT_FK);
 
-    createForeignKeyComboBox(Item.PRODUCT_FK);
-    createTextField(Item.NAME);
-    createTextFieldPanel(Item.DESCRIPTION)
-            .buttonFocusable(false);
-    createTextField(Item.PRICE);
-    createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
-            .add(true);
-    createForeignKeyComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
-            .add(true);
-    createTextField(Item.IMAGE_URL);
-    createTextField(Item.IMAGE_THUMB_URL);
-    createCheckBox(Item.DISABLED);
+		createForeignKeyComboBox(Item.PRODUCT_FK);
+		createTextField(Item.NAME);
+		createTextFieldPanel(Item.DESCRIPTION)
+						.buttonFocusable(false);
+		createTextField(Item.PRICE);
+		createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
+						.add(true);
+		createForeignKeyComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
+						.add(true);
+		createTextField(Item.IMAGE_URL);
+		createTextField(Item.IMAGE_THUMB_URL);
+		createCheckBox(Item.DISABLED);
 
-    setLayout(Layouts.flexibleGridLayout(3, 3));
-    addInputPanel(Item.PRODUCT_FK);
-    addInputPanel(Item.NAME);
-    addInputPanel(Item.DESCRIPTION);
-    addInputPanel(Item.PRICE);
-    addInputPanel(Item.CONTACT_INFO_FK);
-    addInputPanel(Item.ADDRESS_FK);
-    addInputPanel(Item.IMAGE_URL);
-    addInputPanel(Item.IMAGE_THUMB_URL);
-    addInputPanel(Item.DISABLED);
-  }
+		setLayout(Layouts.flexibleGridLayout(3, 3));
+		addInputPanel(Item.PRODUCT_FK);
+		addInputPanel(Item.NAME);
+		addInputPanel(Item.DESCRIPTION);
+		addInputPanel(Item.PRICE);
+		addInputPanel(Item.CONTACT_INFO_FK);
+		addInputPanel(Item.ADDRESS_FK);
+		addInputPanel(Item.IMAGE_URL);
+		addInputPanel(Item.IMAGE_THUMB_URL);
+		addInputPanel(Item.DISABLED);
+	}
 
-  private ContactInfoEditPanel createContactInfoEditPanel() {
-    return new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider()));
-  }
+	private ContactInfoEditPanel createContactInfoEditPanel() {
+		return new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider()));
+	}
 
-  private AddressEditPanel createAddressEditPanel() {
-    return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
-  }
+	private AddressEditPanel createAddressEditPanel() {
+		return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
+	}
 }

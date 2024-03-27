@@ -33,56 +33,56 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilteredTableTest {
 
-  @Test
-  void builderNullTableModel() {
-    assertThrows(Exception.class, () -> FilteredTable.builder(null));
-  }
+	@Test
+	void builderNullTableModel() {
+		assertThrows(Exception.class, () -> FilteredTable.builder(null));
+	}
 
-  @Test
-  void searchField() {
-    FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
-            .columnClass(String.class)
-            .build();
+	@Test
+	void searchField() {
+		FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
+						.columnClass(String.class)
+						.build();
 
-    FilteredTableModel<List<String>, Integer> tableModel =
-            FilteredTableModel.<List<String>, Integer>builder(() -> singletonList(column), List::get)
-                    .itemSupplier(() -> asList(
-                            singletonList("darri"),
-                            singletonList("dac"),
-                            singletonList("dansinn"),
-                            singletonList("dlabo")))
-                    .build();
+		FilteredTableModel<List<String>, Integer> tableModel =
+						FilteredTableModel.<List<String>, Integer>builder(() -> singletonList(column), List::get)
+										.itemSupplier(() -> asList(
+														singletonList("darri"),
+														singletonList("dac"),
+														singletonList("dansinn"),
+														singletonList("dlabo")))
+										.build();
 
-    FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
-    tableModel.refresh();
+		FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
+		tableModel.refresh();
 
-    new JScrollPane(filteredTable);
+		new JScrollPane(filteredTable);
 
-    JTextField searchField = filteredTable.searchField();
+		JTextField searchField = filteredTable.searchField();
 
-    searchField.setText("d");
-    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("da");
-    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dac");
-    assertEquals(1, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dar");
-    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dan");
-    assertEquals(2, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dl");
-    assertEquals(3, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("darri");
-    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dac");
-    assertEquals(1, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dl");
-    assertEquals(3, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dans");
-    assertEquals(2, tableModel.selectionModel().getSelectedIndex());
-    searchField.setText("dansu");
-    assertTrue(tableModel.selectionModel().isSelectionEmpty());
+		searchField.setText("d");
+		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("da");
+		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dac");
+		assertEquals(1, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dar");
+		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dan");
+		assertEquals(2, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dl");
+		assertEquals(3, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("darri");
+		assertEquals(0, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dac");
+		assertEquals(1, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dl");
+		assertEquals(3, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dans");
+		assertEquals(2, tableModel.selectionModel().getSelectedIndex());
+		searchField.setText("dansu");
+		assertTrue(tableModel.selectionModel().isSelectionEmpty());
 
-    searchField.setText("");
-  }
+		searchField.setText("");
+	}
 }

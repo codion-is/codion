@@ -29,56 +29,56 @@ import javax.swing.text.PlainDocument;
  */
 public final class SizedDocument extends PlainDocument {
 
-  private final CaseDocumentFilter documentFilter;
-  private final StringLengthValidator stringLengthValidator;
+	private final CaseDocumentFilter documentFilter;
+	private final StringLengthValidator stringLengthValidator;
 
-  private SizedDocument(int maximumLength) {
-    documentFilter = CaseDocumentFilter.caseDocumentFilter();
-    stringLengthValidator = new StringLengthValidator(maximumLength);
-    documentFilter.addValidator(stringLengthValidator);
-    super.setDocumentFilter(documentFilter);
-  }
+	private SizedDocument(int maximumLength) {
+		documentFilter = CaseDocumentFilter.caseDocumentFilter();
+		stringLengthValidator = new StringLengthValidator(maximumLength);
+		documentFilter.addValidator(stringLengthValidator);
+		super.setDocumentFilter(documentFilter);
+	}
 
-  /**
-   * @param filter the filter
-   * @throws UnsupportedOperationException always
-   */
-  @Override
-  public void setDocumentFilter(DocumentFilter filter) {
-    throw new UnsupportedOperationException("Changing the DocumentFilter of SizedDocument is not allowed");
-  }
+	/**
+	 * @param filter the filter
+	 * @throws UnsupportedOperationException always
+	 */
+	@Override
+	public void setDocumentFilter(DocumentFilter filter) {
+		throw new UnsupportedOperationException("Changing the DocumentFilter of SizedDocument is not allowed");
+	}
 
-  @Override
-  public CaseDocumentFilter getDocumentFilter() {
-    return (CaseDocumentFilter) super.getDocumentFilter();
-  }
+	@Override
+	public CaseDocumentFilter getDocumentFilter() {
+		return (CaseDocumentFilter) super.getDocumentFilter();
+	}
 
-  /**
-   * @return the maximum length of the text to allow, -1 if unlimited
-   */
-  public int getMaximumLength() {
-    return stringLengthValidator.getMaximumLength();
-  }
+	/**
+	 * @return the maximum length of the text to allow, -1 if unlimited
+	 */
+	public int getMaximumLength() {
+		return stringLengthValidator.getMaximumLength();
+	}
 
-  /**
-   * @param maximumLength the maximum length of the text to allow, -1 if unlimited
-   */
-  public void setMaximumLength(int maximumLength) {
-    stringLengthValidator.setMaximumLength(maximumLength);
-  }
+	/**
+	 * @param maximumLength the maximum length of the text to allow, -1 if unlimited
+	 */
+	public void setMaximumLength(int maximumLength) {
+		stringLengthValidator.setMaximumLength(maximumLength);
+	}
 
-  /**
-   * @return a new {@link SizedDocument}
-   */
-  public static SizedDocument sizedDocument() {
-    return sizedDocument(-1);
-  }
+	/**
+	 * @return a new {@link SizedDocument}
+	 */
+	public static SizedDocument sizedDocument() {
+		return sizedDocument(-1);
+	}
 
-  /**
-   * @param maximumLength the maximum text length
-   * @return a new {@link SizedDocument}
-   */
-  public static SizedDocument sizedDocument(int maximumLength) {
-    return new SizedDocument(maximumLength);
-  }
+	/**
+	 * @param maximumLength the maximum text length
+	 * @return a new {@link SizedDocument}
+	 */
+	public static SizedDocument sizedDocument(int maximumLength) {
+		return new SizedDocument(maximumLength);
+	}
 }

@@ -26,28 +26,28 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class OwnerEditPanel extends EntityEditPanel {
 
-  public OwnerEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public OwnerEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Owner.FIRST_NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Owner.FIRST_NAME);
 
-    createTextField(Owner.FIRST_NAME);
-    createTextField(Owner.LAST_NAME);
-    createTextField(Owner.ADDRESS);
-    createTextField(Owner.CITY);
-    createTextField(Owner.TELEPHONE);
-    createComboBox(Owner.PHONE_TYPE);
+		createTextField(Owner.FIRST_NAME);
+		createTextField(Owner.LAST_NAME);
+		createTextField(Owner.ADDRESS);
+		createTextField(Owner.CITY);
+		createTextField(Owner.TELEPHONE);
+		createComboBox(Owner.PHONE_TYPE);
 
-    setLayout(gridLayout(3, 2));
+		setLayout(gridLayout(3, 2));
 
-    addInputPanel(Owner.FIRST_NAME);
-    addInputPanel(Owner.LAST_NAME);
-    addInputPanel(Owner.ADDRESS);
-    addInputPanel(Owner.CITY);
-    addInputPanel(Owner.TELEPHONE);
-    addInputPanel(Owner.PHONE_TYPE);
-  }
+		addInputPanel(Owner.FIRST_NAME);
+		addInputPanel(Owner.LAST_NAME);
+		addInputPanel(Owner.ADDRESS);
+		addInputPanel(Owner.CITY);
+		addInputPanel(Owner.TELEPHONE);
+		addInputPanel(Owner.PHONE_TYPE);
+	}
 }

@@ -29,31 +29,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefaultExceptionDialogBuilderTest {
 
-  @Test
-  void test() {
-    Exception rootException = new Exception();
-    RuntimeException wrapper = new RuntimeException(rootException);
-    List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
-    toUnwrap.add(RuntimeException.class);
-    Throwable unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(wrapper, toUnwrap);
-    assertEquals(rootException, unwrapped);
+	@Test
+	void test() {
+		Exception rootException = new Exception();
+		RuntimeException wrapper = new RuntimeException(rootException);
+		List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
+		toUnwrap.add(RuntimeException.class);
+		Throwable unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(wrapper, toUnwrap);
+		assertEquals(rootException, unwrapped);
 
-    rootException = new Exception();
-    wrapper = new RuntimeException(new RuntimeException(rootException));
-    unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(wrapper, toUnwrap);
-    assertEquals(rootException, unwrapped);
+		rootException = new Exception();
+		wrapper = new RuntimeException(new RuntimeException(rootException));
+		unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(wrapper, toUnwrap);
+		assertEquals(rootException, unwrapped);
 
-    rootException = new CancelException();
-    wrapper = new RuntimeException(rootException);
-    unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(wrapper, toUnwrap);
-    assertEquals(rootException, unwrapped);
+		rootException = new CancelException();
+		wrapper = new RuntimeException(rootException);
+		unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(wrapper, toUnwrap);
+		assertEquals(rootException, unwrapped);
 
-    rootException = new Exception();
-    unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(rootException, toUnwrap);
-    assertEquals(rootException, unwrapped);
+		rootException = new Exception();
+		unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(rootException, toUnwrap);
+		assertEquals(rootException, unwrapped);
 
-    rootException = new RuntimeException();
-    unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(rootException, toUnwrap);
-    assertEquals(rootException, unwrapped);
-  }
+		rootException = new RuntimeException();
+		unwrapped = DefaultExceptionDialogBuilder.unwrapExceptions(rootException, toUnwrap);
+		assertEquals(rootException, unwrapped);
+	}
 }

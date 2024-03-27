@@ -35,47 +35,47 @@ import java.util.ResourceBundle;
 
 public final class PlaylistTablePanel extends EntityTablePanel {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(PlaylistTablePanel.class.getName());
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(PlaylistTablePanel.class.getName());
 
-  public PlaylistTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-  }
+	public PlaylistTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel);
+	}
 
-  @Override
-  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-    return super.createPopupMenuControls(additionalPopupMenuControls)
-            .addAt(0, Control.builder(this::createRandomPlaylist)
-                    .name(BUNDLE.getString("create_random_playlist"))
-                    .smallIcon(FrameworkIcons.instance().add())
-                    .build())
-            .addSeparatorAt(1);
-  }
+	@Override
+	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+		return super.createPopupMenuControls(additionalPopupMenuControls)
+						.addAt(0, Control.builder(this::createRandomPlaylist)
+										.name(BUNDLE.getString("create_random_playlist"))
+										.smallIcon(FrameworkIcons.instance().add())
+										.build())
+						.addSeparatorAt(1);
+	}
 
-  private void createRandomPlaylist() throws DatabaseException {
-    RandomPlaylistParametersValue playlistParametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
-    RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(playlistParametersValue)
-            .owner(this)
-            .title(BUNDLE.getString("create_random_playlist"))
-            .inputValid(playlistParametersValue.component().parametersValid())
-            .show();
+	private void createRandomPlaylist() throws DatabaseException {
+		RandomPlaylistParametersValue playlistParametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
+		RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(playlistParametersValue)
+						.owner(this)
+						.title(BUNDLE.getString("create_random_playlist"))
+						.inputValid(playlistParametersValue.component().parametersValid())
+						.show();
 
-    PlaylistTableModel playlistTableModel = tableModel();
-    playlistTableModel.createRandomPlaylist(randomPlaylistParameters);
-  }
+		PlaylistTableModel playlistTableModel = tableModel();
+		playlistTableModel.createRandomPlaylist(randomPlaylistParameters);
+	}
 
-  private static final class RandomPlaylistParametersValue
-          extends AbstractComponentValue<RandomPlaylistParameters, RandomPlaylistParametersPanel> {
+	private static final class RandomPlaylistParametersValue
+					extends AbstractComponentValue<RandomPlaylistParameters, RandomPlaylistParametersPanel> {
 
-    private RandomPlaylistParametersValue(EntityConnectionProvider connectionProvider) {
-      super(new RandomPlaylistParametersPanel(connectionProvider));
-    }
+		private RandomPlaylistParametersValue(EntityConnectionProvider connectionProvider) {
+			super(new RandomPlaylistParametersPanel(connectionProvider));
+		}
 
-    @Override
-    protected RandomPlaylistParameters getComponentValue() {
-      return component().get();
-    }
+		@Override
+		protected RandomPlaylistParameters getComponentValue() {
+			return component().get();
+		}
 
-    @Override
-    protected void setComponentValue(RandomPlaylistParameters parameters) {/* Read only value, not required */}
-  }
+		@Override
+		protected void setComponentValue(RandomPlaylistParameters parameters) {/* Read only value, not required */}
+	}
 }

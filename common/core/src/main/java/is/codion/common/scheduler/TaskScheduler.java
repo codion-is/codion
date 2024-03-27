@@ -44,75 +44,75 @@ import java.util.concurrent.TimeUnit;
  */
 public interface TaskScheduler {
 
-  /**
-   * Controls the task interval and when set, in case this scheduler was running, re-schedules the task.
-   * If the scheduler was stopped it will remain so, the new interval coming into effect on next start.
-   * @return the value controlling the interval
-   */
-  Value<Integer> interval();
+	/**
+	 * Controls the task interval and when set, in case this scheduler was running, re-schedules the task.
+	 * If the scheduler was stopped it will remain so, the new interval coming into effect on next start.
+	 * @return the value controlling the interval
+	 */
+	Value<Integer> interval();
 
-  /**
-   * @return the time unit
-   */
-  TimeUnit timeUnit();
+	/**
+	 * @return the time unit
+	 */
+	TimeUnit timeUnit();
 
-  /**
-   * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
-   * @return this TaskScheduler instance
-   */
-  TaskScheduler start();
+	/**
+	 * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
+	 * @return this TaskScheduler instance
+	 */
+	TaskScheduler start();
 
-  /**
-   * Stops this TaskScheduler, if it is not running calling this method has no effect.
-   */
-  void stop();
+	/**
+	 * Stops this TaskScheduler, if it is not running calling this method has no effect.
+	 */
+	void stop();
 
-  /**
-   * @return true if this TaskScheduler is running
-   */
-  boolean running();
+	/**
+	 * @return true if this TaskScheduler is running
+	 */
+	boolean running();
 
-  /**
-   * @param task the task to run
-   * @return a new {@link TaskScheduler.Builder} instance.
-   */
-  static TaskScheduler.Builder builder(Runnable task) {
-    return new DefaultTaskScheduler.DefaultBuilder(task);
-  }
+	/**
+	 * @param task the task to run
+	 * @return a new {@link TaskScheduler.Builder} instance.
+	 */
+	static TaskScheduler.Builder builder(Runnable task) {
+		return new DefaultTaskScheduler.DefaultBuilder(task);
+	}
 
-  /**
-   * A builder for {@link TaskScheduler}
-   */
-  interface Builder {
+	/**
+	 * A builder for {@link TaskScheduler}
+	 */
+	interface Builder {
 
-    /**
-     * @param interval the interval
-     * @param timeUnit the time unit
-     * @return this builder instance
-     */
-    Builder interval(int interval, TimeUnit timeUnit);
+		/**
+		 * @param interval the interval
+		 * @param timeUnit the time unit
+		 * @return this builder instance
+		 */
+		Builder interval(int interval, TimeUnit timeUnit);
 
-    /**
-     * @param initialDelay the initial start delay, used on restarts as well
-     * @return this builder instance
-     */
-    Builder initialDelay(int initialDelay);
+		/**
+		 * @param initialDelay the initial start delay, used on restarts as well
+		 * @return this builder instance
+		 */
+		Builder initialDelay(int initialDelay);
 
-    /**
-     * @param threadFactory the thread factory to use
-     * @return this builder instance
-     */
-    Builder threadFactory(ThreadFactory threadFactory);
+		/**
+		 * @param threadFactory the thread factory to use
+		 * @return this builder instance
+		 */
+		Builder threadFactory(ThreadFactory threadFactory);
 
-    /**
-     * Builds and starts a new {@link TaskScheduler}.
-     * @return a new {@link TaskScheduler}.
-     */
-    TaskScheduler start();
+		/**
+		 * Builds and starts a new {@link TaskScheduler}.
+		 * @return a new {@link TaskScheduler}.
+		 */
+		TaskScheduler start();
 
-    /**
-     * @return a new {@link TaskScheduler}.
-     */
-    TaskScheduler build();
-  }
+		/**
+		 * @return a new {@link TaskScheduler}.
+		 */
+		TaskScheduler build();
+	}
 }

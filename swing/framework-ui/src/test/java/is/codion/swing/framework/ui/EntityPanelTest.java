@@ -31,65 +31,65 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityPanelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void test() {
-    SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
-    EntityPanel deptPanel = new EntityPanel(deptModel, null, (EntityTablePanel) null);
-    assertFalse(deptPanel.containsEditPanel());
-    assertThrows(IllegalStateException.class, deptPanel::editPanel);
-    assertFalse(deptPanel.containsTablePanel());
-    assertThrows(IllegalStateException.class, deptPanel::tablePanel);
-    assertNotNull(deptPanel.editModel());
-    assertNotNull(deptPanel.tableModel());
+	@Test
+	void test() {
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
+		EntityPanel deptPanel = new EntityPanel(deptModel, null, (EntityTablePanel) null);
+		assertFalse(deptPanel.containsEditPanel());
+		assertThrows(IllegalStateException.class, deptPanel::editPanel);
+		assertFalse(deptPanel.containsTablePanel());
+		assertThrows(IllegalStateException.class, deptPanel::tablePanel);
+		assertNotNull(deptPanel.editModel());
+		assertNotNull(deptPanel.tableModel());
 
-    // panel with a default table panel
-    deptPanel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
-      @Override
-      protected void initializeUI() {}
-    });
-    deptPanel.initialize();
-    assertNotNull(deptPanel.editPanel());
-    assertNotNull(deptPanel.tablePanel());
+		// panel with a default table panel
+		deptPanel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
+			@Override
+			protected void initializeUI() {}
+		});
+		deptPanel.initialize();
+		assertNotNull(deptPanel.editPanel());
+		assertNotNull(deptPanel.tablePanel());
 
-    deptPanel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
-      @Override
-      protected void initializeUI() {}
-    }, (EntityTablePanel) null);
-    deptPanel.initialize();
-    assertNotNull(deptPanel.editPanel());
-    assertThrows(IllegalStateException.class, deptPanel::tablePanel);
-  }
+		deptPanel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
+			@Override
+			protected void initializeUI() {}
+		}, (EntityTablePanel) null);
+		deptPanel.initialize();
+		assertNotNull(deptPanel.editPanel());
+		assertThrows(IllegalStateException.class, deptPanel::tablePanel);
+	}
 
-  @Test
-  void detailPanels() {
-    SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
-    SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
-    deptModel.addDetailModel(empModel);
+	@Test
+	void detailPanels() {
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		deptModel.addDetailModel(empModel);
 
-    EntityPanel deptPanel = new EntityPanel(deptModel);
-    EntityPanel empPanel = new EntityPanel(empModel);
+		EntityPanel deptPanel = new EntityPanel(deptModel);
+		EntityPanel empPanel = new EntityPanel(empModel);
 
-    deptPanel.addDetailPanel(empPanel);
-    assertThrows(IllegalArgumentException.class, () -> deptPanel.addDetailPanel(empPanel));
-    assertNotNull(deptPanel.detailPanel(Employee.TYPE));
-    assertEquals(0, deptPanel.activeDetailPanels().size());
+		deptPanel.addDetailPanel(empPanel);
+		assertThrows(IllegalArgumentException.class, () -> deptPanel.addDetailPanel(empPanel));
+		assertNotNull(deptPanel.detailPanel(Employee.TYPE));
+		assertEquals(0, deptPanel.activeDetailPanels().size());
 
-    assertSame(deptPanel, empPanel.parentPanel().orElseThrow(IllegalStateException::new));
+		assertSame(deptPanel, empPanel.parentPanel().orElseThrow(IllegalStateException::new));
 
-    // activates the detail panel
-    deptPanel.initialize();
-    assertThrows(IllegalStateException.class, () -> deptPanel.addDetailPanels(empPanel));
-    assertEquals(1, deptPanel.activeDetailPanels().size());
+		// activates the detail panel
+		deptPanel.initialize();
+		assertThrows(IllegalStateException.class, () -> deptPanel.addDetailPanels(empPanel));
+		assertEquals(1, deptPanel.activeDetailPanels().size());
 
-    deptModel.detailModelLink(empModel).active().set(false);
-    assertEquals(0, deptPanel.activeDetailPanels().size());
-  }
+		deptModel.detailModelLink(empModel).active().set(false);
+		assertEquals(0, deptPanel.activeDetailPanels().size());
+	}
 }

@@ -27,9 +27,9 @@ import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.
 // tag::loadTest[]
 public final class SelectDepartment implements Performer<EmployeesAppModel> {
 
-  @Override
-  public void perform(EmployeesAppModel application) {
-    selectRandomRow(application.entityModel(Department.TYPE).tableModel());
-  }
+	@Override
+	public void perform(EmployeesAppModel application) {
+		selectRandomRow(application.entityModel(Department.TYPE).tableModel());
+	}
 }
 // end::loadTest[]

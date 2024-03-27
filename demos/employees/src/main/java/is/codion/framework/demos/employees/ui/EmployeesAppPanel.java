@@ -50,76 +50,76 @@ import static java.util.Collections.singletonList;
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
 
-  private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
+	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
 
-  public EmployeesAppPanel(EmployeesAppModel applicationModel) {
-    super(applicationModel);
-  }
+	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
+		super(applicationModel);
+	}
 
-  @Override
-  protected List<EntityPanel> createEntityPanels() {
-    SwingEntityModel departmentModel = applicationModel().entityModel(Department.TYPE);
-    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
+	@Override
+	protected List<EntityPanel> createEntityPanels() {
+		SwingEntityModel departmentModel = applicationModel().entityModel(Department.TYPE);
+		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
-    EntityPanel employeePanel = new EntityPanel(employeeModel,
-            new EmployeeEditPanel(employeeModel.editModel()));
+		EntityPanel employeePanel = new EntityPanel(employeeModel,
+						new EmployeeEditPanel(employeeModel.editModel()));
 
-    EntityPanel departmentPanel = new EntityPanel(departmentModel,
-            new DepartmentEditPanel(departmentModel.editModel()),
-            new DepartmentTablePanel(departmentModel.tableModel()),
-            config -> config.detailLayout(TabbedDetailLayout.builder()
-                    .splitPaneResizeWeight(0.4)
-                    .build()));
-    departmentPanel.addDetailPanel(employeePanel);
+		EntityPanel departmentPanel = new EntityPanel(departmentModel,
+						new DepartmentEditPanel(departmentModel.editModel()),
+						new DepartmentTablePanel(departmentModel.tableModel()),
+						config -> config.detailLayout(TabbedDetailLayout.builder()
+										.splitPaneResizeWeight(0.4)
+										.build()));
+		departmentPanel.addDetailPanel(employeePanel);
 
-    return singletonList(departmentPanel);
-  }
-  // end::createEntityPanels[]
+		return singletonList(departmentPanel);
+	}
+	// end::createEntityPanels[]
 
-  // tag::importJSON[]
-  public void importJSON() throws Exception {
-    File file = Dialogs.fileSelectionDialog()
-            .owner(this)
-            .fileFilter(new FileNameExtensionFilter("JSON files", "json"))
-            .fileFilter(new FileNameExtensionFilter("Text files", "txt"))
-            .selectFile();
+	// tag::importJSON[]
+	public void importJSON() throws Exception {
+		File file = Dialogs.fileSelectionDialog()
+						.owner(this)
+						.fileFilter(new FileNameExtensionFilter("JSON files", "json"))
+						.fileFilter(new FileNameExtensionFilter("Text files", "txt"))
+						.selectFile();
 
-    List<Entity> entities = entityObjectMapper(applicationModel().entities())
-            .deserializeEntities(textFileContents(file.getAbsolutePath(), defaultCharset()));
+		List<Entity> entities = entityObjectMapper(applicationModel().entities())
+						.deserializeEntities(textFileContents(file.getAbsolutePath(), defaultCharset()));
 
-    SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, applicationModel().connectionProvider());
-    tableModel.editModel().readOnly().set(true);
-    EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
-            config -> config.includePopupMenu(false));
+		SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, applicationModel().connectionProvider());
+		tableModel.editModel().readOnly().set(true);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
+						config -> config.includePopupMenu(false));
 
-    Dialogs.componentDialog(tablePanel.initialize())
-            .owner(this)
-            .title("Import")
-            .show();
-  }
-  // end::importJSON[]
+		Dialogs.componentDialog(tablePanel.initialize())
+						.owner(this)
+						.title("Import")
+						.show();
+	}
+	// end::importJSON[]
 
-  // tag::createToolsMenuControls[]
-  @Override
-  protected Controls createToolsMenuControls() {
-    return super.createToolsMenuControls()
-            .add(Control.builder(this::importJSON)
-                    .name("Import JSON")
-                    .build());
-  }
-  // end::createToolsMenuControls[]
+	// tag::createToolsMenuControls[]
+	@Override
+	protected Controls createToolsMenuControls() {
+		return super.createToolsMenuControls()
+						.add(Control.builder(this::importJSON)
+										.name("Import JSON")
+										.build());
+	}
+	// end::createToolsMenuControls[]
 
-  // tag::main[]
-  public static void main(String[] args) {
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-    EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
-            .applicationName("Employees")
-            .domainType(Employees.DOMAIN)
-            .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .defaultLoginUser(User.parse("scott:tiger"))
-            .start();
-  }
-  // end::main[]
+	// tag::main[]
+	public static void main(String[] args) {
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+		EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
+						.applicationName("Employees")
+						.domainType(Employees.DOMAIN)
+						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLoginUser(User.parse("scott:tiger"))
+						.start();
+	}
+	// end::main[]
 }

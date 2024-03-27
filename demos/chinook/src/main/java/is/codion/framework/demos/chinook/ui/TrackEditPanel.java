@@ -38,109 +38,109 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 public final class TrackEditPanel extends EntityEditPanel {
 
-  private final SwingEntityTableModel tableModel;
+	private final SwingEntityTableModel tableModel;
 
-  public TrackEditPanel(SwingEntityEditModel editModel, SwingEntityTableModel tableModel) {
-    super(editModel);
-    this.tableModel = tableModel;
-    addKeyEvents();
-  }
+	public TrackEditPanel(SwingEntityEditModel editModel, SwingEntityTableModel tableModel) {
+		super(editModel);
+		this.tableModel = tableModel;
+		addKeyEvents();
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Track.ALBUM_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Track.ALBUM_FK);
 
-    createForeignKeySearchField(Track.ALBUM_FK);
-    createTextField(Track.NAME)
-            .columns(12);
-    createForeignKeyComboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
-            .preferredWidth(160)
-            .add(true)
-            .edit(true);
-    createForeignKeyComboBoxPanel(Track.GENRE_FK, this::createGenreEditPanel)
-            .preferredWidth(160)
-            .add(true)
-            .edit(true);
-    createTextFieldPanel(Track.COMPOSER)
-            .columns(12);
-    createIntegerField(Track.MILLISECONDS)
-            .columns(5);
+		createForeignKeySearchField(Track.ALBUM_FK);
+		createTextField(Track.NAME)
+						.columns(12);
+		createForeignKeyComboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+						.preferredWidth(160)
+						.add(true)
+						.edit(true);
+		createForeignKeyComboBoxPanel(Track.GENRE_FK, this::createGenreEditPanel)
+						.preferredWidth(160)
+						.add(true)
+						.edit(true);
+		createTextFieldPanel(Track.COMPOSER)
+						.columns(12);
+		createIntegerField(Track.MILLISECONDS)
+						.columns(5);
 
-    ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
-    minutesSecondsValue.link(editModel().value(Track.MILLISECONDS));
+		ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
+		minutesSecondsValue.link(editModel().value(Track.MILLISECONDS));
 
-    createIntegerField(Track.BYTES)
-            .columns(6);
-    createTextField(Track.UNITPRICE)
-            .columns(4);
+		createIntegerField(Track.BYTES)
+						.columns(6);
+		createTextField(Track.UNITPRICE)
+						.columns(4);
 
-    JPanel genreMediaTypePanel = flexibleGridLayoutPanel(1, 2)
-            .add(createInputPanel(Track.GENRE_FK))
-            .add(createInputPanel(Track.MEDIATYPE_FK))
-            .build();
+		JPanel genreMediaTypePanel = flexibleGridLayoutPanel(1, 2)
+						.add(createInputPanel(Track.GENRE_FK))
+						.add(createInputPanel(Track.MEDIATYPE_FK))
+						.build();
 
-    JPanel durationPanel = flexibleGridLayoutPanel(1, 3)
-            .add(createInputPanel(Track.BYTES))
-            .add(createInputPanel(Track.MILLISECONDS))
-            .add(minutesSecondsValue.component())
-            .build();
+		JPanel durationPanel = flexibleGridLayoutPanel(1, 3)
+						.add(createInputPanel(Track.BYTES))
+						.add(createInputPanel(Track.MILLISECONDS))
+						.add(minutesSecondsValue.component())
+						.build();
 
-    JPanel unitPricePanel = borderLayoutPanel()
-            .eastComponent(createInputPanel(Track.UNITPRICE))
-            .build();
+		JPanel unitPricePanel = borderLayoutPanel()
+						.eastComponent(createInputPanel(Track.UNITPRICE))
+						.build();
 
-    setLayout(flexibleGridLayout(4, 2));
-    addInputPanel(Track.ALBUM_FK);
-    addInputPanel(Track.NAME);
-    add(genreMediaTypePanel);
-    addInputPanel(Track.COMPOSER);
-    add(durationPanel);
-    add(unitPricePanel);
-  }
+		setLayout(flexibleGridLayout(4, 2));
+		addInputPanel(Track.ALBUM_FK);
+		addInputPanel(Track.NAME);
+		add(genreMediaTypePanel);
+		addInputPanel(Track.COMPOSER);
+		add(durationPanel);
+		add(unitPricePanel);
+	}
 
-  private EntityEditPanel createMediaTypeEditPanel() {
-    return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
-  }
+	private EntityEditPanel createMediaTypeEditPanel() {
+		return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
+	}
 
-  private GenreEditPanel createGenreEditPanel() {
-    return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
-  }
+	private GenreEditPanel createGenreEditPanel() {
+		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
+	}
 
-  private void addKeyEvents() {
-    KeyEvents.Builder keyEvent = KeyEvents.builder()
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .modifiers(CTRL_DOWN_MASK);
-    keyEvent.keyCode(VK_UP)
-            .action(Control.control(this::moveSelectionUp))
-            .enable(this);
-    keyEvent.keyCode(VK_DOWN)
-            .action(Control.control(this::moveSelectionDown))
-            .enable(this);
-  }
+	private void addKeyEvents() {
+		KeyEvents.Builder keyEvent = KeyEvents.builder()
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.modifiers(CTRL_DOWN_MASK);
+		keyEvent.keyCode(VK_UP)
+						.action(Control.control(this::moveSelectionUp))
+						.enable(this);
+		keyEvent.keyCode(VK_DOWN)
+						.action(Control.control(this::moveSelectionDown))
+						.enable(this);
+	}
 
-  private void moveSelectionUp() {
-    if (readyForSelectionChange()) {
-      tableModel.selectionModel().moveSelectionUp();
-    }
-  }
+	private void moveSelectionUp() {
+		if (readyForSelectionChange()) {
+			tableModel.selectionModel().moveSelectionUp();
+		}
+	}
 
-  private void moveSelectionDown() {
-    if (readyForSelectionChange()) {
-      tableModel.selectionModel().moveSelectionDown();
-    }
-  }
+	private void moveSelectionDown() {
+		if (readyForSelectionChange()) {
+			tableModel.selectionModel().moveSelectionDown();
+		}
+	}
 
-  private boolean readyForSelectionChange() {
-    // If the selection is empty
-    if (tableModel.selectionModel().isSelectionEmpty()) {
-      return true;
-    }
-    // If the current item is not modified
-    if (!editModel().modified().get()) {
-      return true;
-    }
-    // If the current item was modified and
-    // successfully updated after user confirmation
-    return updateWithConfirmation();
-  }
+	private boolean readyForSelectionChange() {
+		// If the selection is empty
+		if (tableModel.selectionModel().isSelectionEmpty()) {
+			return true;
+		}
+		// If the current item is not modified
+		if (!editModel().modified().get()) {
+			return true;
+		}
+		// If the current item was modified and
+		// successfully updated after user confirmation
+		return updateWithConfirmation();
+	}
 }

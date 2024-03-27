@@ -27,17 +27,17 @@ import org.junit.jupiter.api.Test;
 
 public class DomainGeneratorPanelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  @Test
-  void test() throws DatabaseException {
-    DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-    new DomainGeneratorPanel(model);
-    model.schemaModel().refresh();
-    model.schemaModel().sortItems();
-    model.schemaModel().selectionModel().setSelectedIndex(1);
-    model.populateSelected(schema -> {});
-    model.definitionModel().selectionModel().setSelectedIndex(0);
-  }
+	@Test
+	void test() throws DatabaseException {
+		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
+		new DomainGeneratorPanel(model);
+		model.schemaModel().refresh();
+		model.schemaModel().sortItems();
+		model.schemaModel().selectionModel().setSelectedIndex(1);
+		model.populateSelected(schema -> {});
+		model.definitionModel().selectionModel().setSelectedIndex(0);
+	}
 }

@@ -27,11 +27,11 @@ import java.util.List;
  */
 public interface ConditionProvider {
 
-  /**
-   * Creates a query condition string for the given values
-   * @param columns the condition columns
-   * @param values the values
-   * @return a query condition string
-   */
-  String toString(List<Column<?>> columns, List<?> values);
+	/**
+	 * Creates a query condition string for the given values
+	 * @param columns the condition columns
+	 * @param values the values
+	 * @return a query condition string
+	 */
+	String toString(List<Column<?>> columns, List<?> values);
 }

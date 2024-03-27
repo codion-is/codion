@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
  */
 public final class EntitiesTutorialTest {
 
-  @Test
-  void test() throws DatabaseException {
-    EntitiesTutorial.main(new String[0]);
-  }
+	@Test
+	void test() throws DatabaseException {
+		EntitiesTutorial.main(new String[0]);
+	}
 }

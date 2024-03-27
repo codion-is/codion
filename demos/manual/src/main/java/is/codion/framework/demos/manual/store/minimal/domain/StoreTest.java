@@ -26,17 +26,17 @@ import org.junit.jupiter.api.Test;
 
 public class StoreTest extends EntityTestUnit {
 
-  public StoreTest() {
-    super(new Store());
-  }
+	public StoreTest() {
+		super(new Store());
+	}
 
-  @Test
-  void customer() throws Exception {
-    test(Customer.TYPE);
-  }
+	@Test
+	void customer() throws Exception {
+		test(Customer.TYPE);
+	}
 
-  @Test
-  void address() throws Exception {
-    test(Address.TYPE);
-  }
+	@Test
+	void address() throws Exception {
+		test(Address.TYPE);
+	}
 }

@@ -56,203 +56,203 @@ import static java.util.stream.Collectors.joining;
  */
 final class EntityPopupMenu extends JPopupMenu {
 
-  private static final int MAXIMUM_VALUE_LENGTH = 42;
+	private static final int MAXIMUM_VALUE_LENGTH = 42;
 
-  EntityPopupMenu(Entity entity, EntityConnection connection) {
-    requireNonNull(entity);
-    requireNonNull(connection);
-    populateEntityMenu(this, populateEntityGraph(entity.copy(), connection, new HashSet<>()), connection);
-  }
+	EntityPopupMenu(Entity entity, EntityConnection connection) {
+		requireNonNull(entity);
+		requireNonNull(connection);
+		populateEntityMenu(this, populateEntityGraph(entity.copy(), connection, new HashSet<>()), connection);
+	}
 
-  private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKey().definitions()));
-    populateForeignKeyMenu(rootMenu, entity, connection);
-    populateValueMenu(rootMenu, entity);
-  }
+	private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
+		populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKey().definitions()));
+		populateForeignKeyMenu(rootMenu, entity, connection);
+		populateValueMenu(rootMenu, entity);
+	}
 
-  private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnDefinition<?>> primaryKeyColumns) {
-    Text.collate(primaryKeyColumns);
-    for (ColumnDefinition<?> primaryKeyColumn : primaryKeyColumns) {
-      JMenuItem menuItem = new JMenuItem(new StringBuilder("[PK] ")
-              .append(primaryKeyColumn.attribute())
-              .append(" [").append(primaryKeyColumn.attribute().type().valueClass().getSimpleName()).append("]: ")
-              .append(createValueString(entity, primaryKeyColumn)).toString());
-      menuItem.addActionListener(clipboardControl(entity, primaryKeyColumn.attribute()));
-      configureMenuItem(menuItem, entity, primaryKeyColumn.attribute(), primaryKeyColumn.attribute().name());
-      rootMenu.add(menuItem);
-    }
-  }
+	private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnDefinition<?>> primaryKeyColumns) {
+		Text.collate(primaryKeyColumns);
+		for (ColumnDefinition<?> primaryKeyColumn : primaryKeyColumns) {
+			JMenuItem menuItem = new JMenuItem(new StringBuilder("[PK] ")
+							.append(primaryKeyColumn.attribute())
+							.append(" [").append(primaryKeyColumn.attribute().type().valueClass().getSimpleName()).append("]: ")
+							.append(createValueString(entity, primaryKeyColumn)).toString());
+			menuItem.addActionListener(clipboardControl(entity, primaryKeyColumn.attribute()));
+			configureMenuItem(menuItem, entity, primaryKeyColumn.attribute(), primaryKeyColumn.attribute().name());
+			rootMenu.add(menuItem);
+		}
+	}
 
-  private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
-    List<ForeignKeyDefinition> fkDefinitions = new ArrayList<>(entity.definition().foreignKeys().definitions());
-    Text.collate(fkDefinitions);
-    for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
-      StringBuilder captionBuilder = new StringBuilder("[FK] ").append(fkDefinition.caption()).append(": ");
-      ForeignKey foreignKey = fkDefinition.attribute();
-      String caption = captionBuilder.append(createValueString(entity, fkDefinition)).toString();
-      JMenuItem menuItem = entity.isNull(foreignKey) ? new JMenuItem(caption) : new JMenu(caption);
-      configureMenuItem(menuItem, entity, foreignKey, foreignKeyAttributeNames(foreignKey));
-      rootMenu.add(menuItem);
-      Entity referencedEntity = entity.get(foreignKey);
-      if (referencedEntity != null) {
-        populateEntityMenu(menuItem, referencedEntity, connection);
-      }
-    }
-  }
+	private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity, EntityConnection connection) {
+		List<ForeignKeyDefinition> fkDefinitions = new ArrayList<>(entity.definition().foreignKeys().definitions());
+		Text.collate(fkDefinitions);
+		for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
+			StringBuilder captionBuilder = new StringBuilder("[FK] ").append(fkDefinition.caption()).append(": ");
+			ForeignKey foreignKey = fkDefinition.attribute();
+			String caption = captionBuilder.append(createValueString(entity, fkDefinition)).toString();
+			JMenuItem menuItem = entity.isNull(foreignKey) ? new JMenuItem(caption) : new JMenu(caption);
+			configureMenuItem(menuItem, entity, foreignKey, foreignKeyAttributeNames(foreignKey));
+			rootMenu.add(menuItem);
+			Entity referencedEntity = entity.get(foreignKey);
+			if (referencedEntity != null) {
+				populateEntityMenu(menuItem, referencedEntity, connection);
+			}
+		}
+	}
 
-  private static String foreignKeyAttributeNames(ForeignKey foreignKey) {
-    return foreignKey.references().stream()
-            .map(reference -> reference.column().toString())
-            .collect(joining(", "));
-  }
+	private static String foreignKeyAttributeNames(ForeignKey foreignKey) {
+		return foreignKey.references().stream()
+						.map(reference -> reference.column().toString())
+						.collect(joining(", "));
+	}
 
-  private static void populateValueMenu(JComponent rootMenu, Entity entity) {
-    List<AttributeDefinition<?>> attributeDefinitions = Text.collate(new ArrayList<>(entity.definition().attributes().definitions()));
-    for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
-      boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKey();
-      if (!primaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
-        JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
-                .append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
-                .append(attributeDefinition.derived() ? "*" : "").append("]: ")
-                .append(createValueString(entity, attributeDefinition)).toString());
-        menuItem.addActionListener(clipboardControl(entity, attributeDefinition.attribute()));
-        configureMenuItem(menuItem, entity, attributeDefinition.attribute(), attributeDefinition.attribute().toString());
-        rootMenu.add(menuItem);
-      }
-    }
-  }
+	private static void populateValueMenu(JComponent rootMenu, Entity entity) {
+		List<AttributeDefinition<?>> attributeDefinitions = Text.collate(new ArrayList<>(entity.definition().attributes().definitions()));
+		for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
+			boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKey();
+			if (!primaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
+				JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
+								.append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
+								.append(attributeDefinition.derived() ? "*" : "").append("]: ")
+								.append(createValueString(entity, attributeDefinition)).toString());
+				menuItem.addActionListener(clipboardControl(entity, attributeDefinition.attribute()));
+				configureMenuItem(menuItem, entity, attributeDefinition.attribute(), attributeDefinition.attribute().toString());
+				rootMenu.add(menuItem);
+			}
+		}
+	}
 
-  private static String createValueString(Entity entity, AttributeDefinition<?> attributeDefinition) {
-    StringBuilder builder = new StringBuilder();
-    if (entity.modified(attributeDefinition.attribute())) {
-      builder.append(createValueString(entity.original(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition));
-      builder.append(" → ");
-    }
-    builder.append(createValueString(entity.get(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition));
+	private static String createValueString(Entity entity, AttributeDefinition<?> attributeDefinition) {
+		StringBuilder builder = new StringBuilder();
+		if (entity.modified(attributeDefinition.attribute())) {
+			builder.append(createValueString(entity.original(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition));
+			builder.append(" → ");
+		}
+		builder.append(createValueString(entity.get(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition));
 
-    return builder.toString();
-  }
+		return builder.toString();
+	}
 
-  private static String createValueString(Object value, AttributeDefinition<Object> attributeDefinition) {
-    String valueAsString = value == null ? "<null>" : attributeDefinition.string(value);
-    if (valueAsString.length() > MAXIMUM_VALUE_LENGTH) {
-      valueAsString = valueAsString.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
-    }
+	private static String createValueString(Object value, AttributeDefinition<Object> attributeDefinition) {
+		String valueAsString = value == null ? "<null>" : attributeDefinition.string(value);
+		if (valueAsString.length() > MAXIMUM_VALUE_LENGTH) {
+			valueAsString = valueAsString.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
+		}
 
-    return valueAsString;
-  }
+		return valueAsString;
+	}
 
-  private static void configureMenuItem(JMenuItem menuItem, Entity entity, Attribute<?> attribute, String toolTipText) {
-    Font currentFont = menuItem.getFont();
-    if (!valid(entity, attribute)) {
-      menuItem.setForeground(Color.RED);
-      menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
-    }
-    if (entity.modified(attribute)) {
-      menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
-    }
-    menuItem.setToolTipText(toolTipText);
-  }
+	private static void configureMenuItem(JMenuItem menuItem, Entity entity, Attribute<?> attribute, String toolTipText) {
+		Font currentFont = menuItem.getFont();
+		if (!valid(entity, attribute)) {
+			menuItem.setForeground(Color.RED);
+			menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
+		}
+		if (entity.modified(attribute)) {
+			menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
+		}
+		menuItem.setToolTipText(toolTipText);
+	}
 
-  private static boolean valid(Entity entity, Attribute<?> attribute) {
-    try {
-      entity.definition().validator().validate(entity, attribute);
-      return true;
-    }
-    catch (ValidationException e) {
-      return false;
-    }
-  }
+	private static boolean valid(Entity entity, Attribute<?> attribute) {
+		try {
+			entity.definition().validator().validate(entity, attribute);
+			return true;
+		}
+		catch (ValidationException e) {
+			return false;
+		}
+	}
 
-  private static Entity populateEntityGraph(Entity entity, EntityConnection connection, Set<ForeignKeyEntity> visited) {
-    for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
-      Entity.Key referencedKey = entity.referencedKey(foreignKey);
-      if (entity.isNotNull(foreignKey)) {
-        ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, selectEntity(referencedKey, connection));
-        if (visited.contains(foreignKeyEntity)) {
-          entity.put(foreignKey, duplicateEntity(foreignKeyEntity.referencedEntity));
-        }
-        else {
-          visited.add(foreignKeyEntity);
-          entity.put(foreignKey, foreignKeyEntity.referencedEntity);
-          populateEntityGraph(foreignKeyEntity.referencedEntity, connection, visited);
-        }
-      }
-    }
+	private static Entity populateEntityGraph(Entity entity, EntityConnection connection, Set<ForeignKeyEntity> visited) {
+		for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
+			Entity.Key referencedKey = entity.referencedKey(foreignKey);
+			if (entity.isNotNull(foreignKey)) {
+				ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, selectEntity(referencedKey, connection));
+				if (visited.contains(foreignKeyEntity)) {
+					entity.put(foreignKey, duplicateEntity(foreignKeyEntity.referencedEntity));
+				}
+				else {
+					visited.add(foreignKeyEntity);
+					entity.put(foreignKey, foreignKeyEntity.referencedEntity);
+					populateEntityGraph(foreignKeyEntity.referencedEntity, connection, visited);
+				}
+			}
+		}
 
-    return entity;
-  }
+		return entity;
+	}
 
-  private static Entity selectEntity(Entity.Key primaryKey, EntityConnection connection) {
-    try {
-      return connection.selectSingle(where(key(primaryKey))
-              .fetchDepth(0)
-              .build());
-    }
-    catch (RecordNotFoundException e) {
-      return ProxyBuilder.builder(Entity.class)
-              .delegate(Entity.entity(primaryKey))
-              .method("toString", parameters -> primaryKey.toString() + " <RECORD NOT FOUND>")
-              .build();
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	private static Entity selectEntity(Entity.Key primaryKey, EntityConnection connection) {
+		try {
+			return connection.selectSingle(where(key(primaryKey))
+							.fetchDepth(0)
+							.build());
+		}
+		catch (RecordNotFoundException e) {
+			return ProxyBuilder.builder(Entity.class)
+							.delegate(Entity.entity(primaryKey))
+							.method("toString", parameters -> primaryKey.toString() + " <RECORD NOT FOUND>")
+							.build();
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  private static Entity duplicateEntity(Entity referencedEntity) {
-    return ProxyBuilder.builder(Entity.class)
-            .delegate(referencedEntity)
-            .method("toString", parameters -> referencedEntity + " <DUPLICATE>")
-            .build();
-  }
+	private static Entity duplicateEntity(Entity referencedEntity) {
+		return ProxyBuilder.builder(Entity.class)
+						.delegate(referencedEntity)
+						.method("toString", parameters -> referencedEntity + " <DUPLICATE>")
+						.build();
+	}
 
-  private static Control clipboardControl(Entity entity, Attribute<?> attribute) {
-    return control(new ClipboardCommand(entity, attribute));
-  }
+	private static Control clipboardControl(Entity entity, Attribute<?> attribute) {
+		return control(new ClipboardCommand(entity, attribute));
+	}
 
-  private static final class ClipboardCommand implements Control.Command {
+	private static final class ClipboardCommand implements Control.Command {
 
-    private final Entity entity;
-    private final Attribute<?> attribute;
+		private final Entity entity;
+		private final Attribute<?> attribute;
 
-    private ClipboardCommand(Entity entity, Attribute<?> attribute) {
-      this.entity = entity;
-      this.attribute = attribute;
-    }
+		private ClipboardCommand(Entity entity, Attribute<?> attribute) {
+			this.entity = entity;
+			this.attribute = attribute;
+		}
 
-    @Override
-    public void execute() throws Exception {
-      setClipboard(entity.string(attribute));
-    }
-  }
+		@Override
+		public void execute() throws Exception {
+			setClipboard(entity.string(attribute));
+		}
+	}
 
-  private static final class ForeignKeyEntity {
+	private static final class ForeignKeyEntity {
 
-    private final ForeignKey foreignKey;
-    private final Entity referencedEntity;
+		private final ForeignKey foreignKey;
+		private final Entity referencedEntity;
 
-    private ForeignKeyEntity(ForeignKey foreignKey, Entity referencedEntity) {
-      this.foreignKey = foreignKey;
-      this.referencedEntity = referencedEntity;
-    }
+		private ForeignKeyEntity(ForeignKey foreignKey, Entity referencedEntity) {
+			this.foreignKey = foreignKey;
+			this.referencedEntity = referencedEntity;
+		}
 
-    @Override
-    public boolean equals(Object object) {
-      if (this == object) {
-        return true;
-      }
-      if (!(object instanceof ForeignKeyEntity)) {
-        return false;
-      }
-      ForeignKeyEntity that = (ForeignKeyEntity) object;
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (!(object instanceof ForeignKeyEntity)) {
+				return false;
+			}
+			ForeignKeyEntity that = (ForeignKeyEntity) object;
 
-      return Objects.equals(foreignKey, that.foreignKey) && Objects.equals(referencedEntity, that.referencedEntity);
-    }
+			return Objects.equals(foreignKey, that.foreignKey) && Objects.equals(referencedEntity, that.referencedEntity);
+		}
 
-    @Override
-    public int hashCode() {
-      return Objects.hash(foreignKey, referencedEntity);
-    }
-  }
+		@Override
+		public int hashCode() {
+			return Objects.hash(foreignKey, referencedEntity);
+		}
+	}
 }

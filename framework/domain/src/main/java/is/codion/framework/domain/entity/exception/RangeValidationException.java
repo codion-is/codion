@@ -26,13 +26,13 @@ import is.codion.framework.domain.entity.attribute.Attribute;
  */
 public class RangeValidationException extends ValidationException {
 
-  /**
-   * Instantiates a new RangeValidationException
-   * @param attribute the attribute
-   * @param value the value that is out of range
-   * @param message the message
-   */
-  public RangeValidationException(Attribute<?> attribute, Object value, String message) {
-    super(attribute, value, message);
-  }
+	/**
+	 * Instantiates a new RangeValidationException
+	 * @param attribute the attribute
+	 * @param value the value that is out of range
+	 * @param message the message
+	 */
+	public RangeValidationException(Attribute<?> attribute, Object value, String message) {
+		super(attribute, value, message);
+	}
 }

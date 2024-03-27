@@ -37,49 +37,49 @@ import java.io.IOException;
 // tag::customSerializer[]
 public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFactory {
 
-  private static final String LATITUDE = "latitude";
-  private static final String LONGITUDE = "longitude";
+	private static final String LATITUDE = "latitude";
+	private static final String LONGITUDE = "longitude";
 
-  public WorldObjectMapperFactory() {
-    super(World.DOMAIN);
-  }
+	public WorldObjectMapperFactory() {
+		super(World.DOMAIN);
+	}
 
-  @Override
-  public EntityObjectMapper entityObjectMapper(Entities entities) {
-    EntityObjectMapper objectMapper = super.entityObjectMapper(entities);
-    objectMapper.addSerializer(Location.class, new LocationSerializer());
-    objectMapper.addDeserializer(Location.class, new LocationDeserializer());
+	@Override
+	public EntityObjectMapper entityObjectMapper(Entities entities) {
+		EntityObjectMapper objectMapper = super.entityObjectMapper(entities);
+		objectMapper.addSerializer(Location.class, new LocationSerializer());
+		objectMapper.addDeserializer(Location.class, new LocationDeserializer());
 
-    return objectMapper;
-  }
+		return objectMapper;
+	}
 
-  private static final class LocationSerializer extends StdSerializer<Location> {
+	private static final class LocationSerializer extends StdSerializer<Location> {
 
-    private LocationSerializer() {
-      super(Location.class);
-    }
+		private LocationSerializer() {
+			super(Location.class);
+		}
 
-    @Override
-    public void serialize(Location location, JsonGenerator generator, SerializerProvider provider) throws IOException {
-      generator.writeStartObject();
-      generator.writeNumberField(LATITUDE, location.latitude());
-      generator.writeNumberField(LONGITUDE, location.longitude());
-      generator.writeEndObject();
-    }
-  }
+		@Override
+		public void serialize(Location location, JsonGenerator generator, SerializerProvider provider) throws IOException {
+			generator.writeStartObject();
+			generator.writeNumberField(LATITUDE, location.latitude());
+			generator.writeNumberField(LONGITUDE, location.longitude());
+			generator.writeEndObject();
+		}
+	}
 
-  private static final class LocationDeserializer extends StdDeserializer<Location> {
+	private static final class LocationDeserializer extends StdDeserializer<Location> {
 
-    private LocationDeserializer() {
-      super(Location.class);
-    }
+		private LocationDeserializer() {
+			super(Location.class);
+		}
 
-    @Override
-    public Location deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JacksonException {
-      JsonNode node = parser.getCodec().readTree(parser);
+		@Override
+		public Location deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JacksonException {
+			JsonNode node = parser.getCodec().readTree(parser);
 
-      return new Location(node.get(LATITUDE).asDouble(), node.get(LONGITUDE).asDouble());
-    }
-  }
+			return new Location(node.get(LATITUDE).asDouble(), node.get(LONGITUDE).asDouble());
+		}
+	}
 }
 // end::customSerializer[]

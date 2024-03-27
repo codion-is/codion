@@ -35,79 +35,79 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityServerMonitor {
 
-  private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
+	private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
 
-  /**
-   * Specifies the statistics polling rate for the server monitor, in seconds.
-   * Value type: Integer<br>
-   * Default value: 5
-   */
-  public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE =
-          Configuration.integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+	/**
+	 * Specifies the statistics polling rate for the server monitor, in seconds.
+	 * Value type: Integer<br>
+	 * Default value: 5
+	 */
+	public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE =
+					Configuration.integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
 
-  private final Event<String> hostAddedEvent = Event.event();
+	private final Event<String> hostAddedEvent = Event.event();
 
-  private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
+	private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
 
-  /**
-   * Instantiates a new {@link EntityServerMonitor}
-   * @param hostNames a comma separated list of hostnames to monitor
-   * @param registryPort the registry port
-   * @param adminUser the admin user
-   * @throws RemoteException in case of an exception
-   */
-  public EntityServerMonitor(String hostNames, int registryPort, User adminUser) throws RemoteException {
-    if (nullOrEmpty(hostNames)) {
-      throw new IllegalArgumentException("No server host names specified for server monitor");
-    }
-    requireNonNull(adminUser);
-    for (String hostname : hostNames.split(",")) {
-      addHost(hostname, registryPort, adminUser);
-    }
-  }
+	/**
+	 * Instantiates a new {@link EntityServerMonitor}
+	 * @param hostNames a comma separated list of hostnames to monitor
+	 * @param registryPort the registry port
+	 * @param adminUser the admin user
+	 * @throws RemoteException in case of an exception
+	 */
+	public EntityServerMonitor(String hostNames, int registryPort, User adminUser) throws RemoteException {
+		if (nullOrEmpty(hostNames)) {
+			throw new IllegalArgumentException("No server host names specified for server monitor");
+		}
+		requireNonNull(adminUser);
+		for (String hostname : hostNames.split(",")) {
+			addHost(hostname, registryPort, adminUser);
+		}
+	}
 
-  /**
-   * @return the host monitors for this server
-   */
-  public Collection<HostMonitor> hostMonitors() {
-    return hostMonitors;
-  }
+	/**
+	 * @return the host monitors for this server
+	 */
+	public Collection<HostMonitor> hostMonitors() {
+		return hostMonitors;
+	}
 
-  /**
-   * Refreshes the servers
-   * @throws RemoteException in case of a communication error
-   */
-  public void refresh() throws RemoteException {
-    for (HostMonitor hostMonitor : hostMonitors) {
-      hostMonitor.refresh();
-    }
-  }
+	/**
+	 * Refreshes the servers
+	 * @throws RemoteException in case of a communication error
+	 */
+	public void refresh() throws RemoteException {
+		for (HostMonitor hostMonitor : hostMonitors) {
+			hostMonitor.refresh();
+		}
+	}
 
-  public void setUpdateInterval(Integer interval) {
-    for (HostMonitor hostMonitor : hostMonitors) {
-      hostMonitor.serverMonitors().forEach(serverMonitor -> {
-        serverMonitor.updateInterval().set(interval);
-        serverMonitor.databaseMonitor().updateInterval().set(interval);
-        serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
-                .forEach(poolMonitor -> poolMonitor.updateInterval().set(interval));
-        serverMonitor.clientMonitor().updateInterval().set(interval);
-      });
-    }
-  }
+	public void setUpdateInterval(Integer interval) {
+		for (HostMonitor hostMonitor : hostMonitors) {
+			hostMonitor.serverMonitors().forEach(serverMonitor -> {
+				serverMonitor.updateInterval().set(interval);
+				serverMonitor.databaseMonitor().updateInterval().set(interval);
+				serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
+								.forEach(poolMonitor -> poolMonitor.updateInterval().set(interval));
+				serverMonitor.clientMonitor().updateInterval().set(interval);
+			});
+		}
+	}
 
-  public void clearCharts() {
-    for (HostMonitor hostMonitor : hostMonitors) {
-      hostMonitor.serverMonitors().forEach(serverMonitor -> {
-        serverMonitor.clearStatistics();
-        serverMonitor.databaseMonitor().clearStatistics();
-        serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
-                .forEach(ConnectionPoolMonitor::clearStatistics);
-      });
-    }
-  }
+	public void clearCharts() {
+		for (HostMonitor hostMonitor : hostMonitors) {
+			hostMonitor.serverMonitors().forEach(serverMonitor -> {
+				serverMonitor.clearStatistics();
+				serverMonitor.databaseMonitor().clearStatistics();
+				serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
+								.forEach(ConnectionPoolMonitor::clearStatistics);
+			});
+		}
+	}
 
-  private void addHost(String hostname, int registryPort, User adminUser) throws RemoteException {
-    hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser, SERVER_MONITOR_UPDATE_RATE.get()));
-    hostAddedEvent.accept(hostname);
-  }
+	private void addHost(String hostname, int registryPort, User adminUser) throws RemoteException {
+		hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser, SERVER_MONITOR_UPDATE_RATE.get()));
+		hostAddedEvent.accept(hostname);
+	}
 }

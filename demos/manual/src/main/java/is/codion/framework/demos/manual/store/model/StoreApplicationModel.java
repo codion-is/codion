@@ -24,18 +24,18 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 // tag::storeAppModel[]
 public class StoreApplicationModel extends SwingEntityApplicationModel {
 
-  public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
+	public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
+		super(connectionProvider);
 
-    CustomerModel customerModel = new CustomerModel(connectionProvider);
-    CustomerAddressModel customerAddressModel = new CustomerAddressModel(connectionProvider);
+		CustomerModel customerModel = new CustomerModel(connectionProvider);
+		CustomerAddressModel customerAddressModel = new CustomerAddressModel(connectionProvider);
 
-    customerModel.addDetailModel(customerAddressModel);
+		customerModel.addDetailModel(customerAddressModel);
 
-    //populate the model with rows from the database
-    customerModel.tableModel().refresh();
+		//populate the model with rows from the database
+		customerModel.tableModel().refresh();
 
-    addEntityModel(customerModel);
-  }
+		addEntityModel(customerModel);
+	}
 }
 // end::storeAppModel[]

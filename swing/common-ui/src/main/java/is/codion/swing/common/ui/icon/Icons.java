@@ -35,61 +35,61 @@ import java.awt.Color;
  */
 public interface Icons {
 
-  int DEFAULT_ICON_SIZE = 16;
+	int DEFAULT_ICON_SIZE = 16;
 
-  /**
-   * The icon size, note that this will affect the size of buttons<br>
-   * Value type: Integer<br>
-   * Default value: 16
-   */
-  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("is.codion.swing.common.ui.icon.Icons.iconSize", DEFAULT_ICON_SIZE);
+	/**
+	 * The icon size, note that this will affect the size of buttons<br>
+	 * Value type: Integer<br>
+	 * Default value: 16
+	 */
+	PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("is.codion.swing.common.ui.icon.Icons.iconSize", DEFAULT_ICON_SIZE);
 
-  /**
-   * The icon color<br>
-   * Value type: Color<br>
-   * Default value: UIManager.getColor("Button.foreground")
-   */
-  PropertyValue<Color> ICON_COLOR = Configuration.value("is.codion.swing.common.ui.icon.Icons.iconColor", Color::decode, UIManager.getColor("Button.foreground"));
+	/**
+	 * The icon color<br>
+	 * Value type: Color<br>
+	 * Default value: UIManager.getColor("Button.foreground")
+	 */
+	PropertyValue<Color> ICON_COLOR = Configuration.value("is.codion.swing.common.ui.icon.Icons.iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 
-  /**
-   * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.
-   * @param ikons the ikons to add
-   * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
-   */
-  void add(Ikon... ikons);
+	/**
+	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.
+	 * @param ikons the ikons to add
+	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
+	 */
+	void add(Ikon... ikons);
 
-  /**
-   * Retrieves the ImageIcon associated with the given ikon from this FrameworkIcons instance.
-   * @param ikon the ikon
-   * @return the ImageIcon associated with the given ikon
-   * @throws IllegalArgumentException in case no icon has been associated with the given ikon
-   * @see #add(Ikon...)
-   */
-  ImageIcon icon(Ikon ikon);
+	/**
+	 * Retrieves the ImageIcon associated with the given ikon from this FrameworkIcons instance.
+	 * @param ikon the ikon
+	 * @return the ImageIcon associated with the given ikon
+	 * @throws IllegalArgumentException in case no icon has been associated with the given ikon
+	 * @see #add(Ikon...)
+	 */
+	ImageIcon icon(Ikon ikon);
 
-  /**
-   * Sets the icon color
-   * @param color the color
-   */
-  void iconColor(Color color);
+	/**
+	 * Sets the icon color
+	 * @param color the color
+	 */
+	void iconColor(Color color);
 
-  /**
-   * Adds a listener to the {@link #ICON_COLOR} property value,
-   * dynamically changing the color of the icons in this instance.
-   * @return this icons instance
-   */
-  Icons enableIconColorListener();
+	/**
+	 * Adds a listener to the {@link #ICON_COLOR} property value,
+	 * dynamically changing the color of the icons in this instance.
+	 * @return this icons instance
+	 */
+	Icons enableIconColorListener();
 
-  /**
-   * Disables the dynamic color change listener
-   * @return this icons instance
-   */
-  Icons disableIconColorListener();
+	/**
+	 * Disables the dynamic color change listener
+	 * @return this icons instance
+	 */
+	Icons disableIconColorListener();
 
-  /**
-   * @return a new {@link Icons} instance
-   */
-  static Icons icons() {
-    return new DefaultIcons();
-  }
+	/**
+	 * @return a new {@link Icons} instance
+	 */
+	static Icons icons() {
+		return new DefaultIcons();
+	}
 }

@@ -25,13 +25,13 @@ import is.codion.framework.domain.entity.attribute.Attribute;
  */
 public final class ItemValidationException extends ValidationException {
 
-  /**
-   * Instantiates a new ItemValidationException.
-   * @param attribute the attribute of the value being validated
-   * @param value the value
-   * @param message the exception message
-   */
-  public ItemValidationException(Attribute<?> attribute, Object value, String message) {
-    super(attribute, value, message);
-  }
+	/**
+	 * Instantiates a new ItemValidationException.
+	 * @param attribute the attribute of the value being validated
+	 * @param value the value
+	 * @param message the exception message
+	 */
+	public ItemValidationException(Attribute<?> attribute, Object value, String message) {
+		super(attribute, value, message);
+	}
 }

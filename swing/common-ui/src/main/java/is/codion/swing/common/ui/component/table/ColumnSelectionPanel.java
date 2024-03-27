@@ -51,198 +51,198 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class ColumnSelectionPanel<C> extends JPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSelectionPanel.class.getName());
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSelectionPanel.class.getName());
 
-  private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
-  private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
+	private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
+	private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
 
-  private final FilteredTableColumnModel<C> columnModel;
-  private final Map<FilteredTableColumn<C>, State> visibleStates;
-  private final List<JCheckBox> checkBoxes;
+	private final FilteredTableColumnModel<C> columnModel;
+	private final Map<FilteredTableColumn<C>, State> visibleStates;
+	private final List<JCheckBox> checkBoxes;
 
-  ColumnSelectionPanel(FilteredTableColumnModel<C> columnModel) {
-    super(new BorderLayout());
-    this.columnModel = columnModel;
-    this.visibleStates = createVisibleStates();
-    this.checkBoxes = visibleStates.entrySet().stream()
-            .map(entry -> Components.checkBox(entry.getValue())
-                    .text(String.valueOf(entry.getKey().getHeaderValue()))
-                    .toolTipText(entry.getKey().toolTipText())
-                    .build())
-            .collect(Collectors.toList());
-    JScrollPane checkBoxPanel = createCheckBoxPanel();
-    add(createNorthPanel(checkBoxPanel.getBorder().getBorderInsets(checkBoxPanel)), BorderLayout.NORTH);
-    add(checkBoxPanel, BorderLayout.CENTER);
-  }
+	ColumnSelectionPanel(FilteredTableColumnModel<C> columnModel) {
+		super(new BorderLayout());
+		this.columnModel = columnModel;
+		this.visibleStates = createVisibleStates();
+		this.checkBoxes = visibleStates.entrySet().stream()
+						.map(entry -> Components.checkBox(entry.getValue())
+										.text(String.valueOf(entry.getKey().getHeaderValue()))
+										.toolTipText(entry.getKey().toolTipText())
+										.build())
+						.collect(Collectors.toList());
+		JScrollPane checkBoxPanel = createCheckBoxPanel();
+		add(createNorthPanel(checkBoxPanel.getBorder().getBorderInsets(checkBoxPanel)), BorderLayout.NORTH);
+		add(checkBoxPanel, BorderLayout.CENTER);
+	}
 
-  void requestColumnPanelFocus() {
-    if (!checkBoxes.isEmpty()) {
-      checkBoxes.get(0).requestFocusInWindow();
-    }
-  }
+	void requestColumnPanelFocus() {
+		if (!checkBoxes.isEmpty()) {
+			checkBoxes.get(0).requestFocusInWindow();
+		}
+	}
 
-  void applyChanges() {
-    columnModel.visible().forEach(tableColumn -> {
-      if (!visibleStates.get(tableColumn).get()) {
-        columnModel.visible(tableColumn.getIdentifier()).set(false);
-      }
-    });
-    new ArrayList<>(columnModel.hidden()).forEach(tableColumn -> {
-      if (visibleStates.get(tableColumn).get()) {
-        columnModel.visible(tableColumn.getIdentifier()).set(true);
-      }
-    });
-  }
+	void applyChanges() {
+		columnModel.visible().forEach(tableColumn -> {
+			if (!visibleStates.get(tableColumn).get()) {
+				columnModel.visible(tableColumn.getIdentifier()).set(false);
+			}
+		});
+		new ArrayList<>(columnModel.hidden()).forEach(tableColumn -> {
+			if (visibleStates.get(tableColumn).get()) {
+				columnModel.visible(tableColumn.getIdentifier()).set(true);
+			}
+		});
+	}
 
-  private Map<FilteredTableColumn<C>, State> createVisibleStates() {
-    Map<FilteredTableColumn<C>, State> states = new LinkedHashMap<>();
-    columnModel.columns().stream()
-            .sorted(new FilteredTable.ColumnComparator())
-            .forEach(column -> states.put(column, State.state(columnModel.visible(column.getIdentifier()).get())));
+	private Map<FilteredTableColumn<C>, State> createVisibleStates() {
+		Map<FilteredTableColumn<C>, State> states = new LinkedHashMap<>();
+		columnModel.columns().stream()
+						.sorted(new FilteredTable.ColumnComparator())
+						.forEach(column -> states.put(column, State.state(columnModel.visible(column.getIdentifier()).get())));
 
-    return states;
-  }
+		return states;
+	}
 
-  private JPanel createNorthPanel(Insets insets) {
-    JCheckBox selectAllBox = Components.checkBox()
-            .linkedValue(State.and(visibleStates.values()))
-            .text(MESSAGES.getString("select_all"))
-            .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
-            .build();
-    JCheckBox selectNoneBox = Components.checkBox()
-            .linkedValue(State.and(visibleStates.values().stream()
-                    .map(StateObserver::not)
-                    .collect(Collectors.toList())))
-            .text(MESSAGES.getString("select_none"))
-            .mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))
-            .build();
-    selectAllBox.addActionListener(new SelectAll(selectAllBox, selectNoneBox));
-    selectNoneBox.addActionListener(new SelectNone(selectAllBox, selectNoneBox));
+	private JPanel createNorthPanel(Insets insets) {
+		JCheckBox selectAllBox = Components.checkBox()
+						.linkedValue(State.and(visibleStates.values()))
+						.text(MESSAGES.getString("select_all"))
+						.mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
+						.build();
+		JCheckBox selectNoneBox = Components.checkBox()
+						.linkedValue(State.and(visibleStates.values().stream()
+										.map(StateObserver::not)
+										.collect(Collectors.toList())))
+						.text(MESSAGES.getString("select_none"))
+						.mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))
+						.build();
+		selectAllBox.addActionListener(new SelectAll(selectAllBox, selectNoneBox));
+		selectNoneBox.addActionListener(new SelectNone(selectAllBox, selectNoneBox));
 
-    List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllBox, selectNoneBox);
-    KeyEvents.builder(VK_UP)
-            .condition(WHEN_FOCUSED)
-            .action(control(new TransferFocusCommand(selectCheckBoxes, false)))
-            .enable(selectAllBox, selectNoneBox);
-    KeyEvents.builder(VK_DOWN)
-            .condition(WHEN_FOCUSED)
-            .action(control(new TransferFocusCommand(selectCheckBoxes, true)))
-            .enable(selectAllBox, selectNoneBox);
+		List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllBox, selectNoneBox);
+		KeyEvents.builder(VK_UP)
+						.condition(WHEN_FOCUSED)
+						.action(control(new TransferFocusCommand(selectCheckBoxes, false)))
+						.enable(selectAllBox, selectNoneBox);
+		KeyEvents.builder(VK_DOWN)
+						.condition(WHEN_FOCUSED)
+						.action(control(new TransferFocusCommand(selectCheckBoxes, true)))
+						.enable(selectAllBox, selectNoneBox);
 
-    return Components.gridLayoutPanel(2, 1)
-            .addAll(selectAllBox, selectNoneBox)
-            .border(createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right))
-            .build();
-  }
+		return Components.gridLayoutPanel(2, 1)
+						.addAll(selectAllBox, selectNoneBox)
+						.border(createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right))
+						.build();
+	}
 
-  private void selectAll() {
-    visibleStates.values().forEach(state -> state.set(true));
-  }
+	private void selectAll() {
+		visibleStates.values().forEach(state -> state.set(true));
+	}
 
-  private void selectNone() {
-    visibleStates.values().forEach(state -> state.set(false));
-  }
+	private void selectNone() {
+		visibleStates.values().forEach(state -> state.set(false));
+	}
 
-  private JScrollPane createCheckBoxPanel() {
-    JPanel northPanel = Components.gridLayoutPanel(0, 1)
-            .addAll(checkBoxes)
-            .build();
-    KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)
-            .condition(WHEN_FOCUSED)
-            .action(control(new TransferFocusCommand(checkBoxes, false)));
-    KeyEvents.Builder downEventBuilder = KeyEvents.builder(VK_DOWN)
-            .condition(WHEN_FOCUSED)
-            .action(control(new TransferFocusCommand(checkBoxes, true)));
-    checkBoxes.forEach(checkBox -> {
-      upEventBuilder.enable(checkBox);
-      downEventBuilder.enable(checkBox);
-      checkBox.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-          northPanel.scrollRectToVisible(checkBox.getBounds());
-        }
-      });
-    });
+	private JScrollPane createCheckBoxPanel() {
+		JPanel northPanel = Components.gridLayoutPanel(0, 1)
+						.addAll(checkBoxes)
+						.build();
+		KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)
+						.condition(WHEN_FOCUSED)
+						.action(control(new TransferFocusCommand(checkBoxes, false)));
+		KeyEvents.Builder downEventBuilder = KeyEvents.builder(VK_DOWN)
+						.condition(WHEN_FOCUSED)
+						.action(control(new TransferFocusCommand(checkBoxes, true)));
+		checkBoxes.forEach(checkBox -> {
+			upEventBuilder.enable(checkBox);
+			downEventBuilder.enable(checkBox);
+			checkBox.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusGained(FocusEvent e) {
+					northPanel.scrollRectToVisible(checkBox.getBounds());
+				}
+			});
+		});
 
-    return Components.borderLayoutPanel()
-            .northComponent(northPanel)
-            .scrollPane()
-            .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
-            .verticalUnitIncrement(COLUMN_SCROLL_BAR_UNIT_INCREMENT)
-            .build();
-  }
+		return Components.borderLayoutPanel()
+						.northComponent(northPanel)
+						.scrollPane()
+						.preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
+						.verticalUnitIncrement(COLUMN_SCROLL_BAR_UNIT_INCREMENT)
+						.build();
+	}
 
-  private final class SelectAll implements ActionListener {
+	private final class SelectAll implements ActionListener {
 
-    private final JCheckBox selectAllBox;
-    private final JCheckBox selectNoneBox;
+		private final JCheckBox selectAllBox;
+		private final JCheckBox selectNoneBox;
 
-    private SelectAll(JCheckBox selectAllBox, JCheckBox selectNoneBox) {
-      this.selectAllBox = selectAllBox;
-      this.selectNoneBox = selectNoneBox;
-    }
+		private SelectAll(JCheckBox selectAllBox, JCheckBox selectNoneBox) {
+			this.selectAllBox = selectAllBox;
+			this.selectNoneBox = selectNoneBox;
+		}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (selectAllBox.isSelected()) {
-        selectAll();
-      }
-      else {
-        selectNone();
-        selectNoneBox.setSelected(true);
-      }
-    }
-  }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (selectAllBox.isSelected()) {
+				selectAll();
+			}
+			else {
+				selectNone();
+				selectNoneBox.setSelected(true);
+			}
+		}
+	}
 
-  private final class SelectNone implements ActionListener {
+	private final class SelectNone implements ActionListener {
 
-    private final JCheckBox selectAllBox;
-    private final JCheckBox selectNoneBox;
+		private final JCheckBox selectAllBox;
+		private final JCheckBox selectNoneBox;
 
-    private SelectNone(JCheckBox selectAllBox, JCheckBox selectNoneBox) {
-      this.selectAllBox = selectAllBox;
-      this.selectNoneBox = selectNoneBox;
-    }
+		private SelectNone(JCheckBox selectAllBox, JCheckBox selectNoneBox) {
+			this.selectAllBox = selectAllBox;
+			this.selectNoneBox = selectNoneBox;
+		}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (selectNoneBox.isSelected()) {
-        selectNone();
-      }
-      else {
-        selectAll();
-        selectAllBox.setSelected(true);
-      }
-    }
-  }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (selectNoneBox.isSelected()) {
+				selectNone();
+			}
+			else {
+				selectAll();
+				selectAllBox.setSelected(true);
+			}
+		}
+	}
 
-  private static final class TransferFocusCommand implements Control.Command {
+	private static final class TransferFocusCommand implements Control.Command {
 
-    private final List<JCheckBox> checkBoxes;
-    private final boolean next;
+		private final List<JCheckBox> checkBoxes;
+		private final boolean next;
 
-    private TransferFocusCommand(List<JCheckBox> checkBoxes, boolean next) {
-      this.next = next;
-      this.checkBoxes = checkBoxes;
-    }
+		private TransferFocusCommand(List<JCheckBox> checkBoxes, boolean next) {
+			this.next = next;
+			this.checkBoxes = checkBoxes;
+		}
 
-    @Override
-    public void execute() {
-      checkBoxes.stream()
-              .filter(Component::isFocusOwner)
-              .findAny()
-              .ifPresent(checkBox -> checkBoxes.get(next ?
-                              nextIndex(checkBoxes.indexOf(checkBox)) :
-                              previousIndex(checkBoxes.indexOf(checkBox)))
-                      .requestFocusInWindow());
-    }
+		@Override
+		public void execute() {
+			checkBoxes.stream()
+							.filter(Component::isFocusOwner)
+							.findAny()
+							.ifPresent(checkBox -> checkBoxes.get(next ?
+															nextIndex(checkBoxes.indexOf(checkBox)) :
+															previousIndex(checkBoxes.indexOf(checkBox)))
+											.requestFocusInWindow());
+		}
 
-    private int nextIndex(int currentIndex) {
-      return currentIndex == checkBoxes.size() - 1 ? 0 : currentIndex + 1;
-    }
+		private int nextIndex(int currentIndex) {
+			return currentIndex == checkBoxes.size() - 1 ? 0 : currentIndex + 1;
+		}
 
-    private int previousIndex(int currentIndex) {
-      return currentIndex == 0 ? checkBoxes.size() - 1 : currentIndex - 1;
-    }
-  }
+		private int previousIndex(int currentIndex) {
+			return currentIndex == 0 ? checkBoxes.size() - 1 : currentIndex - 1;
+		}
+	}
 }

@@ -33,18 +33,18 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint, Map<String, Object>> implements JRReport {
 
-  protected AbstractJRReport(String reportPath, boolean cacheReport) {
-    super(reportPath, cacheReport);
-  }
+	protected AbstractJRReport(String reportPath, boolean cacheReport) {
+		super(reportPath, cacheReport);
+	}
 
-  @Override
-  public final JasperPrint fill(Connection connection, Map<String, Object> parameters) throws ReportException {
-    requireNonNull(connection, "connection");
-    try {
-      return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);
-    }
-    catch (Exception e) {
-      throw new ReportException(e);
-    }
-  }
+	@Override
+	public final JasperPrint fill(Connection connection, Map<String, Object> parameters) throws ReportException {
+		requireNonNull(connection, "connection");
+		try {
+			return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);
+		}
+		catch (Exception e) {
+			throw new ReportException(e);
+		}
+	}
 }

@@ -26,10 +26,10 @@
  * {@link is.codion.framework.model.EntityApplicationModel}<br>
  */
 module is.codion.framework.model {
-  requires org.slf4j;
-  requires org.json;
-  requires transitive is.codion.common.model;
-  requires transitive is.codion.framework.db.core;
+	requires org.slf4j;
+	requires org.json;
+	requires transitive is.codion.common.model;
+	requires transitive is.codion.framework.db.core;
 
-  exports is.codion.framework.model;
+	exports is.codion.framework.model;
 }

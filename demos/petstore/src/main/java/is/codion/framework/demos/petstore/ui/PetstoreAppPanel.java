@@ -35,82 +35,82 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
-  public PetstoreAppPanel(PetstoreAppModel applicationModel) {
-    super(applicationModel);
-  }
+	public PetstoreAppPanel(PetstoreAppModel applicationModel) {
+		super(applicationModel);
+	}
 
-  @Override
-  protected List<EntityPanel> createEntityPanels() {
-    /* CATEGORY
-     *   PRODUCT
-     *     ITEM
-     *       ITEMTAG
-     */
-    SwingEntityModel categoryModel = applicationModel().entityModel(Category.TYPE);
-    SwingEntityModel productModel = categoryModel.detailModel(Product.TYPE);
-    SwingEntityModel itemModel = productModel.detailModel(Item.TYPE);
-    SwingEntityModel tagItemModel = itemModel.detailModel(TagItem.TYPE);
+	@Override
+	protected List<EntityPanel> createEntityPanels() {
+		/* CATEGORY
+		 *   PRODUCT
+		 *     ITEM
+		 *       ITEMTAG
+		 */
+		SwingEntityModel categoryModel = applicationModel().entityModel(Category.TYPE);
+		SwingEntityModel productModel = categoryModel.detailModel(Product.TYPE);
+		SwingEntityModel itemModel = productModel.detailModel(Item.TYPE);
+		SwingEntityModel tagItemModel = itemModel.detailModel(TagItem.TYPE);
 
-    EntityPanel categoryPanel = new EntityPanel(categoryModel,
-            new CategoryEditPanel(categoryModel.editModel()),
-            config -> config.detailLayout(TabbedDetailLayout.builder()
-                    .splitPaneResizeWeight(0.3)
-                    .build()));
-    EntityPanel productPanel = new EntityPanel(productModel,
-            new ProductEditPanel(productModel.editModel()));
-    EntityPanel itemPanel = new EntityPanel(itemModel,
-            new ItemEditPanel(itemModel.editModel()),
-            config -> config.detailLayout(TabbedDetailLayout.builder()
-                    .panelState(PanelState.HIDDEN)
-                    .build()));
-    EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
-            new TagItemEditPanel(tagItemModel.editModel()));
+		EntityPanel categoryPanel = new EntityPanel(categoryModel,
+						new CategoryEditPanel(categoryModel.editModel()),
+						config -> config.detailLayout(TabbedDetailLayout.builder()
+										.splitPaneResizeWeight(0.3)
+										.build()));
+		EntityPanel productPanel = new EntityPanel(productModel,
+						new ProductEditPanel(productModel.editModel()));
+		EntityPanel itemPanel = new EntityPanel(itemModel,
+						new ItemEditPanel(itemModel.editModel()),
+						config -> config.detailLayout(TabbedDetailLayout.builder()
+										.panelState(PanelState.HIDDEN)
+										.build()));
+		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
+						new TagItemEditPanel(tagItemModel.editModel()));
 
-    categoryPanel.addDetailPanel(productPanel);
-    productPanel.addDetailPanel(itemPanel);
-    itemPanel.addDetailPanels(tagItemPanel);
+		categoryPanel.addDetailPanel(productPanel);
+		productPanel.addDetailPanel(itemPanel);
+		itemPanel.addDetailPanels(tagItemPanel);
 
-    return Collections.singletonList(categoryPanel);
-  }
+		return Collections.singletonList(categoryPanel);
+	}
 
-  @Override
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
-    SwingEntityModel.Builder tagModelBuilder =
-            SwingEntityModel.builder(Tag.TYPE)
-                    .detailModel(SwingEntityModel.builder(TagItem.TYPE));
-    SwingEntityModel.Builder sellerContactInfoModelBuilder =
-            SwingEntityModel.builder(SellerContactInfo.TYPE)
-                    .detailModel(SwingEntityModel.builder(Item.TYPE)
-                            .detailModel(SwingEntityModel.builder(TagItem.TYPE)));
+	@Override
+	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+		SwingEntityModel.Builder tagModelBuilder =
+						SwingEntityModel.builder(Tag.TYPE)
+										.detailModel(SwingEntityModel.builder(TagItem.TYPE));
+		SwingEntityModel.Builder sellerContactInfoModelBuilder =
+						SwingEntityModel.builder(SellerContactInfo.TYPE)
+										.detailModel(SwingEntityModel.builder(Item.TYPE)
+														.detailModel(SwingEntityModel.builder(TagItem.TYPE)));
 
-    return Arrays.asList(
-            EntityPanel.builder(Address.TYPE)
-                    .editPanel(AddressEditPanel.class),
-            EntityPanel.builder(sellerContactInfoModelBuilder)
-                    .editPanel(ContactInfoEditPanel.class)
-                    .detailPanel(EntityPanel.builder(Item.TYPE)
-                            .editPanel(ItemEditPanel.class)
-                            .detailPanel(EntityPanel.builder(TagItem.TYPE)
-                                    .editPanel(TagItemEditPanel.class))
-                            .detailLayout(TabbedDetailLayout.builder()
-                                    .panelState(PanelState.HIDDEN)
-                                    .build())),
-            EntityPanel.builder(tagModelBuilder)
-                    .editPanel(TagEditPanel.class)
-                    .detailPanel(EntityPanel.builder(TagItem.TYPE)
-                            .editPanel(TagItemEditPanel.class))
-                    .detailLayout(TabbedDetailLayout.builder()
-                            .panelState(PanelState.HIDDEN)
-                            .build()));
-  }
+		return Arrays.asList(
+						EntityPanel.builder(Address.TYPE)
+										.editPanel(AddressEditPanel.class),
+						EntityPanel.builder(sellerContactInfoModelBuilder)
+										.editPanel(ContactInfoEditPanel.class)
+										.detailPanel(EntityPanel.builder(Item.TYPE)
+														.editPanel(ItemEditPanel.class)
+														.detailPanel(EntityPanel.builder(TagItem.TYPE)
+																		.editPanel(TagItemEditPanel.class))
+														.detailLayout(TabbedDetailLayout.builder()
+																		.panelState(PanelState.HIDDEN)
+																		.build())),
+						EntityPanel.builder(tagModelBuilder)
+										.editPanel(TagEditPanel.class)
+										.detailPanel(EntityPanel.builder(TagItem.TYPE)
+														.editPanel(TagItemEditPanel.class))
+										.detailLayout(TabbedDetailLayout.builder()
+														.panelState(PanelState.HIDDEN)
+														.build()));
+	}
 
-  public static void main(String[] args) {
-    Locale.setDefault(new Locale("en"));
-    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-    EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
-            .applicationName("The Pet Store")
-            .domainType(DOMAIN)
-            .defaultLoginUser(User.parse("scott:tiger"))
-            .start();
-  }
+	public static void main(String[] args) {
+		Locale.setDefault(new Locale("en"));
+		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+		EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
+						.applicationName("The Pet Store")
+						.domainType(DOMAIN)
+						.defaultLoginUser(User.parse("scott:tiger"))
+						.start();
+	}
 }

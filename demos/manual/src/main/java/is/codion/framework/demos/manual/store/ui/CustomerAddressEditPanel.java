@@ -28,25 +28,25 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 // tag::customerAddressEditPanel[]
 public class CustomerAddressEditPanel extends EntityEditPanel {
 
-  public CustomerAddressEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public CustomerAddressEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(CustomerAddress.ADDRESS_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(CustomerAddress.ADDRESS_FK);
 
-    createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
-            .preferredWidth(280)
-            .add(true);
+		createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
+						.preferredWidth(280)
+						.add(true);
 
-    setLayout(borderLayout());
+		setLayout(borderLayout());
 
-    addInputPanel(CustomerAddress.ADDRESS_FK);
-  }
+		addInputPanel(CustomerAddress.ADDRESS_FK);
+	}
 
-  private AddressEditPanel createAddressEditPanel() {
-    return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
-  }
+	private AddressEditPanel createAddressEditPanel() {
+		return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
+	}
 }
 // end::customerAddressEditPanel[]

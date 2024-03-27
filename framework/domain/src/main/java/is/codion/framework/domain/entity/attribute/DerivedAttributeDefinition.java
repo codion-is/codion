@@ -26,13 +26,13 @@ import java.util.List;
  */
 public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 
-  /**
-   * @return the attributes this attribute derives from.
-   */
-  List<Attribute<?>> sourceAttributes();
+	/**
+	 * @return the attributes this attribute derives from.
+	 */
+	List<Attribute<?>> sourceAttributes();
 
-  /**
-   * @return the value provider, providing the derived value
-   */
-  DerivedAttribute.Provider<T> valueProvider();
+	/**
+	 * @return the value provider, providing the derived value
+	 */
+	DerivedAttribute.Provider<T> valueProvider();
 }

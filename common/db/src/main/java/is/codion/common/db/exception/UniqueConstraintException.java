@@ -25,12 +25,12 @@ import java.sql.SQLException;
  */
 public final class UniqueConstraintException extends DatabaseException {
 
-  /**
-   * Instantiates a new {@link UniqueConstraintException}
-   * @param cause the underlying cause
-   * @param message the error message
-   */
-  public UniqueConstraintException(SQLException cause, String message) {
-    super(cause, message);
-  }
+	/**
+	 * Instantiates a new {@link UniqueConstraintException}
+	 * @param cause the underlying cause
+	 * @param message the error message
+	 */
+	public UniqueConstraintException(SQLException cause, String message) {
+		super(cause, message);
+	}
 }

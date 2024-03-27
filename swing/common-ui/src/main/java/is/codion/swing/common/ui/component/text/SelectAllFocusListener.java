@@ -24,19 +24,19 @@ import java.awt.event.FocusEvent;
 
 final class SelectAllFocusListener extends FocusAdapter {
 
-  private final JTextComponent textComponent;
+	private final JTextComponent textComponent;
 
-  SelectAllFocusListener(JTextComponent textComponent) {
-    this.textComponent = textComponent;
-  }
+	SelectAllFocusListener(JTextComponent textComponent) {
+		this.textComponent = textComponent;
+	}
 
-  @Override
-  public void focusGained(FocusEvent e) {
-    textComponent.selectAll();
-  }
+	@Override
+	public void focusGained(FocusEvent e) {
+		textComponent.selectAll();
+	}
 
-  @Override
-  public void focusLost(FocusEvent e) {
-    textComponent.select(0, 0);
-  }
+	@Override
+	public void focusLost(FocusEvent e) {
+		textComponent.select(0, 0);
+	}
 }

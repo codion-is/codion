@@ -27,14 +27,14 @@ import java.awt.Dimension;
 
 public final class InvoiceLineTablePanel extends EntityTablePanel {
 
-  public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, config -> config
-            .includeSouthPanel(false)
-            .includeConditionPanel(false)
-            .editable(attributes -> attributes.remove(InvoiceLine.INVOICE_FK))
-            .editComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory()));
-    table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    table().getModel().columnModel().visible(InvoiceLine.INVOICE_FK).set(false);
-    setPreferredSize(new Dimension(360, 40));
-  }
+	public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, config -> config
+						.includeSouthPanel(false)
+						.includeConditionPanel(false)
+						.editable(attributes -> attributes.remove(InvoiceLine.INVOICE_FK))
+						.editComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory()));
+		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		table().getModel().columnModel().visible(InvoiceLine.INVOICE_FK).set(false);
+		setPreferredSize(new Dimension(360, 40));
+	}
 }

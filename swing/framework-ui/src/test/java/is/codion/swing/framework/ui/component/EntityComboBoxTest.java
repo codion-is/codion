@@ -40,51 +40,51 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class EntityComboBoxTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void inputProvider() throws Exception {
-    EntityComboBoxModel model = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-    model.refresh();
-    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
-    model.setSelectedItem(operations);
-    ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
-            .buildValue();
+	@Test
+	void inputProvider() throws Exception {
+		EntityComboBoxModel model = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+		model.refresh();
+		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
+		model.setSelectedItem(operations);
+		ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
+						.buildValue();
 
-    assertNotNull(value.get());
+		assertNotNull(value.get());
 
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
-            Department.NAME.equalTo("SALES"));
+		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
+						Department.NAME.equalTo("SALES"));
 
-    model.setSelectedItem(sales);
-    assertEquals(sales, value.get());
-    model.setSelectedItem(null);
-    assertNull(value.get());
-  }
+		model.setSelectedItem(sales);
+		assertEquals(sales, value.get());
+		model.setSelectedItem(null);
+		assertNull(value.get());
+	}
 
-  @Test
-  void integerSelectorField() {
-    EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
-    comboBoxModel.refresh();
-    Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
-    comboBoxModel.select(jonesKey);
-    EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    NumberField<Integer> empIdValue = comboBox.integerSelectorField(Employee.ID).build();
-    assertEquals(3, empIdValue.getNumber());
-    Entity.Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
-    comboBoxModel.select(blakeKey);
-    assertEquals(5, empIdValue.getNumber());
-    comboBoxModel.setSelectedItem(null);
-    assertNull(empIdValue.getNumber());
-    empIdValue.setNumber(10);
-    assertEquals("ADAMS", comboBoxModel.selectedValue().get(Employee.NAME));
-    empIdValue.setNumber(null);
-    assertNull(comboBoxModel.selectedValue());
-  }
+	@Test
+	void integerSelectorField() {
+		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
+		comboBoxModel.refresh();
+		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
+		comboBoxModel.select(jonesKey);
+		EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+		NumberField<Integer> empIdValue = comboBox.integerSelectorField(Employee.ID).build();
+		assertEquals(3, empIdValue.getNumber());
+		Entity.Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
+		comboBoxModel.select(blakeKey);
+		assertEquals(5, empIdValue.getNumber());
+		comboBoxModel.setSelectedItem(null);
+		assertNull(empIdValue.getNumber());
+		empIdValue.setNumber(10);
+		assertEquals("ADAMS", comboBoxModel.selectedValue().get(Employee.NAME));
+		empIdValue.setNumber(null);
+		assertNull(comboBoxModel.selectedValue());
+	}
 }

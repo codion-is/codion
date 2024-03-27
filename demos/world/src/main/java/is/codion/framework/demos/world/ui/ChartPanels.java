@@ -36,52 +36,52 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 
 final class ChartPanels {
 
-  private ChartPanels() {}
+	private ChartPanels() {}
 
-  static ChartPanel createPieChartPanel(JComponent parent, PieDataset<String> dataset, String title) {
-    JFreeChart chart = createPieChart(title, dataset);
-    chart.removeLegend();
-    linkColors(parent, chart);
+	static ChartPanel createPieChartPanel(JComponent parent, PieDataset<String> dataset, String title) {
+		JFreeChart chart = createPieChart(title, dataset);
+		chart.removeLegend();
+		linkColors(parent, chart);
 
-    return new ChartPanel(chart);
-  }
+		return new ChartPanel(chart);
+	}
 
-  static ChartPanel createBarChartPanel(JComponent parent, CategoryDataset dataset, String title,
-                                        String categoryLabel, String valueLabel) {
-    JFreeChart chart = createBarChart(title, categoryLabel, valueLabel, dataset);
-    linkColors(parent, chart);
+	static ChartPanel createBarChartPanel(JComponent parent, CategoryDataset dataset, String title,
+																				String categoryLabel, String valueLabel) {
+		JFreeChart chart = createBarChart(title, categoryLabel, valueLabel, dataset);
+		linkColors(parent, chart);
 
-    return new ChartPanel(chart);
-  }
+		return new ChartPanel(chart);
+	}
 
-  private static void linkColors(JComponent parent, JFreeChart chart) {
-    setColors(chart, parent.getBackground());
-    parent.addPropertyChangeListener("background", evt ->
-            setColors(chart, (Color) evt.getNewValue()));
-  }
+	private static void linkColors(JComponent parent, JFreeChart chart) {
+		setColors(chart, parent.getBackground());
+		parent.addPropertyChangeListener("background", evt ->
+						setColors(chart, (Color) evt.getNewValue()));
+	}
 
-  private static void setColors(JFreeChart chart, Color backgroundColor) {
-    chart.setBackgroundPaint(backgroundColor);
-    Plot plot = chart.getPlot();
-    plot.setBackgroundPaint(backgroundColor);
-    Color textFieldForeground = UIManager.getColor("TextField.foreground");
-    if (plot instanceof PiePlot) {
-      PiePlot<?> piePlot = (PiePlot<?>) plot;
-      piePlot.setLabelBackgroundPaint(textFieldForeground);
-      piePlot.setLabelPaint(backgroundColor);
-    }
-    if (plot instanceof CategoryPlot) {
-      CategoryPlot categoryPlot = (CategoryPlot) plot;
-      categoryPlot.getDomainAxis().setLabelPaint(textFieldForeground);
-      categoryPlot.getDomainAxis().setTickLabelPaint(textFieldForeground);
-      categoryPlot.getRangeAxis().setTickLabelPaint(textFieldForeground);
-      categoryPlot.getRangeAxis().setLabelPaint(textFieldForeground);
-    }
-    LegendTitle legend = chart.getLegend();
-    if (legend != null) {
-      legend.setBackgroundPaint(backgroundColor);
-      legend.setItemPaint(textFieldForeground);
-    }
-    chart.getTitle().setPaint(textFieldForeground);
-  }
+	private static void setColors(JFreeChart chart, Color backgroundColor) {
+		chart.setBackgroundPaint(backgroundColor);
+		Plot plot = chart.getPlot();
+		plot.setBackgroundPaint(backgroundColor);
+		Color textFieldForeground = UIManager.getColor("TextField.foreground");
+		if (plot instanceof PiePlot) {
+			PiePlot<?> piePlot = (PiePlot<?>) plot;
+			piePlot.setLabelBackgroundPaint(textFieldForeground);
+			piePlot.setLabelPaint(backgroundColor);
+		}
+		if (plot instanceof CategoryPlot) {
+			CategoryPlot categoryPlot = (CategoryPlot) plot;
+			categoryPlot.getDomainAxis().setLabelPaint(textFieldForeground);
+			categoryPlot.getDomainAxis().setTickLabelPaint(textFieldForeground);
+			categoryPlot.getRangeAxis().setTickLabelPaint(textFieldForeground);
+			categoryPlot.getRangeAxis().setLabelPaint(textFieldForeground);
+		}
+		LegendTitle legend = chart.getLegend();
+		if (legend != null) {
+			legend.setBackgroundPaint(backgroundColor);
+			legend.setItemPaint(textFieldForeground);
+		}
+		chart.getTitle().setPaint(textFieldForeground);
+	}
 }

@@ -31,23 +31,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LoadTestPanelTest {
 
-  @Test
-  void test() {
-    LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
-            .user(User.user("test"))
-            .minimumThinkTime(25)
-            .maximumThinkTime(50)
-            .loginDelayFactor(2)
-            .applicationBatchSize(2)
-            .build();
-    LoadTestModel<Object> model = loadTestModel(loadTest);
-    LoadTestPanel<Object> panel = loadTestPanel(model);
-    assertEquals(model, panel.model());
-    loadTest.shutdown();
-  }
+	@Test
+	void test() {
+		LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
+						.user(User.user("test"))
+						.minimumThinkTime(25)
+						.maximumThinkTime(50)
+						.loginDelayFactor(2)
+						.applicationBatchSize(2)
+						.build();
+		LoadTestModel<Object> model = loadTestModel(loadTest);
+		LoadTestPanel<Object> panel = loadTestPanel(model);
+		assertEquals(model, panel.model());
+		loadTest.shutdown();
+	}
 
-  @Test
-  void constructorNullModel() {
-    assertThrows(NullPointerException.class, () -> loadTestPanel(null));
-  }
+	@Test
+	void constructorNullModel() {
+		assertThrows(NullPointerException.class, () -> loadTestPanel(null));
+	}
 }

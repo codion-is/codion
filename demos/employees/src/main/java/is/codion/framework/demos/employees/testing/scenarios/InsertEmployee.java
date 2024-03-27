@@ -35,15 +35,15 @@ import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestUtil.
 // tag::loadTest[]
 public final class InsertEmployee implements Performer<EmployeesAppModel> {
 
-  @Override
-  public void perform(EmployeesAppModel application) throws Exception {
-    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
-    selectRandomRow(departmentModel.tableModel());
-    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
-    Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
-    foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
-    employeeModel.editModel().set(createRandomEntity(application.entities(), Employee.TYPE, foreignKeyEntities));
-    employeeModel.editModel().insert();
-  }
+	@Override
+	public void perform(EmployeesAppModel application) throws Exception {
+		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
+		selectRandomRow(departmentModel.tableModel());
+		SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
+		Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
+		foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
+		employeeModel.editModel().set(createRandomEntity(application.entities(), Employee.TYPE, foreignKeyEntities));
+		employeeModel.editModel().insert();
+	}
 }
 // end::loadTest[]

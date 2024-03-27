@@ -29,47 +29,47 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBuilder> {
 
-  /**
-   * @param floatable true if the toolbar should be floatable
-   * @return this builder instance
-   * @see JToolBar#setFloatable(boolean)
-   */
-  ToolBarBuilder floatable(boolean floatable);
+	/**
+	 * @param floatable true if the toolbar should be floatable
+	 * @return this builder instance
+	 * @see JToolBar#setFloatable(boolean)
+	 */
+	ToolBarBuilder floatable(boolean floatable);
 
-  /**
-   * @param rollover true if rollover should be enabled
-   * @return this builder instance
-   * @see JToolBar#setRollover(boolean)
-   */
-  ToolBarBuilder rollover(boolean rollover);
+	/**
+	 * @param rollover true if rollover should be enabled
+	 * @return this builder instance
+	 * @see JToolBar#setRollover(boolean)
+	 */
+	ToolBarBuilder rollover(boolean rollover);
 
-  /**
-   * @param borderPainted true if the border should be painted
-   * @return this builder instance
-   * @see JToolBar#setBorderPainted(boolean)
-   */
-  ToolBarBuilder borderPainted(boolean borderPainted);
+	/**
+	 * @param borderPainted true if the border should be painted
+	 * @return this builder instance
+	 * @see JToolBar#setBorderPainted(boolean)
+	 */
+	ToolBarBuilder borderPainted(boolean borderPainted);
 
-  /**
-   * @return a new {@link ToolBarBuilder}
-   */
-  static ToolBarBuilder builder() {
-    return new DefaultToolBarBuilder(null);
-  }
+	/**
+	 * @return a new {@link ToolBarBuilder}
+	 */
+	static ToolBarBuilder builder() {
+		return new DefaultToolBarBuilder(null);
+	}
 
-  /**
-   * @param controls the controls
-   * @return a new {@link ToolBarBuilder}
-   */
-  static ToolBarBuilder builder(Controls controls) {
-    return new DefaultToolBarBuilder(requireNonNull(controls));
-  }
+	/**
+	 * @param controls the controls
+	 * @return a new {@link ToolBarBuilder}
+	 */
+	static ToolBarBuilder builder(Controls controls) {
+		return new DefaultToolBarBuilder(requireNonNull(controls));
+	}
 
-  /**
-   * @param controlsBuilder the controls builder
-   * @return a new {@link ToolBarBuilder}
-   */
-  static ToolBarBuilder builder(Controls.Builder controlsBuilder) {
-    return new DefaultToolBarBuilder(requireNonNull(controlsBuilder).build());
-  }
+	/**
+	 * @param controlsBuilder the controls builder
+	 * @return a new {@link ToolBarBuilder}
+	 */
+	static ToolBarBuilder builder(Controls.Builder controlsBuilder) {
+		return new DefaultToolBarBuilder(requireNonNull(controlsBuilder).build());
+	}
 }

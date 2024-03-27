@@ -31,26 +31,26 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class VisitEditPanel extends EntityEditPanel {
 
-  public VisitEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public VisitEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Visit.PET_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Visit.PET_FK);
 
-    createForeignKeyComboBox(Visit.PET_FK);
-    createTemporalFieldPanel(Visit.VISIT_DATE);
-    createTextArea(Visit.DESCRIPTION)
-            .rowsColumns(4, 20);
+		createForeignKeyComboBox(Visit.PET_FK);
+		createTemporalFieldPanel(Visit.VISIT_DATE);
+		createTextArea(Visit.DESCRIPTION)
+						.rowsColumns(4, 20);
 
-    JPanel northPanel = gridLayoutPanel(1, 2)
-            .add(createInputPanel(Visit.PET_FK))
-            .add(createInputPanel(Visit.VISIT_DATE))
-            .build();
+		JPanel northPanel = gridLayoutPanel(1, 2)
+						.add(createInputPanel(Visit.PET_FK))
+						.add(createInputPanel(Visit.VISIT_DATE))
+						.build();
 
-    setLayout(borderLayout());
-    add(northPanel, BorderLayout.NORTH);
-    addInputPanel(Visit.DESCRIPTION, new JScrollPane(component(Visit.DESCRIPTION).get()), BorderLayout.CENTER);
-  }
+		setLayout(borderLayout());
+		add(northPanel, BorderLayout.NORTH);
+		addInputPanel(Visit.DESCRIPTION, new JScrollPane(component(Visit.DESCRIPTION).get()), BorderLayout.CENTER);
+	}
 }

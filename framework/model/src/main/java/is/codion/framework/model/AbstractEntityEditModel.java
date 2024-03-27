@@ -65,1195 +65,1195 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractEntityEditModel implements EntityEditModel {
 
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
-
-  private final Entity entity;
-  private final EntityConnectionProvider connectionProvider;
-  private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
-  private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
-  private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
-  private final Map<Attribute<?>, Value<Supplier<?>>> defaultValues = new ConcurrentHashMap<>();
-  private final Value<EntityValidator> validator;
-  private final Value<Predicate<Entity>> modifiedPredicate;
-  private final Value<Predicate<Entity>> existsPredicate;
-
-  private final Events events = new Events();
-  private final States states = new States();
-
-  /**
-   * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
-   * @param connectionProvider the {@link EntityConnectionProvider} instance
-   */
-  protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
-    this.connectionProvider = connectionProvider;
-    this.validator = Value.value(entityDefinition().validator(), entityDefinition().validator());
-    this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
-    this.existsPredicate = Value.value(entityDefinition().exists(), entityDefinition().exists());
-    this.states.readOnly.set(entityDefinition().readOnly());
-    this.events.bindEvents();
-    configurePersistentForeignKeys();
-    setEntity(createEntity(AttributeDefinition::defaultValue));
-  }
-
-  @Override
-  public final Entities entities() {
-    return connectionProvider.entities();
-  }
-
-  @Override
-  public final EntityDefinition entityDefinition() {
-    return entity.definition();
-  }
-
-  @Override
-  public final String toString() {
-    return getClass() + ", " + entity.entityType();
-  }
-
-  @Override
-  public final <S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute) {
-    AttributeDefinition<T> attributeDefinition = entityDefinition().attributes().definition(attribute);
-
-    return (Value<S>) defaultValues.computeIfAbsent(attribute, k ->
-            Value.value(attributeDefinition::defaultValue, attributeDefinition::defaultValue));
-  }
-
-  @Override
-  public final State overwriteWarning() {
-    return states.overwriteWarning;
-  }
-
-  @Override
-  public final State editEvents() {
-    return states.editEvents;
-  }
-
-  @Override
-  public final State persist(Attribute<?> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    return persistValues.computeIfAbsent(attribute, k -> State.state());
-  }
-
-  @Override
-  public final State readOnly() {
-    return states.readOnly;
-  }
-
-  @Override
-  public final State insertEnabled() {
-    return states.insertEnabled;
-  }
-
-  @Override
-  public final State updateEnabled() {
-    return states.updateEnabled;
-  }
-
-  @Override
-  public final State updateMultipleEnabled() {
-    return states.updateMultipleEnabled;
-  }
-
-  @Override
-  public final State deleteEnabled() {
-    return states.deleteEnabled;
-  }
-
-  @Override
-  public final StateObserver exists() {
-    return states.entityExists.observer();
-  }
-
-  @Override
-  public final StateObserver primaryKeyNull() {
-    return states.primaryKeyNull.observer();
-  }
-
-  @Override
-  public final void set(Entity entity) {
-    if (setEntityAllowed()) {
-      setEntity(entity);
-    }
-  }
-
-  @Override
-  public final void defaults() {
-    if (setEntityAllowed()) {
-      setEntity(null);
-    }
-  }
-
-  @Override
-  public final EntityType entityType() {
-    return entity.entityType();
-  }
-
-  @Override
-  public final EntityConnectionProvider connectionProvider() {
-    return connectionProvider;
-  }
-
-  @Override
-  public final EntityConnection connection() {
-    return connectionProvider.connection();
-  }
-
-  @Override
-  public final void replace(ForeignKey foreignKey, Collection<Entity> entities) {
-    replaceForeignKey(requireNonNull(foreignKey), requireNonNull(entities));
-  }
-
-  @Override
-  public final Entity entity() {
-    return entity.immutable();
-  }
-
-  @Override
-  public final Entity referencedEntity(ForeignKey foreignKey) {
-    return entity.referencedEntity(foreignKey);
-  }
-
-  @Override
-  public final StateObserver modified() {
-    return states.entityModified.observer();
-  }
-
-  @Override
-  public final StateObserver modified(Attribute<?> attribute) {
-    return states.modifiedObserver(attribute);
-  }
-
-  @Override
-  public final <T> T get(Attribute<T> attribute) {
-    return entity.get(attribute);
-  }
-
-  @Override
-  public final <T> Optional<T> optional(Attribute<T> attribute) {
-    return entity.optional(attribute);
-  }
-
-  @Override
-  public final <T> T put(Attribute<T> attribute, T value) {
-    entityDefinition().attributes().definition(attribute);
-    Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-    T previousValue = entity.put(attribute, value);
-    if (!Objects.equals(value, previousValue)) {
-      events.notifyValueEdit(attribute, value, dependingValues);
-    }
-
-    return previousValue;
-  }
-
-  @Override
-  public final <T> T remove(Attribute<T> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    T value = null;
-    if (entity.contains(attribute)) {
-      Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-      value = entity.remove(attribute);
-      events.notifyValueEdit(attribute, null, dependingValues);
-    }
-
-    return value;
-  }
-
-  @Override
-  public final boolean nullable(Attribute<?> attribute) {
-    return validator.get().nullable(entity, attribute);
-  }
-
-  @Override
-  public final StateObserver isNull(Attribute<?> attribute) {
-    return states.nullObserver(attribute);
-  }
-
-  @Override
-  public final StateObserver isNotNull(Attribute<?> attribute) {
-    return states.nullObserver(attribute).not();
-  }
-
-  @Override
-  public final StateObserver valid() {
-    return states.entityValid.observer();
-  }
-
-  @Override
-  public final StateObserver valid(Attribute<?> attribute) {
-    return states.validObserver(attribute);
-  }
-
-  @Override
-  public final void validate(Attribute<?> attribute) throws ValidationException {
-    validator.get().validate(entity, attribute);
-  }
-
-  @Override
-  public final void validate() throws ValidationException {
-    validate(entity);
-  }
-
-  @Override
-  public final void validate(Collection<Entity> entities) throws ValidationException {
-    for (Entity entityToValidate : requireNonNull(entities)) {
-      validate(entityToValidate);
-    }
-  }
-
-  @Override
-  public void validate(Entity entity) throws ValidationException {
-    if (entity.entityType().equals(entityType())) {
-      validator.get().validate(entity);
-    }
-    else {
-      entity.definition().validator().validate(entity);
-    }
-  }
-
-  @Override
-  public final Entity insert() throws DatabaseException, ValidationException {
-    return new DefaultInsert().insert().iterator().next();
-  }
-
-  @Override
-  public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    return new DefaultInsert(entities).insert();
-  }
-
-  @Override
-  public final Entity update() throws DatabaseException, ValidationException {
-    return new DefaultUpdate().update().iterator().next();
-  }
-
-  @Override
-  public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    return new DefaultUpdate(entities).update();
-  }
-
-  @Override
-  public final void delete() throws DatabaseException {
-    new DefaultDelete().delete();
-  }
-
-  @Override
-  public final void delete(Collection<Entity> entities) throws DatabaseException {
-    new DefaultDelete(entities).delete();
-  }
-
-  @Override
-  public final Insert createInsert() throws ValidationException {
-    return new DefaultInsert();
-  }
-
-  @Override
-  public final Insert createInsert(Collection<Entity> entities) throws ValidationException {
-    return new DefaultInsert(entities);
-  }
-
-  @Override
-  public final Update createUpdate() throws ValidationException {
-    return new DefaultUpdate();
-  }
-
-  @Override
-  public final Update createUpdate(Collection<Entity> entities) throws ValidationException {
-    return new DefaultUpdate(entities);
-  }
-
-  @Override
-  public final Delete createDelete() {
-    return new DefaultDelete();
-  }
-
-  @Override
-  public final Delete createDelete(Collection<Entity> entities) {
-    return new DefaultDelete(entities);
-  }
-
-  @Override
-  public final void refreshEntity() {
-    try {
-      if (states.entityExists.get()) {
-        set(connection().select(entity.primaryKey()));
-      }
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
-    entityDefinition().foreignKeys().definition(foreignKey);
-    Collection<Column<String>> searchable = entities().definition(foreignKey.referencedType()).columns().searchable();
-    if (searchable.isEmpty()) {
-      throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
-    }
-
-    return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider)
-            .columns(searchable)
-            .singleSelection(true)
-            .build();
-  }
-
-  @Override
-  public final EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey) {
-    entityDefinition().foreignKeys().definition(foreignKey);
-    synchronized (entitySearchModels) {
-      // can't use computeIfAbsent here, see comment in SwingEntityEditModel.foreignKeyComboBoxModel()
-      EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
-      if (entitySearchModel == null) {
-        entitySearchModel = createForeignKeySearchModel(foreignKey);
-        entitySearchModels.put(foreignKey, entitySearchModel);
-      }
-
-      return entitySearchModel;
-    }
-  }
-
-  @Override
-  public final <T> Value<T> value(Attribute<T> attribute) {
-    entityDefinition().attributes().definition(attribute);
-    return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
-  }
-
-  @Override
-  public final <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
-    events.removeEditListener(attribute, listener);
-  }
-
-  @Override
-  public final <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
-    events.addEditListener(attribute, listener);
-  }
-
-  @Override
-  public final <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
-    events.removeValueListener(attribute, listener);
-  }
-
-  @Override
-  public final <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
-    events.addValueListener(attribute, listener);
-  }
-
-  @Override
-  public final void removeValueChangeListener(Consumer<Attribute<?>> listener) {
-    events.valueChange.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addValueChangeListener(Consumer<Attribute<?>> listener) {
-    events.valueChange.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeEntityListener(Consumer<Entity> listener) {
-    events.entity.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addEntityListener(Consumer<Entity> listener) {
-    events.entity.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeBeforeInsertListener(Consumer<Collection<Entity>> listener) {
-    events.beforeInsert.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addBeforeInsertListener(Consumer<Collection<Entity>> listener) {
-    events.beforeInsert.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeAfterInsertListener(Consumer<Collection<Entity>> listener) {
-    events.afterInsert.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addAfterInsertListener(Consumer<Collection<Entity>> listener) {
-    events.afterInsert.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    events.beforeUpdate.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    events.beforeUpdate.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    events.afterUpdate.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-    events.afterUpdate.addDataListener(listener);
-  }
-
-  @Override
-  public final void addBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
-    events.beforeDelete.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
-    events.beforeDelete.removeDataListener(listener);
-  }
-
-  @Override
-  public final void removeAfterDeleteListener(Consumer<Collection<Entity>> listener) {
-    events.afterDelete.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addAfterDeleteListener(Consumer<Collection<Entity>> listener) {
-    events.afterDelete.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeInsertUpdateOrDeleteListener(Runnable listener) {
-    events.insertUpdateOrDelete.removeListener(listener);
-  }
-
-  @Override
-  public final void addInsertUpdateOrDeleteListener(Runnable listener) {
-    events.insertUpdateOrDelete.addListener(listener);
-  }
-
-  @Override
-  public final void addConfirmOverwriteListener(Consumer<State> listener) {
-    events.confirmOverwrite.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeConfirmOverwriteListener(Consumer<State> listener) {
-    events.confirmOverwrite.removeDataListener(listener);
-  }
-
-  /**
-   * Inserts the given entities into the database using the given connection
-   * @param entities the entities to insert
-   * @param connection the connection to use
-   * @return the inserted entities
-   * @throws DatabaseException in case of a database exception
-   */
-  protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
-    return requireNonNull(connection).insertSelect(entities);
-  }
-
-  /**
-   * Updates the given entities in the database using the given connection
-   * @param entities the entities to update
-   * @param connection the connection to use
-   * @return the updated entities
-   * @throws DatabaseException in case of a database exception
-   */
-  protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
-    return requireNonNull(connection).updateSelect(entities);
-  }
-
-  /**
-   * Deletes the given entities from the database using the given connection
-   * @param entities the entities to delete
-   * @param connection the connection to use
-   * @throws DatabaseException in case of a database exception
-   */
-  protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
-    requireNonNull(connection).delete(Entity.primaryKeys(entities));
-  }
-
-  /**
-   * For every field referencing the given foreign key values, replaces that foreign key instance with
-   * the corresponding entity from {@code values}, useful when attribute
-   * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param foreignKey the foreign key attribute
-   * @param values the foreign key entities
-   */
-  protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
-    Entity currentForeignKeyValue = referencedEntity(foreignKey);
-    if (currentForeignKeyValue != null) {
-      for (Entity replacementValue : values) {
-        if (currentForeignKeyValue.equals(replacementValue)) {
-          put(foreignKey, null);
-          put(foreignKey, replacementValue);
-        }
-      }
-    }
-  }
-
-  /**
-   * Controls the validator used by this edit model.
-   * @return the value controlling the validator
-   * @see #validate(Entity)
-   */
-  protected final Value<EntityValidator> validator() {
-    return validator;
-  }
-
-  /**
-   * Controls the 'modified' predicate for this edit model, which is responsible for providing
-   * the modified state of the underlying entity.
-   * @return the value controlling the predicate used to check if the entity is modified
-   * @see Entity#modified()
-   * @see #modified()
-   */
-  protected final Value<Predicate<Entity>> modifiedPredicate() {
-    return modifiedPredicate;
-  }
-
-  /**
-   * Controls the 'exists' predicate for this edit model, which is responsible for providing
-   * the exists state of the underlying entity.
-   * @return the value controlling the predicate used to check if the entity exists
-   * @see EntityDefinition#exists()
-   * @see Entity#exists()
-   */
-  protected final Value<Predicate<Entity>> existsPredicate() {
-    return existsPredicate;
-  }
-
-  /**
-   * Updates the modified state.
-   * @see #modified()
-   */
-  protected final void updateModifiedState() {
-    states.updateModifiedState();
-  }
-
-  /**
-   * Notifies that insert is about to be performed
-   * @param entitiesToInsert the entities about to be inserted
-   * @see #addBeforeInsertListener(Consumer)
-   */
-  protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
-    events.beforeInsert.accept(requireNonNull(entitiesToInsert));
-  }
-
-  /**
-   * Notifies that insert has been performed
-   * @param insertedEntities the inserted entities
-   * @see #addAfterInsertListener(Consumer)
-   */
-  protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
-    events.afterInsert.accept(requireNonNull(insertedEntities));
-  }
-
-  /**
-   * Notifies that update is about to be performed
-   * @param entitiesToUpdate the entities about to be updated
-   * @see #addBeforeUpdateListener(Consumer)
-   */
-  protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
-    events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
-  }
-
-  /**
-   * Notifies that update has been performed
-   * @param updatedEntities the updated entities
-   * @see #addAfterUpdateListener(Consumer)
-   */
-  protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
-    events.afterUpdate.accept(requireNonNull(updatedEntities));
-  }
-
-  /**
-   * Notifies that delete is about to be performed
-   * @param entitiesToDelete the entities about to be deleted
-   * @see #addBeforeDeleteListener(Consumer)
-   */
-  protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
-    events.beforeDelete.accept(requireNonNull(entitiesToDelete));
-  }
-
-  /**
-   * Notifies that delete has been performed
-   * @param deletedEntities the deleted entities
-   * @see #addAfterDeleteListener(Consumer)
-   */
-  protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
-    events.afterDelete.accept(requireNonNull(deletedEntities));
-  }
-
-  private boolean setEntityAllowed() {
-    if (states.overwriteWarning.get() && exists().get() && modified().get()) {
-      State confirmation = State.state(true);
-      events.confirmOverwrite.accept(confirmation);
-
-      return confirmation.get();
-    }
-
-    return true;
-  }
-
-  private void setEntity(Entity entity) {
-    Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
-    for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
-      Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
-      events.notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
-    }
-    if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
-      states.updateEntityStates();
-    }
-    states.updateAttributeModifiedStates();
-
-    events.entity.accept(entity);
-  }
-
-  private void configurePersistentForeignKeys() {
-    if (EntityEditModel.PERSIST_FOREIGN_KEYS.get()) {
-      entityDefinition().foreignKeys().get().forEach(foreignKey ->
-              persist(foreignKey).set(foreignKeyWritable(foreignKey)));
-    }
-  }
-
-  private boolean foreignKeyWritable(ForeignKey foreignKey) {
-    return foreignKey.references().stream()
-            .map(ForeignKey.Reference::column)
-            .map(entityDefinition().columns()::definition)
-            .filter(ColumnDefinition.class::isInstance)
-            .map(ColumnDefinition.class::cast)
-            .anyMatch(columnDefinition -> !columnDefinition.readOnly());
-  }
-
-  /**
-   * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
-   * Values are populated for {@link ColumnDefinition} and its descendants, {@link ForeignKeyDefinition}
-   * and {@link TransientAttributeDefinition} (excluding its descendants).
-   * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
-   * skipped unless the attribute itself has a default value, which then overrides the columns default value.
-   * @return an entity instance populated with default values
-   * @see ColumnDefinition.Builder#columnHasDefaultValue()
-   * @see ColumnDefinition.Builder#defaultValue(Object)
-   */
-  private Entity createEntity(ValueSupplier valueSupplier) {
-    EntityDefinition definition = entityDefinition();
-    Entity newEntity = definition.entity();
-    addColumnValues(valueSupplier, definition, newEntity);
-    addTransientValues(valueSupplier, definition, newEntity);
-    addForeignKeyValues(valueSupplier, definition, newEntity);
-
-    newEntity.save();
-
-    return newEntity;
-  }
-
-  private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
-    if (persist(attributeDefinition.attribute()).get()) {
-      if (attributeDefinition instanceof ForeignKeyDefinition) {
-        return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
-      }
-
-      return entity.get(attributeDefinition.attribute());
-    }
-
-    return (T) defaultValue(attributeDefinition.attribute()).get().get();
-  }
-
-  private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
-    return dependingValues(attribute, new LinkedHashMap<>());
-  }
-
-  private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
-    addDependingDerivedAttributes(attribute, dependingValues);
-    if (attribute instanceof Column) {
-      addDependingForeignKeys((Column<?>) attribute, dependingValues);
-    }
-    else if (attribute instanceof ForeignKey) {
-      addDependingReferencedColumns((ForeignKey) attribute, dependingValues);
-    }
-
-    return dependingValues;
-  }
-
-  private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
-    entityDefinition().attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
-      dependingValues.put(derivedAttribute, get(derivedAttribute));
-      addDependingDerivedAttributes(derivedAttribute, dependingValues);
-    });
-  }
-
-  private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
-    entityDefinition().foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
-            dependingValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
-  }
-
-  private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
-    foreignKey.references().forEach(reference ->
-            dependingValues.put(reference.column(), get(reference.column())));
-  }
-
-  private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
-    definition.columns().definitions().stream()
-            //these are set via their respective parent foreign key
-            .filter(columnDefinition -> !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
-            .filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
-            .map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
-            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
-  }
-
-  private static void addTransientValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
-    definition.attributes().definitions().stream()
-            .filter(TransientAttributeDefinition.class::isInstance)
-            .filter(attributeDefinition -> !attributeDefinition.derived())
-            .map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
-            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
-  }
-
-  private static void addForeignKeyValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
-    definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-            newEntity.put(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
-  }
-
-  /**
-   * Maps the given entities and their updated counterparts to their original primary keys,
-   * assumes a single copy of each entity in the given lists.
-   * @param entitiesBeforeUpdate the entities before update
-   * @param entitiesAfterUpdate the entities after update
-   * @return the updated entities mapped to their respective original primary keys
-   */
-  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
-                                                                 Collection<Entity> entitiesAfterUpdate) {
-    List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-    Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
-    for (Entity entity : entitiesBeforeUpdate) {
-      keyMap.put(entity.originalPrimaryKey(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
-    }
-
-    return unmodifiableMap(keyMap);
-  }
-
-  private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
-    while (iterator.hasNext()) {
-      Entity current = iterator.next();
-      if (current.primaryKey().equals(primaryKey)) {
-        iterator.remove();
-
-        return current;
-      }
-    }
-
-    return null;
-  }
-
-  private interface ValueSupplier {
-    <T> T get(AttributeDefinition<T> attributeDefinition);
-  }
-
-  private final class DefaultInsert implements Insert {
-
-    private final Collection<Entity> entities;
-    private final boolean activeEntity;
-
-    private DefaultInsert() throws ValidationException {
-      this.entities = singleton(activeEntity());
-      this.activeEntity = true;
-      states.verifyInsertEnabled();
-      validate(entities);
-    }
-
-    private DefaultInsert(Collection<Entity> entities) throws ValidationException {
-      this.entities = unmodifiableCollection(new ArrayList<>(entities));
-      this.activeEntity = false;
-      states.verifyInsertEnabled();
-      validate(entities);
-    }
-
-    @Override
-    public void before() {
-      AbstractEntityEditModel.this.notifyBeforeInsert(entities);
-    }
-
-    @Override
-    public Collection<Entity> perform() throws DatabaseException {
-      LOG.debug("{} - insert {}", this, entities);
-      Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
-      if (!entities.isEmpty() && inserted.isEmpty()) {
-        throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
-      }
-
-      return inserted;
-    }
-
-    @Override
-    public void after(Collection<Entity> insertedEntities) {
-      AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
-      if (activeEntity) {
-        setEntity(insertedEntities.iterator().next());
-      }
-    }
-
-    private Entity activeEntity() {
-      Entity toInsert = entity.copy();
-      if (entity.definition().primaryKey().generated()) {
-        toInsert.clearPrimaryKey();
-      }
-
-      return toInsert;
-    }
-
-    private Collection<Entity> insert() throws DatabaseException {
-      before();
-      Collection<Entity> inserted = perform();
-      after(inserted);
-
-      return inserted;
-    }
-  }
-
-  private final class DefaultUpdate implements Update {
-
-    private final Collection<Entity> entities;
-
-    private DefaultUpdate() throws ValidationException {
-      this.entities = singleton(entity().copy());
-      states.verifyUpdateEnabled(entities);
-      validate(entities);
-      verifyModified(entities);
-    }
-
-    private DefaultUpdate(Collection<Entity> entities) throws ValidationException {
-      this.entities = unmodifiableCollection(new ArrayList<>(entities));
-      states.verifyUpdateEnabled(entities);
-      validate(entities);
-      verifyModified(entities);
-    }
-
-    @Override
-    public void before() {
-      AbstractEntityEditModel.this.notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
-    }
-
-    @Override
-    public Collection<Entity> perform() throws DatabaseException {
-      LOG.debug("{} - update {}", this, entities);
-      return new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection()));
-    }
-
-    @Override
-    public void after(Collection<Entity> updatedEntities) {
-      AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
-      Entity activeEntity = entity();
-      updatedEntities.stream()
-              .filter(updatedEntity -> updatedEntity.equals(activeEntity))
-              .findFirst()
-              .ifPresent(AbstractEntityEditModel.this::setEntity);
-    }
-
-    private void verifyModified(Collection<Entity> entities) {
-      for (Entity entityToUpdate : entities) {
-        if (!entityToUpdate.modified()) {
-          throw new IllegalArgumentException("Entity is not modified: " + entityToUpdate);
-        }
-      }
-    }
-
-    private Collection<Entity> update() throws DatabaseException {
-      before();
-      Collection<Entity> updatedEntities = perform();
-      after(updatedEntities);
-
-      return updatedEntities;
-    }
-  }
-
-  private final class DefaultDelete implements Delete {
-
-    private final Collection<Entity> entities;
-    private final boolean activeEntity;
-
-    private DefaultDelete() {
-      this.entities = singleton(activeEntity());
-      this.activeEntity = true;
-      states.verifyDeleteEnabled();
-    }
-
-    private DefaultDelete(Collection<Entity> entities) {
-      this.entities = unmodifiableCollection(new ArrayList<>(entities));
-      this.activeEntity = false;
-      states.verifyDeleteEnabled();
-    }
-
-    @Override
-    public void before() {
-      AbstractEntityEditModel.this.notifyBeforeDelete(entities);
-    }
-
-    @Override
-    public Collection<Entity> perform() throws DatabaseException {
-      LOG.debug("{} - delete {}", this, entities);
-      AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
-
-      return entities;
-    }
-
-    @Override
-    public void after(Collection<Entity> deletedEntities) {
-      AbstractEntityEditModel.this.notifyAfterDelete(deletedEntities);
-      if (activeEntity) {
-        defaults();
-      }
-    }
-
-    private Entity activeEntity() {
-      Entity copy = entity.copy();
-      copy.revert();
-
-      return copy;
-    }
-
-    private void delete() throws DatabaseException {
-      before();
-      after(perform());
-    }
-  }
-
-  private final class NotifyInserted implements Consumer<Collection<Entity>> {
-
-    @Override
-    public void accept(Collection<Entity> insertedEntities) {
-      if (states.editEvents.get()) {
-        EntityEditEvents.notifyInserted(insertedEntities);
-      }
-    }
-  }
-
-  private final class NotifyUpdated implements Consumer<Map<Entity.Key, Entity>> {
-
-    @Override
-    public void accept(Map<Entity.Key, Entity> updatedEntities) {
-      if (states.editEvents.get()) {
-        EntityEditEvents.notifyUpdated(updatedEntities);
-      }
-    }
-  }
-
-  private final class NotifyDeleted implements Consumer<Collection<Entity>> {
-
-    @Override
-    public void accept(Collection<Entity> deletedEntities) {
-      if (states.editEvents.get()) {
-        EntityEditEvents.notifyDeleted(deletedEntities);
-      }
-    }
-  }
-
-  private final class Events {
-
-    private final Event<Collection<Entity>> beforeInsert = Event.event();
-    private final Event<Collection<Entity>> afterInsert = Event.event();
-    private final Event<Map<Entity.Key, Entity>> beforeUpdate = Event.event();
-    private final Event<Map<Entity.Key, Entity>> afterUpdate = Event.event();
-    private final Event<Collection<Entity>> beforeDelete = Event.event();
-    private final Event<Collection<Entity>> afterDelete = Event.event();
-    private final Event<?> insertUpdateOrDelete = Event.event();
-    private final Event<State> confirmOverwrite = Event.event();
-    private final Event<Entity> entity = Event.event();
-    private final Event<Attribute<?>> valueChange = Event.event();
-    private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
-    private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
-
-    private void bindEvents() {
-      afterInsert.addListener(insertUpdateOrDelete);
-      afterUpdate.addListener(insertUpdateOrDelete);
-      afterDelete.addListener(insertUpdateOrDelete);
-      afterInsert.addDataListener(new NotifyInserted());
-      afterUpdate.addDataListener(new NotifyUpdated());
-      afterDelete.addDataListener(new NotifyDeleted());
-      validator.addListener(states::updateValidState);
-      modifiedPredicate.addListener(states::updateModifiedState);
-      existsPredicate.addListener(states::updateExistsState);
-    }
-
-    private <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
-      entityDefinition().attributes().definition(attribute);
-      ((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
-    }
-
-    private <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
-      entityDefinition().attributes().definition(attribute);
-      if (valueEditEvents.containsKey(attribute)) {
-        ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
-      }
-    }
-
-    private <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
-      entityDefinition().attributes().definition(attribute);
-      ((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
-    }
-
-    private <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
-      entityDefinition().attributes().definition(attribute);
-      if (valueChangeEvents.containsKey(attribute)) {
-        ((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
-      }
-    }
-
-    private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
-      notifyValueChange(attribute, value);
-      Event<T> editEvent = (Event<T>) valueEditEvents.get(attribute);
-      if (editEvent != null) {
-        editEvent.accept(value);
-      }
-      dependingValues.forEach((dependingAttribute, previousValue) -> {
-        Object currentValue = get(dependingAttribute);
-        if (!Objects.equals(previousValue, currentValue)) {
-          notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
-        }
-      });
-    }
-
-    private <T> void notifyValueChange(Attribute<T> attribute, T value) {
-      states.updateEntityStates();
-      states.updateAttributeStates(attribute);
-      Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
-      if (changeEvent != null) {
-        changeEvent.accept(value);
-      }
-      valueChange.accept(attribute);
-    }
-  }
-
-  private final class States {
-
-    private final State entityValid = State.state();
-    private final State entityExists = State.state(false);
-    private final State entityModified = State.state();
-    private final State primaryKeyNull = State.state(true);
-    private final State readOnly = State.state();
-    private final State insertEnabled = State.state(true);
-    private final State updateEnabled = State.state(true);
-    private final State updateMultipleEnabled = State.state(true);
-    private final State deleteEnabled = State.state(true);
-    private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
-    private final State editEvents = State.state(EDIT_EVENTS.get());
-    private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
-    private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
-    private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
-
-    private StateObserver modifiedObserver(Attribute<?> attribute) {
-      entityDefinition().attributes().definition(attribute);
-      return attributeModifiedMap.computeIfAbsent(attribute, k ->
-              State.state(entityExists.get() && entity.modified(attribute))).observer();
-    }
-
-    private StateObserver nullObserver(Attribute<?> attribute) {
-      entityDefinition().attributes().definition(attribute);
-      return attributeNullMap.computeIfAbsent(attribute, k ->
-              State.state(entity.isNull(attribute))).observer();
-    }
-
-    private StateObserver validObserver(Attribute<?> attribute) {
-      entityDefinition().attributes().definition(attribute);
-      return attributeValidMap.computeIfAbsent(attribute, k ->
-              State.state(valid(attribute))).observer();
-    }
-
-    private void updateEntityStates() {
-      updateExistsState();
-      updateModifiedState();
-      updateValidState();
-      updatePrimaryKeyNullState();
-    }
-
-    private void updateExistsState() {
-      entityExists.set(existsPredicate.get().test(entity));
-    }
-
-    private void updateModifiedState() {
-      entityModified.set(modifiedPredicate.get().test(entity));
-    }
-
-    private void updateValidState() {
-      entityValid.set(validator.get().valid(entity));
-    }
-
-    private void updatePrimaryKeyNullState() {
-      primaryKeyNull.set(entity.primaryKey().isNull());
-    }
-
-    private <T> void updateAttributeStates(Attribute<T> attribute) {
-      State nullState = attributeNullMap.get(attribute);
-      if (nullState != null) {
-        nullState.set(entity.isNull(attribute));
-      }
-      State validState = attributeValidMap.get(attribute);
-      if (validState != null) {
-        validState.set(valid(attribute));
-      }
-      State modifiedState = attributeModifiedMap.get(attribute);
-      if (modifiedState != null) {
-        updateAttributeModifiedState(attribute, modifiedState);
-      }
-    }
-
-    private boolean valid(Attribute<?> attribute) {
-      try {
-        validate(attribute);
-        return true;
-      }
-      catch (ValidationException e) {
-        return false;
-      }
-    }
-
-    private void updateAttributeModifiedStates() {
-      attributeModifiedMap.forEach(this::updateAttributeModifiedState);
-    }
-
-    private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-      modifiedState.set(existsPredicate.get().test(entity) && entity.modified(attribute));
-    }
-
-    private void verifyInsertEnabled() {
-      if (readOnly.get() || !insertEnabled.get()) {
-        throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
-      }
-    }
-
-    private void verifyUpdateEnabled(Collection<Entity> entities) {
-      if (readOnly.get() || !updateEnabled.get()) {
-        throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
-      }
-      if (entities.size() > 1 && !updateMultipleEnabled.get()) {
-        throw new IllegalStateException("Batch update of entities is not enabled");
-      }
-    }
-
-    private void verifyDeleteEnabled() {
-      if (readOnly.get() || !deleteEnabled.get()) {
-        throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
-      }
-    }
-  }
-
-  private static final class EditModelValue<T> extends AbstractValue<T> {
-
-    private final EntityEditModel editModel;
-    private final Attribute<T> attribute;
-
-    private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
-      this.editModel = editModel;
-      this.attribute = attribute;
-      this.editModel.addValueListener(attribute, value -> notifyListeners());
-    }
-
-    @Override
-    public T get() {
-      return editModel.get(attribute);
-    }
-
-    @Override
-    protected void setValue(T value) {
-      editModel.put(attribute, value);
-    }
-  }
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
+
+	private final Entity entity;
+	private final EntityConnectionProvider connectionProvider;
+	private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
+	private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
+	private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
+	private final Map<Attribute<?>, Value<Supplier<?>>> defaultValues = new ConcurrentHashMap<>();
+	private final Value<EntityValidator> validator;
+	private final Value<Predicate<Entity>> modifiedPredicate;
+	private final Value<Predicate<Entity>> existsPredicate;
+
+	private final Events events = new Events();
+	private final States states = new States();
+
+	/**
+	 * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
+	 * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
+	 * @param connectionProvider the {@link EntityConnectionProvider} instance
+	 */
+	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
+		this.connectionProvider = connectionProvider;
+		this.validator = Value.value(entityDefinition().validator(), entityDefinition().validator());
+		this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
+		this.existsPredicate = Value.value(entityDefinition().exists(), entityDefinition().exists());
+		this.states.readOnly.set(entityDefinition().readOnly());
+		this.events.bindEvents();
+		configurePersistentForeignKeys();
+		setEntity(createEntity(AttributeDefinition::defaultValue));
+	}
+
+	@Override
+	public final Entities entities() {
+		return connectionProvider.entities();
+	}
+
+	@Override
+	public final EntityDefinition entityDefinition() {
+		return entity.definition();
+	}
+
+	@Override
+	public final String toString() {
+		return getClass() + ", " + entity.entityType();
+	}
+
+	@Override
+	public final <S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute) {
+		AttributeDefinition<T> attributeDefinition = entityDefinition().attributes().definition(attribute);
+
+		return (Value<S>) defaultValues.computeIfAbsent(attribute, k ->
+						Value.value(attributeDefinition::defaultValue, attributeDefinition::defaultValue));
+	}
+
+	@Override
+	public final State overwriteWarning() {
+		return states.overwriteWarning;
+	}
+
+	@Override
+	public final State editEvents() {
+		return states.editEvents;
+	}
+
+	@Override
+	public final State persist(Attribute<?> attribute) {
+		entityDefinition().attributes().definition(attribute);
+		return persistValues.computeIfAbsent(attribute, k -> State.state());
+	}
+
+	@Override
+	public final State readOnly() {
+		return states.readOnly;
+	}
+
+	@Override
+	public final State insertEnabled() {
+		return states.insertEnabled;
+	}
+
+	@Override
+	public final State updateEnabled() {
+		return states.updateEnabled;
+	}
+
+	@Override
+	public final State updateMultipleEnabled() {
+		return states.updateMultipleEnabled;
+	}
+
+	@Override
+	public final State deleteEnabled() {
+		return states.deleteEnabled;
+	}
+
+	@Override
+	public final StateObserver exists() {
+		return states.entityExists.observer();
+	}
+
+	@Override
+	public final StateObserver primaryKeyNull() {
+		return states.primaryKeyNull.observer();
+	}
+
+	@Override
+	public final void set(Entity entity) {
+		if (setEntityAllowed()) {
+			setEntity(entity);
+		}
+	}
+
+	@Override
+	public final void defaults() {
+		if (setEntityAllowed()) {
+			setEntity(null);
+		}
+	}
+
+	@Override
+	public final EntityType entityType() {
+		return entity.entityType();
+	}
+
+	@Override
+	public final EntityConnectionProvider connectionProvider() {
+		return connectionProvider;
+	}
+
+	@Override
+	public final EntityConnection connection() {
+		return connectionProvider.connection();
+	}
+
+	@Override
+	public final void replace(ForeignKey foreignKey, Collection<Entity> entities) {
+		replaceForeignKey(requireNonNull(foreignKey), requireNonNull(entities));
+	}
+
+	@Override
+	public final Entity entity() {
+		return entity.immutable();
+	}
+
+	@Override
+	public final Entity referencedEntity(ForeignKey foreignKey) {
+		return entity.referencedEntity(foreignKey);
+	}
+
+	@Override
+	public final StateObserver modified() {
+		return states.entityModified.observer();
+	}
+
+	@Override
+	public final StateObserver modified(Attribute<?> attribute) {
+		return states.modifiedObserver(attribute);
+	}
+
+	@Override
+	public final <T> T get(Attribute<T> attribute) {
+		return entity.get(attribute);
+	}
+
+	@Override
+	public final <T> Optional<T> optional(Attribute<T> attribute) {
+		return entity.optional(attribute);
+	}
+
+	@Override
+	public final <T> T put(Attribute<T> attribute, T value) {
+		entityDefinition().attributes().definition(attribute);
+		Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+		T previousValue = entity.put(attribute, value);
+		if (!Objects.equals(value, previousValue)) {
+			events.notifyValueEdit(attribute, value, dependingValues);
+		}
+
+		return previousValue;
+	}
+
+	@Override
+	public final <T> T remove(Attribute<T> attribute) {
+		entityDefinition().attributes().definition(attribute);
+		T value = null;
+		if (entity.contains(attribute)) {
+			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+			value = entity.remove(attribute);
+			events.notifyValueEdit(attribute, null, dependingValues);
+		}
+
+		return value;
+	}
+
+	@Override
+	public final boolean nullable(Attribute<?> attribute) {
+		return validator.get().nullable(entity, attribute);
+	}
+
+	@Override
+	public final StateObserver isNull(Attribute<?> attribute) {
+		return states.nullObserver(attribute);
+	}
+
+	@Override
+	public final StateObserver isNotNull(Attribute<?> attribute) {
+		return states.nullObserver(attribute).not();
+	}
+
+	@Override
+	public final StateObserver valid() {
+		return states.entityValid.observer();
+	}
+
+	@Override
+	public final StateObserver valid(Attribute<?> attribute) {
+		return states.validObserver(attribute);
+	}
+
+	@Override
+	public final void validate(Attribute<?> attribute) throws ValidationException {
+		validator.get().validate(entity, attribute);
+	}
+
+	@Override
+	public final void validate() throws ValidationException {
+		validate(entity);
+	}
+
+	@Override
+	public final void validate(Collection<Entity> entities) throws ValidationException {
+		for (Entity entityToValidate : requireNonNull(entities)) {
+			validate(entityToValidate);
+		}
+	}
+
+	@Override
+	public void validate(Entity entity) throws ValidationException {
+		if (entity.entityType().equals(entityType())) {
+			validator.get().validate(entity);
+		}
+		else {
+			entity.definition().validator().validate(entity);
+		}
+	}
+
+	@Override
+	public final Entity insert() throws DatabaseException, ValidationException {
+		return new DefaultInsert().insert().iterator().next();
+	}
+
+	@Override
+	public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
+		return new DefaultInsert(entities).insert();
+	}
+
+	@Override
+	public final Entity update() throws DatabaseException, ValidationException {
+		return new DefaultUpdate().update().iterator().next();
+	}
+
+	@Override
+	public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
+		return new DefaultUpdate(entities).update();
+	}
+
+	@Override
+	public final void delete() throws DatabaseException {
+		new DefaultDelete().delete();
+	}
+
+	@Override
+	public final void delete(Collection<Entity> entities) throws DatabaseException {
+		new DefaultDelete(entities).delete();
+	}
+
+	@Override
+	public final Insert createInsert() throws ValidationException {
+		return new DefaultInsert();
+	}
+
+	@Override
+	public final Insert createInsert(Collection<Entity> entities) throws ValidationException {
+		return new DefaultInsert(entities);
+	}
+
+	@Override
+	public final Update createUpdate() throws ValidationException {
+		return new DefaultUpdate();
+	}
+
+	@Override
+	public final Update createUpdate(Collection<Entity> entities) throws ValidationException {
+		return new DefaultUpdate(entities);
+	}
+
+	@Override
+	public final Delete createDelete() {
+		return new DefaultDelete();
+	}
+
+	@Override
+	public final Delete createDelete(Collection<Entity> entities) {
+		return new DefaultDelete(entities);
+	}
+
+	@Override
+	public final void refreshEntity() {
+		try {
+			if (states.entityExists.get()) {
+				set(connection().select(entity.primaryKey()));
+			}
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
+		entityDefinition().foreignKeys().definition(foreignKey);
+		Collection<Column<String>> searchable = entities().definition(foreignKey.referencedType()).columns().searchable();
+		if (searchable.isEmpty()) {
+			throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
+		}
+
+		return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider)
+						.columns(searchable)
+						.singleSelection(true)
+						.build();
+	}
+
+	@Override
+	public final EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey) {
+		entityDefinition().foreignKeys().definition(foreignKey);
+		synchronized (entitySearchModels) {
+			// can't use computeIfAbsent here, see comment in SwingEntityEditModel.foreignKeyComboBoxModel()
+			EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
+			if (entitySearchModel == null) {
+				entitySearchModel = createForeignKeySearchModel(foreignKey);
+				entitySearchModels.put(foreignKey, entitySearchModel);
+			}
+
+			return entitySearchModel;
+		}
+	}
+
+	@Override
+	public final <T> Value<T> value(Attribute<T> attribute) {
+		entityDefinition().attributes().definition(attribute);
+		return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
+	}
+
+	@Override
+	public final <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
+		events.removeEditListener(attribute, listener);
+	}
+
+	@Override
+	public final <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
+		events.addEditListener(attribute, listener);
+	}
+
+	@Override
+	public final <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
+		events.removeValueListener(attribute, listener);
+	}
+
+	@Override
+	public final <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
+		events.addValueListener(attribute, listener);
+	}
+
+	@Override
+	public final void removeValueChangeListener(Consumer<Attribute<?>> listener) {
+		events.valueChange.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addValueChangeListener(Consumer<Attribute<?>> listener) {
+		events.valueChange.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeEntityListener(Consumer<Entity> listener) {
+		events.entity.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addEntityListener(Consumer<Entity> listener) {
+		events.entity.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeBeforeInsertListener(Consumer<Collection<Entity>> listener) {
+		events.beforeInsert.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addBeforeInsertListener(Consumer<Collection<Entity>> listener) {
+		events.beforeInsert.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeAfterInsertListener(Consumer<Collection<Entity>> listener) {
+		events.afterInsert.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addAfterInsertListener(Consumer<Collection<Entity>> listener) {
+		events.afterInsert.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
+		events.beforeUpdate.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
+		events.beforeUpdate.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
+		events.afterUpdate.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
+		events.afterUpdate.addDataListener(listener);
+	}
+
+	@Override
+	public final void addBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
+		events.beforeDelete.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
+		events.beforeDelete.removeDataListener(listener);
+	}
+
+	@Override
+	public final void removeAfterDeleteListener(Consumer<Collection<Entity>> listener) {
+		events.afterDelete.removeDataListener(listener);
+	}
+
+	@Override
+	public final void addAfterDeleteListener(Consumer<Collection<Entity>> listener) {
+		events.afterDelete.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeInsertUpdateOrDeleteListener(Runnable listener) {
+		events.insertUpdateOrDelete.removeListener(listener);
+	}
+
+	@Override
+	public final void addInsertUpdateOrDeleteListener(Runnable listener) {
+		events.insertUpdateOrDelete.addListener(listener);
+	}
+
+	@Override
+	public final void addConfirmOverwriteListener(Consumer<State> listener) {
+		events.confirmOverwrite.addDataListener(listener);
+	}
+
+	@Override
+	public final void removeConfirmOverwriteListener(Consumer<State> listener) {
+		events.confirmOverwrite.removeDataListener(listener);
+	}
+
+	/**
+	 * Inserts the given entities into the database using the given connection
+	 * @param entities the entities to insert
+	 * @param connection the connection to use
+	 * @return the inserted entities
+	 * @throws DatabaseException in case of a database exception
+	 */
+	protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+		return requireNonNull(connection).insertSelect(entities);
+	}
+
+	/**
+	 * Updates the given entities in the database using the given connection
+	 * @param entities the entities to update
+	 * @param connection the connection to use
+	 * @return the updated entities
+	 * @throws DatabaseException in case of a database exception
+	 */
+	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+		return requireNonNull(connection).updateSelect(entities);
+	}
+
+	/**
+	 * Deletes the given entities from the database using the given connection
+	 * @param entities the entities to delete
+	 * @param connection the connection to use
+	 * @throws DatabaseException in case of a database exception
+	 */
+	protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+		requireNonNull(connection).delete(Entity.primaryKeys(entities));
+	}
+
+	/**
+	 * For every field referencing the given foreign key values, replaces that foreign key instance with
+	 * the corresponding entity from {@code values}, useful when attribute
+	 * values have been changed in the referenced entity that must be reflected in the edit model.
+	 * @param foreignKey the foreign key attribute
+	 * @param values the foreign key entities
+	 */
+	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
+		Entity currentForeignKeyValue = referencedEntity(foreignKey);
+		if (currentForeignKeyValue != null) {
+			for (Entity replacementValue : values) {
+				if (currentForeignKeyValue.equals(replacementValue)) {
+					put(foreignKey, null);
+					put(foreignKey, replacementValue);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Controls the validator used by this edit model.
+	 * @return the value controlling the validator
+	 * @see #validate(Entity)
+	 */
+	protected final Value<EntityValidator> validator() {
+		return validator;
+	}
+
+	/**
+	 * Controls the 'modified' predicate for this edit model, which is responsible for providing
+	 * the modified state of the underlying entity.
+	 * @return the value controlling the predicate used to check if the entity is modified
+	 * @see Entity#modified()
+	 * @see #modified()
+	 */
+	protected final Value<Predicate<Entity>> modifiedPredicate() {
+		return modifiedPredicate;
+	}
+
+	/**
+	 * Controls the 'exists' predicate for this edit model, which is responsible for providing
+	 * the exists state of the underlying entity.
+	 * @return the value controlling the predicate used to check if the entity exists
+	 * @see EntityDefinition#exists()
+	 * @see Entity#exists()
+	 */
+	protected final Value<Predicate<Entity>> existsPredicate() {
+		return existsPredicate;
+	}
+
+	/**
+	 * Updates the modified state.
+	 * @see #modified()
+	 */
+	protected final void updateModifiedState() {
+		states.updateModifiedState();
+	}
+
+	/**
+	 * Notifies that insert is about to be performed
+	 * @param entitiesToInsert the entities about to be inserted
+	 * @see #addBeforeInsertListener(Consumer)
+	 */
+	protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
+		events.beforeInsert.accept(requireNonNull(entitiesToInsert));
+	}
+
+	/**
+	 * Notifies that insert has been performed
+	 * @param insertedEntities the inserted entities
+	 * @see #addAfterInsertListener(Consumer)
+	 */
+	protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
+		events.afterInsert.accept(requireNonNull(insertedEntities));
+	}
+
+	/**
+	 * Notifies that update is about to be performed
+	 * @param entitiesToUpdate the entities about to be updated
+	 * @see #addBeforeUpdateListener(Consumer)
+	 */
+	protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
+		events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
+	}
+
+	/**
+	 * Notifies that update has been performed
+	 * @param updatedEntities the updated entities
+	 * @see #addAfterUpdateListener(Consumer)
+	 */
+	protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
+		events.afterUpdate.accept(requireNonNull(updatedEntities));
+	}
+
+	/**
+	 * Notifies that delete is about to be performed
+	 * @param entitiesToDelete the entities about to be deleted
+	 * @see #addBeforeDeleteListener(Consumer)
+	 */
+	protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
+		events.beforeDelete.accept(requireNonNull(entitiesToDelete));
+	}
+
+	/**
+	 * Notifies that delete has been performed
+	 * @param deletedEntities the deleted entities
+	 * @see #addAfterDeleteListener(Consumer)
+	 */
+	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
+		events.afterDelete.accept(requireNonNull(deletedEntities));
+	}
+
+	private boolean setEntityAllowed() {
+		if (states.overwriteWarning.get() && exists().get() && modified().get()) {
+			State confirmation = State.state(true);
+			events.confirmOverwrite.accept(confirmation);
+
+			return confirmation.get();
+		}
+
+		return true;
+	}
+
+	private void setEntity(Entity entity) {
+		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
+		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
+			Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
+			events.notifyValueChange(objectAttribute, this.entity.get(objectAttribute));
+		}
+		if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
+			states.updateEntityStates();
+		}
+		states.updateAttributeModifiedStates();
+
+		events.entity.accept(entity);
+	}
+
+	private void configurePersistentForeignKeys() {
+		if (EntityEditModel.PERSIST_FOREIGN_KEYS.get()) {
+			entityDefinition().foreignKeys().get().forEach(foreignKey ->
+							persist(foreignKey).set(foreignKeyWritable(foreignKey)));
+		}
+	}
+
+	private boolean foreignKeyWritable(ForeignKey foreignKey) {
+		return foreignKey.references().stream()
+						.map(ForeignKey.Reference::column)
+						.map(entityDefinition().columns()::definition)
+						.filter(ColumnDefinition.class::isInstance)
+						.map(ColumnDefinition.class::cast)
+						.anyMatch(columnDefinition -> !columnDefinition.readOnly());
+	}
+
+	/**
+	 * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
+	 * Values are populated for {@link ColumnDefinition} and its descendants, {@link ForeignKeyDefinition}
+	 * and {@link TransientAttributeDefinition} (excluding its descendants).
+	 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
+	 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
+	 * @return an entity instance populated with default values
+	 * @see ColumnDefinition.Builder#columnHasDefaultValue()
+	 * @see ColumnDefinition.Builder#defaultValue(Object)
+	 */
+	private Entity createEntity(ValueSupplier valueSupplier) {
+		EntityDefinition definition = entityDefinition();
+		Entity newEntity = definition.entity();
+		addColumnValues(valueSupplier, definition, newEntity);
+		addTransientValues(valueSupplier, definition, newEntity);
+		addForeignKeyValues(valueSupplier, definition, newEntity);
+
+		newEntity.save();
+
+		return newEntity;
+	}
+
+	private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
+		if (persist(attributeDefinition.attribute()).get()) {
+			if (attributeDefinition instanceof ForeignKeyDefinition) {
+				return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
+			}
+
+			return entity.get(attributeDefinition.attribute());
+		}
+
+		return (T) defaultValue(attributeDefinition.attribute()).get().get();
+	}
+
+	private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
+		return dependingValues(attribute, new LinkedHashMap<>());
+	}
+
+	private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
+		addDependingDerivedAttributes(attribute, dependingValues);
+		if (attribute instanceof Column) {
+			addDependingForeignKeys((Column<?>) attribute, dependingValues);
+		}
+		else if (attribute instanceof ForeignKey) {
+			addDependingReferencedColumns((ForeignKey) attribute, dependingValues);
+		}
+
+		return dependingValues;
+	}
+
+	private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
+		entityDefinition().attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
+			dependingValues.put(derivedAttribute, get(derivedAttribute));
+			addDependingDerivedAttributes(derivedAttribute, dependingValues);
+		});
+	}
+
+	private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
+		entityDefinition().foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
+						dependingValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
+	}
+
+	private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
+		foreignKey.references().forEach(reference ->
+						dependingValues.put(reference.column(), get(reference.column())));
+	}
+
+	private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
+		definition.columns().definitions().stream()
+						//these are set via their respective parent foreign key
+						.filter(columnDefinition -> !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
+						.filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
+						.map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
+						.forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+	}
+
+	private static void addTransientValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
+		definition.attributes().definitions().stream()
+						.filter(TransientAttributeDefinition.class::isInstance)
+						.filter(attributeDefinition -> !attributeDefinition.derived())
+						.map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
+						.forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+	}
+
+	private static void addForeignKeyValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
+		definition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
+						newEntity.put(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
+	}
+
+	/**
+	 * Maps the given entities and their updated counterparts to their original primary keys,
+	 * assumes a single copy of each entity in the given lists.
+	 * @param entitiesBeforeUpdate the entities before update
+	 * @param entitiesAfterUpdate the entities after update
+	 * @return the updated entities mapped to their respective original primary keys
+	 */
+	private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+																																 Collection<Entity> entitiesAfterUpdate) {
+		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
+		Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+		for (Entity entity : entitiesBeforeUpdate) {
+			keyMap.put(entity.originalPrimaryKey(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
+		}
+
+		return unmodifiableMap(keyMap);
+	}
+
+	private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
+		while (iterator.hasNext()) {
+			Entity current = iterator.next();
+			if (current.primaryKey().equals(primaryKey)) {
+				iterator.remove();
+
+				return current;
+			}
+		}
+
+		return null;
+	}
+
+	private interface ValueSupplier {
+		<T> T get(AttributeDefinition<T> attributeDefinition);
+	}
+
+	private final class DefaultInsert implements Insert {
+
+		private final Collection<Entity> entities;
+		private final boolean activeEntity;
+
+		private DefaultInsert() throws ValidationException {
+			this.entities = singleton(activeEntity());
+			this.activeEntity = true;
+			states.verifyInsertEnabled();
+			validate(entities);
+		}
+
+		private DefaultInsert(Collection<Entity> entities) throws ValidationException {
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			this.activeEntity = false;
+			states.verifyInsertEnabled();
+			validate(entities);
+		}
+
+		@Override
+		public void before() {
+			AbstractEntityEditModel.this.notifyBeforeInsert(entities);
+		}
+
+		@Override
+		public Collection<Entity> perform() throws DatabaseException {
+			LOG.debug("{} - insert {}", this, entities);
+			Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
+			if (!entities.isEmpty() && inserted.isEmpty()) {
+				throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
+			}
+
+			return inserted;
+		}
+
+		@Override
+		public void after(Collection<Entity> insertedEntities) {
+			AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
+			if (activeEntity) {
+				setEntity(insertedEntities.iterator().next());
+			}
+		}
+
+		private Entity activeEntity() {
+			Entity toInsert = entity.copy();
+			if (entity.definition().primaryKey().generated()) {
+				toInsert.clearPrimaryKey();
+			}
+
+			return toInsert;
+		}
+
+		private Collection<Entity> insert() throws DatabaseException {
+			before();
+			Collection<Entity> inserted = perform();
+			after(inserted);
+
+			return inserted;
+		}
+	}
+
+	private final class DefaultUpdate implements Update {
+
+		private final Collection<Entity> entities;
+
+		private DefaultUpdate() throws ValidationException {
+			this.entities = singleton(entity().copy());
+			states.verifyUpdateEnabled(entities);
+			validate(entities);
+			verifyModified(entities);
+		}
+
+		private DefaultUpdate(Collection<Entity> entities) throws ValidationException {
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			states.verifyUpdateEnabled(entities);
+			validate(entities);
+			verifyModified(entities);
+		}
+
+		@Override
+		public void before() {
+			AbstractEntityEditModel.this.notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
+		}
+
+		@Override
+		public Collection<Entity> perform() throws DatabaseException {
+			LOG.debug("{} - update {}", this, entities);
+			return new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection()));
+		}
+
+		@Override
+		public void after(Collection<Entity> updatedEntities) {
+			AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
+			Entity activeEntity = entity();
+			updatedEntities.stream()
+							.filter(updatedEntity -> updatedEntity.equals(activeEntity))
+							.findFirst()
+							.ifPresent(AbstractEntityEditModel.this::setEntity);
+		}
+
+		private void verifyModified(Collection<Entity> entities) {
+			for (Entity entityToUpdate : entities) {
+				if (!entityToUpdate.modified()) {
+					throw new IllegalArgumentException("Entity is not modified: " + entityToUpdate);
+				}
+			}
+		}
+
+		private Collection<Entity> update() throws DatabaseException {
+			before();
+			Collection<Entity> updatedEntities = perform();
+			after(updatedEntities);
+
+			return updatedEntities;
+		}
+	}
+
+	private final class DefaultDelete implements Delete {
+
+		private final Collection<Entity> entities;
+		private final boolean activeEntity;
+
+		private DefaultDelete() {
+			this.entities = singleton(activeEntity());
+			this.activeEntity = true;
+			states.verifyDeleteEnabled();
+		}
+
+		private DefaultDelete(Collection<Entity> entities) {
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			this.activeEntity = false;
+			states.verifyDeleteEnabled();
+		}
+
+		@Override
+		public void before() {
+			AbstractEntityEditModel.this.notifyBeforeDelete(entities);
+		}
+
+		@Override
+		public Collection<Entity> perform() throws DatabaseException {
+			LOG.debug("{} - delete {}", this, entities);
+			AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
+
+			return entities;
+		}
+
+		@Override
+		public void after(Collection<Entity> deletedEntities) {
+			AbstractEntityEditModel.this.notifyAfterDelete(deletedEntities);
+			if (activeEntity) {
+				defaults();
+			}
+		}
+
+		private Entity activeEntity() {
+			Entity copy = entity.copy();
+			copy.revert();
+
+			return copy;
+		}
+
+		private void delete() throws DatabaseException {
+			before();
+			after(perform());
+		}
+	}
+
+	private final class NotifyInserted implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> insertedEntities) {
+			if (states.editEvents.get()) {
+				EntityEditEvents.notifyInserted(insertedEntities);
+			}
+		}
+	}
+
+	private final class NotifyUpdated implements Consumer<Map<Entity.Key, Entity>> {
+
+		@Override
+		public void accept(Map<Entity.Key, Entity> updatedEntities) {
+			if (states.editEvents.get()) {
+				EntityEditEvents.notifyUpdated(updatedEntities);
+			}
+		}
+	}
+
+	private final class NotifyDeleted implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> deletedEntities) {
+			if (states.editEvents.get()) {
+				EntityEditEvents.notifyDeleted(deletedEntities);
+			}
+		}
+	}
+
+	private final class Events {
+
+		private final Event<Collection<Entity>> beforeInsert = Event.event();
+		private final Event<Collection<Entity>> afterInsert = Event.event();
+		private final Event<Map<Entity.Key, Entity>> beforeUpdate = Event.event();
+		private final Event<Map<Entity.Key, Entity>> afterUpdate = Event.event();
+		private final Event<Collection<Entity>> beforeDelete = Event.event();
+		private final Event<Collection<Entity>> afterDelete = Event.event();
+		private final Event<?> insertUpdateOrDelete = Event.event();
+		private final Event<State> confirmOverwrite = Event.event();
+		private final Event<Entity> entity = Event.event();
+		private final Event<Attribute<?>> valueChange = Event.event();
+		private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
+		private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
+
+		private void bindEvents() {
+			afterInsert.addListener(insertUpdateOrDelete);
+			afterUpdate.addListener(insertUpdateOrDelete);
+			afterDelete.addListener(insertUpdateOrDelete);
+			afterInsert.addDataListener(new NotifyInserted());
+			afterUpdate.addDataListener(new NotifyUpdated());
+			afterDelete.addDataListener(new NotifyDeleted());
+			validator.addListener(states::updateValidState);
+			modifiedPredicate.addListener(states::updateModifiedState);
+			existsPredicate.addListener(states::updateExistsState);
+		}
+
+		private <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
+			entityDefinition().attributes().definition(attribute);
+			((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+		}
+
+		private <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
+			entityDefinition().attributes().definition(attribute);
+			if (valueEditEvents.containsKey(attribute)) {
+				((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
+			}
+		}
+
+		private <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
+			entityDefinition().attributes().definition(attribute);
+			((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+		}
+
+		private <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
+			entityDefinition().attributes().definition(attribute);
+			if (valueChangeEvents.containsKey(attribute)) {
+				((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
+			}
+		}
+
+		private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
+			notifyValueChange(attribute, value);
+			Event<T> editEvent = (Event<T>) valueEditEvents.get(attribute);
+			if (editEvent != null) {
+				editEvent.accept(value);
+			}
+			dependingValues.forEach((dependingAttribute, previousValue) -> {
+				Object currentValue = get(dependingAttribute);
+				if (!Objects.equals(previousValue, currentValue)) {
+					notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
+				}
+			});
+		}
+
+		private <T> void notifyValueChange(Attribute<T> attribute, T value) {
+			states.updateEntityStates();
+			states.updateAttributeStates(attribute);
+			Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
+			if (changeEvent != null) {
+				changeEvent.accept(value);
+			}
+			valueChange.accept(attribute);
+		}
+	}
+
+	private final class States {
+
+		private final State entityValid = State.state();
+		private final State entityExists = State.state(false);
+		private final State entityModified = State.state();
+		private final State primaryKeyNull = State.state(true);
+		private final State readOnly = State.state();
+		private final State insertEnabled = State.state(true);
+		private final State updateEnabled = State.state(true);
+		private final State updateMultipleEnabled = State.state(true);
+		private final State deleteEnabled = State.state(true);
+		private final State overwriteWarning = State.state(WARN_ABOUT_UNSAVED_DATA.get());
+		private final State editEvents = State.state(EDIT_EVENTS.get());
+		private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
+		private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
+		private final Map<Attribute<?>, State> attributeValidMap = new HashMap<>();
+
+		private StateObserver modifiedObserver(Attribute<?> attribute) {
+			entityDefinition().attributes().definition(attribute);
+			return attributeModifiedMap.computeIfAbsent(attribute, k ->
+							State.state(entityExists.get() && entity.modified(attribute))).observer();
+		}
+
+		private StateObserver nullObserver(Attribute<?> attribute) {
+			entityDefinition().attributes().definition(attribute);
+			return attributeNullMap.computeIfAbsent(attribute, k ->
+							State.state(entity.isNull(attribute))).observer();
+		}
+
+		private StateObserver validObserver(Attribute<?> attribute) {
+			entityDefinition().attributes().definition(attribute);
+			return attributeValidMap.computeIfAbsent(attribute, k ->
+							State.state(valid(attribute))).observer();
+		}
+
+		private void updateEntityStates() {
+			updateExistsState();
+			updateModifiedState();
+			updateValidState();
+			updatePrimaryKeyNullState();
+		}
+
+		private void updateExistsState() {
+			entityExists.set(existsPredicate.get().test(entity));
+		}
+
+		private void updateModifiedState() {
+			entityModified.set(modifiedPredicate.get().test(entity));
+		}
+
+		private void updateValidState() {
+			entityValid.set(validator.get().valid(entity));
+		}
+
+		private void updatePrimaryKeyNullState() {
+			primaryKeyNull.set(entity.primaryKey().isNull());
+		}
+
+		private <T> void updateAttributeStates(Attribute<T> attribute) {
+			State nullState = attributeNullMap.get(attribute);
+			if (nullState != null) {
+				nullState.set(entity.isNull(attribute));
+			}
+			State validState = attributeValidMap.get(attribute);
+			if (validState != null) {
+				validState.set(valid(attribute));
+			}
+			State modifiedState = attributeModifiedMap.get(attribute);
+			if (modifiedState != null) {
+				updateAttributeModifiedState(attribute, modifiedState);
+			}
+		}
+
+		private boolean valid(Attribute<?> attribute) {
+			try {
+				validate(attribute);
+				return true;
+			}
+			catch (ValidationException e) {
+				return false;
+			}
+		}
+
+		private void updateAttributeModifiedStates() {
+			attributeModifiedMap.forEach(this::updateAttributeModifiedState);
+		}
+
+		private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
+			modifiedState.set(existsPredicate.get().test(entity) && entity.modified(attribute));
+		}
+
+		private void verifyInsertEnabled() {
+			if (readOnly.get() || !insertEnabled.get()) {
+				throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
+			}
+		}
+
+		private void verifyUpdateEnabled(Collection<Entity> entities) {
+			if (readOnly.get() || !updateEnabled.get()) {
+				throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
+			}
+			if (entities.size() > 1 && !updateMultipleEnabled.get()) {
+				throw new IllegalStateException("Batch update of entities is not enabled");
+			}
+		}
+
+		private void verifyDeleteEnabled() {
+			if (readOnly.get() || !deleteEnabled.get()) {
+				throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
+			}
+		}
+	}
+
+	private static final class EditModelValue<T> extends AbstractValue<T> {
+
+		private final EntityEditModel editModel;
+		private final Attribute<T> attribute;
+
+		private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
+			this.editModel = editModel;
+			this.attribute = attribute;
+			this.editModel.addValueListener(attribute, value -> notifyListeners());
+		}
+
+		@Override
+		public T get() {
+			return editModel.get(attribute);
+		}
+
+		@Override
+		protected void setValue(T value) {
+			editModel.put(attribute, value);
+		}
+	}
 }

@@ -25,19 +25,19 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 public final class CustomerPanel extends EntityPanel {
 
-  public CustomerPanel(SwingEntityModel customerModel) {
-    super(customerModel, new CustomerEditPanel(customerModel.editModel()), new CustomerTablePanel(customerModel.tableModel()));
+	public CustomerPanel(SwingEntityModel customerModel) {
+		super(customerModel, new CustomerEditPanel(customerModel.editModel()), new CustomerTablePanel(customerModel.tableModel()));
 
-    SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
-    SwingEntityModel invoiceLineModel = invoiceModel.detailModel(InvoiceLine.TYPE);
+		SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
+		SwingEntityModel invoiceLineModel = invoiceModel.detailModel(InvoiceLine.TYPE);
 
-    InvoiceLineTablePanel invoiceLineTablePanel = new InvoiceLineTablePanel(invoiceLineModel.tableModel());
-    InvoiceLineEditPanel invoiceLineEditPanel = new InvoiceLineEditPanel(invoiceLineModel.editModel(),
-            invoiceLineTablePanel.table().searchField());
+		InvoiceLineTablePanel invoiceLineTablePanel = new InvoiceLineTablePanel(invoiceLineModel.tableModel());
+		InvoiceLineEditPanel invoiceLineEditPanel = new InvoiceLineEditPanel(invoiceLineModel.editModel(),
+						invoiceLineTablePanel.table().searchField());
 
-    EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, invoiceLineEditPanel,
-            invoiceLineTablePanel, config -> config.includeControls(false));
+		EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, invoiceLineEditPanel,
+						invoiceLineTablePanel, config -> config.includeControls(false));
 
-    addDetailPanel(new InvoicePanel(invoiceModel, invoiceLinePanel));
-  }
+		addDetailPanel(new InvoicePanel(invoiceModel, invoiceLinePanel));
+	}
 }

@@ -27,18 +27,18 @@ import org.junit.jupiter.api.Test;
 // tag::domainTest[]
 public class EmployeesTest extends EntityTestUnit {
 
-  public EmployeesTest() {
-    super(new Employees());
-  }
+	public EmployeesTest() {
+		super(new Employees());
+	}
 
-  @Test
-  void department() throws Exception {
-    test(Department.TYPE);
-  }
+	@Test
+	void department() throws Exception {
+		test(Department.TYPE);
+	}
 
-  @Test
-  void employee() throws Exception {
-    test(Employee.TYPE);
-  }
+	@Test
+	void employee() throws Exception {
+		test(Employee.TYPE);
+	}
 }
 // end::domainTest[]

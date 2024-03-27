@@ -26,32 +26,32 @@ import java.time.temporal.Temporal;
 
 final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValue<T, TemporalField<T>> {
 
-  TemporalFieldValue(TemporalField<T> component, UpdateOn updateOn) {
-    super(component);
-    if (updateOn == UpdateOn.VALUE_CHANGE) {
-      component.addListener(value -> notifyListeners());
-    }
-    else {
-      component.addFocusListener(new NotifyOnFocusLost());
-    }
-  }
+	TemporalFieldValue(TemporalField<T> component, UpdateOn updateOn) {
+		super(component);
+		if (updateOn == UpdateOn.VALUE_CHANGE) {
+			component.addListener(value -> notifyListeners());
+		}
+		else {
+			component.addFocusListener(new NotifyOnFocusLost());
+		}
+	}
 
-  @Override
-  protected T getComponentValue() {
-    return component().getTemporal();
-  }
+	@Override
+	protected T getComponentValue() {
+		return component().getTemporal();
+	}
 
-  @Override
-  protected void setComponentValue(T value) {
-    component().setTemporal(value);
-  }
+	@Override
+	protected void setComponentValue(T value) {
+		component().setTemporal(value);
+	}
 
-  private final class NotifyOnFocusLost extends FocusAdapter {
-    @Override
-    public void focusLost(FocusEvent e) {
-      if (!e.isTemporary()) {
-        notifyListeners();
-      }
-    }
-  }
+	private final class NotifyOnFocusLost extends FocusAdapter {
+		@Override
+		public void focusLost(FocusEvent e) {
+			if (!e.isTemporary()) {
+				notifyListeners();
+			}
+		}
+	}
 }

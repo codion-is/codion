@@ -53,156 +53,156 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilteredTableColumnComponentPanel<C, T extends JComponent> extends JPanel {
 
-  private final FilteredTableColumnModel<C> columnModel;
-  private final Collection<FilteredTableColumn<C>> columns;
-  private final Box.Filler scrollBarFiller;
-  private final JPanel basePanel;
-  private final Map<C, T> components;
-  private final Map<C, JPanel> nullComponents = new HashMap<>(0);
+	private final FilteredTableColumnModel<C> columnModel;
+	private final Collection<FilteredTableColumn<C>> columns;
+	private final Box.Filler scrollBarFiller;
+	private final JPanel basePanel;
+	private final Map<C, T> components;
+	private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-  private FilteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> components) {
-    this.columnModel = requireNonNull(columnModel);
-    this.columns = columnModel.columns();
-    requireNonNull(components).forEach((columnIdentifier, component) -> {
-      if (!columnModel.containsColumn(columnIdentifier)) {
-        throw new IllegalArgumentException("Column " + columnIdentifier + " is not part of column model");
-      }
-    });
-    this.components = Collections.unmodifiableMap(components);
-    this.basePanel = new JPanel(FlexibleGridLayout.builder()
-            .rows(1)
-            .build());
-    Dimension fillerSize = new Dimension(UIManager.getInt("ScrollBar.width"), 0);
-    this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
-    setLayout(new BorderLayout());
-    add(basePanel, BorderLayout.WEST);
-    bindColumnAndComponentSizes();
-    resetPanel();
-  }
+	private FilteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> components) {
+		this.columnModel = requireNonNull(columnModel);
+		this.columns = columnModel.columns();
+		requireNonNull(components).forEach((columnIdentifier, component) -> {
+			if (!columnModel.containsColumn(columnIdentifier)) {
+				throw new IllegalArgumentException("Column " + columnIdentifier + " is not part of column model");
+			}
+		});
+		this.components = Collections.unmodifiableMap(components);
+		this.basePanel = new JPanel(FlexibleGridLayout.builder()
+						.rows(1)
+						.build());
+		Dimension fillerSize = new Dimension(UIManager.getInt("ScrollBar.width"), 0);
+		this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
+		setLayout(new BorderLayout());
+		add(basePanel, BorderLayout.WEST);
+		bindColumnAndComponentSizes();
+		resetPanel();
+	}
 
-  @Override
-  public void updateUI() {
-    super.updateUI();
-    Utilities.updateUI(scrollBarFiller, basePanel);
-    if (components != null) {
-      Utilities.updateUI(components.values());
-    }
-    if (nullComponents != null) {
-      Utilities.updateUI(nullComponents.values());
-    }
-  }
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateUI(scrollBarFiller, basePanel);
+		if (components != null) {
+			Utilities.updateUI(components.values());
+		}
+		if (nullComponents != null) {
+			Utilities.updateUI(nullComponents.values());
+		}
+	}
 
-  /**
-   * @return the column components mapped their respective column identifiers
-   */
-  public Map<C, T> components() {
-    return components;
-  }
+	/**
+	 * @return the column components mapped their respective column identifiers
+	 */
+	public Map<C, T> components() {
+		return components;
+	}
 
-  /**
-   * Instantiates a new {@link FilteredTableColumnComponentPanel}.
-   * @param columnModel the column model
-   * @param columnComponents the column components mapped to their respective column
-   * @param <C> the column identifier type
-   * @param <T> the component type
-   * @return a new {@link FilteredTableColumnComponentPanel}
-   */
-  public static <C, T extends JComponent> FilteredTableColumnComponentPanel<C, T> filteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
-                                                                                                                    Map<C, T> columnComponents) {
-    return new FilteredTableColumnComponentPanel<>(columnModel, columnComponents);
-  }
+	/**
+	 * Instantiates a new {@link FilteredTableColumnComponentPanel}.
+	 * @param columnModel the column model
+	 * @param columnComponents the column components mapped to their respective column
+	 * @param <C> the column identifier type
+	 * @param <T> the component type
+	 * @return a new {@link FilteredTableColumnComponentPanel}
+	 */
+	public static <C, T extends JComponent> FilteredTableColumnComponentPanel<C, T> filteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
+																																																										Map<C, T> columnComponents) {
+		return new FilteredTableColumnComponentPanel<>(columnModel, columnComponents);
+	}
 
-  private void resetPanel() {
-    Component childFocusOwner = childFocusOwner();
-    if (childFocusOwner != null) {
-      basePanel.requestFocusInWindow();
-    }
-    basePanel.removeAll();
-    columnModel.visible().stream()
-            .map(this::columnComponent)
-            .forEach(basePanel::add);
-    basePanel.add(scrollBarFiller);
-    syncPanelWidths();
-    repaint();
-    if (childFocusOwner != null && childFocusOwner.isShowing()) {
-      childFocusOwner.requestFocusInWindow();
-    }
-  }
+	private void resetPanel() {
+		Component childFocusOwner = childFocusOwner();
+		if (childFocusOwner != null) {
+			basePanel.requestFocusInWindow();
+		}
+		basePanel.removeAll();
+		columnModel.visible().stream()
+						.map(this::columnComponent)
+						.forEach(basePanel::add);
+		basePanel.add(scrollBarFiller);
+		syncPanelWidths();
+		repaint();
+		if (childFocusOwner != null && childFocusOwner.isShowing()) {
+			childFocusOwner.requestFocusInWindow();
+		}
+	}
 
-  private Component childFocusOwner() {
-    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-    if (Utilities.parentOfType(FilteredTableColumnComponentPanel.class, focusOwner) == this) {
-      return focusOwner;
-    }
+	private Component childFocusOwner() {
+		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+		if (Utilities.parentOfType(FilteredTableColumnComponentPanel.class, focusOwner) == this) {
+			return focusOwner;
+		}
 
-    return null;
-  }
+		return null;
+	}
 
-  private void bindColumnAndComponentSizes() {
-    columnModel.addColumnModelListener(new SyncColumnModelListener());
-    for (FilteredTableColumn<C> column : columns) {
-      JComponent component = columnComponent(column);
-      component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
-      column.addPropertyChangeListener(new SyncListener(component, column));
-    }
-  }
+	private void bindColumnAndComponentSizes() {
+		columnModel.addColumnModelListener(new SyncColumnModelListener());
+		for (FilteredTableColumn<C> column : columns) {
+			JComponent component = columnComponent(column);
+			component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
+			column.addPropertyChangeListener(new SyncListener(component, column));
+		}
+	}
 
-  private void syncPanelWidths() {
-    for (FilteredTableColumn<C> column : columns) {
-      syncPanelWidth(columnComponent(column), column);
-    }
-  }
+	private void syncPanelWidths() {
+		for (FilteredTableColumn<C> column : columns) {
+			syncPanelWidth(columnComponent(column), column);
+		}
+	}
 
-  private JComponent columnComponent(FilteredTableColumn<C> column) {
-    return components.getOrDefault(column.getIdentifier(),
-            (T) nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
-  }
+	private JComponent columnComponent(FilteredTableColumn<C> column) {
+		return components.getOrDefault(column.getIdentifier(),
+						(T) nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
+	}
 
-  private static void syncPanelWidth(JComponent component, TableColumn column) {
-    component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
-    component.revalidate();
-  }
+	private static void syncPanelWidth(JComponent component, TableColumn column) {
+		component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
+		component.revalidate();
+	}
 
-  private static final class SyncListener implements PropertyChangeListener {
+	private static final class SyncListener implements PropertyChangeListener {
 
-    private final JComponent component;
-    private final TableColumn column;
+		private final JComponent component;
+		private final TableColumn column;
 
-    private SyncListener(JComponent component, TableColumn column) {
-      this.component = component;
-      this.column = column;
-    }
+		private SyncListener(JComponent component, TableColumn column) {
+			this.component = component;
+			this.column = column;
+		}
 
-    @Override
-    public void propertyChange(PropertyChangeEvent changeEvent) {
-      if ("width".equals(changeEvent.getPropertyName())) {
-        syncPanelWidth(component, column);
-      }
-    }
-  }
+		@Override
+		public void propertyChange(PropertyChangeEvent changeEvent) {
+			if ("width".equals(changeEvent.getPropertyName())) {
+				syncPanelWidth(component, column);
+			}
+		}
+	}
 
-  private final class SyncColumnModelListener implements TableColumnModelListener {
-    @Override
-    public void columnAdded(TableColumnModelEvent e) {
-      resetPanel();
-    }
+	private final class SyncColumnModelListener implements TableColumnModelListener {
+		@Override
+		public void columnAdded(TableColumnModelEvent e) {
+			resetPanel();
+		}
 
-    @Override
-    public void columnRemoved(TableColumnModelEvent e) {
-      resetPanel();
-    }
+		@Override
+		public void columnRemoved(TableColumnModelEvent e) {
+			resetPanel();
+		}
 
-    @Override
-    public void columnMoved(TableColumnModelEvent e) {
-      if (e.getFromIndex() != e.getToIndex()) {
-        resetPanel();
-      }
-    }
+		@Override
+		public void columnMoved(TableColumnModelEvent e) {
+			if (e.getFromIndex() != e.getToIndex()) {
+				resetPanel();
+			}
+		}
 
-    @Override
-    public void columnMarginChanged(ChangeEvent e) {/*Not required*/}
+		@Override
+		public void columnMarginChanged(ChangeEvent e) {/*Not required*/}
 
-    @Override
-    public void columnSelectionChanged(ListSelectionEvent e) {/*Not required*/}
-  }
+		@Override
+		public void columnSelectionChanged(ListSelectionEvent e) {/*Not required*/}
+	}
 }

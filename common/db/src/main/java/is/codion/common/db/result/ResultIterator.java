@@ -28,31 +28,31 @@ import java.util.Iterator;
  */
 public interface ResultIterator<T> extends AutoCloseable {
 
-  /**
-   * Returns true if a row is available in the underlying result set.
-   * @return true if a row is available in the underlying result set
-   * @throws SQLException in case of an exception
-   */
-  boolean hasNext() throws SQLException;
+	/**
+	 * Returns true if a row is available in the underlying result set.
+	 * @return true if a row is available in the underlying result set
+	 * @throws SQLException in case of an exception
+	 */
+	boolean hasNext() throws SQLException;
 
-  /**
-   * @return an instance of T fetched from the result set
-   * @throws SQLException in case of an exception
-   * @throws java.util.NoSuchElementException in case no more rows are available
-   */
-  T next() throws SQLException;
+	/**
+	 * @return an instance of T fetched from the result set
+	 * @throws SQLException in case of an exception
+	 * @throws java.util.NoSuchElementException in case no more rows are available
+	 */
+	T next() throws SQLException;
 
-  /**
-   * Closes the underlying result set and other resources held by this iterator
-   */
-  void close();
+	/**
+	 * Closes the underlying result set and other resources held by this iterator
+	 */
+	void close();
 
-  /**
-   * Wraps this {@link ResultIterator} in a {@link Iterator}. Any SQLExceptions
-   * that occur are rethrown as RuntimeExceptions.
-   * @return a {@link Iterator} instance based on this {@link ResultIterator}
-   */
-  default Iterator<T> iterator() {
-    return new DefaultIterator<>(this);
-  }
+	/**
+	 * Wraps this {@link ResultIterator} in a {@link Iterator}. Any SQLExceptions
+	 * that occur are rethrown as RuntimeExceptions.
+	 * @return a {@link Iterator} instance based on this {@link ResultIterator}
+	 */
+	default Iterator<T> iterator() {
+		return new DefaultIterator<>(this);
+	}
 }

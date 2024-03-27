@@ -27,30 +27,30 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 
 public final class InvoiceEditModel extends SwingEntityEditModel {
 
-  public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
-    super(Invoice.TYPE, connectionProvider);
-    persist(Invoice.CUSTOMER_FK).set(false);
-    bindEvents();
-  }
+	public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
+		super(Invoice.TYPE, connectionProvider);
+		persist(Invoice.CUSTOMER_FK).set(false);
+		bindEvents();
+	}
 
-  private void bindEvents() {
-    addEditListener(Invoice.CUSTOMER_FK, this::setAddress);
-  }
+	private void bindEvents() {
+		addEditListener(Invoice.CUSTOMER_FK, this::setAddress);
+	}
 
-  private void setAddress(Entity customer) {
-    if (customer == null) {
-      put(Invoice.BILLINGADDRESS, null);
-      put(Invoice.BILLINGCITY, null);
-      put(Invoice.BILLINGPOSTALCODE, null);
-      put(Invoice.BILLINGSTATE, null);
-      put(Invoice.BILLINGCOUNTRY, null);
-    }
-    else {
-      put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
-      put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
-      put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
-      put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
-      put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
-    }
-  }
+	private void setAddress(Entity customer) {
+		if (customer == null) {
+			put(Invoice.BILLINGADDRESS, null);
+			put(Invoice.BILLINGCITY, null);
+			put(Invoice.BILLINGPOSTALCODE, null);
+			put(Invoice.BILLINGSTATE, null);
+			put(Invoice.BILLINGCOUNTRY, null);
+		}
+		else {
+			put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
+			put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
+			put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
+			put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
+			put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
+		}
+	}
 }

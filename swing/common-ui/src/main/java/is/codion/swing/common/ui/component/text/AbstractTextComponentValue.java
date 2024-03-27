@@ -39,72 +39,72 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractTextComponentValue<T, C extends JTextComponent> extends AbstractComponentValue<T, C> {
 
-  /**
-   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}
-   * update on policy and no null value.
-   * @param component the component
-   */
-  protected AbstractTextComponentValue(C component) {
-    this(component, null);
-  }
+	/**
+	 * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}
+	 * update on policy and no null value.
+	 * @param component the component
+	 */
+	protected AbstractTextComponentValue(C component) {
+		this(component, null);
+	}
 
-  /**
-   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}
-   * update on policy.
-   * @param component the component
-   * @param nullValue the value to use instead of null
-   */
-  protected AbstractTextComponentValue(C component, T nullValue) {
-    this(component, nullValue, UpdateOn.VALUE_CHANGE);
-  }
+	/**
+	 * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}
+	 * update on policy.
+	 * @param component the component
+	 * @param nullValue the value to use instead of null
+	 */
+	protected AbstractTextComponentValue(C component, T nullValue) {
+		this(component, nullValue, UpdateOn.VALUE_CHANGE);
+	}
 
-  /**
-   * Instantiates a new {@link AbstractComponentValue}
-   * @param component the component
-   * @param nullValue the value to use instead of null
-   * @param updateOn the update on policy
-   * @throws NullPointerException in case component is null
-   */
-  protected AbstractTextComponentValue(C component, T nullValue, UpdateOn updateOn) {
-    super(component, nullValue);
-    DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
-    if (documentFilter instanceof ValidationDocumentFilter) {
-      ((ValidationDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
-    }
-    if (updateOn == UpdateOn.VALUE_CHANGE) {
-      Document document = component.getDocument();
-      if (document instanceof NumberDocument) {
-        ((NumberDocument<Number>) document).addListener(new NotifyOnNumberChanged());
-      }
-      else {
-        document.addDocumentListener(new NotifyOnContentsChanged());
-      }
-    }
-    else {
-      component.addFocusListener(new NotifyOnFocusLost());
-    }
-  }
+	/**
+	 * Instantiates a new {@link AbstractComponentValue}
+	 * @param component the component
+	 * @param nullValue the value to use instead of null
+	 * @param updateOn the update on policy
+	 * @throws NullPointerException in case component is null
+	 */
+	protected AbstractTextComponentValue(C component, T nullValue, UpdateOn updateOn) {
+		super(component, nullValue);
+		DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
+		if (documentFilter instanceof ValidationDocumentFilter) {
+			((ValidationDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
+		}
+		if (updateOn == UpdateOn.VALUE_CHANGE) {
+			Document document = component.getDocument();
+			if (document instanceof NumberDocument) {
+				((NumberDocument<Number>) document).addListener(new NotifyOnNumberChanged());
+			}
+			else {
+				document.addDocumentListener(new NotifyOnContentsChanged());
+			}
+		}
+		else {
+			component.addFocusListener(new NotifyOnFocusLost());
+		}
+	}
 
-  private final class NotifyOnNumberChanged implements Consumer<Number> {
-    @Override
-    public void accept(Number value) {
-      notifyListeners();
-    }
-  }
+	private final class NotifyOnNumberChanged implements Consumer<Number> {
+		@Override
+		public void accept(Number value) {
+			notifyListeners();
+		}
+	}
 
-  private final class NotifyOnContentsChanged implements DocumentAdapter {
-    @Override
-    public void contentsChanged(DocumentEvent e) {
-      notifyListeners();
-    }
-  }
+	private final class NotifyOnContentsChanged implements DocumentAdapter {
+		@Override
+		public void contentsChanged(DocumentEvent e) {
+			notifyListeners();
+		}
+	}
 
-  private final class NotifyOnFocusLost extends FocusAdapter {
-    @Override
-    public void focusLost(FocusEvent e) {
-      if (!e.isTemporary()) {
-        notifyListeners();
-      }
-    }
-  }
+	private final class NotifyOnFocusLost extends FocusAdapter {
+		@Override
+		public void focusLost(FocusEvent e) {
+			if (!e.isTemporary()) {
+				notifyListeners();
+			}
+		}
+	}
 }

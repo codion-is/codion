@@ -33,15 +33,15 @@
  * {@link is.codion.framework.domain.entity.condition.ForeignKeyCondition}<br>
  */
 module is.codion.framework.domain {
-  requires org.slf4j;
-  requires transitive is.codion.common.db;
+	requires org.slf4j;
+	requires transitive is.codion.common.db;
 
-  exports is.codion.framework.domain.entity;
-  exports is.codion.framework.domain.entity.attribute;
-  exports is.codion.framework.domain.entity.condition;
-  exports is.codion.framework.domain.entity.exception;
-  exports is.codion.framework.domain.entity.query;
-  exports is.codion.framework.domain;
+	exports is.codion.framework.domain.entity;
+	exports is.codion.framework.domain.entity.attribute;
+	exports is.codion.framework.domain.entity.condition;
+	exports is.codion.framework.domain.entity.exception;
+	exports is.codion.framework.domain.entity.query;
+	exports is.codion.framework.domain;
 
-  uses is.codion.framework.domain.Domain;
+	uses is.codion.framework.domain.Domain;
 }

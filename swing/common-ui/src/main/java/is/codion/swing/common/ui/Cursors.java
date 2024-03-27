@@ -25,8 +25,8 @@ import java.awt.Cursor;
  */
 public final class Cursors {
 
-  public static final Cursor WAIT = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-  public static final Cursor DEFAULT = Cursor.getDefaultCursor();
+	public static final Cursor WAIT = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+	public static final Cursor DEFAULT = Cursor.getDefaultCursor();
 
-  private Cursors() {}
+	private Cursors() {}
 }

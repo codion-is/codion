@@ -25,16 +25,16 @@ import java.util.ResourceBundle;
  */
 public final class SwingMessages {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingMessages.class.getName());
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingMessages.class.getName());
 
-  private SwingMessages() {}
+	private SwingMessages() {}
 
-  /**
-   * Retrieves the locale string associated with the given key
-   * @param key the key
-   * @return the string associated with the key
-   */
-  public static String get(String key) {
-    return MESSAGES.getString(key);
-  }
+	/**
+	 * Retrieves the locale string associated with the given key
+	 * @param key the key
+	 * @return the string associated with the key
+	 */
+	public static String get(String key) {
+		return MESSAGES.getString(key);
+	}
 }

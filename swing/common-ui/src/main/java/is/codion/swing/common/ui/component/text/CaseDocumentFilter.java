@@ -27,61 +27,61 @@ import static java.util.Objects.requireNonNull;
  */
 public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
 
-  /**
-   * Specifies possible case conversions for document text.
-   */
-  public enum DocumentCase {
-    NONE, UPPERCASE, LOWERCASE;
-  }
+	/**
+	 * Specifies possible case conversions for document text.
+	 */
+	public enum DocumentCase {
+		NONE, UPPERCASE, LOWERCASE;
+	}
 
-  private DocumentCase documentCase = DocumentCase.NONE;
+	private DocumentCase documentCase = DocumentCase.NONE;
 
-  /**
-   * Instantiates a new CaseDocumentFilter
-   * @param documentCase the document case setting
-   */
-  private CaseDocumentFilter(DocumentCase documentCase) {
-    super(STRING_PARSER);
-    setDocumentCase(documentCase);
-  }
+	/**
+	 * Instantiates a new CaseDocumentFilter
+	 * @param documentCase the document case setting
+	 */
+	private CaseDocumentFilter(DocumentCase documentCase) {
+		super(STRING_PARSER);
+		setDocumentCase(documentCase);
+	}
 
-  /**
-   * @param documentCase the document case setting
-   * @return this CaseDocumentFilter instance
-   */
-  public CaseDocumentFilter setDocumentCase(DocumentCase documentCase) {
-    this.documentCase = requireNonNull(documentCase);
-    return this;
-  }
+	/**
+	 * @param documentCase the document case setting
+	 * @return this CaseDocumentFilter instance
+	 */
+	public CaseDocumentFilter setDocumentCase(DocumentCase documentCase) {
+		this.documentCase = requireNonNull(documentCase);
+		return this;
+	}
 
-  /**
-   * @return the document case setting
-   */
-  public DocumentCase getDocumentCase() {
-    return documentCase;
-  }
+	/**
+	 * @return the document case setting
+	 */
+	public DocumentCase getDocumentCase() {
+		return documentCase;
+	}
 
-  /**
-   * Creates a new CaseDocumentFilter instance, configured with {@link DocumentCase#NONE}
-   * @return a new CaseDocumentFilter instance
-   */
-  public static CaseDocumentFilter caseDocumentFilter() {
-    return new CaseDocumentFilter(DocumentCase.NONE);
-  }
+	/**
+	 * Creates a new CaseDocumentFilter instance, configured with {@link DocumentCase#NONE}
+	 * @return a new CaseDocumentFilter instance
+	 */
+	public static CaseDocumentFilter caseDocumentFilter() {
+		return new CaseDocumentFilter(DocumentCase.NONE);
+	}
 
-  @Override
-  protected String transform(String string) {
-    return string == null ? null : setCase(string);
-  }
+	@Override
+	protected String transform(String string) {
+		return string == null ? null : setCase(string);
+	}
 
-  private String setCase(String string) {
-    switch (documentCase) {
-      case UPPERCASE:
-        return string.toUpperCase(Locale.getDefault());
-      case LOWERCASE:
-        return string.toLowerCase(Locale.getDefault());
-      default:
-        return string;
-    }
-  }
+	private String setCase(String string) {
+		switch (documentCase) {
+			case UPPERCASE:
+				return string.toUpperCase(Locale.getDefault());
+			case LOWERCASE:
+				return string.toLowerCase(Locale.getDefault());
+			default:
+				return string;
+		}
+	}
 }

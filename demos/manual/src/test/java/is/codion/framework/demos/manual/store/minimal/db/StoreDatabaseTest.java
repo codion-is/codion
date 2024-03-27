@@ -26,8 +26,8 @@ import java.sql.SQLException;
 
 public final class StoreDatabaseTest {
 
-  @Test
-  void run() throws DatabaseException, SQLException {
-    StoreDatabase.storeEntityConnection();
-  }
+	@Test
+	void run() throws DatabaseException, SQLException {
+		StoreDatabase.storeEntityConnection();
+	}
 }

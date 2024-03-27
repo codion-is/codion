@@ -31,42 +31,42 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DatabaseTest {
 
-  @Test
-  void validateWithQuery() throws DatabaseException, SQLException {
-    Database testDatabase = new TestDatabase();
-    Connection connection = testDatabase.createConnection(User.parse("scott:tiger"));
-    assertTrue(testDatabase.connectionValid(connection));
-    connection.close();
-    assertFalse(testDatabase.connectionValid(connection));
-  }
+	@Test
+	void validateWithQuery() throws DatabaseException, SQLException {
+		Database testDatabase = new TestDatabase();
+		Connection connection = testDatabase.createConnection(User.parse("scott:tiger"));
+		assertTrue(testDatabase.connectionValid(connection));
+		connection.close();
+		assertFalse(testDatabase.connectionValid(connection));
+	}
 
-  private static final class TestDatabase extends AbstractDatabase {
+	private static final class TestDatabase extends AbstractDatabase {
 
-    private final Database database;
+		private final Database database;
 
-    public TestDatabase() {
-      super("jdbc:h2:mem:h2db");
-      this.database = Database.instance();
-    }
+		public TestDatabase() {
+			super("jdbc:h2:mem:h2db");
+			this.database = Database.instance();
+		}
 
-    @Override
-    public String name() {
-      return database.name();
-    }
+		@Override
+		public String name() {
+			return database.name();
+		}
 
-    @Override
-    public String selectForUpdateClause() {
-      return FOR_UPDATE_NOWAIT;
-    }
+		@Override
+		public String selectForUpdateClause() {
+			return FOR_UPDATE_NOWAIT;
+		}
 
-    @Override
-    public String limitOffsetClause(Integer limit, Integer offset) {
-      return createLimitOffsetClause(limit, offset);
-    }
+		@Override
+		public String limitOffsetClause(Integer limit, Integer offset) {
+			return createLimitOffsetClause(limit, offset);
+		}
 
-    @Override
-    public String autoIncrementQuery(String idSource) {
-      return database.autoIncrementQuery(idSource);
-    }
-  }
+		@Override
+		public String autoIncrementQuery(String idSource) {
+			return database.autoIncrementQuery(idSource);
+		}
+	}
 }

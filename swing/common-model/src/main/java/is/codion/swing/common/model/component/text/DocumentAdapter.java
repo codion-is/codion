@@ -27,22 +27,22 @@ import javax.swing.event.DocumentListener;
  */
 public interface DocumentAdapter extends DocumentListener {
 
-  @Override
-  default void changedUpdate(DocumentEvent e) {}
+	@Override
+	default void changedUpdate(DocumentEvent e) {}
 
-  @Override
-  default void insertUpdate(DocumentEvent e) {
-    contentsChanged(e);
-  }
+	@Override
+	default void insertUpdate(DocumentEvent e) {
+		contentsChanged(e);
+	}
 
-  @Override
-  default void removeUpdate(DocumentEvent e) {
-    contentsChanged(e);
-  }
+	@Override
+	default void removeUpdate(DocumentEvent e) {
+		contentsChanged(e);
+	}
 
-  /**
-   * Called when the contents of this document change, either via insertion, update or removal
-   * @param e the document event
-   */
-  void contentsChanged(DocumentEvent e);
+	/**
+	 * Called when the contents of this document change, either via insertion, update or removal
+	 * @param e the document event
+	 */
+	void contentsChanged(DocumentEvent e);
 }

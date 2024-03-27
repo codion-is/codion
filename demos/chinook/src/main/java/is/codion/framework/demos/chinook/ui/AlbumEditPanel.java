@@ -32,37 +32,37 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class AlbumEditPanel extends EntityEditPanel {
 
-  public AlbumEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public AlbumEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Album.ARTIST_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Album.ARTIST_FK);
 
-    createForeignKeySearchFieldPanel(Album.ARTIST_FK, this::createArtistEditPanel)
-            .columns(15)
-            .add(true)
-            .edit(true);
-    createTextField(Album.TITLE)
-            .columns(15);
-    component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
+		createForeignKeySearchFieldPanel(Album.ARTIST_FK, this::createArtistEditPanel)
+						.columns(15)
+						.add(true)
+						.edit(true);
+		createTextField(Album.TITLE)
+						.columns(15);
+		component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
 
-    JPanel centerPanel = borderLayoutPanel()
-            .westComponent(borderLayoutPanel()
-                    .northComponent(gridLayoutPanel(2, 1)
-                            .add(createInputPanel(Album.ARTIST_FK))
-                            .add(createInputPanel(Album.TITLE))
-                            .build())
-                    .build())
-            .centerComponent(createInputPanel(Album.COVER))
-            .build();
+		JPanel centerPanel = borderLayoutPanel()
+						.westComponent(borderLayoutPanel()
+										.northComponent(gridLayoutPanel(2, 1)
+														.add(createInputPanel(Album.ARTIST_FK))
+														.add(createInputPanel(Album.TITLE))
+														.build())
+										.build())
+						.centerComponent(createInputPanel(Album.COVER))
+						.build();
 
-    setLayout(borderLayout());
-    add(centerPanel, BorderLayout.CENTER);
-  }
+		setLayout(borderLayout());
+		add(centerPanel, BorderLayout.CENTER);
+	}
 
-  private EntityEditPanel createArtistEditPanel() {
-    return new ArtistEditPanel(new SwingEntityEditModel(Artist.TYPE, editModel().connectionProvider()));
-  }
+	private EntityEditPanel createArtistEditPanel() {
+		return new ArtistEditPanel(new SwingEntityEditModel(Artist.TYPE, editModel().connectionProvider()));
+	}
 }

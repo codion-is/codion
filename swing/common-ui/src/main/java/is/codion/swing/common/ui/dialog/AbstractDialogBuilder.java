@@ -38,64 +38,64 @@ import static java.util.Objects.requireNonNull;
  */
 public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
 
-  protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
+	protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 
-  protected Window owner;
-  protected Component locationRelativeTo;
-  protected Point location;
-  protected ValueObserver<String> titleProvider;
-  protected ImageIcon icon;
+	protected Window owner;
+	protected Component locationRelativeTo;
+	protected Point location;
+	protected ValueObserver<String> titleProvider;
+	protected ImageIcon icon;
 
-  @Override
-  public final B owner(Window owner) {
-    this.owner = owner;
-    if (locationRelativeTo == null) {
-      locationRelativeTo = owner;
-    }
-    return (B) this;
-  }
+	@Override
+	public final B owner(Window owner) {
+		this.owner = owner;
+		if (locationRelativeTo == null) {
+			locationRelativeTo = owner;
+		}
+		return (B) this;
+	}
 
-  @Override
-  public final B owner(Component owner) {
-    this.owner = owner == null ? null : Utilities.parentWindow(owner);
-    if (locationRelativeTo == null) {
-      locationRelativeTo = owner;
-    }
-    return (B) this;
-  }
+	@Override
+	public final B owner(Component owner) {
+		this.owner = owner == null ? null : Utilities.parentWindow(owner);
+		if (locationRelativeTo == null) {
+			locationRelativeTo = owner;
+		}
+		return (B) this;
+	}
 
-  @Override
-  public final B locationRelativeTo(Component locationRelativeTo) {
-    this.locationRelativeTo = locationRelativeTo;
-    return (B) this;
-  }
+	@Override
+	public final B locationRelativeTo(Component locationRelativeTo) {
+		this.locationRelativeTo = locationRelativeTo;
+		return (B) this;
+	}
 
-  @Override
-  public final B location(Point location) {
-    this.location = location;
-    return (B) this;
-  }
+	@Override
+	public final B location(Point location) {
+		this.location = location;
+		return (B) this;
+	}
 
-  @Override
-  public final B title(String title) {
-    return titleProvider(Value.value(title));
-  }
+	@Override
+	public final B title(String title) {
+		return titleProvider(Value.value(title));
+	}
 
-  @Override
-  public final B titleProvider(ValueObserver<String> titleProvider) {
-    this.titleProvider = titleProvider;
-    return (B) this;
-  }
+	@Override
+	public final B titleProvider(ValueObserver<String> titleProvider) {
+		this.titleProvider = titleProvider;
+		return (B) this;
+	}
 
-  @Override
-  public final B icon(ImageIcon icon) {
-    this.icon = icon;
-    return (B) this;
-  }
+	@Override
+	public final B icon(ImageIcon icon) {
+		this.icon = icon;
+		return (B) this;
+	}
 
-  @Override
-  public final B keyEvent(KeyEvents.Builder keyEventBuilder) {
-    this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
-    return (B) this;
-  }
+	@Override
+	public final B keyEvent(KeyEvents.Builder keyEventBuilder) {
+		this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
+		return (B) this;
+	}
 }

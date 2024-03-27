@@ -26,21 +26,21 @@ import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
 public class ProductEditPanel extends EntityEditPanel {
 
-  public ProductEditPanel(SwingEntityEditModel model) {
-    super(model);
-  }
+	public ProductEditPanel(SwingEntityEditModel model) {
+		super(model);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Product.CATEGORY_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Product.CATEGORY_FK);
 
-    createForeignKeyComboBox(Product.CATEGORY_FK);
-    createTextField(Product.NAME);
-    createTextField(Product.DESCRIPTION).columns(16);
+		createForeignKeyComboBox(Product.CATEGORY_FK);
+		createTextField(Product.NAME);
+		createTextField(Product.DESCRIPTION).columns(16);
 
-    setLayout(Layouts.flexibleGridLayout(3, 1));
-    addInputPanel(Product.CATEGORY_FK);
-    addInputPanel(Product.NAME);
-    addInputPanel(Product.DESCRIPTION);
-  }
+		setLayout(Layouts.flexibleGridLayout(3, 1));
+		addInputPanel(Product.CATEGORY_FK);
+		addInputPanel(Product.NAME);
+		addInputPanel(Product.DESCRIPTION);
+	}
 }

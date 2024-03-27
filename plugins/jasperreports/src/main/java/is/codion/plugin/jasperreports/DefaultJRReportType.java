@@ -28,40 +28,40 @@ import java.util.Map;
 
 final class DefaultJRReportType implements JRReportType, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;
+	private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;
 
-  DefaultJRReportType(String name) {
-    this.reportType = ReportType.reportType(name);
-  }
+	DefaultJRReportType(String name) {
+		this.reportType = ReportType.reportType(name);
+	}
 
-  @Override
-  public String name() {
-    return reportType.name();
-  }
+	@Override
+	public String name() {
+		return reportType.name();
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof DefaultJRReportType)) {
-      return false;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof DefaultJRReportType)) {
+			return false;
+		}
 
-    DefaultJRReportType that = (DefaultJRReportType) o;
+		DefaultJRReportType that = (DefaultJRReportType) o;
 
-    return reportType.equals(that.reportType);
-  }
+		return reportType.equals(that.reportType);
+	}
 
-  @Override
-  public int hashCode() {
-    return reportType.hashCode();
-  }
+	@Override
+	public int hashCode() {
+		return reportType.hashCode();
+	}
 
-  @Override
-  public String toString() {
-    return reportType.toString();
-  }
+	@Override
+	public String toString() {
+		return reportType.toString();
+	}
 }

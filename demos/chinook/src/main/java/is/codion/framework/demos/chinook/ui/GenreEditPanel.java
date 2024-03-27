@@ -26,17 +26,17 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class GenreEditPanel extends EntityEditPanel {
 
-  public GenreEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public GenreEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Genre.NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Genre.NAME);
 
-    createTextField(Genre.NAME);
+		createTextField(Genre.NAME);
 
-    setLayout(gridLayout(1, 1));
-    addInputPanel(Genre.NAME);
-  }
+		setLayout(gridLayout(1, 1));
+		addInputPanel(Genre.NAME);
+	}
 }

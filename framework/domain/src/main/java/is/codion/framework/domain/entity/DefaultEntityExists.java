@@ -23,10 +23,10 @@ import java.util.function.Predicate;
 
 final class DefaultEntityExists implements Predicate<Entity>, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  @Override
-  public boolean test(Entity entity) {
-    return entity.originalPrimaryKey().isNotNull();
-  }
+	@Override
+	public boolean test(Entity entity) {
+		return entity.originalPrimaryKey().isNotNull();
+	}
 }

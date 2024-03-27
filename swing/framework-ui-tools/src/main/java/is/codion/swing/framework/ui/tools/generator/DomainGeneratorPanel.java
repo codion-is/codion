@@ -62,145 +62,145 @@ import static java.util.Objects.requireNonNull;
 
 public final class DomainGeneratorPanel extends JPanel {
 
-  private static final double RESIZE_WEIGHT = 0.2;
+	private static final double RESIZE_WEIGHT = 0.2;
 
-  private final DomainGeneratorModel model;
+	private final DomainGeneratorModel model;
 
-  /**
-   * Instantiates a new DomainGeneratorPanel.
-   * @param model the domain generator model to base this panel on
-   */
-  DomainGeneratorPanel(DomainGeneratorModel model) {
-    this.model = requireNonNull(model);
-    Control populateSchemaControl = Control.builder(this::populateSchema)
-            .name("Populate")
-            .enabled(model.schemaModel().selectionModel().selectionNotEmpty())
-            .build();
-    FilteredTable<MetaDataSchema, Integer> schemaTable =
-            FilteredTable.builder(model.schemaModel())
-                    .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-                    .doubleClickAction(populateSchemaControl)
-                    .keyEvent(KeyEvents.builder(VK_ENTER)
-                            .modifiers(InputEvent.CTRL_DOWN_MASK)
-                            .action(populateSchemaControl))
-                    .popupMenuControls(table -> Controls.builder()
-                            .control(populateSchemaControl)
-                            .controls(Controls.builder()
-                                    .name("Columns")
-                                    .control(table.createToggleColumnsControls())
-                                    .controls(table.createAutoResizeModeControl()))
-                            .build())
-                    .build();
+	/**
+	 * Instantiates a new DomainGeneratorPanel.
+	 * @param model the domain generator model to base this panel on
+	 */
+	DomainGeneratorPanel(DomainGeneratorModel model) {
+		this.model = requireNonNull(model);
+		Control populateSchemaControl = Control.builder(this::populateSchema)
+						.name("Populate")
+						.enabled(model.schemaModel().selectionModel().selectionNotEmpty())
+						.build();
+		FilteredTable<MetaDataSchema, Integer> schemaTable =
+						FilteredTable.builder(model.schemaModel())
+										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+										.doubleClickAction(populateSchemaControl)
+										.keyEvent(KeyEvents.builder(VK_ENTER)
+														.modifiers(InputEvent.CTRL_DOWN_MASK)
+														.action(populateSchemaControl))
+										.popupMenuControls(table -> Controls.builder()
+														.control(populateSchemaControl)
+														.controls(Controls.builder()
+																		.name("Columns")
+																		.control(table.createToggleColumnsControls())
+																		.controls(table.createAutoResizeModeControl()))
+														.build())
+										.build();
 
-    FilteredTable<DefinitionRow, Integer> domainTable =
-            FilteredTable.builder(model.definitionModel())
-                    .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-                    .popupMenuControl(FilteredTable::createAutoResizeModeControl)
-                    .build();
+		FilteredTable<DefinitionRow, Integer> domainTable =
+						FilteredTable.builder(model.definitionModel())
+										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+										.popupMenuControl(FilteredTable::createAutoResizeModeControl)
+										.build();
 
-    JSplitPane schemaTableSplitPane = splitPane()
-            .orientation(JSplitPane.VERTICAL_SPLIT)
-            .resizeWeight(RESIZE_WEIGHT)
-            .topComponent(new JScrollPane(schemaTable))
-            .bottomComponent(new JScrollPane(domainTable))
-            .build();
+		JSplitPane schemaTableSplitPane = splitPane()
+						.orientation(JSplitPane.VERTICAL_SPLIT)
+						.resizeWeight(RESIZE_WEIGHT)
+						.topComponent(new JScrollPane(schemaTable))
+						.bottomComponent(new JScrollPane(domainTable))
+						.build();
 
-    JTextArea textArea = textArea()
-            .rowsColumns(40, 60)
-            .editable(false)
-            .build();
+		JTextArea textArea = textArea()
+						.rowsColumns(40, 60)
+						.editable(false)
+						.build();
 
-    Font font = textArea.getFont();
-    textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
+		Font font = textArea.getFont();
+		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 
-    JPanel textAreaCopyPanel = borderLayoutPanel()
-            .centerComponent(new JScrollPane(textArea))
-            .southComponent(flowLayoutPanel(FlowLayout.RIGHT)
-                    .add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
-                            .name(Messages.copy()))
-                            .build())
-                    .build())
-            .build();
+		JPanel textAreaCopyPanel = borderLayoutPanel()
+						.centerComponent(new JScrollPane(textArea))
+						.southComponent(flowLayoutPanel(FlowLayout.RIGHT)
+										.add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
+														.name(Messages.copy()))
+														.build())
+										.build())
+						.build();
 
-    JSplitPane splitPane = splitPane()
-            .resizeWeight(RESIZE_WEIGHT)
-            .leftComponent(schemaTableSplitPane)
-            .rightComponent(textAreaCopyPanel)
-            .build();
+		JSplitPane splitPane = splitPane()
+						.resizeWeight(RESIZE_WEIGHT)
+						.leftComponent(schemaTableSplitPane)
+						.rightComponent(textAreaCopyPanel)
+						.build();
 
-    setLayout(borderLayout());
-    add(splitPane, BorderLayout.CENTER);
+		setLayout(borderLayout());
+		add(splitPane, BorderLayout.CENTER);
 
-    model.domainSourceObserver().addDataListener(textArea::setText);
-  }
+		model.domainSourceObserver().addDataListener(textArea::setText);
+	}
 
-  public void showFrame() {
-    Windows.frame(this)
-            .title("Codion Domain Generator")
-            .icon(Logos.logoTransparent())
-            .menuBar(menu(createMainMenuControls()).createMenuBar())
-            .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-            .onClosing(windowEvent -> model.close())
-            .centerFrame(true)
-            .show();
-  }
+	public void showFrame() {
+		Windows.frame(this)
+						.title("Codion Domain Generator")
+						.icon(Logos.logoTransparent())
+						.menuBar(menu(createMainMenuControls()).createMenuBar())
+						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
+						.onClosing(windowEvent -> model.close())
+						.centerFrame(true)
+						.show();
+	}
 
-  private void populateSchema() {
-    JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
-    JPanel northPanel = borderLayoutPanel()
-            .centerComponent(schemaLabel)
-            .build();
-    Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
-    Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))
-            .owner(this)
-            .title("Populating")
-            .northPanel(northPanel)
-            .onResult(model.schemaModel()::refresh)
-            .execute();
-  }
+	private void populateSchema() {
+		JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
+		JPanel northPanel = borderLayoutPanel()
+						.centerComponent(schemaLabel)
+						.build();
+		Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
+		Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))
+						.owner(this)
+						.title("Populating")
+						.northPanel(northPanel)
+						.onResult(model.schemaModel()::refresh)
+						.execute();
+	}
 
-  private Controls createMainMenuControls() {
-    return Controls.builder()
-            .controls(Controls.builder()
-                    .name("File")
-                    .mnemonic('F')
-                    .control(Control.builder(() -> System.exit(0))
-                            .name("Exit")
-                            .mnemonic('X')))
-            .controls(Controls.builder()
-                    .name("View")
-                    .mnemonic('V')
-                    .control(lookAndFeelSelectionDialog()
-                            .owner(this)
-                            .userPreferencePropertyName(DomainGeneratorPanel.class.getName())
-                            .createControl()))
-            .build();
-  }
+	private Controls createMainMenuControls() {
+		return Controls.builder()
+						.controls(Controls.builder()
+										.name("File")
+										.mnemonic('F')
+										.control(Control.builder(() -> System.exit(0))
+														.name("Exit")
+														.mnemonic('X')))
+						.controls(Controls.builder()
+										.name("View")
+										.mnemonic('V')
+										.control(lookAndFeelSelectionDialog()
+														.owner(this)
+														.userPreferencePropertyName(DomainGeneratorPanel.class.getName())
+														.createControl()))
+						.build();
+	}
 
-  /**
-   * Runs a DomainGeneratorPanel instance in a frame
-   * @param arguments no arguments required
-   */
-  public static void main(String[] arguments) {
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName()))
-            .ifPresent(LookAndFeelProvider::enable);
-    try {
-      Database database = Database.instance();
-      DomainGeneratorModel explorerModel = DomainGeneratorModel.domainGeneratorModel(database,
-              Dialogs.loginDialog()
-                      .icon(Logos.logoTransparent())
-                      .validator(user -> database.createConnection(user).close())
-                      .show());
-      SwingUtilities.invokeLater(() -> new DomainGeneratorPanel(explorerModel).showFrame());
-    }
-    catch (CancelException ignored) {
-      System.exit(0);
-    }
-    catch (Exception e) {
-      Dialogs.displayExceptionDialog(e, null);
-      System.exit(1);
-    }
-  }
+	/**
+	 * Runs a DomainGeneratorPanel instance in a frame
+	 * @param arguments no arguments required
+	 */
+	public static void main(String[] arguments) {
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		findLookAndFeelProvider(defaultLookAndFeelName(DomainGeneratorPanel.class.getName()))
+						.ifPresent(LookAndFeelProvider::enable);
+		try {
+			Database database = Database.instance();
+			DomainGeneratorModel explorerModel = DomainGeneratorModel.domainGeneratorModel(database,
+							Dialogs.loginDialog()
+											.icon(Logos.logoTransparent())
+											.validator(user -> database.createConnection(user).close())
+											.show());
+			SwingUtilities.invokeLater(() -> new DomainGeneratorPanel(explorerModel).showFrame());
+		}
+		catch (CancelException ignored) {
+			System.exit(0);
+		}
+		catch (Exception e) {
+			Dialogs.displayExceptionDialog(e, null);
+			System.exit(1);
+		}
+	}
 }

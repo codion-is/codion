@@ -40,56 +40,56 @@ import static java.awt.event.KeyEvent.VK_2;
 
 final class ContinentPanel extends EntityPanel {
 
-  ContinentPanel(ContinentModel continentModel) {
-    super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
-  }
+	ContinentPanel(ContinentModel continentModel) {
+		super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
+	}
 
-  @Override
-  protected void initializeUI() {
-    ContinentModel model = model();
+	@Override
+	protected void initializeUI() {
+		ContinentModel model = model();
 
-    ChartPanel populationChartPanel = createPieChartPanel(this, model.populationDataset(), "Population");
-    ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.surfaceAreaDataset(), "Surface area");
-    ChartPanel gnpChartPanel = createPieChartPanel(this, model.gnpDataset(), "GNP");
-    ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
-    setPreferredHeight(lifeExpectancyChartPanel, 120);
+		ChartPanel populationChartPanel = createPieChartPanel(this, model.populationDataset(), "Population");
+		ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.surfaceAreaDataset(), "Surface area");
+		ChartPanel gnpChartPanel = createPieChartPanel(this, model.gnpDataset(), "GNP");
+		ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
+		setPreferredHeight(lifeExpectancyChartPanel, 120);
 
-    Dimension pieChartSize = new Dimension(260, 260);
-    populationChartPanel.setPreferredSize(pieChartSize);
-    surfaceAreaChartPanel.setPreferredSize(pieChartSize);
-    gnpChartPanel.setPreferredSize(pieChartSize);
+		Dimension pieChartSize = new Dimension(260, 260);
+		populationChartPanel.setPreferredSize(pieChartSize);
+		surfaceAreaChartPanel.setPreferredSize(pieChartSize);
+		gnpChartPanel.setPreferredSize(pieChartSize);
 
-    JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
-            .add(populationChartPanel)
-            .add(surfaceAreaChartPanel)
-            .add(gnpChartPanel)
-            .build();
+		JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
+						.add(populationChartPanel)
+						.add(surfaceAreaChartPanel)
+						.add(gnpChartPanel)
+						.build();
 
-    JPanel chartPanel = borderLayoutPanel()
-            .northComponent(lifeExpectancyChartPanel)
-            .centerComponent(pieChartChartPanel)
-            .build();
+		JPanel chartPanel = borderLayoutPanel()
+						.northComponent(lifeExpectancyChartPanel)
+						.centerComponent(pieChartChartPanel)
+						.build();
 
-    EntityTablePanel countryTablePanel =
-            new EntityTablePanel(model.detailModel(Country.TYPE).tableModel(),
-                    config -> config.includeConditionPanel(false));
-    setPreferredHeight(countryTablePanel, 300);
+		EntityTablePanel countryTablePanel =
+						new EntityTablePanel(model.detailModel(Country.TYPE).tableModel(),
+										config -> config.includeConditionPanel(false));
+		setPreferredHeight(countryTablePanel, 300);
 
-    JTabbedPane tabbedPane = tabbedPane()
-            .tabBuilder("Charts", chartPanel)
-            .mnemonic(VK_1)
-            .add()
-            .tabBuilder("Countries", countryTablePanel.initialize())
-            .mnemonic(VK_2)
-            .add()
-            .build();
+		JTabbedPane tabbedPane = tabbedPane()
+						.tabBuilder("Charts", chartPanel)
+						.mnemonic(VK_1)
+						.add()
+						.tabBuilder("Countries", countryTablePanel.initialize())
+						.mnemonic(VK_2)
+						.add()
+						.build();
 
-    setLayout(borderLayout());
+		setLayout(borderLayout());
 
-    add(tablePanel().initialize(), BorderLayout.CENTER);
-    add(tabbedPane, BorderLayout.SOUTH);
+		add(tablePanel().initialize(), BorderLayout.CENTER);
+		add(tabbedPane, BorderLayout.SOUTH);
 
-    setupKeyboardActions();
-    setupNavigation();
-  }
+		setupKeyboardActions();
+		setupNavigation();
+	}
 }

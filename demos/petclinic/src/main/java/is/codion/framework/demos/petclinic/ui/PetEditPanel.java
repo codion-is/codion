@@ -27,29 +27,29 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class PetEditPanel extends EntityEditPanel {
 
-  public PetEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public PetEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Pet.NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Pet.NAME);
 
-    createForeignKeyComboBox(Pet.OWNER_FK);
-    createTextField(Pet.NAME);
-    createForeignKeyComboBoxPanel(Pet.PET_TYPE_FK, this::createPetTypeEditPanel)
-            .add(true);
-    createTemporalFieldPanel(Pet.BIRTH_DATE);
+		createForeignKeyComboBox(Pet.OWNER_FK);
+		createTextField(Pet.NAME);
+		createForeignKeyComboBoxPanel(Pet.PET_TYPE_FK, this::createPetTypeEditPanel)
+						.add(true);
+		createTemporalFieldPanel(Pet.BIRTH_DATE);
 
-    setLayout(gridLayout(2, 2));
+		setLayout(gridLayout(2, 2));
 
-    addInputPanel(Pet.OWNER_FK);
-    addInputPanel(Pet.NAME);
-    addInputPanel(Pet.PET_TYPE_FK);
-    addInputPanel(Pet.BIRTH_DATE);
-  }
+		addInputPanel(Pet.OWNER_FK);
+		addInputPanel(Pet.NAME);
+		addInputPanel(Pet.PET_TYPE_FK);
+		addInputPanel(Pet.BIRTH_DATE);
+	}
 
-  private PetTypeEditPanel createPetTypeEditPanel() {
-    return new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, editModel().connectionProvider()));
-  }
+	private PetTypeEditPanel createPetTypeEditPanel() {
+		return new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, editModel().connectionProvider()));
+	}
 }

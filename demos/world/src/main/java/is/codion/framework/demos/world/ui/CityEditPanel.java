@@ -46,67 +46,67 @@ import static java.util.stream.Collectors.toSet;
 
 public final class CityEditPanel extends EntityEditPanel {
 
-  private final JXMapKit mapKit;
+	private final JXMapKit mapKit;
 
-  public CityEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-    this.mapKit = null;
-  }
+	public CityEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+		this.mapKit = null;
+	}
 
-  CityEditPanel(CityTableModel tableModel) {
-    super(tableModel.editModel());
-    this.mapKit = Maps.createMapKit();
-    tableModel.addDisplayLocationListener(this::displayLocation);
-  }
+	CityEditPanel(CityTableModel tableModel) {
+		super(tableModel.editModel());
+		this.mapKit = Maps.createMapKit();
+		tableModel.addDisplayLocationListener(this::displayLocation);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(City.COUNTRY_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(City.COUNTRY_FK);
 
-    createForeignKeyComboBox(City.COUNTRY_FK)
-            .preferredWidth(120);
-    createTextField(City.NAME);
-    createTextField(City.DISTRICT);
-    createTextField(City.POPULATION);
+		createForeignKeyComboBox(City.COUNTRY_FK)
+						.preferredWidth(120);
+		createTextField(City.NAME);
+		createTextField(City.DISTRICT);
+		createTextField(City.POPULATION);
 
-    JPanel inputPanel = gridLayoutPanel(0, 1)
-            .add(createInputPanel(City.COUNTRY_FK))
-            .add(createInputPanel(City.NAME))
-            .add(createInputPanel(City.DISTRICT))
-            .add(createInputPanel(City.POPULATION))
-            .build();
+		JPanel inputPanel = gridLayoutPanel(0, 1)
+						.add(createInputPanel(City.COUNTRY_FK))
+						.add(createInputPanel(City.NAME))
+						.add(createInputPanel(City.DISTRICT))
+						.add(createInputPanel(City.POPULATION))
+						.build();
 
-    JPanel centerPanel = gridLayoutPanel(1, 0)
-            .add(inputPanel)
-            .build();
-    if (mapKit != null) {
-      centerPanel.add(mapKit);
-    }
-    setLayout(borderLayout());
-    add(centerPanel, BorderLayout.CENTER);
-  }
+		JPanel centerPanel = gridLayoutPanel(1, 0)
+						.add(inputPanel)
+						.build();
+		if (mapKit != null) {
+			centerPanel.add(mapKit);
+		}
+		setLayout(borderLayout());
+		add(centerPanel, BorderLayout.CENTER);
+	}
 
-  @Override
-  protected Controls createControls() {
-    return super.createControls()
-            .addAt(4, Control.builder(this::populateLocation)
-                    .enabled(State.and(active(),
-                            editModel().isNull(City.LOCATION),
-                            editModel().exists()))
-                    .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
-                    .build());
-  }
+	@Override
+	protected Controls createControls() {
+		return super.createControls()
+						.addAt(4, Control.builder(this::populateLocation)
+										.enabled(State.and(active(),
+														editModel().isNull(City.LOCATION),
+														editModel().exists()))
+										.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
+										.build());
+	}
 
-  private void populateLocation() throws ValidationException, IOException, DatabaseException {
-    CityEditModel editModel = editModel();
-    editModel.populateLocation();
-    displayLocation(singleton(editModel.entity()));
-  }
+	private void populateLocation() throws ValidationException, IOException, DatabaseException {
+		CityEditModel editModel = editModel();
+		editModel.populateLocation();
+		displayLocation(singleton(editModel.entity()));
+	}
 
-  private void displayLocation(Collection<Entity> cities) {
-    Maps.paintWaypoints(cities.stream()
-            .filter(city -> city.isNotNull(City.LOCATION))
-            .map(city -> city.get(City.LOCATION))
-            .collect(toSet()), mapKit.getMainMap());
-  }
+	private void displayLocation(Collection<Entity> cities) {
+		Maps.paintWaypoints(cities.stream()
+						.filter(city -> city.isNotNull(City.LOCATION))
+						.map(city -> city.get(City.LOCATION))
+						.collect(toSet()), mapKit.getMainMap());
+	}
 }

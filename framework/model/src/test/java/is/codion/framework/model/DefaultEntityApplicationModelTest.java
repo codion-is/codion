@@ -23,16 +23,16 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<DefaultEntityModelTest.TestEntityModel,
-        DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
+				DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
 
-  @Override
-  protected DefaultEntityModelTest.TestEntityModel createDepartmentModel() {
-    DefaultEntityModelTest.TestEntityModel deptModel = new DefaultEntityModelTest.TestEntityModel(
-            new DefaultEntityModelTest.TestEntityEditModel(Department.TYPE, connectionProvider()));
-    DefaultEntityModelTest.TestEntityModel empModel = new DefaultEntityModelTest.TestEntityModel(
-            new DefaultEntityModelTest.TestEntityEditModel(Employee.TYPE, connectionProvider()));
-    deptModel.addDetailModel(empModel).active().set(true);
+	@Override
+	protected DefaultEntityModelTest.TestEntityModel createDepartmentModel() {
+		DefaultEntityModelTest.TestEntityModel deptModel = new DefaultEntityModelTest.TestEntityModel(
+						new DefaultEntityModelTest.TestEntityEditModel(Department.TYPE, connectionProvider()));
+		DefaultEntityModelTest.TestEntityModel empModel = new DefaultEntityModelTest.TestEntityModel(
+						new DefaultEntityModelTest.TestEntityEditModel(Employee.TYPE, connectionProvider()));
+		deptModel.addDetailModel(empModel).active().set(true);
 
-    return deptModel;
-  }
+		return deptModel;
+	}
 }

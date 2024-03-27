@@ -23,9 +23,9 @@ import is.codion.framework.domain.DomainType;
 
 public final class TestDomain extends DefaultDomain {
 
-  static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
+	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
-  public TestDomain() {
-    super(DOMAIN);
-  }
+	public TestDomain() {
+		super(DOMAIN);
+	}
 }

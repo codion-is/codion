@@ -38,296 +38,296 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
-  DefaultHttpEntityConnection(DefaultBuilder builder) {
-    super(builder, "/entities/ser/");
-  }
+	DefaultHttpEntityConnection(DefaultBuilder builder) {
+		super(builder, "/entities/ser/");
+	}
 
-  @Override
-  public boolean transactionOpen() {
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("isTransactionOpen")));
-      }
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public boolean transactionOpen() {
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("isTransactionOpen")));
+			}
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public void setQueryCacheEnabled(boolean queryCacheEnabled) {
-    try {
-      synchronized (httpClient) {
-        handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCacheEnabled))));
-      }
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+		try {
+			synchronized (httpClient) {
+				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCacheEnabled))));
+			}
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public boolean isQueryCacheEnabled() {
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("isQueryCacheEnabled")));
-      }
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public boolean isQueryCacheEnabled() {
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("isQueryCacheEnabled")));
+			}
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException {
-    requireNonNull(entities);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("insert", serialize(entities))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public Collection<Entity.Key> insert(Collection<Entity> entities) throws DatabaseException {
+		requireNonNull(entities);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("insert", serialize(entities))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException {
-    requireNonNull(entities);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("insertSelect", serialize(entities))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public Collection<Entity> insertSelect(Collection<Entity> entities) throws DatabaseException {
+		requireNonNull(entities);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("insertSelect", serialize(entities))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public void update(Collection<Entity> entities) throws DatabaseException {
-    requireNonNull(entities);
-    try {
-      synchronized (httpClient) {
-        handleResponse(execute(createRequest("update", serialize(entities))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public void update(Collection<Entity> entities) throws DatabaseException {
+		requireNonNull(entities);
+		try {
+			synchronized (httpClient) {
+				handleResponse(execute(createRequest("update", serialize(entities))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
-    requireNonNull(entities);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("updateSelect", serialize(entities))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public Collection<Entity> updateSelect(Collection<Entity> entities) throws DatabaseException {
+		requireNonNull(entities);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("updateSelect", serialize(entities))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public int update(Update update) throws DatabaseException {
-    requireNonNull(update);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("updateByCondition", serialize(update))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public int update(Update update) throws DatabaseException {
+		requireNonNull(update);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("updateByCondition", serialize(update))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public void delete(Collection<Entity.Key> keys) throws DatabaseException {
-    requireNonNull(keys);
-    try {
-      synchronized (httpClient) {
-        throwIfError(execute(createRequest("deleteByKey", serialize(keys))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public void delete(Collection<Entity.Key> keys) throws DatabaseException {
+		requireNonNull(keys);
+		try {
+			synchronized (httpClient) {
+				throwIfError(execute(createRequest("deleteByKey", serialize(keys))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public int delete(Condition condition) throws DatabaseException {
-    requireNonNull(condition);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("delete", serialize(condition))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public int delete(Condition condition) throws DatabaseException {
+		requireNonNull(condition);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("delete", serialize(condition))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
-    requireNonNull(column);
-    requireNonNull(select);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
+		requireNonNull(column);
+		requireNonNull(select);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
-    requireNonNull(keys, "keys");
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
+		requireNonNull(keys, "keys");
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public List<Entity> select(Select select) throws DatabaseException {
-    requireNonNull(select, "select");
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("select", serialize(select))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public List<Entity> select(Select select) throws DatabaseException {
+		requireNonNull(select, "select");
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("select", serialize(select))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
-    requireNonNull(entities, "entities");
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("dependencies", serialize(entities))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) throws DatabaseException {
+		requireNonNull(entities, "entities");
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("dependencies", serialize(entities))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 
-  @Override
-  public int count(Count count) throws DatabaseException {
-    requireNonNull(count);
-    try {
-      synchronized (httpClient) {
-        return handleResponse(execute(createRequest("count", serialize(count))));
-      }
-    }
-    catch (DatabaseException e) {
-      throw e;
-    }
-    catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw logAndWrap(e);
-    }
-    catch (Exception e) {
-      throw logAndWrap(e);
-    }
-  }
+	@Override
+	public int count(Count count) throws DatabaseException {
+		requireNonNull(count);
+		try {
+			synchronized (httpClient) {
+				return handleResponse(execute(createRequest("count", serialize(count))));
+			}
+		}
+		catch (DatabaseException e) {
+			throw e;
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw logAndWrap(e);
+		}
+		catch (Exception e) {
+			throw logAndWrap(e);
+		}
+	}
 }

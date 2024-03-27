@@ -25,25 +25,25 @@ import is.codion.swing.framework.model.SwingEntityModel;
 // tag::customerModel[]
 public class CustomerModel extends SwingEntityModel {
 
-  public CustomerModel(EntityConnectionProvider connectionProvider) {
-    super(new CustomerTableModel(connectionProvider));
-    bindEvents();
-  }
+	public CustomerModel(EntityConnectionProvider connectionProvider) {
+		super(new CustomerTableModel(connectionProvider));
+		bindEvents();
+	}
 
-  // tag::bindEvents[]
-  private void bindEvents() {
-    tableModel().refresher().observer().addDataListener(refreshing -> {
-      if (refreshing) {
-        System.out.println("Refresh is about to start");
-      }
-      else {
-        System.out.println("Refresh is about to end");
-      }
-    });
+	// tag::bindEvents[]
+	private void bindEvents() {
+		tableModel().refresher().observer().addDataListener(refreshing -> {
+			if (refreshing) {
+				System.out.println("Refresh is about to start");
+			}
+			else {
+				System.out.println("Refresh is about to end");
+			}
+		});
 
-    editModel().addValueListener(Customer.FIRST_NAME, value ->
-            System.out.println("First name changed to " + value));
-  }
-  // end::bindEvents[]
+		editModel().addValueListener(Customer.FIRST_NAME, value ->
+						System.out.println("First name changed to " + value));
+	}
+	// end::bindEvents[]
 }
 // end::customerModel[]

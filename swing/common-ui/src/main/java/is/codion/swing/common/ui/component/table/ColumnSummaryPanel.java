@@ -39,52 +39,52 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ColumnSummaryPanel extends JPanel {
 
-  private ColumnSummaryPanel(ColumnSummaryModel model, int horizontalAlignment) {
-    setLayout(new BorderLayout());
-    add(createSummaryField(requireNonNull(model, "model"), horizontalAlignment), BorderLayout.CENTER);
-  }
+	private ColumnSummaryPanel(ColumnSummaryModel model, int horizontalAlignment) {
+		setLayout(new BorderLayout());
+		add(createSummaryField(requireNonNull(model, "model"), horizontalAlignment), BorderLayout.CENTER);
+	}
 
-  /**
-   * @param columnSummaryModel the {@link ColumnSummaryModel} instance
-   * @param horizontalAlignment the horizontal alignment
-   * @return a new {@link ColumnSummaryPanel} instance.
-   */
-  public static ColumnSummaryPanel columnSummaryPanel(ColumnSummaryModel columnSummaryModel, int horizontalAlignment) {
-    return new ColumnSummaryPanel(columnSummaryModel, horizontalAlignment);
-  }
+	/**
+	 * @param columnSummaryModel the {@link ColumnSummaryModel} instance
+	 * @param horizontalAlignment the horizontal alignment
+	 * @return a new {@link ColumnSummaryPanel} instance.
+	 */
+	public static ColumnSummaryPanel columnSummaryPanel(ColumnSummaryModel columnSummaryModel, int horizontalAlignment) {
+		return new ColumnSummaryPanel(columnSummaryModel, horizontalAlignment);
+	}
 
-  private static JTextField createSummaryField(ColumnSummaryModel model, int horizontalAlignment) {
-    JPopupMenu popupMenu = createPopupMenu(model);
-    return Components.stringField()
-            .linkedValue(model.summaryText())
-            .horizontalAlignment(horizontalAlignment)
-            .editable(false)
-            .focusable(false)
-            .popupMenu(summaryField -> popupMenu)
-            .mouseListener(new MouseAdapter() {
-              @Override
-              public void mouseReleased(MouseEvent e) {
-                if (!model.locked().get()) {
-                  popupMenu.show(e.getComponent(), e.getX(), e.getY() - popupMenu.getPreferredSize().height);
-                }
-              }
-            })
-            .build();
-  }
+	private static JTextField createSummaryField(ColumnSummaryModel model, int horizontalAlignment) {
+		JPopupMenu popupMenu = createPopupMenu(model);
+		return Components.stringField()
+						.linkedValue(model.summaryText())
+						.horizontalAlignment(horizontalAlignment)
+						.editable(false)
+						.focusable(false)
+						.popupMenu(summaryField -> popupMenu)
+						.mouseListener(new MouseAdapter() {
+							@Override
+							public void mouseReleased(MouseEvent e) {
+								if (!model.locked().get()) {
+									popupMenu.show(e.getComponent(), e.getX(), e.getY() - popupMenu.getPreferredSize().height);
+								}
+							}
+						})
+						.build();
+	}
 
-  private static JPopupMenu createPopupMenu(ColumnSummaryModel model) {
-    JPopupMenu popupMenu = new JPopupMenu();
-    ButtonGroup group = new ButtonGroup();
-    for (ColumnSummaryModel.Summary summary : model.summaries()) {
-      JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.summary().set(summary))
-              .name(summary.toString())
-              .build());
-      model.summary().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));
-      item.setSelected(model.summary().get().equals(summary));
-      group.add(item);
-      popupMenu.add(item);
-    }
+	private static JPopupMenu createPopupMenu(ColumnSummaryModel model) {
+		JPopupMenu popupMenu = new JPopupMenu();
+		ButtonGroup group = new ButtonGroup();
+		for (ColumnSummaryModel.Summary summary : model.summaries()) {
+			JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.summary().set(summary))
+							.name(summary.toString())
+							.build());
+			model.summary().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));
+			item.setSelected(model.summary().get().equals(summary));
+			group.add(item);
+			popupMenu.add(item);
+		}
 
-    return popupMenu;
-  }
+		return popupMenu;
+	}
 }

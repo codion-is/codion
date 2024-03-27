@@ -34,58 +34,58 @@ import static java.util.Objects.requireNonNull;
  */
 final class SteppedComboBoxUI extends MetalComboBoxUI {
 
-  private int popupWidth = 0;
+	private int popupWidth = 0;
 
-  SteppedComboBoxUI(JComboBox<?> comboBox, int popupWidth) {
-    requireNonNull(comboBox).setUI(this);
-    this.popupWidth = popupWidth;
-  }
+	SteppedComboBoxUI(JComboBox<?> comboBox, int popupWidth) {
+		requireNonNull(comboBox).setUI(this);
+		this.popupWidth = popupWidth;
+	}
 
-  @Override
-  protected ComboPopup createPopup() {
-    return new SteppedComboBoxPopup(comboBox, this);
-  }
+	@Override
+	protected ComboPopup createPopup() {
+		return new SteppedComboBoxPopup(comboBox, this);
+	}
 
-  private static final class SteppedComboBoxPopup extends BasicComboPopup {
+	private static final class SteppedComboBoxPopup extends BasicComboPopup {
 
-    private final SteppedComboBoxUI comboBoxUI;
+		private final SteppedComboBoxUI comboBoxUI;
 
-    private SteppedComboBoxPopup(JComboBox comboBox, SteppedComboBoxUI comboBoxUI) {
-      super(comboBox);
-      this.comboBoxUI = comboBoxUI;
-      getAccessibleContext().setAccessibleParent(comboBox);
-    }
+		private SteppedComboBoxPopup(JComboBox comboBox, SteppedComboBoxUI comboBoxUI) {
+			super(comboBox);
+			this.comboBoxUI = comboBoxUI;
+			getAccessibleContext().setAccessibleParent(comboBox);
+		}
 
-    @Override
-    public void setVisible(boolean visible) {
-      if (visible) {
-        Dimension popupSize = popupSize(comboBox);
-        popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-        Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
-        scroller.setMaximumSize(popupBounds.getSize());
-        scroller.setPreferredSize(popupBounds.getSize());
-        scroller.setMinimumSize(popupBounds.getSize());
-        getList().invalidate();
-        int selectedIndex = comboBox.getSelectedIndex();
-        if (selectedIndex == -1) {
-          getList().clearSelection();
-        }
-        else {
-          getList().setSelectedIndex(selectedIndex);
-        }
-        getList().ensureIndexIsVisible(getList().getSelectedIndex());
-        setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
-      }
+		@Override
+		public void setVisible(boolean visible) {
+			if (visible) {
+				Dimension popupSize = popupSize(comboBox);
+				popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
+				Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
+				scroller.setMaximumSize(popupBounds.getSize());
+				scroller.setPreferredSize(popupBounds.getSize());
+				scroller.setMinimumSize(popupBounds.getSize());
+				getList().invalidate();
+				int selectedIndex = comboBox.getSelectedIndex();
+				if (selectedIndex == -1) {
+					getList().clearSelection();
+				}
+				else {
+					getList().setSelectedIndex(selectedIndex);
+				}
+				getList().ensureIndexIsVisible(getList().getSelectedIndex());
+				setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
+			}
 
-      super.setVisible(visible);
-    }
+			super.setVisible(visible);
+		}
 
-    private Dimension popupSize(JComboBox<?> comboBox) {
-      Dimension displaySize = comboBoxUI.getDisplaySize();
-      Dimension size = comboBox.getSize();
+		private Dimension popupSize(JComboBox<?> comboBox) {
+			Dimension displaySize = comboBoxUI.getDisplaySize();
+			Dimension size = comboBox.getSize();
 
-      return new Dimension(Math.max(size.width, comboBoxUI.popupWidth <= 0 ? displaySize.width :
-              comboBoxUI.popupWidth), size.height);
-    }
-  }
+			return new Dimension(Math.max(size.width, comboBoxUI.popupWidth <= 0 ? displaySize.width :
+							comboBoxUI.popupWidth), size.height);
+		}
+	}
 }

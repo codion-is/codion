@@ -32,46 +32,46 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultToggleControl extends AbstractControl implements ToggleControl {
 
-  private final Value<Boolean> value;
+	private final Value<Boolean> value;
 
-  /**
-   * @param value the value to toggle
-   * @param name the name
-   * @param enabled an observer indicating when this control should be enabled
-   */
-  DefaultToggleControl(Value<Boolean> value, String name, StateObserver enabled) {
-    super(name, enabled);
-    this.value = requireNonNull(value, "value");
-  }
+	/**
+	 * @param value the value to toggle
+	 * @param name the name
+	 * @param enabled an observer indicating when this control should be enabled
+	 */
+	DefaultToggleControl(Value<Boolean> value, String name, StateObserver enabled) {
+		super(name, enabled);
+		this.value = requireNonNull(value, "value");
+	}
 
-  @Override
-  public Value<Boolean> value() {
-    return value;
-  }
+	@Override
+	public Value<Boolean> value() {
+		return value;
+	}
 
-  @Override
-  public void actionPerformed(ActionEvent e) {/*Not required*/}
+	@Override
+	public void actionPerformed(ActionEvent e) {/*Not required*/}
 
-  @Override
-  public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(Value<Boolean> value) {
-    B builder = (B) new ToggleControlBuilder<>(value)
-            .enabled(enabledObserver)
-            .description(getDescription())
-            .name(getName())
-            .mnemonic((char) getMnemonic())
-            .keyStroke(getKeyStroke())
-            .smallIcon(getSmallIcon())
-            .largeIcon(getLargeIcon());
-    Arrays.stream(getKeys())
-            .filter(key -> !STANDARD_KEYS.contains(key))
-            .map(String.class::cast)
-            .forEach(key -> builder.value(key, getValue(key)));
+	@Override
+	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(Value<Boolean> value) {
+		B builder = (B) new ToggleControlBuilder<>(value)
+						.enabled(enabledObserver)
+						.description(getDescription())
+						.name(getName())
+						.mnemonic((char) getMnemonic())
+						.keyStroke(getKeyStroke())
+						.smallIcon(getSmallIcon())
+						.largeIcon(getLargeIcon());
+		Arrays.stream(getKeys())
+						.filter(key -> !STANDARD_KEYS.contains(key))
+						.map(String.class::cast)
+						.forEach(key -> builder.value(key, getValue(key)));
 
-    return builder;
-  }
+		return builder;
+	}
 
-  @Override
-  public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(State state) {
-    return copy((Value<Boolean>) state);
-  }
+	@Override
+	public <B extends Builder<ToggleControl, B>> Builder<ToggleControl, B> copy(State state) {
+		return copy((Value<Boolean>) state);
+	}
 }

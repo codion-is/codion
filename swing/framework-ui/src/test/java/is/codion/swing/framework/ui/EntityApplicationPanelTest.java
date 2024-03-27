@@ -41,64 +41,64 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class EntityApplicationPanelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @AfterEach
-  void tearDown() {
-    Thread.setDefaultUncaughtExceptionHandler(null);
-  }
+	@AfterEach
+	void tearDown() {
+		Thread.setDefaultUncaughtExceptionHandler(null);
+	}
 
-  @Test
-  void createDependencyTreeModel() {
-    TreeModel model = EntityApplicationPanel.createDependencyTreeModel(CONNECTION_PROVIDER.entities());
-    DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-    Enumeration<?> tree = root.preorderEnumeration();
-    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
-    assertNull(node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Master.TYPE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Detail.TYPE, node.getUserObject());
-  }
+	@Test
+	void createDependencyTreeModel() {
+		TreeModel model = EntityApplicationPanel.createDependencyTreeModel(CONNECTION_PROVIDER.entities());
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+		Enumeration<?> tree = root.preorderEnumeration();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
+		assertNull(node.getUserObject());
+		node = (DefaultMutableTreeNode) tree.nextElement();
+		assertEquals(Master.TYPE, node.getUserObject());
+		node = (DefaultMutableTreeNode) tree.nextElement();
+		assertEquals(Detail.TYPE, node.getUserObject());
+	}
 
-  @Test
-  void test() {
-    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
-            .automaticLoginUser(UNIT_TEST_USER)
-            .domainType(TestDomain.DOMAIN)
-            .setUncaughtExceptionHandler(false)
-            .saveDefaultUsername(false)
-            .loginRequired(false)
-            .displayFrame(false)
-            .includeMainMenu(true)
-            .displayStartupDialog(false)
-            .start(false);
-  }
+	@Test
+	void test() {
+		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.automaticLoginUser(UNIT_TEST_USER)
+						.domainType(TestDomain.DOMAIN)
+						.setUncaughtExceptionHandler(false)
+						.saveDefaultUsername(false)
+						.loginRequired(false)
+						.displayFrame(false)
+						.includeMainMenu(true)
+						.displayStartupDialog(false)
+						.start(false);
+	}
 
-  private static final class TestApplicationModel extends SwingEntityApplicationModel {
+	private static final class TestApplicationModel extends SwingEntityApplicationModel {
 
-    public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-      super(connectionProvider);
-      addEntityModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
-    }
-  }
+		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
+			super(connectionProvider);
+			addEntityModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
+		}
+	}
 
-  private static final class TestApplicationPanel extends EntityApplicationPanel<TestApplicationModel> {
+	private static final class TestApplicationPanel extends EntityApplicationPanel<TestApplicationModel> {
 
-    public TestApplicationPanel(TestApplicationModel applicationModel) {
-      super(applicationModel);
-    }
+		public TestApplicationPanel(TestApplicationModel applicationModel) {
+			super(applicationModel);
+		}
 
-    @Override
-    protected List<EntityPanel> createEntityPanels() {
-      return singletonList(new EntityPanel(applicationModel().entityModel(Employee.TYPE)));
-    }
-  }
+		@Override
+		protected List<EntityPanel> createEntityPanels() {
+			return singletonList(new EntityPanel(applicationModel().entityModel(Employee.TYPE)));
+		}
+	}
 }

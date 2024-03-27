@@ -29,24 +29,24 @@ import static java.util.Objects.requireNonNull;
  */
 public interface CheckBoxBuilder extends ToggleButtonBuilder<JCheckBox, CheckBoxBuilder> {
 
-  /**
-   * @param nullable if true then a {@link NullableCheckBox} is built.
-   * @return this builder instance
-   */
-  CheckBoxBuilder nullable(boolean nullable);
+	/**
+	 * @param nullable if true then a {@link NullableCheckBox} is built.
+	 * @return this builder instance
+	 */
+	CheckBoxBuilder nullable(boolean nullable);
 
-  /**
-   * @return a builder for a component
-   */
-  static CheckBoxBuilder builder() {
-    return new DefaultCheckBoxBuilder(null);
-  }
+	/**
+	 * @return a builder for a component
+	 */
+	static CheckBoxBuilder builder() {
+		return new DefaultCheckBoxBuilder(null);
+	}
 
-  /**
-   * @param linkedValue the value to link to the check-box
-   * @return a builder for a component
-   */
-  static CheckBoxBuilder builder(Value<Boolean> linkedValue) {
-    return new DefaultCheckBoxBuilder(requireNonNull(linkedValue));
-  }
+	/**
+	 * @param linkedValue the value to link to the check-box
+	 * @return a builder for a component
+	 */
+	static CheckBoxBuilder builder(Value<Boolean> linkedValue) {
+		return new DefaultCheckBoxBuilder(requireNonNull(linkedValue));
+	}
 }

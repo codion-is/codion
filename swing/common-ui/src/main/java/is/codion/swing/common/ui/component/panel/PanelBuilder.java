@@ -33,62 +33,62 @@ import static java.util.Objects.requireNonNull;
  */
 public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilder> {
 
-  /**
-   * @param layoutManager the layout manager
-   * @return this builder instance
-   * @see JPanel#setLayout(LayoutManager)
-   */
-  PanelBuilder layout(LayoutManager layoutManager);
+	/**
+	 * @param layoutManager the layout manager
+	 * @return this builder instance
+	 * @see JPanel#setLayout(LayoutManager)
+	 */
+	PanelBuilder layout(LayoutManager layoutManager);
 
-  /**
-   * @param component the component to add
-   * @return this builder instance
-   * @see JPanel#add(Component)
-   */
-  PanelBuilder add(JComponent component);
+	/**
+	 * @param component the component to add
+	 * @return this builder instance
+	 * @see JPanel#add(Component)
+	 */
+	PanelBuilder add(JComponent component);
 
-  /**
-   * @param component the component to add
-   * @param constraints the layout constraints
-   * @return this builder instance
-   * @see JPanel#add(Component, Object)
-   */
-  PanelBuilder add(JComponent component, Object constraints);
+	/**
+	 * @param component the component to add
+	 * @param constraints the layout constraints
+	 * @return this builder instance
+	 * @see JPanel#add(Component, Object)
+	 */
+	PanelBuilder add(JComponent component, Object constraints);
 
-  /**
-   * @param components the components to add
-   * @return this builder instance
-   * @see JPanel#add(Component)
-   */
-  PanelBuilder addAll(JComponent... components);
+	/**
+	 * @param components the components to add
+	 * @return this builder instance
+	 * @see JPanel#add(Component)
+	 */
+	PanelBuilder addAll(JComponent... components);
 
-  /**
-   * @param components the components to add
-   * @return this builder instance
-   * @see JPanel#add(Component)
-   */
-  PanelBuilder addAll(Collection<? extends JComponent> components);
+	/**
+	 * @param components the components to add
+	 * @return this builder instance
+	 * @see JPanel#add(Component)
+	 */
+	PanelBuilder addAll(Collection<? extends JComponent> components);
 
-  /**
-   * @return a panel builder
-   */
-  static PanelBuilder builder() {
-    return new DefaultPanelBuilder((LayoutManager) null);
-  }
+	/**
+	 * @return a panel builder
+	 */
+	static PanelBuilder builder() {
+		return new DefaultPanelBuilder((LayoutManager) null);
+	}
 
-  /**
-   * @param layout the panel layout manager
-   * @return a panel builder
-   */
-  static PanelBuilder builder(LayoutManager layout) {
-    return new DefaultPanelBuilder(requireNonNull(layout));
-  }
+	/**
+	 * @param layout the panel layout manager
+	 * @return a panel builder
+	 */
+	static PanelBuilder builder(LayoutManager layout) {
+		return new DefaultPanelBuilder(requireNonNull(layout));
+	}
 
-  /**
-   * @param panel the panel to configure
-   * @return a panel builder
-   */
-  static PanelBuilder builder(JPanel panel) {
-    return new DefaultPanelBuilder(panel);
-  }
+	/**
+	 * @param panel the panel to configure
+	 * @return a panel builder
+	 */
+	static PanelBuilder builder(JPanel panel) {
+		return new DefaultPanelBuilder(panel);
+	}
 }

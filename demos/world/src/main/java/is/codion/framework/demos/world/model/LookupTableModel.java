@@ -38,58 +38,58 @@ import static java.util.Objects.requireNonNull;
 
 public final class LookupTableModel extends SwingEntityTableModel {
 
-  public enum ExportFormat {
-    CSV {
-      @Override
-      public String defaultFileName() {
-        return "export.csv";
-      }
-    },
-    JSON {
-      @Override
-      public String defaultFileName() {
-        return "export.json";
-      }
-    };
+	public enum ExportFormat {
+		CSV {
+			@Override
+			public String defaultFileName() {
+				return "export.csv";
+			}
+		},
+		JSON {
+			@Override
+			public String defaultFileName() {
+				return "export.json";
+			}
+		};
 
-    public abstract String defaultFileName();
-  }
+		public abstract String defaultFileName();
+	}
 
-  private final EntityObjectMapper objectMapper = new WorldObjectMapperFactory().entityObjectMapper(entities());
+	private final EntityObjectMapper objectMapper = new WorldObjectMapperFactory().entityObjectMapper(entities());
 
-  LookupTableModel(EntityConnectionProvider connectionProvider) {
-    super(Lookup.TYPE, connectionProvider);
-    objectMapper.setIncludeNullValues(false);
-  }
+	LookupTableModel(EntityConnectionProvider connectionProvider) {
+		super(Lookup.TYPE, connectionProvider);
+		objectMapper.setIncludeNullValues(false);
+	}
 
-  public void export(File file, ExportFormat format) throws IOException {
-    requireNonNull(file);
-    requireNonNull(format);
-    switch (format) {
-      case CSV:
-        exportCSV(file);
-        break;
-      case JSON:
-        exportJSON(file);
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown export format: " + format);
-    }
-  }
+	public void export(File file, ExportFormat format) throws IOException {
+		requireNonNull(file);
+		requireNonNull(format);
+		switch (format) {
+			case CSV:
+				exportCSV(file);
+				break;
+			case JSON:
+				exportJSON(file);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown export format: " + format);
+		}
+	}
 
-  public void importJSON(File file) throws IOException {
-    List<Entity> entities = objectMapper.deserializeEntities(textFileContents(file, UTF_8));
-    clear();
-    conditionModel().clear();
-    addItemsAtSorted(0, entities);
-  }
+	public void importJSON(File file) throws IOException {
+		List<Entity> entities = objectMapper.deserializeEntities(textFileContents(file, UTF_8));
+		clear();
+		conditionModel().clear();
+		addItemsAtSorted(0, entities);
+	}
 
-  private void exportCSV(File file) throws IOException {
-    Files.write(file.toPath(), singletonList(rowsAsDelimitedString(',')));
-  }
+	private void exportCSV(File file) throws IOException {
+		Files.write(file.toPath(), singletonList(rowsAsDelimitedString(',')));
+	}
 
-  private void exportJSON(File file) throws IOException {
-    Collection<Entity> entities = selectionModel().isSelectionEmpty() ? items() : selectionModel().getSelectedItems();
-    Files.write(file.toPath(), objectMapper.serializeEntities(entities).getBytes(UTF_8));
-  }
+	private void exportJSON(File file) throws IOException {
+		Collection<Entity> entities = selectionModel().isSelectionEmpty() ? items() : selectionModel().getSelectedItems();
+		Files.write(file.toPath(), objectMapper.serializeEntities(entities).getBytes(UTF_8));
+	}
 }

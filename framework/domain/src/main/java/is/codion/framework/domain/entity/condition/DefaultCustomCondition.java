@@ -28,50 +28,50 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultCustomCondition extends AbstractCondition implements CustomCondition {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final ConditionType conditionType;
+	private final ConditionType conditionType;
 
-  DefaultCustomCondition(ConditionType conditionType, List<Column<?>> columns, List<Object> values) {
-    super(requireNonNull(conditionType).entityType(), columns, values);
-    this.conditionType = conditionType;
-  }
+	DefaultCustomCondition(ConditionType conditionType, List<Column<?>> columns, List<Object> values) {
+		super(requireNonNull(conditionType).entityType(), columns, values);
+		this.conditionType = conditionType;
+	}
 
-  @Override
-  public ConditionType conditionType() {
-    return conditionType;
-  }
+	@Override
+	public ConditionType conditionType() {
+		return conditionType;
+	}
 
-  @Override
-  public String toString(EntityDefinition definition) {
-    return requireNonNull(definition).conditionProvider(conditionType).toString(columns(), values());
-  }
+	@Override
+	public String toString(EntityDefinition definition) {
+		return requireNonNull(definition).conditionProvider(conditionType).toString(columns(), values());
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof DefaultCustomCondition)) {
-      return false;
-    }
-    if (!super.equals(object)) {
-      return false;
-    }
-    DefaultCustomCondition that = (DefaultCustomCondition) object;
-    return conditionType.equals(that.conditionType);
-  }
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof DefaultCustomCondition)) {
+			return false;
+		}
+		if (!super.equals(object)) {
+			return false;
+		}
+		DefaultCustomCondition that = (DefaultCustomCondition) object;
+		return conditionType.equals(that.conditionType);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), conditionType);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), conditionType);
+	}
 
-  @Override
-  public String toString() {
-    return "DefaultCustomCondition{" +
-            "conditionType=" + conditionType +
-            ", columns=" + columns() +
-            ", values=" + values() + "}";
-  }
+	@Override
+	public String toString() {
+		return "DefaultCustomCondition{" +
+						"conditionType=" + conditionType +
+						", columns=" + columns() +
+						", values=" + values() + "}";
+	}
 }

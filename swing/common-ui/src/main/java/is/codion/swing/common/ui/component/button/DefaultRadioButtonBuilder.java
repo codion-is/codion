@@ -26,18 +26,18 @@ import javax.swing.SwingConstants;
 
 final class DefaultRadioButtonBuilder extends DefaultToggleButtonBuilder<JRadioButton, RadioButtonBuilder> implements RadioButtonBuilder {
 
-  DefaultRadioButtonBuilder(Value<Boolean> linkedValue) {
-    super(linkedValue);
-    horizontalAlignment(SwingConstants.LEADING);
-  }
+	DefaultRadioButtonBuilder(Value<Boolean> linkedValue) {
+		super(linkedValue);
+		horizontalAlignment(SwingConstants.LEADING);
+	}
 
-  @Override
-  protected JToggleButton createToggleButton() {
-    return new JRadioButton();
-  }
+	@Override
+	protected JToggleButton createToggleButton() {
+		return new JRadioButton();
+	}
 
-  @Override
-  protected boolean supportsNull() {
-    return false;
-  }
+	@Override
+	protected boolean supportsNull() {
+		return false;
+	}
 }

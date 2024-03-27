@@ -48,113 +48,113 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 final class RandomPlaylistParametersPanel extends JPanel {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(RandomPlaylistParametersPanel.class.getName());
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(RandomPlaylistParametersPanel.class.getName());
 
-  private final RandomPlaylistParametersModel model = new RandomPlaylistParametersModel();
+	private final RandomPlaylistParametersModel model = new RandomPlaylistParametersModel();
 
-  private final JTextField playlistNameField;
-  private final NumberField<Integer> noOfTracksField;
-  private final JList<Entity> genreList;
+	private final JTextField playlistNameField;
+	private final NumberField<Integer> noOfTracksField;
+	private final JList<Entity> genreList;
 
-  RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
-    super(borderLayout());
-    this.playlistNameField = createPlaylistNameField();
-    this.noOfTracksField = createNoOfTracksField();
-    this.genreList = createGenreList(connectionProvider);
-    add(borderLayoutPanel()
-            .northComponent(gridLayoutPanel(1, 2)
-                    .add(new JLabel(BUNDLE.getString("playlist_name")))
-                    .add(new JLabel(BUNDLE.getString("no_of_tracks")))
-                    .build())
-            .centerComponent(gridLayoutPanel(1, 2)
-                    .add(playlistNameField)
-                    .add(noOfTracksField)
-                    .build())
-            .southComponent(borderLayoutPanel()
-                    .northComponent(new JLabel(BUNDLE.getString("genres")))
-                    .centerComponent(new JScrollPane(genreList))
-                    .build())
-            .build(), BorderLayout.CENTER);
-  }
+	RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
+		super(borderLayout());
+		this.playlistNameField = createPlaylistNameField();
+		this.noOfTracksField = createNoOfTracksField();
+		this.genreList = createGenreList(connectionProvider);
+		add(borderLayoutPanel()
+						.northComponent(gridLayoutPanel(1, 2)
+										.add(new JLabel(BUNDLE.getString("playlist_name")))
+										.add(new JLabel(BUNDLE.getString("no_of_tracks")))
+										.build())
+						.centerComponent(gridLayoutPanel(1, 2)
+										.add(playlistNameField)
+										.add(noOfTracksField)
+										.build())
+						.southComponent(borderLayoutPanel()
+										.northComponent(new JLabel(BUNDLE.getString("genres")))
+										.centerComponent(new JScrollPane(genreList))
+										.build())
+						.build(), BorderLayout.CENTER);
+	}
 
-  StateObserver parametersValid() {
-    return model.parametersValid.observer();
-  }
+	StateObserver parametersValid() {
+		return model.parametersValid.observer();
+	}
 
-  RandomPlaylistParameters get() {
-    return new RandomPlaylistParameters(model.playlistName.get(), model.noOfTracks.get(), model.genres.get());
-  }
+	RandomPlaylistParameters get() {
+		return new RandomPlaylistParameters(model.playlistName.get(), model.noOfTracks.get(), model.genres.get());
+	}
 
-  private JTextField createPlaylistNameField() {
-    return stringField(model.playlistName)
-            .transferFocusOnEnter(true)
-            .selectAllOnFocusGained(true)
-            .maximumLength(120)
-            .columns(10)
-            .build();
-  }
+	private JTextField createPlaylistNameField() {
+		return stringField(model.playlistName)
+						.transferFocusOnEnter(true)
+						.selectAllOnFocusGained(true)
+						.maximumLength(120)
+						.columns(10)
+						.build();
+	}
 
-  private NumberField<Integer> createNoOfTracksField() {
-    return integerField(model.noOfTracks)
-            .valueRange(1, 5000)
-            .transferFocusOnEnter(true)
-            .selectAllOnFocusGained(true)
-            .columns(3)
-            .build();
-  }
+	private NumberField<Integer> createNoOfTracksField() {
+		return integerField(model.noOfTracks)
+						.valueRange(1, 5000)
+						.transferFocusOnEnter(true)
+						.selectAllOnFocusGained(true)
+						.columns(3)
+						.build();
+	}
 
-  private JList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
-    return Components.list(createGenreListModel(connectionProvider), model.genres)
-            .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-            .visibleRowCount(5)
-            .build();
-  }
+	private JList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
+		return Components.list(createGenreListModel(connectionProvider), model.genres)
+						.selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+						.visibleRowCount(5)
+						.build();
+	}
 
-  private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
-    DefaultListModel<Entity> listModel = new DefaultListModel<>();
-    try {
-      connectionProvider.connection().select(all(Genre.TYPE)
-                      .orderBy(ascending(Genre.NAME))
-                      .build())
-              .forEach(listModel::addElement);
+	private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
+		DefaultListModel<Entity> listModel = new DefaultListModel<>();
+		try {
+			connectionProvider.connection().select(all(Genre.TYPE)
+											.orderBy(ascending(Genre.NAME))
+											.build())
+							.forEach(listModel::addElement);
 
-      return listModel;
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+			return listModel;
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  private static final class RandomPlaylistParametersModel {
+	private static final class RandomPlaylistParametersModel {
 
-    private final Value<String> playlistName = Value.value();
-    private final Value<Integer> noOfTracks = Value.value();
-    private final ValueSet<Entity> genres = ValueSet.valueSet();
-    private final State parametersValid = State.state();
+		private final Value<String> playlistName = Value.value();
+		private final Value<Integer> noOfTracks = Value.value();
+		private final ValueSet<Entity> genres = ValueSet.valueSet();
+		private final State parametersValid = State.state();
 
-    private RandomPlaylistParametersModel() {
-      playlistName.addListener(this::validate);
-      noOfTracks.addListener(this::validate);
-      genres.addListener(this::validate);
-      validate();
-    }
+		private RandomPlaylistParametersModel() {
+			playlistName.addListener(this::validate);
+			noOfTracks.addListener(this::validate);
+			genres.addListener(this::validate);
+			validate();
+		}
 
-    private void validate() {
-      parametersValid.set(valid());
-    }
+		private void validate() {
+			parametersValid.set(valid());
+		}
 
-    private boolean valid() {
-      if (nullOrEmpty(playlistName.get())) {
-        return false;
-      }
-      if (noOfTracks.isNull()) {
-        return false;
-      }
-      if (genres.empty()) {
-        return false;
-      }
+		private boolean valid() {
+			if (nullOrEmpty(playlistName.get())) {
+				return false;
+			}
+			if (noOfTracks.isNull()) {
+				return false;
+			}
+			if (genres.empty()) {
+				return false;
+			}
 
-      return true;
-    }
-  }
+			return true;
+		}
+	}
 }

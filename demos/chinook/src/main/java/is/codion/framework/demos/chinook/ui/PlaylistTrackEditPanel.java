@@ -26,23 +26,23 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class PlaylistTrackEditPanel extends EntityEditPanel {
 
-  public PlaylistTrackEditPanel(SwingEntityEditModel editModel) {
-    super(editModel, config -> config
-            // No confirmation needed when deleting
-            .deleteConfirmer(dialogOwner -> true));
-  }
+	public PlaylistTrackEditPanel(SwingEntityEditModel editModel) {
+		super(editModel, config -> config
+						// No confirmation needed when deleting
+						.deleteConfirmer(dialogOwner -> true));
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(PlaylistTrack.PLAYLIST_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(PlaylistTrack.PLAYLIST_FK);
 
-    createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
-    createForeignKeySearchField(PlaylistTrack.TRACK_FK)
-            .selectorFactory(new TrackSelectorFactory())
-            .columns(30);
+		createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
+		createForeignKeySearchField(PlaylistTrack.TRACK_FK)
+						.selectorFactory(new TrackSelectorFactory())
+						.columns(30);
 
-    setLayout(gridLayout(2, 1));
-    addInputPanel(PlaylistTrack.PLAYLIST_FK);
-    addInputPanel(PlaylistTrack.TRACK_FK);
-  }
+		setLayout(gridLayout(2, 1));
+		addInputPanel(PlaylistTrack.PLAYLIST_FK);
+		addInputPanel(PlaylistTrack.TRACK_FK);
+	}
 }

@@ -24,9 +24,9 @@ import is.codion.framework.domain.entity.attribute.Column;
 import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface Vet {
-  EntityType TYPE = DOMAIN.entityType("petclinic.vet");
+	EntityType TYPE = DOMAIN.entityType("petclinic.vet");
 
-  Column<Integer> ID = TYPE.integerColumn("id");
-  Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
-  Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+	Column<Integer> ID = TYPE.integerColumn("id");
+	Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+	Column<String> LAST_NAME = TYPE.stringColumn("last_name");
 }

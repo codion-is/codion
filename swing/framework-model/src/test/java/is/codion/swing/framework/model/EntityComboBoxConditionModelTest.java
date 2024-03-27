@@ -37,37 +37,37 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityComboBoxConditionModelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void searchEntitiesComboBoxModel() throws DatabaseException {
-    EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-    EntityComboBoxConditionModel conditionModel = entityComboBoxConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
-    comboBoxModel.setSelectedItem(sales);
-    Collection<Entity> searchEntities = conditionModel.getEqualValues();
-    assertEquals(1, searchEntities.size());
-    assertTrue(searchEntities.contains(sales));
-    comboBoxModel.refresh();
-    assertEquals(sales, comboBoxModel.selectedValue());
-    searchEntities = conditionModel.getEqualValues();
-    assertEquals(1, searchEntities.size());
-    assertTrue(searchEntities.contains(sales));
+	@Test
+	void searchEntitiesComboBoxModel() throws DatabaseException {
+		EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+		EntityComboBoxConditionModel conditionModel = entityComboBoxConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
+		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
+		comboBoxModel.setSelectedItem(sales);
+		Collection<Entity> searchEntities = conditionModel.getEqualValues();
+		assertEquals(1, searchEntities.size());
+		assertTrue(searchEntities.contains(sales));
+		comboBoxModel.refresh();
+		assertEquals(sales, comboBoxModel.selectedValue());
+		searchEntities = conditionModel.getEqualValues();
+		assertEquals(1, searchEntities.size());
+		assertTrue(searchEntities.contains(sales));
 
-    conditionModel.setEqualValue(null);
-    assertNull(comboBoxModel.getSelectedItem());
-    conditionModel.setEqualValue(sales);
-    assertEquals(comboBoxModel.getSelectedItem(), sales);
+		conditionModel.setEqualValue(null);
+		assertNull(comboBoxModel.getSelectedItem());
+		conditionModel.setEqualValue(sales);
+		assertEquals(comboBoxModel.getSelectedItem(), sales);
 
-    comboBoxModel.setSelectedItem(null);
+		comboBoxModel.setSelectedItem(null);
 
-    searchEntities = conditionModel.getEqualValues();
-    assertTrue(searchEntities.isEmpty());
-  }
+		searchEntities = conditionModel.getEqualValues();
+		assertTrue(searchEntities.isEmpty());
+	}
 }

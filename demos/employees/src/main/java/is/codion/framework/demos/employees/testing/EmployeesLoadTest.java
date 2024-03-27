@@ -42,46 +42,46 @@ import static java.util.Arrays.asList;
 // tag::loadTest[]
 public final class EmployeesLoadTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final class EmployeesAppModelFactory
-          implements Function<User, EmployeesAppModel> {
+	private static final class EmployeesAppModelFactory
+					implements Function<User, EmployeesAppModel> {
 
-    @Override
-    public EmployeesAppModel apply(User user) {
-      EmployeesAppModel applicationModel =
-              new EmployeesAppModel(EntityConnectionProvider.builder()
-                      .domainType(Employees.DOMAIN)
-                      .clientTypeId(EmployeesLoadTest.class.getSimpleName())
-                      .user(user)
-                      .build());
+		@Override
+		public EmployeesAppModel apply(User user) {
+			EmployeesAppModel applicationModel =
+							new EmployeesAppModel(EntityConnectionProvider.builder()
+											.domainType(Employees.DOMAIN)
+											.clientTypeId(EmployeesLoadTest.class.getSimpleName())
+											.user(user)
+											.build());
 
-      SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
-      model.detailModelLink(model.detailModel(Employee.TYPE)).active().set(true);
-      try {
-        model.tableModel().refresh();
-      }
-      catch (Exception ignored) {/*ignored*/}
+			SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
+			model.detailModelLink(model.detailModel(Employee.TYPE)).active().set(true);
+			try {
+				model.tableModel().refresh();
+			}
+			catch (Exception ignored) {/*ignored*/}
 
-      return applicationModel;
-    }
-  }
+			return applicationModel;
+		}
+	}
 
-  public static void main(String[] args) {
-    LoadTest<EmployeesAppModel> loadTest =
-            LoadTest.builder(new EmployeesAppModelFactory(),
-                            application -> application.connectionProvider().close())
-                    .user(UNIT_TEST_USER)
-                    .scenarios(asList(
-                            scenario(new InsertDepartment(), 1),
-                            scenario(new InsertEmployee(), 3),
-                            scenario(new LoginLogout(), 4),
-                            scenario(new SelectDepartment(), 10),
-                            scenario(new UpdateEmployee(), 5)))
-                    .name("Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
-                    .build();
-    loadTestPanel(loadTestModel(loadTest)).run();
-  }
+	public static void main(String[] args) {
+		LoadTest<EmployeesAppModel> loadTest =
+						LoadTest.builder(new EmployeesAppModelFactory(),
+														application -> application.connectionProvider().close())
+										.user(UNIT_TEST_USER)
+										.scenarios(asList(
+														scenario(new InsertDepartment(), 1),
+														scenario(new InsertEmployee(), 3),
+														scenario(new LoginLogout(), 4),
+														scenario(new SelectDepartment(), 10),
+														scenario(new UpdateEmployee(), 5)))
+										.name("Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.build();
+		loadTestPanel(loadTestModel(loadTest)).run();
+	}
 }
 // end::loadTest[]

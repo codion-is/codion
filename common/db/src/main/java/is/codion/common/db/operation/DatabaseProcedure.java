@@ -27,11 +27,11 @@ import is.codion.common.db.exception.DatabaseException;
  */
 public interface DatabaseProcedure<C, T> {
 
-  /**
-   * Executes this procedure using the given connection
-   * @param connection the connection to use
-   * @param argument the procedure argument, if any
-   * @throws DatabaseException in case of an exception during the execution
-   */
-  void execute(C connection, T argument) throws DatabaseException;
+	/**
+	 * Executes this procedure using the given connection
+	 * @param connection the connection to use
+	 * @param argument the procedure argument, if any
+	 * @throws DatabaseException in case of an exception during the execution
+	 */
+	void execute(C connection, T argument) throws DatabaseException;
 }

@@ -38,62 +38,62 @@ import static java.util.Arrays.asList;
 
 public class StoreDatabase {
 
-  static void storeEntityConnection() throws DatabaseException {
-    Database database = H2DatabaseFactory
-            .createDatabase("jdbc:h2:mem:store",
-                    "src/main/sql/create_schema_minimal.sql");
+	static void storeEntityConnection() throws DatabaseException {
+		Database database = H2DatabaseFactory
+						.createDatabase("jdbc:h2:mem:store",
+										"src/main/sql/create_schema_minimal.sql");
 
-    EntityConnectionProvider connectionProvider =
-            LocalEntityConnectionProvider.builder()
-                    .database(database)
-                    .domain(new Store())
-                    .user(User.parse("scott:tiger"))
-                    .build();
+		EntityConnectionProvider connectionProvider =
+						LocalEntityConnectionProvider.builder()
+										.database(database)
+										.domain(new Store())
+										.user(User.parse("scott:tiger"))
+										.build();
 
-    EntityConnection connection = connectionProvider.connection();
+		EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> customersNamedDoe =
-            connection.select(Customer.LAST_NAME.equalTo("Doe"));
+		List<Entity> customersNamedDoe =
+						connection.select(Customer.LAST_NAME.equalTo("Doe"));
 
-    List<Entity> doesAddresses =
-            connection.select(Address.CUSTOMER_FK.in(customersNamedDoe));
+		List<Entity> doesAddresses =
+						connection.select(Address.CUSTOMER_FK.in(customersNamedDoe));
 
-    List<Entity> customersWithoutEmail =
-            connection.select(Customer.EMAIL.isNull());
+		List<Entity> customersWithoutEmail =
+						connection.select(Customer.EMAIL.isNull());
 
-    List<String> activeCustomerEmailAddresses =
-            connection.select(Customer.EMAIL,
-                    Customer.ACTIVE.equalTo(true));
+		List<String> activeCustomerEmailAddresses =
+						connection.select(Customer.EMAIL,
+										Customer.ACTIVE.equalTo(true));
 
-    List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(and(
-                    Customer.ACTIVE.equalTo(true),
-                    Customer.EMAIL.isNotNull()));
+		List<Entity> activeCustomersWithEmailAddresses =
+						connection.select(and(
+										Customer.ACTIVE.equalTo(true),
+										Customer.EMAIL.isNotNull()));
 
-    // The domain model entities, a factory for Entity instances.
-    Entities entities = connection.entities();
+		// The domain model entities, a factory for Entity instances.
+		Entities entities = connection.entities();
 
-    Entity customer = entities.builder(Customer.TYPE)
-            .with(Customer.FIRST_NAME, "Peter")
-            .with(Customer.LAST_NAME, "Jackson")
-            .build();
+		Entity customer = entities.builder(Customer.TYPE)
+						.with(Customer.FIRST_NAME, "Peter")
+						.with(Customer.LAST_NAME, "Jackson")
+						.build();
 
-    customer = connection.insertSelect(customer);
+		customer = connection.insertSelect(customer);
 
-    Entity address = entities.builder(Address.TYPE)
-            .with(Address.CUSTOMER_FK, customer)
-            .with(Address.STREET, "Elm st.")
-            .with(Address.CITY, "Boston")
-            .build();
+		Entity address = entities.builder(Address.TYPE)
+						.with(Address.CUSTOMER_FK, customer)
+						.with(Address.STREET, "Elm st.")
+						.with(Address.CITY, "Boston")
+						.build();
 
-    Entity.Key addressKey = connection.insert(address);
+		Entity.Key addressKey = connection.insert(address);
 
-    customer.put(Customer.EMAIL, "mail@email.com");
+		customer.put(Customer.EMAIL, "mail@email.com");
 
-    customer = connection.updateSelect(customer);
+		customer = connection.updateSelect(customer);
 
-    connection.delete(asList(addressKey, customer.primaryKey()));
+		connection.delete(asList(addressKey, customer.primaryKey()));
 
-    connection.close();
-  }
+		connection.close();
+	}
 }

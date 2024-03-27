@@ -28,11 +28,11 @@ import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandom
 // tag::loadTest[]
 public final class InsertDepartment implements Performer<EmployeesAppModel> {
 
-  @Override
-  public void perform(EmployeesAppModel application) throws Exception {
-    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
-    departmentModel.editModel().set(createRandomEntity(application.entities(), Department.TYPE, null));
-    departmentModel.editModel().insert();
-  }
+	@Override
+	public void perform(EmployeesAppModel application) throws Exception {
+		SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
+		departmentModel.editModel().set(createRandomEntity(application.entities(), Department.TYPE, null));
+		departmentModel.editModel().insert();
+	}
 }
 // end::loadTest[]

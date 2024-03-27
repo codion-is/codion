@@ -28,15 +28,15 @@ import static java.util.Collections.singletonList;
 
 public final class ColumnSelectionPanelTest {
 
-  @Test
-  void test() {
-    FilteredTableColumn<Integer> column = filteredTableColumn(0);
-    column.setHeaderValue("Testing");
+	@Test
+	void test() {
+		FilteredTableColumn<Integer> column = filteredTableColumn(0);
+		column.setHeaderValue("Testing");
 
-    FilteredTableModel<Object, Integer> tableModel =
-            FilteredTableModel.<Object, Integer>builder(() -> singletonList(column), (row, columnIdentifier) -> null)
-                    .build();
+		FilteredTableModel<Object, Integer> tableModel =
+						FilteredTableModel.<Object, Integer>builder(() -> singletonList(column), (row, columnIdentifier) -> null)
+										.build();
 
-    new ColumnSelectionPanel<>(tableModel.columnModel());
-  }
+		new ColumnSelectionPanel<>(tableModel.columnModel());
+	}
 }

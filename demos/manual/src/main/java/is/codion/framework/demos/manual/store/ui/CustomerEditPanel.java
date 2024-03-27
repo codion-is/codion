@@ -27,29 +27,29 @@ import java.awt.GridLayout;
 // tag::customerEditPanel[]
 public class CustomerEditPanel extends EntityEditPanel {
 
-  public CustomerEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-    defaults().textFieldColumns().set(15);
-  }
+	public CustomerEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+		defaults().textFieldColumns().set(15);
+	}
 
-  @Override
-  protected void initializeUI() {
-    //the firstName field should receive the focus whenever the panel is initialized
-    initialFocusAttribute().set(Customer.FIRST_NAME);
+	@Override
+	protected void initializeUI() {
+		//the firstName field should receive the focus whenever the panel is initialized
+		initialFocusAttribute().set(Customer.FIRST_NAME);
 
-    createTextField(Customer.FIRST_NAME);
-    createTextField(Customer.LAST_NAME);
-    createTextField(Customer.EMAIL);
-    createCheckBox(Customer.ACTIVE);
+		createTextField(Customer.FIRST_NAME);
+		createTextField(Customer.LAST_NAME);
+		createTextField(Customer.EMAIL);
+		createCheckBox(Customer.ACTIVE);
 
-    setLayout(new GridLayout(4, 1));
-    //the addInputPanel method creates and adds a panel containing the
-    //component associated with the attribute as well as a JLabel with the
-    //property caption as defined in the domain model
-    addInputPanel(Customer.FIRST_NAME);
-    addInputPanel(Customer.LAST_NAME);
-    addInputPanel(Customer.EMAIL);
-    addInputPanel(Customer.ACTIVE);
-  }
+		setLayout(new GridLayout(4, 1));
+		//the addInputPanel method creates and adds a panel containing the
+		//component associated with the attribute as well as a JLabel with the
+		//property caption as defined in the domain model
+		addInputPanel(Customer.FIRST_NAME);
+		addInputPanel(Customer.LAST_NAME);
+		addInputPanel(Customer.EMAIL);
+		addInputPanel(Customer.ACTIVE);
+	}
 }
 // end::customerEditPanel[]

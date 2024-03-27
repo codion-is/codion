@@ -26,25 +26,25 @@ import java.awt.event.ItemListener;
 
 final class BooleanToggleButtonValue<C extends AbstractButton> extends AbstractComponentValue<Boolean, C> {
 
-  BooleanToggleButtonValue(C button) {
-    super(button, false);
-    button.getModel().addItemListener(new NotifyOnItemEvent());
-  }
+	BooleanToggleButtonValue(C button) {
+		super(button, false);
+		button.getModel().addItemListener(new NotifyOnItemEvent());
+	}
 
-  @Override
-  protected Boolean getComponentValue() {
-    return component().isSelected();
-  }
+	@Override
+	protected Boolean getComponentValue() {
+		return component().isSelected();
+	}
 
-  @Override
-  protected void setComponentValue(Boolean value) {
-    component().setSelected(value != null && value);
-  }
+	@Override
+	protected void setComponentValue(Boolean value) {
+		component().setSelected(value != null && value);
+	}
 
-  private final class NotifyOnItemEvent implements ItemListener {
-    @Override
-    public void itemStateChanged(ItemEvent itemEvent) {
-      notifyListeners();
-    }
-  }
+	private final class NotifyOnItemEvent implements ItemListener {
+		@Override
+		public void itemStateChanged(ItemEvent itemEvent) {
+			notifyListeners();
+		}
+	}
 }

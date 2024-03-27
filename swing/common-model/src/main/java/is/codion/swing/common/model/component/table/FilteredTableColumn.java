@@ -38,324 +38,324 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilteredTableColumn<C> extends TableColumn {
 
-  /**
-   * A Comparator for comparing {@link Comparable} instances.
-   */
-  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
+	/**
+	 * A Comparator for comparing {@link Comparable} instances.
+	 */
+	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
 
-  /**
-   * A Comparator for comparing Objects according to their toString() value.
-   */
-  private static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
+	/**
+	 * A Comparator for comparing Objects according to their toString() value.
+	 */
+	private static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
-  private final Class<?> columnClass;
-  private final Comparator<?> comparator;
-  private final String toolTipText;
+	private final Class<?> columnClass;
+	private final Comparator<?> comparator;
+	private final String toolTipText;
 
-  private FilteredTableColumn(DefaultBuilder<C> builder) {
-    super(builder.modelIndex);
-    super.setIdentifier(builder.identifier);
-    this.columnClass = builder.columnClass;
-    this.comparator = builder.comparator == null ? defaultComparator(this.columnClass) : builder.comparator;
-    this.toolTipText = builder.toolTipText;
-    if (builder.preferredWidth != 0) {
-      setPreferredWidth(builder.preferredWidth);
-    }
-    if (builder.maxWidth != 0) {
-      setMaxWidth(builder.maxWidth);
-    }
-    if (builder.minWidth != 0) {
-      setMinWidth(builder.minWidth);
-    }
-    if (builder.width != 0) {
-      setWidth(builder.width);
-    }
-    if (builder.headerValue != null) {
-      setHeaderValue(builder.headerValue);
-    }
-    if (builder.headerRenderer != null) {
-      setHeaderRenderer(builder.headerRenderer);
-    }
-    if (builder.cellEditor != null) {
-      setCellEditor(builder.cellEditor);
-    }
-    if (builder.cellRenderer != null) {
-      setCellRenderer(builder.cellRenderer);
-    }
-    setResizable(builder.resizable);
-  }
+	private FilteredTableColumn(DefaultBuilder<C> builder) {
+		super(builder.modelIndex);
+		super.setIdentifier(builder.identifier);
+		this.columnClass = builder.columnClass;
+		this.comparator = builder.comparator == null ? defaultComparator(this.columnClass) : builder.comparator;
+		this.toolTipText = builder.toolTipText;
+		if (builder.preferredWidth != 0) {
+			setPreferredWidth(builder.preferredWidth);
+		}
+		if (builder.maxWidth != 0) {
+			setMaxWidth(builder.maxWidth);
+		}
+		if (builder.minWidth != 0) {
+			setMinWidth(builder.minWidth);
+		}
+		if (builder.width != 0) {
+			setWidth(builder.width);
+		}
+		if (builder.headerValue != null) {
+			setHeaderValue(builder.headerValue);
+		}
+		if (builder.headerRenderer != null) {
+			setHeaderRenderer(builder.headerRenderer);
+		}
+		if (builder.cellEditor != null) {
+			setCellEditor(builder.cellEditor);
+		}
+		if (builder.cellRenderer != null) {
+			setCellRenderer(builder.cellRenderer);
+		}
+		setResizable(builder.resizable);
+	}
 
-  @Override
-  public C getIdentifier() {
-    return (C) super.getIdentifier();
-  }
+	@Override
+	public C getIdentifier() {
+		return (C) super.getIdentifier();
+	}
 
-  /**
-   * @param identifier an identifier for this column
-   * @throws IllegalStateException always, changing the identifier is not supported
-   */
-  @Override
-  public void setIdentifier(Object identifier) {
-    throw new IllegalStateException("Can't change the identifier of a FilteredTableColumn");
-  }
+	/**
+	 * @param identifier an identifier for this column
+	 * @throws IllegalStateException always, changing the identifier is not supported
+	 */
+	@Override
+	public void setIdentifier(Object identifier) {
+		throw new IllegalStateException("Can't change the identifier of a FilteredTableColumn");
+	}
 
-  /**
-   * @return the column class
-   */
-  public Class<?> columnClass() {
-    return columnClass;
-  }
+	/**
+	 * @return the column class
+	 */
+	public Class<?> columnClass() {
+		return columnClass;
+	}
 
-  /**
-   * @return the column comparator
-   */
-  public Comparator<?> comparator() {
-    return comparator;
-  }
+	/**
+	 * @return the column comparator
+	 */
+	public Comparator<?> comparator() {
+		return comparator;
+	}
 
-  /**
-   * @return the tool tip text to display for this column, null in case of no tool tip
-   */
-  public String toolTipText() {
-    return toolTipText;
-  }
+	/**
+	 * @return the tool tip text to display for this column, null in case of no tool tip
+	 */
+	public String toolTipText() {
+		return toolTipText;
+	}
 
-  /**
-   * Instantiates a new index based {@link FilteredTableColumn}.
-   * @param modelIndex the column model index, also used as identifier
-   * @return a new {@link FilteredTableColumn} instance
-   */
-  public static FilteredTableColumn<Integer> filteredTableColumn(int modelIndex) {
-    return builder(modelIndex, modelIndex).build();
-  }
+	/**
+	 * Instantiates a new index based {@link FilteredTableColumn}.
+	 * @param modelIndex the column model index, also used as identifier
+	 * @return a new {@link FilteredTableColumn} instance
+	 */
+	public static FilteredTableColumn<Integer> filteredTableColumn(int modelIndex) {
+		return builder(modelIndex, modelIndex).build();
+	}
 
-  /**
-   * Instantiates a new {@link FilteredTableColumn}.
-   * @param <C> the column identifier type
-   * @param identifier the column identifier
-   * @param modelIndex the column model index
-   * @return a new {@link FilteredTableColumn} instance
-   * @throws NullPointerException in case {@code identifier} is null
-   */
-  public static <C> FilteredTableColumn<C> filteredTableColumn(C identifier, int modelIndex) {
-    return builder(identifier, modelIndex).build();
-  }
+	/**
+	 * Instantiates a new {@link FilteredTableColumn}.
+	 * @param <C> the column identifier type
+	 * @param identifier the column identifier
+	 * @param modelIndex the column model index
+	 * @return a new {@link FilteredTableColumn} instance
+	 * @throws NullPointerException in case {@code identifier} is null
+	 */
+	public static <C> FilteredTableColumn<C> filteredTableColumn(C identifier, int modelIndex) {
+		return builder(identifier, modelIndex).build();
+	}
 
-  /**
-   * Instantiates a new index based {@link FilteredTableColumn.Builder}.
-   * @param modelIndex the column model index, also used as identifier
-   * @return a new {@link FilteredTableColumn.Builder} instance
-   */
-  public static FilteredTableColumn.Builder<Integer> builder(int modelIndex) {
-    return builder(modelIndex, modelIndex);
-  }
+	/**
+	 * Instantiates a new index based {@link FilteredTableColumn.Builder}.
+	 * @param modelIndex the column model index, also used as identifier
+	 * @return a new {@link FilteredTableColumn.Builder} instance
+	 */
+	public static FilteredTableColumn.Builder<Integer> builder(int modelIndex) {
+		return builder(modelIndex, modelIndex);
+	}
 
-  /**
-   * Instantiates a new {@link FilteredTableColumn.Builder}.
-   * @param <C> the column identifier type
-   * @param identifier the column identifier
-   * @param modelIndex the column model index
-   * @return a new {@link FilteredTableColumn} instance
-   * @throws NullPointerException in case {@code identifier} is null
-   */
-  public static <C> FilteredTableColumn.Builder<C> builder(C identifier, int modelIndex) {
-    return new DefaultBuilder<>(identifier, modelIndex);
-  }
+	/**
+	 * Instantiates a new {@link FilteredTableColumn.Builder}.
+	 * @param <C> the column identifier type
+	 * @param identifier the column identifier
+	 * @param modelIndex the column model index
+	 * @return a new {@link FilteredTableColumn} instance
+	 * @throws NullPointerException in case {@code identifier} is null
+	 */
+	public static <C> FilteredTableColumn.Builder<C> builder(C identifier, int modelIndex) {
+		return new DefaultBuilder<>(identifier, modelIndex);
+	}
 
-  private static Comparator<?> defaultComparator(Class<?> columnClass) {
-    if (Comparable.class.isAssignableFrom(columnClass)) {
-      return COMPARABLE_COMPARATOR;
-    }
+	private static Comparator<?> defaultComparator(Class<?> columnClass) {
+		if (Comparable.class.isAssignableFrom(columnClass)) {
+			return COMPARABLE_COMPARATOR;
+		}
 
-    return STRING_COMPARATOR;
-  }
+		return STRING_COMPARATOR;
+	}
 
-  /**
-   * A builder for {@link FilteredTableColumn} instances.
-   * @param <C> the column identifier type
-   */
-  public interface Builder<C> {
+	/**
+	 * A builder for {@link FilteredTableColumn} instances.
+	 * @param <C> the column identifier type
+	 */
+	public interface Builder<C> {
 
-    /**
-     * @param columnClass the column class
-     * @return this builder instance
-     */
-    Builder<C> columnClass(Class<?> columnClass);
+		/**
+		 * @param columnClass the column class
+		 * @return this builder instance
+		 */
+		Builder<C> columnClass(Class<?> columnClass);
 
-    /**
-     * @param comparator the column comparator
-     * @return this builder instance
-     */
-    Builder<C> comparator(Comparator<?> comparator);
+		/**
+		 * @param comparator the column comparator
+		 * @return this builder instance
+		 */
+		Builder<C> comparator(Comparator<?> comparator);
 
-    /**
-     * @param preferredWidth the preferred column width
-     * @return this builder instance
-     */
-    Builder<C> preferredWidth(int preferredWidth);
+		/**
+		 * @param preferredWidth the preferred column width
+		 * @return this builder instance
+		 */
+		Builder<C> preferredWidth(int preferredWidth);
 
-    /**
-     * @param maxWidth the maximum column width
-     * @return this builder instance
-     */
-    Builder<C> maxWidth(int maxWidth);
+		/**
+		 * @param maxWidth the maximum column width
+		 * @return this builder instance
+		 */
+		Builder<C> maxWidth(int maxWidth);
 
-    /**
-     * @param minWidth the minimum column width
-     * @return this builder instance
-     */
-    Builder<C> minWidth(int minWidth);
+		/**
+		 * @param minWidth the minimum column width
+		 * @return this builder instance
+		 */
+		Builder<C> minWidth(int minWidth);
 
-    /**
-     * @param width the column width
-     * @return this builder instance
-     */
-    Builder<C> width(int width);
+		/**
+		 * @param width the column width
+		 * @return this builder instance
+		 */
+		Builder<C> width(int width);
 
-    /**
-     * @param resizable true if the column should be resizable
-     * @return this builder instance
-     */
-    Builder<C> resizable(boolean resizable);
+		/**
+		 * @param resizable true if the column should be resizable
+		 * @return this builder instance
+		 */
+		Builder<C> resizable(boolean resizable);
 
-    /**
-     * @param headerValue the header value
-     * @return this builder instance
-     */
-    Builder<C> headerValue(Object headerValue);
+		/**
+		 * @param headerValue the header value
+		 * @return this builder instance
+		 */
+		Builder<C> headerValue(Object headerValue);
 
-    /**
-     * @param headerRenderer the header renderer
-     * @return this builder instance
-     */
-    Builder<C> headerRenderer(TableCellRenderer headerRenderer);
+		/**
+		 * @param headerRenderer the header renderer
+		 * @return this builder instance
+		 */
+		Builder<C> headerRenderer(TableCellRenderer headerRenderer);
 
-    /**
-     * @param toolTipText the column tool tip text
-     * @return this builder instance
-     */
-    Builder<C> toolTipText(String toolTipText);
+		/**
+		 * @param toolTipText the column tool tip text
+		 * @return this builder instance
+		 */
+		Builder<C> toolTipText(String toolTipText);
 
-    /**
-     * @param cellEditor the cell editor
-     * @return this builder instance
-     */
-    Builder<C> cellEditor(TableCellEditor cellEditor);
+		/**
+		 * @param cellEditor the cell editor
+		 * @return this builder instance
+		 */
+		Builder<C> cellEditor(TableCellEditor cellEditor);
 
-    /**
-     * @param cellRenderer the cell renderer
-     * @return this builder instance
-     */
-    Builder<C> cellRenderer(TableCellRenderer cellRenderer);
+		/**
+		 * @param cellRenderer the cell renderer
+		 * @return this builder instance
+		 */
+		Builder<C> cellRenderer(TableCellRenderer cellRenderer);
 
-    /**
-     * @return a new {@link FilteredTableColumn} based on this builder
-     */
-    FilteredTableColumn<C> build();
-  }
+		/**
+		 * @return a new {@link FilteredTableColumn} based on this builder
+		 */
+		FilteredTableColumn<C> build();
+	}
 
-  private static final class DefaultBuilder<C> implements Builder<C> {
+	private static final class DefaultBuilder<C> implements Builder<C> {
 
-    private final C identifier;
-    private final int modelIndex;
+		private final C identifier;
+		private final int modelIndex;
 
-    private Class<?> columnClass = Object.class;
-    private Comparator<?> comparator;
-    private int preferredWidth;
-    private int maxWidth;
-    private int minWidth;
-    private int width;
-    private boolean resizable = true;
-    private Object headerValue;
-    private String toolTipText;
-    private TableCellRenderer headerRenderer;
-    private TableCellEditor cellEditor;
-    private TableCellRenderer cellRenderer;
+		private Class<?> columnClass = Object.class;
+		private Comparator<?> comparator;
+		private int preferredWidth;
+		private int maxWidth;
+		private int minWidth;
+		private int width;
+		private boolean resizable = true;
+		private Object headerValue;
+		private String toolTipText;
+		private TableCellRenderer headerRenderer;
+		private TableCellEditor cellEditor;
+		private TableCellRenderer cellRenderer;
 
-    private DefaultBuilder(C identifier, int modelIndex) {
-      if (modelIndex < 0) {
-        throw new IllegalArgumentException("Model index must be positive: " + modelIndex);
-      }
-      this.identifier = requireNonNull(identifier);
-      this.modelIndex = modelIndex;
-      this.headerValue = identifier;
-    }
+		private DefaultBuilder(C identifier, int modelIndex) {
+			if (modelIndex < 0) {
+				throw new IllegalArgumentException("Model index must be positive: " + modelIndex);
+			}
+			this.identifier = requireNonNull(identifier);
+			this.modelIndex = modelIndex;
+			this.headerValue = identifier;
+		}
 
-    @Override
-    public Builder<C> columnClass(Class<?> columnClass) {
-      this.columnClass = requireNonNull(columnClass);
-      return this;
-    }
+		@Override
+		public Builder<C> columnClass(Class<?> columnClass) {
+			this.columnClass = requireNonNull(columnClass);
+			return this;
+		}
 
-    @Override
-    public Builder<C> comparator(Comparator<?> comparator) {
-      this.comparator = requireNonNull(comparator);
-      return this;
-    }
+		@Override
+		public Builder<C> comparator(Comparator<?> comparator) {
+			this.comparator = requireNonNull(comparator);
+			return this;
+		}
 
-    @Override
-    public Builder<C> preferredWidth(int preferredWidth) {
-      this.preferredWidth = preferredWidth;
-      return this;
-    }
+		@Override
+		public Builder<C> preferredWidth(int preferredWidth) {
+			this.preferredWidth = preferredWidth;
+			return this;
+		}
 
-    @Override
-    public Builder<C> maxWidth(int maxWidth) {
-      this.maxWidth = maxWidth;
-      return this;
-    }
+		@Override
+		public Builder<C> maxWidth(int maxWidth) {
+			this.maxWidth = maxWidth;
+			return this;
+		}
 
-    @Override
-    public Builder<C> minWidth(int minWidth) {
-      this.minWidth = minWidth;
-      return this;
-    }
+		@Override
+		public Builder<C> minWidth(int minWidth) {
+			this.minWidth = minWidth;
+			return this;
+		}
 
-    @Override
-    public Builder<C> width(int width) {
-      this.width = width;
-      return this;
-    }
+		@Override
+		public Builder<C> width(int width) {
+			this.width = width;
+			return this;
+		}
 
-    @Override
-    public Builder<C> resizable(boolean resizable) {
-      this.resizable = resizable;
-      return this;
-    }
+		@Override
+		public Builder<C> resizable(boolean resizable) {
+			this.resizable = resizable;
+			return this;
+		}
 
-    @Override
-    public Builder<C> headerValue(Object headerValue) {
-      this.headerValue = requireNonNull(headerValue);
-      return this;
-    }
+		@Override
+		public Builder<C> headerValue(Object headerValue) {
+			this.headerValue = requireNonNull(headerValue);
+			return this;
+		}
 
-    @Override
-    public Builder<C> headerRenderer(TableCellRenderer headerRenderer) {
-      this.headerRenderer = requireNonNull(headerRenderer);
-      return this;
-    }
+		@Override
+		public Builder<C> headerRenderer(TableCellRenderer headerRenderer) {
+			this.headerRenderer = requireNonNull(headerRenderer);
+			return this;
+		}
 
-    @Override
-    public Builder<C> toolTipText(String toolTipText) {
-      this.toolTipText = toolTipText;
-      return this;
-    }
+		@Override
+		public Builder<C> toolTipText(String toolTipText) {
+			this.toolTipText = toolTipText;
+			return this;
+		}
 
-    @Override
-    public Builder<C> cellEditor(TableCellEditor cellEditor) {
-      this.cellEditor = cellEditor;
-      return this;
-    }
+		@Override
+		public Builder<C> cellEditor(TableCellEditor cellEditor) {
+			this.cellEditor = cellEditor;
+			return this;
+		}
 
-    @Override
-    public Builder<C> cellRenderer(TableCellRenderer cellRenderer) {
-      this.cellRenderer = cellRenderer;
-      return this;
-    }
+		@Override
+		public Builder<C> cellRenderer(TableCellRenderer cellRenderer) {
+			this.cellRenderer = cellRenderer;
+			return this;
+		}
 
-    @Override
-    public FilteredTableColumn<C> build() {
-      return new FilteredTableColumn<>(this);
-    }
-  }
+		@Override
+		public FilteredTableColumn<C> build() {
+			return new FilteredTableColumn<>(this);
+		}
+	}
 }

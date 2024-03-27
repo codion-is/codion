@@ -48,45 +48,45 @@ import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
-  private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
+	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
 
-  public WorldAppPanel(WorldAppModel applicationModel) {
-    super(applicationModel);
-    FrameworkIcons.instance().add(Foundation.MAP, Foundation.PAGE_EXPORT, Foundation.PAGE_ADD, Foundation.CHECK);
-  }
+	public WorldAppPanel(WorldAppModel applicationModel) {
+		super(applicationModel);
+		FrameworkIcons.instance().add(Foundation.MAP, Foundation.PAGE_EXPORT, Foundation.PAGE_ADD, Foundation.CHECK);
+	}
 
-  // tag::initializeEntityPanels[]
-  @Override
-  protected List<EntityPanel> createEntityPanels() {
-    CountryModel countryModel = applicationModel().entityModel(Country.TYPE);
-    CountryPanel countryPanel = new CountryPanel(countryModel);
+	// tag::initializeEntityPanels[]
+	@Override
+	protected List<EntityPanel> createEntityPanels() {
+		CountryModel countryModel = applicationModel().entityModel(Country.TYPE);
+		CountryPanel countryPanel = new CountryPanel(countryModel);
 
-    ContinentModel continentModel = applicationModel().entityModel(Continent.TYPE);
-    ContinentPanel continentPanel = new ContinentPanel(continentModel);
+		ContinentModel continentModel = applicationModel().entityModel(Continent.TYPE);
+		ContinentPanel continentPanel = new ContinentPanel(continentModel);
 
-    SwingEntityModel lookupModel = applicationModel().entityModel(Lookup.TYPE);
-    EntityPanel lookupPanel = new EntityPanel(lookupModel,
-            new LookupTablePanel(lookupModel.tableModel()));
+		SwingEntityModel lookupModel = applicationModel().entityModel(Lookup.TYPE);
+		EntityPanel lookupPanel = new EntityPanel(lookupModel,
+						new LookupTablePanel(lookupModel.tableModel()));
 
-    return asList(countryPanel, continentPanel, lookupPanel);
-  }
-  // end::initializeEntityPanels[]
+		return asList(countryPanel, continentPanel, lookupPanel);
+	}
+	// end::initializeEntityPanels[]
 
-  public static void main(String[] args) throws CancelException {
-    Locale.setDefault(new Locale("en", "EN"));
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-    FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-    ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
-            .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    EntityApplicationPanel.builder(WorldAppModel.class, WorldAppPanel.class)
-            .applicationName("World")
-            .domainType(World.DOMAIN)
-            .applicationVersion(WorldAppModel.VERSION)
-            .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .defaultLoginUser(User.parse("scott:tiger"))
-            .defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
-            .start();
-  }
+	public static void main(String[] args) throws CancelException {
+		Locale.setDefault(new Locale("en", "EN"));
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+		FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
+						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
+		EntityApplicationPanel.builder(WorldAppModel.class, WorldAppPanel.class)
+						.applicationName("World")
+						.domainType(World.DOMAIN)
+						.applicationVersion(WorldAppModel.VERSION)
+						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
+						.start();
+	}
 }

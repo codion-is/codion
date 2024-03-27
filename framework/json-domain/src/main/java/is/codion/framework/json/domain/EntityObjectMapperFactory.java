@@ -31,38 +31,38 @@ import static java.util.Objects.requireNonNull;
  */
 public interface EntityObjectMapperFactory {
 
-  /**
-   * Creates a new {@link EntityObjectMapper} instance.
-   * @param entities the domain entities
-   * @return a new {@link EntityObjectMapper} instance.
-   */
-  default EntityObjectMapper entityObjectMapper(Entities entities) {
-    return EntityObjectMapper.entityObjectMapper(entities);
-  }
+	/**
+	 * Creates a new {@link EntityObjectMapper} instance.
+	 * @param entities the domain entities
+	 * @return a new {@link EntityObjectMapper} instance.
+	 */
+	default EntityObjectMapper entityObjectMapper(Entities entities) {
+		return EntityObjectMapper.entityObjectMapper(entities);
+	}
 
-  /**
-   * Returns true if this mapper factory is compatible with the given domain type.
-   * @param domainType the domain type
-   * @return true if this mapper factory is compatible with the given domain type
-   */
-  boolean compatibleWith(DomainType domainType);
+	/**
+	 * Returns true if this mapper factory is compatible with the given domain type.
+	 * @param domainType the domain type
+	 * @return true if this mapper factory is compatible with the given domain type
+	 */
+	boolean compatibleWith(DomainType domainType);
 
-  /**
-   * Returns the first available {@link EntityObjectMapperFactory} instance compatible with the given domain type,
-   * if no such mapper factory is available a default one, compatible with all domain models, is returned.
-   * @param domainType the domain type for which to find a mapper factory
-   * @return a {@link EntityObjectMapperFactory} instance compatible with the given domain type.
-   */
-  static EntityObjectMapperFactory instance(DomainType domainType) {
-    requireNonNull(domainType);
-    ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
-    for (EntityObjectMapperFactory factory : loader) {
-      if (factory.compatibleWith(domainType)) {
-        return factory;
-      }
-    }
+	/**
+	 * Returns the first available {@link EntityObjectMapperFactory} instance compatible with the given domain type,
+	 * if no such mapper factory is available a default one, compatible with all domain models, is returned.
+	 * @param domainType the domain type for which to find a mapper factory
+	 * @return a {@link EntityObjectMapperFactory} instance compatible with the given domain type.
+	 */
+	static EntityObjectMapperFactory instance(DomainType domainType) {
+		requireNonNull(domainType);
+		ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
+		for (EntityObjectMapperFactory factory : loader) {
+			if (factory.compatibleWith(domainType)) {
+				return factory;
+			}
+		}
 
-    //compatible with all domain models
-    return mapperDomainType -> true;
-  }
+		//compatible with all domain models
+		return mapperDomainType -> true;
+	}
 }

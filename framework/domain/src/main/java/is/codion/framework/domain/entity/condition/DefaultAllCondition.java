@@ -29,37 +29,37 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultAllCondition extends AbstractCondition implements Condition.All, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  DefaultAllCondition(EntityType entityType) {
-    super(entityType, emptyList(), emptyList());
-  }
+	DefaultAllCondition(EntityType entityType) {
+		super(entityType, emptyList(), emptyList());
+	}
 
-  @Override
-  public String toString(EntityDefinition definition) {
-    requireNonNull(definition);
-    return "";
-  }
+	@Override
+	public String toString(EntityDefinition definition) {
+		requireNonNull(definition);
+		return "";
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof All)) {
-      return false;
-    }
-    All that = (All) object;
-    return Objects.equals(entityType(), that.entityType());
-  }
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof All)) {
+			return false;
+		}
+		All that = (All) object;
+		return Objects.equals(entityType(), that.entityType());
+	}
 
-  @Override
-  public int hashCode() {
-    return entityType().hashCode();
-  }
+	@Override
+	public int hashCode() {
+		return entityType().hashCode();
+	}
 
-  @Override
-  public String toString() {
-    return "DefaultAllCondition{entityType=" + entityType() + "}";
-  }
+	@Override
+	public String toString() {
+		return "DefaultAllCondition{entityType=" + entityType() + "}";
+	}
 }

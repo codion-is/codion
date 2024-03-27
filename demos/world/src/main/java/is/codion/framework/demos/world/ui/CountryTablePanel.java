@@ -35,42 +35,42 @@ import java.awt.Dimension;
 
 final class CountryTablePanel extends EntityTablePanel {
 
-  CountryTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, config ->
-            config.editable(attributes ->
-                    attributes.remove(Country.CAPITAL_FK)));
-  }
+	CountryTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, config ->
+						config.editable(attributes ->
+										attributes.remove(Country.CAPITAL_FK)));
+	}
 
-  @Override
-  protected void setupControls() {
-    control(TableControl.PRINT).set(Control.builder(this::viewCountryReport)
-            .name("Country report")
-            .enabled(tableModel().selectionModel().selectionNotEmpty())
-            .smallIcon(FrameworkIcons.instance().print())
-            .build());
-  }
+	@Override
+	protected void setupControls() {
+		control(TableControl.PRINT).set(Control.builder(this::viewCountryReport)
+						.name("Country report")
+						.enabled(tableModel().selectionModel().selectionNotEmpty())
+						.smallIcon(FrameworkIcons.instance().print())
+						.build());
+	}
 
-  private void viewCountryReport() {
-    Dialogs.progressWorkerDialog(this::fillCountryReport)
-            .owner(this)
-            .maximumProgress(tableModel().selectionModel().selectionCount())
-            .stringPainted(true)
-            .onResult(this::viewReport)
-            .execute();
-  }
+	private void viewCountryReport() {
+		Dialogs.progressWorkerDialog(this::fillCountryReport)
+						.owner(this)
+						.maximumProgress(tableModel().selectionModel().selectionCount())
+						.stringPainted(true)
+						.onResult(this::viewReport)
+						.execute();
+	}
 
-  private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
-    CountryTableModel countryTableModel = tableModel();
+	private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
+		CountryTableModel countryTableModel = tableModel();
 
-    return countryTableModel.fillCountryReport(progressReporter);
-  }
+		return countryTableModel.fillCountryReport(progressReporter);
+	}
 
-  private void viewReport(JasperPrint countryReport) {
-    Dialogs.componentDialog(new JRViewer(countryReport))
-            .owner(this)
-            .modal(false)
-            .title("Country report")
-            .size(new Dimension(800, 600))
-            .show();
-  }
+	private void viewReport(JasperPrint countryReport) {
+		Dialogs.componentDialog(new JRViewer(countryReport))
+						.owner(this)
+						.modal(false)
+						.title("Country report")
+						.size(new Dimension(800, 600))
+						.show();
+	}
 }

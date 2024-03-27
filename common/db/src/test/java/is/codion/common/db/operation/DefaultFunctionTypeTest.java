@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class DefaultFunctionTypeTest {
 
-  @Test
-  void test() {
-    DefaultFunctionType<String, String, String> functionType = new DefaultFunctionType<>("test");
-    assertEquals(functionType, new DefaultFunctionType<>("test"));
-    assertEquals(functionType.name(), functionType.toString());
-  }
+	@Test
+	void test() {
+		DefaultFunctionType<String, String, String> functionType = new DefaultFunctionType<>("test");
+		assertEquals(functionType, new DefaultFunctionType<>("test"));
+		assertEquals(functionType.name(), functionType.toString());
+	}
 }

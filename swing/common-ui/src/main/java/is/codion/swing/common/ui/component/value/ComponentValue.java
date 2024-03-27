@@ -31,8 +31,8 @@ import javax.swing.JComponent;
  */
 public interface ComponentValue<T, C extends JComponent> extends Value<T> {
 
-  /**
-   * @return the input component representing the value
-   */
-  C component();
+	/**
+	 * @return the input component representing the value
+	 */
+	C component();
 }

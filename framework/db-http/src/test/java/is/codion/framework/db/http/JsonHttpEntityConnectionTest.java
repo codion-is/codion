@@ -24,16 +24,16 @@ import java.util.UUID;
 
 public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnectionTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  public JsonHttpEntityConnectionTest() {
-    super(HttpEntityConnection.builder()
-            .json(true)
-            .domainType(TestDomain.DOMAIN)
-            .user(UNIT_TEST_USER)
-            .clientTypeId("JsonHttpEntityConnectionTest")
-            .clientId(UUID.randomUUID())
-            .build());
-  }
+	public JsonHttpEntityConnectionTest() {
+		super(HttpEntityConnection.builder()
+						.json(true)
+						.domainType(TestDomain.DOMAIN)
+						.user(UNIT_TEST_USER)
+						.clientTypeId("JsonHttpEntityConnectionTest")
+						.clientId(UUID.randomUUID())
+						.build());
+	}
 }

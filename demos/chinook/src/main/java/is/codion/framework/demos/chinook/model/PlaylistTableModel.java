@@ -30,32 +30,32 @@ import java.util.Collections;
 
 public final class PlaylistTableModel extends SwingEntityTableModel {
 
-  public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
-    super(Playlist.TYPE, connectionProvider);
-  }
+	public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
+		super(Playlist.TYPE, connectionProvider);
+	}
 
-  public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-    Entity randomPlaylist = createPlaylist(parameters);
-    addItemsAt(0, Collections.singletonList(randomPlaylist));
-    selectionModel().setSelectedItem(randomPlaylist);
-  }
+	public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
+		Entity randomPlaylist = createPlaylist(parameters);
+		addItemsAt(0, Collections.singletonList(randomPlaylist));
+		selectionModel().setSelectedItem(randomPlaylist);
+	}
 
-  private Entity createPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-    EntityConnection connection = connection();
-    connection.beginTransaction();
-    try {
-      Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
-      connection.commitTransaction();
+	private Entity createPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
+		EntityConnection connection = connection();
+		connection.beginTransaction();
+		try {
+			Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
+			connection.commitTransaction();
 
-      return randomPlaylist;
-    }
-    catch (DatabaseException e) {
-      connection.rollbackTransaction();
-      throw e;
-    }
-    catch (Exception e) {
-      connection.rollbackTransaction();
-      throw new RuntimeException(e);
-    }
-  }
+			return randomPlaylist;
+		}
+		catch (DatabaseException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+	}
 }

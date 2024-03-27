@@ -34,66 +34,66 @@ import java.util.concurrent.Executor;
  */
 public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 
-  /**
-   * Instantiates a new builder instance.
-   * @return a new builder
-   */
-  static Builder builder() {
-    return new DefaultHttpEntityConnectionProviderBuilder();
-  }
+	/**
+	 * Instantiates a new builder instance.
+	 * @return a new builder
+	 */
+	static Builder builder() {
+		return new DefaultHttpEntityConnectionProviderBuilder();
+	}
 
-  /**
-   * Builds a {@link HttpEntityConnectionProvider} instance.
-   */
-  interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
+	/**
+	 * Builds a {@link HttpEntityConnectionProvider} instance.
+	 */
+	interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
 
-    /**
-     * @param hostName the server host name
-     * @return this builder instance
-     */
-    Builder hostName(String hostName);
+		/**
+		 * @param hostName the server host name
+		 * @return this builder instance
+		 */
+		Builder hostName(String hostName);
 
-    /**
-     * @param port the server port
-     * @return this builder instance
-     */
-    Builder port(int port);
+		/**
+		 * @param port the server port
+		 * @return this builder instance
+		 */
+		Builder port(int port);
 
-    /**
-     * @param securePort the server https port
-     * @return this builder instance
-     */
-    Builder securePort(int securePort);
+		/**
+		 * @param securePort the server https port
+		 * @return this builder instance
+		 */
+		Builder securePort(int securePort);
 
-    /**
-     * @param https true if https should be enabled
-     * @return this builder instance
-     */
-    Builder https(boolean https);
+		/**
+		 * @param https true if https should be enabled
+		 * @return this builder instance
+		 */
+		Builder https(boolean https);
 
-    /**
-     * @param json true if json serialization should be used
-     * @return this builder instance
-     */
-    Builder json(boolean json);
+		/**
+		 * @param json true if json serialization should be used
+		 * @return this builder instance
+		 */
+		Builder json(boolean json);
 
-    /**
-     * @param socketTimeout the socket timeout
-     * @return this builder instance
-     */
-    Builder socketTimeout(int socketTimeout);
+		/**
+		 * @param socketTimeout the socket timeout
+		 * @return this builder instance
+		 */
+		Builder socketTimeout(int socketTimeout);
 
-    /**
-     * @param connectTimeout the connect timeout
-     * @return this builder instance
-     */
-    Builder connectTimeout(int connectTimeout);
+		/**
+		 * @param connectTimeout the connect timeout
+		 * @return this builder instance
+		 */
+		Builder connectTimeout(int connectTimeout);
 
-    /**
-     * By default the http client uses a shared thread pool executor.
-     * @param executor the http client executor to use
-     * @return this builder instance
-     */
-    Builder executor(Executor executor);
-  }
+		/**
+		 * By default the http client uses a shared thread pool executor.
+		 * @param executor the http client executor to use
+		 * @return this builder instance
+		 */
+		Builder executor(Executor executor);
+	}
 }

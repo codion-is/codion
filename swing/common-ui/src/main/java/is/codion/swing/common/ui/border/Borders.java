@@ -28,16 +28,16 @@ import javax.swing.border.Border;
  */
 public final class Borders {
 
-  private Borders() {}
+	private Borders() {}
 
-  /**
-   * Creates en empty border using the value of {@link Layouts#GAP}
-   * as the top, bottom, left and right values.
-   * @return a new empty border
-   */
-  public static Border emptyBorder() {
-    int gap = Layouts.GAP.get();
+	/**
+	 * Creates en empty border using the value of {@link Layouts#GAP}
+	 * as the top, bottom, left and right values.
+	 * @return a new empty border
+	 */
+	public static Border emptyBorder() {
+		int gap = Layouts.GAP.get();
 
-    return BorderFactory.createEmptyBorder(gap, gap, gap, gap);
-  }
+		return BorderFactory.createEmptyBorder(gap, gap, gap, gap);
+	}
 }

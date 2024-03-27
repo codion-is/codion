@@ -23,11 +23,11 @@ package is.codion.common.rmi.server.exception;
  */
 public class LoginException extends ServerException {
 
-  /**
-   * Instantiates a new {@link LoginException}
-   * @param message the exception message
-   */
-  public LoginException(String message) {
-    super(message);
-  }
+	/**
+	 * Instantiates a new {@link LoginException}
+	 * @param message the exception message
+	 */
+	public LoginException(String message) {
+		super(message);
+	}
 }

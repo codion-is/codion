@@ -27,90 +27,90 @@ import javax.swing.JToolBar;
 
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
-  private boolean floatable = true;
-  private boolean rollover = false;
-  private boolean borderPainted = true;
+	private boolean floatable = true;
+	private boolean rollover = false;
+	private boolean borderPainted = true;
 
-  DefaultToolBarBuilder(Controls controls) {
-    super(controls);
-    includeButtonText(false);
-  }
+	DefaultToolBarBuilder(Controls controls) {
+		super(controls);
+		includeButtonText(false);
+	}
 
-  @Override
-  public ToolBarBuilder floatable(boolean floatable) {
-    this.floatable = floatable;
-    return this;
-  }
+	@Override
+	public ToolBarBuilder floatable(boolean floatable) {
+		this.floatable = floatable;
+		return this;
+	}
 
-  @Override
-  public ToolBarBuilder rollover(boolean rollover) {
-    this.rollover = rollover;
-    return this;
-  }
+	@Override
+	public ToolBarBuilder rollover(boolean rollover) {
+		this.rollover = rollover;
+		return this;
+	}
 
-  @Override
-  public ToolBarBuilder borderPainted(boolean borderPainted) {
-    this.borderPainted = borderPainted;
-    return this;
-  }
+	@Override
+	public ToolBarBuilder borderPainted(boolean borderPainted) {
+		this.borderPainted = borderPainted;
+		return this;
+	}
 
-  @Override
-  protected JToolBar createComponent() {
-    JToolBar toolBar = new JToolBar();
-    toolBar.setFloatable(floatable);
-    toolBar.setOrientation(orientation());
-    toolBar.setRollover(rollover);
-    toolBar.setBorderPainted(borderPainted);
+	@Override
+	protected JToolBar createComponent() {
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(floatable);
+		toolBar.setOrientation(orientation());
+		toolBar.setRollover(rollover);
+		toolBar.setBorderPainted(borderPainted);
 
-    new ToolBarControlHandler(toolBar, controls(), buttonBuilder(), toggleButtonBuilder());
+		new ToolBarControlHandler(toolBar, controls(), buttonBuilder(), toggleButtonBuilder());
 
-    return toolBar;
-  }
+		return toolBar;
+	}
 
-  private static final class ToolBarControlHandler extends ControlHandler {
+	private static final class ToolBarControlHandler extends ControlHandler {
 
-    private final JToolBar toolBar;
-    private final ButtonBuilder<?, ?, ?> buttonBuilder;
-    private final ToggleButtonBuilder<?, ?> toggleButtonBuilder;
+		private final JToolBar toolBar;
+		private final ButtonBuilder<?, ?, ?> buttonBuilder;
+		private final ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
-    private ToolBarControlHandler(JToolBar toolBar, Controls controls,
-                                  ButtonBuilder<?, ?, ?> buttonBuilder,
-                                  ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
-      this.toolBar = toolBar;
-      this.buttonBuilder = buttonBuilder.clear();
-      this.toggleButtonBuilder = toggleButtonBuilder.clear();
-      controls.actions().forEach(this);
-    }
+		private ToolBarControlHandler(JToolBar toolBar, Controls controls,
+																	ButtonBuilder<?, ?, ?> buttonBuilder,
+																	ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
+			this.toolBar = toolBar;
+			this.buttonBuilder = buttonBuilder.clear();
+			this.toggleButtonBuilder = toggleButtonBuilder.clear();
+			controls.actions().forEach(this);
+		}
 
-    @Override
-    void onSeparator() {
-      toolBar.addSeparator();
-    }
+		@Override
+		void onSeparator() {
+			toolBar.addSeparator();
+		}
 
-    @Override
-    void onControl(Control control) {
-      onAction(control);
-    }
+		@Override
+		void onControl(Control control) {
+			onAction(control);
+		}
 
-    @Override
-    void onToggleControl(ToggleControl toggleControl) {
-      toolBar.add(toggleButtonBuilder
-              .toggleControl(toggleControl)
-              .build());
-      toggleButtonBuilder.clear();
-    }
+		@Override
+		void onToggleControl(ToggleControl toggleControl) {
+			toolBar.add(toggleButtonBuilder
+							.toggleControl(toggleControl)
+							.build());
+			toggleButtonBuilder.clear();
+		}
 
-    @Override
-    void onControls(Controls controls) {
-      new ToolBarControlHandler(toolBar, controls, buttonBuilder, toggleButtonBuilder);
-    }
+		@Override
+		void onControls(Controls controls) {
+			new ToolBarControlHandler(toolBar, controls, buttonBuilder, toggleButtonBuilder);
+		}
 
-    @Override
-    void onAction(Action action) {
-      toolBar.add(buttonBuilder
-              .action(action)
-              .build());
-      buttonBuilder.clear();
-    }
-  }
+		@Override
+		void onAction(Action action) {
+			toolBar.add(buttonBuilder
+							.action(action)
+							.build());
+			buttonBuilder.clear();
+		}
+	}
 }

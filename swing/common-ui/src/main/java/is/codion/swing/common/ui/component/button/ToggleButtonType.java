@@ -22,5 +22,5 @@ package is.codion.swing.common.ui.component.button;
  * Specifies how toggle buttons are presented.
  */
 public enum ToggleButtonType {
-  CHECKBOX, BUTTON, RADIO_BUTTON
+	CHECKBOX, BUTTON, RADIO_BUTTON
 }

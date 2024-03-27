@@ -25,10 +25,10 @@ import is.codion.framework.model.DefaultDetailModelLink;
  */
 public class SwingDetailModelLink extends DefaultDetailModelLink<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  /**
-   * @param detailModel the detail model
-   */
-  public SwingDetailModelLink(SwingEntityModel detailModel) {
-    super(detailModel);
-  }
+	/**
+	 * @param detailModel the detail model
+	 */
+	public SwingDetailModelLink(SwingEntityModel detailModel) {
+		super(detailModel);
+	}
 }

@@ -38,33 +38,33 @@ import static is.codion.framework.domain.entity.condition.Condition.all;
 
 public final class EmployeeServer extends EntityServer {
 
-  private final Domain domain = new Employees();
+	private final Domain domain = new Employees();
 
-  public EmployeeServer(EntityServerConfiguration configuration) throws RemoteException {
-    super(configuration);
-  }
+	public EmployeeServer(EntityServerConfiguration configuration) throws RemoteException {
+		super(configuration);
+	}
 
-  @Override
-  protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
-                                                                  RemoteClient remoteClient, int port,
-                                                                  RMIClientSocketFactory clientSocketFactory,
-                                                                  RMIServerSocketFactory serverSocketFactory)
-          throws RemoteException, DatabaseException {
-    return new DefaultEmployeeService(domain, database, remoteClient, port);
-  }
+	@Override
+	protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
+																																	RemoteClient remoteClient, int port,
+																																	RMIClientSocketFactory clientSocketFactory,
+																																	RMIServerSocketFactory serverSocketFactory)
+					throws RemoteException, DatabaseException {
+		return new DefaultEmployeeService(domain, database, remoteClient, port);
+	}
 
-  static final class DefaultEmployeeService extends AbstractRemoteEntityConnection implements EmployeeService {
+	static final class DefaultEmployeeService extends AbstractRemoteEntityConnection implements EmployeeService {
 
-    private DefaultEmployeeService(Domain domain, Database database, RemoteClient remoteClient, int port)
-            throws DatabaseException, RemoteException {
-      super(domain, database, remoteClient, port, null, null);
-    }
+		private DefaultEmployeeService(Domain domain, Database database, RemoteClient remoteClient, int port)
+						throws DatabaseException, RemoteException {
+			super(domain, database, remoteClient, port, null, null);
+		}
 
-    @Override
-    public Collection<Entity> employees() throws RemoteException, DatabaseException {
-      synchronized (connectionProxy) {
-        return connectionProxy.select(all(Employee.TYPE));
-      }
-    }
-  }
+		@Override
+		public Collection<Entity> employees() throws RemoteException, DatabaseException {
+			synchronized (connectionProxy) {
+				return connectionProxy.select(all(Employee.TYPE));
+			}
+		}
+	}
 }

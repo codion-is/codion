@@ -28,58 +28,58 @@ import javax.swing.JProgressBar;
  */
 public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> {
 
-  /**
-   * @param string a string to paint
-   * @return this builder
-   * @see JProgressBar#setString(String)
-   */
-  ProgressBarBuilder string(String string);
+	/**
+	 * @param string a string to paint
+	 * @return this builder
+	 * @see JProgressBar#setString(String)
+	 */
+	ProgressBarBuilder string(String string);
 
-  /**
-   * @param borderPainted true if a border should be painted
-   * @return this builder
-   * @see JProgressBar#setBorderPainted(boolean)
-   */
-  ProgressBarBuilder borderPainted(boolean borderPainted);
+	/**
+	 * @param borderPainted true if a border should be painted
+	 * @return this builder
+	 * @see JProgressBar#setBorderPainted(boolean)
+	 */
+	ProgressBarBuilder borderPainted(boolean borderPainted);
 
-  /**
-   * @param stringPainted true if a progress string should be painted
-   * @return this builder
-   * @see JProgressBar#setStringPainted(boolean)
-   */
-  ProgressBarBuilder stringPainted(boolean stringPainted);
+	/**
+	 * @param stringPainted true if a progress string should be painted
+	 * @return this builder
+	 * @see JProgressBar#setStringPainted(boolean)
+	 */
+	ProgressBarBuilder stringPainted(boolean stringPainted);
 
-  /**
-   * @param orientation the orientiation
-   * @return this builder
-   * @see JProgressBar#setOrientation(int)
-   */
-  ProgressBarBuilder orientation(int orientation);
+	/**
+	 * @param orientation the orientiation
+	 * @return this builder
+	 * @see JProgressBar#setOrientation(int)
+	 */
+	ProgressBarBuilder orientation(int orientation);
 
-  /**
-   * @param indeterminate true if the progress bar should be inditerminate
-   * @return this builder
-   * @see JProgressBar#setIndeterminate(boolean)
-   */
-  ProgressBarBuilder indeterminate(boolean indeterminate);
+	/**
+	 * @param indeterminate true if the progress bar should be inditerminate
+	 * @return this builder
+	 * @see JProgressBar#setIndeterminate(boolean)
+	 */
+	ProgressBarBuilder indeterminate(boolean indeterminate);
 
-  /**
-   * @return a new JProgressBar
-   */
-  JProgressBar build();
+	/**
+	 * @return a new JProgressBar
+	 */
+	JProgressBar build();
 
-  /**
-   * @return a new indeterminate {@link ProgressBarBuilder} instance
-   */
-  static ProgressBarBuilder builder() {
-    return new DefaultProgressBarBuilder(null);
-  }
+	/**
+	 * @return a new indeterminate {@link ProgressBarBuilder} instance
+	 */
+	static ProgressBarBuilder builder() {
+		return new DefaultProgressBarBuilder(null);
+	}
 
-  /**
-   * @param boundedRangeModel the progress bar model
-   * @return a new {@link ProgressBarBuilder} instance
-   */
-  static ProgressBarBuilder builder(BoundedRangeModel boundedRangeModel) {
-    return new DefaultProgressBarBuilder(boundedRangeModel);
-  }
+	/**
+	 * @param boundedRangeModel the progress bar model
+	 * @return a new {@link ProgressBarBuilder} instance
+	 */
+	static ProgressBarBuilder builder(BoundedRangeModel boundedRangeModel) {
+		return new DefaultProgressBarBuilder(boundedRangeModel);
+	}
 }

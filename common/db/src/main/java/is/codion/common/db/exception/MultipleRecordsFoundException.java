@@ -23,11 +23,11 @@ package is.codion.common.db.exception;
  */
 public class MultipleRecordsFoundException extends DatabaseException {
 
-  /**
-   * Instantiates a new MultipleRecordsFoundException
-   * @param message the exception message
-   */
-  public MultipleRecordsFoundException(String message) {
-    super(message);
-  }
+	/**
+	 * Instantiates a new MultipleRecordsFoundException
+	 * @param message the exception message
+	 */
+	public MultipleRecordsFoundException(String message) {
+		super(message);
+	}
 }

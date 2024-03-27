@@ -36,33 +36,33 @@ import java.util.concurrent.ConcurrentHashMap;
 
 final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
-  private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
+	private final EntityObjectMapper entityObjectMapper;
+	private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
-  EntityKeyDeserializer(EntityObjectMapper entityObjectMapper) {
-    super(Entity.Key.class);
-    this.entityObjectMapper = entityObjectMapper;
-  }
+	EntityKeyDeserializer(EntityObjectMapper entityObjectMapper) {
+		super(Entity.Key.class);
+		this.entityObjectMapper = entityObjectMapper;
+	}
 
-  @Override
-  public Entity.Key deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
-    ObjectCodec codec = parser.getCodec();
-    JsonNode node = codec.readTree(parser);
-    EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entityObjectMapper.entities()::definition);
-    JsonNode values = node.get("values");
-    Entity.Key.Builder builder = entityObjectMapper.entities().keyBuilder(definition.entityType());
-    Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
-    while (fields.hasNext()) {
-      Map.Entry<String, JsonNode> field = fields.next();
-      ColumnDefinition<Object> columnDefinition =
-              definition.columns().definition((Column<Object>) definition.attributes().get(field.getKey()));
-      builder.with(columnDefinition.attribute(),
-              entityObjectMapper.readValue(field.getValue().toString(),
-                      columnDefinition.attribute().type().valueClass()));
-    }
+	@Override
+	public Entity.Key deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+		ObjectCodec codec = parser.getCodec();
+		JsonNode node = codec.readTree(parser);
+		EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entityObjectMapper.entities()::definition);
+		JsonNode values = node.get("values");
+		Entity.Key.Builder builder = entityObjectMapper.entities().keyBuilder(definition.entityType());
+		Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
+		while (fields.hasNext()) {
+			Map.Entry<String, JsonNode> field = fields.next();
+			ColumnDefinition<Object> columnDefinition =
+							definition.columns().definition((Column<Object>) definition.attributes().get(field.getKey()));
+			builder.with(columnDefinition.attribute(),
+							entityObjectMapper.readValue(field.getValue().toString(),
+											columnDefinition.attribute().type().valueClass()));
+		}
 
-    return builder.build();
-  }
+		return builder.build();
+	}
 }

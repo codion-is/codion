@@ -26,12 +26,12 @@ import is.codion.swing.framework.model.SwingEntityModel;
 // tag::applicationModel[]
 public final class EmployeesAppModel extends SwingEntityApplicationModel {
 
-  public EmployeesAppModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
-    SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
-    departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
-    departmentModel.tableModel().refresh();
-    addEntityModel(departmentModel);
-  }
+	public EmployeesAppModel(EntityConnectionProvider connectionProvider) {
+		super(connectionProvider);
+		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
+		departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
+		departmentModel.tableModel().refresh();
+		addEntityModel(departmentModel);
+	}
 }
 // end::applicationModel[]

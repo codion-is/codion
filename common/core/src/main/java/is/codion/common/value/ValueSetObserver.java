@@ -27,32 +27,32 @@ import java.util.Set;
  */
 public interface ValueSetObserver<T> extends ValueObserver<Set<T>>, Iterable<T> {
 
-  /**
-   * Returns true if this set contains the specified element
-   * @param value the element
-   * @return true if this set contains the specified element
-   */
-  boolean contains(T value);
+	/**
+	 * Returns true if this set contains the specified element
+	 * @param value the element
+	 * @return true if this set contains the specified element
+	 */
+	boolean contains(T value);
 
-  /**
-   * Returns true if this set contains all of the elements of the specified collection
-   * @param values the elements to check
-   * @return true if this set contains all of the elements of the specified collection
-   */
-  boolean containsAll(Collection<T> values);
+	/**
+	 * Returns true if this set contains all of the elements of the specified collection
+	 * @param values the elements to check
+	 * @return true if this set contains all of the elements of the specified collection
+	 */
+	boolean containsAll(Collection<T> values);
 
-  /**
-   * @return true if this value set is empty
-   */
-  boolean empty();
+	/**
+	 * @return true if this value set is empty
+	 */
+	boolean empty();
 
-  /**
-   * @return true if this value set is not empty
-   */
-  boolean notEmpty();
+	/**
+	 * @return true if this value set is not empty
+	 */
+	boolean notEmpty();
 
-  /**
-   * @return the number of elements in this value set
-   */
-  int size();
+	/**
+	 * @return the number of elements in this value set
+	 */
+	int size();
 }

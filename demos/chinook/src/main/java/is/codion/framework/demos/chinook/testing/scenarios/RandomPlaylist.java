@@ -37,40 +37,40 @@ import static java.util.Arrays.asList;
 
 public final class RandomPlaylist implements Performer<EntityConnectionProvider> {
 
-  private static final String PLAYLIST_NAME = "Random playlist";
-  private static final Collection<String> GENRES =
-          asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
+	private static final String PLAYLIST_NAME = "Random playlist";
+	private static final Collection<String> GENRES =
+					asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
-  @Override
-  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
-    EntityConnection connection = connectionProvider.connection();
-    List<Entity> playlistGenres = connection.select(Genre.NAME.in(GENRES));
-    RandomPlaylistParameters parameters = new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
-            RANDOM.nextInt(20) + 25, playlistGenres);
-    Entity playlist = createPlaylist(connection, parameters);
-    Collection<Entity> playlistTracks = connection.select(PlaylistTrack.PLAYLIST_FK.equalTo(playlist));
-    Collection<Entity.Key> toDelete = Entity.primaryKeys(playlistTracks);
-    toDelete.add(playlist.primaryKey());
+	@Override
+	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+		EntityConnection connection = connectionProvider.connection();
+		List<Entity> playlistGenres = connection.select(Genre.NAME.in(GENRES));
+		RandomPlaylistParameters parameters = new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
+						RANDOM.nextInt(20) + 25, playlistGenres);
+		Entity playlist = createPlaylist(connection, parameters);
+		Collection<Entity> playlistTracks = connection.select(PlaylistTrack.PLAYLIST_FK.equalTo(playlist));
+		Collection<Entity.Key> toDelete = Entity.primaryKeys(playlistTracks);
+		toDelete.add(playlist.primaryKey());
 
-    connection.delete(toDelete);
-  }
+		connection.delete(toDelete);
+	}
 
-  private static Entity createPlaylist(EntityConnection connection,
-                                       RandomPlaylistParameters parameters) throws DatabaseException {
-    connection.beginTransaction();
-    try {
-      Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
-      connection.commitTransaction();
+	private static Entity createPlaylist(EntityConnection connection,
+																			 RandomPlaylistParameters parameters) throws DatabaseException {
+		connection.beginTransaction();
+		try {
+			Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
+			connection.commitTransaction();
 
-      return randomPlaylist;
-    }
-    catch (DatabaseException e) {
-      connection.rollbackTransaction();
-      throw e;
-    }
-    catch (Exception e) {
-      connection.rollbackTransaction();
-      throw new RuntimeException(e);
-    }
-  }
+			return randomPlaylist;
+		}
+		catch (DatabaseException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
+		catch (Exception e) {
+			connection.rollbackTransaction();
+			throw new RuntimeException(e);
+		}
+	}
 }

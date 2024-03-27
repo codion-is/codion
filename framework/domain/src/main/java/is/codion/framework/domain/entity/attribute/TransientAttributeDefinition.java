@@ -28,21 +28,21 @@ package is.codion.framework.domain.entity.attribute;
  */
 public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> {
 
-  /**
-   * @return true if the value of this attribute being modified should result in a modified entity
-   */
-  boolean modifiesEntity();
+	/**
+	 * @return true if the value of this attribute being modified should result in a modified entity
+	 */
+	boolean modifiesEntity();
 
-  /**
-   * Builds a transient AttributeDefinition instance
-   * @param <T> the attribute value type
-   */
-  interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
+	/**
+	 * Builds a transient AttributeDefinition instance
+	 * @param <T> the attribute value type
+	 */
+	interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
 
-    /**
-     * @param modifiesEntity if false then modifications to the value will not result in the owning entity becoming modified
-     * @return this builder instance
-     */
-    Builder<T, B> modifiesEntity(boolean modifiesEntity);
-  }
+		/**
+		 * @param modifiesEntity if false then modifications to the value will not result in the owning entity becoming modified
+		 * @return this builder instance
+		 */
+		Builder<T, B> modifiesEntity(boolean modifiesEntity);
+	}
 }

@@ -31,65 +31,65 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ItemComboBoxModelTest {
 
-  @Test
-  void test() {
-    ItemComboBoxModel.itemComboBoxModel();
-    Item<Integer> nullItem = item(null, "");
-    Item<Integer> aOne = item(1, "AOne");
-    Item<Integer> bTwo = item(2, "BTwo");
-    Item<Integer> cThree = item(3, "CThree");
-    Item<Integer> dFour = item(4, "DFour");
+	@Test
+	void test() {
+		ItemComboBoxModel.itemComboBoxModel();
+		Item<Integer> nullItem = item(null, "");
+		Item<Integer> aOne = item(1, "AOne");
+		Item<Integer> bTwo = item(2, "BTwo");
+		Item<Integer> cThree = item(3, "CThree");
+		Item<Integer> dFour = item(4, "DFour");
 
-    List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-    ItemComboBoxModel<Integer> model = ItemComboBoxModel.sortedItemComboBoxModel(items);
+		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
+		ItemComboBoxModel<Integer> model = ItemComboBoxModel.sortedItemComboBoxModel(items);
 
-    assertEquals(0, model.indexOf(null));
-    assertEquals(1, model.indexOf(1));
-    assertEquals(2, model.indexOf(2));
-    assertEquals(3, model.indexOf(3));
-    assertEquals(4, model.indexOf(4));
+		assertEquals(0, model.indexOf(null));
+		assertEquals(1, model.indexOf(1));
+		assertEquals(2, model.indexOf(2));
+		assertEquals(3, model.indexOf(3));
+		assertEquals(4, model.indexOf(4));
 
-    model.setSelectedItem(1);
-    assertEquals(model.getSelectedItem(), aOne);
-    assertEquals(1, (int) model.selectedValue().get());
-    assertEquals("AOne", model.getSelectedItem().toString());
-    model.setSelectedItem(2);
-    assertEquals(2, (int) model.selectedValue().get());
-    assertEquals(model.getSelectedItem(), bTwo);
-    model.setSelectedItem(4);
-    assertEquals(4, (int) model.selectedValue().get());
-    assertEquals(model.getSelectedItem(), dFour);
-    model.setSelectedItem(null);
-    assertNull(model.selectedValue().get());
-    assertEquals(model.getSelectedItem(), nullItem);
+		model.setSelectedItem(1);
+		assertEquals(model.getSelectedItem(), aOne);
+		assertEquals(1, (int) model.selectedValue().get());
+		assertEquals("AOne", model.getSelectedItem().toString());
+		model.setSelectedItem(2);
+		assertEquals(2, (int) model.selectedValue().get());
+		assertEquals(model.getSelectedItem(), bTwo);
+		model.setSelectedItem(4);
+		assertEquals(4, (int) model.selectedValue().get());
+		assertEquals(model.getSelectedItem(), dFour);
+		model.setSelectedItem(null);
+		assertNull(model.selectedValue().get());
+		assertEquals(model.getSelectedItem(), nullItem);
 
-    model.refresh();
+		model.refresh();
 
-    assertEquals(0, model.indexOf(null));
-    assertEquals(1, model.indexOf(1));
-    assertEquals(2, model.indexOf(2));
-    assertEquals(3, model.indexOf(3));
-    assertEquals(4, model.indexOf(4));
+		assertEquals(0, model.indexOf(null));
+		assertEquals(1, model.indexOf(1));
+		assertEquals(2, model.indexOf(2));
+		assertEquals(3, model.indexOf(3));
+		assertEquals(4, model.indexOf(4));
 
-    //test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-    ItemComboBoxModel<Integer> unsortedModel = ItemComboBoxModel.itemComboBoxModel(items);
+		//test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
+		ItemComboBoxModel<Integer> unsortedModel = ItemComboBoxModel.itemComboBoxModel(items);
 
-    assertEquals(0, unsortedModel.indexOf(null));
-    assertEquals(1, unsortedModel.indexOf(3));
-    assertEquals(2, unsortedModel.indexOf(2));
-    assertEquals(3, unsortedModel.indexOf(1));
-    assertEquals(4, unsortedModel.indexOf(4));
-  }
+		assertEquals(0, unsortedModel.indexOf(null));
+		assertEquals(1, unsortedModel.indexOf(3));
+		assertEquals(2, unsortedModel.indexOf(2));
+		assertEquals(3, unsortedModel.indexOf(1));
+		assertEquals(4, unsortedModel.indexOf(4));
+	}
 
-  @Test
-  void booleanComboBoxModel() {
-    ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
+	@Test
+	void booleanComboBoxModel() {
+		ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
 
-    model.setSelectedItem(false);
-    assertEquals(false, model.getSelectedItem().get());
-    model.setSelectedItem(true);
-    assertEquals(true, model.getSelectedItem().get());
-    model.setSelectedItem(null);
-    assertNull(model.getSelectedItem().get());
-  }
+		model.setSelectedItem(false);
+		assertEquals(false, model.getSelectedItem().get());
+		model.setSelectedItem(true);
+		assertEquals(true, model.getSelectedItem().get());
+		model.setSelectedItem(null);
+		assertNull(model.getSelectedItem().get());
+	}
 }

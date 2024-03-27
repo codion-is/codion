@@ -52,344 +52,344 @@ import java.time.LocalTime;
 
 public final class InputControls {
 
-  static void control() {
-    // tag::control[]
-    State somethingEnabledState = State.state(true);
+	static void control() {
+		// tag::control[]
+		State somethingEnabledState = State.state(true);
 
-    Control control = Control.builder(() -> System.out.println("Doing something"))
-            .name("Do something")
-            .mnemonic('D')
-            .enabled(somethingEnabledState)
-            .build();
+		Control control = Control.builder(() -> System.out.println("Doing something"))
+						.name("Do something")
+						.mnemonic('D')
+						.enabled(somethingEnabledState)
+						.build();
 
-    JButton somethingButton = new JButton(control);
+		JButton somethingButton = new JButton(control);
 
-    Control.ActionCommand actionCommand = actionEvent -> {
-      if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
-        System.out.println("Doing something else");
-      }
-    };
-    Control actionControl = Control.actionControlBuilder(actionCommand)
-            .name("Do something else")
-            .mnemonic('S')
-            .build();
+		Control.ActionCommand actionCommand = actionEvent -> {
+			if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+				System.out.println("Doing something else");
+			}
+		};
+		Control actionControl = Control.actionControlBuilder(actionCommand)
+						.name("Do something else")
+						.mnemonic('S')
+						.build();
 
-    JButton somethingElseButton = new JButton(actionControl);
-    // end::control[]
+		JButton somethingElseButton = new JButton(actionControl);
+		// end::control[]
 
-    // tag::toggleControl[]
-    State state = State.state();
+		// tag::toggleControl[]
+		State state = State.state();
 
-    JToggleButton toggleButton = Components.toggleButton(state)
-            .text("Change state")
-            .mnemonic('C')
-            .build();
+		JToggleButton toggleButton = Components.toggleButton(state)
+						.text("Change state")
+						.mnemonic('C')
+						.build();
 
-    Value<Boolean> booleanValue = Value.value();
+		Value<Boolean> booleanValue = Value.value();
 
-    JCheckBox checkBox = Components.checkBox(booleanValue)
-            .text("Change value")
-            .mnemonic('V')
-            .build();
-    // end::toggleControl[]
-  }
+		JCheckBox checkBox = Components.checkBox(booleanValue)
+						.text("Change value")
+						.mnemonic('V')
+						.build();
+		// end::toggleControl[]
+	}
 
-  void controls() {
-    // tag::controls[]
-    Controls controls = Controls.builder()
-            .control(Control.builder(this::doFirst)
-                    .name("First")
-                    .mnemonic('F'))
-            .control(Control.builder(this::doSecond)
-                    .name("Second")
-                    .mnemonic('S'))
-            .control(Controls.builder()
-                    .name("Submenu")
-                    .control(Control.builder(this::doSubFirst)
-                            .name("Sub-first")
-                            .mnemonic('b'))
-                    .control(Control.builder(this::doSubSecond)
-                            .name("Sub-second")
-                            .mnemonic('u')))
-            .build();
+	void controls() {
+		// tag::controls[]
+		Controls controls = Controls.builder()
+						.control(Control.builder(this::doFirst)
+										.name("First")
+										.mnemonic('F'))
+						.control(Control.builder(this::doSecond)
+										.name("Second")
+										.mnemonic('S'))
+						.control(Controls.builder()
+										.name("Submenu")
+										.control(Control.builder(this::doSubFirst)
+														.name("Sub-first")
+														.mnemonic('b'))
+										.control(Control.builder(this::doSubSecond)
+														.name("Sub-second")
+														.mnemonic('u')))
+						.build();
 
-    JMenu menu = Components.menu(controls).build();
+		JMenu menu = Components.menu(controls).build();
 
-    Control firstControl = Control.builder(this::doFirst)
-            .name("First")
-            .mnemonic('F')
-            .build();
-    Control secondControl = Control.builder(this::doSecond)
-            .name("Second")
-            .mnemonic('S')
-            .build();
+		Control firstControl = Control.builder(this::doFirst)
+						.name("First")
+						.mnemonic('F')
+						.build();
+		Control secondControl = Control.builder(this::doSecond)
+						.name("Second")
+						.mnemonic('S')
+						.build();
 
-    Controls twoControls = Controls.builder()
-            .controls(firstControl, secondControl)
-            .build();
+		Controls twoControls = Controls.builder()
+						.controls(firstControl, secondControl)
+						.build();
 
-    JPanel buttonPanel = Components.buttonPanel(twoControls).build();
-    // end::controls[]
-  }
+		JPanel buttonPanel = Components.buttonPanel(twoControls).build();
+		// end::controls[]
+	}
 
-  void doFirst() {}
-  void doSecond() {}
-  void doSubFirst() {}
-  void doSubSecond() {}
+	void doFirst() {}
+	void doSecond() {}
+	void doSubFirst() {}
+	void doSubSecond() {}
 
-  static void basics() {
-    // tag::basics[]
-    //an integer based value, initialized to 42
-    Value<Integer> integerValue = Value.value(42);
+	static void basics() {
+		// tag::basics[]
+		//an integer based value, initialized to 42
+		Value<Integer> integerValue = Value.value(42);
 
-    //create a spinner linked to the value
-    JSpinner spinner =
-            Components.integerSpinner(integerValue)
-                    .build();
+		//create a spinner linked to the value
+		JSpinner spinner =
+						Components.integerSpinner(integerValue)
+										.build();
 
-    //create a NumberField component value, basically doing the same as
-    //the above, with an extra step to expose the underlying ComponentValue
-    ComponentValue<Integer, NumberField<Integer>> numberFieldValue =
-            Components.integerField()
-                    .buildValue();
+		//create a NumberField component value, basically doing the same as
+		//the above, with an extra step to expose the underlying ComponentValue
+		ComponentValue<Integer, NumberField<Integer>> numberFieldValue =
+						Components.integerField()
+										.buildValue();
 
-    //linked to the same value
-    numberFieldValue.link(integerValue);
+		//linked to the same value
+		numberFieldValue.link(integerValue);
 
-    //fetch the input field from the component value
-    NumberField<Integer> numberField = numberFieldValue.component();
-    // end::basics[]
-  }
+		//fetch the input field from the component value
+		NumberField<Integer> numberField = numberFieldValue.component();
+		// end::basics[]
+	}
 
-  static void checkBox() {
-    // tag::checkBox[]
-    //non-nullable so use this value instead of null
-    boolean nullValue = false;
+	static void checkBox() {
+		// tag::checkBox[]
+		//non-nullable so use this value instead of null
+		boolean nullValue = false;
 
-    Value<Boolean> booleanValue = Value.value(true, nullValue);
+		Value<Boolean> booleanValue = Value.value(true, nullValue);
 
-    JCheckBox checkBox =
-            Components.checkBox(booleanValue)
-                    .text("Check")
-                    .horizontalAlignment(SwingConstants.CENTER)
-                    .build();
+		JCheckBox checkBox =
+						Components.checkBox(booleanValue)
+										.text("Check")
+										.horizontalAlignment(SwingConstants.CENTER)
+										.build();
 
-    // end::checkBox[]
-  }
+		// end::checkBox[]
+	}
 
-  static void nullableCheckBox() {
-    // tag::nullableCheckBox[]
-    //nullable boolean value
-    Value<Boolean> booleanValue = Value.value();
+	static void nullableCheckBox() {
+		// tag::nullableCheckBox[]
+		//nullable boolean value
+		Value<Boolean> booleanValue = Value.value();
 
-    NullableCheckBox checkBox =
-            (NullableCheckBox) Components.checkBox(booleanValue)
-                    .text("Check")
-                    .nullable(true)
-                    .build();
-    // end::nullableCheckBox[]
-  }
+		NullableCheckBox checkBox =
+						(NullableCheckBox) Components.checkBox(booleanValue)
+										.text("Check")
+										.nullable(true)
+										.build();
+		// end::nullableCheckBox[]
+	}
 
-  static void booleanComboBox() {
-    // tag::booleanComboBox[]
-    Value<Boolean> booleanValue = Value.value();
+	static void booleanComboBox() {
+		// tag::booleanComboBox[]
+		Value<Boolean> booleanValue = Value.value();
 
-    JComboBox<Item<Boolean>> comboBox =
-            Components.booleanComboBox(booleanValue)
-                    .toolTipText("Select a value")
-                    .build();
-    // end::booleanComboBox[]
-  }
+		JComboBox<Item<Boolean>> comboBox =
+						Components.booleanComboBox(booleanValue)
+										.toolTipText("Select a value")
+										.build();
+		// end::booleanComboBox[]
+	}
 
-  static void stringField() {
-    // tag::stringField[]
-    Value<String> stringValue = Value.value();
+	static void stringField() {
+		// tag::stringField[]
+		Value<String> stringValue = Value.value();
 
-    JTextField textField =
-            Components.stringField(stringValue)
-                    .preferredWidth(120)
-                    .transferFocusOnEnter(true)
-                    .build();
-    // end::stringField[]
-  }
+		JTextField textField =
+						Components.stringField(stringValue)
+										.preferredWidth(120)
+										.transferFocusOnEnter(true)
+										.build();
+		// end::stringField[]
+	}
 
-  static void characterField() {
-    // tag::characterField[]
-    Value<Character> characterValue = Value.value();
+	static void characterField() {
+		// tag::characterField[]
+		Value<Character> characterValue = Value.value();
 
-    JTextField textField =
-            Components.characterField(characterValue)
-                    .preferredWidth(120)
-                    .transferFocusOnEnter(true)
-                    .build();
-    // end::characterField[]
-  }
+		JTextField textField =
+						Components.characterField(characterValue)
+										.preferredWidth(120)
+										.transferFocusOnEnter(true)
+										.build();
+		// end::characterField[]
+	}
 
-  static void textArea() {
-    // tag::textArea[]
-    Value<String> stringValue = Value.value();
+	static void textArea() {
+		// tag::textArea[]
+		Value<String> stringValue = Value.value();
 
-    JTextArea textArea =
-            Components.textArea(stringValue)
-                    .rowsColumns(10, 20)
-                    .lineWrap(true)
-                    .build();
-    // end::textArea[]
-  }
+		JTextArea textArea =
+						Components.textArea(stringValue)
+										.rowsColumns(10, 20)
+										.lineWrap(true)
+										.build();
+		// end::textArea[]
+	}
 
-  static void integerField() {
-    // tag::integerField[]
-    Value<Integer> integerValue = Value.value();
+	static void integerField() {
+		// tag::integerField[]
+		Value<Integer> integerValue = Value.value();
 
-    NumberField<Integer> integerField =
-            Components.integerField(integerValue)
-                    .valueRange(0, 10_000)
-                    .groupingUsed(false)
-                    .build();
-    // end::integerField[]
-  }
+		NumberField<Integer> integerField =
+						Components.integerField(integerValue)
+										.valueRange(0, 10_000)
+										.groupingUsed(false)
+										.build();
+		// end::integerField[]
+	}
 
-  static void longField() {
-    // tag::longField[]
-    Value<Long> longValue = Value.value();
+	static void longField() {
+		// tag::longField[]
+		Value<Long> longValue = Value.value();
 
-    NumberField<Long> longField =
-            Components.longField(longValue)
-                    .groupingUsed(true)
-                    .build();
-    // end::longField[]
-  }
+		NumberField<Long> longField =
+						Components.longField(longValue)
+										.groupingUsed(true)
+										.build();
+		// end::longField[]
+	}
 
-  static void doubleField() {
-    // tag::doubleField[]
-    Value<Double> doubleValue = Value.value();
+	static void doubleField() {
+		// tag::doubleField[]
+		Value<Double> doubleValue = Value.value();
 
-    NumberField<Double> doubleField =
-            Components.doubleField(doubleValue)
-                    .maximumFractionDigits(3)
-                    .decimalSeparator('.')
-                    .build();
-    // end::doubleField[]
-  }
+		NumberField<Double> doubleField =
+						Components.doubleField(doubleValue)
+										.maximumFractionDigits(3)
+										.decimalSeparator('.')
+										.build();
+		// end::doubleField[]
+	}
 
-  static void bigDecimalField() {
-    // tag::bigDecimalField[]
-    Value<BigDecimal> bigDecimalValue = Value.value();
+	static void bigDecimalField() {
+		// tag::bigDecimalField[]
+		Value<BigDecimal> bigDecimalValue = Value.value();
 
-    NumberField<BigDecimal> bigDecimalField =
-            Components.bigDecimalField(bigDecimalValue)
-                    .maximumFractionDigits(2)
-                    .groupingSeparator('.')
-                    .decimalSeparator(',')
-                    .build();
-    // end::bigDecimalField[]
-  }
+		NumberField<BigDecimal> bigDecimalField =
+						Components.bigDecimalField(bigDecimalValue)
+										.maximumFractionDigits(2)
+										.groupingSeparator('.')
+										.decimalSeparator(',')
+										.build();
+		// end::bigDecimalField[]
+	}
 
-  static void localTime() {
-    // tag::localTime[]
-    Value<LocalTime> localTimeValue = Value.value();
+	static void localTime() {
+		// tag::localTime[]
+		Value<LocalTime> localTimeValue = Value.value();
 
-    TemporalField<LocalTime> temporalField =
-            Components.localTimeField("HH:mm:ss", localTimeValue)
-                    .build();
-    // end::localTime[]
-  }
+		TemporalField<LocalTime> temporalField =
+						Components.localTimeField("HH:mm:ss", localTimeValue)
+										.build();
+		// end::localTime[]
+	}
 
-  static void localDate() {
-    // tag::localDate[]
-    Value<LocalDate> localDateValue = Value.value();
+	static void localDate() {
+		// tag::localDate[]
+		Value<LocalDate> localDateValue = Value.value();
 
-    TemporalField<LocalDate> temporalField =
-            Components.localDateField("dd-MM-yyyy", localDateValue)
-                    .build();
-    // end::localDate[]
-  }
+		TemporalField<LocalDate> temporalField =
+						Components.localDateField("dd-MM-yyyy", localDateValue)
+										.build();
+		// end::localDate[]
+	}
 
-  static void localDateTime() {
-    // tag::localDateTime[]
-    Value<LocalDateTime> localDateTimeValue = Value.value();
+	static void localDateTime() {
+		// tag::localDateTime[]
+		Value<LocalDateTime> localDateTimeValue = Value.value();
 
-    TemporalField<LocalDateTime> temporalField =
-            Components.localDateTimeField("dd-MM-yyyy HH:mm", localDateTimeValue)
-                    .build();
-    // end::localDateTime[]
-  }
+		TemporalField<LocalDateTime> temporalField =
+						Components.localDateTimeField("dd-MM-yyyy HH:mm", localDateTimeValue)
+										.build();
+		// end::localDateTime[]
+	}
 
-  static void selectionComboBox() {
-    // tag::selectionComboBox[]
-    Value<String> stringValue = Value.value();
+	static void selectionComboBox() {
+		// tag::selectionComboBox[]
+		Value<String> stringValue = Value.value();
 
-    DefaultComboBoxModel<String> comboBoxModel =
-            new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
+		DefaultComboBoxModel<String> comboBoxModel =
+						new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
-    JComboBox<String> comboBox =
-            Components.comboBox(comboBoxModel, stringValue)
-                    .preferredWidth(160)
-                    .build();
-    // end::selectionComboBox[]
-  }
+		JComboBox<String> comboBox =
+						Components.comboBox(comboBoxModel, stringValue)
+										.preferredWidth(160)
+										.build();
+		// end::selectionComboBox[]
+	}
 
-  static void customTextFields() {
-    // tag::customTextFields[]
-    class Person {
-      final String firstName;
-      final String lastName;
+	static void customTextFields() {
+		// tag::customTextFields[]
+		class Person {
+			final String firstName;
+			final String lastName;
 
-      public Person(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-      }
+			public Person(String firstName, String lastName) {
+				this.firstName = firstName;
+				this.lastName = lastName;
+			}
 
-      @Override
-      public String toString() {
-        return lastName + ", " + firstName;
-      }
-    }
+			@Override
+			public String toString() {
+				return lastName + ", " + firstName;
+			}
+		}
 
-    class PersonPanel extends JPanel {
-      final JTextField firstNameField = new JTextField();
-      final JTextField lastNameField = new JTextField();
+		class PersonPanel extends JPanel {
+			final JTextField firstNameField = new JTextField();
+			final JTextField lastNameField = new JTextField();
 
-      public PersonPanel() {
-        setLayout(new GridLayout(2, 2));
-        add(new JLabel("First name"));
-        add(new JLabel("Last name"));
-        add(firstNameField);
-        add(lastNameField);
-      }
-    }
+			public PersonPanel() {
+				setLayout(new GridLayout(2, 2));
+				add(new JLabel("First name"));
+				add(new JLabel("Last name"));
+				add(firstNameField);
+				add(lastNameField);
+			}
+		}
 
-    class PersonPanelValue extends AbstractComponentValue<Person, PersonPanel> {
+		class PersonPanelValue extends AbstractComponentValue<Person, PersonPanel> {
 
-      public PersonPanelValue(PersonPanel component) {
-        super(component);
-        //We must call notifyListeners() each time this value changes,
-        //that is, when either the first or last name changes.
-        component.firstNameField.getDocument()
-                .addDocumentListener((DocumentAdapter) e -> notifyListeners());
-        component.lastNameField.getDocument()
-                .addDocumentListener((DocumentAdapter) e -> notifyListeners());
-      }
+			public PersonPanelValue(PersonPanel component) {
+				super(component);
+				//We must call notifyListeners() each time this value changes,
+				//that is, when either the first or last name changes.
+				component.firstNameField.getDocument()
+								.addDocumentListener((DocumentAdapter) e -> notifyListeners());
+				component.lastNameField.getDocument()
+								.addDocumentListener((DocumentAdapter) e -> notifyListeners());
+			}
 
-      @Override
-      protected Person getComponentValue() {
-        return new Person(component().firstNameField.getText(), component().lastNameField.getText());
-      }
+			@Override
+			protected Person getComponentValue() {
+				return new Person(component().firstNameField.getText(), component().lastNameField.getText());
+			}
 
-      @Override
-      protected void setComponentValue(Person value) {
-        component().firstNameField.setText(value == null ? null : value.firstName);
-        component().lastNameField.setText(value == null ? null : value.lastName);
-      }
-    }
+			@Override
+			protected void setComponentValue(Person value) {
+				component().firstNameField.setText(value == null ? null : value.firstName);
+				component().lastNameField.setText(value == null ? null : value.lastName);
+			}
+		}
 
-    Value<Person> personValue = Value.value();
+		Value<Person> personValue = Value.value();
 
-    PersonPanel personPanel = new PersonPanel();
+		PersonPanel personPanel = new PersonPanel();
 
-    Value<Person> personPanelValue = new PersonPanelValue(personPanel);
+		Value<Person> personPanelValue = new PersonPanelValue(personPanel);
 
-    personPanelValue.link(personValue);
-    // end::customTextFields[]
-  }
+		personPanelValue.link(personValue);
+		// end::customTextFields[]
+	}
 }

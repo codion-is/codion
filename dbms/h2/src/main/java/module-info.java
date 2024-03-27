@@ -23,10 +23,10 @@
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.h2 {
-  requires transitive is.codion.common.db;
+	requires transitive is.codion.common.db;
 
-  exports is.codion.dbms.h2;
+	exports is.codion.dbms.h2;
 
-  provides is.codion.common.db.database.DatabaseFactory
-          with is.codion.dbms.h2.H2DatabaseFactory;
+	provides is.codion.common.db.database.DatabaseFactory
+					with is.codion.dbms.h2.H2DatabaseFactory;
 }

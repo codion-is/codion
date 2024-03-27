@@ -36,44 +36,44 @@ import static java.util.stream.Collectors.toList;
 
 final class DisposeDialogOnEscapeAction extends AbstractAction {
 
-  private final JDialog dialog;
-  private final Consumer<State> confirmCloseListener;
+	private final JDialog dialog;
+	private final Consumer<State> confirmCloseListener;
 
-  DisposeDialogOnEscapeAction(JDialog dialog, Consumer<State> confirmCloseListener) {
-    super("DisposeDialogOnEscapeAction");
-    this.dialog = dialog;
-    this.confirmCloseListener = confirmCloseListener;
-  }
+	DisposeDialogOnEscapeAction(JDialog dialog, Consumer<State> confirmCloseListener) {
+		super("DisposeDialogOnEscapeAction");
+		this.dialog = dialog;
+		this.confirmCloseListener = confirmCloseListener;
+	}
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    List<Window> heavyWeightWindows = Arrays.stream(dialog.getOwnedWindows()).filter(window ->
-            window.getClass().getName().endsWith("Popup$HeavyWeightWindow") && window.isVisible()).collect(toList());
-    if (!heavyWeightWindows.isEmpty()) {
-      heavyWeightWindows.forEach(Window::dispose);
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		List<Window> heavyWeightWindows = Arrays.stream(dialog.getOwnedWindows()).filter(window ->
+						window.getClass().getName().endsWith("Popup$HeavyWeightWindow") && window.isVisible()).collect(toList());
+		if (!heavyWeightWindows.isEmpty()) {
+			heavyWeightWindows.forEach(Window::dispose);
 
-      return;
-    }
-    List<JPopupMenu> popupMenus = componentsOfType(dialog.getContentPane(), JPopupMenu.class);
-    if (popupMenus.isEmpty()) {
-      DisposeDialogAction.closeIfConfirmed(dialog, confirmCloseListener);
-    }
-    else {
-      popupMenus.forEach(popupMenu -> popupMenu.setVisible(false));
-    }
-  }
+			return;
+		}
+		List<JPopupMenu> popupMenus = componentsOfType(dialog.getContentPane(), JPopupMenu.class);
+		if (popupMenus.isEmpty()) {
+			DisposeDialogAction.closeIfConfirmed(dialog, confirmCloseListener);
+		}
+		else {
+			popupMenus.forEach(popupMenu -> popupMenu.setVisible(false));
+		}
+	}
 
-  static <T extends Component> List<T> componentsOfType(Container container, Class<T> clazz) {
-    List<T> components = new ArrayList<>();
-    for (Component component : container.getComponents()) {
-      if (clazz.isAssignableFrom(component.getClass())) {
-        components.add((T) component);
-      }
-      if (component instanceof Container) {
-        components.addAll(componentsOfType((Container) component, clazz));
-      }
-    }
+	static <T extends Component> List<T> componentsOfType(Container container, Class<T> clazz) {
+		List<T> components = new ArrayList<>();
+		for (Component component : container.getComponents()) {
+			if (clazz.isAssignableFrom(component.getClass())) {
+				components.add((T) component);
+			}
+			if (component instanceof Container) {
+				components.addAll(componentsOfType((Container) component, clazz));
+			}
+		}
 
-    return components;
-  }
+		return components;
+	}
 }

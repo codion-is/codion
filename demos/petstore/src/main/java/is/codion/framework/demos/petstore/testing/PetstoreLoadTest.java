@@ -36,55 +36,55 @@ import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final class PetstoreAppModelFactory
-          implements Function<User, PetstoreAppModel> {
+	private static final class PetstoreAppModelFactory
+					implements Function<User, PetstoreAppModel> {
 
-    @Override
-    public PetstoreAppModel apply(User user) {
-      PetstoreAppModel applicationModel = new PetstoreAppModel(
-              EntityConnectionProvider.builder()
-                      .domainType(Petstore.DOMAIN)
-                      .clientTypeId(getClass().getSimpleName())
-                      .user(user)
-                      .build());
-      SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
-      categoryModel.detailModelLink(categoryModel.detailModels().iterator().next()).active().set(true);
-      SwingEntityModel productModel = categoryModel.detailModels().iterator().next();
-      productModel.detailModelLink(productModel.detailModels().iterator().next()).active().set(true);
-      SwingEntityModel itemModel = productModel.detailModels().iterator().next();
-      itemModel.detailModelLink(itemModel.detailModels().iterator().next()).active().set(true);
+		@Override
+		public PetstoreAppModel apply(User user) {
+			PetstoreAppModel applicationModel = new PetstoreAppModel(
+							EntityConnectionProvider.builder()
+											.domainType(Petstore.DOMAIN)
+											.clientTypeId(getClass().getSimpleName())
+											.user(user)
+											.build());
+			SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
+			categoryModel.detailModelLink(categoryModel.detailModels().iterator().next()).active().set(true);
+			SwingEntityModel productModel = categoryModel.detailModels().iterator().next();
+			productModel.detailModelLink(productModel.detailModels().iterator().next()).active().set(true);
+			SwingEntityModel itemModel = productModel.detailModels().iterator().next();
+			itemModel.detailModelLink(itemModel.detailModels().iterator().next()).active().set(true);
 
-      return applicationModel;
-    }
-  }
+			return applicationModel;
+		}
+	}
 
-  private static final class PetstoreUsageScenario
-          implements Performer<PetstoreAppModel> {
+	private static final class PetstoreUsageScenario
+					implements Performer<PetstoreAppModel> {
 
-    @Override
-    public void perform(PetstoreAppModel application) throws Exception {
-      SwingEntityModel categoryModel = application.entityModels().iterator().next();
-      categoryModel.tableModel().selectionModel().clearSelection();
-      categoryModel.tableModel().refresh();
-      selectRandomRow(categoryModel.tableModel());
-      selectRandomRow(categoryModel.detailModels().iterator().next().tableModel());
-      selectRandomRow(categoryModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
-    }
-  }
+		@Override
+		public void perform(PetstoreAppModel application) throws Exception {
+			SwingEntityModel categoryModel = application.entityModels().iterator().next();
+			categoryModel.tableModel().selectionModel().clearSelection();
+			categoryModel.tableModel().refresh();
+			selectRandomRow(categoryModel.tableModel());
+			selectRandomRow(categoryModel.detailModels().iterator().next().tableModel());
+			selectRandomRow(categoryModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
+		}
+	}
 
-  public static void main(String[] args) {
-    LoadTest<PetstoreAppModel> loadTest =
-            LoadTest.builder(new PetstoreAppModelFactory(),
-                            application -> application.connectionProvider().close())
-                    .user(UNIT_TEST_USER)
-                    .scenarios(singletonList(Scenario.builder(new PetstoreUsageScenario())
-                            .name("selectRecords")
-                            .build()))
-                    .name("Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
-                    .build();
-    loadTestPanel(loadTestModel(loadTest)).run();
-  }
+	public static void main(String[] args) {
+		LoadTest<PetstoreAppModel> loadTest =
+						LoadTest.builder(new PetstoreAppModelFactory(),
+														application -> application.connectionProvider().close())
+										.user(UNIT_TEST_USER)
+										.scenarios(singletonList(Scenario.builder(new PetstoreUsageScenario())
+														.name("selectRecords")
+														.build()))
+										.name("Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.build();
+		loadTestPanel(loadTestModel(loadTest)).run();
+	}
 }

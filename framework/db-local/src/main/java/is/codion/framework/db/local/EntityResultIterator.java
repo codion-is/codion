@@ -29,50 +29,50 @@ import java.util.NoSuchElementException;
 
 final class EntityResultIterator implements ResultIterator<Entity> {
 
-  private final Statement statement;
-  private final ResultSet resultSet;
-  private final ResultPacker<Entity> resultPacker;
+	private final Statement statement;
+	private final ResultSet resultSet;
+	private final ResultPacker<Entity> resultPacker;
 
-  private boolean hasNext;
-  private boolean hasNextCalled;
+	private boolean hasNext;
+	private boolean hasNextCalled;
 
-  EntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
-    this.statement = statement;
-    this.resultSet = resultSet;
-    this.resultPacker = resultPacker;
-  }
+	EntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
+		this.statement = statement;
+		this.resultSet = resultSet;
+		this.resultPacker = resultPacker;
+	}
 
-  @Override
-  public boolean hasNext() throws SQLException {
-    if (hasNextCalled) {
-      return hasNext;
-    }
-    hasNext = resultSet.next();
-    hasNextCalled = true;
+	@Override
+	public boolean hasNext() throws SQLException {
+		if (hasNextCalled) {
+			return hasNext;
+		}
+		hasNext = resultSet.next();
+		hasNextCalled = true;
 
-    return hasNext;
-  }
+		return hasNext;
+	}
 
-  @Override
-  public Entity next() throws SQLException {
-    if (!hasNext()) {
-      throw new NoSuchElementException();
-    }
-    hasNextCalled = false;
+	@Override
+	public Entity next() throws SQLException {
+		if (!hasNext()) {
+			throw new NoSuchElementException();
+		}
+		hasNextCalled = false;
 
-    return resultPacker.get(resultSet);
-  }
+		return resultPacker.get(resultSet);
+	}
 
-  @Override
-  public void close() {
-    closeSilently(resultSet);
-    closeSilently(statement);
-  }
+	@Override
+	public void close() {
+		closeSilently(resultSet);
+		closeSilently(statement);
+	}
 
-  private static void closeSilently(AutoCloseable closeable) {
-    try {
-      closeable.close();
-    }
-    catch (Exception ignored) {/*ignored*/}
-  }
+	private static void closeSilently(AutoCloseable closeable) {
+		try {
+			closeable.close();
+		}
+		catch (Exception ignored) {/*ignored*/}
+	}
 }

@@ -26,16 +26,16 @@ import java.util.function.Consumer;
 
 final class OnTextChangedListener implements DocumentAdapter {
 
-  private final Consumer<String> onTextChanged;
-  private final JTextComponent textComponent;
+	private final Consumer<String> onTextChanged;
+	private final JTextComponent textComponent;
 
-  OnTextChangedListener(Consumer<String> onTextChanged, JTextComponent textComponent) {
-    this.onTextChanged = onTextChanged;
-    this.textComponent = textComponent;
-  }
+	OnTextChangedListener(Consumer<String> onTextChanged, JTextComponent textComponent) {
+		this.onTextChanged = onTextChanged;
+		this.textComponent = textComponent;
+	}
 
-  @Override
-  public void contentsChanged(DocumentEvent e) {
-    onTextChanged.accept(textComponent.getText());
-  }
+	@Override
+	public void contentsChanged(DocumentEvent e) {
+		onTextChanged.accept(textComponent.getText());
+	}
 }

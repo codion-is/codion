@@ -26,23 +26,23 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 public class TagItemEditPanel extends EntityEditPanel {
 
-  public TagItemEditPanel(SwingEntityEditModel model) {
-    super(model);
-  }
+	public TagItemEditPanel(SwingEntityEditModel model) {
+		super(model);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(TagItem.ITEM_FK);
-    createForeignKeyComboBox(TagItem.ITEM_FK)
-            .preferredWidth(180);
-    createForeignKeyComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
-            .add(true);
-    setLayout(Layouts.flexibleGridLayout(2, 1));
-    addInputPanel(TagItem.ITEM_FK);
-    addInputPanel(TagItem.TAG_FK);
-  }
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(TagItem.ITEM_FK);
+		createForeignKeyComboBox(TagItem.ITEM_FK)
+						.preferredWidth(180);
+		createForeignKeyComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
+						.add(true);
+		setLayout(Layouts.flexibleGridLayout(2, 1));
+		addInputPanel(TagItem.ITEM_FK);
+		addInputPanel(TagItem.TAG_FK);
+	}
 
-  private TagEditPanel createTagEditPanel() {
-    return new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider()));
-  }
+	private TagEditPanel createTagEditPanel() {
+		return new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider()));
+	}
 }

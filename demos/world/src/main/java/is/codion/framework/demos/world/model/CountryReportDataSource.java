@@ -40,91 +40,91 @@ import static is.codion.framework.domain.entity.OrderBy.descending;
 
 public final class CountryReportDataSource extends JasperReportsDataSource<Entity> {
 
-  private final EntityConnection connection;
+	private final EntityConnection connection;
 
-  CountryReportDataSource(List<Entity> countries, EntityConnection connection,
-                          ProgressReporter<String> progressReporter) {
-    super(countries.iterator(), new CountryValueProvider(),
-            new CountryReportProgressReporter(progressReporter));
-    this.connection = connection;
-  }
+	CountryReportDataSource(List<Entity> countries, EntityConnection connection,
+													ProgressReporter<String> progressReporter) {
+		super(countries.iterator(), new CountryValueProvider(),
+						new CountryReportProgressReporter(progressReporter));
+		this.connection = connection;
+	}
 
-  /* See usage in src/main/reports/country_report.jrxml, subreport element */
-  public JRDataSource cityDataSource() {
-    Entity country = currentItem();
-    try {
-      Collection<Entity> largestCities =
-              connection.select(where(City.COUNTRY_FK.equalTo(country))
-                      .attributes(City.NAME, City.POPULATION)
-                      .orderBy(descending(City.POPULATION))
-                      .limit(5)
-                      .build());
+	/* See usage in src/main/reports/country_report.jrxml, subreport element */
+	public JRDataSource cityDataSource() {
+		Entity country = currentItem();
+		try {
+			Collection<Entity> largestCities =
+							connection.select(where(City.COUNTRY_FK.equalTo(country))
+											.attributes(City.NAME, City.POPULATION)
+											.orderBy(descending(City.POPULATION))
+											.limit(5)
+											.build());
 
-      return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+			return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  private static final class CountryValueProvider implements BiFunction<Entity, JRField, Object> {
+	private static final class CountryValueProvider implements BiFunction<Entity, JRField, Object> {
 
-    private static final String NAME = "name";
-    private static final String CONTINENT = "continent";
-    private static final String REGION = "region";
-    private static final String SURFACEAREA = "surfacearea";
-    private static final String POPULATION = "population";
+		private static final String NAME = "name";
+		private static final String CONTINENT = "continent";
+		private static final String REGION = "region";
+		private static final String SURFACEAREA = "surfacearea";
+		private static final String POPULATION = "population";
 
-    @Override
-    public Object apply(Entity country, JRField field) {
-      switch (field.getName()) {
-        case NAME:
-          return country.get(Country.NAME);
-        case CONTINENT:
-          return country.get(Country.CONTINENT);
-        case REGION:
-          return country.get(Country.REGION);
-        case SURFACEAREA:
-          return country.get(Country.SURFACEAREA);
-        case POPULATION:
-          return country.get(Country.POPULATION);
-        default:
-          throw new IllegalArgumentException("Unknown field: " + field.getName());
-      }
-    }
-  }
+		@Override
+		public Object apply(Entity country, JRField field) {
+			switch (field.getName()) {
+				case NAME:
+					return country.get(Country.NAME);
+				case CONTINENT:
+					return country.get(Country.CONTINENT);
+				case REGION:
+					return country.get(Country.REGION);
+				case SURFACEAREA:
+					return country.get(Country.SURFACEAREA);
+				case POPULATION:
+					return country.get(Country.POPULATION);
+				default:
+					throw new IllegalArgumentException("Unknown field: " + field.getName());
+			}
+		}
+	}
 
-  private static final class CityValueProvider implements BiFunction<Entity, JRField, Object> {
+	private static final class CityValueProvider implements BiFunction<Entity, JRField, Object> {
 
-    private static final String NAME = "name";
-    private static final String POPULATION = "population";
+		private static final String NAME = "name";
+		private static final String POPULATION = "population";
 
-    @Override
-    public Object apply(Entity city, JRField field) {
-      switch (field.getName()) {
-        case NAME:
-          return city.get(City.NAME);
-        case POPULATION:
-          return city.get(City.POPULATION);
-        default:
-          throw new IllegalArgumentException("Unknown field: " + field.getName());
-      }
-    }
-  }
+		@Override
+		public Object apply(Entity city, JRField field) {
+			switch (field.getName()) {
+				case NAME:
+					return city.get(City.NAME);
+				case POPULATION:
+					return city.get(City.POPULATION);
+				default:
+					throw new IllegalArgumentException("Unknown field: " + field.getName());
+			}
+		}
+	}
 
-  private static final class CountryReportProgressReporter implements Consumer<Entity> {
+	private static final class CountryReportProgressReporter implements Consumer<Entity> {
 
-    private final AtomicInteger counter = new AtomicInteger();
-    private final ProgressReporter<String> progressReporter;
+		private final AtomicInteger counter = new AtomicInteger();
+		private final ProgressReporter<String> progressReporter;
 
-    private CountryReportProgressReporter(ProgressReporter<String> progressReporter) {
-      this.progressReporter = progressReporter;
-    }
+		private CountryReportProgressReporter(ProgressReporter<String> progressReporter) {
+			this.progressReporter = progressReporter;
+		}
 
-    @Override
-    public void accept(Entity country) {
-      progressReporter.publish(country.get(Country.NAME));
-      progressReporter.report(counter.incrementAndGet());
-    }
-  }
+		@Override
+		public void accept(Entity country) {
+			progressReporter.publish(country.get(Country.NAME));
+			progressReporter.report(counter.incrementAndGet());
+		}
+	}
 }

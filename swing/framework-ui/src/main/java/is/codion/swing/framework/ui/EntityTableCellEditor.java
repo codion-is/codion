@@ -41,50 +41,50 @@ import static java.util.Objects.requireNonNull;
  */
 final class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
 
-  private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier;
-  private final Value<T> cellValue = Value.value();
+	private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier;
+	private final Value<T> cellValue = Value.value();
 
-  private JComponent component;
+	private JComponent component;
 
-  EntityTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier) {
-    this.inputComponentSupplier = requireNonNull(inputComponentSupplier);
-  }
+	EntityTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier) {
+		this.inputComponentSupplier = requireNonNull(inputComponentSupplier);
+	}
 
-  @Override
-  public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-    if (component == null) {
-      component = createEditorComponent();
-    }
-    cellValue.set((T) value);
+	@Override
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+		if (component == null) {
+			component = createEditorComponent();
+		}
+		cellValue.set((T) value);
 
-    return component;
-  }
+		return component;
+	}
 
-  @Override
-  public Object getCellEditorValue() {
-    return cellValue.get();
-  }
+	@Override
+	public Object getCellEditorValue() {
+		return cellValue.get();
+	}
 
-  @Override
-  public boolean isCellEditable(EventObject event) {
-    if (event instanceof MouseEvent) {
-      return ((MouseEvent) event).getClickCount() >= 2;
-    }
+	@Override
+	public boolean isCellEditable(EventObject event) {
+		if (event instanceof MouseEvent) {
+			return ((MouseEvent) event).getClickCount() >= 2;
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  private JComponent createEditorComponent() {
-    ComponentValue<T, ? extends JComponent> componentValue = inputComponentSupplier.get();
-    componentValue.link(cellValue);
-    JComponent editorComponent = componentValue.component();
-    if (editorComponent instanceof JCheckBox) {
-      ((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
-    }
-    if (editorComponent instanceof JComboBox) {
-      new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, Control.control(this::stopCellEditing));
-    }
+	private JComponent createEditorComponent() {
+		ComponentValue<T, ? extends JComponent> componentValue = inputComponentSupplier.get();
+		componentValue.link(cellValue);
+		JComponent editorComponent = componentValue.component();
+		if (editorComponent instanceof JCheckBox) {
+			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		if (editorComponent instanceof JComboBox) {
+			new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, Control.control(this::stopCellEditing));
+		}
 
-    return editorComponent;
-  }
+		return editorComponent;
+	}
 }

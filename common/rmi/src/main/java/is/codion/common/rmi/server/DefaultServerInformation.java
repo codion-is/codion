@@ -28,55 +28,55 @@ import java.util.UUID;
 
 final class DefaultServerInformation implements ServerInformation, Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final UUID serverId;
-  private final String serverName;
-  private final int serverPort;
-  private final ZonedDateTime serverStartTime;
-  private final Locale locale = Locale.getDefault();
-  private final Version serverVersion = Version.version();
+	private final UUID serverId;
+	private final String serverName;
+	private final int serverPort;
+	private final ZonedDateTime serverStartTime;
+	private final Locale locale = Locale.getDefault();
+	private final Version serverVersion = Version.version();
 
-  DefaultServerInformation(UUID serverId, String serverName, int serverPort,
-                           ZonedDateTime serverStartTime) {
-    this.serverId = serverId;
-    this.serverName = serverName;
-    this.serverPort = serverPort;
-    this.serverStartTime = serverStartTime;
-  }
+	DefaultServerInformation(UUID serverId, String serverName, int serverPort,
+													 ZonedDateTime serverStartTime) {
+		this.serverId = serverId;
+		this.serverName = serverName;
+		this.serverPort = serverPort;
+		this.serverStartTime = serverStartTime;
+	}
 
-  @Override
-  public String serverName() {
-    return serverName;
-  }
+	@Override
+	public String serverName() {
+		return serverName;
+	}
 
-  @Override
-  public UUID serverId() {
-    return serverId;
-  }
+	@Override
+	public UUID serverId() {
+		return serverId;
+	}
 
-  @Override
-  public int serverPort() {
-    return serverPort;
-  }
+	@Override
+	public int serverPort() {
+		return serverPort;
+	}
 
-  @Override
-  public Version serverVersion() {
-    return serverVersion;
-  }
+	@Override
+	public Version serverVersion() {
+		return serverVersion;
+	}
 
-  @Override
-  public ZonedDateTime startTime() {
-    return serverStartTime;
-  }
+	@Override
+	public ZonedDateTime startTime() {
+		return serverStartTime;
+	}
 
-  @Override
-  public Locale locale() {
-    return locale;
-  }
+	@Override
+	public Locale locale() {
+		return locale;
+	}
 
-  @Override
-  public ZoneId timeZone() {
-    return serverStartTime.getZone();
-  }
+	@Override
+	public ZoneId timeZone() {
+		return serverStartTime.getZone();
+	}
 }

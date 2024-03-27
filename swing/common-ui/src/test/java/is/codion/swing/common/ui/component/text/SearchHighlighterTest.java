@@ -32,62 +32,62 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class SearchHighlighterTest {
 
-  @Test
-  void test() throws BadLocationException {
-    Document document = new DefaultStyledDocument();
-    document.insertString(0, "Hello there, here we are", null);
+	@Test
+	void test() throws BadLocationException {
+		Document document = new DefaultStyledDocument();
+		document.insertString(0, "Hello there, here we are", null);
 
-    JTextArea textArea = new JTextArea(document);
+		JTextArea textArea = new JTextArea(document);
 
-    SearchHighlighter highlighter = SearchHighlighter.searchHighlighter(textArea);
-    highlighter.highlightColor(Color.BLUE);
-    highlighter.highlightSelectedColor(Color.MAGENTA);
+		SearchHighlighter highlighter = SearchHighlighter.searchHighlighter(textArea);
+		highlighter.highlightColor(Color.BLUE);
+		highlighter.highlightSelectedColor(Color.MAGENTA);
 
-    JTextField searchField = highlighter.createSearchField();
+		JTextField searchField = highlighter.createSearchField();
 
-    searchField.setText("th");
-    assertEquals(6, highlighter.selectedHighlightPosition());
+		searchField.setText("th");
+		assertEquals(6, highlighter.selectedHighlightPosition());
 
-    searchField.setText(null);
-    assertNull(highlighter.selectedHighlightPosition());
+		searchField.setText(null);
+		assertNull(highlighter.selectedHighlightPosition());
 
-    searchField.setText("re");
-    assertEquals(9, highlighter.selectedHighlightPosition());
+		searchField.setText("re");
+		assertEquals(9, highlighter.selectedHighlightPosition());
 
-    highlighter.nextSearchPosition();
-    assertEquals(15, highlighter.selectedHighlightPosition());
+		highlighter.nextSearchPosition();
+		assertEquals(15, highlighter.selectedHighlightPosition());
 
-    highlighter.nextSearchPosition();
-    assertEquals(22, highlighter.selectedHighlightPosition());
+		highlighter.nextSearchPosition();
+		assertEquals(22, highlighter.selectedHighlightPosition());
 
-    highlighter.nextSearchPosition();
-    assertEquals(9, highlighter.selectedHighlightPosition());
+		highlighter.nextSearchPosition();
+		assertEquals(9, highlighter.selectedHighlightPosition());
 
-    highlighter.previousSearchPosition();
-    assertEquals(22, highlighter.selectedHighlightPosition());
+		highlighter.previousSearchPosition();
+		assertEquals(22, highlighter.selectedHighlightPosition());
 
-    highlighter.previousSearchPosition();
-    assertEquals(15, highlighter.selectedHighlightPosition());
+		highlighter.previousSearchPosition();
+		assertEquals(15, highlighter.selectedHighlightPosition());
 
-    highlighter.previousSearchPosition();
-    assertEquals(9, highlighter.selectedHighlightPosition());
+		highlighter.previousSearchPosition();
+		assertEquals(9, highlighter.selectedHighlightPosition());
 
-    highlighter.previousSearchPosition();
-    assertEquals(22, highlighter.selectedHighlightPosition());
+		highlighter.previousSearchPosition();
+		assertEquals(22, highlighter.selectedHighlightPosition());
 
-    highlighter.caseSensitive().set(true);
-    highlighter.searchString().set("he");
-    assertEquals(7, highlighter.selectedHighlightPosition());
+		highlighter.caseSensitive().set(true);
+		highlighter.searchString().set("he");
+		assertEquals(7, highlighter.selectedHighlightPosition());
 
-    highlighter.caseSensitive().set(false);
-    assertEquals(0, highlighter.selectedHighlightPosition());
+		highlighter.caseSensitive().set(false);
+		assertEquals(0, highlighter.selectedHighlightPosition());
 
-    highlighter.caseSensitive().set(true);
-    highlighter.searchString().set("He");
-    highlighter.nextSearchPosition();
-    assertEquals(0, highlighter.selectedHighlightPosition());
+		highlighter.caseSensitive().set(true);
+		highlighter.searchString().set("He");
+		highlighter.nextSearchPosition();
+		assertEquals(0, highlighter.selectedHighlightPosition());
 
-    highlighter.previousSearchPosition();
-    assertEquals(0, highlighter.selectedHighlightPosition());
-  }
+		highlighter.previousSearchPosition();
+		assertEquals(0, highlighter.selectedHighlightPosition());
+	}
 }

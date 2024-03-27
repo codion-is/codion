@@ -29,30 +29,30 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 final class CountryLanguageEditPanel extends EntityEditPanel {
 
-  CountryLanguageEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	CountryLanguageEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(CountryLanguage.COUNTRY_FK);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(CountryLanguage.COUNTRY_FK);
 
-    createForeignKeyComboBox(CountryLanguage.COUNTRY_FK)
-            .preferredWidth(120);
-    createTextField(CountryLanguage.LANGUAGE);
-    createCheckBox(CountryLanguage.IS_OFFICIAL);
-    createTextField(CountryLanguage.PERCENTAGE)
-            .columns(4);
+		createForeignKeyComboBox(CountryLanguage.COUNTRY_FK)
+						.preferredWidth(120);
+		createTextField(CountryLanguage.LANGUAGE);
+		createCheckBox(CountryLanguage.IS_OFFICIAL);
+		createTextField(CountryLanguage.PERCENTAGE)
+						.columns(4);
 
-    JPanel percentageOfficialPanel = gridLayoutPanel(1, 2)
-            .add(createInputPanel(CountryLanguage.PERCENTAGE))
-            .add(createInputPanel(CountryLanguage.IS_OFFICIAL))
-            .build();
+		JPanel percentageOfficialPanel = gridLayoutPanel(1, 2)
+						.add(createInputPanel(CountryLanguage.PERCENTAGE))
+						.add(createInputPanel(CountryLanguage.IS_OFFICIAL))
+						.build();
 
-    setLayout(gridLayout(0, 1));
+		setLayout(gridLayout(0, 1));
 
-    addInputPanel(CountryLanguage.COUNTRY_FK);
-    addInputPanel(CountryLanguage.LANGUAGE);
-    add(percentageOfficialPanel);
-  }
+		addInputPanel(CountryLanguage.COUNTRY_FK);
+		addInputPanel(CountryLanguage.LANGUAGE);
+		add(percentageOfficialPanel);
+	}
 }

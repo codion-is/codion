@@ -27,29 +27,29 @@ import java.awt.event.ItemListener;
 
 final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractComponentValue<T, C> {
 
-  SelectedItemValue(C comboBox) {
-    super(comboBox);
-    component().addItemListener(new NotifyOnItemSelectedListener());
-  }
+	SelectedItemValue(C comboBox) {
+		super(comboBox);
+		component().addItemListener(new NotifyOnItemSelectedListener());
+	}
 
-  @Override
-  protected T getComponentValue() {
-    Item<T> selectedValue = (Item<T>) component().getModel().getSelectedItem();
+	@Override
+	protected T getComponentValue() {
+		Item<T> selectedValue = (Item<T>) component().getModel().getSelectedItem();
 
-    return selectedValue == null ? null : selectedValue.get();
-  }
+		return selectedValue == null ? null : selectedValue.get();
+	}
 
-  @Override
-  protected void setComponentValue(T value) {
-    component().getModel().setSelectedItem(value);
-  }
+	@Override
+	protected void setComponentValue(T value) {
+		component().getModel().setSelectedItem(value);
+	}
 
-  private final class NotifyOnItemSelectedListener implements ItemListener {
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-        notifyListeners();
-      }
-    }
-  }
+	private final class NotifyOnItemSelectedListener implements ItemListener {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				notifyListeners();
+			}
+		}
+	}
 }

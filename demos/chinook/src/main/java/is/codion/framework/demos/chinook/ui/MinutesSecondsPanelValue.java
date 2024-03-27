@@ -33,63 +33,63 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
-  MinutesSecondsPanelValue() {
-    this(false);
-  }
+	MinutesSecondsPanelValue() {
+		this(false);
+	}
 
-  MinutesSecondsPanelValue(boolean horizontal) {
-    super(new MinutesSecondsPanel(horizontal));
-    component().minutesField.addListener(minutes -> notifyListeners());
-    component().secondsField.addListener(seconds -> notifyListeners());
-  }
+	MinutesSecondsPanelValue(boolean horizontal) {
+		super(new MinutesSecondsPanel(horizontal));
+		component().minutesField.addListener(minutes -> notifyListeners());
+		component().secondsField.addListener(seconds -> notifyListeners());
+	}
 
-  @Override
-  protected Integer getComponentValue() {
-    return milliseconds(component().minutesField.getNumber(), component().secondsField.getNumber());
-  }
+	@Override
+	protected Integer getComponentValue() {
+		return milliseconds(component().minutesField.getNumber(), component().secondsField.getNumber());
+	}
 
-  @Override
-  protected void setComponentValue(Integer milliseconds) {
-    component().minutesField.setNumber(minutes(milliseconds));
-    component().secondsField.setNumber(seconds(milliseconds));
-  }
+	@Override
+	protected void setComponentValue(Integer milliseconds) {
+		component().minutesField.setNumber(minutes(milliseconds));
+		component().secondsField.setNumber(seconds(milliseconds));
+	}
 
-  static final class MinutesSecondsPanel extends JPanel {
+	static final class MinutesSecondsPanel extends JPanel {
 
-    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
+		private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
 
-    private final NumberField<Integer> minutesField = integerField()
-            .transferFocusOnEnter(true)
-            .selectAllOnFocusGained(true)
-            .columns(2)
-            .build();
-    private final NumberField<Integer> secondsField = integerField()
-            .valueRange(0, 59)
-            .transferFocusOnEnter(true)
-            .selectAllOnFocusGained(true)
-            .columns(2)
-            .build();
+		private final NumberField<Integer> minutesField = integerField()
+						.transferFocusOnEnter(true)
+						.selectAllOnFocusGained(true)
+						.columns(2)
+						.build();
+		private final NumberField<Integer> secondsField = integerField()
+						.valueRange(0, 59)
+						.transferFocusOnEnter(true)
+						.selectAllOnFocusGained(true)
+						.columns(2)
+						.build();
 
-    private MinutesSecondsPanel(boolean horizontal) {
-      super(borderLayout());
-      if (horizontal) {
-        gridLayoutPanel(1, 4)
-                .add(new JLabel(BUNDLE.getString("min")))
-                .add(minutesField)
-                .add(new JLabel(BUNDLE.getString("sec")))
-                .add(secondsField)
-                .build(panel -> add(panel, BorderLayout.CENTER));
-      }
-      else {
-        gridLayoutPanel(1, 2)
-                .add(new JLabel(BUNDLE.getString("min")))
-                .add(new JLabel(BUNDLE.getString("sec")))
-                .build(panel -> add(panel, BorderLayout.NORTH));
-        gridLayoutPanel(1, 2)
-                .add(minutesField)
-                .add(secondsField)
-                .build(panel -> add(panel, BorderLayout.CENTER));
-      }
-    }
-  }
+		private MinutesSecondsPanel(boolean horizontal) {
+			super(borderLayout());
+			if (horizontal) {
+				gridLayoutPanel(1, 4)
+								.add(new JLabel(BUNDLE.getString("min")))
+								.add(minutesField)
+								.add(new JLabel(BUNDLE.getString("sec")))
+								.add(secondsField)
+								.build(panel -> add(panel, BorderLayout.CENTER));
+			}
+			else {
+				gridLayoutPanel(1, 2)
+								.add(new JLabel(BUNDLE.getString("min")))
+								.add(new JLabel(BUNDLE.getString("sec")))
+								.build(panel -> add(panel, BorderLayout.NORTH));
+				gridLayoutPanel(1, 2)
+								.add(minutesField)
+								.add(secondsField)
+								.build(panel -> add(panel, BorderLayout.CENTER));
+			}
+		}
+	}
 }

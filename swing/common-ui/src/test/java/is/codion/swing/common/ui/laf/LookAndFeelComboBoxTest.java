@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 public final class LookAndFeelComboBoxTest {
 
-  @Test
-  void test() {
-    LookAndFeelComboBox.lookAndFeelComboBox(true).selectedLookAndFeel();
-  }
+	@Test
+	void test() {
+		LookAndFeelComboBox.lookAndFeelComboBox(true).selectedLookAndFeel();
+	}
 }

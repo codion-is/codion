@@ -34,69 +34,69 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void test() throws DatabaseException {
-    SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-    TestEditPanel editPanel = new TestEditPanel(editModel);
-    assertEquals(7, editPanel.attributes().size());
-    assertThrows(IllegalStateException.class, editPanel::controls);
-    editPanel.initialize();
-    editPanel.controls();
+	@Test
+	void test() throws DatabaseException {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEditPanel editPanel = new TestEditPanel(editModel);
+		assertEquals(7, editPanel.attributes().size());
+		assertThrows(IllegalStateException.class, editPanel::controls);
+		editPanel.initialize();
+		editPanel.controls();
 
-    assertEquals(editModel, editPanel.editModel());
-    assertFalse(editPanel.active().get());
-    editPanel.active().set(true);
-    assertTrue(editPanel.active().get());
+		assertEquals(editModel, editPanel.editModel());
+		assertFalse(editPanel.active().get());
+		editPanel.active().set(true);
+		assertTrue(editPanel.active().get());
 
-    Entity martin = editModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
-    editModel.set(martin);
-    assertTrue(editModel.exists().get());
-    editPanel.clearAndRequestFocus();
-    assertFalse(editModel.exists().get());
-    assertEquals(7, editPanel.attributes().size());
+		Entity martin = editModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
+		editModel.set(martin);
+		assertTrue(editModel.exists().get());
+		editPanel.clearAndRequestFocus();
+		assertFalse(editModel.exists().get());
+		assertEquals(7, editPanel.attributes().size());
 
-    assertNotNull(editPanel.control(EditControl.INSERT));
-    assertNotNull(editPanel.control(EditControl.UPDATE));
-    assertNotNull(editPanel.control(EditControl.DELETE));
-    assertNotNull(editPanel.control(EditControl.CLEAR));
-  }
+		assertNotNull(editPanel.control(EditControl.INSERT));
+		assertNotNull(editPanel.control(EditControl.UPDATE));
+		assertNotNull(editPanel.control(EditControl.DELETE));
+		assertNotNull(editPanel.control(EditControl.CLEAR));
+	}
 
-  private static final class TestEditPanel extends EntityEditPanel {
+	private static final class TestEditPanel extends EntityEditPanel {
 
-    public TestEditPanel(SwingEntityEditModel editModel) {
-      super(editModel);
-      createTextField(Employee.NAME);
-      createItemComboBox(Employee.JOB);
-      createForeignKeyComboBox(Employee.MGR_FK);
-      createForeignKeyComboBox(Employee.DEPARTMENT_FK);
-      createTextField(Employee.SALARY);
-      createTextField(Employee.COMMISSION);
-      createTemporalFieldPanel(Employee.HIREDATE);
-    }
+		public TestEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
+			createTextField(Employee.NAME);
+			createItemComboBox(Employee.JOB);
+			createForeignKeyComboBox(Employee.MGR_FK);
+			createForeignKeyComboBox(Employee.DEPARTMENT_FK);
+			createTextField(Employee.SALARY);
+			createTextField(Employee.COMMISSION);
+			createTemporalFieldPanel(Employee.HIREDATE);
+		}
 
-    @Override
-    protected void initializeUI() {
-      initialFocusAttribute().set(Employee.NAME);
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(Employee.NAME);
 
-      setLayout(Layouts.flexibleGridLayout(3, 3));
+			setLayout(Layouts.flexibleGridLayout(3, 3));
 
-      addInputPanel(Employee.NAME);
-      addInputPanel(Employee.JOB);
-      addInputPanel(Employee.DEPARTMENT_FK);
+			addInputPanel(Employee.NAME);
+			addInputPanel(Employee.JOB);
+			addInputPanel(Employee.DEPARTMENT_FK);
 
-      addInputPanel(Employee.MGR_FK);
-      addInputPanel(Employee.SALARY);
-      addInputPanel(Employee.COMMISSION);
+			addInputPanel(Employee.MGR_FK);
+			addInputPanel(Employee.SALARY);
+			addInputPanel(Employee.COMMISSION);
 
-      addInputPanel(Employee.HIREDATE);
-    }
-  }
+			addInputPanel(Employee.HIREDATE);
+		}
+	}
 }

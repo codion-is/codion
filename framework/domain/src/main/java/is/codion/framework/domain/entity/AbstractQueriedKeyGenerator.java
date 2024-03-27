@@ -32,48 +32,48 @@ import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DAT
 
 abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-  protected final <T> void selectAndPopulate(Entity entity, ColumnDefinition<T> primaryKeyColumn,
-                                             DatabaseConnection databaseConnection) throws SQLException {
-    MethodLogger methodLogger = databaseConnection.getMethodLogger();
-    Connection connection = databaseConnection.getConnection();
-    if (connection == null) {
-      throw new IllegalStateException("No connection available when querying for key value");
-    }
-    String query = query(databaseConnection.database());
-    if (query == null) {
-      throw new IllegalStateException("Queried key generator returned no query");
-    }
-    SQLException exception = null;
-    logEntry(methodLogger, query);
-    try (PreparedStatement statement = connection.prepareStatement(query);
-         ResultSet resultSet = statement.executeQuery()) {
-      if (!resultSet.next()) {
-        throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
-      }
+	protected final <T> void selectAndPopulate(Entity entity, ColumnDefinition<T> primaryKeyColumn,
+																						 DatabaseConnection databaseConnection) throws SQLException {
+		MethodLogger methodLogger = databaseConnection.getMethodLogger();
+		Connection connection = databaseConnection.getConnection();
+		if (connection == null) {
+			throw new IllegalStateException("No connection available when querying for key value");
+		}
+		String query = query(databaseConnection.database());
+		if (query == null) {
+			throw new IllegalStateException("Queried key generator returned no query");
+		}
+		SQLException exception = null;
+		logEntry(methodLogger, query);
+		try (PreparedStatement statement = connection.prepareStatement(query);
+				 ResultSet resultSet = statement.executeQuery()) {
+			if (!resultSet.next()) {
+				throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
+			}
 
-      entity.put(primaryKeyColumn.attribute(), primaryKeyColumn.get(resultSet, 1));
-    }
-    catch (SQLException e) {
-      exception = e;
-      throw e;
-    }
-    finally {
-      logExit(methodLogger, exception);
-      databaseConnection.database().queryCounter().select();
-    }
-  }
+			entity.put(primaryKeyColumn.attribute(), primaryKeyColumn.get(resultSet, 1));
+		}
+		catch (SQLException e) {
+			exception = e;
+			throw e;
+		}
+		finally {
+			logExit(methodLogger, exception);
+			databaseConnection.database().queryCounter().select();
+		}
+	}
 
-  protected abstract String query(Database database);
+	protected abstract String query(Database database);
 
-  private static void logEntry(MethodLogger methodLogger, Object argument) {
-    if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.enter("selectAndPopulate", argument);
-    }
-  }
+	private static void logEntry(MethodLogger methodLogger, Object argument) {
+		if (methodLogger != null && methodLogger.isEnabled()) {
+			methodLogger.enter("selectAndPopulate", argument);
+		}
+	}
 
-  private static void logExit(MethodLogger methodLogger, Throwable exception) {
-    if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.exit("selectAndPopulate", exception);
-    }
-  }
+	private static void logExit(MethodLogger methodLogger, Throwable exception) {
+		if (methodLogger != null && methodLogger.isEnabled()) {
+			methodLogger.exit("selectAndPopulate", exception);
+		}
+	}
 }

@@ -40,43 +40,43 @@ import static java.util.Collections.singletonMap;
 
 public final class CountryTableModel extends SwingEntityTableModel {
 
-  private static final String CITY_SUBREPORT_PARAMETER = "CITY_SUBREPORT";
-  private static final String COUNTRY_REPORT = "country_report.jasper";
-  private static final String CITY_REPORT = "city_report.jasper";
+	private static final String CITY_SUBREPORT_PARAMETER = "CITY_SUBREPORT";
+	private static final String COUNTRY_REPORT = "country_report.jasper";
+	private static final String CITY_REPORT = "city_report.jasper";
 
-  CountryTableModel(EntityConnectionProvider connectionProvider) {
-    super(new CountryEditModel(connectionProvider));
-    configureCapitalConditionModel();
-  }
+	CountryTableModel(EntityConnectionProvider connectionProvider) {
+		super(new CountryEditModel(connectionProvider));
+		configureCapitalConditionModel();
+	}
 
-  public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
-    CountryReportDataSource dataSource = new CountryReportDataSource(selectionModel().getSelectedItems(),
-            connection(), progressReporter);
+	public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
+		CountryReportDataSource dataSource = new CountryReportDataSource(selectionModel().getSelectedItems(),
+						connection(), progressReporter);
 
-    return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, reportParameters());
-  }
+		return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, reportParameters());
+	}
 
-  private static Map<String, Object> reportParameters() throws ReportException {
-    return new HashMap<>(singletonMap(CITY_SUBREPORT_PARAMETER,
-            classPathReport(CityTableModel.class, CITY_REPORT).load()));
-  }
+	private static Map<String, Object> reportParameters() throws ReportException {
+		return new HashMap<>(singletonMap(CITY_SUBREPORT_PARAMETER,
+						classPathReport(CityTableModel.class, CITY_REPORT).load()));
+	}
 
-  private void configureCapitalConditionModel() {
-    ((EntitySearchConditionModel) conditionModel()
-            .attributeModel(Country.CAPITAL_FK))
-            .searchModel()
-            .condition().set(new CapitalConditionSupplier());
-  }
+	private void configureCapitalConditionModel() {
+		((EntitySearchConditionModel) conditionModel()
+						.attributeModel(Country.CAPITAL_FK))
+						.searchModel()
+						.condition().set(new CapitalConditionSupplier());
+	}
 
-  private final class CapitalConditionSupplier implements Supplier<Condition> {
-    @Override
-    public Condition get() {
-      try {
-        return City.ID.in(connection().select(Country.CAPITAL));
-      }
-      catch (DatabaseException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+	private final class CapitalConditionSupplier implements Supplier<Condition> {
+		@Override
+		public Condition get() {
+			try {
+				return City.ID.in(connection().select(Country.CAPITAL));
+			}
+			catch (DatabaseException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 }

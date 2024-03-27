@@ -27,27 +27,27 @@ import java.awt.Color;
 
 final class ChartUtil {
 
-  private ChartUtil() {}
+	private ChartUtil() {}
 
-  static void linkColors(JComponent parent, JFreeChart chart) {
-    chart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    setColors(parent, chart);
-    parent.addPropertyChangeListener("background", evt -> setColors(parent, chart));
-  }
+	static void linkColors(JComponent parent, JFreeChart chart) {
+		chart.getXYPlot().setBackgroundPaint(Color.BLACK);
+		setColors(parent, chart);
+		parent.addPropertyChangeListener("background", evt -> setColors(parent, chart));
+	}
 
-  private static void setColors(JComponent parent, JFreeChart chart) {
-    Color textFieldForeground = UIManager.getColor("TextField.foreground");
-    chart.setBackgroundPaint(parent.getBackground());
-    chart.getLegend().setBackgroundPaint(parent.getBackground());
-    chart.getLegend().setItemPaint(textFieldForeground);
-    setColors(chart.getXYPlot().getRangeAxis(), textFieldForeground);
-    setColors(chart.getXYPlot().getDomainAxis(), textFieldForeground);
-  }
+	private static void setColors(JComponent parent, JFreeChart chart) {
+		Color textFieldForeground = UIManager.getColor("TextField.foreground");
+		chart.setBackgroundPaint(parent.getBackground());
+		chart.getLegend().setBackgroundPaint(parent.getBackground());
+		chart.getLegend().setItemPaint(textFieldForeground);
+		setColors(chart.getXYPlot().getRangeAxis(), textFieldForeground);
+		setColors(chart.getXYPlot().getDomainAxis(), textFieldForeground);
+	}
 
-  private static void setColors(ValueAxis axis, Color color) {
-    axis.setLabelPaint(color);
-    axis.setTickLabelPaint(color);
-    axis.setAxisLinePaint(color);
-    axis.setTickMarkPaint(color);
-  }
+	private static void setColors(ValueAxis axis, Color color) {
+		axis.setLabelPaint(color);
+		axis.setTickLabelPaint(color);
+		axis.setAxisLinePaint(color);
+		axis.setTickMarkPaint(color);
+	}
 }

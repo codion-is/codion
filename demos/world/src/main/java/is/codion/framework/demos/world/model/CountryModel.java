@@ -23,10 +23,10 @@ import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class CountryModel extends SwingEntityModel {
 
-  CountryModel(EntityConnectionProvider connectionProvider) {
-    super(new CountryTableModel(connectionProvider));
-    SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
-    SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
-    addDetailModels(cityModel, countryLanguageModel);
-  }
+	CountryModel(EntityConnectionProvider connectionProvider) {
+		super(new CountryTableModel(connectionProvider));
+		SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
+		SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
+		addDetailModels(cityModel, countryLanguageModel);
+	}
 }

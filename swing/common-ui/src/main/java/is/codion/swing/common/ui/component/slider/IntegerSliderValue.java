@@ -24,18 +24,18 @@ import javax.swing.JSlider;
 
 final class IntegerSliderValue extends AbstractComponentValue<Integer, JSlider> {
 
-  IntegerSliderValue(JSlider slider) {
-    super(slider, 0);
-    slider.getModel().addChangeListener(e -> notifyListeners());
-  }
+	IntegerSliderValue(JSlider slider) {
+		super(slider, 0);
+		slider.getModel().addChangeListener(e -> notifyListeners());
+	}
 
-  @Override
-  protected Integer getComponentValue() {
-    return component().getValue();
-  }
+	@Override
+	protected Integer getComponentValue() {
+		return component().getValue();
+	}
 
-  @Override
-  protected void setComponentValue(Integer value) {
-    component().setValue(value == null ? 0 : value);
-  }
+	@Override
+	protected void setComponentValue(Integer value) {
+		component().setValue(value == null ? 0 : value);
+	}
 }

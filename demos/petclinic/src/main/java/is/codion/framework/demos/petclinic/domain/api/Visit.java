@@ -27,12 +27,12 @@ import java.time.LocalDate;
 import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface Visit {
-  EntityType TYPE = DOMAIN.entityType("petclinic.visit");
+	EntityType TYPE = DOMAIN.entityType("petclinic.visit");
 
-  Column<Integer> ID = TYPE.integerColumn("id");
-  Column<Integer> PET_ID = TYPE.integerColumn("pet_id");
-  Column<LocalDate> VISIT_DATE = TYPE.localDateColumn("visit_date");
-  Column<String> DESCRIPTION = TYPE.stringColumn("description");
+	Column<Integer> ID = TYPE.integerColumn("id");
+	Column<Integer> PET_ID = TYPE.integerColumn("pet_id");
+	Column<LocalDate> VISIT_DATE = TYPE.localDateColumn("visit_date");
+	Column<String> DESCRIPTION = TYPE.stringColumn("description");
 
-  ForeignKey PET_FK = TYPE.foreignKey("pet_fk", PET_ID, Pet.ID);
+	ForeignKey PET_FK = TYPE.foreignKey("pet_fk", PET_ID, Pet.ID);
 }

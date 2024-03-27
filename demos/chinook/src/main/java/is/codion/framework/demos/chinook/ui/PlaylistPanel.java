@@ -25,19 +25,19 @@ import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 public final class PlaylistPanel extends EntityPanel {
 
-  public PlaylistPanel(SwingEntityModel playlistModel) {
-    super(playlistModel,
-            new PlaylistEditPanel(playlistModel.editModel()),
-            new PlaylistTablePanel(playlistModel.tableModel()),
-            config -> config.detailLayout(TabbedDetailLayout.builder()
-                    .splitPaneResizeWeight(0.25)
-                    .build()));
+	public PlaylistPanel(SwingEntityModel playlistModel) {
+		super(playlistModel,
+						new PlaylistEditPanel(playlistModel.editModel()),
+						new PlaylistTablePanel(playlistModel.tableModel()),
+						config -> config.detailLayout(TabbedDetailLayout.builder()
+										.splitPaneResizeWeight(0.25)
+										.build()));
 
-    SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
-    EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,
-            new PlaylistTrackEditPanel(playlistTrackModel.editModel()),
-            new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));
+		SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
+		EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,
+						new PlaylistTrackEditPanel(playlistTrackModel.editModel()),
+						new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));
 
-    addDetailPanel(playlistTrackPanel);
-  }
+		addDetailPanel(playlistTrackPanel);
+	}
 }

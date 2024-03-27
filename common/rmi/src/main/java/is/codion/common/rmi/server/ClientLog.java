@@ -28,23 +28,23 @@ import java.util.UUID;
  */
 public interface ClientLog {
 
-  /**
-   * @return the log entry list
-   */
-  List<MethodLogger.Entry> entries();
+	/**
+	 * @return the log entry list
+	 */
+	List<MethodLogger.Entry> entries();
 
-  /**
-   * @return the UUID identifying this logs client
-   */
-  UUID clientId();
+	/**
+	 * @return the UUID identifying this logs client
+	 */
+	UUID clientId();
 
-  /**
-   * Instantiates a new ClientLog instance.
-   * @param clientId the id of the client this log represents
-   * @param entries the log entries
-   * @return a new ClientLog instance
-   */
-  static ClientLog clientLog(UUID clientId, List<MethodLogger.Entry> entries) {
-    return new DefaultClientLog(clientId, entries);
-  }
+	/**
+	 * Instantiates a new ClientLog instance.
+	 * @param clientId the id of the client this log represents
+	 * @param entries the log entries
+	 * @return a new ClientLog instance
+	 */
+	static ClientLog clientLog(UUID clientId, List<MethodLogger.Entry> entries) {
+		return new DefaultClientLog(clientId, entries);
+	}
 }

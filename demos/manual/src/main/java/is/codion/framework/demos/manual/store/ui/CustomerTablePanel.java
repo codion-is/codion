@@ -38,37 +38,37 @@ import java.util.Map;
 // tag::customerTablePanel[]
 public class CustomerTablePanel extends EntityTablePanel {
 
-  public CustomerTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-    // associate a custom Control with the PRINT control code,
-    // which calls the viewCustomerReport method in this class,
-    // enabled only when the selection is not empty
-    control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
-            .name("Customer report")
-            .smallIcon(FrameworkIcons.instance().print())
-            .enabled(tableModel().selectionModel().selectionNotEmpty())
-            .build());
-  }
+	public CustomerTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel);
+		// associate a custom Control with the PRINT control code,
+		// which calls the viewCustomerReport method in this class,
+		// enabled only when the selection is not empty
+		control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
+						.name("Customer report")
+						.smallIcon(FrameworkIcons.instance().print())
+						.enabled(tableModel().selectionModel().selectionNotEmpty())
+						.build());
+	}
 
-  private void viewCustomerReport() throws Exception {
-    List<Entity> selectedCustomers = tableModel().selectionModel().getSelectedItems();
-    if (selectedCustomers.isEmpty()) {
-      return;
-    }
+	private void viewCustomerReport() throws Exception {
+		List<Entity> selectedCustomers = tableModel().selectionModel().getSelectedItems();
+		if (selectedCustomers.isEmpty()) {
+			return;
+		}
 
-    Collection<String> customerIds = Entity.values(Customer.ID, selectedCustomers);
-    Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("CUSTOMER_IDS", customerIds);
+		Collection<String> customerIds = Entity.values(Customer.ID, selectedCustomers);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("CUSTOMER_IDS", customerIds);
 
-    JasperPrint customerReport = tableModel().connection()
-            .report(Customer.REPORT, reportParameters);
+		JasperPrint customerReport = tableModel().connection()
+						.report(Customer.REPORT, reportParameters);
 
-    Dialogs.componentDialog(new JRViewer(customerReport))
-            .owner(this)
-            .modal(false)
-            .title("Customer Report")
-            .size(new Dimension(800, 600))
-            .show();
-  }
+		Dialogs.componentDialog(new JRViewer(customerReport))
+						.owner(this)
+						.modal(false)
+						.title("Customer Report")
+						.size(new Dimension(800, 600))
+						.show();
+	}
 }
 // end::customerTablePanel[]

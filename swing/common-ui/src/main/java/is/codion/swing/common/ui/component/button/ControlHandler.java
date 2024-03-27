@@ -27,34 +27,34 @@ import java.util.function.Consumer;
 
 abstract class ControlHandler implements Consumer<Action> {
 
-  @Override
-  public final void accept(Action action) {
-    if (action == Controls.SEPARATOR) {
-      onSeparator();
-    }
-    else if (action instanceof Controls) {
-      if (((Controls) action).notEmpty()) {
-        onControls((Controls) action);
-      }
-    }
-    else if (action instanceof ToggleControl) {
-      onToggleControl((ToggleControl) action);
-    }
-    else if (action instanceof Control) {
-      onControl((Control) action);
-    }
-    else {
-      onAction(action);
-    }
-  }
+	@Override
+	public final void accept(Action action) {
+		if (action == Controls.SEPARATOR) {
+			onSeparator();
+		}
+		else if (action instanceof Controls) {
+			if (((Controls) action).notEmpty()) {
+				onControls((Controls) action);
+			}
+		}
+		else if (action instanceof ToggleControl) {
+			onToggleControl((ToggleControl) action);
+		}
+		else if (action instanceof Control) {
+			onControl((Control) action);
+		}
+		else {
+			onAction(action);
+		}
+	}
 
-  abstract void onSeparator();
+	abstract void onSeparator();
 
-  abstract void onControl(Control control);
+	abstract void onControl(Control control);
 
-  abstract void onToggleControl(ToggleControl toggleControl);
+	abstract void onToggleControl(ToggleControl toggleControl);
 
-  abstract void onControls(Controls controls);
+	abstract void onControls(Controls controls);
 
-  abstract void onAction(Action action);
+	abstract void onAction(Action action);
 }

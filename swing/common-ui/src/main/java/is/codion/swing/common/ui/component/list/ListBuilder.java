@@ -34,78 +34,78 @@ import java.util.Set;
  */
 public interface ListBuilder<T> extends ComponentBuilder<Set<T>, JList<T>, ListBuilder<T>> {
 
-  /**
-   * @param visibleRowCount the visible row count
-   * @return this builder instance
-   * @see JList#setVisibleRowCount(int)
-   */
-  ListBuilder<T> visibleRowCount(int visibleRowCount);
+	/**
+	 * @param visibleRowCount the visible row count
+	 * @return this builder instance
+	 * @see JList#setVisibleRowCount(int)
+	 */
+	ListBuilder<T> visibleRowCount(int visibleRowCount);
 
-  /**
-   * @param layoutOrientation the list layout orientation
-   * @return thi builder instance
-   * @see JList#setLayoutOrientation(int)
-   */
-  ListBuilder<T> layoutOrientation(int layoutOrientation);
+	/**
+	 * @param layoutOrientation the list layout orientation
+	 * @return thi builder instance
+	 * @see JList#setLayoutOrientation(int)
+	 */
+	ListBuilder<T> layoutOrientation(int layoutOrientation);
 
-  /**
-   * @param fixedCellHeight the fixed cell height
-   * @return this builder instance
-   * @see JList#setFixedCellHeight(int)
-   */
-  ListBuilder<T> fixedCellHeight(int fixedCellHeight);
+	/**
+	 * @param fixedCellHeight the fixed cell height
+	 * @return this builder instance
+	 * @see JList#setFixedCellHeight(int)
+	 */
+	ListBuilder<T> fixedCellHeight(int fixedCellHeight);
 
-  /**
-   * @param fixedCellWidth the fixed cell width
-   * @return this builder instance
-   * @see JList#setFixedCellWidth(int)
-   */
-  ListBuilder<T> fixedCellWidth(int fixedCellWidth);
+	/**
+	 * @param fixedCellWidth the fixed cell width
+	 * @return this builder instance
+	 * @see JList#setFixedCellWidth(int)
+	 */
+	ListBuilder<T> fixedCellWidth(int fixedCellWidth);
 
-  /**
-   * @param cellRenderer the cell renderer
-   * @return this builder instance
-   * @see JList#setCellRenderer(ListCellRenderer)
-   */
-  ListBuilder<T> cellRenderer(ListCellRenderer<T> cellRenderer);
+	/**
+	 * @param cellRenderer the cell renderer
+	 * @return this builder instance
+	 * @see JList#setCellRenderer(ListCellRenderer)
+	 */
+	ListBuilder<T> cellRenderer(ListCellRenderer<T> cellRenderer);
 
-  /**
-   * @param selectionMode the list selection model
-   * @return this builder instance
-   * @see JList#setSelectionMode(int)
-   */
-  ListBuilder<T> selectionMode(int selectionMode);
+	/**
+	 * @param selectionMode the list selection model
+	 * @return this builder instance
+	 * @see JList#setSelectionMode(int)
+	 */
+	ListBuilder<T> selectionMode(int selectionMode);
 
-  /**
-   * @param selectionModel the list selection model
-   * @return this builder instance
-   * @see JList#setSelectionModel(ListSelectionModel)
-   */
-  ListBuilder<T> selectionModel(ListSelectionModel selectionModel);
+	/**
+	 * @param selectionModel the list selection model
+	 * @return this builder instance
+	 * @see JList#setSelectionModel(ListSelectionModel)
+	 */
+	ListBuilder<T> selectionModel(ListSelectionModel selectionModel);
 
-  /**
-   * @param listSelectionListener the list selection listener
-   * @return this builder instance
-   * @see JList#addListSelectionListener(ListSelectionListener)
-   */
-  ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener);
+	/**
+	 * @param listSelectionListener the list selection listener
+	 * @return this builder instance
+	 * @see JList#addListSelectionListener(ListSelectionListener)
+	 */
+	ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener);
 
-  /**
-   * @param <T> the list element type
-   * @param listModel the list model
-   * @return a new builder instance
-   */
-  static <T> ListBuilder<T> builder(ListModel<T> listModel) {
-    return new DefaultListBuilder<>(listModel, null);
-  }
+	/**
+	 * @param <T> the list element type
+	 * @param listModel the list model
+	 * @return a new builder instance
+	 */
+	static <T> ListBuilder<T> builder(ListModel<T> listModel) {
+		return new DefaultListBuilder<>(listModel, null);
+	}
 
-  /**
-   * @param <T> the list element type
-   * @param listModel the list model
-   * @param linkedValueSet value set to link to the component
-   * @return a new builder instance
-   */
-  static <T> ListBuilder<T> builder(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
-    return new DefaultListBuilder<>(listModel, linkedValueSet);
-  }
+	/**
+	 * @param <T> the list element type
+	 * @param listModel the list model
+	 * @param linkedValueSet value set to link to the component
+	 * @return a new builder instance
+	 */
+	static <T> ListBuilder<T> builder(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
+		return new DefaultListBuilder<>(listModel, linkedValueSet);
+	}
 }

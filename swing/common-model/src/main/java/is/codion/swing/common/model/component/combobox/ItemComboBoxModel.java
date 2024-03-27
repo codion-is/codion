@@ -41,146 +41,146 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
 
-  private ItemComboBoxModel(List<Item<T>> items) {
-    selectedItemTranslator().set(new SelectedItemTranslator());
-    setItems(items);
-  }
+	private ItemComboBoxModel(List<Item<T>> items) {
+		selectedItemTranslator().set(new SelectedItemTranslator());
+		setItems(items);
+	}
 
-  private ItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
-    selectedItemTranslator().set(new SelectedItemTranslator());
-    comparator().set(comparator);
-    setItems(items);
-    if (containsItem(Item.item(null))) {
-      setSelectedItem(null);
-    }
-  }
+	private ItemComboBoxModel(Comparator<Item<T>> comparator, Collection<Item<T>> items) {
+		selectedItemTranslator().set(new SelectedItemTranslator());
+		comparator().set(comparator);
+		setItems(items);
+		if (containsItem(Item.item(null))) {
+			setSelectedItem(null);
+		}
+	}
 
-  /**
-   * Returns the index of the Item representing the given value, -1 if this model does not contain such an Item.
-   * @param value the value
-   * @return the index of the Item representing the given value, -1 if not found
-   */
-  public int indexOf(T value) {
-    for (int i = 0; i < getSize(); i++) {
-      if (Objects.equals(getElementAt(i).get(), value)) {
-        return i;
-      }
-    }
+	/**
+	 * Returns the index of the Item representing the given value, -1 if this model does not contain such an Item.
+	 * @param value the value
+	 * @return the index of the Item representing the given value, -1 if not found
+	 */
+	public int indexOf(T value) {
+		for (int i = 0; i < getSize(); i++) {
+			if (Objects.equals(getElementAt(i).get(), value)) {
+				return i;
+			}
+		}
 
-    return -1;
-  }
+		return -1;
+	}
 
-  /**
-   * @param <T> the Item value type
-   * @return a new combo box model
-   */
-  public static <T> ItemComboBoxModel<T> itemComboBoxModel() {
-    return new ItemComboBoxModel<>(null, emptyList());
-  }
+	/**
+	 * @param <T> the Item value type
+	 * @return a new combo box model
+	 */
+	public static <T> ItemComboBoxModel<T> itemComboBoxModel() {
+		return new ItemComboBoxModel<>(null, emptyList());
+	}
 
-  /**
-   * @param items the items
-   * @param <T> the Item value type
-   * @return a new combo box model
-   */
-  public static <T> ItemComboBoxModel<T> itemComboBoxModel(List<Item<T>> items) {
-    return new ItemComboBoxModel<>(null, items);
-  }
+	/**
+	 * @param items the items
+	 * @param <T> the Item value type
+	 * @return a new combo box model
+	 */
+	public static <T> ItemComboBoxModel<T> itemComboBoxModel(List<Item<T>> items) {
+		return new ItemComboBoxModel<>(null, items);
+	}
 
-  /**
-   * @param <T> the Item value type
-   * @return a new combo box model
-   */
-  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel() {
-    return sortedItemComboBoxModel(emptyList());
-  }
+	/**
+	 * @param <T> the Item value type
+	 * @return a new combo box model
+	 */
+	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel() {
+		return sortedItemComboBoxModel(emptyList());
+	}
 
-  /**
-   * @param items the items
-   * @param <T> the Item value type
-   * @return a new combo box model
-   */
-  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items) {
-    return new ItemComboBoxModel<>(items);
-  }
+	/**
+	 * @param items the items
+	 * @param <T> the Item value type
+	 * @return a new combo box model
+	 */
+	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items) {
+		return new ItemComboBoxModel<>(items);
+	}
 
-  /**
-   * @param comparator the comparator to use when sorting
-   * @param <T> the Item value type
-   * @return a new combo box model
-   */
-  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
-    return new ItemComboBoxModel<>(requireNonNull(comparator), emptyList());
-  }
+	/**
+	 * @param comparator the comparator to use when sorting
+	 * @param <T> the Item value type
+	 * @return a new combo box model
+	 */
+	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> comparator) {
+		return new ItemComboBoxModel<>(requireNonNull(comparator), emptyList());
+	}
 
-  /**
-   * @param items the items
-   * @param comparator the comparator to use when sorting
-   * @param <T> the Item value type
-   * @return a new combo box model
-   */
-  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> comparator) {
-    requireNonNull(items);
-    requireNonNull(comparator);
+	/**
+	 * @param items the items
+	 * @param comparator the comparator to use when sorting
+	 * @param <T> the Item value type
+	 * @return a new combo box model
+	 */
+	public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> comparator) {
+		requireNonNull(items);
+		requireNonNull(comparator);
 
-    return new ItemComboBoxModel<>(comparator, items);
-  }
+		return new ItemComboBoxModel<>(comparator, items);
+	}
 
-  /**
-   * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-   * @return a Boolean based ItemComboBoxModel
-   */
-  public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel() {
-    return booleanItemComboBoxModel("-");
-  }
+	/**
+	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
+	 * @return a Boolean based ItemComboBoxModel
+	 */
+	public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel() {
+		return booleanItemComboBoxModel("-");
+	}
 
-  /**
-   * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-   * @param nullCaption the string representing a null value
-   * @return a Boolean based ItemComboBoxModel
-   */
-  public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption) {
-    return booleanItemComboBoxModel(nullCaption, Messages.yes(), Messages.no());
-  }
+	/**
+	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
+	 * @param nullCaption the string representing a null value
+	 * @return a Boolean based ItemComboBoxModel
+	 */
+	public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption) {
+		return booleanItemComboBoxModel(nullCaption, Messages.yes(), Messages.no());
+	}
 
-  /**
-   * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-   * @param nullCaption the string representing a null value
-   * @param trueCaption the string representing the boolean value 'true'
-   * @param falseCaption the string representing the boolean value 'false'
-   * @return a Boolean based ItemComboBoxModel
-   */
-  public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption, String trueCaption, String falseCaption) {
-    return new ItemComboBoxModel<>(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
-  }
+	/**
+	 * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
+	 * @param nullCaption the string representing a null value
+	 * @param trueCaption the string representing the boolean value 'true'
+	 * @param falseCaption the string representing the boolean value 'false'
+	 * @return a Boolean based ItemComboBoxModel
+	 */
+	public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption, String trueCaption, String falseCaption) {
+		return new ItemComboBoxModel<>(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
+	}
 
-  private final class SelectedItemTranslator implements Function<Object, Item<T>> {
+	private final class SelectedItemTranslator implements Function<Object, Item<T>> {
 
-    @Override
-    public Item<T> apply(Object item) {
-      if (item instanceof Item) {
-        return findItem((Item<T>) item);
-      }
+		@Override
+		public Item<T> apply(Object item) {
+			if (item instanceof Item) {
+				return findItem((Item<T>) item);
+			}
 
-      return findItem((T) item);
-    }
+			return findItem((T) item);
+		}
 
-    private Item<T> findItem(Item<T> item) {
-      int index = visibleItems().indexOf(item);
-      if (index >= 0) {
-        return getElementAt(index);
-      }
+		private Item<T> findItem(Item<T> item) {
+			int index = visibleItems().indexOf(item);
+			if (index >= 0) {
+				return getElementAt(index);
+			}
 
-      return null;
-    }
+			return null;
+		}
 
-    private Item<T> findItem(T value) {
-      int index = indexOf(value);
-      if (index >= 0) {
-        return getElementAt(index);
-      }
+		private Item<T> findItem(T value) {
+			int index = indexOf(value);
+			if (index >= 0) {
+				return getElementAt(index);
+			}
 
-      return null;
-    }
-  }
+			return null;
+		}
+	}
 }

@@ -24,8 +24,8 @@ package is.codion.framework.domain.entity.condition;
  */
 public interface CustomCondition extends Condition {
 
-  /**
-   * @return the condition type
-   */
-  ConditionType conditionType();
+	/**
+	 * @return the condition type
+	 */
+	ConditionType conditionType();
 }

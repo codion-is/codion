@@ -43,69 +43,69 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class InvoiceLineEditModelTest {
 
-  @Test
-  void updateTotals() throws DatabaseException, ValidationException {
-    try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-      EntityConnection connection = connectionProvider.connection();
+	@Test
+	void updateTotals() throws DatabaseException, ValidationException {
+		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
+			EntityConnection connection = connectionProvider.connection();
 
-      Entity invoice = createInvoice(connectionProvider);
-      assertNull(invoice.get(Invoice.TOTAL));
+			Entity invoice = createInvoice(connectionProvider);
+			assertNull(invoice.get(Invoice.TOTAL));
 
-      Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
+			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
 
-      InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
-      editModel.put(InvoiceLine.INVOICE_FK, invoice);
-      editModel.put(InvoiceLine.TRACK_FK, battery);
-      Entity invoiceLineBattery = editModel.insert();
+			InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
+			editModel.put(InvoiceLine.INVOICE_FK, invoice);
+			editModel.put(InvoiceLine.TRACK_FK, battery);
+			Entity invoiceLineBattery = editModel.insert();
 
-      invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(battery.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
+			invoice = connection.selectSingle(key(invoice.primaryKey()));
+			assertEquals(battery.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
 
-      Entity orion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
-      editModel.defaults();
-      editModel.put(InvoiceLine.INVOICE_FK, invoice);
-      editModel.put(InvoiceLine.TRACK_FK, orion);
-      editModel.insert();
+			Entity orion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
+			editModel.defaults();
+			editModel.put(InvoiceLine.INVOICE_FK, invoice);
+			editModel.put(InvoiceLine.TRACK_FK, orion);
+			editModel.insert();
 
-      invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(battery.get(Track.UNITPRICE).add(orion.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
+			invoice = connection.selectSingle(key(invoice.primaryKey()));
+			assertEquals(battery.get(Track.UNITPRICE).add(orion.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
 
-      Entity theCallOfKtulu = connection.selectSingle(Track.NAME.equalToIgnoreCase("the call of ktulu"));
-      theCallOfKtulu.put(Track.UNITPRICE, BigDecimal.valueOf(2));
-      theCallOfKtulu = connection.updateSelect(theCallOfKtulu);
+			Entity theCallOfKtulu = connection.selectSingle(Track.NAME.equalToIgnoreCase("the call of ktulu"));
+			theCallOfKtulu.put(Track.UNITPRICE, BigDecimal.valueOf(2));
+			theCallOfKtulu = connection.updateSelect(theCallOfKtulu);
 
-      editModel.set(invoiceLineBattery);
-      editModel.put(InvoiceLine.TRACK_FK, theCallOfKtulu);
-      editModel.update();
+			editModel.set(invoiceLineBattery);
+			editModel.put(InvoiceLine.TRACK_FK, theCallOfKtulu);
+			editModel.update();
 
-      invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(orion.get(Track.UNITPRICE).add(theCallOfKtulu.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
+			invoice = connection.selectSingle(key(invoice.primaryKey()));
+			assertEquals(orion.get(Track.UNITPRICE).add(theCallOfKtulu.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
 
-      editModel.delete();
+			editModel.delete();
 
-      invoice = connection.selectSingle(key(invoice.primaryKey()));
-      assertEquals(orion.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
-    }
-  }
+			invoice = connection.selectSingle(key(invoice.primaryKey()));
+			assertEquals(orion.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
+		}
+	}
 
-  private static Entity createInvoice(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    Entities entities = connectionProvider.entities();
-    EntityConnection connection = connectionProvider.connection();
+	private static Entity createInvoice(EntityConnectionProvider connectionProvider) throws DatabaseException {
+		Entities entities = connectionProvider.entities();
+		EntityConnection connection = connectionProvider.connection();
 
-    return connection.insertSelect(entities.builder(Invoice.TYPE)
-            .with(Invoice.CUSTOMER_FK, connection.insertSelect(entities.builder(Customer.TYPE)
-                    .with(Customer.FIRSTNAME, "Björn")
-                    .with(Customer.LASTNAME, "Sigurðsson")
-                    .with(Customer.EMAIL, "email@email.com")
-                    .build()))
-            .with(Invoice.DATE, LocalDate.now())
-            .build());
-  }
+		return connection.insertSelect(entities.builder(Invoice.TYPE)
+						.with(Invoice.CUSTOMER_FK, connection.insertSelect(entities.builder(Customer.TYPE)
+										.with(Customer.FIRSTNAME, "Björn")
+										.with(Customer.LASTNAME, "Sigurðsson")
+										.with(Customer.EMAIL, "email@email.com")
+										.build()))
+						.with(Invoice.DATE, LocalDate.now())
+						.build());
+	}
 
-  private static EntityConnectionProvider createConnectionProvider() {
-    return LocalEntityConnectionProvider.builder()
-            .domain(new ChinookImpl())
-            .user(User.parse("scott:tiger"))
-            .build();
-  }
+	private static EntityConnectionProvider createConnectionProvider() {
+		return LocalEntityConnectionProvider.builder()
+						.domain(new ChinookImpl())
+						.user(User.parse("scott:tiger"))
+						.build();
+	}
 }

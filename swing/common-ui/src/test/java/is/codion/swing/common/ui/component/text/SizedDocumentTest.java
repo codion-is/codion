@@ -30,38 +30,38 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SizedDocumentTest {
 
-  @Test
-  void test() throws BadLocationException {
-    JTextField textField = new JTextField();
-    SizedDocument document = SizedDocument.sizedDocument();
-    textField.setDocument(document);
-    textField.setText("hello");
-    assertEquals("hello", textField.getText());
+	@Test
+	void test() throws BadLocationException {
+		JTextField textField = new JTextField();
+		SizedDocument document = SizedDocument.sizedDocument();
+		textField.setDocument(document);
+		textField.setText("hello");
+		assertEquals("hello", textField.getText());
 
-    document.setMaximumLength(10);
-    assertEquals(10, document.getMaximumLength());
+		document.setMaximumLength(10);
+		assertEquals(10, document.getMaximumLength());
 
-    textField.setText("hellohello");
-    assertEquals("hellohello", textField.getText());
+		textField.setText("hellohello");
+		assertEquals("hellohello", textField.getText());
 
-    assertThrows(IllegalArgumentException.class, () -> textField.setText("hellohellohello"));//invalid
-    assertEquals("hellohello", textField.getText());
+		assertThrows(IllegalArgumentException.class, () -> textField.setText("hellohellohello"));//invalid
+		assertEquals("hellohello", textField.getText());
 
-    document.getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
-    assertEquals(DocumentCase.UPPERCASE, document.getDocumentFilter().getDocumentCase());
+		document.getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
+		assertEquals(DocumentCase.UPPERCASE, document.getDocumentFilter().getDocumentCase());
 
-    textField.setText("hello");
-    assertEquals("HELLO", textField.getText());
+		textField.setText("hello");
+		assertEquals("HELLO", textField.getText());
 
-    document.getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
-    assertEquals(DocumentCase.LOWERCASE, document.getDocumentFilter().getDocumentCase());
+		document.getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
+		assertEquals(DocumentCase.LOWERCASE, document.getDocumentFilter().getDocumentCase());
 
-    textField.setText("HELLO");
-    assertEquals("hello", textField.getText());
+		textField.setText("HELLO");
+		assertEquals("hello", textField.getText());
 
-    document.getDocumentFilter().setDocumentCase(DocumentCase.NONE);
+		document.getDocumentFilter().setDocumentCase(DocumentCase.NONE);
 
-    document.insertString(2, "HOLA", null);
-    assertEquals("heHOLAllo", textField.getText());
-  }
+		document.insertString(2, "HOLA", null);
+		assertEquals("heHOLAllo", textField.getText());
+	}
 }

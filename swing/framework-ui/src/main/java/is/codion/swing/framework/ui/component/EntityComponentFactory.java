@@ -32,13 +32,13 @@ import javax.swing.JComponent;
  */
 public interface EntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> {
 
-  /**
-   * Provides value input components for multiple entity update, override to supply
-   * specific {@link ComponentValue} implementations for attributes.
-   * @param attribute the attribute for which to get the ComponentValue
-   * @param editModel the edit model used to create foreign key input models
-   * @param initialValue the initial value to display
-   * @return a new ComponentValue instance handling input for {@code attribute}
-   */
-  ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue);
+	/**
+	 * Provides value input components for multiple entity update, override to supply
+	 * specific {@link ComponentValue} implementations for attributes.
+	 * @param attribute the attribute for which to get the ComponentValue
+	 * @param editModel the edit model used to create foreign key input models
+	 * @param initialValue the initial value to display
+	 * @return a new ComponentValue instance handling input for {@code attribute}
+	 */
+	ComponentValue<T, C> componentValue(A attribute, SwingEntityEditModel editModel, T initialValue);
 }

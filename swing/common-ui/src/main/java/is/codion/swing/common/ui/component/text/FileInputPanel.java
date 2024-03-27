@@ -46,107 +46,107 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FileInputPanel extends JPanel {
 
-  private final JTextField filePathField;
+	private final JTextField filePathField;
 
-  private FileInputPanel(JTextField filePathField) {
-    this.filePathField = requireNonNull(filePathField);
-    setLayout(Layouts.borderLayout());
-    add(filePathField, BorderLayout.CENTER);
-    JButton browseButton = new JButton(new AbstractAction("...") {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        browseFile();
-      }
-    });
-    browseButton.setPreferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height));
-    add(browseButton, BorderLayout.EAST);
-  }
+	private FileInputPanel(JTextField filePathField) {
+		this.filePathField = requireNonNull(filePathField);
+		setLayout(Layouts.borderLayout());
+		add(filePathField, BorderLayout.CENTER);
+		JButton browseButton = new JButton(new AbstractAction("...") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				browseFile();
+			}
+		});
+		browseButton.setPreferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height));
+		add(browseButton, BorderLayout.EAST);
+	}
 
-  public JTextField filePathField() {
-    return filePathField;
-  }
+	public JTextField filePathField() {
+		return filePathField;
+	}
 
-  /**
-   * @param filePathField the file path input field
-   * @return a new {@link FileInputPanel} instance.
-   */
-  public static FileInputPanel fileInputPanel(JTextField filePathField) {
-    return new FileInputPanel(filePathField);
-  }
+	/**
+	 * @param filePathField the file path input field
+	 * @return a new {@link FileInputPanel} instance.
+	 */
+	public static FileInputPanel fileInputPanel(JTextField filePathField) {
+		return new FileInputPanel(filePathField);
+	}
 
-  /**
-   * @param filePathField the file path input field
-   * @return a new {@link FileInputPanel.Builder} instance.
-   */
-  public static FileInputPanel.Builder builder(JTextField filePathField) {
-    return new FileInputPanel.DefaultFileInputPanelBuilder(filePathField);
-  }
+	/**
+	 * @param filePathField the file path input field
+	 * @return a new {@link FileInputPanel.Builder} instance.
+	 */
+	public static FileInputPanel.Builder builder(JTextField filePathField) {
+		return new FileInputPanel.DefaultFileInputPanelBuilder(filePathField);
+	}
 
-  private void browseFile() {
-    try {
-      File file = Dialogs.fileSelectionDialog()
-              .owner(filePathField)
-              .title("Select file")
-              .selectFile();
-      filePathField.setText(file.toString());
-    }
-    catch (CancelException e) {
-      filePathField.setText("");
-      throw e;
-    }
-  }
+	private void browseFile() {
+		try {
+			File file = Dialogs.fileSelectionDialog()
+							.owner(filePathField)
+							.title("Select file")
+							.selectFile();
+			filePathField.setText(file.toString());
+		}
+		catch (CancelException e) {
+			filePathField.setText("");
+			throw e;
+		}
+	}
 
-  /**
-   * Builds a {@link FileInputPanel}
-   */
-  public interface Builder extends ComponentBuilder<byte[], FileInputPanel, Builder> {}
+	/**
+	 * Builds a {@link FileInputPanel}
+	 */
+	public interface Builder extends ComponentBuilder<byte[], FileInputPanel, Builder> {}
 
-  private static final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder> implements Builder {
+	private static final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder> implements Builder {
 
-    private final JTextField filePathField;
+		private final JTextField filePathField;
 
-    private DefaultFileInputPanelBuilder(JTextField filePathField) {
-      this.filePathField = requireNonNull(filePathField);
-    }
+		private DefaultFileInputPanelBuilder(JTextField filePathField) {
+			this.filePathField = requireNonNull(filePathField);
+		}
 
-    @Override
-    protected FileInputPanel createComponent() {
-      return fileInputPanel(filePathField);
-    }
+		@Override
+		protected FileInputPanel createComponent() {
+			return fileInputPanel(filePathField);
+		}
 
-    @Override
-    protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
-      return new FileInputPanelValue(component);
-    }
+		@Override
+		protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
+			return new FileInputPanelValue(component);
+		}
 
-    @Override
-    protected void setInitialValue(FileInputPanel component, byte[] initialValue) {}
-  }
+		@Override
+		protected void setInitialValue(FileInputPanel component, byte[] initialValue) {}
+	}
 
-  private static final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInputPanel> {
+	private static final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInputPanel> {
 
-    private FileInputPanelValue(FileInputPanel fileInputPanel) {
-      super(fileInputPanel);
-      fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
-    }
+		private FileInputPanelValue(FileInputPanel fileInputPanel) {
+			super(fileInputPanel);
+			fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+		}
 
-    @Override
-    protected byte[] getComponentValue() {
-      String filePath = component().filePathField().getText();
-      if (filePath.isEmpty()) {
-        return null;
-      }
-      try {
-        return Files.readAllBytes(new File(filePath).toPath());
-      }
-      catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
+		@Override
+		protected byte[] getComponentValue() {
+			String filePath = component().filePathField().getText();
+			if (filePath.isEmpty()) {
+				return null;
+			}
+			try {
+				return Files.readAllBytes(new File(filePath).toPath());
+			}
+			catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
-    @Override
-    protected void setComponentValue(byte[] value) {
-      throw new UnsupportedOperationException();
-    }
-  }
+		@Override
+		protected void setComponentValue(byte[] value) {
+			throw new UnsupportedOperationException();
+		}
+	}
 }

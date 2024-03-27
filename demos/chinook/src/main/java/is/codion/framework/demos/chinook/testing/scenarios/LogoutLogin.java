@@ -25,13 +25,13 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.R
 
 public final class LogoutLogin implements Performer<EntityConnectionProvider> {
 
-  @Override
-  public void perform(EntityConnectionProvider connectionProvider) {
-    try {
-      connectionProvider.close();
-      Thread.sleep(RANDOM.nextInt(1500));
-      connectionProvider.connection();
-    }
-    catch (InterruptedException ignored) {/*ignored*/}
-  }
+	@Override
+	public void perform(EntityConnectionProvider connectionProvider) {
+		try {
+			connectionProvider.close();
+			Thread.sleep(RANDOM.nextInt(1500));
+			connectionProvider.connection();
+		}
+		catch (InterruptedException ignored) {/*ignored*/}
+	}
 }

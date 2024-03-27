@@ -37,31 +37,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SearchValueLinkTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  private final EntityEditModel model = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-  private final EntityComponents inputComponents = new EntityComponents(model.entityDefinition());
+	private final EntityEditModel model = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+	private final EntityComponents inputComponents = new EntityComponents(model.entityDefinition());
 
-  @Test
-  void test() throws Exception {
-    ComponentValue<Entity, EntitySearchField> componentValue =
-            inputComponents.foreignKeySearchField(Employee.DEPARTMENT_FK,
-                    model.foreignKeySearchModel(Employee.DEPARTMENT_FK)).buildValue();
-    componentValue.link(model.value(Employee.DEPARTMENT_FK));
-    EntitySearchModel searchModel = componentValue.component().model();
-    assertTrue(searchModel.entities().get().isEmpty());
-    Entity department = model.connection().selectSingle(Department.NAME.equalTo("SALES"));
-    model.put(Employee.DEPARTMENT_FK, department);
-    assertEquals(searchModel.entities().get().size(), 1);
-    assertEquals(searchModel.entities().get().iterator().next(), department);
-    department = model.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
-    searchModel.entity().set(department);
-    assertEquals(model.get(Employee.DEPARTMENT_FK), department);
-  }
+	@Test
+	void test() throws Exception {
+		ComponentValue<Entity, EntitySearchField> componentValue =
+						inputComponents.foreignKeySearchField(Employee.DEPARTMENT_FK,
+										model.foreignKeySearchModel(Employee.DEPARTMENT_FK)).buildValue();
+		componentValue.link(model.value(Employee.DEPARTMENT_FK));
+		EntitySearchModel searchModel = componentValue.component().model();
+		assertTrue(searchModel.entities().get().isEmpty());
+		Entity department = model.connection().selectSingle(Department.NAME.equalTo("SALES"));
+		model.put(Employee.DEPARTMENT_FK, department);
+		assertEquals(searchModel.entities().get().size(), 1);
+		assertEquals(searchModel.entities().get().iterator().next(), department);
+		department = model.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
+		searchModel.entity().set(department);
+		assertEquals(model.get(Employee.DEPARTMENT_FK), department);
+	}
 }

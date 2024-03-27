@@ -27,35 +27,35 @@ import java.util.ResourceBundle;
  */
 final class StringLengthValidator implements Value.Validator<String> {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(StringLengthValidator.class.getName());
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(StringLengthValidator.class.getName());
 
-  private int maximumLength;
+	private int maximumLength;
 
-  /**
-   * @param maximumLength the maximum length, -1 for no limit
-   */
-  StringLengthValidator(int maximumLength) {
-    this.maximumLength = maximumLength;
-  }
+	/**
+	 * @param maximumLength the maximum length, -1 for no limit
+	 */
+	StringLengthValidator(int maximumLength) {
+		this.maximumLength = maximumLength;
+	}
 
-  /**
-   * @return the maximum length
-   */
-  int getMaximumLength() {
-    return maximumLength;
-  }
+	/**
+	 * @return the maximum length
+	 */
+	int getMaximumLength() {
+		return maximumLength;
+	}
 
-  /**
-   * @param maximumLength the maximum length, -1 for no limit
-   */
-  void setMaximumLength(int maximumLength) {
-    this.maximumLength = maximumLength < 0 ? -1 : maximumLength;
-  }
+	/**
+	 * @param maximumLength the maximum length, -1 for no limit
+	 */
+	void setMaximumLength(int maximumLength) {
+		this.maximumLength = maximumLength < 0 ? -1 : maximumLength;
+	}
 
-  @Override
-  public void validate(String text) {
-    if (text != null && maximumLength >= 0 && text.length() > maximumLength) {
-      throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + ": " + maximumLength);
-    }
-  }
+	@Override
+	public void validate(String text) {
+		if (text != null && maximumLength >= 0 && text.length() > maximumLength) {
+			throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + ": " + maximumLength);
+		}
+	}
 }

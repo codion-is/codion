@@ -48,169 +48,169 @@ import static is.codion.framework.domain.DomainType.domainType;
 
 public final class EntityEditPanels {
 
-  interface DemoMaster {
-    EntityType TYPE = domainType("domainType").entityType("master");
-    Column<Integer> ID = TYPE.integerColumn("id");
-  }
+	interface DemoMaster {
+		EntityType TYPE = domainType("domainType").entityType("master");
+		Column<Integer> ID = TYPE.integerColumn("id");
+	}
 
-  interface Demo {
-    EntityType TYPE = domainType("domainType").entityType("entityType");
-    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
-    Column<Integer> FOREIGN_ATTRIBUTE = TYPE.integerColumn("foreign_id");
-    ForeignKey FOREIGN_KEY = TYPE.foreignKey("foreign_key", FOREIGN_ATTRIBUTE, DemoMaster.ID);
-    Column<LocalDate> LOCAL_DATE = TYPE.localDateColumn("local_date");
-    Column<Integer> INTEGER = TYPE.integerColumn("integer");
-    Column<Long> LONG = TYPE.longColumn("long");
-    Column<Double> DOUBLE = TYPE.doubleColumn("double");
-    Column<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalColumn("big_decimal");
-    Column<String> TEXT = TYPE.stringColumn("text");
-    Column<String> LONG_TEXT = TYPE.stringColumn("long_text");
-    Column<String> FORMATTED_TEXT = TYPE.stringColumn("formatted_text");
-    Column<String> ITEM_LIST = TYPE.stringColumn("item_list");
-  }
+	interface Demo {
+		EntityType TYPE = domainType("domainType").entityType("entityType");
+		Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+		Column<Integer> FOREIGN_ATTRIBUTE = TYPE.integerColumn("foreign_id");
+		ForeignKey FOREIGN_KEY = TYPE.foreignKey("foreign_key", FOREIGN_ATTRIBUTE, DemoMaster.ID);
+		Column<LocalDate> LOCAL_DATE = TYPE.localDateColumn("local_date");
+		Column<Integer> INTEGER = TYPE.integerColumn("integer");
+		Column<Long> LONG = TYPE.longColumn("long");
+		Column<Double> DOUBLE = TYPE.doubleColumn("double");
+		Column<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalColumn("big_decimal");
+		Column<String> TEXT = TYPE.stringColumn("text");
+		Column<String> LONG_TEXT = TYPE.stringColumn("long_text");
+		Column<String> FORMATTED_TEXT = TYPE.stringColumn("formatted_text");
+		Column<String> ITEM_LIST = TYPE.stringColumn("item_list");
+	}
 
-  private static final class EditPanelDemo extends EntityEditComponentPanel {
+	private static final class EditPanelDemo extends EntityEditComponentPanel {
 
-    public EditPanelDemo(SwingEntityEditModel editModel) {
-      super(editModel);
-    }
+		public EditPanelDemo(SwingEntityEditModel editModel) {
+			super(editModel);
+		}
 
-    private void booleanValue() {
-      // tag::booleanValue[]
-      JCheckBox checkBox =
-              createCheckBox(Demo.BOOLEAN)
-                      .build();
+		private void booleanValue() {
+			// tag::booleanValue[]
+			JCheckBox checkBox =
+							createCheckBox(Demo.BOOLEAN)
+											.build();
 
-      NullableCheckBox nullableCheckBox =
-              (NullableCheckBox) createCheckBox(Demo.BOOLEAN)
-                      .nullable(true)
-                      .build();
+			NullableCheckBox nullableCheckBox =
+							(NullableCheckBox) createCheckBox(Demo.BOOLEAN)
+											.nullable(true)
+											.build();
 
-      JComboBox<Item<Boolean>> comboBox =
-              createBooleanComboBox(Demo.BOOLEAN)
-                      .build();
-      // end::booleanValue[]
-    }
+			JComboBox<Item<Boolean>> comboBox =
+							createBooleanComboBox(Demo.BOOLEAN)
+											.build();
+			// end::booleanValue[]
+		}
 
-    private void foreignKeyValue() {
-      // tag::foreignKeyValue[]
-      EntityComboBox comboBox =
-              createForeignKeyComboBox(Demo.FOREIGN_KEY)
-                      .build();
+		private void foreignKeyValue() {
+			// tag::foreignKeyValue[]
+			EntityComboBox comboBox =
+							createForeignKeyComboBox(Demo.FOREIGN_KEY)
+											.build();
 
-      EntitySearchField searchField =
-              createForeignKeySearchField(Demo.FOREIGN_KEY)
-                      .build();
+			EntitySearchField searchField =
+							createForeignKeySearchField(Demo.FOREIGN_KEY)
+											.build();
 
-      //readOnly
-      JLabel label =
-              createForeignKeyLabel(Demo.FOREIGN_KEY)
-                      .build();
-      // end::foreignKeyValue[]
-    }
+			//readOnly
+			JLabel label =
+							createForeignKeyLabel(Demo.FOREIGN_KEY)
+											.build();
+			// end::foreignKeyValue[]
+		}
 
-    private void temporalValue() {
-      // tag::temporalValue[]
-      TemporalField<LocalDateTime> textField =
-              (TemporalField<LocalDateTime>) createTextField(Demo.LOCAL_DATE)
-                      .build();
+		private void temporalValue() {
+			// tag::temporalValue[]
+			TemporalField<LocalDateTime> textField =
+							(TemporalField<LocalDateTime>) createTextField(Demo.LOCAL_DATE)
+											.build();
 
-      TemporalField<LocalDate> localDateField =
-              createTemporalField(Demo.LOCAL_DATE)
-                      .build();
+			TemporalField<LocalDate> localDateField =
+							createTemporalField(Demo.LOCAL_DATE)
+											.build();
 
-      TemporalFieldPanel<LocalDate> temporalPanel =
-              createTemporalFieldPanel(Demo.LOCAL_DATE)
-                      .build();
-      // end::temporalValue[]
-    }
+			TemporalFieldPanel<LocalDate> temporalPanel =
+							createTemporalFieldPanel(Demo.LOCAL_DATE)
+											.build();
+			// end::temporalValue[]
+		}
 
-    private void numericalValue() {
-      // tag::numericalValue[]
-      NumberField<Integer> integerField =
-              (NumberField<Integer>) createTextField(Demo.INTEGER)
-                      .build();
+		private void numericalValue() {
+			// tag::numericalValue[]
+			NumberField<Integer> integerField =
+							(NumberField<Integer>) createTextField(Demo.INTEGER)
+											.build();
 
-      integerField =
-              createIntegerField(Demo.INTEGER)
-                      .build();
+			integerField =
+							createIntegerField(Demo.INTEGER)
+											.build();
 
-      NumberField<Long> longField =
-              (NumberField<Long>) createTextField(Demo.LONG)
-                      .build();
+			NumberField<Long> longField =
+							(NumberField<Long>) createTextField(Demo.LONG)
+											.build();
 
-      longField =
-              createLongField(Demo.LONG)
-                      .build();
+			longField =
+							createLongField(Demo.LONG)
+											.build();
 
-      NumberField<Double> doubleField =
-              (NumberField<Double>) createTextField(Demo.DOUBLE)
-                      .build();
+			NumberField<Double> doubleField =
+							(NumberField<Double>) createTextField(Demo.DOUBLE)
+											.build();
 
-      doubleField =
-              createDoubleField(Demo.DOUBLE)
-                      .build();
+			doubleField =
+							createDoubleField(Demo.DOUBLE)
+											.build();
 
-      NumberField<BigDecimal> bigDecimalField =
-              (NumberField<BigDecimal>) createTextField(Demo.BIG_DECIMAL)
-                      .build();
+			NumberField<BigDecimal> bigDecimalField =
+							(NumberField<BigDecimal>) createTextField(Demo.BIG_DECIMAL)
+											.build();
 
-      bigDecimalField =
-              createBigDecimalField(Demo.BIG_DECIMAL)
-                      .build();
-      // end::numericalValue[]
-    }
+			bigDecimalField =
+							createBigDecimalField(Demo.BIG_DECIMAL)
+											.build();
+			// end::numericalValue[]
+		}
 
-    private void textValue() {
-      // tag::textValue[]
-      JTextField textField =
-              createTextField(Demo.TEXT)
-                      .build();
+		private void textValue() {
+			// tag::textValue[]
+			JTextField textField =
+							createTextField(Demo.TEXT)
+											.build();
 
-      JFormattedTextField maskedField =
-              createMaskedTextField(Demo.FORMATTED_TEXT)
-                      .mask("###:###")
-                      .valueContainsLiteralCharacters(true)
-                      .build();
+			JFormattedTextField maskedField =
+							createMaskedTextField(Demo.FORMATTED_TEXT)
+											.mask("###:###")
+											.valueContainsLiteralCharacters(true)
+											.build();
 
-      JTextArea textArea =
-              createTextArea(Demo.LONG_TEXT)
-                      .rowsColumns(5, 20)
-                      .build();
+			JTextArea textArea =
+							createTextArea(Demo.LONG_TEXT)
+											.rowsColumns(5, 20)
+											.build();
 
-      TextFieldPanel inputPanel =
-              createTextFieldPanel(Demo.LONG_TEXT)
-                      .build();
-      // end::textValue[]
-    }
+			TextFieldPanel inputPanel =
+							createTextFieldPanel(Demo.LONG_TEXT)
+											.build();
+			// end::textValue[]
+		}
 
-    private void selectionValue() {
-      // tag::selectionValue[]
-      DefaultComboBoxModel<String> comboBoxModel =
-              new DefaultComboBoxModel<>(new String[] {"One", "Two"});
+		private void selectionValue() {
+			// tag::selectionValue[]
+			DefaultComboBoxModel<String> comboBoxModel =
+							new DefaultComboBoxModel<>(new String[] {"One", "Two"});
 
-      JComboBox<String> comboBox =
-              createComboBox(Demo.TEXT, comboBoxModel)
-                      .editable(true)
-                      .build();
-      // end::selectionValue[]
-    }
+			JComboBox<String> comboBox =
+							createComboBox(Demo.TEXT, comboBoxModel)
+											.editable(true)
+											.build();
+			// end::selectionValue[]
+		}
 
-    private void item() {
-      // tag::item[]
-      JComboBox<Item<String>> comboBox =
-              createItemComboBox(Demo.ITEM_LIST)
-                      .build();
-      // end::item[]
-    }
+		private void item() {
+			// tag::item[]
+			JComboBox<Item<String>> comboBox =
+							createItemComboBox(Demo.ITEM_LIST)
+											.build();
+			// end::item[]
+		}
 
-    private void panelLabel() {
-      // tag::panelLabel[]
-      JLabel label = createLabel(Demo.TEXT)
-              .build();
+		private void panelLabel() {
+			// tag::panelLabel[]
+			JLabel label = createLabel(Demo.TEXT)
+							.build();
 
-      JPanel inputPanel = createInputPanel(Demo.TEXT);
-      // end::panelLabel[]
-    }
-  }
+			JPanel inputPanel = createInputPanel(Demo.TEXT);
+			// end::panelLabel[]
+		}
+	}
 }

@@ -29,21 +29,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ClientsTest {
 
-  @Test
-  void connectionRequest() {
-    User user = User.parse("scott:tiger");
-    UUID uuid = UUID.randomUUID();
-    ConnectionRequest request = ConnectionRequest.builder()
-            .user(user)
-            .clientId(uuid)
-            .clientTypeId("test")
-            .build();
-    assertEquals(user, request.user());
-    assertEquals(uuid, request.clientId());
-    assertNull(request.clientVersion());
-    assertEquals(Version.version(), request.frameworkVersion());
-    assertEquals(uuid.hashCode(), request.hashCode());
-    assertEquals("test", request.clientTypeId());
-    assertTrue(request.toString().contains(user.username()));
-  }
+	@Test
+	void connectionRequest() {
+		User user = User.parse("scott:tiger");
+		UUID uuid = UUID.randomUUID();
+		ConnectionRequest request = ConnectionRequest.builder()
+						.user(user)
+						.clientId(uuid)
+						.clientTypeId("test")
+						.build();
+		assertEquals(user, request.user());
+		assertEquals(uuid, request.clientId());
+		assertNull(request.clientVersion());
+		assertEquals(Version.version(), request.frameworkVersion());
+		assertEquals(uuid.hashCode(), request.hashCode());
+		assertEquals("test", request.clientTypeId());
+		assertTrue(request.toString().contains(user.username()));
+	}
 }

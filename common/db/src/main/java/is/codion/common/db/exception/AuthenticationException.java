@@ -23,10 +23,10 @@ package is.codion.common.db.exception;
  */
 public final class AuthenticationException extends DatabaseException {
 
-  /**
-   * @param message the error message
-   */
-  public AuthenticationException(String message) {
-    super(message);
-  }
+	/**
+	 * @param message the error message
+	 */
+	public AuthenticationException(String message) {
+		super(message);
+	}
 }

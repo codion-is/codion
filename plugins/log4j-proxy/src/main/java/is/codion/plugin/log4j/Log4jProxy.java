@@ -40,38 +40,38 @@ import static java.util.Arrays.asList;
  */
 public final class Log4jProxy implements LoggerProxy {
 
-  @Override
-  public Object getLogLevel() {
-    LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+	@Override
+	public Object getLogLevel() {
+		LoggerContext context = (LoggerContext) LogManager.getContext(false);
+		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
 
-    return loggerConfig.getLevel();
-  }
+		return loggerConfig.getLevel();
+	}
 
-  @Override
-  public void setLogLevel(Object logLevel) {
-    if (!(logLevel instanceof Level)) {
-      throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
-    }
-    LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-    loggerConfig.setLevel((Level) logLevel);
-    context.updateLoggers();
-  }
+	@Override
+	public void setLogLevel(Object logLevel) {
+		if (!(logLevel instanceof Level)) {
+			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
+		}
+		LoggerContext context = (LoggerContext) LogManager.getContext(false);
+		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+		loggerConfig.setLevel((Level) logLevel);
+		context.updateLoggers();
+	}
 
-  @Override
-  public List<Object> levels() {
-    return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);
-  }
+	@Override
+	public List<Object> levels() {
+		return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);
+	}
 
-  @Override
-  public Collection<String> files() {
-    Map<String, Appender> appenderMap = ((Logger) LogManager.getLogger()).getAppenders();
+	@Override
+	public Collection<String> files() {
+		Map<String, Appender> appenderMap = ((Logger) LogManager.getLogger()).getAppenders();
 
-    return appenderMap.values().stream()
-            .filter(RollingFileAppender.class::isInstance)
-            .map(RollingFileAppender.class::cast)
-            .map(RollingFileAppender::getFileName)
-            .collect(Collectors.toList());
-  }
+		return appenderMap.values().stream()
+						.filter(RollingFileAppender.class::isInstance)
+						.map(RollingFileAppender.class::cast)
+						.map(RollingFileAppender::getFileName)
+						.collect(Collectors.toList());
+	}
 }

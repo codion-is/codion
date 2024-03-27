@@ -34,31 +34,31 @@ import java.io.IOException;
 
 public final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMapperFactory {
 
-  public CustomEntityObjectMapperFactory() {
-    super(TestDomain.DOMAIN);
-  }
+	public CustomEntityObjectMapperFactory() {
+		super(TestDomain.DOMAIN);
+	}
 
-  @Override
-  public EntityObjectMapper entityObjectMapper(Entities entities) {
-    EntityObjectMapper mapper = super.entityObjectMapper(entities);
-    mapper.addSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
-      @Override
-      public void serialize(Custom value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeStartObject();
-        gen.writeStringField("value", value.value);
-        gen.writeEndObject();
-      }
-    });
-    mapper.addDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
-      @Override
-      public Custom deserialize(JsonParser p, DeserializationContext ctxt) throws IOException,
-              JsonProcessingException {
-        JsonNode node = p.getCodec().readTree(p);
+	@Override
+	public EntityObjectMapper entityObjectMapper(Entities entities) {
+		EntityObjectMapper mapper = super.entityObjectMapper(entities);
+		mapper.addSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
+			@Override
+			public void serialize(Custom value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+				gen.writeStartObject();
+				gen.writeStringField("value", value.value);
+				gen.writeEndObject();
+			}
+		});
+		mapper.addDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
+			@Override
+			public Custom deserialize(JsonParser p, DeserializationContext ctxt) throws IOException,
+							JsonProcessingException {
+				JsonNode node = p.getCodec().readTree(p);
 
-        return new Custom(node.get("value").asText());
-      }
-    });
+				return new Custom(node.get("value").asText());
+			}
+		});
 
-    return mapper;
-  }
+		return mapper;
+	}
 }

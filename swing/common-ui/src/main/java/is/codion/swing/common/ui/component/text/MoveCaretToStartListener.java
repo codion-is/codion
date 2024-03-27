@@ -24,14 +24,14 @@ import java.awt.event.FocusEvent;
 
 final class MoveCaretToStartListener extends FocusAdapter {
 
-  private final JTextComponent textComponent;
+	private final JTextComponent textComponent;
 
-  MoveCaretToStartListener(JTextComponent textComponent) {
-    this.textComponent = textComponent;
-  }
+	MoveCaretToStartListener(JTextComponent textComponent) {
+		this.textComponent = textComponent;
+	}
 
-  @Override
-  public void focusGained(FocusEvent e) {
-    textComponent.setCaretPosition(0);
-  }
+	@Override
+	public void focusGained(FocusEvent e) {
+		textComponent.setCaretPosition(0);
+	}
 }

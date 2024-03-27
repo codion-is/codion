@@ -33,67 +33,67 @@ import static java.util.Objects.requireNonNull;
  * @see HttpEntityConnectionProvider#builder()
  */
 final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnectionProvider
-        implements HttpEntityConnectionProvider {
+				implements HttpEntityConnectionProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
 
-  private final String hostName;
-  private final int port;
-  private final int securePort;
-  private final boolean https;
-  private final boolean json;
-  private final int socketTimeout;
-  private final int connectTimeout;
-  private final Executor executor;
+	private final String hostName;
+	private final int port;
+	private final int securePort;
+	private final boolean https;
+	private final boolean json;
+	private final int socketTimeout;
+	private final int connectTimeout;
+	private final Executor executor;
 
-  DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
-    super(builder);
-    this.hostName = requireNonNull(builder.hostName, "hostName");
-    this.port = builder.port;
-    this.securePort = builder.securePort;
-    this.https = builder.https;
-    this.json = builder.json;
-    this.socketTimeout = builder.socketTimeout;
-    this.connectTimeout = builder.connectTimeout;
-    this.executor = builder.executor;
-  }
+	DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
+		super(builder);
+		this.hostName = requireNonNull(builder.hostName, "hostName");
+		this.port = builder.port;
+		this.securePort = builder.securePort;
+		this.https = builder.https;
+		this.json = builder.json;
+		this.socketTimeout = builder.socketTimeout;
+		this.connectTimeout = builder.connectTimeout;
+		this.executor = builder.executor;
+	}
 
-  @Override
-  public String connectionType() {
-    return CONNECTION_TYPE_HTTP;
-  }
+	@Override
+	public String connectionType() {
+		return CONNECTION_TYPE_HTTP;
+	}
 
-  @Override
-  public String description() {
-    return hostName;
-  }
+	@Override
+	public String description() {
+		return hostName;
+	}
 
-  @Override
-  protected EntityConnection connect() {
-    try {
-      LOG.debug("Initializing connection for {}", user());
-      return HttpEntityConnection.builder()
-              .domainType(domainType())
-              .hostName(hostName)
-              .port(port)
-              .securePort(securePort)
-              .user(user())
-              .clientTypeId(clientTypeId())
-              .clientId(clientId())
-              .json(json)
-              .https(https)
-              .socketTimeout(socketTimeout)
-              .connectTimeout(connectTimeout)
-              .executor(executor)
-              .build();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
+	@Override
+	protected EntityConnection connect() {
+		try {
+			LOG.debug("Initializing connection for {}", user());
+			return HttpEntityConnection.builder()
+							.domainType(domainType())
+							.hostName(hostName)
+							.port(port)
+							.securePort(securePort)
+							.user(user())
+							.clientTypeId(clientTypeId())
+							.clientId(clientId())
+							.json(json)
+							.https(https)
+							.socketTimeout(socketTimeout)
+							.connectTimeout(connectTimeout)
+							.executor(executor)
+							.build();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Override
-  protected void close(EntityConnection connection) {
-    connection.close();
-  }
+	@Override
+	protected void close(EntityConnection connection) {
+		connection.close();
+	}
 }

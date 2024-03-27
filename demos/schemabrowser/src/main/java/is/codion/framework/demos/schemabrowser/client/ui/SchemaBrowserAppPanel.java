@@ -46,67 +46,67 @@ import static is.codion.swing.framework.ui.WindowDetailLayout.windowDetailLayout
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
-  private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
+	private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
 
-  public SchemaBrowserAppPanel(SchemaBrowserApplicationModel applicationModel) {
-    super(applicationModel);
-  }
+	public SchemaBrowserAppPanel(SchemaBrowserApplicationModel applicationModel) {
+		super(applicationModel);
+	}
 
-  @Override
-  protected List<EntityPanel> createEntityPanels() {
-    SwingEntityModel schemaModel = applicationModel().entityModel(Schema.TYPE);
-    SwingEntityModel tableModel = schemaModel.detailModel(Table.TYPE);
-    SwingEntityModel columnModel = tableModel.detailModel(TableColumn.TYPE);
-    SwingEntityModel constraintModel = tableModel.detailModel(Constraint.TYPE);
-    SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
+	@Override
+	protected List<EntityPanel> createEntityPanels() {
+		SwingEntityModel schemaModel = applicationModel().entityModel(Schema.TYPE);
+		SwingEntityModel tableModel = schemaModel.detailModel(Table.TYPE);
+		SwingEntityModel columnModel = tableModel.detailModel(TableColumn.TYPE);
+		SwingEntityModel constraintModel = tableModel.detailModel(Constraint.TYPE);
+		SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
-    EntityPanel schemaPanel = new EntityPanel(schemaModel,
-            config -> config.detailLayout(TabbedDetailLayout.builder()
-                    .splitPaneResizeWeight(0.3)
-                    .build()));
-    EntityPanel tablePanel = new EntityPanel(tableModel,
-            config -> config.detailLayout(windowDetailLayout()));
-    EntityPanel columnPanel = new EntityPanel(columnModel);
-    EntityPanel constraintPanel = new EntityPanel(constraintModel);
-    EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);
+		EntityPanel schemaPanel = new EntityPanel(schemaModel,
+						config -> config.detailLayout(TabbedDetailLayout.builder()
+										.splitPaneResizeWeight(0.3)
+										.build()));
+		EntityPanel tablePanel = new EntityPanel(tableModel,
+						config -> config.detailLayout(windowDetailLayout()));
+		EntityPanel columnPanel = new EntityPanel(columnModel);
+		EntityPanel constraintPanel = new EntityPanel(constraintModel);
+		EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);
 
-    schemaPanel.addDetailPanel(tablePanel);
-    tablePanel.addDetailPanels(columnPanel);
-    tablePanel.addDetailPanel(constraintPanel);
-    constraintPanel.addDetailPanel(columnConstraintPanel);
+		schemaPanel.addDetailPanel(tablePanel);
+		tablePanel.addDetailPanels(columnPanel);
+		tablePanel.addDetailPanel(constraintPanel);
+		constraintPanel.addDetailPanel(columnConstraintPanel);
 
-    schemaModel.tableModel().refresh();
+		schemaModel.tableModel().refresh();
 
-    return Collections.singletonList(schemaPanel);
-  }
+		return Collections.singletonList(schemaPanel);
+	}
 
-  public static void main(String[] args) {
-    Arrays.stream(FlatAllIJThemes.INFOS)
-            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
-    FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.set(true);
-    EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
-            .applicationName("Schema Browser")
-            .domainType(SchemaBrowser.DOMAIN)
-            .defaultLoginUser(User.parse("scott:tiger"))
-            .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
-            .start();
-  }
+	public static void main(String[] args) {
+		Arrays.stream(FlatAllIJThemes.INFOS)
+						.forEach(LookAndFeelProvider::addLookAndFeelProvider);
+		FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.set(true);
+		EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
+						.applicationName("Schema Browser")
+						.domainType(SchemaBrowser.DOMAIN)
+						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
+						.start();
+	}
 
-  public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
-    public SchemaBrowserApplicationModel(EntityConnectionProvider connectionProvider) {
-      super(connectionProvider);
-      SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
-      SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
-      SwingEntityModel columnModel = new SwingEntityModel(TableColumn.TYPE, connectionProvider);
-      SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
-      SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
+	public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
+		public SchemaBrowserApplicationModel(EntityConnectionProvider connectionProvider) {
+			super(connectionProvider);
+			SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
+			SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
+			SwingEntityModel columnModel = new SwingEntityModel(TableColumn.TYPE, connectionProvider);
+			SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
+			SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
 
-      schemaModel.addDetailModel(tableModel);
-      tableModel.addDetailModels(columnModel, constraintModel);
-      constraintModel.addDetailModels(constraintColumnModel);
+			schemaModel.addDetailModel(tableModel);
+			tableModel.addDetailModels(columnModel, constraintModel);
+			constraintModel.addDetailModels(constraintColumnModel);
 
-      addEntityModel(schemaModel);
-    }
-  }
+			addEntityModel(schemaModel);
+		}
+	}
 }

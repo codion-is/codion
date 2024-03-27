@@ -33,23 +33,23 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PoolMonitorPanel extends JPanel {
 
-  private final PoolMonitor model;
+	private final PoolMonitor model;
 
-  /**
-   * Instantiates a new PoolMonitorPanel
-   * @param model the PoolMonitor to base this panel on
-   */
-  public PoolMonitorPanel(PoolMonitor model) {
-    this.model = requireNonNull(model);
-    initializeUI();
-  }
+	/**
+	 * Instantiates a new PoolMonitorPanel
+	 * @param model the PoolMonitor to base this panel on
+	 */
+	public PoolMonitorPanel(PoolMonitor model) {
+		this.model = requireNonNull(model);
+		initializeUI();
+	}
 
-  private void initializeUI() {
-    TabbedPaneBuilder tabbedPaneBuilder = tabbedPane();
-    for (ConnectionPoolMonitor monitor : model.connectionPoolInstanceMonitors()) {
-      tabbedPaneBuilder.tab(monitor.username(), new ConnectionPoolMonitorPanel(monitor));
-    }
-    setLayout(new BorderLayout());
-    add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
-  }
+	private void initializeUI() {
+		TabbedPaneBuilder tabbedPaneBuilder = tabbedPane();
+		for (ConnectionPoolMonitor monitor : model.connectionPoolInstanceMonitors()) {
+			tabbedPaneBuilder.tab(monitor.username(), new ConnectionPoolMonitorPanel(monitor));
+		}
+		setLayout(new BorderLayout());
+		add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
+	}
 }

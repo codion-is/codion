@@ -33,13 +33,13 @@ import static is.codion.framework.demos.chinook.testing.scenarios.LoadTestUtil.r
 
 public final class ViewCustomerReport implements Performer<EntityConnectionProvider> {
 
-  @Override
-  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
-    EntityConnection connection = connectionProvider.connection();
-    Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
-    Collection<Long> customerIDs = Collections.singletonList(customer.primaryKey().get());
-    Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("CUSTOMER_IDS", customerIDs);
-    connection.report(Customer.REPORT, reportParameters);
-  }
+	@Override
+	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+		EntityConnection connection = connectionProvider.connection();
+		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
+		Collection<Long> customerIDs = Collections.singletonList(customer.primaryKey().get());
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("CUSTOMER_IDS", customerIDs);
+		connection.report(Customer.REPORT, reportParameters);
+	}
 }

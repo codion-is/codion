@@ -26,10 +26,10 @@
  * {@link is.codion.swing.framework.model.component.EntityComboBoxModel}<br>
  */
 module is.codion.swing.framework.model {
-  requires org.slf4j;
-  requires transitive is.codion.framework.model;
-  requires transitive is.codion.swing.common.model;
+	requires org.slf4j;
+	requires transitive is.codion.framework.model;
+	requires transitive is.codion.swing.common.model;
 
-  exports is.codion.swing.framework.model;
-  exports is.codion.swing.framework.model.component;
+	exports is.codion.swing.framework.model;
+	exports is.codion.swing.framework.model.component;
 }

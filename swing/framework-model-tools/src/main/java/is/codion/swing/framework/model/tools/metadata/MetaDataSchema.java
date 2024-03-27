@@ -35,75 +35,75 @@ import static java.util.stream.Collectors.toMap;
 
 public final class MetaDataSchema {
 
-  private final String catalog;
-  private final String name;
-  private final Map<String, MetaDataTable> tables = new HashMap<>();
+	private final String catalog;
+	private final String name;
+	private final Map<String, MetaDataTable> tables = new HashMap<>();
 
-  private boolean populated = false;
+	private boolean populated = false;
 
-  MetaDataSchema(String name, String catalog) {
-    this.name = requireNonNull(name);
-    this.catalog = catalog;
-  }
+	MetaDataSchema(String name, String catalog) {
+		this.name = requireNonNull(name);
+		this.catalog = catalog;
+	}
 
-  public String name() {
-    return name;
-  }
+	public String name() {
+		return name;
+	}
 
-  public String catalog() {
-    return catalog;
-  }
+	public String catalog() {
+		return catalog;
+	}
 
-  public Map<String, MetaDataTable> tables() {
-    return unmodifiableMap(tables);
-  }
+	public Map<String, MetaDataTable> tables() {
+		return unmodifiableMap(tables);
+	}
 
-  public void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas,
-                       Consumer<String> schemaNotifier, Set<String> populatedSchemas) {
-    if (!populatedSchemas.contains(name)) {
-      schemaNotifier.accept(name);
-      tables.clear();
-      try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
-        tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
-                .collect(toMap(MetaDataTable::tableName, Function.identity())));
-        tables.values().stream()
-                .flatMap(table -> table.referencedSchemaNames().stream())
-                .map(schemas::get)
-                .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier, populatedSchemas));
-        tables.values().forEach(table -> table.resolveForeignKeys(schemas));
-        populated = true;
-        populatedSchemas.add(name);
-      }
-      catch (SQLException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+	public void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas,
+											 Consumer<String> schemaNotifier, Set<String> populatedSchemas) {
+		if (!populatedSchemas.contains(name)) {
+			schemaNotifier.accept(name);
+			tables.clear();
+			try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
+				tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
+								.collect(toMap(MetaDataTable::tableName, Function.identity())));
+				tables.values().stream()
+								.flatMap(table -> table.referencedSchemaNames().stream())
+								.map(schemas::get)
+								.forEach(schema -> schema.populate(metaData, schemas, schemaNotifier, populatedSchemas));
+				tables.values().forEach(table -> table.resolveForeignKeys(schemas));
+				populated = true;
+				populatedSchemas.add(name);
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-  public boolean populated() {
-    return populated;
-  }
+	public boolean populated() {
+		return populated;
+	}
 
-  @Override
-  public String toString() {
-    return name;
-  }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (object == null || getClass() != object.getClass()) {
-      return false;
-    }
-    MetaDataSchema schema = (MetaDataSchema) object;
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (object == null || getClass() != object.getClass()) {
+			return false;
+		}
+		MetaDataSchema schema = (MetaDataSchema) object;
 
-    return name.equals(schema.name);
-  }
+		return name.equals(schema.name);
+	}
 
-  @Override
-  public int hashCode() {
-    return name.hashCode();
-  }
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

@@ -23,7 +23,7 @@
  * {@link is.codion.swing.framework.ui.test.EntityApplicationPanelTestUnit}<br>
  */
 module is.codion.swing.framework.ui.test {
-  requires is.codion.swing.framework.ui;
+	requires is.codion.swing.framework.ui;
 
-  exports is.codion.swing.framework.ui.test;
+	exports is.codion.swing.framework.ui.test;
 }

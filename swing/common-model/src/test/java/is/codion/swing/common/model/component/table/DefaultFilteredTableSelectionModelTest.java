@@ -30,65 +30,65 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultFilteredTableSelectionModelTest {
 
-  private final FilteredTableSelectionModel<String> testModel;
+	private final FilteredTableSelectionModel<String> testModel;
 
-  public DefaultFilteredTableSelectionModelTest() {
-    List<String> data = asList("A", "B", "C");
-    FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
-            .columnClass(String.class)
-            .build();
-    FilteredTableModel<String, Integer> tableModel =
-            FilteredTableModel.<String, Integer>builder(() -> singletonList(column), (row, integer) -> row)
-                    .itemSupplier(() -> data)
-                    .build();
-    tableModel.refresh();
+	public DefaultFilteredTableSelectionModelTest() {
+		List<String> data = asList("A", "B", "C");
+		FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
+						.columnClass(String.class)
+						.build();
+		FilteredTableModel<String, Integer> tableModel =
+						FilteredTableModel.<String, Integer>builder(() -> singletonList(column), (row, integer) -> row)
+										.itemSupplier(() -> data)
+										.build();
+		tableModel.refresh();
 
-    testModel = tableModel.selectionModel();
-  }
+		testModel = tableModel.selectionModel();
+	}
 
-  @Test
-  void test() {
-    testModel.setSelectedIndex(0);
-    assertTrue(testModel.isSelected("A"));
-    assertTrue(testModel.selectedItem().isPresent());
-    testModel.clearSelection();
-    assertFalse(testModel.isSelected("A"));
-    assertFalse(testModel.selectedItem().isPresent());
-  }
+	@Test
+	void test() {
+		testModel.setSelectedIndex(0);
+		assertTrue(testModel.isSelected("A"));
+		assertTrue(testModel.selectedItem().isPresent());
+		testModel.clearSelection();
+		assertFalse(testModel.isSelected("A"));
+		assertFalse(testModel.selectedItem().isPresent());
+	}
 
-  @Test
-  void selectionMode() {
-    assertFalse(testModel.singleSelectionMode().get());
-    testModel.setSelectionMode(SINGLE_SELECTION);
-    assertTrue(testModel.singleSelectionMode().get());
-    testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
-    assertFalse(testModel.singleSelectionMode().get());
-    testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-    assertFalse(testModel.singleSelectionMode().get());
-    testModel.setSelectionMode(SINGLE_SELECTION);
-    assertTrue(testModel.singleSelectionMode().get());
-    testModel.singleSelectionMode().set(false);
-    assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
-    testModel.setSelectionMode(SINGLE_SELECTION);
-    assertTrue(testModel.singleSelectionMode().get());
-    assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
-  }
+	@Test
+	void selectionMode() {
+		assertFalse(testModel.singleSelectionMode().get());
+		testModel.setSelectionMode(SINGLE_SELECTION);
+		assertTrue(testModel.singleSelectionMode().get());
+		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
+		assertFalse(testModel.singleSelectionMode().get());
+		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
+		assertFalse(testModel.singleSelectionMode().get());
+		testModel.setSelectionMode(SINGLE_SELECTION);
+		assertTrue(testModel.singleSelectionMode().get());
+		testModel.singleSelectionMode().set(false);
+		assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
+		testModel.setSelectionMode(SINGLE_SELECTION);
+		assertTrue(testModel.singleSelectionMode().get());
+		assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
+	}
 
-  @Test
-  void events() {
-    AtomicInteger emptyCounter = new AtomicInteger();
-    testModel.selectionEmpty().addListener(emptyCounter::incrementAndGet);
-    testModel.setSelectedIndex(0);
-    assertEquals(1, emptyCounter.get());
-    testModel.addSelectedIndex(1);
-    assertEquals(1, emptyCounter.get());
-    testModel.setSelectedIndexes(asList(1, 2));
-    assertEquals(1, emptyCounter.get());
-    testModel.addSelectionInterval(0, 1);
-    assertEquals(1, emptyCounter.get());
-    testModel.moveSelectionDown();
-    assertEquals(1, emptyCounter.get());
-    testModel.clearSelection();
-    assertEquals(2, emptyCounter.get());
-  }
+	@Test
+	void events() {
+		AtomicInteger emptyCounter = new AtomicInteger();
+		testModel.selectionEmpty().addListener(emptyCounter::incrementAndGet);
+		testModel.setSelectedIndex(0);
+		assertEquals(1, emptyCounter.get());
+		testModel.addSelectedIndex(1);
+		assertEquals(1, emptyCounter.get());
+		testModel.setSelectedIndexes(asList(1, 2));
+		assertEquals(1, emptyCounter.get());
+		testModel.addSelectionInterval(0, 1);
+		assertEquals(1, emptyCounter.get());
+		testModel.moveSelectionDown();
+		assertEquals(1, emptyCounter.get());
+		testModel.clearSelection();
+		assertEquals(2, emptyCounter.get());
+	}
 }

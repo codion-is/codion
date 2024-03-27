@@ -39,46 +39,46 @@ import java.util.ResourceBundle;
 
 public final class CustomerTablePanel extends EntityTablePanel {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
 
-  public CustomerTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, config -> config
-            .refreshButtonVisible(RefreshButtonVisible.ALWAYS));
-  }
+	public CustomerTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, config -> config
+						.refreshButtonVisible(RefreshButtonVisible.ALWAYS));
+	}
 
-  @Override
-  protected void setupControls() {
-    control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
-            .name(BUNDLE.getString("customer_report"))
-            .smallIcon(FrameworkIcons.instance().print())
-            .enabled(tableModel().selectionModel().selectionNotEmpty())
-            .build());
-  }
+	@Override
+	protected void setupControls() {
+		control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
+						.name(BUNDLE.getString("customer_report"))
+						.smallIcon(FrameworkIcons.instance().print())
+						.enabled(tableModel().selectionModel().selectionNotEmpty())
+						.build());
+	}
 
-  private void viewCustomerReport() {
-    Dialogs.progressWorkerDialog(this::fillCustomerReport)
-            .owner(this)
-            .title(BUNDLE.getString("customer_report"))
-            .onResult(this::viewReport)
-            .execute();
-  }
+	private void viewCustomerReport() {
+		Dialogs.progressWorkerDialog(this::fillCustomerReport)
+						.owner(this)
+						.title(BUNDLE.getString("customer_report"))
+						.onResult(this::viewReport)
+						.execute();
+	}
 
-  private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
-    Collection<Long> customerIDs = Entity.values(Customer.ID,
-            tableModel().selectionModel().getSelectedItems());
-    Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("CUSTOMER_IDS", customerIDs);
+	private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
+		Collection<Long> customerIDs = Entity.values(Customer.ID,
+						tableModel().selectionModel().getSelectedItems());
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    return tableModel().connection()
-            .report(Customer.REPORT, reportParameters);
-  }
+		return tableModel().connection()
+						.report(Customer.REPORT, reportParameters);
+	}
 
-  private void viewReport(JasperPrint customerReport) {
-    Dialogs.componentDialog(new JRViewer(customerReport))
-            .owner(this)
-            .modal(false)
-            .title(BUNDLE.getString("customer_report"))
-            .size(new Dimension(800, 600))
-            .show();
-  }
+	private void viewReport(JasperPrint customerReport) {
+		Dialogs.componentDialog(new JRViewer(customerReport))
+						.owner(this)
+						.modal(false)
+						.title(BUNDLE.getString("customer_report"))
+						.size(new Dimension(800, 600))
+						.show();
+	}
 }

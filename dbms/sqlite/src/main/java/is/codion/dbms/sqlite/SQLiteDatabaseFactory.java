@@ -28,15 +28,15 @@ import static java.util.Objects.requireNonNull;
  */
 public final class SQLiteDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "org.sqlite";
+	private static final String DRIVER_PACKAGE = "org.sqlite";
 
-  @Override
-  public boolean driverCompatible(String driverClassName) {
-    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
-  }
+	@Override
+	public boolean driverCompatible(String driverClassName) {
+		return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
+	}
 
-  @Override
-  public Database createDatabase(String url) {
-    return new SQLiteDatabase(url);
-  }
+	@Override
+	public Database createDatabase(String url) {
+		return new SQLiteDatabase(url);
+	}
 }

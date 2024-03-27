@@ -38,104 +38,104 @@ import is.codion.swing.framework.ui.EntityTablePanel;
  */
 public final class ClientArchitecture {
 
-  // tag::entityModel[]
-  /**
-   * Creates a SwingEntityModel based on the {@link Artist#TYPE} entity
-   * with a detail model based on {@link Album#TYPE}
-   * @param connectionProvider the connection provider
-   */
-  static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
-    // create a default edit model
-    SwingEntityEditModel artistEditModel =
-            new SwingEntityEditModel(Artist.TYPE, connectionProvider);
+	// tag::entityModel[]
+	/**
+	 * Creates a SwingEntityModel based on the {@link Artist#TYPE} entity
+	 * with a detail model based on {@link Album#TYPE}
+	 * @param connectionProvider the connection provider
+	 */
+	static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
+		// create a default edit model
+		SwingEntityEditModel artistEditModel =
+						new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-    // create a default table model, wrapping the edit model
-    SwingEntityTableModel artistTableModel =
-            new SwingEntityTableModel(artistEditModel);
+		// create a default table model, wrapping the edit model
+		SwingEntityTableModel artistTableModel =
+						new SwingEntityTableModel(artistEditModel);
 
-    // create a default model wrapping the table model
-    SwingEntityModel artistModel =
-            new SwingEntityModel(artistTableModel);
+		// create a default model wrapping the table model
+		SwingEntityModel artistModel =
+						new SwingEntityModel(artistTableModel);
 
-    // Note that this does the same as the above, that is, creates
-    // a SwingEntityModel with a default edit and table model
-    SwingEntityModel albumModel =
-            new SwingEntityModel(Album.TYPE, connectionProvider);
+		// Note that this does the same as the above, that is, creates
+		// a SwingEntityModel with a default edit and table model
+		SwingEntityModel albumModel =
+						new SwingEntityModel(Album.TYPE, connectionProvider);
 
-    artistModel.addDetailModel(albumModel);
+		artistModel.addDetailModel(albumModel);
 
-    return artistModel;
-  }
-  // end::entityModel[]
-  // tag::entityPanel[]
-  /**
-   * Creates a EntityPanel based on the {@link Artist#TYPE} entity
-   * with a detail panel based on {@link Album#TYPE}
-   * @param connectionProvider the connection provider
-   */
-  static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
-    // create the EntityModel to base the panel on (calling the above method)
-    SwingEntityModel artistModel = artistModel(connectionProvider);
+		return artistModel;
+	}
+	// end::entityModel[]
+	// tag::entityPanel[]
+	/**
+	 * Creates a EntityPanel based on the {@link Artist#TYPE} entity
+	 * with a detail panel based on {@link Album#TYPE}
+	 * @param connectionProvider the connection provider
+	 */
+	static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
+		// create the EntityModel to base the panel on (calling the above method)
+		SwingEntityModel artistModel = artistModel(connectionProvider);
 
-    // the edit model
-    SwingEntityEditModel artistEditModel = artistModel.editModel();
+		// the edit model
+		SwingEntityEditModel artistEditModel = artistModel.editModel();
 
-    // the table model
-    SwingEntityTableModel artistTableModel = artistModel.tableModel();
+		// the table model
+		SwingEntityTableModel artistTableModel = artistModel.tableModel();
 
-    // the album detail model
-    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
+		// the album detail model
+		SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
 
-    // create a EntityEditPanel instance, based on the artist edit model
-    EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {
-      @Override
-      protected void initializeUI() {
-        createTextField(Artist.NAME).columns(15);
-        addInputPanel(Artist.NAME);
-      }
-    };
-    // create a EntityTablePanel instance, based on the artist table model
-    EntityTablePanel artistTablePanel = new EntityTablePanel(artistTableModel);
+		// create a EntityEditPanel instance, based on the artist edit model
+		EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {
+			@Override
+			protected void initializeUI() {
+				createTextField(Artist.NAME).columns(15);
+				addInputPanel(Artist.NAME);
+			}
+		};
+		// create a EntityTablePanel instance, based on the artist table model
+		EntityTablePanel artistTablePanel = new EntityTablePanel(artistTableModel);
 
-    // create a EntityPanel instance, based on the artist model and
-    // the edit and table panels from above
-    EntityPanel artistPanel = new EntityPanel(artistModel, artistEditPanel, artistTablePanel);
+		// create a EntityPanel instance, based on the artist model and
+		// the edit and table panels from above
+		EntityPanel artistPanel = new EntityPanel(artistModel, artistEditPanel, artistTablePanel);
 
-    // create a new EntityPanel, without an edit panel and
-    // with a default EntityTablePanel
-    EntityPanel albumPanel = new EntityPanel(albumModel);
+		// create a new EntityPanel, without an edit panel and
+		// with a default EntityTablePanel
+		EntityPanel albumPanel = new EntityPanel(albumModel);
 
-    artistPanel.addDetailPanel(albumPanel);
+		artistPanel.addDetailPanel(albumPanel);
 
-    return artistPanel;
-  }
-  // end::entityPanel[]
+		return artistPanel;
+	}
+	// end::entityPanel[]
 
-  public static void main(String[] args) {
-    // Configure the database
-    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+	public static void main(String[] args) {
+		// Configure the database
+		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-    // initialize a connection provider, this class is responsible
-    // for supplying a valid connection or throwing an exception
-    // in case a connection can not be established
-    EntityConnectionProvider connectionProvider =
-            LocalEntityConnectionProvider.builder()
-                    .domain(new ChinookImpl())
-                    .user(User.parse("scott:tiger"))
-                    .build();
+		// initialize a connection provider, this class is responsible
+		// for supplying a valid connection or throwing an exception
+		// in case a connection can not be established
+		EntityConnectionProvider connectionProvider =
+						LocalEntityConnectionProvider.builder()
+										.domain(new ChinookImpl())
+										.user(User.parse("scott:tiger"))
+										.build();
 
-    EntityPanel artistPanel = artistPanel(connectionProvider);
+		EntityPanel artistPanel = artistPanel(connectionProvider);
 
-    // lazy initialization
-    artistPanel.initialize();
+		// lazy initialization
+		artistPanel.initialize();
 
-    // fetch data from the database
-    artistPanel.model().tableModel().refresh();
+		// fetch data from the database
+		artistPanel.model().tableModel().refresh();
 
-    // uncomment the below line to display the panel
+		// uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");
 
-    connectionProvider.close();
-  }
+		connectionProvider.close();
+	}
 }

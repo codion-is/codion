@@ -41,56 +41,56 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
 
-  private final EntityConnectionProvider connectionProvider;
+	private final EntityConnectionProvider connectionProvider;
 
-  /**
-   * Instantiates a new {@link EntityConditionModelFactory}.
-   * @param connectionProvider the connection provider
-   */
-  public EntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
-    this.connectionProvider = requireNonNull(connectionProvider);
-  }
+	/**
+	 * Instantiates a new {@link EntityConditionModelFactory}.
+	 * @param connectionProvider the connection provider
+	 */
+	public EntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
+		this.connectionProvider = requireNonNull(connectionProvider);
+	}
 
-  @Override
-  public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
-    if (attribute instanceof ForeignKey) {
-      ForeignKey foreignKey = (ForeignKey) attribute;
-      return Optional.of(entitySearchConditionModel(foreignKey,
-              EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build()));
-    }
+	@Override
+	public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+		if (attribute instanceof ForeignKey) {
+			ForeignKey foreignKey = (ForeignKey) attribute;
+			return Optional.of(entitySearchConditionModel(foreignKey,
+							EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build()));
+		}
 
-    ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
+		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
 
-    return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
-            .operators(operators(attribute))
-            .format(column.format())
-            .dateTimePattern(column.dateTimePattern())
-            .build());
-  }
+		return Optional.of(ColumnConditionModel.builder(attribute, attribute.type().valueClass())
+						.operators(operators(attribute))
+						.format(column.format())
+						.dateTimePattern(column.dateTimePattern())
+						.build());
+	}
 
-  /**
-   * @return the underlying connection provider
-   */
-  protected final EntityConnectionProvider connectionProvider() {
-    return connectionProvider;
-  }
+	/**
+	 * @return the underlying connection provider
+	 */
+	protected final EntityConnectionProvider connectionProvider() {
+		return connectionProvider;
+	}
 
-  /**
-   * @param entityType the entity type
-   * @return the entity definition
-   */
-  protected final EntityDefinition definition(EntityType entityType) {
-    return connectionProvider.entities().definition(entityType);
-  }
+	/**
+	 * @param entityType the entity type
+	 * @return the entity definition
+	 */
+	protected final EntityDefinition definition(EntityType entityType) {
+		return connectionProvider.entities().definition(entityType);
+	}
 
-  private static List<Operator> operators(Attribute<?> attribute) {
-    if (attribute instanceof ForeignKey) {
-      return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
-    }
-    if (attribute.type().isBoolean()) {
-      return Collections.singletonList(Operator.EQUAL);
-    }
+	private static List<Operator> operators(Attribute<?> attribute) {
+		if (attribute instanceof ForeignKey) {
+			return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
+		}
+		if (attribute.type().isBoolean()) {
+			return Collections.singletonList(Operator.EQUAL);
+		}
 
-    return Arrays.asList(Operator.values());
-  }
+		return Arrays.asList(Operator.values());
+	}
 }

@@ -22,18 +22,18 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean, NullableCheckBox> {
 
-  BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
-    super(checkBox);
-    checkBox.getNullableModel().addListener(value -> notifyListeners());
-  }
+	BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
+		super(checkBox);
+		checkBox.getNullableModel().addListener(value -> notifyListeners());
+	}
 
-  @Override
-  protected Boolean getComponentValue() {
-    return component().getState();
-  }
+	@Override
+	protected Boolean getComponentValue() {
+		return component().getState();
+	}
 
-  @Override
-  protected void setComponentValue(Boolean value) {
-    component().getNullableModel().setState(value);
-  }
+	@Override
+	protected void setComponentValue(Boolean value) {
+		component().getNullableModel().setState(value);
+	}
 }

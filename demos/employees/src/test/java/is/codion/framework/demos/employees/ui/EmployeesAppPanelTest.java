@@ -26,15 +26,15 @@ import org.junit.jupiter.api.Test;
 
 public class EmployeesAppPanelTest extends EntityApplicationPanelTestUnit<EmployeesAppModel> {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  public EmployeesAppPanelTest() {
-    super(EmployeesAppModel.class, EmployeesAppPanel.class, UNIT_TEST_USER);
-  }
+	public EmployeesAppPanelTest() {
+		super(EmployeesAppModel.class, EmployeesAppPanel.class, UNIT_TEST_USER);
+	}
 
-  @Test
-  void initialize() {
-    testInitialize();
-  }
+	@Test
+	void initialize() {
+		testInitialize();
+	}
 }

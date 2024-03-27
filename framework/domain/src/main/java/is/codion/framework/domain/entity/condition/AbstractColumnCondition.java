@@ -30,72 +30,72 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractColumnCondition<T> extends AbstractCondition implements ColumnCondition<T> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final Column<T> column;
-  private final Operator operator;
-  private final boolean caseSensitive;
+	private final Column<T> column;
+	private final Operator operator;
+	private final boolean caseSensitive;
 
-  protected AbstractColumnCondition(Column<T> column, Operator operator, Collection<? extends T> values,
-                                    boolean caseSensitive) {
-    super(requireNonNull(column).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
-    if (!caseSensitive && !(column.type().isString() || column.type().isCharacter())) {
-      throw new IllegalStateException("Case insensitivity only applies to String and Character based columns: " + column);
-    }
-    this.column = column;
-    this.operator = requireNonNull(operator);
-    this.caseSensitive = caseSensitive;
-  }
+	protected AbstractColumnCondition(Column<T> column, Operator operator, Collection<? extends T> values,
+																		boolean caseSensitive) {
+		super(requireNonNull(column).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
+		if (!caseSensitive && !(column.type().isString() || column.type().isCharacter())) {
+			throw new IllegalStateException("Case insensitivity only applies to String and Character based columns: " + column);
+		}
+		this.column = column;
+		this.operator = requireNonNull(operator);
+		this.caseSensitive = caseSensitive;
+	}
 
-  public final Column<T> column() {
-    return column;
-  }
+	public final Column<T> column() {
+		return column;
+	}
 
-  @Override
-  public final Operator operator() {
-    return operator;
-  }
+	@Override
+	public final Operator operator() {
+		return operator;
+	}
 
-  @Override
-  public final boolean caseSensitive() {
-    return caseSensitive;
-  }
+	@Override
+	public final boolean caseSensitive() {
+		return caseSensitive;
+	}
 
-  @Override
-  public final String toString(EntityDefinition definition) {
-    return toString(requireNonNull(definition).columns().definition(column).expression());
-  }
+	@Override
+	public final String toString(EntityDefinition definition) {
+		return toString(requireNonNull(definition).columns().definition(column).expression());
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof AbstractColumnCondition)) {
-      return false;
-    }
-    if (!super.equals(object)) {
-      return false;
-    }
-    AbstractColumnCondition<?> that = (AbstractColumnCondition<?>) object;
-    return Objects.equals(operator, that.operator) &&
-            caseSensitive == that.caseSensitive;
-  }
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof AbstractColumnCondition)) {
+			return false;
+		}
+		if (!super.equals(object)) {
+			return false;
+		}
+		AbstractColumnCondition<?> that = (AbstractColumnCondition<?>) object;
+		return Objects.equals(operator, that.operator) &&
+						caseSensitive == that.caseSensitive;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), operator, caseSensitive);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), operator, caseSensitive);
+	}
 
-  /**
-   * @param columnExpression the column expression
-   * @return a condition string based on this condition
-   */
-  protected abstract String toString(String columnExpression);
+	/**
+	 * @param columnExpression the column expression
+	 * @return a condition string based on this condition
+	 */
+	protected abstract String toString(String columnExpression);
 
-  /**
-   * @param operator the operator
-   * @throws IllegalArgumentException in case the operator is not supported
-   */
-  protected abstract void validateOperator(Operator operator);
+	/**
+	 * @param operator the operator
+	 * @throws IllegalArgumentException in case the operator is not supported
+	 */
+	protected abstract void validateOperator(Operator operator);
 }

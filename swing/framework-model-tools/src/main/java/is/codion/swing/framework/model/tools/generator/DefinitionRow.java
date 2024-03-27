@@ -22,11 +22,11 @@ import is.codion.framework.domain.entity.EntityDefinition;
 
 public final class DefinitionRow {
 
-  final String tableType;
-  final EntityDefinition definition;
+	final String tableType;
+	final EntityDefinition definition;
 
-  DefinitionRow(EntityDefinition definition, String tableType) {
-    this.definition = definition;
-    this.tableType = tableType;
-  }
+	DefinitionRow(EntityDefinition definition, String tableType) {
+		this.definition = definition;
+		this.tableType = tableType;
+	}
 }

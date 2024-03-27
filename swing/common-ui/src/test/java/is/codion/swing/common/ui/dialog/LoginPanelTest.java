@@ -27,8 +27,8 @@ import javax.swing.JLabel;
 
 public final class LoginPanelTest {
 
-  @Test
-  void test() {
-    new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, Logos.logoTransparent(), new JLabel(), 1);
-  }
+	@Test
+	void test() {
+		new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, Logos.logoTransparent(), new JLabel(), 1);
+	}
 }

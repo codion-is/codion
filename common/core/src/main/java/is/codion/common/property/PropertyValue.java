@@ -26,28 +26,28 @@ import is.codion.common.value.Value;
  */
 public interface PropertyValue<T> extends Value<T> {
 
-  /**
-   * @return the name of the property this value represents
-   */
-  String propertyName();
+	/**
+	 * @return the name of the property this value represents
+	 */
+	String propertyName();
 
-  /**
-   * Returns the underlying value, if the value is null then a {@link IllegalStateException} is thrown.
-   * @return the value, if available
-   * @throws IllegalStateException in case the underlying value is null
-   */
-  T getOrThrow() throws IllegalStateException;
+	/**
+	 * Returns the underlying value, if the value is null then a {@link IllegalStateException} is thrown.
+	 * @return the value, if available
+	 * @throws IllegalStateException in case the underlying value is null
+	 */
+	T getOrThrow() throws IllegalStateException;
 
-  /**
-   * Returns the underlying value, if the value is null then a {@link IllegalStateException} is thrown.
-   * @param message the error message to use when throwing
-   * @return the value, if available
-   * @throws IllegalStateException in case the underlying value is null
-   */
-  T getOrThrow(String message) throws IllegalStateException;
+	/**
+	 * Returns the underlying value, if the value is null then a {@link IllegalStateException} is thrown.
+	 * @param message the error message to use when throwing
+	 * @return the value, if available
+	 * @throws IllegalStateException in case the underlying value is null
+	 */
+	T getOrThrow(String message) throws IllegalStateException;
 
-  /**
-   * Sets this value to null as well as removing it from the underlying store and clearing the system property.
-   */
-  void clear();
+	/**
+	 * Sets this value to null as well as removing it from the underlying store and clearing the system property.
+	 */
+	void clear();
 }

@@ -32,91 +32,91 @@ import static java.util.Objects.requireNonNull;
  */
 final class BoundedItemRandomizer<T> extends DefaultItemRandomizer<T> {
 
-  private final Object lock = new Object();
-  private final int maximumTotalWeight;
+	private final Object lock = new Object();
+	private final int maximumTotalWeight;
 
-  private RandomItem<T> lastAffected;
+	private RandomItem<T> lastAffected;
 
-  BoundedItemRandomizer(Collection<T> items, int maximumTotalWeight) {
-    super(initializeItems(items, maximumTotalWeight));
-    this.maximumTotalWeight = maximumTotalWeight;
-    this.lastAffected = items().get(0);
-  }
+	BoundedItemRandomizer(Collection<T> items, int maximumTotalWeight) {
+		super(initializeItems(items, maximumTotalWeight));
+		this.maximumTotalWeight = maximumTotalWeight;
+		this.lastAffected = items().get(0);
+	}
 
-  @Override
-  public void incrementWeight(T item) {
-    synchronized (lock) {
-      RandomItem<T> randomItem = randomItem(item);
-      if (randomItem.weight() >= maximumTotalWeight) {
-        throw new IllegalStateException("Maximum weight reached");
-      }
+	@Override
+	public void incrementWeight(T item) {
+		synchronized (lock) {
+			RandomItem<T> randomItem = randomItem(item);
+			if (randomItem.weight() >= maximumTotalWeight) {
+				throw new IllegalStateException("Maximum weight reached");
+			}
 
-      decrementWeight(randomItem);
-      randomItem(item).incrementWeight();
-    }
-  }
+			decrementWeight(randomItem);
+			randomItem(item).incrementWeight();
+		}
+	}
 
-  @Override
-  public void decrementWeight(T item) {
-    synchronized (lock) {
-      RandomItem<T> randomItem = randomItem(item);
-      if (randomItem.weight() == 0) {
-        throw new IllegalStateException("No weight to shed");
-      }
+	@Override
+	public void decrementWeight(T item) {
+		synchronized (lock) {
+			RandomItem<T> randomItem = randomItem(item);
+			if (randomItem.weight() == 0) {
+				throw new IllegalStateException("No weight to shed");
+			}
 
-      incrementWeight(randomItem);
-      randomItem.decrementWeight();
-    }
-  }
+			incrementWeight(randomItem);
+			randomItem.decrementWeight();
+		}
+	}
 
-  @Override
-  public void setWeight(T item, int weight) {
-    throw new UnsupportedOperationException("setWeight is not implemented in " + getClass().getSimpleName());
-  }
+	@Override
+	public void setWeight(T item, int weight) {
+		throw new UnsupportedOperationException("setWeight is not implemented in " + getClass().getSimpleName());
+	}
 
-  private static <T> Collection<RandomItem<T>> initializeItems(Collection<T> items, int weightBounds) {
-    if (weightBounds <= 0) {
-      throw new IllegalArgumentException("Bounded weight must be a positive integer");
-    }
-    if (requireNonNull(items, "items").isEmpty()) {
-      throw new IllegalArgumentException("Items must not be empty");
-    }
-    int rest = weightBounds % items.size();
-    int amountEach = weightBounds / items.size();
-    Collection<RandomItem<T>> randomItems = new ArrayList<>(items.size());
-    Iterator<T> itemIterator = items.iterator();
-    int i = 0;
-    while (itemIterator.hasNext()) {
-      randomItems.add(RandomItem.randomItem(itemIterator.next(), i++ < items.size() - 1 ? amountEach : amountEach + rest));
-    }
+	private static <T> Collection<RandomItem<T>> initializeItems(Collection<T> items, int weightBounds) {
+		if (weightBounds <= 0) {
+			throw new IllegalArgumentException("Bounded weight must be a positive integer");
+		}
+		if (requireNonNull(items, "items").isEmpty()) {
+			throw new IllegalArgumentException("Items must not be empty");
+		}
+		int rest = weightBounds % items.size();
+		int amountEach = weightBounds / items.size();
+		Collection<RandomItem<T>> randomItems = new ArrayList<>(items.size());
+		Iterator<T> itemIterator = items.iterator();
+		int i = 0;
+		while (itemIterator.hasNext()) {
+			randomItems.add(RandomItem.randomItem(itemIterator.next(), i++ < items.size() - 1 ? amountEach : amountEach + rest));
+		}
 
-    return randomItems;
-  }
+		return randomItems;
+	}
 
-  private void incrementWeight(RandomItem<?> exclude) {
-    lastAffected = nextItem(exclude, false);
-    lastAffected.incrementWeight();
-  }
+	private void incrementWeight(RandomItem<?> exclude) {
+		lastAffected = nextItem(exclude, false);
+		lastAffected.incrementWeight();
+	}
 
-  private void decrementWeight(RandomItem<?> exclude) {
-    lastAffected = nextItem(exclude, true);
-    lastAffected.decrementWeight();
-  }
+	private void decrementWeight(RandomItem<?> exclude) {
+		lastAffected = nextItem(exclude, true);
+		lastAffected.decrementWeight();
+	}
 
-  private RandomItem<T> nextItem(RandomItem<?> exclude, boolean nonEmpty) {
-    int index = items().indexOf(lastAffected);
-    RandomItem<T> item = null;
-    while (item == null || item.equals(exclude) || (nonEmpty ? item.weight() == 0 : item.weight() == maximumTotalWeight)) {
-      if (index == 0) {
-        index = items().size() - 1;
-      }
-      else {
-        index--;
-      }
+	private RandomItem<T> nextItem(RandomItem<?> exclude, boolean nonEmpty) {
+		int index = items().indexOf(lastAffected);
+		RandomItem<T> item = null;
+		while (item == null || item.equals(exclude) || (nonEmpty ? item.weight() == 0 : item.weight() == maximumTotalWeight)) {
+			if (index == 0) {
+				index = items().size() - 1;
+			}
+			else {
+				index--;
+			}
 
-      item = items().get(index);
-    }
+			item = items().get(index);
+		}
 
-    return item;
-  }
+		return item;
+	}
 }

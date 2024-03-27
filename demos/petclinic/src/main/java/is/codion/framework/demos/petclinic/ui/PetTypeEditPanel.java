@@ -26,18 +26,18 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class PetTypeEditPanel extends EntityEditPanel {
 
-  public PetTypeEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public PetTypeEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(PetType.NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(PetType.NAME);
 
-    createTextField(PetType.NAME);
+		createTextField(PetType.NAME);
 
-    setLayout(gridLayout(1, 1));
+		setLayout(gridLayout(1, 1));
 
-    addInputPanel(PetType.NAME);
-  }
+		addInputPanel(PetType.NAME);
+	}
 }

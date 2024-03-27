@@ -33,41 +33,41 @@ import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
 public final class EntitiesInAction {
 
-  public static void main(String[] args) throws DatabaseException {
-    // tag::entitiesInAction[]
-    EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-            .domainType(Petstore.DOMAIN)
-            .clientTypeId("Manual")
-            .user(User.parse("scott:tiger"))
-            .build();
+	public static void main(String[] args) throws DatabaseException {
+		// tag::entitiesInAction[]
+		EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+						.domainType(Petstore.DOMAIN)
+						.clientTypeId("Manual")
+						.user(User.parse("scott:tiger"))
+						.build();
 
-    Entities entities = connectionProvider.entities();
+		Entities entities = connectionProvider.entities();
 
-    EntityConnection connection = connectionProvider.connection();
+		EntityConnection connection = connectionProvider.connection();
 
-    //populate a new category
-    Entity insects = entities.builder(Category.TYPE)
-            .with(Category.NAME, "Insects")
-            .with(Category.DESCRIPTION, "Creepy crawlies")
-            .build();
+		//populate a new category
+		Entity insects = entities.builder(Category.TYPE)
+						.with(Category.NAME, "Insects")
+						.with(Category.DESCRIPTION, "Creepy crawlies")
+						.build();
 
-    insects = connection.insertSelect(insects);
+		insects = connection.insertSelect(insects);
 
-    //populate a new product for the insect category
-    Entity smallBeetles = entities.builder(Product.TYPE)
-            .with(Product.CATEGORY_FK, insects)
-            .with(Product.NAME, "Small Beetles")
-            .with(Product.DESCRIPTION, "Beetles on the smaller side")
-            .build();
+		//populate a new product for the insect category
+		Entity smallBeetles = entities.builder(Product.TYPE)
+						.with(Product.CATEGORY_FK, insects)
+						.with(Product.NAME, "Small Beetles")
+						.with(Product.DESCRIPTION, "Beetles on the smaller side")
+						.build();
 
-    connection.insert(smallBeetles);
+		connection.insert(smallBeetles);
 
-    //see what products are available for the Cats category
-    Entity categoryCats = connection.selectSingle(Category.NAME.equalTo("Cats"));
+		//see what products are available for the Cats category
+		Entity categoryCats = connection.selectSingle(Category.NAME.equalTo("Cats"));
 
-    List<Entity> cats = connection.select(Product.CATEGORY_FK.equalTo(categoryCats));
+		List<Entity> cats = connection.select(Product.CATEGORY_FK.equalTo(categoryCats));
 
-    cats.forEach(System.out::println);
-    // end::entitiesInAction[]
-  }
+		cats.forEach(System.out::println);
+		// end::entitiesInAction[]
+	}
 }

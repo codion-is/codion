@@ -43,102 +43,102 @@ import static java.util.Arrays.asList;
 
 public final class EmployeesServletLoadTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private final LoadTest<EntityConnectionProvider> loadTest;
+	private final LoadTest<EntityConnectionProvider> loadTest;
 
-  private EmployeesServletLoadTest(User user) {
-    loadTest = LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
-            .user(user)
-            .scenarios(asList(
-                    scenario(new SelectDepartment(), 4),
-                    scenario(new UpdateLocation(), 2),
-                    scenario(new SelectEmployees(), 5),
-                    scenario(new AddDepartment(), 1),
-                    scenario(new AddEmployee(), 4)))
-            .minimumThinkTime(2500)
-            .maximumThinkTime(5000)
-            .loginDelayFactor(2)
-            .applicationBatchSize(10)
-            .build();
-  }
+	private EmployeesServletLoadTest(User user) {
+		loadTest = LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
+						.user(user)
+						.scenarios(asList(
+										scenario(new SelectDepartment(), 4),
+										scenario(new UpdateLocation(), 2),
+										scenario(new SelectEmployees(), 5),
+										scenario(new AddDepartment(), 1),
+										scenario(new AddEmployee(), 4)))
+						.minimumThinkTime(2500)
+						.maximumThinkTime(5000)
+						.loginDelayFactor(2)
+						.applicationBatchSize(10)
+						.build();
+	}
 
-  private static void disconnectApplication(EntityConnectionProvider client) {
-    client.close();
-  }
+	private static void disconnectApplication(EntityConnectionProvider client) {
+		client.close();
+	}
 
-  private static EntityConnectionProvider createApplication(User user) throws CancelException {
-    return HttpEntityConnectionProvider.builder()
-            .clientTypeId("EmployeesServletLoadTest")
-            .domainType(Employees.DOMAIN)
-            .user(user)
-            .build();
-  }
+	private static EntityConnectionProvider createApplication(User user) throws CancelException {
+		return HttpEntityConnectionProvider.builder()
+						.clientTypeId("EmployeesServletLoadTest")
+						.domainType(Employees.DOMAIN)
+						.user(user)
+						.build();
+	}
 
-  public static void main(String[] args) {
-    loadTestPanel(loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
-  }
+	public static void main(String[] args) {
+		loadTestPanel(loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
+	}
 
-  private static final class UpdateLocation implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class UpdateLocation implements Scenario.Performer<EntityConnectionProvider> {
 
-    @Override
-    public void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(all(Department.TYPE));
-      Entity entity = departments.get(new Random().nextInt(departments.size()));
-      entity.put(Department.LOCATION, Text.randomString(10, 13));
-      client.connection().update(entity);
-    }
-  }
+		@Override
+		public void perform(EntityConnectionProvider client) throws Exception {
+			List<Entity> departments = client.connection().select(all(Department.TYPE));
+			Entity entity = departments.get(new Random().nextInt(departments.size()));
+			entity.put(Department.LOCATION, Text.randomString(10, 13));
+			client.connection().update(entity);
+		}
+	}
 
-  private static final class SelectDepartment implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class SelectDepartment implements Scenario.Performer<EntityConnectionProvider> {
 
-    @Override
-    public void perform(EntityConnectionProvider client) throws Exception {
-      client.connection().select(Department.NAME.equalTo("Accounting"));
-    }
-  }
+		@Override
+		public void perform(EntityConnectionProvider client) throws Exception {
+			client.connection().select(Department.NAME.equalTo("Accounting"));
+		}
+	}
 
-  private static final class SelectEmployees implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class SelectEmployees implements Scenario.Performer<EntityConnectionProvider> {
 
-    @Override
-    public void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(all(Department.TYPE));
+		@Override
+		public void perform(EntityConnectionProvider client) throws Exception {
+			List<Entity> departments = client.connection().select(all(Department.TYPE));
 
-      client.connection().select(Employee.DEPARTMENT
-              .equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.DEPARTMENT_NO)));
-    }
-  }
+			client.connection().select(Employee.DEPARTMENT
+							.equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.DEPARTMENT_NO)));
+		}
+	}
 
-  private static final class AddDepartment implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class AddDepartment implements Scenario.Performer<EntityConnectionProvider> {
 
-    @Override
-    public void perform(EntityConnectionProvider client) throws Exception {
-      int departmentNo = new Random().nextInt(5000);
-      client.connection().insert(client.entities().builder(Department.TYPE)
-              .with(Department.DEPARTMENT_NO, departmentNo)
-              .with(Department.NAME, Text.randomString(4, 8))
-              .with(Department.LOCATION, Text.randomString(5, 10))
-              .build());
-    }
-  }
+		@Override
+		public void perform(EntityConnectionProvider client) throws Exception {
+			int departmentNo = new Random().nextInt(5000);
+			client.connection().insert(client.entities().builder(Department.TYPE)
+							.with(Department.DEPARTMENT_NO, departmentNo)
+							.with(Department.NAME, Text.randomString(4, 8))
+							.with(Department.LOCATION, Text.randomString(5, 10))
+							.build());
+		}
+	}
 
-  private static final class AddEmployee implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class AddEmployee implements Scenario.Performer<EntityConnectionProvider> {
 
-    private final Random random = new Random();
+		private final Random random = new Random();
 
-    @Override
-    public void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(all(Department.TYPE));
-      Entity department = departments.get(random.nextInt(departments.size()));
-      client.connection().insert(client.entities().builder(Employee.TYPE)
-              .with(Employee.DEPARTMENT_FK, department)
-              .with(Employee.NAME, Text.randomString(5, 10))
-              .with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).get())
-              .with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
-              .with(Employee.HIREDATE, LocalDate.now())
-              .with(Employee.COMMISSION, random.nextDouble() * 500)
-              .build());
-    }
-  }
+		@Override
+		public void perform(EntityConnectionProvider client) throws Exception {
+			List<Entity> departments = client.connection().select(all(Department.TYPE));
+			Entity department = departments.get(random.nextInt(departments.size()));
+			client.connection().insert(client.entities().builder(Employee.TYPE)
+							.with(Employee.DEPARTMENT_FK, department)
+							.with(Employee.NAME, Text.randomString(5, 10))
+							.with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).get())
+							.with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
+							.with(Employee.HIREDATE, LocalDate.now())
+							.with(Employee.COMMISSION, random.nextDouble() * 500)
+							.build());
+		}
+	}
 }

@@ -41,83 +41,83 @@ import static java.util.Collections.singletonList;
 
 public final class ClientServer {
 
-  private static final int SERVER_PORT = 2223;
-  private static final int REGISTRY_PORT = 1099;
-  private static final int HTTP_PORT = 8080;
+	private static final int SERVER_PORT = 2223;
+	private static final int REGISTRY_PORT = 1099;
+	private static final int HTTP_PORT = 8080;
 
-  private static void runServer() throws RemoteException, DatabaseException {
-    // tag::runServer[]
-    Database database = H2DatabaseFactory
-            .createDatabase("jdbc:h2:mem:testdb",
-                    "src/main/sql/create_schema.sql");
+	private static void runServer() throws RemoteException, DatabaseException {
+		// tag::runServer[]
+		Database database = H2DatabaseFactory
+						.createDatabase("jdbc:h2:mem:testdb",
+										"src/main/sql/create_schema.sql");
 
-    EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-            .domainClassNames(singletonList(Store.class.getName()))
-            .database(database)
-            .sslEnabled(false)
-            .build();
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+						.domainClassNames(singletonList(Store.class.getName()))
+						.database(database)
+						.sslEnabled(false)
+						.build();
 
-    EntityServer server = EntityServer.startServer(configuration);
+		EntityServer server = EntityServer.startServer(configuration);
 
-    RemoteEntityConnectionProvider connectionProvider =
-            RemoteEntityConnectionProvider.builder()
-                    .port(SERVER_PORT)
-                    .registryPort(REGISTRY_PORT)
-                    .domainType(Store.DOMAIN)
-                    .user(parse("scott:tiger"))
-                    .clientTypeId("ClientServer")
-                    .build();
+		RemoteEntityConnectionProvider connectionProvider =
+						RemoteEntityConnectionProvider.builder()
+										.port(SERVER_PORT)
+										.registryPort(REGISTRY_PORT)
+										.domainType(Store.DOMAIN)
+										.user(parse("scott:tiger"))
+										.clientTypeId("ClientServer")
+										.build();
 
-    EntityConnection connection = connectionProvider.connection();
+		EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> customers = connection.select(all(Customer.TYPE));
-    customers.forEach(System.out::println);
+		List<Entity> customers = connection.select(all(Customer.TYPE));
+		customers.forEach(System.out::println);
 
-    connection.close();
+		connection.close();
 
-    server.shutdown();
-    // end::runServer[]
-  }
+		server.shutdown();
+		// end::runServer[]
+	}
 
-  private static void runServerWithHttp() throws RemoteException, DatabaseException {
-    // tag::runServerWithHttp[]
-    Database database = H2DatabaseFactory
-            .createDatabase("jdbc:h2:mem:testdb",
-                    "src/main/sql/create_schema.sql");
+	private static void runServerWithHttp() throws RemoteException, DatabaseException {
+		// tag::runServerWithHttp[]
+		Database database = H2DatabaseFactory
+						.createDatabase("jdbc:h2:mem:testdb",
+										"src/main/sql/create_schema.sql");
 
-    EntityService.HTTP_SERVER_PORT.set(HTTP_PORT);
+		EntityService.HTTP_SERVER_PORT.set(HTTP_PORT);
 
-    EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-            .domainClassNames(singletonList(Store.class.getName()))
-            .database(database)
-            .sslEnabled(false)
-            .auxiliaryServerFactoryClassNames(singletonList(EntityServiceFactory.class.getName()))
-            .build();
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+						.domainClassNames(singletonList(Store.class.getName()))
+						.database(database)
+						.sslEnabled(false)
+						.auxiliaryServerFactoryClassNames(singletonList(EntityServiceFactory.class.getName()))
+						.build();
 
-    EntityServer server = EntityServer.startServer(configuration);
+		EntityServer server = EntityServer.startServer(configuration);
 
-    HttpEntityConnectionProvider connectionProvider =
-            HttpEntityConnectionProvider.builder()
-                    .port(HTTP_PORT)
-                    .https(false)
-                    .domainType(Store.DOMAIN)
-                    .user(parse("scott:tiger"))
-                    .clientTypeId("ClientServer")
-                    .build();
+		HttpEntityConnectionProvider connectionProvider =
+						HttpEntityConnectionProvider.builder()
+										.port(HTTP_PORT)
+										.https(false)
+										.domainType(Store.DOMAIN)
+										.user(parse("scott:tiger"))
+										.clientTypeId("ClientServer")
+										.build();
 
-    EntityConnection connection = connectionProvider.connection();
+		EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> customers = connection.select(all(Customer.TYPE));
-    customers.forEach(System.out::println);
+		List<Entity> customers = connection.select(all(Customer.TYPE));
+		customers.forEach(System.out::println);
 
-    connection.close();
+		connection.close();
 
-    server.shutdown();
-    // end::runServerWithHttp[]
-  }
+		server.shutdown();
+		// end::runServerWithHttp[]
+	}
 
-  public static void main(String[] args) throws RemoteException, DatabaseException {
-    runServer();
-    runServerWithHttp();
-  }
+	public static void main(String[] args) throws RemoteException, DatabaseException {
+		runServer();
+		runServerWithHttp();
+	}
 }

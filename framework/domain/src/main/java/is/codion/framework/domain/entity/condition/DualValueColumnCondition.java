@@ -25,64 +25,64 @@ import static java.util.Arrays.asList;
 
 final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  DualValueColumnCondition(Column<T> column, T lowerBound, T upperBound, Operator operator) {
-    super(column, operator, asList(lowerBound, upperBound), true);
-    validateOperator(operator);
-  }
+	DualValueColumnCondition(Column<T> column, T lowerBound, T upperBound, Operator operator) {
+		super(column, operator, asList(lowerBound, upperBound), true);
+		validateOperator(operator);
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof DualValueColumnCondition)) {
-      return false;
-    }
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof DualValueColumnCondition)) {
+			return false;
+		}
 
-    return super.equals(object);
-  }
+		return super.equals(object);
+	}
 
-  @Override
-  public int hashCode() {
-    return super.hashCode();
-  }
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 
-  @Override
-  public String toString() {
-    return "DualValueColumnCondition{" +
-            "column=" + column() +
-            ", operator=" + operator() +
-            ", values=" + values() +
-            ", caseSensitive=" + caseSensitive() + "}";
-  }
+	@Override
+	public String toString() {
+		return "DualValueColumnCondition{" +
+						"column=" + column() +
+						", operator=" + operator() +
+						", values=" + values() +
+						", caseSensitive=" + caseSensitive() + "}";
+	}
 
-  @Override
-  protected String toString(String columnExpression) {
-    switch (operator()) {
-      case BETWEEN:
-        return "(" + columnExpression + " >= ? AND " + columnExpression + " <= ?)";
-      case NOT_BETWEEN:
-        return "(" + columnExpression + " < ? OR " + columnExpression + " > ?)";
-      case BETWEEN_EXCLUSIVE:
-        return "(" + columnExpression + " > ? AND " + columnExpression + " < ?)";
-      case NOT_BETWEEN_EXCLUSIVE:
-        return "(" + columnExpression + " <= ? OR " + columnExpression + " >= ?)";
-      default:
-        throw new IllegalStateException("Unsupported dual value operator: " + operator());
-    }
-  }
+	@Override
+	protected String toString(String columnExpression) {
+		switch (operator()) {
+			case BETWEEN:
+				return "(" + columnExpression + " >= ? AND " + columnExpression + " <= ?)";
+			case NOT_BETWEEN:
+				return "(" + columnExpression + " < ? OR " + columnExpression + " > ?)";
+			case BETWEEN_EXCLUSIVE:
+				return "(" + columnExpression + " > ? AND " + columnExpression + " < ?)";
+			case NOT_BETWEEN_EXCLUSIVE:
+				return "(" + columnExpression + " <= ? OR " + columnExpression + " >= ?)";
+			default:
+				throw new IllegalStateException("Unsupported dual value operator: " + operator());
+		}
+	}
 
-  protected void validateOperator(Operator operator) {
-    switch (operator) {
-      case BETWEEN:
-      case NOT_BETWEEN:
-      case BETWEEN_EXCLUSIVE:
-      case NOT_BETWEEN_EXCLUSIVE:
-        break;
-      default:
-        throw new IllegalArgumentException("Unsupported dual value operator: " + operator);
-    }
-  }
+	protected void validateOperator(Operator operator) {
+		switch (operator) {
+			case BETWEEN:
+			case NOT_BETWEEN:
+			case BETWEEN_EXCLUSIVE:
+			case NOT_BETWEEN_EXCLUSIVE:
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported dual value operator: " + operator);
+		}
+	}
 }

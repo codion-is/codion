@@ -40,46 +40,46 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {
 
-  public static final int REGISTRY_PORT = 3221;
-  public static final int SERVER_PORT = 3223;
-  public static final int SERVER_ADMIN_PORT = 3224;
+	public static final int REGISTRY_PORT = 3221;
+	public static final int SERVER_PORT = 3223;
+	public static final int SERVER_ADMIN_PORT = 3224;
 
-  @Test
-  void test() throws RemoteException, NotBoundException, LoginException,
-          ConnectionNotAvailableException, DatabaseException {
-    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+	@Test
+	void test() throws RemoteException, NotBoundException, LoginException,
+					ConnectionNotAvailableException, DatabaseException {
+		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
-    EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-            .adminPort(SERVER_ADMIN_PORT)
-            .database(Database.instance())
-            .idleConnectionTimeout(60_000)
-            .adminUser(User.parse("scott:tiger"))
-            .sslEnabled(false)
-            .serverName("Employee Server")
-            .build();
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+						.adminPort(SERVER_ADMIN_PORT)
+						.database(Database.instance())
+						.idleConnectionTimeout(60_000)
+						.adminUser(User.parse("scott:tiger"))
+						.sslEnabled(false)
+						.serverName("Employee Server")
+						.build();
 
-    EmployeeServer employeeServer = new EmployeeServer(configuration);
+		EmployeeServer employeeServer = new EmployeeServer(configuration);
 
-    Server<EmployeeService, ?> remoteServer = Server.Locator.builder()
-            .hostName("localhost")
-            .namePrefix("Employee Server")
-            .registryPort(REGISTRY_PORT)
-            .port(SERVER_PORT)
-            .build()
-            .locateServer();
+		Server<EmployeeService, ?> remoteServer = Server.Locator.builder()
+						.hostName("localhost")
+						.namePrefix("Employee Server")
+						.registryPort(REGISTRY_PORT)
+						.port(SERVER_PORT)
+						.build()
+						.locateServer();
 
-    UUID clientId = UUID.randomUUID();
-    EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
-            .user(User.parse("scott:tiger"))
-            .clientId(clientId)
-            .clientTypeId("EmployeeServerTest")
-            .build());
+		UUID clientId = UUID.randomUUID();
+		EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
+						.user(User.parse("scott:tiger"))
+						.clientId(clientId)
+						.clientTypeId("EmployeeServerTest")
+						.build());
 
-    Collection<Entity> employees = employeeService.employees();
-    assertEquals(16, employees.size());
+		Collection<Entity> employees = employeeService.employees();
+		assertEquals(16, employees.size());
 
-    employeeServer.disconnect(clientId);
+		employeeServer.disconnect(clientId);
 
-    employeeServer.shutdown();
-  }
+		employeeServer.shutdown();
+	}
 }

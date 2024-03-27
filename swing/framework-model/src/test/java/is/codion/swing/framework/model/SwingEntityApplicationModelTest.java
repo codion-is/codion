@@ -24,17 +24,17 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 public final class SwingEntityApplicationModelTest
-        extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+				extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  @Override
-  protected SwingEntityModel createDepartmentModel() {
-    return new DeptModel(connectionProvider());
-  }
+	@Override
+	protected SwingEntityModel createDepartmentModel() {
+		return new DeptModel(connectionProvider());
+	}
 
-  private static class DeptModel extends SwingEntityModel {
-    private DeptModel(EntityConnectionProvider connectionProvider) {
-      super(Department.TYPE, connectionProvider);
-      addDetailModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
-    }
-  }
+	private static class DeptModel extends SwingEntityModel {
+		private DeptModel(EntityConnectionProvider connectionProvider) {
+			super(Department.TYPE, connectionProvider);
+			addDetailModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
+		}
+	}
 }

@@ -45,214 +45,214 @@ import static java.util.Objects.requireNonNull;
  */
 public final class WindowDetailLayout implements DetailLayout {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedDetailLayout.class.getName());
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedDetailLayout.class.getName());
 
-  private static final String DETAIL_TABLES = "detail_tables";
+	private static final String DETAIL_TABLES = "detail_tables";
 
-  private static final Value.Validator<PanelState> PANEL_STATE_VALIDATOR = new RejectEmbedded();
+	private static final Value.Validator<PanelState> PANEL_STATE_VALIDATOR = new RejectEmbedded();
 
-  /**
-   * Specifies the window type.
-   */
-  public enum WindowType {
+	/**
+	 * Specifies the window type.
+	 */
+	public enum WindowType {
 
-    /**
-     * Display detail panels in a JFrame
-     */
-    FRAME,
+		/**
+		 * Display detail panels in a JFrame
+		 */
+		FRAME,
 
-    /**
-     * Display detail panels in a JDialog
-     */
-    DIALOG
-  }
+		/**
+		 * Display detail panels in a JDialog
+		 */
+		DIALOG
+	}
 
-  private final Map<EntityPanel, DetailWindow> panelWindows = new HashMap<>();
-  private final WindowType windowType;
+	private final Map<EntityPanel, DetailWindow> panelWindows = new HashMap<>();
+	private final WindowType windowType;
 
-  private EntityPanel entityPanel;
+	private EntityPanel entityPanel;
 
-  private WindowDetailLayout(DefaultBuilder builder) {
-    this.windowType = builder.windowType;
-  }
+	private WindowDetailLayout(DefaultBuilder builder) {
+		this.windowType = builder.windowType;
+	}
 
-  @Override
-  public JComponent layout(EntityPanel entityPanel) {
-    requireNonNull(entityPanel);
-    if (this.entityPanel != null) {
-      throw new IllegalStateException("EntityPanel has already been laid out: " + entityPanel);
-    }
-    this.entityPanel = entityPanel;
-    if (!entityPanel.detailPanels().isEmpty()) {
-      entityPanel.detailPanels().forEach(detailPanel ->
-              panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
-      setupControls(entityPanel);
-    }
+	@Override
+	public JComponent layout(EntityPanel entityPanel) {
+		requireNonNull(entityPanel);
+		if (this.entityPanel != null) {
+			throw new IllegalStateException("EntityPanel has already been laid out: " + entityPanel);
+		}
+		this.entityPanel = entityPanel;
+		if (!entityPanel.detailPanels().isEmpty()) {
+			entityPanel.detailPanels().forEach(detailPanel ->
+							panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
+			setupControls(entityPanel);
+		}
 
-    return entityPanel.mainPanel();
-  }
+		return entityPanel.mainPanel();
+	}
 
-  @Override
-  public Value<PanelState> panelState(EntityPanel detailPanel) {
-    throwIfNotLaidOut();
+	@Override
+	public Value<PanelState> panelState(EntityPanel detailPanel) {
+		throwIfNotLaidOut();
 
-    return detailWindow(detailPanel).panelState;
-  }
+		return detailWindow(detailPanel).panelState;
+	}
 
-  @Override
-  public void select(EntityPanel entityPanel) {
-    throwIfNotLaidOut();
-    Window panelWindow = detailWindow(entityPanel).window;
-    if (panelWindow.isShowing()) {
-      panelWindow.toFront();
-    }
-  }
+	@Override
+	public void select(EntityPanel entityPanel) {
+		throwIfNotLaidOut();
+		Window panelWindow = detailWindow(entityPanel).window;
+		if (panelWindow.isShowing()) {
+			panelWindow.toFront();
+		}
+	}
 
-  /**
-   * @return a new {@link WindowDetailLayout} instance based on {@link WindowType#DIALOG}.
-   */
-  public static WindowDetailLayout windowDetailLayout() {
-    return windowDetailLayout(DIALOG);
-  }
+	/**
+	 * @return a new {@link WindowDetailLayout} instance based on {@link WindowType#DIALOG}.
+	 */
+	public static WindowDetailLayout windowDetailLayout() {
+		return windowDetailLayout(DIALOG);
+	}
 
-  /**
-   * @param windowType the window type
-   * @return a new {@link WindowDetailLayout} instance based on the given window type.
-   */
-  public static WindowDetailLayout windowDetailLayout(WindowType windowType) {
-    return builder().windowType(windowType).build();
-  }
+	/**
+	 * @param windowType the window type
+	 * @return a new {@link WindowDetailLayout} instance based on the given window type.
+	 */
+	public static WindowDetailLayout windowDetailLayout(WindowType windowType) {
+		return builder().windowType(windowType).build();
+	}
 
-  private void throwIfNotLaidOut() {
-    if (entityPanel == null) {
-      throw new IllegalStateException("EntityPanel has not been laid out");
-    }
-  }
+	private void throwIfNotLaidOut() {
+		if (entityPanel == null) {
+			throw new IllegalStateException("EntityPanel has not been laid out");
+		}
+	}
 
-  /**
-   * @return a new {@link Builder} instance
-   */
-  public static Builder builder() {
-    return new DefaultBuilder();
-  }
+	/**
+	 * @return a new {@link Builder} instance
+	 */
+	public static Builder builder() {
+		return new DefaultBuilder();
+	}
 
-  private void setupControls(EntityPanel entityPanel) {
-    if (entityPanel.containsTablePanel()) {
-      Controls.Builder controls = Controls.builder()
-              .name(MESSAGES.getString(DETAIL_TABLES))
-              .smallIcon(FrameworkIcons.instance().detail());
-      entityPanel.detailPanels().forEach(detailPanel ->
-              controls.control(Control.builder(() -> panelWindows.get(detailPanel).panelState.set(WINDOW))
-                      .name(detailPanel.caption().get())
-                      .build()));
-      entityPanel.tablePanel().addPopupMenuControls(controls.build());
-    }
-  }
+	private void setupControls(EntityPanel entityPanel) {
+		if (entityPanel.containsTablePanel()) {
+			Controls.Builder controls = Controls.builder()
+							.name(MESSAGES.getString(DETAIL_TABLES))
+							.smallIcon(FrameworkIcons.instance().detail());
+			entityPanel.detailPanels().forEach(detailPanel ->
+							controls.control(Control.builder(() -> panelWindows.get(detailPanel).panelState.set(WINDOW))
+											.name(detailPanel.caption().get())
+											.build()));
+			entityPanel.tablePanel().addPopupMenuControls(controls.build());
+		}
+	}
 
-  private DetailWindow detailWindow(EntityPanel detailPanel) {
-    DetailWindow detailWindow = panelWindows.get(requireNonNull(detailPanel));
-    if (detailWindow == null) {
-      throw new IllegalArgumentException("Detail panel not found: " + detailPanel);
-    }
+	private DetailWindow detailWindow(EntityPanel detailPanel) {
+		DetailWindow detailWindow = panelWindows.get(requireNonNull(detailPanel));
+		if (detailWindow == null) {
+			throw new IllegalArgumentException("Detail panel not found: " + detailPanel);
+		}
 
-    return detailWindow;
-  }
+		return detailWindow;
+	}
 
-  /**
-   * Builds a {@link WindowDetailLayout} instance.
-   */
-  public interface Builder {
+	/**
+	 * Builds a {@link WindowDetailLayout} instance.
+	 */
+	public interface Builder {
 
-    /**
-     * @param windowType specifies whether a JFrame or a JDialog should be used
-     * @return this Builder instance
-     */
-    Builder windowType(WindowType windowType);
+		/**
+		 * @param windowType specifies whether a JFrame or a JDialog should be used
+		 * @return this Builder instance
+		 */
+		Builder windowType(WindowType windowType);
 
-    /**
-     * @return a new {@link WindowDetailLayout} instance
-     */
-    WindowDetailLayout build();
-  }
+		/**
+		 * @return a new {@link WindowDetailLayout} instance
+		 */
+		WindowDetailLayout build();
+	}
 
-  private final class DetailWindow {
+	private final class DetailWindow {
 
-    private final Value<PanelState> panelState = Value.value(HIDDEN, HIDDEN, Notify.WHEN_SET);
-    private final EntityPanel detailPanel;
+		private final Value<PanelState> panelState = Value.value(HIDDEN, HIDDEN, Notify.WHEN_SET);
+		private final EntityPanel detailPanel;
 
-    private Window window;
-    private boolean initialized = false;
+		private Window window;
+		private boolean initialized = false;
 
-    private DetailWindow(EntityPanel detailPanel) {
-      this.detailPanel = detailPanel;
-      panelState.addValidator(PANEL_STATE_VALIDATOR);
-      panelState.addDataListener(this::updateDetailState);
-    }
+		private DetailWindow(EntityPanel detailPanel) {
+			this.detailPanel = detailPanel;
+			panelState.addValidator(PANEL_STATE_VALIDATOR);
+			panelState.addDataListener(this::updateDetailState);
+		}
 
-    private void updateDetailState(PanelState panelState) {
-      if (window == null) {
-        window = createDetailWindow();
-      }
-      if (panelState == WINDOW) {
-        detailPanel.initialize();
-        if (!initialized) {
-          window.pack();
-          detailPanel.requestInitialFocus();
-          initialized = true;
-        }
-        window.setVisible(true);
-        window.toFront();
-      }
-      else {
-        window.setVisible(false);
-      }
-      SwingEntityModel model = detailPanel.model();
-      if (entityPanel.model().containsDetailModel(model)) {
-        entityPanel.model().detailModelLink(model).active().set(panelState == WINDOW);
-      }
-    }
+		private void updateDetailState(PanelState panelState) {
+			if (window == null) {
+				window = createDetailWindow();
+			}
+			if (panelState == WINDOW) {
+				detailPanel.initialize();
+				if (!initialized) {
+					window.pack();
+					detailPanel.requestInitialFocus();
+					initialized = true;
+				}
+				window.setVisible(true);
+				window.toFront();
+			}
+			else {
+				window.setVisible(false);
+			}
+			SwingEntityModel model = detailPanel.model();
+			if (entityPanel.model().containsDetailModel(model)) {
+				entityPanel.model().detailModelLink(model).active().set(panelState == WINDOW);
+			}
+		}
 
-    private Window createDetailWindow() {
-      if (windowType == FRAME) {
-        return Windows.frame(detailPanel)
-                .locationRelativeTo(entityPanel)
-                .title(detailPanel.caption().get())
-                .onClosing(windowEvent -> panelWindows.get(detailPanel).panelState.set(HIDDEN))
-                .build();
-      }
+		private Window createDetailWindow() {
+			if (windowType == FRAME) {
+				return Windows.frame(detailPanel)
+								.locationRelativeTo(entityPanel)
+								.title(detailPanel.caption().get())
+								.onClosing(windowEvent -> panelWindows.get(detailPanel).panelState.set(HIDDEN))
+								.build();
+			}
 
-      return Dialogs.componentDialog(detailPanel)
-              .owner(entityPanel)
-              .locationRelativeTo(entityPanel)
-              .title(detailPanel.caption().get())
-              .modal(false)
-              .onClosed(windowEvent -> panelWindows.get(detailPanel).panelState.set(HIDDEN))
-              .build();
-    }
-  }
+			return Dialogs.componentDialog(detailPanel)
+							.owner(entityPanel)
+							.locationRelativeTo(entityPanel)
+							.title(detailPanel.caption().get())
+							.modal(false)
+							.onClosed(windowEvent -> panelWindows.get(detailPanel).panelState.set(HIDDEN))
+							.build();
+		}
+	}
 
-  private static final class DefaultBuilder implements Builder {
+	private static final class DefaultBuilder implements Builder {
 
-    private WindowType windowType = EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
+		private WindowType windowType = EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
 
-    @Override
-    public Builder windowType(WindowType windowType) {
-      this.windowType = windowType;
-      return this;
-    }
+		@Override
+		public Builder windowType(WindowType windowType) {
+			this.windowType = windowType;
+			return this;
+		}
 
-    @Override
-    public WindowDetailLayout build() {
-      return new WindowDetailLayout(this);
-    }
-  }
+		@Override
+		public WindowDetailLayout build() {
+			return new WindowDetailLayout(this);
+		}
+	}
 
-  private static final class RejectEmbedded implements Value.Validator<PanelState> {
-    @Override
-    public void validate(PanelState panelState) {
-      if (panelState == EMBEDDED) {
-        throw new IllegalArgumentException("WindowedDetailLayout does not support the EMBEDDED PanelState");
-      }
-    }
-  }
+	private static final class RejectEmbedded implements Value.Validator<PanelState> {
+		@Override
+		public void validate(PanelState panelState) {
+			if (panelState == EMBEDDED) {
+				throw new IllegalArgumentException("WindowedDetailLayout does not support the EMBEDDED PanelState");
+			}
+		}
+	}
 }

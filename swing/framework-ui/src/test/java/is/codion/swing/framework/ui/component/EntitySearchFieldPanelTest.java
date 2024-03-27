@@ -35,27 +35,27 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class EntitySearchFieldPanelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domain(new TestDomain())
-          .user(UNIT_TEST_USER)
-          .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+					.domain(new TestDomain())
+					.user(UNIT_TEST_USER)
+					.build();
 
-  @Test
-  void test() throws DatabaseException {
-    EntitySearchModel model = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
-    ComponentValue<Entity, EntitySearchFieldPanel> value = EntitySearchFieldPanel.builder(model, () -> null)
-            .buildValue();
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
-            Department.NAME.equalTo("SALES"));
-    model.entity().set(sales);
-    assertEquals(sales, value.get());
-    value.set(null);
-    Entity entity = model.entity().get();
-    assertNull(entity);
-    value.set(sales);
-    assertEquals(sales, model.entity().get());
-  }
+	@Test
+	void test() throws DatabaseException {
+		EntitySearchModel model = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		ComponentValue<Entity, EntitySearchFieldPanel> value = EntitySearchFieldPanel.builder(model, () -> null)
+						.buildValue();
+		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
+						Department.NAME.equalTo("SALES"));
+		model.entity().set(sales);
+		assertEquals(sales, value.get());
+		value.set(null);
+		Entity entity = model.entity().get();
+		assertNull(entity);
+		value.set(sales);
+		assertEquals(sales, model.entity().get());
+	}
 }

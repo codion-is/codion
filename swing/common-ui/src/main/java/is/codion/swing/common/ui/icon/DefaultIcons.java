@@ -33,74 +33,74 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultIcons implements Icons {
 
-  private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
+	private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
 
-  private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
+	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
 
-  private final OnIconColorChangedListener onIconColorChangedListener = new OnIconColorChangedListener();
+	private final OnIconColorChangedListener onIconColorChangedListener = new OnIconColorChangedListener();
 
-  static {
-    UIManager.addPropertyChangeListener(new OnLookAndFeelChangedListener());
-  }
+	static {
+		UIManager.addPropertyChangeListener(new OnLookAndFeelChangedListener());
+	}
 
-  @Override
-  public void add(Ikon... ikons) {
-    for (Ikon ikon : requireNonNull(ikons)) {
-      if (icons.containsKey(requireNonNull(ikon))) {
-        throw new IllegalArgumentException("Icon has already been added: " + ikon);
-      }
-    }
-    for (Ikon ikon : ikons) {
-      icons.put(ikon, FontImageIcon.builder(ikon).build());
-    }
-  }
+	@Override
+	public void add(Ikon... ikons) {
+		for (Ikon ikon : requireNonNull(ikons)) {
+			if (icons.containsKey(requireNonNull(ikon))) {
+				throw new IllegalArgumentException("Icon has already been added: " + ikon);
+			}
+		}
+		for (Ikon ikon : ikons) {
+			icons.put(ikon, FontImageIcon.builder(ikon).build());
+		}
+	}
 
-  @Override
-  public ImageIcon icon(Ikon ikon) {
-    if (!icons.containsKey(requireNonNull(ikon))) {
-      throw new IllegalArgumentException("No icon has been added for key: " + ikon);
-    }
+	@Override
+	public ImageIcon icon(Ikon ikon) {
+		if (!icons.containsKey(requireNonNull(ikon))) {
+			throw new IllegalArgumentException("No icon has been added for key: " + ikon);
+		}
 
-    return icons.get(ikon).imageIcon();
-  }
+		return icons.get(ikon).imageIcon();
+	}
 
-  @Override
-  public void iconColor(Color color) {
-    requireNonNull(color);
-    icons.values().forEach(icon -> icon.color(color));
-  }
+	@Override
+	public void iconColor(Color color) {
+		requireNonNull(color);
+		icons.values().forEach(icon -> icon.color(color));
+	}
 
-  @Override
-  public Icons enableIconColorListener() {
-    ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
-    return this;
-  }
+	@Override
+	public Icons enableIconColorListener() {
+		ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
+		return this;
+	}
 
-  @Override
-  public Icons disableIconColorListener() {
-    ICON_COLOR.removeWeakDataListener(onIconColorChangedListener);
-    return this;
-  }
+	@Override
+	public Icons disableIconColorListener() {
+		ICON_COLOR.removeWeakDataListener(onIconColorChangedListener);
+		return this;
+	}
 
-  private final class OnIconColorChangedListener implements Consumer<Color> {
+	private final class OnIconColorChangedListener implements Consumer<Color> {
 
-    @Override
-    public void accept(Color color) {
-      if (color != null) {
-        iconColor(color);
-      }
-    }
-  }
+		@Override
+		public void accept(Color color) {
+			if (color != null) {
+				iconColor(color);
+			}
+		}
+	}
 
-  private static final class OnLookAndFeelChangedListener implements PropertyChangeListener {
+	private static final class OnLookAndFeelChangedListener implements PropertyChangeListener {
 
-    private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
+		private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
-    @Override
-    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-      if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && ICON_COLOR != null) {
-        ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
-      }
-    }
-  }
+		@Override
+		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+			if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && ICON_COLOR != null) {
+				ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
+			}
+		}
+	}
 }

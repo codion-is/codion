@@ -26,18 +26,18 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class SpecialtyEditPanel extends EntityEditPanel {
 
-  public SpecialtyEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public SpecialtyEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Specialty.NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Specialty.NAME);
 
-    createTextField(Specialty.NAME);
+		createTextField(Specialty.NAME);
 
-    setLayout(gridLayout(1, 1));
+		setLayout(gridLayout(1, 1));
 
-    addInputPanel(Specialty.NAME);
-  }
+		addInputPanel(Specialty.NAME);
+	}
 }

@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SerializerTest {
 
-  @Test
-  void serializeDeserialize() throws IOException, ClassNotFoundException {
-    assertNull(Serializer.deserialize(new byte[0]));
-    assertEquals(0, Serializer.serialize(null).length);
-    assertEquals(Integer.valueOf(4), Serializer.deserialize(Serializer.serialize(4)));
-  }
+	@Test
+	void serializeDeserialize() throws IOException, ClassNotFoundException {
+		assertNull(Serializer.deserialize(new byte[0]));
+		assertEquals(0, Serializer.serialize(null).length);
+		assertEquals(Integer.valueOf(4), Serializer.deserialize(Serializer.serialize(4)));
+	}
 }

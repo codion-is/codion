@@ -41,46 +41,46 @@ import static java.util.stream.Collectors.toSet;
 
 public final class InsertDeleteInvoice implements Performer<EntityConnectionProvider> {
 
-  @Override
-  public void perform(EntityConnectionProvider connectionProvider) throws Exception {
-    EntityConnection connection = connectionProvider.connection();
+	@Override
+	public void perform(EntityConnectionProvider connectionProvider) throws Exception {
+		EntityConnection connection = connectionProvider.connection();
 
-    Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
-    Entity invoice = connection.insertSelect(connection.entities().builder(Invoice.TYPE)
-            .with(Invoice.CUSTOMER_FK, customer)
-            .with(Invoice.DATE, LocalDate.now())
-            .with(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS))
-            .with(Invoice.BILLINGCITY, customer.get(Customer.CITY))
-            .with(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE))
-            .with(Invoice.BILLINGSTATE, customer.get(Customer.STATE))
-            .with(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY))
-            .build());
+		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
+		Entity invoice = connection.insertSelect(connection.entities().builder(Invoice.TYPE)
+						.with(Invoice.CUSTOMER_FK, customer)
+						.with(Invoice.DATE, LocalDate.now())
+						.with(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS))
+						.with(Invoice.BILLINGCITY, customer.get(Customer.CITY))
+						.with(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE))
+						.with(Invoice.BILLINGSTATE, customer.get(Customer.STATE))
+						.with(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY))
+						.build());
 
-    Set<Long> invoiceTrackIds = IntStream.range(0, 10)
-            .mapToObj(i -> randomTrackId())
-            .collect(toSet());
-    List<Entity> invoiceLines = new ArrayList<>();
-    for (Entity track : connection.select(Track.ID.in(invoiceTrackIds))) {
-      connection.beginTransaction();
-      try {
-        invoiceLines.add(connection.insertSelect(connection.entities().builder(InvoiceLine.TYPE)
-                .with(InvoiceLine.INVOICE_FK, invoice)
-                .with(InvoiceLine.TRACK_FK, track)
-                .with(InvoiceLine.QUANTITY, 1)
-                .with(InvoiceLine.UNITPRICE, track.get(Track.UNITPRICE))
-                .build()));
-        connection.execute(Invoice.UPDATE_TOTALS, singletonList(invoice.get(Invoice.ID)));
-        connection.commitTransaction();
-      }
-      catch (Exception e) {
-        connection.rollbackTransaction();
-        throw e;
-      }
-    }
+		Set<Long> invoiceTrackIds = IntStream.range(0, 10)
+						.mapToObj(i -> randomTrackId())
+						.collect(toSet());
+		List<Entity> invoiceLines = new ArrayList<>();
+		for (Entity track : connection.select(Track.ID.in(invoiceTrackIds))) {
+			connection.beginTransaction();
+			try {
+				invoiceLines.add(connection.insertSelect(connection.entities().builder(InvoiceLine.TYPE)
+								.with(InvoiceLine.INVOICE_FK, invoice)
+								.with(InvoiceLine.TRACK_FK, track)
+								.with(InvoiceLine.QUANTITY, 1)
+								.with(InvoiceLine.UNITPRICE, track.get(Track.UNITPRICE))
+								.build()));
+				connection.execute(Invoice.UPDATE_TOTALS, singletonList(invoice.get(Invoice.ID)));
+				connection.commitTransaction();
+			}
+			catch (Exception e) {
+				connection.rollbackTransaction();
+				throw e;
+			}
+		}
 
-    List<Entity> toDelete = new ArrayList<>(invoiceLines);
-    toDelete.add(invoice);
+		List<Entity> toDelete = new ArrayList<>(invoiceLines);
+		toDelete.add(invoice);
 
-    connection.delete(primaryKeys(toDelete));
-  }
+		connection.delete(primaryKeys(toDelete));
+	}
 }

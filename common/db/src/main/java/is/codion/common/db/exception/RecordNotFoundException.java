@@ -23,11 +23,11 @@ package is.codion.common.db.exception;
  */
 public class RecordNotFoundException extends DatabaseException {
 
-  /**
-   * Instantiates a new RecordNotFoundException
-   * @param message the exception message
-   */
-  public RecordNotFoundException(String message) {
-    super(message);
-  }
+	/**
+	 * Instantiates a new RecordNotFoundException
+	 * @param message the exception message
+	 */
+	public RecordNotFoundException(String message) {
+		super(message);
+	}
 }

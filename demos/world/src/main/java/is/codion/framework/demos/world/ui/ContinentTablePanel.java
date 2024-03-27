@@ -27,13 +27,13 @@ import java.util.List;
 
 final class ContinentTablePanel extends EntityTablePanel {
 
-  ContinentTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, config -> config.includeSouthPanel(false));
-    table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-  }
+	ContinentTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, config -> config.includeSouthPanel(false));
+		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+	}
 
-  @Override
-  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-    return Controls.controls(control(TableControl.REFRESH).get());
-  }
+	@Override
+	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+		return Controls.controls(control(TableControl.REFRESH).get());
+	}
 }

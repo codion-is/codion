@@ -29,13 +29,13 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
  */
 public interface EntityTableCellRenderer {
 
-  /**
-   * Instantiates a new {@link Builder} with defaults based on the given attribute.
-   * @param tableModel the table model providing the data to render
-   * @param attribute the attribute
-   * @return a new {@link Builder} instance
-   */
-  static Builder<Entity, Attribute<?>> builder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
-    return new EntityTableCellRendererBuilder(tableModel, attribute);
-  }
+	/**
+	 * Instantiates a new {@link Builder} with defaults based on the given attribute.
+	 * @param tableModel the table model providing the data to render
+	 * @param attribute the attribute
+	 * @return a new {@link Builder} instance
+	 */
+	static Builder<Entity, Attribute<?>> builder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
+		return new EntityTableCellRendererBuilder(tableModel, attribute);
+	}
 }

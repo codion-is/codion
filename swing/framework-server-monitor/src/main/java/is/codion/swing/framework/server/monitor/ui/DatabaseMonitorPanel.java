@@ -40,55 +40,55 @@ import static javax.swing.BorderFactory.createTitledBorder;
  */
 public final class DatabaseMonitorPanel extends JPanel {
 
-  private static final int SPINNER_COLUMNS = 3;
+	private static final int SPINNER_COLUMNS = 3;
 
-  private final DatabaseMonitor model;
+	private final DatabaseMonitor model;
 
-  private final JFreeChart queriesPerSecondChart = ChartFactory.createXYStepChart(null,
-          null, null, null, PlotOrientation.VERTICAL, true, true, false);
+	private final JFreeChart queriesPerSecondChart = ChartFactory.createXYStepChart(null,
+					null, null, null, PlotOrientation.VERTICAL, true, true, false);
 
-  private final ChartPanel queriesPerSecondChartPanel = new ChartPanel(queriesPerSecondChart);
+	private final ChartPanel queriesPerSecondChartPanel = new ChartPanel(queriesPerSecondChart);
 
-  /**
-   * Instantiates a new DatabaseMonitorPanel
-   * @param model the DatabaseMonitor to base this panel on
-   */
-  public DatabaseMonitorPanel(DatabaseMonitor model) {
-    this.model = requireNonNull(model);
-    this.queriesPerSecondChart.getXYPlot().setDataset(model.queriesPerSecondCollection());
-    ChartUtil.linkColors(this, queriesPerSecondChart);
-    initializeUI();
-  }
+	/**
+	 * Instantiates a new DatabaseMonitorPanel
+	 * @param model the DatabaseMonitor to base this panel on
+	 */
+	public DatabaseMonitorPanel(DatabaseMonitor model) {
+		this.model = requireNonNull(model);
+		this.queriesPerSecondChart.getXYPlot().setDataset(model.queriesPerSecondCollection());
+		ChartUtil.linkColors(this, queriesPerSecondChart);
+		initializeUI();
+	}
 
-  private void initializeUI() {
-    setLayout(new BorderLayout());
-    add(tabbedPane()
-            .tab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()))
-            .tab("Performance", chartPanel())
-            .build(), BorderLayout.CENTER);
-  }
+	private void initializeUI() {
+		setLayout(new BorderLayout());
+		add(tabbedPane()
+						.tab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()))
+						.tab("Performance", chartPanel())
+						.build(), BorderLayout.CENTER);
+	}
 
-  private JPanel chartPanel() {
-    JPanel chartConfig = flexibleGridLayoutPanel(1, 3)
-            .border(createTitledBorder("Charts"))
-            .add(new JLabel("Update interval (s)"))
-            .add(integerSpinner(model.updateInterval())
-                    .minimum(1)
-                    .columns(SPINNER_COLUMNS)
-                    .editable(false)
-                    .build())
-            .add(button(control(model::clearStatistics))
-                    .text("Clear")
-                    .build())
-            .build();
+	private JPanel chartPanel() {
+		JPanel chartConfig = flexibleGridLayoutPanel(1, 3)
+						.border(createTitledBorder("Charts"))
+						.add(new JLabel("Update interval (s)"))
+						.add(integerSpinner(model.updateInterval())
+										.minimum(1)
+										.columns(SPINNER_COLUMNS)
+										.editable(false)
+										.build())
+						.add(button(control(model::clearStatistics))
+										.text("Clear")
+										.build())
+						.build();
 
-    queriesPerSecondChartPanel.setBorder(createEtchedBorder());
+		queriesPerSecondChartPanel.setBorder(createEtchedBorder());
 
-    return borderLayoutPanel()
-            .centerComponent(queriesPerSecondChartPanel)
-            .southComponent(borderLayoutPanel()
-                    .westComponent(chartConfig)
-                    .build())
-            .build();
-  }
+		return borderLayoutPanel()
+						.centerComponent(queriesPerSecondChartPanel)
+						.southComponent(borderLayoutPanel()
+										.westComponent(chartConfig)
+										.build())
+						.build();
+	}
 }

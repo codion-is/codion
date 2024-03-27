@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 public final class ExceptionPanelTest {
 
-  @Test
-  void test() {
-    new ExceptionPanel(new Exception("Exception"), "Title", true);
-  }
+	@Test
+	void test() {
+		new ExceptionPanel(new Exception("Exception"), "Title", true);
+	}
 }

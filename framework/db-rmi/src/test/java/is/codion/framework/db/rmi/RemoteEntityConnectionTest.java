@@ -33,25 +33,25 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemoteEntityConnectionTest {
 
-  /* A sanity check since {@link RemoteEntityConnection} can not extend {@link EntityConnection}. */
-  @Test
-  void entityConnectionCompatibility() {
-    List<Method> remoteEntityConnectionMethods = Arrays.stream(RemoteEntityConnection.class.getDeclaredMethods())
-            .filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
-    List<Method> entityConnectionMethods = Arrays.stream(EntityConnection.class.getDeclaredMethods())
-            .filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
-    if (remoteEntityConnectionMethods.size() != entityConnectionMethods.size()) {
-      fail("Method count mismatch");
-    }
-    for (Method entityConnectionMethod : entityConnectionMethods) {
-      if (remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
-              remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
-                      && remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())
-                      && Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())
-                      && asList(remoteConnectionMethod.getExceptionTypes()).containsAll(asList(entityConnectionMethod.getExceptionTypes())))) {
-        fail(EntityConnection.class.getSimpleName() + " method " + entityConnectionMethod.getName()
-                + " not found in " + RemoteEntityConnection.class.getSimpleName());
-      }
-    }
-  }
+	/* A sanity check since {@link RemoteEntityConnection} can not extend {@link EntityConnection}. */
+	@Test
+	void entityConnectionCompatibility() {
+		List<Method> remoteEntityConnectionMethods = Arrays.stream(RemoteEntityConnection.class.getDeclaredMethods())
+						.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
+		List<Method> entityConnectionMethods = Arrays.stream(EntityConnection.class.getDeclaredMethods())
+						.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
+		if (remoteEntityConnectionMethods.size() != entityConnectionMethods.size()) {
+			fail("Method count mismatch");
+		}
+		for (Method entityConnectionMethod : entityConnectionMethods) {
+			if (remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
+							remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
+											&& remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())
+											&& Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())
+											&& asList(remoteConnectionMethod.getExceptionTypes()).containsAll(asList(entityConnectionMethod.getExceptionTypes())))) {
+				fail(EntityConnection.class.getSimpleName() + " method " + entityConnectionMethod.getName()
+								+ " not found in " + RemoteEntityConnection.class.getSimpleName());
+			}
+		}
+	}
 }

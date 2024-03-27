@@ -39,41 +39,41 @@ import static java.util.Collections.singletonList;
 // tag::storeLoadTest[]
 public class StoreLoadTest {
 
-  private static final class StoreApplicationModelFactory
-          implements Function<User, StoreApplicationModel> {
+	private static final class StoreApplicationModelFactory
+					implements Function<User, StoreApplicationModel> {
 
-    @Override
-    public StoreApplicationModel apply(User user) {
-      EntityConnectionProvider connectionProvider =
-              RemoteEntityConnectionProvider.builder()
-                      .user(user)
-                      .domainType(Store.DOMAIN)
-                      .build();
+		@Override
+		public StoreApplicationModel apply(User user) {
+			EntityConnectionProvider connectionProvider =
+							RemoteEntityConnectionProvider.builder()
+											.user(user)
+											.domainType(Store.DOMAIN)
+											.build();
 
-      return new StoreApplicationModel(connectionProvider);
-    }
-  }
+			return new StoreApplicationModel(connectionProvider);
+		}
+	}
 
-  private static class StoreScenarioPerformer
-          implements Performer<StoreApplicationModel> {
+	private static class StoreScenarioPerformer
+					implements Performer<StoreApplicationModel> {
 
-    @Override
-    public void perform(StoreApplicationModel application) {
-      SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
-      customerModel.tableModel().refresh();
-      selectRandomRow(customerModel.tableModel());
-    }
-  }
+		@Override
+		public void perform(StoreApplicationModel application) {
+			SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
+			customerModel.tableModel().refresh();
+			selectRandomRow(customerModel.tableModel());
+		}
+	}
 
-  public static void main(String[] args) {
-    LoadTest<StoreApplicationModel> loadTest =
-            LoadTest.builder(new StoreApplicationModelFactory(),
-                            application -> application.connectionProvider().close())
-                    .user(User.parse("scott:tiger"))
-                    .scenarios(singletonList(scenario(new StoreScenarioPerformer())))
-                    .name("Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
-                    .build();
-    loadTestPanel(loadTestModel(loadTest)).run();
-  }
+	public static void main(String[] args) {
+		LoadTest<StoreApplicationModel> loadTest =
+						LoadTest.builder(new StoreApplicationModelFactory(),
+														application -> application.connectionProvider().close())
+										.user(User.parse("scott:tiger"))
+										.scenarios(singletonList(scenario(new StoreScenarioPerformer())))
+										.name("Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.build();
+		loadTestPanel(loadTestModel(loadTest)).run();
+	}
 }
 // end::storeLoadTest[]

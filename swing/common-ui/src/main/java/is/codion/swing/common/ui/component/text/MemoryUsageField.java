@@ -31,15 +31,15 @@ import java.util.concurrent.TimeUnit;
  */
 public final class MemoryUsageField extends JTextField {
 
-  /**
-   * @param updateIntervalMilliseconds the update interval
-   */
-  public MemoryUsageField(int updateIntervalMilliseconds) {
-    super(8);
-    setEditable(false);
-    setHorizontalAlignment(SwingConstants.CENTER);
-    TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> setText(Memory.memoryUsage())))
-            .interval(updateIntervalMilliseconds, TimeUnit.MILLISECONDS)
-            .start();
-  }
+	/**
+	 * @param updateIntervalMilliseconds the update interval
+	 */
+	public MemoryUsageField(int updateIntervalMilliseconds) {
+		super(8);
+		setEditable(false);
+		setHorizontalAlignment(SwingConstants.CENTER);
+		TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> setText(Memory.memoryUsage())))
+						.interval(updateIntervalMilliseconds, TimeUnit.MILLISECONDS)
+						.start();
+	}
 }

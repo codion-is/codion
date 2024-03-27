@@ -25,12 +25,12 @@ import java.sql.SQLException;
  */
 public final class QueryTimeoutException extends DatabaseException {
 
-  /**
-   * Instantiates a new {@link QueryTimeoutException}
-   * @param cause the underlying cause
-   * @param message the error message
-   */
-  public QueryTimeoutException(SQLException cause, String message) {
-    super(cause, message);
-  }
+	/**
+	 * Instantiates a new {@link QueryTimeoutException}
+	 * @param cause the underlying cause
+	 * @param message the error message
+	 */
+	public QueryTimeoutException(SQLException cause, String message) {
+		super(cause, message);
+	}
 }

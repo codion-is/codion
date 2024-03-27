@@ -41,85 +41,85 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 public class StoreDemo {
 
-  private static class CustomerEditPanel extends EntityEditPanel {
+	private static class CustomerEditPanel extends EntityEditPanel {
 
-    private CustomerEditPanel(SwingEntityEditModel editModel) {
-      super(editModel);
-    }
+		private CustomerEditPanel(SwingEntityEditModel editModel) {
+			super(editModel);
+		}
 
-    @Override
-    protected void initializeUI() {
-      initialFocusAttribute().set(Customer.FIRST_NAME);
-      createTextField(Customer.FIRST_NAME);
-      createTextField(Customer.LAST_NAME);
-      createTextField(Customer.EMAIL);
-      createCheckBox(Customer.ACTIVE);
-      setLayout(gridLayout(4, 1));
-      addInputPanel(Customer.FIRST_NAME);
-      addInputPanel(Customer.LAST_NAME);
-      addInputPanel(Customer.EMAIL);
-      addInputPanel(Customer.ACTIVE);
-    }
-  }
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(Customer.FIRST_NAME);
+			createTextField(Customer.FIRST_NAME);
+			createTextField(Customer.LAST_NAME);
+			createTextField(Customer.EMAIL);
+			createCheckBox(Customer.ACTIVE);
+			setLayout(gridLayout(4, 1));
+			addInputPanel(Customer.FIRST_NAME);
+			addInputPanel(Customer.LAST_NAME);
+			addInputPanel(Customer.EMAIL);
+			addInputPanel(Customer.ACTIVE);
+		}
+	}
 
-  private static class AddressEditPanel extends EntityEditPanel {
+	private static class AddressEditPanel extends EntityEditPanel {
 
-    private AddressEditPanel(SwingEntityEditModel addressEditModel) {
-      super(addressEditModel);
-    }
+		private AddressEditPanel(SwingEntityEditModel addressEditModel) {
+			super(addressEditModel);
+		}
 
-    @Override
-    protected void initializeUI() {
-      initialFocusAttribute().set(Address.STREET);
-      createForeignKeyComboBox(Address.CUSTOMER_FK);
-      createTextField(Address.STREET);
-      createTextField(Address.CITY);
-      setLayout(gridLayout(3, 1));
-      addInputPanel(Address.CUSTOMER_FK);
-      addInputPanel(Address.STREET);
-      addInputPanel(Address.CITY);
-    }
-  }
+		@Override
+		protected void initializeUI() {
+			initialFocusAttribute().set(Address.STREET);
+			createForeignKeyComboBox(Address.CUSTOMER_FK);
+			createTextField(Address.STREET);
+			createTextField(Address.CITY);
+			setLayout(gridLayout(3, 1));
+			addInputPanel(Address.CUSTOMER_FK);
+			addInputPanel(Address.STREET);
+			addInputPanel(Address.CITY);
+		}
+	}
 
-  public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(new FlatMaterialDarkerIJTheme());
+	public static void main(String[] args) throws Exception {
+		UIManager.setLookAndFeel(new FlatMaterialDarkerIJTheme());
 
-    Database database = H2DatabaseFactory
-            .createDatabase("jdbc:h2:mem:h2db",
-                    "src/main/sql/create_schema_minimal.sql");
+		Database database = H2DatabaseFactory
+						.createDatabase("jdbc:h2:mem:h2db",
+										"src/main/sql/create_schema_minimal.sql");
 
-    EntityConnectionProvider connectionProvider =
-            LocalEntityConnectionProvider.builder()
-                    .database(database)
-                    .domain(new Store())
-                    .user(User.parse("scott:tiger"))
-                    .build();
+		EntityConnectionProvider connectionProvider =
+						LocalEntityConnectionProvider.builder()
+										.database(database)
+										.domain(new Store())
+										.user(User.parse("scott:tiger"))
+										.build();
 
-    SwingEntityModel customerModel =
-            new SwingEntityModel(Customer.TYPE, connectionProvider);
-    EntityPanel customerPanel =
-            new EntityPanel(customerModel,
-                    new CustomerEditPanel(customerModel.editModel()));
+		SwingEntityModel customerModel =
+						new SwingEntityModel(Customer.TYPE, connectionProvider);
+		EntityPanel customerPanel =
+						new EntityPanel(customerModel,
+										new CustomerEditPanel(customerModel.editModel()));
 
-    SwingEntityModel addressModel =
-            new SwingEntityModel(Address.TYPE, connectionProvider);
-    EntityPanel addressPanel =
-            new EntityPanel(addressModel,
-                    new AddressEditPanel(addressModel.editModel()));
+		SwingEntityModel addressModel =
+						new SwingEntityModel(Address.TYPE, connectionProvider);
+		EntityPanel addressPanel =
+						new EntityPanel(addressModel,
+										new AddressEditPanel(addressModel.editModel()));
 
-    customerModel.addDetailModel(addressModel);
-    customerPanel.addDetailPanel(addressPanel);
+		customerModel.addDetailModel(addressModel);
+		customerPanel.addDetailPanel(addressPanel);
 
-    addressPanel.tablePanel()
-            .conditionPanelVisible().set(true);
+		addressPanel.tablePanel()
+						.conditionPanelVisible().set(true);
 
-    customerModel.tableModel().refresh();
-    customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
-    customerPanel.initialize();
+		customerModel.tableModel().refresh();
+		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
+		customerPanel.initialize();
 
-    Dialogs.componentDialog(customerPanel)
-            .title("Customers")
-            .onClosed(e -> connectionProvider.close())
-            .show();
-  }
+		Dialogs.componentDialog(customerPanel)
+						.title("Customers")
+						.onClosed(e -> connectionProvider.close())
+						.show();
+	}
 }

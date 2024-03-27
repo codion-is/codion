@@ -25,17 +25,17 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 public class TagEditPanel extends EntityEditPanel {
 
-  public TagEditPanel(SwingEntityEditModel model) {
-    super(model);
-  }
+	public TagEditPanel(SwingEntityEditModel model) {
+		super(model);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Tag.TAG);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Tag.TAG);
 
-    createTextField(Tag.TAG).columns(16);
+		createTextField(Tag.TAG).columns(16);
 
-    setLayout(Layouts.flexibleGridLayout(1, 1));
-    addInputPanel(Tag.TAG);
-  }
+		setLayout(Layouts.flexibleGridLayout(1, 1));
+		addInputPanel(Tag.TAG);
+	}
 }

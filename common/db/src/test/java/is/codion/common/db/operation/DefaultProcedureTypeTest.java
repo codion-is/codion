@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class DefaultProcedureTypeTest {
 
-  @Test
-  void test() {
-    DefaultProcedureType<String, String> procedureType = new DefaultProcedureType<>("test");
-    assertEquals(procedureType, new DefaultProcedureType<>("test"));
-    assertEquals(procedureType.name(), procedureType.toString());
-  }
+	@Test
+	void test() {
+		DefaultProcedureType<String, String> procedureType = new DefaultProcedureType<>("test");
+		assertEquals(procedureType, new DefaultProcedureType<>("test"));
+		assertEquals(procedureType.name(), procedureType.toString());
+	}
 }

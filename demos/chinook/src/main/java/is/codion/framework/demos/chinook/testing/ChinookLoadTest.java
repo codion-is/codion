@@ -46,44 +46,44 @@ import static java.util.Arrays.asList;
 
 public final class ChinookLoadTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Collection<Scenario<EntityConnectionProvider>> SCENARIOS = asList(
-          scenario(new ViewGenre(), 10),
-          scenario(new ViewCustomerReport(), 2),
-          scenario(new ViewInvoice(), 10),
-          scenario(new ViewAlbum(), 10),
-          scenario(new UpdateTotals(), 1),
-          scenario(new InsertDeleteAlbum(), 3),
-          scenario(new LogoutLogin(), 1),
-          scenario(new RaisePrices(), 1),
-          scenario(new RandomPlaylist(), 1),
-          scenario(new InsertDeleteInvoice(), 3));
+	private static final Collection<Scenario<EntityConnectionProvider>> SCENARIOS = asList(
+					scenario(new ViewGenre(), 10),
+					scenario(new ViewCustomerReport(), 2),
+					scenario(new ViewInvoice(), 10),
+					scenario(new ViewAlbum(), 10),
+					scenario(new UpdateTotals(), 1),
+					scenario(new InsertDeleteAlbum(), 3),
+					scenario(new LogoutLogin(), 1),
+					scenario(new RaisePrices(), 1),
+					scenario(new RandomPlaylist(), 1),
+					scenario(new InsertDeleteInvoice(), 3));
 
-  private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
+	private static final class ConnectionProviderFactory implements Function<User, EntityConnectionProvider> {
 
-    @Override
-    public EntityConnectionProvider apply(User user) {
-      EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-              .domainType(Chinook.DOMAIN)
-              .clientTypeId(ChinookAppPanel.class.getName())
-              .clientVersion(ChinookAppModel.VERSION)
-              .user(user)
-              .build();
-      connectionProvider.connection();
+		@Override
+		public EntityConnectionProvider apply(User user) {
+			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+							.domainType(Chinook.DOMAIN)
+							.clientTypeId(ChinookAppPanel.class.getName())
+							.clientVersion(ChinookAppModel.VERSION)
+							.user(user)
+							.build();
+			connectionProvider.connection();
 
-      return connectionProvider;
-    }
-  }
+			return connectionProvider;
+		}
+	}
 
-  public static void main(String[] args) {
-    LoadTest<EntityConnectionProvider> loadTest =
-            LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
-                    .scenarios(SCENARIOS)
-                    .user(UNIT_TEST_USER)
-                    .name("Chinook LoadTest " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
-                    .build();
-    loadTestPanel(loadTestModel(loadTest)).run();
-  }
+	public static void main(String[] args) {
+		LoadTest<EntityConnectionProvider> loadTest =
+						LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
+										.scenarios(SCENARIOS)
+										.user(UNIT_TEST_USER)
+										.name("Chinook LoadTest " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.build();
+		loadTestPanel(loadTestModel(loadTest)).run();
+	}
 }

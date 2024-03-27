@@ -45,54 +45,54 @@ import static javax.swing.BorderFactory.createTitledBorder;
 
 public final class DesignAndStyle {
 
-  public static void main(String[] args) {
-    LocalEntityConnectionProvider connectionProvider = null;
-    Entity entity = null;
-    FilteredTableSelectionModel<List<String>> selectionModel = null;
+	public static void main(String[] args) {
+		LocalEntityConnectionProvider connectionProvider = null;
+		Entity entity = null;
+		FilteredTableSelectionModel<List<String>> selectionModel = null;
 
-    //tag::factories[]
-    Event<String> event = event(); // Event.event()
+		//tag::factories[]
+		Event<String> event = event(); // Event.event()
 
-    Value<Integer> value = value(42); // Value.value()
+		Value<Integer> value = value(42); // Value.value()
 
-    State state = state(true); // State.state()
+		State state = state(true); // State.state()
 
-    EntityTableConditionModel<Attribute<?>> conditionModel =
-            entityTableConditionModel(Customer.TYPE, connectionProvider);
-    //end::factories[]
+		EntityTableConditionModel<Attribute<?>> conditionModel =
+						entityTableConditionModel(Customer.TYPE, connectionProvider);
+		//end::factories[]
 
-    //tag::builders[]
-    TaskScheduler scheduler =
-            TaskScheduler.builder(() -> {})
-                    .interval(5, TimeUnit.SECONDS)
-                    .initialDelay(15)
-                    .build();
+		//tag::builders[]
+		TaskScheduler scheduler =
+						TaskScheduler.builder(() -> {})
+										.interval(5, TimeUnit.SECONDS)
+										.initialDelay(15)
+										.build();
 
-    TemporalField<LocalDate> field =
-            TemporalField.builder(LocalDate.class, "dd.MM.yyyy")
-                    .columns(12)
-                    .border(createTitledBorder("Date"))
-                    .build();
-    //end::builders[]
+		TemporalField<LocalDate> field =
+						TemporalField.builder(LocalDate.class, "dd.MM.yyyy")
+										.columns(12)
+										.border(createTitledBorder("Date"))
+										.build();
+		//end::builders[]
 
-    //tag::accessors[]
-    EventObserver<String> observer = event.observer();
+		//tag::accessors[]
+		EventObserver<String> observer = event.observer();
 
-    LocalEntityConnection connection = connectionProvider.connection();
+		LocalEntityConnection connection = connectionProvider.connection();
 
-    boolean modified = entity.modified();
+		boolean modified = entity.modified();
 
-    Entity.Key primaryKey = entity.primaryKey();
-    //end::accessors[]
+		Entity.Key primaryKey = entity.primaryKey();
+		//end::accessors[]
 
-    //tag::getters[]
-    boolean optimisticLocking = connection.isOptimisticLocking();
+		//tag::getters[]
+		boolean optimisticLocking = connection.isOptimisticLocking();
 
-    connection.setOptimisticLocking(false);
+		connection.setOptimisticLocking(false);
 
-    List<Integer> selectedIndexes = selectionModel.getSelectedIndexes();
+		List<Integer> selectedIndexes = selectionModel.getSelectedIndexes();
 
-    selectionModel.setSelectedIndexes(Arrays.asList(0, 1, 2));
-    //end::getters[]
-  }
+		selectionModel.setSelectedIndexes(Arrays.asList(0, 1, 2));
+		//end::getters[]
+	}
 }

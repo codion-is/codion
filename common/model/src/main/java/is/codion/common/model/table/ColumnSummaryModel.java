@@ -37,113 +37,113 @@ import static java.util.Collections.unmodifiableCollection;
  */
 public interface ColumnSummaryModel {
 
-  /**
-   * Specifies a summary provider
-   */
-  interface Summary {
+	/**
+	 * Specifies a summary provider
+	 */
+	interface Summary {
 
-    /**
-     * Returns a String containing the summary information for the given column
-     * @param valueProvider the object responsible for providing the values for the summary
-     * @param <T> the value type
-     * @return a summary text
-     */
-    <T extends Number> String summary(SummaryValueProvider<T> valueProvider);
-  }
+		/**
+		 * Returns a String containing the summary information for the given column
+		 * @param valueProvider the object responsible for providing the values for the summary
+		 * @param <T> the value type
+		 * @return a summary text
+		 */
+		<T extends Number> String summary(SummaryValueProvider<T> valueProvider);
+	}
 
-  /**
-   * @return the locked state, if true then changing summary type is disabled
-   */
-  State locked();
+	/**
+	 * @return the locked state, if true then changing summary type is disabled
+	 */
+	State locked();
 
-  /**
-   * @return a list containing the available summaries
-   */
-  List<Summary> summaries();
+	/**
+	 * @return a list containing the available summaries
+	 */
+	List<Summary> summaries();
 
-  /**
-   * @return the value controlling the summary
-   */
-  Value<Summary> summary();
+	/**
+	 * @return the value controlling the summary
+	 */
+	Value<Summary> summary();
 
-  /**
-   * @return an observer for the string representing the summary value
-   */
-  ValueObserver<String> summaryText();
+	/**
+	 * @return an observer for the string representing the summary value
+	 */
+	ValueObserver<String> summaryText();
 
-  /**
-   * Instantiates a new {@link ColumnSummaryModel}
-   * @param valueProvider the value provider
-   * @param <T> the value type
-   * @return a new {@link ColumnSummaryModel} instance
-   */
-  static <T extends Number> ColumnSummaryModel columnSummaryModel(SummaryValueProvider<T> valueProvider) {
-    return new DefaultColumnSummaryModel<>(valueProvider);
-  }
+	/**
+	 * Instantiates a new {@link ColumnSummaryModel}
+	 * @param valueProvider the value provider
+	 * @param <T> the value type
+	 * @return a new {@link ColumnSummaryModel} instance
+	 */
+	static <T extends Number> ColumnSummaryModel columnSummaryModel(SummaryValueProvider<T> valueProvider) {
+		return new DefaultColumnSummaryModel<>(valueProvider);
+	}
 
-  /**
-   * Instantiates a new {@link SummaryValues}.
-   * @param values the values
-   * @param subset true if the values are a subset of the available values
-   * @param <T> the value type
-   * @return a new {@link SummaryValues} instance.
-   */
-  static <T extends Number> SummaryValues<T> summaryValues(Collection<T> values, boolean subset) {
-    return new DefaultSummaryValues<>(unmodifiableCollection(values), subset);
-  }
+	/**
+	 * Instantiates a new {@link SummaryValues}.
+	 * @param values the values
+	 * @param subset true if the values are a subset of the available values
+	 * @param <T> the value type
+	 * @return a new {@link SummaryValues} instance.
+	 */
+	static <T extends Number> SummaryValues<T> summaryValues(Collection<T> values, boolean subset) {
+		return new DefaultSummaryValues<>(unmodifiableCollection(values), subset);
+	}
 
-  /**
-   * Provides the values on which to base the summary .
-   * @param <T> the value type
-   */
-  interface SummaryValueProvider<T extends Number> {
+	/**
+	 * Provides the values on which to base the summary .
+	 * @param <T> the value type
+	 */
+	interface SummaryValueProvider<T extends Number> {
 
-    /**
-     * @param value the value
-     * @return the formatted value
-     */
-    String format(Object value);
+		/**
+		 * @param value the value
+		 * @return the formatted value
+		 */
+		String format(Object value);
 
-    /**
-     * @return the values to base the summary on
-     */
-    SummaryValues<T> values();
+		/**
+		 * @return the values to base the summary on
+		 */
+		SummaryValues<T> values();
 
-    /**
-     * @param listener the listener notified the underlying data changes, requiring a summary refresh
-     */
-    void addListener(Runnable listener);
+		/**
+		 * @param listener the listener notified the underlying data changes, requiring a summary refresh
+		 */
+		void addListener(Runnable listener);
 
-    /**
-     * @param <C> the column identifier type
-     */
-    interface Factory<C> {
+		/**
+		 * @param <C> the column identifier type
+		 */
+		interface Factory<C> {
 
-      /**
-       * @param columnIdentifier the column identifier
-       * @param format the format to use
-       * @param <T> the column type
-       * @return a summary value provider or an empty Optional, if no summary is available for the column
-       */
-      <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format);
-    }
-  }
+			/**
+			 * @param columnIdentifier the column identifier
+			 * @param format the format to use
+			 * @param <T> the column type
+			 * @return a summary value provider or an empty Optional, if no summary is available for the column
+			 */
+			<T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format);
+		}
+	}
 
-  /**
-   * The values to base a summary on.
-   * For instances use the {@link ColumnSummaryModel#summaryValues(Collection, boolean)} factory method.
-   * @see ColumnSummaryModel#summaryValues(Collection, boolean)
-   */
-  interface SummaryValues<T extends Number> {
+	/**
+	 * The values to base a summary on.
+	 * For instances use the {@link ColumnSummaryModel#summaryValues(Collection, boolean)} factory method.
+	 * @see ColumnSummaryModel#summaryValues(Collection, boolean)
+	 */
+	interface SummaryValues<T extends Number> {
 
-    /**
-     * @return the values to base the summary on
-     */
-    Collection<T> values();
+		/**
+		 * @return the values to base the summary on
+		 */
+		Collection<T> values();
 
-    /**
-     * @return true if the values provided by {@link #values()} is a subset of the total available values
-     */
-    boolean subset();
-  }
+		/**
+		 * @return true if the values provided by {@link #values()} is a subset of the total available values
+		 */
+		boolean subset();
+	}
 }

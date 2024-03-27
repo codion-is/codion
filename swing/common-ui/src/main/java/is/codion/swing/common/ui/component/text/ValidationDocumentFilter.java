@@ -35,30 +35,30 @@ import static java.util.Objects.requireNonNull;
  */
 public class ValidationDocumentFilter<T> extends DocumentFilter {
 
-  private final Set<Value.Validator<T>> validators = new LinkedHashSet<>();
+	private final Set<Value.Validator<T>> validators = new LinkedHashSet<>();
 
-  /**
-   * Adds a validator to this validation document
-   * @param validator the validator to add
-   */
-  public final void addValidator(Value.Validator<T> validator) {
-    validators.add(requireNonNull(validator, "validator"));
-  }
+	/**
+	 * Adds a validator to this validation document
+	 * @param validator the validator to add
+	 */
+	public final void addValidator(Value.Validator<T> validator) {
+		validators.add(requireNonNull(validator, "validator"));
+	}
 
-  /**
-   * @return an unmodifiable view of the document validators
-   */
-  public final Collection<Value.Validator<T>> validators() {
-    return Collections.unmodifiableSet(new HashSet<>(validators));
-  }
+	/**
+	 * @return an unmodifiable view of the document validators
+	 */
+	public final Collection<Value.Validator<T>> validators() {
+		return Collections.unmodifiableSet(new HashSet<>(validators));
+	}
 
-  /**
-   * Validates the given value using all the underlying validators (if any).
-   * @param value the value to validate
-   * @throws IllegalArgumentException in case of an invalid value
-   * @see #addValidator(Value.Validator)
-   */
-  protected final void validate(T value) {
-    validators.forEach(validator -> validator.validate(value));
-  }
+	/**
+	 * Validates the given value using all the underlying validators (if any).
+	 * @param value the value to validate
+	 * @throws IllegalArgumentException in case of an invalid value
+	 * @see #addValidator(Value.Validator)
+	 */
+	protected final void validate(T value) {
+		validators.forEach(validator -> validator.validate(value));
+	}
 }

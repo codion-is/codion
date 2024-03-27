@@ -37,29 +37,29 @@ import static java.util.stream.Collectors.toList;
 
 final class CustomConditionDeserializer implements Serializable {
 
-  private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-  private final EntityObjectMapper entityObjectMapper;
+	private final EntityObjectMapper entityObjectMapper;
 
-  CustomConditionDeserializer(EntityObjectMapper entityObjectMapper) {
-    this.entityObjectMapper = requireNonNull(entityObjectMapper);
-  }
+	CustomConditionDeserializer(EntityObjectMapper entityObjectMapper) {
+		this.entityObjectMapper = requireNonNull(entityObjectMapper);
+	}
 
-  CustomCondition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
-    String conditionTypeName = conditionNode.get("conditionType").asText();
-    JsonNode columnsNode = conditionNode.get("columns");
-    List<Column<?>> columns = Arrays.stream(entityObjectMapper.readValue(columnsNode.toString(), String[].class))
-            .map(definition.attributes()::get)
-            .map(attribute -> (Column<?>) attribute)
-            .collect(toList());
-    JsonNode valuesNode = conditionNode.get("values");
-    List<Object> values = new ArrayList<>();
-    int attributeIndex = 0;
-    for (JsonNode valueNode : valuesNode) {
-      AttributeDefinition<?> attributeDefinition = definition.columns().definition(columns.get(attributeIndex++));
-      values.add(entityObjectMapper.readValue(valueNode.toString(), attributeDefinition.attribute().type().valueClass()));
-    }
+	CustomCondition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
+		String conditionTypeName = conditionNode.get("conditionType").asText();
+		JsonNode columnsNode = conditionNode.get("columns");
+		List<Column<?>> columns = Arrays.stream(entityObjectMapper.readValue(columnsNode.toString(), String[].class))
+						.map(definition.attributes()::get)
+						.map(attribute -> (Column<?>) attribute)
+						.collect(toList());
+		JsonNode valuesNode = conditionNode.get("values");
+		List<Object> values = new ArrayList<>();
+		int attributeIndex = 0;
+		for (JsonNode valueNode : valuesNode) {
+			AttributeDefinition<?> attributeDefinition = definition.columns().definition(columns.get(attributeIndex++));
+			values.add(entityObjectMapper.readValue(valueNode.toString(), attributeDefinition.attribute().type().valueClass()));
+		}
 
-    return Condition.custom(definition.entityType().conditionType(conditionTypeName), columns, values);
-  }
+		return Condition.custom(definition.entityType().conditionType(conditionTypeName), columns, values);
+	}
 }

@@ -38,115 +38,115 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
 
-  /**
-   * @param nullable true if a null value should be added to the model if missing
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> nullable(boolean nullable);
+	/**
+	 * @param nullable true if a null value should be added to the model if missing
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> nullable(boolean nullable);
 
-  /**
-   * Sorts the items by caption
-   * @param sorted if true then the items will be sorted by caption
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> sorted(boolean sorted);
+	/**
+	 * Sorts the items by caption
+	 * @param sorted if true then the items will be sorted by caption
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> sorted(boolean sorted);
 
-  /**
-   * @param comparator if specified the combo box items are sorted using this comparator
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> comparator(Comparator<Item<T>> comparator);
+	/**
+	 * @param comparator if specified the combo box items are sorted using this comparator
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> comparator(Comparator<Item<T>> comparator);
 
-  /**
-   * @param completionMode the completion mode
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
+	/**
+	 * @param completionMode the completion mode
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
 
-  /**
-   * Enable mouse wheel scrolling on the combo box
-   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
+	/**
+	 * Enable mouse wheel scrolling on the combo box
+	 * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 
-  /**
-   * Enable mouse wheel scrolling on the combo box, with wrap around
-   * @param mouseWheelScrollingWithWrapAround true if mouse wheel scrolling with wrap around should be enabled
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround);
+	/**
+	 * Enable mouse wheel scrolling on the combo box, with wrap around
+	 * @param mouseWheelScrollingWithWrapAround true if mouse wheel scrolling with wrap around should be enabled
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround);
 
-  /**
-   * @param maximumRowCount the maximum row count
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount);
+	/**
+	 * @param maximumRowCount the maximum row count
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount);
 
-  /**
-   * Only used for the system and cross-platform Look and Feels.
-   * @param popupWidth a fixed popup width
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> popupWidth(int popupWidth);
+	/**
+	 * Only used for the system and cross-platform Look and Feels.
+	 * @param popupWidth a fixed popup width
+	 * @return this builder instance
+	 */
+	ItemComboBoxBuilder<T> popupWidth(int popupWidth);
 
-  /**
-   * @param renderer the renderer for the combo box
-   * @return this builder instance
-   * @see JComboBox#setRenderer(ListCellRenderer)
-   */
-  ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer);
+	/**
+	 * @param renderer the renderer for the combo box
+	 * @return this builder instance
+	 * @see JComboBox#setRenderer(ListCellRenderer)
+	 */
+	ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer);
 
-  /**
-   * @param editor the editor for the combo box
-   * @return this builder instance
-   * @see JComboBox#setEditor(ComboBoxEditor)
-   */
-  ItemComboBoxBuilder<T> editor(ComboBoxEditor editor);
+	/**
+	 * @param editor the editor for the combo box
+	 * @return this builder instance
+	 * @see JComboBox#setEditor(ComboBoxEditor)
+	 */
+	ItemComboBoxBuilder<T> editor(ComboBoxEditor editor);
 
-  /**
-   * @param itemListener the item listener
-   * @return this builder instance
-   * @see JComboBox#addItemListener(ItemListener)
-   */
-  ItemComboBoxBuilder<T> itemListener(ItemListener itemListener);
+	/**
+	 * @param itemListener the item listener
+	 * @return this builder instance
+	 * @see JComboBox#addItemListener(ItemListener)
+	 */
+	ItemComboBoxBuilder<T> itemListener(ItemListener itemListener);
 
-  /**
-   * @param comboBoxModel the combo box model
-   * @param <T> the value type
-   * @return a builder for a component
-   */
-  static <T> ItemComboBoxBuilder<T> builder(ItemComboBoxModel<T> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
-  }
+	/**
+	 * @param comboBoxModel the combo box model
+	 * @param <T> the value type
+	 * @return a builder for a component
+	 */
+	static <T> ItemComboBoxBuilder<T> builder(ItemComboBoxModel<T> comboBoxModel) {
+		return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
+	}
 
-  /**
-   * @param comboBoxModel the combo box model
-   * @param linkedValue the value to link to the component
-   * @param <T> the value type
-   * @return a builder for a component
-   */
-  static <T> ItemComboBoxBuilder<T> builder(ItemComboBoxModel<T> comboBoxModel,
-                                            Value<T> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
-  }
+	/**
+	 * @param comboBoxModel the combo box model
+	 * @param linkedValue the value to link to the component
+	 * @param <T> the value type
+	 * @return a builder for a component
+	 */
+	static <T> ItemComboBoxBuilder<T> builder(ItemComboBoxModel<T> comboBoxModel,
+																						Value<T> linkedValue) {
+		return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+	}
 
-  /**
-   * @param values the values
-   * @param <T> the value type
-   * @return a builder for a component
-   */
-  static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values) {
-    return new DefaultItemComboBoxBuilder<>(values, null);
-  }
+	/**
+	 * @param values the values
+	 * @param <T> the value type
+	 * @return a builder for a component
+	 */
+	static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values) {
+		return new DefaultItemComboBoxBuilder<>(values, null);
+	}
 
-  /**
-   * @param values the values
-   * @param linkedValue the value to link to the component
-   * @param <T> the value type
-   * @return a builder for a component
-   */
-  static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values, Value<T> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(values, requireNonNull(linkedValue));
-  }
+	/**
+	 * @param values the values
+	 * @param linkedValue the value to link to the component
+	 * @param <T> the value type
+	 * @return a builder for a component
+	 */
+	static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values, Value<T> linkedValue) {
+		return new DefaultItemComboBoxBuilder<>(values, requireNonNull(linkedValue));
+	}
 }

@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class JulProxyTest {
 
-  @Test
-  void test() {
-    JulProxy proxy = new JulProxy();
-    proxy.getLogLevel();
-    proxy.setLogLevel(proxy.levels().get(2));
-    assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
-  }
+	@Test
+	void test() {
+		JulProxy proxy = new JulProxy();
+		proxy.getLogLevel();
+		proxy.setLogLevel(proxy.levels().get(2));
+		assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
+	}
 }

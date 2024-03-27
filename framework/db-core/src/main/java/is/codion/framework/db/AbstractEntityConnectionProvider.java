@@ -37,202 +37,202 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
 
-  private final Object lock = new Object();
-  private final Event<EntityConnection> onConnectEvent = Event.event();
+	private final Object lock = new Object();
+	private final Event<EntityConnection> onConnectEvent = Event.event();
 
-  private final User user;
-  private final DomainType domainType;
-  private final UUID clientId;
-  private final Version clientVersion;
-  private final String clientTypeId;
-  private final Consumer<EntityConnectionProvider> onClose;
+	private final User user;
+	private final DomainType domainType;
+	private final UUID clientId;
+	private final Version clientVersion;
+	private final String clientTypeId;
+	private final Consumer<EntityConnectionProvider> onClose;
 
-  private EntityConnection entityConnection;
-  private Entities entities;
+	private EntityConnection entityConnection;
+	private Entities entities;
 
-  protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
-    requireNonNull(builder);
-    this.user = requireNonNull(builder.user, "A user must be specified");
-    this.domainType = requireNonNull(builder.domainType, "A domainType must be specified");
-    this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
-    this.clientTypeId = builder.clientTypeId;
-    this.clientVersion = builder.clientVersion;
-    this.onClose = builder.onClose;
-  }
+	protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
+		requireNonNull(builder);
+		this.user = requireNonNull(builder.user, "A user must be specified");
+		this.domainType = requireNonNull(builder.domainType, "A domainType must be specified");
+		this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
+		this.clientTypeId = builder.clientTypeId;
+		this.clientVersion = builder.clientVersion;
+		this.onClose = builder.onClose;
+	}
 
-  @Override
-  public final Entities entities() {
-    synchronized (lock) {
-      if (entities == null) {
-        doConnect();
-      }
+	@Override
+	public final Entities entities() {
+		synchronized (lock) {
+			if (entities == null) {
+				doConnect();
+			}
 
-      return entities;
-    }
-  }
+			return entities;
+		}
+	}
 
-  @Override
-  public final User user() {
-    return user;
-  }
+	@Override
+	public final User user() {
+		return user;
+	}
 
-  @Override
-  public final DomainType domainType() {
-    return domainType;
-  }
+	@Override
+	public final DomainType domainType() {
+		return domainType;
+	}
 
-  @Override
-  public final UUID clientId() {
-    return clientId;
-  }
+	@Override
+	public final UUID clientId() {
+		return clientId;
+	}
 
-  @Override
-  public final String clientTypeId() {
-    return clientTypeId;
-  }
+	@Override
+	public final String clientTypeId() {
+		return clientTypeId;
+	}
 
-  @Override
-  public final Version clientVersion() {
-    return clientVersion;
-  }
+	@Override
+	public final Version clientVersion() {
+		return clientVersion;
+	}
 
-  @Override
-  public final boolean connectionValid() {
-    synchronized (lock) {
-      if (entityConnection == null) {
-        return false;
-      }
-      try {
-        return entityConnection.connected();
-      }
-      catch (RuntimeException e) {
-        LOG.debug("Connection deemed invalid", e);
-        return false;
-      }
-    }
-  }
+	@Override
+	public final boolean connectionValid() {
+		synchronized (lock) {
+			if (entityConnection == null) {
+				return false;
+			}
+			try {
+				return entityConnection.connected();
+			}
+			catch (RuntimeException e) {
+				LOG.debug("Connection deemed invalid", e);
+				return false;
+			}
+		}
+	}
 
-  @Override
-  public final void addOnConnectListener(Consumer<EntityConnection> listener) {
-    onConnectEvent.addDataListener(listener);
-  }
+	@Override
+	public final void addOnConnectListener(Consumer<EntityConnection> listener) {
+		onConnectEvent.addDataListener(listener);
+	}
 
-  @Override
-  public final void removeOnConnectListener(Consumer<EntityConnection> listener) {
-    onConnectEvent.removeDataListener(listener);
-  }
+	@Override
+	public final void removeOnConnectListener(Consumer<EntityConnection> listener) {
+		onConnectEvent.removeDataListener(listener);
+	}
 
-  @Override
-  public final EntityConnection connection() {
-    synchronized (lock) {
-      validateConnection();
+	@Override
+	public final EntityConnection connection() {
+		synchronized (lock) {
+			validateConnection();
 
-      return entityConnection;
-    }
-  }
+			return entityConnection;
+		}
+	}
 
-  @Override
-  public final void close() {
-    synchronized (lock) {
-      if (connectionValid()) {
-        close(entityConnection);
-      }
-      entityConnection = null;
-    }
-    if (onClose != null) {
-      onClose.accept(this);
-    }
-  }
+	@Override
+	public final void close() {
+		synchronized (lock) {
+			if (connectionValid()) {
+				close(entityConnection);
+			}
+			entityConnection = null;
+		}
+		if (onClose != null) {
+			onClose.accept(this);
+		}
+	}
 
-  /**
-   * @return an established connection
-   */
-  protected abstract EntityConnection connect();
+	/**
+	 * @return an established connection
+	 */
+	protected abstract EntityConnection connect();
 
-  /**
-   * Closes the given connection
-   * @param connection the connection to be closed
-   */
-  protected abstract void close(EntityConnection connection);
+	/**
+	 * Closes the given connection
+	 * @param connection the connection to be closed
+	 */
+	protected abstract void close(EntityConnection connection);
 
-  private void validateConnection() {
-    if (entityConnection == null) {
-      doConnect();
-    }
-    else if (!connectionValid()) {
-      LOG.info("Previous connection invalid, reconnecting");
-      try {//try to disconnect just in case
-        entityConnection.close();
-      }
-      catch (Exception ignored) {/*ignored*/}
-      entityConnection = null;
-      doConnect();
-    }
-  }
+	private void validateConnection() {
+		if (entityConnection == null) {
+			doConnect();
+		}
+		else if (!connectionValid()) {
+			LOG.info("Previous connection invalid, reconnecting");
+			try {//try to disconnect just in case
+				entityConnection.close();
+			}
+			catch (Exception ignored) {/*ignored*/}
+			entityConnection = null;
+			doConnect();
+		}
+	}
 
-  private void doConnect() {
-    entityConnection = connect();
-    entities = entityConnection.entities();
-    onConnectEvent.accept(entityConnection);
-  }
+	private void doConnect() {
+		entityConnection = connect();
+		entities = entityConnection.entities();
+		onConnectEvent.accept(entityConnection);
+	}
 
-  public abstract static class AbstractBuilder<T extends EntityConnectionProvider,
-          B extends Builder<T, B>> implements Builder<T, B> {
+	public abstract static class AbstractBuilder<T extends EntityConnectionProvider,
+					B extends Builder<T, B>> implements Builder<T, B> {
 
-    private final String connectionType;
+		private final String connectionType;
 
-    private User user;
-    private DomainType domainType;
-    private UUID clientId = UUID.randomUUID();
-    private String clientTypeId;
-    private Version clientVersion;
-    private Consumer<EntityConnectionProvider> onClose;
+		private User user;
+		private DomainType domainType;
+		private UUID clientId = UUID.randomUUID();
+		private String clientTypeId;
+		private Version clientVersion;
+		private Consumer<EntityConnectionProvider> onClose;
 
-    protected AbstractBuilder(String connectionType) {
-      this.connectionType = requireNonNull(connectionType);
-    }
+		protected AbstractBuilder(String connectionType) {
+			this.connectionType = requireNonNull(connectionType);
+		}
 
-    @Override
-    public final String connectionType() {
-      return connectionType;
-    }
+		@Override
+		public final String connectionType() {
+			return connectionType;
+		}
 
-    @Override
-    public final B user(User user) {
-      this.user = requireNonNull(user);
-      return (B) this;
-    }
+		@Override
+		public final B user(User user) {
+			this.user = requireNonNull(user);
+			return (B) this;
+		}
 
-    @Override
-    public final B domainType(DomainType domainType) {
-      this.domainType = requireNonNull(domainType);
-      return (B) this;
-    }
+		@Override
+		public final B domainType(DomainType domainType) {
+			this.domainType = requireNonNull(domainType);
+			return (B) this;
+		}
 
-    @Override
-    public final B clientId(UUID clientId) {
-      this.clientId = requireNonNull(clientId);
-      return (B) this;
-    }
+		@Override
+		public final B clientId(UUID clientId) {
+			this.clientId = requireNonNull(clientId);
+			return (B) this;
+		}
 
-    @Override
-    public final B clientTypeId(String clientTypeId) {
-      this.clientTypeId = requireNonNull(clientTypeId);
-      return (B) this;
-    }
+		@Override
+		public final B clientTypeId(String clientTypeId) {
+			this.clientTypeId = requireNonNull(clientTypeId);
+			return (B) this;
+		}
 
-    @Override
-    public final B clientVersion(Version clientVersion) {
-      this.clientVersion = clientVersion;
-      return (B) this;
-    }
+		@Override
+		public final B clientVersion(Version clientVersion) {
+			this.clientVersion = clientVersion;
+			return (B) this;
+		}
 
-    @Override
-    public final B onClose(Consumer<EntityConnectionProvider> onClose) {
-      this.onClose = requireNonNull(onClose);
-      return (B) this;
-    }
-  }
+		@Override
+		public final B onClose(Consumer<EntityConnectionProvider> onClose) {
+			this.onClose = requireNonNull(onClose);
+			return (B) this;
+		}
+	}
 }

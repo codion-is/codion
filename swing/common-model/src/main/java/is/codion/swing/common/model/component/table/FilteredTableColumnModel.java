@@ -34,92 +34,92 @@ import java.util.function.Consumer;
  */
 public interface FilteredTableColumnModel<C> extends TableColumnModel {
 
-  /**
-   * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
-   */
-  Collection<FilteredTableColumn<C>> columns();
+	/**
+	 * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
+	 */
+	Collection<FilteredTableColumn<C>> columns();
 
-  /**
-   * @return an unmodifiable view of the currently visible columns
-   */
-  List<FilteredTableColumn<C>> visible();
+	/**
+	 * @return an unmodifiable view of the currently visible columns
+	 */
+	List<FilteredTableColumn<C>> visible();
 
-  /**
-   * @return an unmodifiable view of currently hidden columns, in no particular order
-   */
-  Collection<FilteredTableColumn<C>> hidden();
+	/**
+	 * @return an unmodifiable view of currently hidden columns, in no particular order
+	 */
+	Collection<FilteredTableColumn<C>> hidden();
 
-  /**
-   * Returns a {@link State} instance controlling whether this model is locked or not.
-   * A locked column model does not allow adding or removing of columns, but columns can be reordered.
-   * @return a {@link State} controlling whether this model is locked or not
-   */
-  State locked();
+	/**
+	 * Returns a {@link State} instance controlling whether this model is locked or not.
+	 * A locked column model does not allow adding or removing of columns, but columns can be reordered.
+	 * @return a {@link State} controlling whether this model is locked or not
+	 */
+	State locked();
 
-  /**
-   * Arranges the columns so that only the given columns are visible and in the given order
-   * @param columnIdentifiers the column identifiers
-   */
-  void setVisibleColumns(C... columnIdentifiers);
+	/**
+	 * Arranges the columns so that only the given columns are visible and in the given order
+	 * @param columnIdentifiers the column identifiers
+	 */
+	void setVisibleColumns(C... columnIdentifiers);
 
-  /**
-   * Arranges the columns so that only the given columns are visible and in the given order
-   * @param columnIdentifiers the column identifiers
-   */
-  void setVisibleColumns(List<C> columnIdentifiers);
+	/**
+	 * Arranges the columns so that only the given columns are visible and in the given order
+	 * @param columnIdentifiers the column identifiers
+	 */
+	void setVisibleColumns(List<C> columnIdentifiers);
 
-  /**
-   * Returns the TableColumn with the given identifier
-   * @param columnIdentifier the column identifier
-   * @return the TableColumn with the given identifier
-   * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
-   */
-  FilteredTableColumn<C> column(C columnIdentifier);
+	/**
+	 * Returns the TableColumn with the given identifier
+	 * @param columnIdentifier the column identifier
+	 * @return the TableColumn with the given identifier
+	 * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
+	 */
+	FilteredTableColumn<C> column(C columnIdentifier);
 
-  @Override
-  FilteredTableColumn<C> getColumn(int columnIndex);
+	@Override
+	FilteredTableColumn<C> getColumn(int columnIndex);
 
-  /**
-   * Returns the State for controlling the column visibility
-   * @param columnIdentifier the column identifier
-   * @return a State for controlling the column visibility
-   */
-  State visible(C columnIdentifier);
+	/**
+	 * Returns the State for controlling the column visibility
+	 * @param columnIdentifier the column identifier
+	 * @return a State for controlling the column visibility
+	 */
+	State visible(C columnIdentifier);
 
-  /**
-   * @param columnIdentifier the column identifier
-   * @return true if this column model contains a column with the given identifier
-   */
-  boolean containsColumn(C columnIdentifier);
+	/**
+	 * @param columnIdentifier the column identifier
+	 * @return true if this column model contains a column with the given identifier
+	 */
+	boolean containsColumn(C columnIdentifier);
 
-  /**
-   * @param modelColumnIndex the column model index
-   * @return the column identifier
-   */
-  C columnIdentifier(int modelColumnIndex);
+	/**
+	 * @param modelColumnIndex the column model index
+	 * @return the column identifier
+	 */
+	C columnIdentifier(int modelColumnIndex);
 
-  /**
-   * Resets the columns to their original location and visibility
-   */
-  void resetColumns();
+	/**
+	 * Resets the columns to their original location and visibility
+	 */
+	void resetColumns();
 
-  /**
-   * @param listener a listener to be notified each time a column is hidden
-   */
-  void addColumnHiddenListener(Consumer<C> listener);
+	/**
+	 * @param listener a listener to be notified each time a column is hidden
+	 */
+	void addColumnHiddenListener(Consumer<C> listener);
 
-  /**
-   * @param listener the listener to remove
-   */
-  void removeColumnHiddenListener(Consumer<C> listener);
+	/**
+	 * @param listener the listener to remove
+	 */
+	void removeColumnHiddenListener(Consumer<C> listener);
 
-  /**
-   * @param listener a listener to be notified each time a column is shown
-   */
-  void addColumnShownListener(Consumer<C> listener);
+	/**
+	 * @param listener a listener to be notified each time a column is shown
+	 */
+	void addColumnShownListener(Consumer<C> listener);
 
-  /**
-   * @param listener the listener to remove
-   */
-  void removeColumnShownListener(Consumer<C> listener);
+	/**
+	 * @param listener the listener to remove
+	 */
+	void removeColumnShownListener(Consumer<C> listener);
 }

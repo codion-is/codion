@@ -37,71 +37,71 @@ import java.sql.Connection;
 
 public final class EntityConnectionProviderDemo {
 
-  static void localConnectionProvider() {
-    // tag::local[]
-    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+	static void localConnectionProvider() {
+		// tag::local[]
+		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-    LocalEntityConnectionProvider connectionProvider =
-            LocalEntityConnectionProvider.builder()
-                    .domain(new ChinookImpl())
-                    .user(User.parse("scott:tiger"))
-                    .build();
+		LocalEntityConnectionProvider connectionProvider =
+						LocalEntityConnectionProvider.builder()
+										.domain(new ChinookImpl())
+										.user(User.parse("scott:tiger"))
+										.build();
 
-    LocalEntityConnection entityConnection =
-            connectionProvider.connection();
+		LocalEntityConnection entityConnection =
+						connectionProvider.connection();
 
-    DatabaseConnection databaseConnection =
-            entityConnection.databaseConnection();
+		DatabaseConnection databaseConnection =
+						entityConnection.databaseConnection();
 
-    // the underlying JDBC connection is available in a local connection
-    Connection connection = databaseConnection.getConnection();
+		// the underlying JDBC connection is available in a local connection
+		Connection connection = databaseConnection.getConnection();
 
-    connectionProvider.close();
-    // end::local[]
-  }
+		connectionProvider.close();
+		// end::local[]
+	}
 
-  static void remoteConnectionProvider() throws DatabaseException {
-    // tag::remote[]
-    RemoteEntityConnectionProvider connectionProvider =
-            RemoteEntityConnectionProvider.builder()
-                    .domainType(Chinook.DOMAIN)
-                    .user(User.parse("scott:tiger"))
-                    .clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
-                    .hostName("localhost")
-                    .registryPort(1099)
-                    .build();
+	static void remoteConnectionProvider() throws DatabaseException {
+		// tag::remote[]
+		RemoteEntityConnectionProvider connectionProvider =
+						RemoteEntityConnectionProvider.builder()
+										.domainType(Chinook.DOMAIN)
+										.user(User.parse("scott:tiger"))
+										.clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
+										.hostName("localhost")
+										.registryPort(1099)
+										.build();
 
-    EntityConnection entityConnection =
-            connectionProvider.connection();
+		EntityConnection entityConnection =
+						connectionProvider.connection();
 
-    Entities entities = entityConnection.entities();
+		Entities entities = entityConnection.entities();
 
-    Entity track = entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
+		Entity track = entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
 
-    connectionProvider.close();
-    // end::remote[]
-  }
+		connectionProvider.close();
+		// end::remote[]
+	}
 
-  static void httpConnectionProvider() throws DatabaseException {
-    // tag::http[]
-    HttpEntityConnectionProvider connectionProvider =
-            HttpEntityConnectionProvider.builder()
-                    .domainType(Chinook.DOMAIN)
-                    .clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
-                    .user(User.parse("scott:tiger"))
-                    .hostName("localhost")
-                    .port(8080)
-                    .https(false)
-                    .build();
+	static void httpConnectionProvider() throws DatabaseException {
+		// tag::http[]
+		HttpEntityConnectionProvider connectionProvider =
+						HttpEntityConnectionProvider.builder()
+										.domainType(Chinook.DOMAIN)
+										.clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
+										.user(User.parse("scott:tiger"))
+										.hostName("localhost")
+										.port(8080)
+										.https(false)
+										.build();
 
-    EntityConnection entityConnection = connectionProvider.connection();
+		EntityConnection entityConnection = connectionProvider.connection();
 
-    Entities entities = entityConnection.entities();
+		Entities entities = entityConnection.entities();
 
-    entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
+		entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
 
-    connectionProvider.close();
-    // end::http[]
-  }
+		connectionProvider.close();
+		// end::http[]
+	}
 }

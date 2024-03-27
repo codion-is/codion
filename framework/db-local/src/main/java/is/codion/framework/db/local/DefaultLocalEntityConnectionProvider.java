@@ -35,66 +35,66 @@ import static is.codion.framework.db.local.LocalEntityConnection.localEntityConn
  * @see LocalEntityConnectionProvider#builder()
  */
 final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectionProvider
-        implements LocalEntityConnectionProvider {
+				implements LocalEntityConnectionProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
 
-  private final Domain domain;
-  private final Database database;
-  private final int defaultQueryTimeout;
+	private final Domain domain;
+	private final Database database;
+	private final int defaultQueryTimeout;
 
-  DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
-    super(builder);
-    this.domain = builder.domain == null ? initializeDomain(domainType()) : builder.domain;
-    this.database = builder.database == null ? Database.instance() : builder.database;
-    this.defaultQueryTimeout = builder.defaultQueryTimeout;
-  }
+	DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
+		super(builder);
+		this.domain = builder.domain == null ? initializeDomain(domainType()) : builder.domain;
+		this.database = builder.database == null ? Database.instance() : builder.database;
+		this.defaultQueryTimeout = builder.defaultQueryTimeout;
+	}
 
-  @Override
-  public String connectionType() {
-    return CONNECTION_TYPE_LOCAL;
-  }
+	@Override
+	public String connectionType() {
+		return CONNECTION_TYPE_LOCAL;
+	}
 
-  @Override
-  public String description() {
-    return database().name().toUpperCase();
-  }
+	@Override
+	public String description() {
+		return database().name().toUpperCase();
+	}
 
-  public Domain domain() {
-    return domain;
-  }
+	public Domain domain() {
+		return domain;
+	}
 
-  public Database database() {
-    return database;
-  }
+	public Database database() {
+		return database;
+	}
 
-  public int defaultQueryTimeout() {
-    return defaultQueryTimeout;
-  }
+	public int defaultQueryTimeout() {
+		return defaultQueryTimeout;
+	}
 
-  @Override
-  protected LocalEntityConnection connect() {
-    try {
-      LOG.debug("Initializing connection for {}", user());
-      LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
-      connection.setDefaultQueryTimeout(defaultQueryTimeout);
+	@Override
+	protected LocalEntityConnection connect() {
+		try {
+			LOG.debug("Initializing connection for {}", user());
+			LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
+			connection.setDefaultQueryTimeout(defaultQueryTimeout);
 
-      return connection;
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+			return connection;
+		}
+		catch (DatabaseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  @Override
-  protected void close(EntityConnection connection) {
-    connection.close();
-  }
+	@Override
+	protected void close(EntityConnection connection) {
+		connection.close();
+	}
 
-  private static Domain initializeDomain(DomainType domainType) {
-    return Domain.domains().stream()
-            .filter(domain -> domain.type().equals(domainType))
-            .findAny()
-            .orElseThrow(() -> new IllegalStateException("Domain model not found in ServiceLoader: " + domainType));
-  }
+	private static Domain initializeDomain(DomainType domainType) {
+		return Domain.domains().stream()
+						.filter(domain -> domain.type().equals(domainType))
+						.findAny()
+						.orElseThrow(() -> new IllegalStateException("Domain model not found in ServiceLoader: " + domainType));
+	}
 }

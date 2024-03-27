@@ -29,15 +29,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 final class EntityTypeKeyDeserializer extends KeyDeserializer {
 
-  private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
-  private final Entities entities;
+	private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
+	private final Entities entities;
 
-  EntityTypeKeyDeserializer(Entities entities) {
-    this.entities = entities;
-  }
+	EntityTypeKeyDeserializer(Entities entities) {
+		this.entities = entities;
+	}
 
-  @Override
-  public Object deserializeKey(String key, DeserializationContext ctxt) {
-    return definitions.computeIfAbsent(key, entities::definition).entityType();
-  }
+	@Override
+	public Object deserializeKey(String key, DeserializationContext ctxt) {
+		return definitions.computeIfAbsent(key, entities::definition).entityType();
+	}
 }

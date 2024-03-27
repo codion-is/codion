@@ -32,25 +32,25 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class CountryEditModelTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  @Test
-  void averageCityPopulation() throws DatabaseException {
-    try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-      CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
-      countryEditModel.set(connectionProvider.connection().selectSingle(
-              Country.NAME.equalTo("Afghanistan")));
-      assertEquals(583_025, countryEditModel.averageCityPopulation().get());
-      countryEditModel.set(null);
-      assertNull(countryEditModel.averageCityPopulation().get());
-    }
-  }
+	@Test
+	void averageCityPopulation() throws DatabaseException {
+		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
+			CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
+			countryEditModel.set(connectionProvider.connection().selectSingle(
+							Country.NAME.equalTo("Afghanistan")));
+			assertEquals(583_025, countryEditModel.averageCityPopulation().get());
+			countryEditModel.set(null);
+			assertNull(countryEditModel.averageCityPopulation().get());
+		}
+	}
 
-  private static EntityConnectionProvider createConnectionProvider() {
-    return LocalEntityConnectionProvider.builder()
-            .domain(new WorldImpl())
-            .user(UNIT_TEST_USER)
-            .build();
-  }
+	private static EntityConnectionProvider createConnectionProvider() {
+		return LocalEntityConnectionProvider.builder()
+						.domain(new WorldImpl())
+						.user(UNIT_TEST_USER)
+						.build();
+	}
 }

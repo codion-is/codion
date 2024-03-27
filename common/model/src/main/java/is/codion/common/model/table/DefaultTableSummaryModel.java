@@ -30,21 +30,21 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 
-  private final SummaryValueProvider.Factory<C> summaryModelFactory;
-  private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
+	private final SummaryValueProvider.Factory<C> summaryModelFactory;
+	private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
-  DefaultTableSummaryModel(SummaryValueProvider.Factory<C> summaryModelFactory) {
-    this.summaryModelFactory = requireNonNull(summaryModelFactory);
-  }
+	DefaultTableSummaryModel(SummaryValueProvider.Factory<C> summaryModelFactory) {
+		this.summaryModelFactory = requireNonNull(summaryModelFactory);
+	}
 
-  @Override
-  public Optional<ColumnSummaryModel> summaryModel(C columnIdentifier) {
-    return Optional.ofNullable(columnSummaryModels.computeIfAbsent(columnIdentifier, k ->
-            createSummaryModel(k, NumberFormat.getInstance()).orElse(null)));
-  }
+	@Override
+	public Optional<ColumnSummaryModel> summaryModel(C columnIdentifier) {
+		return Optional.ofNullable(columnSummaryModels.computeIfAbsent(columnIdentifier, k ->
+						createSummaryModel(k, NumberFormat.getInstance()).orElse(null)));
+	}
 
-  private Optional<ColumnSummaryModel> createSummaryModel(C columnIdentifier, Format format) {
-    return summaryModelFactory.createSummaryValueProvider(columnIdentifier, format)
-            .map(ColumnSummaryModel::columnSummaryModel);
-  }
+	private Optional<ColumnSummaryModel> createSummaryModel(C columnIdentifier, Format format) {
+		return summaryModelFactory.createSummaryValueProvider(columnIdentifier, format)
+						.map(ColumnSummaryModel::columnSummaryModel);
+	}
 }

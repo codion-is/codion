@@ -26,20 +26,20 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class VetEditPanel extends EntityEditPanel {
 
-  public VetEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
+	public VetEditPanel(SwingEntityEditModel editModel) {
+		super(editModel);
+	}
 
-  @Override
-  protected void initializeUI() {
-    initialFocusAttribute().set(Vet.FIRST_NAME);
+	@Override
+	protected void initializeUI() {
+		initialFocusAttribute().set(Vet.FIRST_NAME);
 
-    createTextField(Vet.FIRST_NAME);
-    createTextField(Vet.LAST_NAME);
+		createTextField(Vet.FIRST_NAME);
+		createTextField(Vet.LAST_NAME);
 
-    setLayout(gridLayout(2, 1));
+		setLayout(gridLayout(2, 1));
 
-    addInputPanel(Vet.FIRST_NAME);
-    addInputPanel(Vet.LAST_NAME);
-  }
+		addInputPanel(Vet.FIRST_NAME);
+		addInputPanel(Vet.LAST_NAME);
+	}
 }

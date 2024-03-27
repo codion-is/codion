@@ -29,25 +29,25 @@ import static java.util.Objects.requireNonNull;
  */
 public interface PasswordFieldBuilder extends TextFieldBuilder<String, JPasswordField, PasswordFieldBuilder> {
 
-  /**
-   * @param echoChar the echo char
-   * @return this builder instance
-   * @see JPasswordField#setEchoChar(char)
-   */
-  PasswordFieldBuilder echoChar(char echoChar);
+	/**
+	 * @param echoChar the echo char
+	 * @return this builder instance
+	 * @see JPasswordField#setEchoChar(char)
+	 */
+	PasswordFieldBuilder echoChar(char echoChar);
 
-  /**
-   * @return a new JPasswordField
-   */
-  static PasswordFieldBuilder builder() {
-    return new DefaultPasswordFieldBuilder(null);
-  }
+	/**
+	 * @return a new JPasswordField
+	 */
+	static PasswordFieldBuilder builder() {
+		return new DefaultPasswordFieldBuilder(null);
+	}
 
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a new JPasswordField
-   */
-  static PasswordFieldBuilder builder(Value<String> linkedValue) {
-    return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
-  }
+	/**
+	 * @param linkedValue the value to link to the component
+	 * @return a new JPasswordField
+	 */
+	static PasswordFieldBuilder builder(Value<String> linkedValue) {
+		return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
+	}
 }

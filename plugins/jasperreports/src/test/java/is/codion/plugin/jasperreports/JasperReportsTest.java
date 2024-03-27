@@ -46,114 +46,114 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsTest {
 
-  private static final User UNIT_TEST_USER =
-          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final User UNIT_TEST_USER =
+					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final String REPORT_PATH = "build/resources/test";
+	private static final String REPORT_PATH = "build/resources/test";
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER =
-          LocalEntityConnectionProvider.builder()
-                  .database(H2DatabaseFactory.createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
-                          Database.DATABASE_INIT_SCRIPTS.get()))
-                  .domain(new TestDomain())
-                  .user(UNIT_TEST_USER)
-                  .build();
+	private static final EntityConnectionProvider CONNECTION_PROVIDER =
+					LocalEntityConnectionProvider.builder()
+									.database(H2DatabaseFactory.createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
+													Database.DATABASE_INIT_SCRIPTS.get()))
+									.domain(new TestDomain())
+									.user(UNIT_TEST_USER)
+									.build();
 
-  @AfterAll
-  public static void tearDown() {
-    CONNECTION_PROVIDER.close();
-  }
+	@AfterAll
+	public static void tearDown() {
+		CONNECTION_PROVIDER.close();
+	}
 
-  @Test
-  void fillJdbcReport() throws ReportException {
-    Report.CACHE_REPORTS.set(false);
-    Report.REPORT_PATH.set(REPORT_PATH);
-    HashMap<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("DEPTNO", asList(10, 20));
-    LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-    JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
-    assertNotNull(print);
-  }
+	@Test
+	void fillJdbcReport() throws ReportException {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		HashMap<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+		assertNotNull(print);
+	}
 
-  @Test
-  void fillDataSourceReport() throws ReportException {
-    Report.CACHE_REPORTS.set(false);
-    Report.REPORT_PATH.set(REPORT_PATH);
-    JRReport wrapper = JasperReports.fileReport("employees.jasper");
-    JRDataSource dataSource = new JRDataSource() {
-      boolean done = false;
-      @Override
-      public boolean next() {
-        if (done) {
-          return false;
-        }
+	@Test
+	void fillDataSourceReport() throws ReportException {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		JRReport wrapper = JasperReports.fileReport("employees.jasper");
+		JRDataSource dataSource = new JRDataSource() {
+			boolean done = false;
+			@Override
+			public boolean next() {
+				if (done) {
+					return false;
+				}
 
-        return done = true;
-      }
+				return done = true;
+			}
 
-      @Override
-      public Object getFieldValue(JRField jrField) {
-        return null;
-      }
-    };
-    JasperReports.fillReport(wrapper, dataSource);
-  }
+			@Override
+			public Object getFieldValue(JRField jrField) {
+				return null;
+			}
+		};
+		JasperReports.fillReport(wrapper, dataSource);
+	}
 
-  @Test
-  void fillJdbcReportInvalidReport() {
-    Report.CACHE_REPORTS.set(false);
-    Report.REPORT_PATH.set(REPORT_PATH);
-    ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
-    assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.connection().report(nonExisting, new HashMap<>()));
-  }
+	@Test
+	void fillJdbcReportInvalidReport() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
+		assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.connection().report(nonExisting, new HashMap<>()));
+	}
 
-  @Test
-  void urlReport() throws Exception {
-    Report.CACHE_REPORTS.set(false);
-    Report.REPORT_PATH.set("http://localhost:1234");
-    Server server = new Server(1234);
-    HandlerList handlers = new HandlerList();
-    ResourceHandler fileHandler = new ResourceHandler();
-    fileHandler.setResourceBase(REPORT_PATH);
-    handlers.addHandler(fileHandler);
-    server.setHandler(handlers);
-    try {
-      server.start();
-      Map<String, Object> reportParameters = new HashMap<>();
-      reportParameters.put("DEPTNO", asList(10, 20));
-      LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-      Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
-    }
-    finally {
-      server.stop();
-    }
-  }
+	@Test
+	void urlReport() throws Exception {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set("http://localhost:1234");
+		Server server = new Server(1234);
+		HandlerList handlers = new HandlerList();
+		ResourceHandler fileHandler = new ResourceHandler();
+		fileHandler.setResourceBase(REPORT_PATH);
+		handlers.addHandler(fileHandler);
+		server.setHandler(handlers);
+		try {
+			server.start();
+			Map<String, Object> reportParameters = new HashMap<>();
+			reportParameters.put("DEPTNO", asList(10, 20));
+			LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+			Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+		}
+		finally {
+			server.stop();
+		}
+	}
 
-  @Test
-  void classPathReport() throws ReportException {
-    Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("DEPTNO", asList(10, 20));
-    LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-    Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+	@Test
+	void classPathReport() throws ReportException {
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
 
-    assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").load());
-  }
+		assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").load());
+	}
 
-  @Test
-  void fileReport() throws ReportException {
-    Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("DEPTNO", asList(10, 20));
-    LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-    Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
-    assertTrue(Employee.FILE_REPORT.cached());
-    Employee.FILE_REPORT.clearCache();
-    assertFalse(Employee.FILE_REPORT.cached());
+	@Test
+	void fileReport() throws ReportException {
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+		assertTrue(Employee.FILE_REPORT.cached());
+		Employee.FILE_REPORT.clearCache();
+		assertFalse(Employee.FILE_REPORT.cached());
 
-    assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper", false).load());
-  }
+		assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper", false).load());
+	}
 
-  @Test
-  void reportType() {
-    assertNotEquals(JasperReports.reportType("name"), JasperReports.reportType("another"));
-  }
+	@Test
+	void reportType() {
+		assertNotEquals(JasperReports.reportType("name"), JasperReports.reportType("another"));
+	}
 }

@@ -34,42 +34,42 @@ import static java.util.Objects.requireNonNull;
 
 public final class MetaDataModel {
 
-  private final Map<String, MetaDataSchema> schemas;
-  private final DatabaseMetaData metaData;
+	private final Map<String, MetaDataSchema> schemas;
+	private final DatabaseMetaData metaData;
 
-  public MetaDataModel(DatabaseMetaData metaData) throws DatabaseException {
-    this.metaData = requireNonNull(metaData);
-    try {
-      this.schemas = discoverSchemas(metaData);
-    }
-    catch (SQLException e) {
-      throw new DatabaseException(e);
-    }
-  }
+	public MetaDataModel(DatabaseMetaData metaData) throws DatabaseException {
+		this.metaData = requireNonNull(metaData);
+		try {
+			this.schemas = discoverSchemas(metaData);
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
 
-  public Collection<MetaDataSchema> schemas() {
-    return unmodifiableCollection(schemas.values());
-  }
+	public Collection<MetaDataSchema> schemas() {
+		return unmodifiableCollection(schemas.values());
+	}
 
-  public void populateSchema(String schemaName, Consumer<String> schemaNotifier) {
-    MetaDataSchema schema = schemas.get(requireNonNull(schemaName));
-    if (schema == null) {
-      throw new IllegalArgumentException("Schema not found: " + schemaName);
-    }
-    schema.populate(metaData, schemas, schemaNotifier, new HashSet<>());
-  }
+	public void populateSchema(String schemaName, Consumer<String> schemaNotifier) {
+		MetaDataSchema schema = schemas.get(requireNonNull(schemaName));
+		if (schema == null) {
+			throw new IllegalArgumentException("Schema not found: " + schemaName);
+		}
+		schema.populate(metaData, schemas, schemaNotifier, new HashSet<>());
+	}
 
-  private static Map<String, MetaDataSchema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
-    Map<String, MetaDataSchema> schemas = new HashMap<>();
-    try (ResultSet resultSet = metaData.getSchemas()) {
-      while (resultSet.next()) {
-        String tableSchem = resultSet.getString("TABLE_SCHEM");
-        if (tableSchem != null) {
-          schemas.put(tableSchem, new MetaDataSchema(tableSchem, resultSet.getString("TABLE_CATALOG")));
-        }
-      }
-    }
+	private static Map<String, MetaDataSchema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
+		Map<String, MetaDataSchema> schemas = new HashMap<>();
+		try (ResultSet resultSet = metaData.getSchemas()) {
+			while (resultSet.next()) {
+				String tableSchem = resultSet.getString("TABLE_SCHEM");
+				if (tableSchem != null) {
+					schemas.put(tableSchem, new MetaDataSchema(tableSchem, resultSet.getString("TABLE_CATALOG")));
+				}
+			}
+		}
 
-    return schemas;
-  }
+		return schemas;
+	}
 }

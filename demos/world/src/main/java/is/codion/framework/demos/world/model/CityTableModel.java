@@ -42,83 +42,83 @@ import static java.util.stream.Collectors.toList;
 
 public final class CityTableModel extends SwingEntityTableModel {
 
-  private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
-  private final Event<Collection<Entity>> displayLocationEvent = Event.event();
-  private final State citiesWithoutLocationSelected = State.state();
+	private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
+	private final Event<Collection<Entity>> displayLocationEvent = Event.event();
+	private final State citiesWithoutLocationSelected = State.state();
 
-  CityTableModel(EntityConnectionProvider connectionProvider) {
-    super(new CityEditModel(connectionProvider));
-    selectionModel().addSelectedItemsListener(displayLocationEvent::accept);
-    selectionModel().addSelectionListener(this::updateCitiesWithoutLocationSelected);
-    refresher().addRefreshListener(this::refreshChartDataset);
-  }
+	CityTableModel(EntityConnectionProvider connectionProvider) {
+		super(new CityEditModel(connectionProvider));
+		selectionModel().addSelectedItemsListener(displayLocationEvent::accept);
+		selectionModel().addSelectionListener(this::updateCitiesWithoutLocationSelected);
+		refresher().addRefreshListener(this::refreshChartDataset);
+	}
 
-  public PieDataset<String> chartDataset() {
-    return chartDataset;
-  }
+	public PieDataset<String> chartDataset() {
+		return chartDataset;
+	}
 
-  public PopulateLocationTask populateLocationTask() {
-    return new PopulateLocationTask();
-  }
+	public PopulateLocationTask populateLocationTask() {
+		return new PopulateLocationTask();
+	}
 
-  public void addDisplayLocationListener(Consumer<Collection<Entity>> listener) {
-    displayLocationEvent.addDataListener(listener);
-  }
+	public void addDisplayLocationListener(Consumer<Collection<Entity>> listener) {
+		displayLocationEvent.addDataListener(listener);
+	}
 
-  public StateObserver citiesWithoutLocationSelected() {
-    return citiesWithoutLocationSelected.observer();
-  }
+	public StateObserver citiesWithoutLocationSelected() {
+		return citiesWithoutLocationSelected.observer();
+	}
 
-  private void refreshChartDataset() {
-    chartDataset.clear();
-    visibleItems().forEach(city ->
-            chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
-  }
+	private void refreshChartDataset() {
+		chartDataset.clear();
+		visibleItems().forEach(city ->
+						chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
+	}
 
-  private void updateCitiesWithoutLocationSelected() {
-    citiesWithoutLocationSelected.set(selectionModel().getSelectedItems().stream()
-            .anyMatch(city -> city.isNull(City.LOCATION)));
-  }
+	private void updateCitiesWithoutLocationSelected() {
+		citiesWithoutLocationSelected.set(selectionModel().getSelectedItems().stream()
+						.anyMatch(city -> city.isNull(City.LOCATION)));
+	}
 
-  public final class PopulateLocationTask implements ProgressTask<Void, String> {
+	public final class PopulateLocationTask implements ProgressTask<Void, String> {
 
-    private final State cancelled = State.state();
-    private final Collection<Entity> cities;
+		private final State cancelled = State.state();
+		private final Collection<Entity> cities;
 
-    private PopulateLocationTask() {
-      cities = selectionModel().getSelectedItems().stream()
-              .filter(city -> city.isNull(City.LOCATION))
-              .collect(toList());
-    }
+		private PopulateLocationTask() {
+			cities = selectionModel().getSelectedItems().stream()
+							.filter(city -> city.isNull(City.LOCATION))
+							.collect(toList());
+		}
 
-    public int maximumProgress() {
-      return cities.size();
-    }
+		public int maximumProgress() {
+			return cities.size();
+		}
 
-    public StateObserver working() {
-      return cancelled.not();
-    }
+		public StateObserver working() {
+			return cancelled.not();
+		}
 
-    public void cancel() {
-      cancelled.set(true);
-    }
+		public void cancel() {
+			cancelled.set(true);
+		}
 
-    @Override
-    public Void execute(ProgressReporter<String> progressReporter) throws Exception {
-      Collection<Entity> updatedCities = new ArrayList<>();
-      CityEditModel editModel = editModel();
-      Iterator<Entity> citiesIterator = cities.iterator();
-      while (citiesIterator.hasNext() && !cancelled.get()) {
-        Entity city = citiesIterator.next();
-        progressReporter.publish(city.get(City.COUNTRY_FK).get(Country.NAME) + " - " + city.get(City.NAME));
-        editModel.populateLocation(city);
-        updatedCities.add(city);
-        progressReporter.report(updatedCities.size());
-        displayLocationEvent.accept(singletonList(city));
-      }
-      displayLocationEvent.accept(selectionModel().getSelectedItems());
+		@Override
+		public Void execute(ProgressReporter<String> progressReporter) throws Exception {
+			Collection<Entity> updatedCities = new ArrayList<>();
+			CityEditModel editModel = editModel();
+			Iterator<Entity> citiesIterator = cities.iterator();
+			while (citiesIterator.hasNext() && !cancelled.get()) {
+				Entity city = citiesIterator.next();
+				progressReporter.publish(city.get(City.COUNTRY_FK).get(Country.NAME) + " - " + city.get(City.NAME));
+				editModel.populateLocation(city);
+				updatedCities.add(city);
+				progressReporter.report(updatedCities.size());
+				displayLocationEvent.accept(singletonList(city));
+			}
+			displayLocationEvent.accept(selectionModel().getSelectedItems());
 
-      return null;
-    }
-  }
+			return null;
+		}
+	}
 }
