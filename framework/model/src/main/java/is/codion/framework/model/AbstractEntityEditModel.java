@@ -72,7 +72,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
-  private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
+  private final Map<Attribute<?>, Value<Supplier<?>>> defaultValueSuppliers = new ConcurrentHashMap<>();
   private final Value<EntityValidator> validator;
   private final Value<Predicate<Entity>> modifiedPredicate;
   private final Value<Predicate<Entity>> existsPredicate;
@@ -113,9 +113,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void setDefault(Attribute<T> attribute, Supplier<T> defaultValue) {
-    entityDefinition().attributes().definition(attribute);
-    defaultValueSuppliers.put(attribute, requireNonNull(defaultValue, "defaultValue"));
+  public final <S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute) {
+    AttributeDefinition<T> attributeDefinition = entityDefinition().attributes().definition(attribute);
+
+    return (Value<S>) defaultValueSuppliers.computeIfAbsent(attribute, k ->
+            Value.value(attributeDefinition::defaultValue, attributeDefinition::defaultValue));
   }
 
   @Override
@@ -753,7 +755,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return entity.get(attributeDefinition.attribute());
     }
 
-    return (T) defaultValueSuppliers.computeIfAbsent(attributeDefinition.attribute(), k -> attributeDefinition::defaultValue).get();
+    return (T) defaultValue(attributeDefinition.attribute()).get().get();
   }
 
   private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {

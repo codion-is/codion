@@ -74,10 +74,10 @@ public final class AbstractEntityEditModelTest {
   @BeforeEach
   void setUp() {
     employeeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-    employeeEditModel.setDefault(Employee.HIREDATE, LocalDate::now);
+    employeeEditModel.defaultValue(Employee.HIREDATE).set(LocalDate::now);
     try {
       Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.ID.equalTo(3));//JONES, used in containsUnsavedData()
-      employeeEditModel.setDefault(Employee.MGR_FK, () -> jones);
+      employeeEditModel.defaultValue(Employee.MGR_FK).set(() -> jones);
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -202,12 +202,12 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void defaults() {
-    employeeEditModel.setDefault(Employee.NAME, () -> "Scott");
+    employeeEditModel.defaultValue(Employee.NAME).set(() -> "Scott");
     assertTrue(employeeEditModel.isNull(Employee.NAME).get());
     employeeEditModel.defaults();
     assertEquals("Scott", employeeEditModel.get(Employee.NAME));
 
-    employeeEditModel.setDefault(Employee.NAME, () -> null);
+    employeeEditModel.defaultValue(Employee.NAME).set(() -> null);
     employeeEditModel.defaults();
     assertTrue(employeeEditModel.isNull(Employee.NAME).get());
   }

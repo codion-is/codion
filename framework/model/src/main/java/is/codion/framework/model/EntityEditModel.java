@@ -88,7 +88,7 @@ public interface EntityEditModel {
 
   /**
    * Populates this edit model with default values for all attributes.
-   * @see #setDefault(Attribute, Supplier)
+   * @see #defaultValue(Attribute)
    * @see AttributeDefinition#defaultValue()
    */
   void defaults();
@@ -249,14 +249,16 @@ public interface EntityEditModel {
   EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey);
 
   /**
-   * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
-   * Use {@link #defaults()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
+   * Returns the {@link Value} instance controlling the default value supplier for the given attribute.
+   * Used when the underlying value is not persistent. Use {@link #defaults()} or {@link #set(Entity)}
+   * with a null parameter to populate the model with the default values.
    * @param attribute the attribute
-   * @param defaultValue the default value supplier
+   * @param <S> the value supplier type
    * @param <T> the value type
+   * @return the {@link Value} instance controlling the default value supplier
    * @see #persist(Attribute)
    */
-  <T> void setDefault(Attribute<T> attribute, Supplier<T> defaultValue);
+  <S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute);
 
   /**
    * @return a state controlling whether this edit model posts insert, update and delete events
