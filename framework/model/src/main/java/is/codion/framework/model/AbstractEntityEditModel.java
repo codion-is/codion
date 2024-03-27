@@ -177,7 +177,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setDefaults() {
+  public final void defaults() {
     if (setEntityAllowed()) {
       setEntity(null);
     }
@@ -997,7 +997,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     public void notifyAfterDelete(Collection<Entity> deletedEntities) {
       AbstractEntityEditModel.this.notifyAfterDelete(deletedEntities);
       if (activeEntity) {
-        setDefaults();
+        defaults();
       }
     }
 

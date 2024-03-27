@@ -210,7 +210,7 @@ final class EntityControls {
     @Override
     public void execute() {
       EntityEditPanel editPanel = initializeEditPanel();
-      editPanel.editModel().setDefaults();
+      editPanel.editModel().defaults();
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)

@@ -87,18 +87,18 @@ public interface EntityEditModel {
   EntityConnection connection();
 
   /**
-   * Populates this edit model with default values.
+   * Populates this edit model with default values for all attributes.
    * @see #setDefault(Attribute, Supplier)
    * @see AttributeDefinition#defaultValue()
    */
-  void setDefaults();
+  void defaults();
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
    * {@link Entity} being edited by this edit model. If {@code entity} is null
-   * the effect is the same as calling {@link #setDefaults()}.
+   * the effect is the same as calling {@link #defaults()}.
    * @param entity the entity
-   * @see #setDefaults()
+   * @see #defaults()
    */
   void set(Entity entity);
 
@@ -250,7 +250,7 @@ public interface EntityEditModel {
 
   /**
    * Sets the default value supplier for the given attribute. Used when the underlying value is not persistent.
-   * Use {@link #setDefaults()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
+   * Use {@link #defaults()} or {@link #set(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
    * @param defaultValue the default value supplier
    * @param <T> the value type
@@ -533,10 +533,10 @@ public interface EntityEditModel {
   void removeValueChangeListener(Consumer<Attribute<?>> listener);
 
   /**
-   * Notified each time the entity is set via {@link #set(Entity)} or {@link #setDefaults()}.
+   * Notified each time the entity is set via {@link #set(Entity)} or {@link #defaults()}.
    * @param listener a listener notified each time the entity is set, possibly to null
    * @see #set(Entity)
-   * @see #setDefaults()
+   * @see #defaults()
    */
   void addEntityListener(Consumer<Entity> listener);
 

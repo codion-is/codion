@@ -139,7 +139,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     this.controls = createControlsMap();
     setupFocusActivation();
     if (editModel.exists().not().get()) {
-      editModel.setDefaults();
+      editModel.defaults();
     }
   }
 
@@ -161,7 +161,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #requestInitialFocus()
    */
   public final void clearAndRequestFocus() {
-    editModel().setDefaults();
+    editModel().defaults();
     requestInitialFocus();
   }
 
@@ -237,7 +237,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     try {
       editModel().insert();
       if (configuration.clearAfterInsert) {
-        editModel().setDefaults();
+        editModel().defaults();
       }
       if (configuration.requestFocusAfterInsert) {
         requestAfterInsertFocus();
@@ -758,7 +758,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     private void afterInsert(Collection<Entity> insertedEntities, EntityEditModel.Insert insert) {
       insert.notifyAfterInsert(insertedEntities);
       if (configuration.clearAfterInsert) {
-        editModel().setDefaults();
+        editModel().defaults();
       }
       if (configuration.requestFocusAfterInsert) {
         requestAfterInsertFocus();

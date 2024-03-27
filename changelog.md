@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.35-SNAPSHOT
+### is.codion.swing.framework.model
+- EntityEditModel.setDefaults() renamed defaults().
 
 ## 0.17.34
 ### is.codion.common.core
