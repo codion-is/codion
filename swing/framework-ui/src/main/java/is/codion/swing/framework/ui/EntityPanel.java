@@ -1339,6 +1339,7 @@ public class EntityPanel extends JPanel {
      * as they may be displayed in a shared window.
      * @param detailPanel the detail panel
      * @return the value controlling the state of the given detail panel
+     * @throws IllegalStateException in case the panel has not been laid out
      */
     Value<PanelState> panelState(EntityPanel detailPanel);
   }

@@ -168,14 +168,22 @@ public final class TabbedDetailLayout implements DetailLayout {
 
   @Override
   public void select(EntityPanel entityPanel) {
+    throwIfNotLaidOut();
     detailController.select(requireNonNull(entityPanel));
   }
 
   @Override
   public Value<PanelState> panelState(EntityPanel detailPanel) {
     requireNonNull(detailPanel);
+    throwIfNotLaidOut();
 
     return detailController.panelState();
+  }
+
+  private void throwIfNotLaidOut() {
+    if (entityPanel == null) {
+      throw new IllegalStateException("EntityPanel has not been laid out");
+    }
   }
 
   /**

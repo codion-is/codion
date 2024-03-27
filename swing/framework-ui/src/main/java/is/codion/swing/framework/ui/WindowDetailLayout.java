@@ -94,11 +94,14 @@ public final class WindowDetailLayout implements DetailLayout {
 
   @Override
   public Value<PanelState> panelState(EntityPanel detailPanel) {
+    throwIfNotLaidOut();
+
     return detailWindow(detailPanel).panelState;
   }
 
   @Override
   public void select(EntityPanel entityPanel) {
+    throwIfNotLaidOut();
     Window panelWindow = detailWindow(entityPanel).window;
     if (panelWindow.isShowing()) {
       panelWindow.toFront();
@@ -118,6 +121,12 @@ public final class WindowDetailLayout implements DetailLayout {
    */
   public static WindowDetailLayout windowDetailLayout(WindowType windowType) {
     return builder().windowType(windowType).build();
+  }
+
+  private void throwIfNotLaidOut() {
+    if (entityPanel == null) {
+      throw new IllegalStateException("EntityPanel has not been laid out");
+    }
   }
 
   /**

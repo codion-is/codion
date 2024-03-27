@@ -27,6 +27,7 @@ Codion Change Log
 - EntityApplicationPanel.ApplicationLayout.layout() now throws exception in case the panel has already been laid out.
 - EntityApplicationPanel.ApplicationLayout.applicationTabPane() renamed tabbedPane().
 - EntityTablePanel.StatusPanel.configureLimit() now uses an input validator.
+- EntityPanel.DetailLayout.panelState() now throws exception in case the panel has not been laid out.
 
 ## 0.17.33
 ### is.codion.common.core
