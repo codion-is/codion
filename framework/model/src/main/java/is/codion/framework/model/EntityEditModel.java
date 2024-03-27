@@ -650,7 +650,7 @@ public interface EntityEditModel {
    *
    *   insert.notifyAfterInsert(insertedEntities);
    * </pre>
-   * {@link #insert()} may be called on a background thread while {@link #validate()}, {@link #notifyBeforeInsert()}
+   * {@link #insert()} may be called on a background thread while {@link #notifyBeforeInsert()}
    * and {@link #notifyAfterInsert(Collection)} must be called on the UI thread.
    */
   interface Insert {
@@ -688,7 +688,7 @@ public interface EntityEditModel {
    *
    *   update.notifyAfterUpdate(updatedEntities);
    * </pre>
-   * {@link #update()} may be called on a background thread while {@link #validate()}, {@link #notifyBeforeUpdate()}
+   * {@link #update()} may be called on a background thread while {@link #notifyBeforeUpdate()}
    * and {@link #notifyAfterUpdate(Collection)} must be called on the UI thread.
    */
   interface Update {
