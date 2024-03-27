@@ -19,6 +19,7 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.value.Value.Validator;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entity;
@@ -31,9 +32,13 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
+  private static final int DEFAULT_LIMIT = 1_000;
+  private static final int MAXIMUM_LIMIT = 10_000;
+
   public TrackTableModel(EntityConnectionProvider connectionProvider) {
     super(Track.TYPE, connectionProvider);
     editable().set(true);
+    configureLimit();
   }
 
   public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
@@ -42,6 +47,23 @@ public final class TrackTableModel extends SwingEntityTableModel {
       Collection<Entity> result = connection()
               .execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
       replace(result);
+    }
+  }
+
+  private void configureLimit() {
+    limit().set(DEFAULT_LIMIT);
+    limit().addListener(this::refresh);
+    limit().addValidator(new LimitValidator());
+  }
+
+  private static final class LimitValidator implements Validator<Integer> {
+
+    @Override
+    public void validate(Integer value) {
+      if (value != null && value > MAXIMUM_LIMIT) {
+        // The error message is never displayed, so not required
+        throw new IllegalArgumentException();
+      }
     }
   }
 }
