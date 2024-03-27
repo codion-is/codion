@@ -97,7 +97,7 @@ public final class ApplicationPanel extends JPanel {
 
     JPanel inputPanel = flexibleGridLayoutPanel(0, 2).build();
 
-    Components.stringField(model.shortStringValue())
+    stringField(model.shortStringValue())
             .columns(20)
             .lowerCase(true)
             .maximumLength(20)
