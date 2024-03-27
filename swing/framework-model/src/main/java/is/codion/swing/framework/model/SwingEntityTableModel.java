@@ -30,6 +30,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -284,6 +285,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
+  public final EntityConnection connection() {
+    return editModel.connection();
+  }
+
+  @Override
   public final State editable() {
     return editable;
   }
@@ -373,7 +379,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final void refresh(Collection<Entity.Key> keys) {
     try {
-      replace(connectionProvider().connection().select(keys));
+      replace(connection().select(keys));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -870,7 +876,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
       return emptyList();
     }
-    List<Entity> items = editModel.connectionProvider().connection().select(select);
+    List<Entity> items = connection().select(select);
     updateRefreshSelect(select);
 
     return items;

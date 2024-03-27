@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.value.ValueSet;
 import is.codion.common.value.ValueSetObserver;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -92,6 +93,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final EntityConnectionProvider connectionProvider() {
     return editModel.connectionProvider();
+  }
+
+  @Override
+  public final EntityConnection connection() {
+    return editModel.connection();
   }
 
   @Override

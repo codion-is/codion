@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.ValueSetObserver;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -54,6 +55,13 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the connection provider used by this entity model
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * Do not cache or keep the connection returned by this method in a long living field,
+   * since it may become invalid and thereby unusable.
+   * @return the connection used by this entity model
+   */
+  EntityConnection connection();
 
   /**
    * @return the underlying domain entities

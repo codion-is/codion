@@ -12,6 +12,7 @@ Codion Change Log
 - FrameworkMessages.confirmDeleteSelected() removed.
 ### is.codion.swing.framework.model
 - EntityModel.activeDetailModels() now returns ValueSetObserver, addActiveDetailModelsListener() and removeActiveDetailModelsListener() removed.
+- EntityModel, EntityEditModel, EntityTableModel, EntityApplicationModel.connection() convenience method added.
 ### is.codion.swing.framework.ui
 - EntityPanel.detailLayout() now protected instead of package private.
 - EntityPanel.selectDetailPanel() removed for now.

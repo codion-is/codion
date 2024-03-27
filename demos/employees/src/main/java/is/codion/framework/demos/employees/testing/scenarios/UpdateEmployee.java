@@ -42,7 +42,7 @@ public final class UpdateEmployee implements Performer<EmployeesAppModel> {
     selectRandomRow(departmentModel.tableModel());
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     if (employeeModel.tableModel().getRowCount() > 0) {
-      EntityConnection connection = employeeModel.connectionProvider().connection();
+      EntityConnection connection = employeeModel.connection();
       connection.beginTransaction();
       try {
         selectRandomRow(employeeModel.tableModel());

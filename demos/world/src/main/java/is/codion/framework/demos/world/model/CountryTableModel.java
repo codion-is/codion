@@ -20,7 +20,6 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
@@ -52,7 +51,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 
   public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
     CountryReportDataSource dataSource = new CountryReportDataSource(selectionModel().getSelectedItems(),
-            connectionProvider().connection(), progressReporter);
+            connection(), progressReporter);
 
     return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, reportParameters());
   }
@@ -72,9 +71,8 @@ public final class CountryTableModel extends SwingEntityTableModel {
   private final class CapitalConditionSupplier implements Supplier<Condition> {
     @Override
     public Condition get() {
-      EntityConnection connection = connectionProvider().connection();
       try {
-        return City.ID.in(connection.select(Country.CAPITAL));
+        return City.ID.in(connection().select(Country.CAPITAL));
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

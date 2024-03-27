@@ -162,7 +162,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entities entities = tableModel.entities();
     Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
     Entity.Key pk2 = entities.primaryKey(Employee.TYPE, 2);
-    tableModel.connectionProvider().connection().beginTransaction();
+    tableModel.connection().beginTransaction();
     try {
       tableModel.select(singletonList(pk1));
       tableModel.selectionModel().setSelectedIndex(0);
@@ -178,7 +178,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       assertTrue(tableModel.containsItem(selected));
     }
     finally {
-      tableModel.connectionProvider().connection().rollbackTransaction();
+      tableModel.connection().rollbackTransaction();
     }
   }
 

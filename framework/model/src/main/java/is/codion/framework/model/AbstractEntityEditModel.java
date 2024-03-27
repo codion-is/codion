@@ -194,6 +194,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
+  public final EntityConnection connection() {
+    return connectionProvider.connection();
+  }
+
+  @Override
   public final void replace(ForeignKey foreignKey, Collection<Entity> entities) {
     replaceForeignKey(requireNonNull(foreignKey), requireNonNull(entities));
   }
@@ -369,7 +374,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (states.entityExists.get()) {
-        set(connectionProvider().connection().select(entity.primaryKey()));
+        set(connection().select(entity.primaryKey()));
       }
     }
     catch (DatabaseException e) {

@@ -29,6 +29,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -118,6 +119,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the connection provider used by this table model
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * Do not cache or keep the connection returned by this method in a long living field,
+   * since it may become invalid and thereby unusable.
+   * @return the connection used by this table model
+   */
+  EntityConnection connection();
 
   /**
    * @return the underlying domain entities

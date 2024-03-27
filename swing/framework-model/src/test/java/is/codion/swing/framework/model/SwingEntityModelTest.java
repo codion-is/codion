@@ -90,7 +90,7 @@ public final class SwingEntityModelTest
     Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
     departmentModel.tableModel().select(Collections.singletonList(primaryKey));
     Entity operations = departmentModel.tableModel().selectionModel().getSelectedItem();
-    EntityConnection connection = departmentModel.connectionProvider().connection();
+    EntityConnection connection = departmentModel.connection();
     connection.beginTransaction();
     try {
       departmentModel.editModel().delete();
@@ -126,7 +126,7 @@ public final class SwingEntityModelTest
   @Test
   public void test() throws Exception {
     super.test();
-    EntityConnection connection = departmentModel.connectionProvider().connection();
+    EntityConnection connection = departmentModel.connection();
     connection.beginTransaction();
     try {
       departmentModel.tableModel().refresh();

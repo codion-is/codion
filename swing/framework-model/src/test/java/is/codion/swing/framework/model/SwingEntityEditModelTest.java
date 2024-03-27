@@ -104,7 +104,7 @@ public class SwingEntityEditModelTest {
 
   @Test
   void replace() throws DatabaseException {
-    Entity blake = employeeEditModel.connectionProvider().connection()
+    Entity blake = employeeEditModel.connection()
             .selectSingle(Employee.NAME.equalTo("BLAKE"));
     employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
     employeeEditModel.refreshComboBoxModels();

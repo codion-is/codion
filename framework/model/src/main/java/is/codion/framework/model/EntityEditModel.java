@@ -24,6 +24,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -77,6 +78,13 @@ public interface EntityEditModel {
    * @return the connection provider used by this edit model
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * Do not cache or keep the connection returned by this method in a long living field,
+   * since it may become invalid and thereby unusable.
+   * @return the connection used by this edit model
+   */
+  EntityConnection connection();
 
   /**
    * Populates this edit model with default values.

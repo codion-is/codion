@@ -41,7 +41,7 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
   }
 
   private Entity createPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
-    EntityConnection connection = connectionProvider().connection();
+    EntityConnection connection = connection();
     connection.beginTransaction();
     try {
       Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);

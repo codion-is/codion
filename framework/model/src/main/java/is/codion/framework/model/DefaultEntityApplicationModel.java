@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
@@ -75,6 +76,11 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
+  }
+
+  @Override
+  public final EntityConnection connection() {
+    return connectionProvider.connection();
   }
 
   @Override

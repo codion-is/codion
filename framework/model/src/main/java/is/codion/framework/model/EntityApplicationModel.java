@@ -23,6 +23,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
@@ -69,6 +70,13 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * Do not cache or keep the connection returned by this method in a long living field,
+   * since it may become invalid and thereby unusable.
+   * @return the connection used by this application model
+   */
+  EntityConnection connection();
 
   /**
    * @return the application version, an empty Optional in case no version information is available

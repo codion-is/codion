@@ -179,7 +179,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.detailModel(Employee.TYPE).tableModel().refresh();
     assertTrue(departmentModel.detailModel(Employee.TYPE).tableModel().getRowCount() > 0);
 
-    EntityConnection connection = departmentModel.connectionProvider().connection();
+    EntityConnection connection = departmentModel.connection();
     Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
 
     departmentModel.tableModel().selectionModel().setSelectedItem(department);
@@ -246,7 +246,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
     link.clearForeignKeyOnEmptySelection().set(false);
 
-    Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
+    Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
     departmentModel.tableModel().refresh();
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
@@ -280,7 +280,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
     link.refreshOnSelection().set(false);
 
-    Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
+    Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
     departmentModel.tableModel().refresh();
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
@@ -296,7 +296,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    Entity dept = departmentModel.connectionProvider().entities().builder(Department.TYPE)
+    Entity dept = departmentModel.entities().builder(Department.TYPE)
             .with(Department.ID, -42)
             .with(Department.NAME, "Name")
             .with(Department.LOCATION, "Loc")

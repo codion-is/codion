@@ -63,7 +63,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
       return null;
     }
     try {
-      return connectionProvider().connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
+      return connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);

@@ -544,7 +544,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void showEntityMenu() {
-    new EntityPopupMenu(editModel().entity(), editModel().connectionProvider().connection()).show(this, 0, 0);
+    new EntityPopupMenu(editModel().entity(), editModel().connection()).show(this, 0, 0);
   }
 
   private Map<EditControl, Value<Control>> createControlsMap() {
