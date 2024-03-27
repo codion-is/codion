@@ -85,7 +85,8 @@ public final class H2DatabaseFactory implements DatabaseFactory {
     try {
       Class<?> runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
       Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
-      execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(), database.url(), username, password, scriptPath, scriptCharset, false);
+      execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(),
+              database.url(), username, password, scriptPath, scriptCharset, false);
     }
     catch (ClassNotFoundException cle) {
       throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);

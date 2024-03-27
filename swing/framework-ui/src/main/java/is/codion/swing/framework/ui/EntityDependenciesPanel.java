@@ -191,9 +191,12 @@ public final class EntityDependenciesPanel extends JPanel {
 
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
-      case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      default: throw new IllegalArgumentException();
+      case NAVIGATE_LEFT:
+        return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case NAVIGATE_RIGHT:
+        return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 

@@ -62,7 +62,8 @@ final class DomainToString {
     builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("add(").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
-    builder.append(String.join("," + LINE_SEPARATOR, attributeStrings(definition.attributes().definitions(), interfaceName, definition))).append(")");
+    builder.append(String.join("," + LINE_SEPARATOR,
+            attributeStrings(definition.attributes().definitions(), interfaceName, definition))).append(")");
     if (definition.primaryKey().generated()) {
       builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".keyGenerator(identity())");
     }
@@ -109,9 +110,13 @@ final class DomainToString {
       });
 
       //todo wrap references if more than four
-      builder.append(INDENT).append("ForeignKey ")
-              .append(attributeDefinition.attribute().name().toUpperCase()).append(" = TYPE.foreignKey(\"")
-              .append(attributeDefinition.attribute().name().toLowerCase()).append("\", " + String.join("," + LINE_SEPARATOR, references) + ");").append(LINE_SEPARATOR);
+      builder.append(INDENT)
+              .append("ForeignKey ")
+              .append(attributeDefinition.attribute().name().toUpperCase())
+              .append(" = TYPE.foreignKey(\"")
+              .append(attributeDefinition.attribute().name().toLowerCase())
+              .append("\", " + String.join("," + LINE_SEPARATOR, references) + ");")
+              .append(LINE_SEPARATOR);
     }
   }
 

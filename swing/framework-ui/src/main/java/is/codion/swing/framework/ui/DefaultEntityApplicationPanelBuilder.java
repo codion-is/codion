@@ -496,7 +496,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private static String userInfo(EntityConnectionProvider connectionProvider) {
     String description = connectionProvider.description();
 
-    return removeUsernamePrefix(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
+    return removeUsernamePrefix(connectionProvider.user().username().toUpperCase()) +
+            (description != null ? "@" + description.toUpperCase() : "");
   }
 
   private static String removeUsernamePrefix(String username) {

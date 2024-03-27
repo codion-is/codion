@@ -60,10 +60,10 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
       throw new IllegalStateException("EntityApplicationPanel has already been laid out: " + applicationPanel);
     }
     tabbedPane = Components.tabbedPane()
-          .tabPlacement(TAB_PLACEMENT.get())
-          .focusable(false)
-          .changeListener(new InitializeSelectedPanelListener())
-          .build();
+            .tabPlacement(TAB_PLACEMENT.get())
+            .focusable(false)
+            .changeListener(new InitializeSelectedPanelListener())
+            .build();
     applicationPanel.entityPanels().forEach(this::addTab);//InitializeSelectedPanelListener initializes first panel
     applicationPanel.setBorder(createEmptyBorder(0, Layouts.GAP.get(), 0, Layouts.GAP.get()));
     applicationPanel.setLayout(new BorderLayout());

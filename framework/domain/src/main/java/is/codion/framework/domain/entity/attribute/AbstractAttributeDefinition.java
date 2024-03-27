@@ -53,7 +53,8 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   private static final long serialVersionUID = 1;
 
   private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
-  private static final String INVALID_ITEM_SUFFIX = ResourceBundle.getBundle(AbstractAttributeDefinition.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
+  private static final String INVALID_ITEM_SUFFIX =
+          ResourceBundle.getBundle(AbstractAttributeDefinition.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
 
   private static final Comparator<?> LEXICAL_COMPARATOR = Text.collator();
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();

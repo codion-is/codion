@@ -53,7 +53,7 @@ import static java.util.Arrays.asList;
  */
 public final class EntitiesTutorial {
 
-  /** The domain class, which contains the domain model definition */
+  // The domain class, containing the domain model definition
   public static final class Chinook extends DefaultDomain {
 
     // DomainType for identifying this domain model

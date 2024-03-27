@@ -37,7 +37,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   // end::constructor[]
 
   // tag::createForeignKeyComboBox[]
-  /** Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president */
+  // Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president
   @Override
   public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);

@@ -811,8 +811,8 @@ public class EntityTablePanel extends JPanel {
   /**
    * Override to customize the edit dialog used when multiple entities are edited.
    * @param attribute the attribute to edit
-   * @return a edit dialog builder
    * @param <T> the attribute type
+   * @return a edit dialog builder
    */
   protected <T> EntityDialogs.EditDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
     return EntityDialogs.editDialog(tableModel.editModel(), attribute)
@@ -1906,15 +1906,24 @@ public class EntityTablePanel extends JPanel {
 
     private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
       switch (shortcut) {
-        case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
-        case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
-        case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-        case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case PRINT: return keyStroke(VK_P, CTRL_DOWN_MASK);
-        case DELETE_SELECTED: return keyStroke(VK_DELETE);
-        case DISPLAY_POPUP_MENU: return keyStroke(VK_G, CTRL_DOWN_MASK);
-        default: throw new IllegalArgumentException();
+        case REQUEST_TABLE_FOCUS:
+          return keyStroke(VK_T, CTRL_DOWN_MASK);
+        case SELECT_CONDITION_PANEL:
+          return keyStroke(VK_S, CTRL_DOWN_MASK);
+        case TOGGLE_CONDITION_PANEL:
+          return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case SELECT_FILTER_PANEL:
+          return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
+        case TOGGLE_FILTER_PANEL:
+          return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case PRINT:
+          return keyStroke(VK_P, CTRL_DOWN_MASK);
+        case DELETE_SELECTED:
+          return keyStroke(VK_DELETE);
+        case DISPLAY_POPUP_MENU:
+          return keyStroke(VK_G, CTRL_DOWN_MASK);
+        default:
+          throw new IllegalArgumentException();
       }
     }
   }

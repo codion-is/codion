@@ -45,7 +45,8 @@ public final class EntityEditComponentPanelTest {
   @Test
   void test() {
     SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-    assertThrows(IllegalArgumentException.class, () -> new EntityEditComponentPanel(editModel, new EntityComponents(editModel.entities().definition(Department.TYPE))));
+    assertThrows(IllegalArgumentException.class, () ->
+            new EntityEditComponentPanel(editModel, new EntityComponents(editModel.entities().definition(Department.TYPE))));
     EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
     componentPanel.createTextField(Employee.NAME);
     assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));

@@ -32,9 +32,9 @@ public final class InvoicePanel extends EntityPanel {
                     .editable(attributes -> attributes.remove(Invoice.TOTAL))),
             config -> config
                     .detailLayout(TabbedDetailLayout.builder()
-                    .includeTabbedPane(false)
-                    .includeControls(false)
-                    .build()));
+                            .includeTabbedPane(false)
+                            .includeControls(false)
+                            .build()));
     addDetailPanel(invoiceLinePanel);
   }
 }

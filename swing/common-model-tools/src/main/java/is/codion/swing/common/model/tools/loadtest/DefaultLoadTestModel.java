@@ -197,7 +197,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
   @Override
   public int totalRunCount(String scenarioName) {
     synchronized (counter) {
-      return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get() + counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+      return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get() +
+              counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
     }
   }
 

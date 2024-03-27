@@ -202,9 +202,9 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static Entity duplicateEntity(Entity referencedEntity) {
     return ProxyBuilder.builder(Entity.class)
-                  .delegate(referencedEntity)
-                  .method("toString", parameters -> referencedEntity + " <DUPLICATE>")
-                  .build();
+            .delegate(referencedEntity)
+            .method("toString", parameters -> referencedEntity + " <DUPLICATE>")
+            .build();
   }
 
   private static Control clipboardControl(Entity entity, Attribute<?> attribute) {

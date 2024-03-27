@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 /**
  * A utility class for load testing SwingEntityApplicationModel instances.
  */
-public final class EntityLoadTestUtil{
+public final class EntityLoadTestUtil {
 
   private static final Random RANDOM = new Random();
 

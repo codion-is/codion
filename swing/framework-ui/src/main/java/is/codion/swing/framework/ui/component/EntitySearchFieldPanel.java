@@ -239,9 +239,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
-      case ADD: return keyStroke(VK_INSERT);
-      case EDIT: return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
-      default: throw new IllegalArgumentException();
+      case ADD:
+        return keyStroke(VK_INSERT);
+      case EDIT:
+        return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 

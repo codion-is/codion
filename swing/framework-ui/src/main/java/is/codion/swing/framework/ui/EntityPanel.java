@@ -885,8 +885,8 @@ public class EntityPanel extends JPanel {
   }
 
   /**
-   * @return the detail layout used by this panel
    * @param <T> the detail layout type
+   * @return the detail layout used by this panel
    */
   protected final <T extends DetailLayout> T detailLayout() {
     return (T) configuration.detailLayout;
@@ -1295,20 +1295,34 @@ public class EntityPanel extends JPanel {
 
     private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
       switch (shortcut) {
-        case REQUEST_TABLE_FOCUS: return keyStroke(VK_T, CTRL_DOWN_MASK);
-        case TOGGLE_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case SELECT_CONDITION_PANEL: return keyStroke(VK_S, CTRL_DOWN_MASK);
-        case TOGGLE_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case SELECT_FILTER_PANEL: return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-        case REQUEST_SEARCH_FIELD_FOCUS: return keyStroke(VK_F, CTRL_DOWN_MASK);
-        case REQUEST_EDIT_PANEL_FOCUS: return keyStroke(VK_E, CTRL_DOWN_MASK);
-        case SELECT_INPUT_FIELD: return keyStroke(VK_I, CTRL_DOWN_MASK);
-        case TOGGLE_EDIT_PANEL: return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_UP: return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_DOWN: return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_RIGHT: return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        case NAVIGATE_LEFT: return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-        default: throw new IllegalArgumentException();
+        case REQUEST_TABLE_FOCUS:
+          return keyStroke(VK_T, CTRL_DOWN_MASK);
+        case TOGGLE_CONDITION_PANEL:
+          return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case SELECT_CONDITION_PANEL:
+          return keyStroke(VK_S, CTRL_DOWN_MASK);
+        case TOGGLE_FILTER_PANEL:
+          return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case SELECT_FILTER_PANEL:
+          return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
+        case REQUEST_SEARCH_FIELD_FOCUS:
+          return keyStroke(VK_F, CTRL_DOWN_MASK);
+        case REQUEST_EDIT_PANEL_FOCUS:
+          return keyStroke(VK_E, CTRL_DOWN_MASK);
+        case SELECT_INPUT_FIELD:
+          return keyStroke(VK_I, CTRL_DOWN_MASK);
+        case TOGGLE_EDIT_PANEL:
+          return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_UP:
+          return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_DOWN:
+          return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_RIGHT:
+          return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        case NAVIGATE_LEFT:
+          return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+        default:
+          throw new IllegalArgumentException();
       }
     }
   }

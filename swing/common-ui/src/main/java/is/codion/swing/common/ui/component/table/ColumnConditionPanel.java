@@ -695,10 +695,14 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
-      case TOGGLE_ENABLED: return keyStroke(VK_ENTER, CTRL_DOWN_MASK);
-      case PREVIOUS_OPERATOR: return keyStroke(VK_UP, CTRL_DOWN_MASK);
-      case NEXT_OPERATOR: return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
-      default: throw new IllegalArgumentException();
+      case TOGGLE_ENABLED:
+        return keyStroke(VK_ENTER, CTRL_DOWN_MASK);
+      case PREVIOUS_OPERATOR:
+        return keyStroke(VK_UP, CTRL_DOWN_MASK);
+      case NEXT_OPERATOR:
+        return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 

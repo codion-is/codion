@@ -871,18 +871,18 @@ public final class ComponentsTest {
   void buttonPanel() {
     JPanel base = new JPanel();
     base.add(Components.buttonPanel(Controls.builder()
-            .name("SubMenu")
-            .controls(Control.builder(() -> {})
-                            .name("one"),
-                    Control.builder(() -> {})
-                            .name("two"),
-                    ToggleControl.builder(State.state())
-                            .name("three"))
-            .controls(Controls.builder()
-                    .control(Control.builder(() -> {})
-                            .name("four"))
+                    .name("SubMenu")
+                    .controls(Control.builder(() -> {})
+                                    .name("one"),
+                            Control.builder(() -> {})
+                                    .name("two"),
+                            ToggleControl.builder(State.state())
+                                    .name("three"))
+                    .controls(Controls.builder()
+                            .control(Control.builder(() -> {})
+                                    .name("four"))
+                            .build())
                     .build())
-            .build())
             .orientation(SwingConstants.VERTICAL)
             .build());
   }

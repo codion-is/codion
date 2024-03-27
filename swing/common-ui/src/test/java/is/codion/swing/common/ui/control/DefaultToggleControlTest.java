@@ -152,7 +152,7 @@ public class DefaultToggleControlTest {
     Value<Boolean> value = Value.value(false, false);
     JCheckBox box = CheckBoxBuilder.builder()
             .toggleControl(ToggleControl.builder(value)
-            .name("Test"))
+                    .name("Test"))
             .build();
     assertEquals("Test", box.getText());
   }
@@ -162,7 +162,7 @@ public class DefaultToggleControlTest {
     Value<Boolean> value = Value.value(false, false);
     JMenuItem item = CheckBoxMenuItemBuilder.builder()
             .toggleControl(ToggleControl.builder(value)
-            .name("Test"))
+                    .name("Test"))
             .build();
     assertEquals("Test", item.getText());
   }

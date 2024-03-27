@@ -86,7 +86,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
       Map.Entry<String, JsonNode> field = fields.next();
       AttributeDefinition<?> attributeDefinition = definition.attributes()
               .definition(definition.attributes().get(field.getKey()));
-      valueMap.put(attributeDefinition.attribute(), entityObjectMapper.readValue(field.getValue().toString(), attributeDefinition.attribute().type().valueClass()));
+      valueMap.put(attributeDefinition.attribute(),
+              entityObjectMapper.readValue(field.getValue().toString(),
+                      attributeDefinition.attribute().type().valueClass()));
     }
 
     return valueMap;

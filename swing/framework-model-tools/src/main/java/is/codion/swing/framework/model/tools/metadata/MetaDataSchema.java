@@ -63,7 +63,7 @@ public final class MetaDataSchema {
     if (!populatedSchemas.contains(name)) {
       schemaNotifier.accept(name);
       tables.clear();
-      try (ResultSet resultSet = metaData.getTables(null, name, null, new String[]{"TABLE", "VIEW"})) {
+      try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
                 .collect(toMap(MetaDataTable::tableName, Function.identity())));
         tables.values().stream()

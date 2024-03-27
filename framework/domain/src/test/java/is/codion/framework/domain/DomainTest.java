@@ -97,8 +97,8 @@ public class DomainTest {
               entityType.column("id", Integer.class).define().primaryKey(),
               fkId.define().column(),
               foreignKey.define()
-                    .foreignKey()
-                    .caption("caption")));
+                      .foreignKey()
+                      .caption("caption")));
     });
   }
 
@@ -150,16 +150,19 @@ public class DomainTest {
   @Test
   void condition() {
     EntityType nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
-    assertThrows(NullPointerException.class, () -> domain.add(nullConditionProvider1.define(nullConditionProvider1.integerColumn("id").define().primaryKey())
-            .condition(null, (columns, values) -> null)));
+    assertThrows(NullPointerException.class, () ->
+            domain.add(nullConditionProvider1.define(nullConditionProvider1.integerColumn("id").define().primaryKey())
+                    .condition(null, (columns, values) -> null)));
     EntityType nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
-    assertThrows(NullPointerException.class, () -> domain.add(nullConditionProvider2.define(nullConditionProvider2.integerColumn("id").define().primaryKey())
-            .condition(nullConditionProvider2.conditionType("id"), null)));
+    assertThrows(NullPointerException.class, () ->
+            domain.add(nullConditionProvider2.define(nullConditionProvider2.integerColumn("id").define().primaryKey())
+                    .condition(nullConditionProvider2.conditionType("id"), null)));
     EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
     ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
-    assertThrows(IllegalStateException.class, () -> domain.add(nullConditionProvider3.define(nullConditionProvider3.integerColumn("id").define().primaryKey())
-            .condition(nullConditionType, (columns, values) -> null)
-            .condition(nullConditionType, (columns, values) -> null)));
+    assertThrows(IllegalStateException.class, () ->
+            domain.add(nullConditionProvider3.define(nullConditionProvider3.integerColumn("id").define().primaryKey())
+                    .condition(nullConditionType, (columns, values) -> null)
+                    .condition(nullConditionType, (columns, values) -> null)));
   }
 
   @Test
@@ -184,7 +187,7 @@ public class DomainTest {
     Column<Integer> ref_id = entityType.integerColumn("ref_id");
     ForeignKey foreignKey = entityType.foreignKey("fk", ref_id, id);
     assertThrows(UnsupportedOperationException.class, () -> foreignKey.define()
-                    .foreignKey().comparator((o1, o2) -> 0));
+            .foreignKey().comparator((o1, o2) -> 0));
   }
 
   @Test

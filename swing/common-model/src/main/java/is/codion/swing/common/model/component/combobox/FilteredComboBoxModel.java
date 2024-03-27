@@ -109,7 +109,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
             .forEach(validator::test));
     comparator.addListener(this::sortVisibleItems);
     validSelectionPredicate.addValidator(predicate -> {
-      if (predicate != null && !predicate.test(selectedItem)){
+      if (predicate != null && !predicate.test(selectedItem)) {
         throw new IllegalArgumentException("The current selected item does not satisfy the valid selection predicate");
       }
     });

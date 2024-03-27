@@ -37,7 +37,7 @@ public final class FilteredTableModelDemo {
   // tag::filteredTableModel[]
   // Define a class representing the table rows
   public static final class TableRow {
-    
+
     public static final int STRING_COLUMN_INDEX = 0;
     public static final int INTEGER_COLUMN_INDEX = 1;
 

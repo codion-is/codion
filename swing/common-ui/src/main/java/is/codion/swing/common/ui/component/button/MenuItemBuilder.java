@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Builds a JMenuItem.
  */
-public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends ButtonBuilder<Void, C, B>{
+public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends ButtonBuilder<Void, C, B> {
 
   /**
    * @param <B> the builder type

@@ -87,7 +87,8 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
   private static String createInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
     boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
-    StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
+    StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "")
+            .append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
     int cnt = 1;
     for (int i = 0; i < valueCount; i++) {
       stringBuilder.append(valuePlaceholder);

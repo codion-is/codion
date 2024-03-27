@@ -127,7 +127,7 @@ public final class NotesDemo {
     }
   }
 
-  private static final class NoteEditPanel extends EntityEditPanel  {
+  private static final class NoteEditPanel extends EntityEditPanel {
 
     private NoteEditPanel(NoteEditModel editModel) {
       // CLEAR is the only standard control we require, for clearing the UI
@@ -181,7 +181,7 @@ public final class NotesDemo {
     }
   }
 
-  private static final class NoteTablePanel extends EntityTablePanel  {
+  private static final class NoteTablePanel extends EntityTablePanel {
 
     private NoteTablePanel(NoteTableModel tableModel) {
       super(tableModel, config -> config

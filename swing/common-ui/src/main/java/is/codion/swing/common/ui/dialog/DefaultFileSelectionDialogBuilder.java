@@ -133,7 +133,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
           }
         }
       }
-      fileChooserSave.setSelectedFiles(new File[]{new File("")});
+      fileChooserSave.setSelectedFiles(new File[] {new File("")});
       fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
       fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
       fileChooserSave.setMultiSelectionEnabled(false);

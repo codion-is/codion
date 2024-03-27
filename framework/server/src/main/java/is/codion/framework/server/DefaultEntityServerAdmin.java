@@ -233,7 +233,8 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   @Override
   public Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions() {
     Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions = new HashMap<>();
-    server.domainEntityDefinitions().forEach((domainType, domainDefinitions) -> domainEntityDefinitions.put(domainType.name(), domainDefinitions));
+    server.domainEntityDefinitions().forEach((domainType, domainDefinitions) ->
+            domainEntityDefinitions.put(domainType.name(), domainDefinitions));
 
     return domainEntityDefinitions;
   }

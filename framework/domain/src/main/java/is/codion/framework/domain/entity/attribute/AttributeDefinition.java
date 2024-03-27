@@ -379,7 +379,6 @@ public interface AttributeDefinition<T> {
      * By default, grouping is not used.
      * Only applicable to numerical attributes.
      * This setting is overridden during subsequent calls to {@link #format(Format)}
-     *
      * @param numberFormatGrouping if true then number grouping is used
      * @return this builder instance
      * @throws IllegalStateException in case this is not a numerical attribute

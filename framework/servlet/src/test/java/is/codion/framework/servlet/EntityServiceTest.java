@@ -480,7 +480,8 @@ public class EntityServiceTest {
   }
 
   private static String createAuthorizationHeader() {
-    return "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() + ":" + String.valueOf(UNIT_TEST_USER.password())).getBytes());
+    return "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() +
+            ":" + String.valueOf(UNIT_TEST_USER.password())).getBytes());
   }
 
   private static HttpClient createHttpClient() {

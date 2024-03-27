@@ -82,7 +82,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     requireNonNull(values);
     boolean aggregateColumn = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
     Condition condition = aggregateColumn ? having(Conjunction.AND) : where(Conjunction.AND);
-    ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
+    ColumnConditionModel<Attribute<T>, T> columnConditionModel =
+            (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
     if (columnConditionModel != null) {
       columnConditionModel.operator().set(Operator.EQUAL);
       columnConditionModel.setEqualValues(values);
@@ -311,7 +312,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     @Override
     public boolean test(ColumnConditionModel<?, ?> conditionModel) {
       return (conditionModel.columnIdentifier() instanceof Column) &&
-                    entityDefinition.columns().definition((Column<?>) conditionModel.columnIdentifier()).aggregate();
+              entityDefinition.columns().definition((Column<?>) conditionModel.columnIdentifier()).aggregate();
     }
   }
 
@@ -320,7 +321,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     @Override
     public boolean test(ColumnConditionModel<?, ?> conditionModel) {
       return !(conditionModel.columnIdentifier() instanceof Column) ||
-                    !entityDefinition.columns().definition((Column<?>) conditionModel.columnIdentifier()).aggregate();
+              !entityDefinition.columns().definition((Column<?>) conditionModel.columnIdentifier()).aggregate();
     }
   }
 }

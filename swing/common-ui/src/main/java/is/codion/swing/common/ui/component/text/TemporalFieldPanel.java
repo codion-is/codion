@@ -133,8 +133,8 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
   /**
    * {@link TemporalFieldPanel} supports {@link LocalDate} and {@link LocalDateTime}.
    * @param temporalClass the temporal type
-   * @return true if {@link TemporalFieldPanel} supports the given type
    * @param <T> the temporal type
+   * @return true if {@link TemporalFieldPanel} supports the given type
    */
   public static <T extends Temporal> boolean supports(Class<T> temporalClass) {
     return CalendarPanel.supportedTypes().contains(requireNonNull(temporalClass));

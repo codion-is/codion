@@ -70,7 +70,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
    * Instantiates a new {@link EntityConditionPanelFactory}
    * @param entityComponents the {@link EntityComponents} instance to use when creating bound fields
    */
-  public EntityConditionPanelFactory(EntityComponents entityComponents)  {
+  public EntityConditionPanelFactory(EntityComponents entityComponents) {
     this.entityComponents = requireNonNull(entityComponents);
   }
 

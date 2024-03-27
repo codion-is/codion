@@ -318,7 +318,7 @@ public interface EntityEditModel {
    * @param entities the entities to update
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
-   * @throws is.codion.common.db.exception.RecordModifiedException  in case an entity has been modified since it was loaded
+   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified since it was loaded
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case updating is not enabled
    * @see #addBeforeUpdateListener(Consumer)

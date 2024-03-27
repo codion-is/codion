@@ -59,10 +59,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
-  /** The attributes to include when selecting the entities for this combo box model, an empty set indicates all attributes */
   private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
   private final Entities entities;
-  /** A map of keys used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
   private final Value<Supplier<Condition>> conditionSupplier;

@@ -50,7 +50,7 @@ public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends D
    */
   B escapeAction(Action escapeAction);
 
-   /**
+  /**
    * @param modal true if the dialog should be modal
    * @return this builder instance
    */

@@ -160,7 +160,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static final int DEFAULT_LOGO_SIZE = 68;
 
-  /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
+  // Non-static so that Locale.setDefault(...) can be called in the main method of a subclass
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
 
   private final String applicationDefaultUsernameProperty;
@@ -216,8 +216,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the application layout
    * @param <T> the layout type
+   * @return the application layout
    */
   public final <T extends ApplicationLayout> T applicationLayout() {
     return (T) applicationLayout;

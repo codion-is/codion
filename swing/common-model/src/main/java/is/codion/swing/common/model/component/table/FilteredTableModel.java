@@ -301,9 +301,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param columnIdentifier the column identifier
    * @param tableModel the table model
    * @param format the format
-   * @return a new {@link SummaryValueProvider} instance
    * @param <T> the column value type
    * @param <C> the column identifier type
+   * @return a new {@link SummaryValueProvider} instance
    */
   static <T extends Number, C> SummaryValueProvider<T> summaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
     return new DefaultFilteredTableModel.DefaultSummaryValueProvider<>(columnIdentifier, tableModel, format);

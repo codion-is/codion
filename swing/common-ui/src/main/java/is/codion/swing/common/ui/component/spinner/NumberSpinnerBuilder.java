@@ -69,8 +69,8 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
   /**
    * @param spinnerNumberModel the spinner model
    * @param valueClass the value class
-   * @return a new {@link NumberSpinnerBuilder} instance
    * @param <T> the number type
+   * @return a new {@link NumberSpinnerBuilder} instance
    */
   static <T extends Number> NumberSpinnerBuilder<T> builder(SpinnerNumberModel spinnerNumberModel,
                                                             Class<T> valueClass) {
@@ -81,8 +81,8 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
    * @param spinnerNumberModel the spinner model
    * @param valueClass the value class
    * @param linkedValue the value to link to
-   * @return a new {@link NumberSpinnerBuilder} instance
    * @param <T> the number type
+   * @return a new {@link NumberSpinnerBuilder} instance
    */
   static <T extends Number> NumberSpinnerBuilder<T> builder(SpinnerNumberModel spinnerNumberModel,
                                                             Class<T> valueClass, Value<T> linkedValue) {

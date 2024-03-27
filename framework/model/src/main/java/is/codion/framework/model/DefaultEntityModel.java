@@ -292,9 +292,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     @Override
     public void accept(Boolean active) {
       activeDetailModels.set(detailModels.values().stream()
-            .filter(link -> link.active().get())
-            .map(DetailModelLink::detailModel)
-            .collect(Collectors.toList()));
+              .filter(link -> link.active().get())
+              .map(DetailModelLink::detailModel)
+              .collect(Collectors.toList()));
       if (active) {
         detailModelLink.onSelection(activeEntities());
       }

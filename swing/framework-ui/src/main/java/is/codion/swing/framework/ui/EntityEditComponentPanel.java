@@ -298,11 +298,12 @@ public class EntityEditComponentPanel extends JPanel {
             .sorted(AttributeDefinition.definitionComparator())
             .collect(Collectors.toList());
     if (!attributeDefinitions.isEmpty()) {
-      Optional<AttributeDefinition<?>> optionalAttribute = attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
-              Dialogs.selectionDialog(attributeDefinitions)
-                      .owner(this)
-                      .title(FrameworkMessages.selectInputField())
-                      .selectSingle();
+      Optional<AttributeDefinition<?>> optionalAttribute =
+              attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
+                      Dialogs.selectionDialog(attributeDefinitions)
+                              .owner(this)
+                              .title(FrameworkMessages.selectInputField())
+                              .selectSingle();
       optionalAttribute.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
     }
   }
@@ -459,7 +460,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent,
                                           String labelBorderLayoutConstraints, int labelAlignment) {
-    return createInputPanel(createLabel(attribute).horizontalAlignment(labelAlignment).build(), inputComponent, labelBorderLayoutConstraints);
+    return createInputPanel(createLabel(attribute).horizontalAlignment(labelAlignment).build(),
+            inputComponent, labelBorderLayoutConstraints);
   }
 
   /**

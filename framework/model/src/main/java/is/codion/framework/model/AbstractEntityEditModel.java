@@ -791,7 +791,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
     definition.columns().definitions().stream()
-            .filter(columnDefinition -> !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
+            //these are set via their respective parent foreign key
+            .filter(columnDefinition -> !definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
             .filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
             .map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
             .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));

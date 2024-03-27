@@ -144,7 +144,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     requireNonNull(attributeDefinition, "attributeDefinition");
     Attribute<T> attribute = attributeDefinition.attribute();
     if (!nullable(entity, attribute) && entity.isNull(attribute)) {
-      if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attributeDefinition instanceof ForeignKeyDefinition)) {
+      if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull())
+              && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue(attributeDefinition);
         boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.definition(), attributeDefinition);

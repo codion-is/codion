@@ -96,7 +96,8 @@ public interface LookAndFeelProvider {
    * @param lookAndFeelProvider the look and feel provider to add
    */
   static void addLookAndFeelProvider(LookAndFeelProvider lookAndFeelProvider) {
-    DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).lookAndFeelInfo().getClassName(), lookAndFeelProvider);
+    DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS
+            .put(requireNonNull(lookAndFeelProvider).lookAndFeelInfo().getClassName(), lookAndFeelProvider);
   }
 
   /**

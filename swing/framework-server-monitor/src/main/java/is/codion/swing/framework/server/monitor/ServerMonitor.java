@@ -460,7 +460,8 @@ public final class ServerMonitor {
   private EntityServerAdmin connectServer(String serverName) throws RemoteException, ServerAuthenticationException {
     long time = System.currentTimeMillis();
     try {
-      Server<?, EntityServerAdmin> theServer = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      Server<?, EntityServerAdmin> theServer =
+              (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
       EntityServerAdmin serverAdmin = theServer.serverAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.usedMemory();

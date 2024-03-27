@@ -149,8 +149,8 @@ public interface LoadTestModel<T> {
 
   /**
    * @param loadTest the load test
-   * @return a new {@link LoadTestModel} instance based on the given load test
    * @param <T> the application type
+   * @return a new {@link LoadTestModel} instance based on the given load test
    */
   static <T> LoadTestModel<T> loadTestModel(LoadTest<T> loadTest) {
     return new DefaultLoadTestModel<>(loadTest);

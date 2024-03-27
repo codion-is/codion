@@ -162,8 +162,8 @@ public interface LoadTest<T> {
   /**
    * @param applicationFactory the application factory
    * @param closeApplication closes an application
-   * @return a new builder
    * @param <T> the application type
+   * @return a new builder
    */
   static <T> Builder<T> builder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
     return new DefaultLoadTest.DefaultBuilder<>(applicationFactory, closeApplication);
@@ -337,8 +337,8 @@ public interface LoadTest<T> {
 
     /**
      * @param performer the scenario performer
-     * @return a new Builder
      * @param <T> the load test application type
+     * @return a new Builder
      */
     static <T> Builder<T> builder(Performer<T> performer) {
       return new DefaultScenario.DefaultBuilder<>(performer);
@@ -346,8 +346,8 @@ public interface LoadTest<T> {
 
     /**
      * @param performer the scenario performer
-     * @return a new {@link Scenario} instance
      * @param <T> the load test application type
+     * @return a new {@link Scenario} instance
      */
     static <T> Scenario<T> scenario(Performer<T> performer) {
       return builder(performer).build();
@@ -356,8 +356,8 @@ public interface LoadTest<T> {
     /**
      * @param performer the scenario performer
      * @param defaultWeight the default scenario weight
-     * @return a new {@link Scenario} instance
      * @param <T> the load test application type
+     * @return a new {@link Scenario} instance
      */
     static <T> Scenario<T> scenario(Performer<T> performer, int defaultWeight) {
       return builder(performer)

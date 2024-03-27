@@ -56,7 +56,11 @@ public class TaskSchedulerTest {
 
   @Test
   void setIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1, TimeUnit.SECONDS).build().interval().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable)
+            .interval(1, TimeUnit.SECONDS)
+            .build()
+            .interval()
+            .set(-1));
   }
 
   @Test

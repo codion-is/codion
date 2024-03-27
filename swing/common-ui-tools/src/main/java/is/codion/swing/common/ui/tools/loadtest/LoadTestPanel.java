@@ -133,8 +133,8 @@ public final class LoadTestPanel<T> extends JPanel {
   /**
    * Instantiates a new {@link LoadTestPanel} instance.
    * @param loadTestModel the LoadTestModel to base this panel on
-   * @return a new {@link LoadTestPanel} instance.
    * @param <T> the load test application type
+   * @return a new {@link LoadTestPanel} instance.
    */
   public static <T> LoadTestPanel<T> loadTestPanel(LoadTestModel<T> loadTestModel) {
     return new LoadTestPanel<>(loadTestModel);
@@ -493,7 +493,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private final class ApplicationTableCellRendererFactory implements FilteredTableCellRendererFactory<Integer>{
+  private final class ApplicationTableCellRendererFactory implements FilteredTableCellRendererFactory<Integer> {
 
     @Override
     public TableCellRenderer tableCellRenderer(FilteredTableColumn<Integer> column) {

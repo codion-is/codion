@@ -285,7 +285,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @param condition the condition specifying the entities to delete
    * @return the number of deleted rows
    * @throws DatabaseException in case of a db exception
-   * @throws RemoteException   in case of a remote exception
+   * @throws RemoteException in case of a remote exception
    */
   int delete(Condition condition) throws RemoteException, DatabaseException;
 
@@ -377,7 +377,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(Condition condition) throws RemoteException,  DatabaseException;
+  List<Entity> select(Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities based on the given select
@@ -403,7 +403,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @param count the count conditions
    * @return the number of rows fitting the given count conditions
    * @throws DatabaseException in case of a db exception
-   * @throws RemoteException   in case of a remote exception
+   * @throws RemoteException in case of a remote exception
    */
   int count(Count count) throws RemoteException, DatabaseException;
 

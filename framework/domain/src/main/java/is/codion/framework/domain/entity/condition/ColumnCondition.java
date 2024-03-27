@@ -260,8 +260,8 @@ public interface ColumnCondition<T> extends Condition {
   /**
    * Instantiates a new {@link Factory} instance
    * @param column the column
-   * @return a new {@link Factory} instance
    * @param <T> the column type
+   * @return a new {@link Factory} instance
    */
   static <T> ColumnCondition.Factory<T> factory(Column<T> column) {
     return new DefaultColumnConditionFactory<>(column);

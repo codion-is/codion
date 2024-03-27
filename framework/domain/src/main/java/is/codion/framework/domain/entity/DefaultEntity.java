@@ -287,7 +287,8 @@ class DefaultEntity implements Entity, Serializable {
       throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
     }
     Map<Attribute<?>, Object> previousValues = new HashMap<>();
-    definition.attributes().definitions().forEach(attributeDefinition -> previousValues.put(attributeDefinition.attribute(), get(attributeDefinition)));
+    definition.attributes().definitions().forEach(attributeDefinition ->
+            previousValues.put(attributeDefinition.attribute(), get(attributeDefinition)));
     clear();
     if (entity != null) {
       entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));

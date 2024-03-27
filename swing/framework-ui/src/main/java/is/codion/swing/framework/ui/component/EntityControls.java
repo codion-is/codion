@@ -121,7 +121,7 @@ final class EntityControls {
 
   static String validateButtonLocation(String buttonLocation) {
     requireNonNull(buttonLocation);
-    if (!buttonLocation.equals(BorderLayout.WEST) && ! buttonLocation.equals(BorderLayout.EAST)) {
+    if (!buttonLocation.equals(BorderLayout.WEST) && !buttonLocation.equals(BorderLayout.EAST)) {
       throw new IllegalArgumentException("Button location must be BorderLayout.WEST or BorderLayout.EAST");
     }
     return buttonLocation;

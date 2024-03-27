@@ -42,19 +42,17 @@ import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]
-/**
- * This class contains the specification for the Employees application domain model
- */
+// This class contains the specification for the Employees application domain model
 public final class Employees extends DefaultDomain {
 
-  /** The domain type identifying this domain model */
+  // The domain type identifying this domain model
   public static final DomainType DOMAIN = domainType(Employees.class);
 
-  /** Entity type for the table employees.department */
+  // Entity type for the table employees.department
   public interface Department {
     EntityType TYPE = DOMAIN.entityType("employees.department");
 
-    /** Columns for the columns in the employees.department table */
+    // Columns for the columns in the employees.department table
     Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("department_no");
     Column<String> NAME = TYPE.stringColumn("name");
     Column<String> LOCATION = TYPE.stringColumn("location");
@@ -62,11 +60,11 @@ public final class Employees extends DefaultDomain {
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
-  /** Entity type for the table employees.employee */
+  // Entity type for the table employees.employee
   public interface Employee {
     EntityType TYPE = DOMAIN.entityType("employees.employee");
 
-    /** Columns for the columns in the employees.employee table */
+    // Columns for the columns in the employees.employee table
     Column<Integer> ID = TYPE.integerColumn("id");
     Column<String> NAME = TYPE.stringColumn("name");
     Column<String> JOB = TYPE.stringColumn("job");
@@ -76,11 +74,11 @@ public final class Employees extends DefaultDomain {
     Column<Double> COMMISSION = TYPE.doubleColumn("commission");
     Column<Integer> DEPARTMENT = TYPE.integerColumn("department_no");
 
-    /** Foreign key attribute for the DEPTNO column in the table employees.employee */
+    // Foreign key attribute for the DEPTNO column in the table employees.employee
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_no_fk", DEPARTMENT, Department.DEPARTMENT_NO);
-    /** Foreign key attribute for the MGR column in the table employees.employee */
+    // Foreign key attribute for the MGR column in the table employees.employee
     ForeignKey MANAGER_FK = TYPE.foreignKey("manager_fk", MANAGER_ID, Employee.ID);
-    /** Attribute for the denormalized department location property */
+    // Attribute for the denormalized department location property
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
     JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
@@ -93,7 +91,7 @@ public final class Employees extends DefaultDomain {
   // end::employeeConstants[]
 
   // tag::constructor[]
-  /** Initializes this domain model */
+  // Initializes this domain model
   public Employees() {
     super(DOMAIN);
     department();
@@ -103,7 +101,7 @@ public final class Employees extends DefaultDomain {
 
   // tag::defineDepartment[]
   void department() {
-    /*Defining the entity Department.TYPE*/
+    // Defining the entity Department.TYPE
     add(Department.TYPE.define(
                     Department.DEPARTMENT_NO.define()
                             .primaryKey()
@@ -127,7 +125,7 @@ public final class Employees extends DefaultDomain {
 
   // tag::defineEmployee[]
   void employee() {
-    /*Defining the entity Employee.TYPE*/
+    // Defining the entity Employee.TYPE
     add(Employee.TYPE.define(
                     Employee.ID.define()
                             .primaryKey(),

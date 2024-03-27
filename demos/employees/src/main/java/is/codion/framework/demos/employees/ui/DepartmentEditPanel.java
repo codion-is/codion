@@ -48,7 +48,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
             .columns(12);
 
     editModel().exists().addDataListener(exists ->
-            initialFocusAttribute().set(exists ? Department.NAME: Department.DEPARTMENT_NO));
+            initialFocusAttribute().set(exists ? Department.NAME : Department.DEPARTMENT_NO));
 
     setLayout(borderLayout());
     add(borderLayoutPanel()

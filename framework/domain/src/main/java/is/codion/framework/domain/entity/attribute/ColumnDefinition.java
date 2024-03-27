@@ -49,8 +49,8 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   int type();
 
   /**
-   * @return the {@link Converter} for this column.
    * @param <C> the colum value type
+   * @return the {@link Converter} for this column.
    */
   <C> Converter<C, T> converter();
 

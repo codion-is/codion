@@ -310,9 +310,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
-      case RESIZE_LEFT: return keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
-      case RESIZE_RIGHT: return keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
-      default: throw new IllegalArgumentException();
+      case RESIZE_LEFT:
+        return keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+      case RESIZE_RIGHT:
+        return keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 

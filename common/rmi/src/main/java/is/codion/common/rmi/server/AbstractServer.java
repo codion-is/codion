@@ -376,8 +376,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * Logs the given exception and shuts down this server
    * @param exception the exception
-   * @return the exception
    * @param <T> the exception type
+   * @return the exception
    */
   protected final <T extends Throwable> T logShutdownAndReturn(T exception) {
     LOG.error("Exception on server startup", exception);

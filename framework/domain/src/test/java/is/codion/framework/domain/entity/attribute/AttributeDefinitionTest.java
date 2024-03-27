@@ -132,17 +132,26 @@ public final class AttributeDefinitionTest {
 
   @Test
   void nonDecimalWithRoundingMode() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute").define().column().decimalRoundingMode(RoundingMode.CEILING));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute")
+            .define()
+            .column()
+            .decimalRoundingMode(RoundingMode.CEILING));
   }
 
   @Test
   void dateColumnWithNumberFormat() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().format(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute")
+            .define()
+            .column()
+            .format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
   void timestampColumnWithNumberFormat() {
-    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateTimeColumn("attribute").define().column().format(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateTimeColumn("attribute")
+            .define()
+            .column()
+            .format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
@@ -194,7 +203,11 @@ public final class AttributeDefinitionTest {
   @Test
   void description() {
     final String description = "Here is a description";
-    AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute").define().column().description(description).build();
+    AttributeDefinition<Integer> attributeDefinition = ENTITY_TYPE.integerColumn("attribute")
+            .define()
+            .column()
+            .description(description)
+            .build();
     assertEquals(description, attributeDefinition.description());
   }
 
@@ -212,8 +225,14 @@ public final class AttributeDefinitionTest {
     assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").readOnly(true));
     assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").readOnly(false));
     assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").updatable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").insertable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").define().subquery("select").expression("expression"));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test")
+            .define()
+            .subquery("select")
+            .insertable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test")
+            .define()
+            .subquery("select")
+            .expression("expression"));
   }
 
   @Test

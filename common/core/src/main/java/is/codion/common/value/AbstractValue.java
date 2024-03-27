@@ -265,7 +265,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   private boolean notifyListeners(boolean changed) {
-    if (notify == WHEN_SET || (notify == WHEN_CHANGED && changed)){
+    if (notify == WHEN_SET || (notify == WHEN_CHANGED && changed)) {
       notifyListeners();
     }
 

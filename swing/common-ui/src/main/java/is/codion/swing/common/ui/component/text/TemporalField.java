@@ -507,10 +507,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
-      case DISPLAY_CALENDAR: return keyStroke(VK_INSERT);
-      case INCREMENT: return keyStroke(VK_UP);
-      case DECREMENT: return keyStroke(VK_DOWN);
-      default: throw new IllegalArgumentException();
+      case DISPLAY_CALENDAR:
+        return keyStroke(VK_INSERT);
+      case INCREMENT:
+        return keyStroke(VK_UP);
+      case DECREMENT:
+        return keyStroke(VK_DOWN);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 

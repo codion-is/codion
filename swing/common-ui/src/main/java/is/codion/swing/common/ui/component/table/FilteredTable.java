@@ -1073,10 +1073,14 @@ public final class FilteredTable<R, C> extends JTable {
   }
   private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
     switch (shortcut) {
-      case COPY_CELL: return keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-      case TOGGLE_SORT_COLUMN: return keyStroke(VK_DOWN, ALT_DOWN_MASK);
-      case TOGGLE_SORT_COLUMN_ADD: return keyStroke(VK_UP, ALT_DOWN_MASK);
-      default: throw new IllegalArgumentException();
+      case COPY_CELL:
+        return keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+      case TOGGLE_SORT_COLUMN:
+        return keyStroke(VK_DOWN, ALT_DOWN_MASK);
+      case TOGGLE_SORT_COLUMN_ADD:
+        return keyStroke(VK_UP, ALT_DOWN_MASK);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 

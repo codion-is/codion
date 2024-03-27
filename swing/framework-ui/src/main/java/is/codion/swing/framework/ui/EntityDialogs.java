@@ -93,8 +93,8 @@ public final class EntityDialogs {
   /**
    * @param editModel the edit model to use
    * @param attribute the attribute to edit
-   * @return a new builder
    * @param <T> the attribute type
+   * @return a new builder
    */
   public static <T> EditDialogBuilder<T> editDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
     return new DefaultEntityEditDialogBuilder<>(editModel, attribute);
