@@ -72,7 +72,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
   private final Map<Attribute<?>, State> persistValues = new ConcurrentHashMap<>();
-  private final Map<Attribute<?>, Value<Supplier<?>>> defaultValueSuppliers = new ConcurrentHashMap<>();
+  private final Map<Attribute<?>, Value<Supplier<?>>> defaultValues = new ConcurrentHashMap<>();
   private final Value<EntityValidator> validator;
   private final Value<Predicate<Entity>> modifiedPredicate;
   private final Value<Predicate<Entity>> existsPredicate;
@@ -116,7 +116,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final <S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute) {
     AttributeDefinition<T> attributeDefinition = entityDefinition().attributes().definition(attribute);
 
-    return (Value<S>) defaultValueSuppliers.computeIfAbsent(attribute, k ->
+    return (Value<S>) defaultValues.computeIfAbsent(attribute, k ->
             Value.value(attributeDefinition::defaultValue, attributeDefinition::defaultValue));
   }
 
