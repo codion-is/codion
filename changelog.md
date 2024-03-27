@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityEditModel.setDefaults() renamed defaults().
 - EntityEditModel.setDefault() renamed defaultValue(), now Value based.
+- EntityEditModel.Insert, Update and Delete methods renamed.
 
 ## 0.17.34
 ### is.codion.common.core

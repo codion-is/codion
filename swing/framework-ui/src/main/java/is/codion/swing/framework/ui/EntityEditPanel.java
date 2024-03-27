@@ -745,8 +745,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     public void execute() throws ValidationException {
       if (confirmInsert()) {
         EntityEditModel.Insert insert = editModel().createInsert();
-        insert.notifyBeforeInsert();
-        progressWorkerDialog(insert::insert)
+        insert.before();
+        progressWorkerDialog(insert::perform)
                 .title(MESSAGES.getString("inserting"))
                 .owner(EntityEditPanel.this)
                 .onResult(entities -> afterInsert(entities, insert))
@@ -756,7 +756,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
 
     private void afterInsert(Collection<Entity> insertedEntities, EntityEditModel.Insert insert) {
-      insert.notifyAfterInsert(insertedEntities);
+      insert.after(insertedEntities);
       if (configuration.clearAfterInsert) {
         editModel().defaults();
       }
@@ -777,8 +777,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     public void execute() throws ValidationException {
       if (confirmUpdate()) {
         EntityEditModel.Update update = editModel().createUpdate();
-        update.notifyBeforeUpdate();
-        progressWorkerDialog(update::update)
+        update.before();
+        progressWorkerDialog(update::perform)
                 .title(MESSAGES.getString("updating"))
                 .owner(EntityEditPanel.this)
                 .onResult(entities -> afterUpdate(entities, update))
@@ -788,7 +788,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
 
     private void afterUpdate(Collection<Entity> updatedEntities, EntityEditModel.Update update) {
-      update.notifyAfterUpdate(updatedEntities);
+      update.after(updatedEntities);
       requestAfterUpdateFocus();
     }
 
@@ -804,8 +804,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     public void execute() {
       if (confirmDelete()) {
         EntityEditModel.Delete delete = editModel().createDelete();
-        delete.notifyBeforeDelete();
-        progressWorkerDialog(delete::delete)
+        delete.before();
+        progressWorkerDialog(delete::perform)
                 .title(MESSAGES.getString("deleting"))
                 .owner(EntityEditPanel.this)
                 .onResult(entities -> afterDelete(entities, delete))
@@ -815,7 +815,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
 
     private void afterDelete(Collection<Entity> deletedEntities, EntityEditModel.Delete delete) {
-      delete.notifyAfterDelete(deletedEntities);
+      delete.after(deletedEntities);
       requestInitialFocus();
     }
 

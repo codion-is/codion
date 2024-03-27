@@ -643,15 +643,15 @@ public interface EntityEditModel {
    * <pre>
    *   Insert insert = editModel.createInsert();
    *
-   *   insert.notifyBeforeInsert();
+   *   insert.before();
    *
    *   // Can safely be called in a background thread
-   *   Collection&lt;Entity&gt; insertedEntities = insert.insert();
+   *   Collection&lt;Entity&gt; insertedEntities = insert.perform();
    *
-   *   insert.notifyAfterInsert(insertedEntities);
+   *   insert.after(insertedEntities);
    * </pre>
-   * {@link #insert()} may be called on a background thread while {@link #notifyBeforeInsert()}
-   * and {@link #notifyAfterInsert(Collection)} must be called on the UI thread.
+   * {@link #perform()} may be called on a background thread while {@link #before()}
+   * and {@link #after(Collection)} must be called on the UI thread.
    */
   interface Insert {
 
@@ -659,21 +659,21 @@ public interface EntityEditModel {
      * Notifies listeners that an insert is about to be performed.
      * Must be called on the UI thread if this model has a panel based on it.
      */
-    void notifyBeforeInsert();
+    void before();
 
     /**
      * May be called in a background thread.
      * @return the inserted entities
      * @throws DatabaseException in case of a database exception
      */
-    Collection<Entity> insert() throws DatabaseException;
+    Collection<Entity> perform() throws DatabaseException;
 
     /**
      * Notifies listeners that an insert has been performed.
      * Must be called on the UI thread if this model has a panel based on it.
-     * @param insertedEntities the entities returned by {@link #insert()}
+     * @param insertedEntities the entities returned by {@link #perform()}
      */
-    void notifyAfterInsert(Collection<Entity> insertedEntities);
+    void after(Collection<Entity> insertedEntities);
   }
 
   /**
@@ -681,15 +681,15 @@ public interface EntityEditModel {
    * <pre>
    *   Update update = editModel.createUpdate();
    *
-   *   update.notifyBeforeUpdate();
+   *   update.before();
    *
    *   // Can safely be called in a background thread
-   *   Collection&lt;Entity&gt; updatedEntities = update.update();
+   *   Collection&lt;Entity&gt; updatedEntities = update.perform();
    *
-   *   update.notifyAfterUpdate(updatedEntities);
+   *   update.after(updatedEntities);
    * </pre>
-   * {@link #update()} may be called on a background thread while {@link #notifyBeforeUpdate()}
-   * and {@link #notifyAfterUpdate(Collection)} must be called on the UI thread.
+   * {@link #perform()} may be called on a background thread while {@link #before()}
+   * and {@link #after(Collection)} must be called on the UI thread.
    */
   interface Update {
 
@@ -697,21 +697,21 @@ public interface EntityEditModel {
      * Notifies listeners that an update is about to be performed.
      * Must be called on the UI thread if this model has a panel based on it.
      */
-    void notifyBeforeUpdate();
+    void before();
 
     /**
      * May be called in a background thread.
      * @return the updated entities
      * @throws DatabaseException in case of a database exception
      */
-    Collection<Entity> update() throws DatabaseException;
+    Collection<Entity> perform() throws DatabaseException;
 
     /**
      * Notifies listeners that an update has been performed.
      * Must be called on the UI thread if this model has a panel based on it.
-     * @param updatedEntities the entities returned by {@link #update()}
+     * @param updatedEntities the entities returned by {@link #perform()}
      */
-    void notifyAfterUpdate(Collection<Entity> updatedEntities);
+    void after(Collection<Entity> updatedEntities);
   }
 
   /**
@@ -719,15 +719,15 @@ public interface EntityEditModel {
    * <pre>
    *   Delete delete = editModel.createDelete();
    *
-   *   delete.notifyBeforeDelete();
+   *   delete.before();
    *
    *   // Can safely be called in a background thread
-   *   Collection&lt;Entity&gt; deletedEntities = delete.delete();
+   *   Collection&lt;Entity&gt; deletedEntities = delete.perform();
    *
-   *   delete.notifyAfterDelete(deletedEntities);
+   *   delete.after(deletedEntities);
    * </pre>
-   * {@link #delete()} may be called on a background thread while {@link #notifyBeforeDelete()}
-   * and {@link #notifyAfterDelete(Collection)} must be called on the UI thread.
+   * {@link #perform()} may be called on a background thread while {@link #before()}
+   * and {@link #after(Collection)} must be called on the UI thread.
    */
   interface Delete {
 
@@ -735,19 +735,19 @@ public interface EntityEditModel {
      * Notifies listeners that a delete is about to be performed.
      * Must be called on the UI thread if this model has a panel based on it.
      */
-    void notifyBeforeDelete();
+    void before();
 
     /**
      * May be called in a background thread.
      * @return the deleted entities
      * @throws DatabaseException in case of a database exception
      */
-    Collection<Entity> delete() throws DatabaseException;
+    Collection<Entity> perform() throws DatabaseException;
 
     /**
      * Must be called on the UI thread if this model has a panel based on it.
-     * @param deletedEntities the entities returned by {@link #delete()}
+     * @param deletedEntities the entities returned by {@link #perform()}
      */
-    void notifyAfterDelete(Collection<Entity> deletedEntities);
+    void after(Collection<Entity> deletedEntities);
   }
 }

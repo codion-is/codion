@@ -314,32 +314,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    return new DefaultInsert().perform().iterator().next();
+    return new DefaultInsert().insert().iterator().next();
   }
 
   @Override
   public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    return new DefaultInsert(entities).perform();
+    return new DefaultInsert(entities).insert();
   }
 
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
-    return new DefaultUpdate().perform().iterator().next();
+    return new DefaultUpdate().update().iterator().next();
   }
 
   @Override
   public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
-    return new DefaultUpdate(entities).perform();
+    return new DefaultUpdate(entities).update();
   }
 
   @Override
   public final void delete() throws DatabaseException {
-    new DefaultDelete().perform();
+    new DefaultDelete().delete();
   }
 
   @Override
   public final void delete(Collection<Entity> entities) throws DatabaseException {
-    new DefaultDelete(entities).perform();
+    new DefaultDelete(entities).delete();
   }
 
   @Override
@@ -868,12 +868,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    public void notifyBeforeInsert() {
+    public void before() {
       AbstractEntityEditModel.this.notifyBeforeInsert(entities);
     }
 
     @Override
-    public Collection<Entity> insert() throws DatabaseException {
+    public Collection<Entity> perform() throws DatabaseException {
       LOG.debug("{} - insert {}", this, entities);
       Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
       if (!entities.isEmpty() && inserted.isEmpty()) {
@@ -884,7 +884,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    public void notifyAfterInsert(Collection<Entity> insertedEntities) {
+    public void after(Collection<Entity> insertedEntities) {
       AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
       if (activeEntity) {
         setEntity(insertedEntities.iterator().next());
@@ -900,10 +900,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return toInsert;
     }
 
-    private Collection<Entity> perform() throws DatabaseException {
-      notifyBeforeInsert();
-      Collection<Entity> inserted = insert();
-      notifyAfterInsert(inserted);
+    private Collection<Entity> insert() throws DatabaseException {
+      before();
+      Collection<Entity> inserted = perform();
+      after(inserted);
 
       return inserted;
     }
@@ -928,18 +928,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    public void notifyBeforeUpdate() {
+    public void before() {
       AbstractEntityEditModel.this.notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
     }
 
     @Override
-    public Collection<Entity> update() throws DatabaseException {
+    public Collection<Entity> perform() throws DatabaseException {
       LOG.debug("{} - update {}", this, entities);
       return new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection()));
     }
 
     @Override
-    public void notifyAfterUpdate(Collection<Entity> updatedEntities) {
+    public void after(Collection<Entity> updatedEntities) {
       AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
       Entity activeEntity = entity();
       updatedEntities.stream()
@@ -956,10 +956,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       }
     }
 
-    private Collection<Entity> perform() throws DatabaseException {
-      notifyBeforeUpdate();
-      Collection<Entity> updatedEntities = update();
-      notifyAfterUpdate(updatedEntities);
+    private Collection<Entity> update() throws DatabaseException {
+      before();
+      Collection<Entity> updatedEntities = perform();
+      after(updatedEntities);
 
       return updatedEntities;
     }
@@ -983,12 +983,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    public void notifyBeforeDelete() {
+    public void before() {
       AbstractEntityEditModel.this.notifyBeforeDelete(entities);
     }
 
     @Override
-    public Collection<Entity> delete() throws DatabaseException {
+    public Collection<Entity> perform() throws DatabaseException {
       LOG.debug("{} - delete {}", this, entities);
       AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
 
@@ -996,7 +996,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    public void notifyAfterDelete(Collection<Entity> deletedEntities) {
+    public void after(Collection<Entity> deletedEntities) {
       AbstractEntityEditModel.this.notifyAfterDelete(deletedEntities);
       if (activeEntity) {
         defaults();
@@ -1010,9 +1010,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return copy;
     }
 
-    private void perform() throws DatabaseException {
-      notifyBeforeDelete();
-      notifyAfterDelete(delete());
+    private void delete() throws DatabaseException {
+      before();
+      after(perform());
     }
   }
 

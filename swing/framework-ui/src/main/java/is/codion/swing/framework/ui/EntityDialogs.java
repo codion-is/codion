@@ -347,13 +347,13 @@ public final class EntityDialogs {
       @Override
       public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException {
         EntityEditModel.Update update = editModel.createUpdate(entities);
-        update.notifyBeforeUpdate();
-        progressWorkerDialog(update::update)
+        update.before();
+        progressWorkerDialog(update::perform)
                 .title(EDIT_PANEL_MESSAGES.getString("updating"))
                 .owner(dialogOwner)
                 .locationRelativeTo(locationRelativeTo)
                 .onException(exceptionHandler)
-                .onResult(update::notifyAfterUpdate)
+                .onResult(update::after)
                 .execute();
       }
     }

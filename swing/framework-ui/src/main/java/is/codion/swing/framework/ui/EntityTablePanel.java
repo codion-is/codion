@@ -1361,12 +1361,12 @@ public class EntityTablePanel extends JPanel {
     public void execute() {
       if (confirmDelete()) {
         EntityEditModel.Delete delete = tableModel().editModel().createDelete(tableModel().selectionModel().getSelectedItems());
-        delete.notifyBeforeDelete();
-        progressWorkerDialog(delete::delete)
+        delete.before();
+        progressWorkerDialog(delete::perform)
                 .title(EDIT_PANEL_MESSAGES.getString("deleting"))
                 .owner(EntityTablePanel.this)
                 .onException(this::onException)
-                .onResult(delete::notifyAfterDelete)
+                .onResult(delete::after)
                 .execute();
       }
     }
