@@ -97,6 +97,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
@@ -2101,11 +2102,26 @@ public class EntityTablePanel extends JPanel {
               .buildValue();
       tableModel.limit().set(Dialogs.inputDialog(limitValue)
               .title(MESSAGES.getString("row_limit"))
+              .inputValidator(new LimitInputValidator())
               .show());
     }
 
     private void updateStatusMessage() {
       statusMessage.set(configuration.statusMessage.apply(tableModel));
+    }
+
+    private final class LimitInputValidator implements Predicate<Integer> {
+
+      @Override
+      public boolean test(Integer limit) {
+        try {
+          tableModel.limit().validate(limit);
+          return true;
+        }
+        catch (IllegalArgumentException e) {
+          return false;
+        }
+      }
     }
   }
 }
