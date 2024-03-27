@@ -64,7 +64,7 @@ asciidoctor {
     }
     attributes "codion-version": documentationVersion,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
-            experimental: true, reproducible: true, linkcss: true,
+            experimental: true, reproducible: true, linkcss: true, tabsize: 2,
             "diagram-cachedir": project.layout.buildDirectory.dir("asciidoc/images/diagram-cache").get().asFile.absolutePath,
             "opar": "(",
             "cpar": ")",
