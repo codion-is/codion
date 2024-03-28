@@ -19,6 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.EventObserver;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
@@ -103,16 +104,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	boolean connectionValid();
 
 	/**
-	 * Adds a listener notified each time this connection provider establishes a connection to the database
-	 * @param listener a listener notified when a connection is established
+	 * @return an observer notified when a connection is established
 	 */
-	void addOnConnectListener(Consumer<EntityConnection> listener);
-
-	/**
-	 * Removes the given listener
-	 * @param listener the listener to remove
-	 */
-	void removeOnConnectListener(Consumer<EntityConnection> listener);
+	EventObserver<EntityConnection> connectObserver();
 
 	/**
 	 * Closes the underlying connection and performs cleanup if required

@@ -19,6 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
@@ -115,13 +116,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final void addOnConnectListener(Consumer<EntityConnection> listener) {
-		onConnectEvent.addDataListener(listener);
-	}
-
-	@Override
-	public final void removeOnConnectListener(Consumer<EntityConnection> listener) {
-		onConnectEvent.removeDataListener(listener);
+	public final EventObserver<EntityConnection> connectObserver() {
+		return onConnectEvent.observer();
 	}
 
 	@Override
