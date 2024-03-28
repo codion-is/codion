@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -359,7 +360,7 @@ public class EntityPanel extends JPanel {
 		}
 		addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
 		detailPanel.setParentPanel(this);
-		detailPanel.addActivateListener(configuration.detailLayout::select);
+		detailPanel.activateObserver().addDataListener(configuration.detailLayout::select);
 	}
 
 	/**
@@ -506,11 +507,11 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @param listener notified before this panel is activated
+	 * @return an observer notified before this panel is activated
 	 * @see #activate()
 	 */
-	public final void addActivateListener(Consumer<EntityPanel> listener) {
-		activateEvent.addDataListener(listener);
+	public final EventObserver<EntityPanel> activateObserver() {
+		return activateEvent.observer();
 	}
 
 	/**

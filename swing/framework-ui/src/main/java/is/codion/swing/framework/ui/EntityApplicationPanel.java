@@ -796,7 +796,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.addActivateListener(applicationLayout::select);
+		entityPanel.activateObserver().addDataListener(applicationLayout::select);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
 		}
