@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import javax.swing.SortOrder;
@@ -30,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -126,13 +126,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 	}
 
 	@Override
-	public void addSortingChangedListener(Consumer<C> listener) {
-		sortingChangedEvent.addDataListener(listener);
-	}
-
-	@Override
-	public void removeSortingChangedListener(Consumer<C> listener) {
-		sortingChangedEvent.removeDataListener(listener);
+	public EventObserver<C> sortingChangedObserver() {
+		return sortingChangedEvent.observer();
 	}
 
 	private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {

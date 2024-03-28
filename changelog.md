@@ -14,6 +14,8 @@ Codion Change Log
 - EntityEditModel.refreshEntity() renamed refresh().
 - EntityEditModel.referencedEntity() removed.
 - EntityEditModel, add/removeListener methods replaced with methods that return the underlying event observer.
+### is.codion.swing.common.model
+- FilteredTableSortModel, add/removeListener methods replaced with methods that return the underlying event observer.
 
 ## 0.17.34
 ### is.codion.common.core

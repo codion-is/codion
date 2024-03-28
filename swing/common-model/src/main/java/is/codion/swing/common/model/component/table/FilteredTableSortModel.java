@@ -18,10 +18,11 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.event.EventObserver;
+
 import javax.swing.SortOrder;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -105,14 +106,9 @@ public interface FilteredTableSortModel<R, C> {
 	boolean isSortingEnabled(C columnIdentifier);
 
 	/**
-	 * @param listener a listener notified each time the sorting state changes, with the column identifier as event data
+	 * @return an observer notified each time the sorting state changes, with the column identifier as event data
 	 */
-	void addSortingChangedListener(Consumer<C> listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeSortingChangedListener(Consumer<C> listener);
+	EventObserver<C> sortingChangedObserver();
 
 	/**
 	 * Specifies a sorting state for a column.

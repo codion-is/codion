@@ -703,7 +703,7 @@ public final class FilteredTable<R, C> extends JTable {
 		tableModel.selectionModel().selectedIndexesObserver().addDataListener(new ScrollToSelectedListener());
 		tableModel.filterModel().changeObserver().addListener(getTableHeader()::repaint);
 		tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
-		tableModel.sortModel().addSortingChangedListener(columnIdentifier -> getTableHeader().repaint());
+		tableModel.sortModel().sortingChangedObserver().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilteredTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener());
 		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(COPY_CELL).get())

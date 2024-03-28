@@ -434,7 +434,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		});
 		addTableModelListener(removeSelectionListener);
 		filterModel.changeObserver().addListener(this::filterItems);
-		sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
+		sortModel.sortingChangedObserver().addListener(this::sortItems);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
