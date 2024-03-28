@@ -3,11 +3,10 @@ Codion Change Log
 
 ## 0.17.35-SNAPSHOT
 ### is.codion.framework.model
-- EntityEditModel.Insert, Update and Delete split into separate steps, related refactoring.
-### is.codion.swing.framework.model
 - EntityEditModel.setDefaults() renamed defaults().
 - EntityEditModel.setDefault() renamed defaultValue(), now Value based.
 - EntityEditModel.Insert, Update and Delete methods renamed.
+- EntityEditModel.Insert, Update and Delete split into separate steps, related refactoring.
 
 ## 0.17.34
 ### is.codion.common.core
