@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -48,7 +49,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.text.TemporalField.KeyboardShortcut.*;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
@@ -180,10 +180,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * @param listener notified each time the value changes
+	 * @return an observer notified each time the value changes
 	 */
-	public void addListener(Consumer<T> listener) {
-		value.addDataListener(listener);
+	public ValueObserver<T> valueObserver() {
+		return value.observer();
 	}
 
 	/**
