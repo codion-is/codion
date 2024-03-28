@@ -20,10 +20,10 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -86,16 +86,11 @@ public interface FilteredTableSearchModel {
 	RowColumn currentResult();
 
 	/**
-	 * @param listener a listener notified each time the current search result changes
+	 * @return an observer notified each time the current search result changes
 	 * @see #nextResult()
 	 * @see #previousResult()
 	 */
-	void addCurrentResultListener(Consumer<RowColumn> listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeCurrentResultListener(Consumer<RowColumn> listener);
+	ValueObserver<RowColumn> currentResultObserver();
 
 	/**
 	 * Holds a row/column coordinate

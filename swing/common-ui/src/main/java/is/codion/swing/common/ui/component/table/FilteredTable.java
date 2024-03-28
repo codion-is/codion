@@ -702,7 +702,7 @@ public final class FilteredTable<R, C> extends JTable {
 	private void bindEvents() {
 		tableModel.selectionModel().selectedIndexesObserver().addDataListener(new ScrollToSelectedListener());
 		tableModel.filterModel().changeObserver().addListener(getTableHeader()::repaint);
-		tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
+		tableModel.searchModel().currentResultObserver().addListener(this::repaint);
 		tableModel.sortModel().sortingChangedObserver().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilteredTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener());

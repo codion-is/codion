@@ -20,6 +20,7 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -28,7 +29,6 @@ import javax.swing.event.TableColumnModelListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -106,13 +106,8 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	@Override
-	public void addCurrentResultListener(Consumer<RowColumn> listener) {
-		searchResult.addDataListener(listener);
-	}
-
-	@Override
-	public void removeCurrentResultListener(Consumer<RowColumn> listener) {
-		searchResult.removeDataListener(listener);
+	public ValueObserver<RowColumn> currentResultObserver() {
+		return searchResult.observer();
 	}
 
 	private Optional<RowColumn> nextResult(boolean addToSelection) {
