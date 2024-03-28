@@ -861,10 +861,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		columnModel().addColumnHiddenListener(this::onColumnHidden);
 		editEvents.addDataListener(new HandleEditEventsListener());
 		conditionModel.addChangeListener(() -> onConditionChanged(createSelect(conditionModel)));
-		editModel.addAfterInsertListener(this::onInsert);
-		editModel.addAfterUpdateListener(this::onUpdate);
-		editModel.addAfterDeleteListener(this::onDelete);
-		editModel.addEntityListener(this::onEntitySet);
+		editModel.afterInsertObserver().addDataListener(this::onInsert);
+		editModel.afterUpdateObserver().addDataListener(this::onUpdate);
+		editModel.afterDeleteObserver().addDataListener(this::onDelete);
+		editModel.entityObserver().addDataListener(this::onEntitySet);
 		selectionModel().addSelectedItemListener(editModel::set);
 		addTableModelListener(this::onTableModelEvent);
 	}

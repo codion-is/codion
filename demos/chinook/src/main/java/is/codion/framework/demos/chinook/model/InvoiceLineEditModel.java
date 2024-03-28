@@ -37,7 +37,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
-		addEditListener(InvoiceLine.TRACK_FK, this::setUnitPrice);
+		editObserver(InvoiceLine.TRACK_FK).addDataListener(this::setUnitPrice);
 	}
 
 	void addTotalsUpdatedListener(Consumer<Collection<Entity>> listener) {

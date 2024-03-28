@@ -1093,7 +1093,7 @@ public class EntityTablePanel extends JPanel {
 		tableModel.conditionModel().addChangeListener(this::onConditionChanged);
 		tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
 		tableModel.refresher().addRefreshFailedListener(this::onException);
-		tableModel.editModel().addInsertUpdateOrDeleteListener(table::repaint);
+		tableModel.editModel().insertUpdateOrDeleteObserver().addListener(table::repaint);
 		if (conditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();
 			conditionPanel.addFocusGainedListener(table::scrollToColumn);

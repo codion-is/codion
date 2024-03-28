@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
@@ -415,123 +416,58 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
-		events.removeEditListener(attribute, listener);
+	public final <T> EventObserver<T> editObserver(Attribute<T> attribute) {
+		return events.editObserver(attribute);
 	}
 
 	@Override
-	public final <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
-		events.addEditListener(attribute, listener);
+	public final <T> EventObserver<T> valueObserver(Attribute<T> attribute) {
+		return events.valueObserver(attribute);
 	}
 
 	@Override
-	public final <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
-		events.removeValueListener(attribute, listener);
+	public final EventObserver<Entity> entityObserver() {
+		return events.entity.observer();
 	}
 
 	@Override
-	public final <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
-		events.addValueListener(attribute, listener);
+	public final EventObserver<Collection<Entity>> beforeInsertObserver() {
+		return events.beforeInsert.observer();
 	}
 
 	@Override
-	public final void removeValueChangeListener(Consumer<Attribute<?>> listener) {
-		events.valueChange.removeDataListener(listener);
+	public final EventObserver<Collection<Entity>> afterInsertObserver() {
+		return events.afterInsert.observer();
 	}
 
 	@Override
-	public final void addValueChangeListener(Consumer<Attribute<?>> listener) {
-		events.valueChange.addDataListener(listener);
+	public final EventObserver<Map<Entity.Key, Entity>> beforeUpdateObserver() {
+		return events.beforeUpdate.observer();
 	}
 
 	@Override
-	public final void removeEntityListener(Consumer<Entity> listener) {
-		events.entity.removeDataListener(listener);
+	public final EventObserver<Map<Entity.Key, Entity>> afterUpdateObserver() {
+		return events.afterUpdate.observer();
 	}
 
 	@Override
-	public final void addEntityListener(Consumer<Entity> listener) {
-		events.entity.addDataListener(listener);
+	public final EventObserver<Collection<Entity>> beforeDeleteObserver() {
+		return events.beforeDelete.observer();
 	}
 
 	@Override
-	public final void removeBeforeInsertListener(Consumer<Collection<Entity>> listener) {
-		events.beforeInsert.removeDataListener(listener);
+	public final EventObserver<Collection<Entity>> afterDeleteObserver() {
+		return events.afterDelete.observer();
 	}
 
 	@Override
-	public final void addBeforeInsertListener(Consumer<Collection<Entity>> listener) {
-		events.beforeInsert.addDataListener(listener);
+	public final EventObserver<?> insertUpdateOrDeleteObserver() {
+		return events.insertUpdateOrDelete.observer();
 	}
 
 	@Override
-	public final void removeAfterInsertListener(Consumer<Collection<Entity>> listener) {
-		events.afterInsert.removeDataListener(listener);
-	}
-
-	@Override
-	public final void addAfterInsertListener(Consumer<Collection<Entity>> listener) {
-		events.afterInsert.addDataListener(listener);
-	}
-
-	@Override
-	public final void removeBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-		events.beforeUpdate.removeDataListener(listener);
-	}
-
-	@Override
-	public final void addBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-		events.beforeUpdate.addDataListener(listener);
-	}
-
-	@Override
-	public final void removeAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-		events.afterUpdate.removeDataListener(listener);
-	}
-
-	@Override
-	public final void addAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
-		events.afterUpdate.addDataListener(listener);
-	}
-
-	@Override
-	public final void addBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
-		events.beforeDelete.addDataListener(listener);
-	}
-
-	@Override
-	public final void removeBeforeDeleteListener(Consumer<Collection<Entity>> listener) {
-		events.beforeDelete.removeDataListener(listener);
-	}
-
-	@Override
-	public final void removeAfterDeleteListener(Consumer<Collection<Entity>> listener) {
-		events.afterDelete.removeDataListener(listener);
-	}
-
-	@Override
-	public final void addAfterDeleteListener(Consumer<Collection<Entity>> listener) {
-		events.afterDelete.addDataListener(listener);
-	}
-
-	@Override
-	public final void removeInsertUpdateOrDeleteListener(Runnable listener) {
-		events.insertUpdateOrDelete.removeListener(listener);
-	}
-
-	@Override
-	public final void addInsertUpdateOrDeleteListener(Runnable listener) {
-		events.insertUpdateOrDelete.addListener(listener);
-	}
-
-	@Override
-	public final void addConfirmOverwriteListener(Consumer<State> listener) {
-		events.confirmOverwrite.addDataListener(listener);
-	}
-
-	@Override
-	public final void removeConfirmOverwriteListener(Consumer<State> listener) {
-		events.confirmOverwrite.removeDataListener(listener);
+	public final EventObserver<State> confirmOverwriteObserver() {
+		return events.confirmOverwrite.observer();
 	}
 
 	/**
@@ -627,7 +563,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that insert is about to be performed
 	 * @param entitiesToInsert the entities about to be inserted
-	 * @see #addBeforeInsertListener(Consumer)
+	 * @see #beforeInsertObserver()
 	 */
 	protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
 		events.beforeInsert.accept(requireNonNull(entitiesToInsert));
@@ -636,7 +572,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that insert has been performed
 	 * @param insertedEntities the inserted entities
-	 * @see #addAfterInsertListener(Consumer)
+	 * @see #afterInsertObserver()
 	 */
 	protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
 		events.afterInsert.accept(requireNonNull(insertedEntities));
@@ -645,7 +581,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that update is about to be performed
 	 * @param entitiesToUpdate the entities about to be updated
-	 * @see #addBeforeUpdateListener(Consumer)
+	 * @see #beforeUpdateObserver()
 	 */
 	protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
 		events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
@@ -654,7 +590,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that update has been performed
 	 * @param updatedEntities the updated entities
-	 * @see #addAfterUpdateListener(Consumer)
+	 * @see #afterUpdateObserver()
 	 */
 	protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
 		events.afterUpdate.accept(requireNonNull(updatedEntities));
@@ -663,7 +599,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that delete is about to be performed
 	 * @param entitiesToDelete the entities about to be deleted
-	 * @see #addBeforeDeleteListener(Consumer)
+	 * @see #beforeDeleteObserver()
 	 */
 	protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
 		events.beforeDelete.accept(requireNonNull(entitiesToDelete));
@@ -672,7 +608,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that delete has been performed
 	 * @param deletedEntities the deleted entities
-	 * @see #addAfterDeleteListener(Consumer)
+	 * @see #afterDeleteObserver()
 	 */
 	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
 		events.afterDelete.accept(requireNonNull(deletedEntities));
@@ -1088,28 +1024,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			existsPredicate.addListener(states::updateExistsState);
 		}
 
-		private <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener) {
+		private <T> EventObserver<T> editObserver(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
-			((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
+			return ((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}
 
-		private <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener) {
+		private <T> EventObserver<T> valueObserver(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
-			if (valueEditEvents.containsKey(attribute)) {
-				((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
-			}
-		}
-
-		private <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener) {
-			entityDefinition().attributes().definition(attribute);
-			((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).addDataListener(listener);
-		}
-
-		private <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener) {
-			entityDefinition().attributes().definition(attribute);
-			if (valueChangeEvents.containsKey(attribute)) {
-				((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
-			}
+			return ((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}
 
 		private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
@@ -1258,7 +1180,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = editModel;
 			this.attribute = attribute;
-			this.editModel.addValueListener(attribute, value -> notifyListeners());
+			this.editModel.valueObserver(attribute).addListener(this::notifyListeners);
 		}
 
 		@Override

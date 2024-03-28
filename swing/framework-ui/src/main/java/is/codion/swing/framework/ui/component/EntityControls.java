@@ -241,7 +241,7 @@ final class EntityControls {
 		private EntityEditPanel initializeEditPanel() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			editPanel.setBorder(emptyBorder());
-			editPanel.editModel().addAfterInsertListener(populateInsertedEntities);
+			editPanel.editModel().afterInsertObserver().addDataListener(populateInsertedEntities);
 
 			return editPanel;
 		}
@@ -362,7 +362,7 @@ final class EntityControls {
 		private EntityEditPanel initializeEditPanel() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			editPanel.setBorder(emptyBorder());
-			editPanel.editModel().addAfterUpdateListener(populateUpdatedEntities);
+			editPanel.editModel().afterUpdateObserver().addDataListener(populateUpdatedEntities);
 
 			return editPanel;
 		}

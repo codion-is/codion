@@ -258,14 +258,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	private void bindEventsInternal() {
-		editModel.addAfterInsertListener(this::onInsert);
-		editModel.addAfterUpdateListener(this::onUpdate);
-		editModel.addAfterDeleteListener(this::onDelete);
+		editModel.afterInsertObserver().addDataListener(this::onInsert);
+		editModel.afterUpdateObserver().addDataListener(this::onUpdate);
+		editModel.afterDeleteObserver().addDataListener(this::onDelete);
 		if (containsTableModel()) {
 			tableModel.addSelectionListener(this::onMasterSelectionChanged);
 		}
 		else {
-			editModel.addEntityListener(entity -> onMasterSelectionChanged());
+			editModel.entityObserver().addDataListener(entity -> onMasterSelectionChanged());
 		}
 	}
 
