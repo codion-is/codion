@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.value.Value;
@@ -144,13 +145,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	}
 
 	@Override
-	public void addChangeListener(Runnable listener) {
-		conditionModel.addChangeListener(listener);
-	}
-
-	@Override
-	public void removeChangeListener(Runnable listener) {
-		conditionModel.removeChangeListener(listener);
+	public EventObserver<?> changeObserver() {
+		return conditionModel.changeObserver();
 	}
 
 	@Override

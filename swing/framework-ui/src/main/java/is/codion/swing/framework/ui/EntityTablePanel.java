@@ -1090,7 +1090,7 @@ public class EntityTablePanel extends JPanel {
 		conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
 		filterPanelVisibleState.addDataListener(this::setFilterPanelVisible);
 		summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisible);
-		tableModel.conditionModel().addChangeListener(this::onConditionChanged);
+		tableModel.conditionModel().changeObserver().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
 		tableModel.refresher().addRefreshFailedListener(this::onException);
 		tableModel.editModel().insertUpdateOrDeleteObserver().addListener(table::repaint);

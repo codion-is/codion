@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.table;
 
+import is.codion.common.event.EventObserver;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -61,14 +63,9 @@ public interface TableConditionModel<C> {
 	boolean enabled(C columnIdentifier);
 
 	/**
-	 * @param listener a listener notified each time the condition changes
+	 * @return an observer notified each time the condition changes
 	 */
-	void addChangeListener(Runnable listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeChangeListener(Runnable listener);
+	EventObserver<?> changeObserver();
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}

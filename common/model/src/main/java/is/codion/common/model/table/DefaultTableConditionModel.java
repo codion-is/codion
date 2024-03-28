@@ -18,6 +18,9 @@
  */
 package is.codion.common.model.table;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,9 +31,12 @@ import static java.util.function.Function.identity;
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
+	private final Event<?> changeEvent = Event.event();
 
 	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
 		this.conditionModels = initializeColumnConditionModels(conditionModels);
+		this.conditionModels.values().forEach(conditionModel ->
+						conditionModel.changeObserver().addListener(changeEvent));
 	}
 
 	@Override
@@ -65,13 +71,8 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public void addChangeListener(Runnable listener) {
-		conditionModels.values().forEach(filterModel -> filterModel.changeObserver().addListener(listener));
-	}
-
-	@Override
-	public void removeChangeListener(Runnable listener) {
-		conditionModels.values().forEach(filterModel -> filterModel.changeObserver().removeListener(listener));
+	public EventObserver<?> changeObserver() {
+		return changeEvent.observer();
 	}
 
 	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(Collection<ColumnConditionModel<C, ?>> conditionModels) {
