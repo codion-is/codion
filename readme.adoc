@@ -10,7 +10,7 @@ image::documentation/src/docs/asciidoc/images/codion-logo-gray.png[Codion logo,3
 image:https://github.com/codion-is/codion/workflows/Java%20CI/badge.svg[CI]
 image:https://img.shields.io/badge/License-GNU%20GPL-blue[link="https://www.gnu.org/licenses/gpl-3.0.en.html"]
 image:https://img.shields.io/badge/JDK_Compatibility-17+-blue.svg[Java Compatability 17+]
-image:https://img.shields.io/maven-central/v/is.codion/codion-swing-framework-ui?label=stable&color=blue[link="https://central.sonatype.com/artifact/is.codion/codion-swing-framework-ui"]
+image:https://img.shields.io/maven-central/v/is.codion/codion-swing-framework-ui?label=maven%20central&color=blue[link="https://central.sonatype.com/artifact/is.codion/codion-swing-framework-ui"]
 image:https://img.shields.io/badge/chat-Github%20discussions-blue[link="https://github.com/codion-is/codion/discussions"]
 
 == Introduction
