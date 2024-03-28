@@ -166,13 +166,6 @@ public interface EntityEditModel {
 	<T> Optional<T> optional(Attribute<T> attribute);
 
 	/**
-	 * Returns the value associated with the given foreign key.
-	 * @param foreignKey the foreign key
-	 * @return the foreign key value
-	 */
-	Entity referencedEntity(ForeignKey foreignKey);
-
-	/**
 	 * Returns a Value based on {@code attribute} in this edit model, note that
 	 * subsequent calls for the same attribute return the same value instance.
 	 * @param attribute the attribute

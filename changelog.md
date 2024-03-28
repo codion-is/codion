@@ -8,6 +8,7 @@ Codion Change Log
 - EntityEditModel.Insert, Update and Delete methods renamed.
 - EntityEditModel.Insert, Update and Delete split into separate steps, related refactoring.
 - EntityEditModel.refreshEntity() renamed refresh().
+- EntityEditModel.referencedEntity() removed.
 
 ## 0.17.34
 ### is.codion.common.core

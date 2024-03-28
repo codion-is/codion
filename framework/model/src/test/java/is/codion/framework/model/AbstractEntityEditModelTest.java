@@ -187,7 +187,7 @@ public final class AbstractEntityEditModelTest {
 						Employee.NAME.equalTo("MARTIN"));
 		employeeEditModel.set(employee);
 		//clear the department foreign key value
-		Entity dept = employeeEditModel.referencedEntity(Employee.DEPARTMENT_FK);
+		Entity dept = employeeEditModel.entity().referencedEntity(Employee.DEPARTMENT_FK);
 		employeeEditModel.put(Employee.DEPARTMENT_FK, null);
 		//set the reference key attribute value
 		assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK).get());
@@ -525,11 +525,12 @@ public final class AbstractEntityEditModelTest {
 		Entity james = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("JAMES"));
 		employeeEditModel.set(james);
+		assertTrue(employeeEditModel.entity().referencedEntity(Employee.MGR_FK).isNull(Employee.COMMISSION));
 		Entity blake = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("BLAKE"));
-		assertNotSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
+		blake.put(Employee.COMMISSION, 100d);
 		employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
-		assertSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
+		assertEquals(100d, employeeEditModel.entity().referencedEntity(Employee.MGR_FK).get(Employee.COMMISSION));
 	}
 
 	@Test

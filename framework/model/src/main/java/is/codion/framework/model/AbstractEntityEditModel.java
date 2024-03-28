@@ -211,11 +211,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Entity referencedEntity(ForeignKey foreignKey) {
-		return entity.referencedEntity(foreignKey);
-	}
-
-	@Override
 	public final StateObserver modified() {
 		return states.entityModified.observer();
 	}
@@ -579,7 +574,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param values the foreign key entities
 	 */
 	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
-		Entity currentForeignKeyValue = referencedEntity(foreignKey);
+		Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
