@@ -82,6 +82,7 @@ public class JasperReportsTest {
 		JRReport wrapper = JasperReports.fileReport("employees.jasper");
 		JRDataSource dataSource = new JRDataSource() {
 			boolean done = false;
+
 			@Override
 			public boolean next() {
 				if (done) {

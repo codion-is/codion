@@ -57,25 +57,36 @@ public class JasperReportsDataSourceTest {
 
 	private static class TestField implements JRField {
 		private final String name;
+
 		TestField(String name) {this.name = name;}
+
 		@Override
 		public String getName() {return name;}
+
 		@Override
 		public String getDescription() {return null;}
+
 		@Override
 		public void setDescription(String s) {}
+
 		@Override
 		public Class<String> getValueClass() {return null;}
+
 		@Override
 		public String getValueClassName() {return null;}
+
 		@Override
 		public boolean hasProperties() {return false;}
+
 		@Override
 		public JRPropertiesMap getPropertiesMap() {return null;}
+
 		@Override
 		public JRPropertiesHolder getParentProperties() {return null;}
+
 		@Override
 		public Object clone() {return null;}
+
 		@Override
 		public JRPropertyExpression[] getPropertyExpressions() {return new JRPropertyExpression[0];}
 	}

@@ -36,10 +36,12 @@ public class DefaultColumnSummaryModelTest {
 	final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Integer>() {
 		@Override
 		public String format(Object value) {return numberFormat.format(value);}
+
 		@Override
 		public SummaryValues<Integer> values() {
 			return ColumnSummaryModel.summaryValues(asList(1, 2, 3, null, 4, 5), false);
 		}
+
 		@Override
 		public void addListener(Runnable event) {}
 	});
@@ -47,10 +49,12 @@ public class DefaultColumnSummaryModelTest {
 	final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Double>() {
 		@Override
 		public String format(Object value) {return numberFormat.format(value);}
+
 		@Override
 		public SummaryValues<Double> values() {
 			return ColumnSummaryModel.summaryValues(asList(1.1, 2.2, 3.3, null, 4.4, 5.5), false);
 		}
+
 		@Override
 		public void addListener(Runnable event) {}
 	});

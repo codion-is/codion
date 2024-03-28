@@ -39,6 +39,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 public final class ClientArchitecture {
 
 	// tag::entityModel[]
+
 	/**
 	 * Creates a SwingEntityModel based on the {@link Artist#TYPE} entity
 	 * with a detail model based on {@link Album#TYPE}
@@ -68,6 +69,7 @@ public final class ClientArchitecture {
 	}
 	// end::entityModel[]
 	// tag::entityPanel[]
+
 	/**
 	 * Creates a EntityPanel based on the {@link Artist#TYPE} entity
 	 * with a detail panel based on {@link Album#TYPE}

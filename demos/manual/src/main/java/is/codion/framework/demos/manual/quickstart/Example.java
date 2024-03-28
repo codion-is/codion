@@ -136,6 +136,7 @@ public final class Example {
 											.value(Address.CITY)
 											.build()));
 		}
+
 		// end::address[]
 		// tag::customerAddress[]
 		public interface CustomerAddress {

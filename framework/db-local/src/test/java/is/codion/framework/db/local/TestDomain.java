@@ -325,6 +325,7 @@ public final class TestDomain extends DefaultDomain {
 					}
 				}
 			}
+
 			@Override
 			public boolean returnGeneratedKeys() {
 				return true;

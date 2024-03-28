@@ -55,8 +55,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider);
 		}
+
 		@Override
 		public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
+
 		@Override
 		public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 	}

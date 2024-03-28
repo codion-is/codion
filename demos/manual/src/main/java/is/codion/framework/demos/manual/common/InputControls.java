@@ -133,8 +133,11 @@ public final class InputControls {
 	}
 
 	void doFirst() {}
+
 	void doSecond() {}
+
 	void doSubFirst() {}
+
 	void doSubSecond() {}
 
 	static void basics() {

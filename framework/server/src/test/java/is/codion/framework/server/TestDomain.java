@@ -156,6 +156,7 @@ public final class TestDomain extends DefaultDomain {
 			public Object fill(Connection connection, Object parameters) {
 				return null;
 			}
+
 			@Override
 			public Object load() {
 				return null;

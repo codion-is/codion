@@ -251,6 +251,7 @@ public class ValueTest {
 	void exceptionalValue() {
 		Value<Integer> value1 = new AbstractValue<Integer>() {
 			int intValue = 0;
+
 			@Override
 			protected void setValue(Integer value) {
 				if (value == -1) {
@@ -258,6 +259,7 @@ public class ValueTest {
 				}
 				intValue = value;
 			}
+
 			@Override
 			public Integer get() {
 				return intValue;

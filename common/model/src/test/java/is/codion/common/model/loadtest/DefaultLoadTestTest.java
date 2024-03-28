@@ -41,6 +41,7 @@ public final class DefaultLoadTestTest {
 
 	private static final Scenario<Object> SCENARIO = scenario(new Performer<Object>() {
 		int counter = 0;
+
 		@Override
 		public void perform(Object application) throws Exception {
 			if (counter++ % 2 == 0) {

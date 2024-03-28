@@ -73,6 +73,7 @@ final class EditPanelDemo extends EntityEditPanel {
 							protected String getComponentValue() {
 								return component().getText();
 							}
+
 							@Override
 							protected void setComponentValue(String text) {
 								component().setText(text);

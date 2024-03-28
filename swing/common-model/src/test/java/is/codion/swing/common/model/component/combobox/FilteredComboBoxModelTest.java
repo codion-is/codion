@@ -51,8 +51,10 @@ public class FilteredComboBoxModelTest {
 	private final ListDataListener listDataListener = new ListDataListener() {
 		@Override
 		public void intervalAdded(ListDataEvent e) {}
+
 		@Override
 		public void intervalRemoved(ListDataEvent e) {}
+
 		@Override
 		public void contentsChanged(ListDataEvent e) {}
 	};

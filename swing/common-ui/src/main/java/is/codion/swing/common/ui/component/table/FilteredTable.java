@@ -1071,6 +1071,7 @@ public final class FilteredTable<R, C> extends JTable {
 			return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.columnClass()).build();
 		}
 	}
+
 	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
 		switch (shortcut) {
 			case COPY_CELL:

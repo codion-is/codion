@@ -712,6 +712,7 @@ public class DefaultLocalEntityConnectionTest {
 			public Condition where() {
 				return Condition.all(Employee.TYPE);
 			}
+
 			@Override
 			public Map<Column<?>, Object> values() {
 				return emptyMap();

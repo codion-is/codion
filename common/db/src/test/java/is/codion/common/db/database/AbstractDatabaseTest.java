@@ -107,14 +107,17 @@ public final class AbstractDatabaseTest {
 		public String name() {
 			return "name";
 		}
+
 		@Override
 		public String autoIncrementQuery(String idSource) {
 			return null;
 		}
+
 		@Override
 		public String selectForUpdateClause() {
 			return FOR_UPDATE_NOWAIT;
 		}
+
 		@Override
 		public String limitOffsetClause(Integer limit, Integer offset) {
 			return createLimitOffsetClause(limit, offset);

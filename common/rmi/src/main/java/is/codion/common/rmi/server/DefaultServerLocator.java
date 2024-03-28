@@ -142,6 +142,7 @@ final class DefaultServerLocator implements Server.Locator {
 
 	private static final class ServerComparator<T extends Remote, A extends ServerAdmin> implements Comparator<Server<T, A>>, Serializable {
 		private static final long serialVersionUID = 1;
+
 		@Override
 		public int compare(Server<T, A> o1, Server<T, A> o2) {
 			try {
