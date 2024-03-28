@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 
 import javax.swing.ListSelectionModel;
@@ -33,7 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -248,23 +248,13 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	/* TableColumnModel implementation ends */
 
 	@Override
-	public void addColumnHiddenListener(Consumer<C> listener) {
-		columnHiddenEvent.addDataListener(listener);
+	public EventObserver<C> columnHiddenObserver() {
+		return columnHiddenEvent.observer();
 	}
 
 	@Override
-	public void removeColumnHiddenListener(Consumer<C> listener) {
-		columnHiddenEvent.removeDataListener(listener);
-	}
-
-	@Override
-	public void addColumnShownListener(Consumer<C> listener) {
-		columnShownEvent.addDataListener(listener);
-	}
-
-	@Override
-	public void removeColumnShownListener(Consumer<C> listener) {
-		columnShownEvent.removeDataListener(listener);
+	public EventObserver<C> columnShownObserver() {
+		return columnShownEvent.observer();
 	}
 
 	private void initializeColumn(FilteredTableColumn<C> column) {

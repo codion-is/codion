@@ -38,8 +38,8 @@ public class DefaultFilteredTableColumnModelTest {
 		Collection<Object> shown = new ArrayList<>();
 		Consumer<Integer> hideListener = hidden::add;
 		Consumer<Integer> showListener = shown::add;
-		testModel.addColumnHiddenListener(hideListener);
-		testModel.addColumnShownListener(showListener);
+		testModel.columnHiddenObserver().addDataListener(hideListener);
+		testModel.columnShownObserver().addDataListener(showListener);
 
 		assertEquals(1, testModel.getColumnCount());
 		assertNotNull(testModel.column(0));
@@ -50,8 +50,8 @@ public class DefaultFilteredTableColumnModelTest {
 		testModel.visible(0).set(true);
 		assertEquals(1, shown.size());
 
-		testModel.removeColumnHiddenListener(hideListener);
-		testModel.removeColumnShownListener(showListener);
+		testModel.columnHiddenObserver().removeDataListener(hideListener);
+		testModel.columnShownObserver().removeDataListener(showListener);
 
 		assertTrue(testModel.containsColumn(0));
 		assertFalse(testModel.containsColumn(1));

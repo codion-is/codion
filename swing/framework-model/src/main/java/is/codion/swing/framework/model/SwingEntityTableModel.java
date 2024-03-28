@@ -849,7 +849,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	private void bindEvents() {
-		columnModel().addColumnHiddenListener(this::onColumnHidden);
+		columnModel().columnHiddenObserver().addDataListener(this::onColumnHidden);
 		editEvents.addDataListener(new HandleEditEventsListener());
 		conditionModel.changeObserver().addListener(() -> onConditionChanged(createSelect(conditionModel)));
 		editModel.afterInsertObserver().addDataListener(this::onInsert);

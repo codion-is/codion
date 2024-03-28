@@ -23,6 +23,7 @@ Codion Change Log
 - FilteredTableSearchModel, add/removeListener methods replaced with methods that return the underlying event observer.
 - FilteredComboBoxModel, add/removeListener methods replaced with methods that return the underlying event observer.
 - FilteredTableModel, add/removeListener methods replaced with methods that return the underlying event observer.
+- FilteredTableColumnModel, add/removeListener methods replaced with methods that return the underlying event observer.
 ### is.codion.swing.common.ui
 - TemporalField, add/removeListener methods replaced with methods that return the underlying event observer.
 
