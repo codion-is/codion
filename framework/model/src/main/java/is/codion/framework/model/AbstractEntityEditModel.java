@@ -755,7 +755,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return entity.get(attributeDefinition.attribute());
 		}
 
-		return (T) defaultValue(attributeDefinition.attribute()).get().get();
+		return defaultValue(attributeDefinition.attribute()).get().get();
 	}
 
 	private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
