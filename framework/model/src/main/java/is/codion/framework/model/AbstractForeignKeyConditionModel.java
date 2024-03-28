@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -171,12 +172,7 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 	}
 
 	@Override
-	public final void addChangeListener(Runnable listener) {
-		conditionModel.addChangeListener(listener);
-	}
-
-	@Override
-	public final void removeChangeListener(Runnable listener) {
-		conditionModel.removeChangeListener(listener);
+	public final EventObserver<?> changeObserver() {
+		return conditionModel.changeObserver();
 	}
 }

@@ -66,12 +66,12 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
 	@Override
 	public void addChangeListener(Runnable listener) {
-		conditionModels.values().forEach(filterModel -> filterModel.addChangeListener(listener));
+		conditionModels.values().forEach(filterModel -> filterModel.changeObserver().addListener(listener));
 	}
 
 	@Override
 	public void removeChangeListener(Runnable listener) {
-		conditionModels.values().forEach(filterModel -> filterModel.removeChangeListener(listener));
+		conditionModels.values().forEach(filterModel -> filterModel.changeObserver().removeListener(listener));
 	}
 
 	private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(Collection<ColumnConditionModel<C, ?>> conditionModels) {

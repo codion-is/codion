@@ -20,6 +20,7 @@ package is.codion.common.model.table;
 
 import is.codion.common.Configuration;
 import is.codion.common.Operator;
+import is.codion.common.event.EventObserver;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -226,14 +227,9 @@ public interface ColumnConditionModel<C, T> {
 	boolean accepts(Comparable<T> columnValue);
 
 	/**
-	 * @param listener a listener to be notified each time the condition state changes
+	 * @return an observer notified each time the condition state changes
 	 */
-	void addChangeListener(Runnable listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeChangeListener(Runnable listener);
+	EventObserver<?> changeObserver();
 
 	/**
 	 * Returns a new {@link Builder} instance.

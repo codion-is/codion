@@ -21,6 +21,7 @@ package is.codion.common.model.table;
 import is.codion.common.Operator;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -216,13 +217,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	@Override
-	public void addChangeListener(Runnable listener) {
-		conditionChangedEvent.addListener(listener);
-	}
-
-	@Override
-	public void removeChangeListener(Runnable listener) {
-		conditionChangedEvent.removeListener(listener);
+	public EventObserver<?> changeObserver() {
+		return conditionChangedEvent.observer();
 	}
 
 	private boolean valueAccepted(Comparable<T> comparable) {

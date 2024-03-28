@@ -173,7 +173,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
 	private void bindEvents() {
 		conditionModel.conditionModels().values().forEach(columnConditionModel ->
-						columnConditionModel.addChangeListener(conditionChangedEvent));
+						columnConditionModel.changeObserver().addListener(conditionChangedEvent));
 		additionalWhere.addListener(conditionChangedEvent);
 		additionalHaving.addListener(conditionChangedEvent);
 	}
