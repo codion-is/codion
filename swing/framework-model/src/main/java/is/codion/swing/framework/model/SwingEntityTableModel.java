@@ -706,23 +706,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final void addDataChangedListener(Runnable listener) {
-		tableModel.addDataChangedListener(listener);
+	public final EventObserver<?> dataChangedObserver() {
+		return tableModel.dataChangedObserver();
 	}
 
 	@Override
-	public final void removeDataChangedListener(Runnable listener) {
-		tableModel.removeDataChangedListener(listener);
-	}
-
-	@Override
-	public final void addClearListener(Runnable listener) {
-		tableModel.addClearListener(listener);
-	}
-
-	@Override
-	public final void removeClearListener(Runnable listener) {
-		tableModel.removeClearListener(listener);
+	public final EventObserver<?> clearObserver() {
+		return tableModel.clearObserver();
 	}
 
 	@Override

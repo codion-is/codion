@@ -20,6 +20,7 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
@@ -387,23 +388,13 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public void addDataChangedListener(Runnable listener) {
-		dataChangedEvent.addListener(listener);
+	public EventObserver<?> dataChangedObserver() {
+		return dataChangedEvent.observer();
 	}
 
 	@Override
-	public void removeDataChangedListener(Runnable listener) {
-		dataChangedEvent.removeListener(listener);
-	}
-
-	@Override
-	public void addClearListener(Runnable listener) {
-		clearEvent.addListener(listener);
-	}
-
-	@Override
-	public void removeClearListener(Runnable listener) {
-		clearEvent.removeListener(listener);
+	public EventObserver<?> clearObserver() {
+		return clearEvent.observer();
 	}
 
 	@Override
@@ -666,7 +657,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 		@Override
 		public void addListener(Runnable listener) {
-			tableModel.addDataChangedListener(listener);
+			tableModel.dataChangedObserver().addListener(listener);
 			tableModel.selectionModel().selectionObserver().addListener(listener);
 		}
 

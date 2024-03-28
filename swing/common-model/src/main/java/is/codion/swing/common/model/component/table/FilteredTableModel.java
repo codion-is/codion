@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -42,24 +43,14 @@ import java.util.function.Supplier;
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
 	/**
-	 * @param listener a listener to be notified each time the table data changes
+	 * @return an observer notified each time the table data changes
 	 */
-	void addDataChangedListener(Runnable listener);
+	EventObserver<?> dataChangedObserver();
 
 	/**
-	 * @param listener the listener to remove
+	 * @return an observer notified each time the table model is cleared
 	 */
-	void removeDataChangedListener(Runnable listener);
-
-	/**
-	 * @param listener a listener to be notified each time the table model is cleared
-	 */
-	void addClearListener(Runnable listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeClearListener(Runnable listener);
+	EventObserver<?> clearObserver();
 
 	/**
 	 * @param item the item

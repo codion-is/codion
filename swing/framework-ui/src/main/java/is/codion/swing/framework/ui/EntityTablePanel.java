@@ -2079,7 +2079,7 @@ public class EntityTablePanel extends JPanel {
 				setComponentPopupMenu(createPopupMenu());
 			}
 			tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
-			tableModel.addDataChangedListener(this::updateStatusMessage);
+			tableModel.dataChangedObserver().addListener(this::updateStatusMessage);
 			updateStatusMessage();
 		}
 
