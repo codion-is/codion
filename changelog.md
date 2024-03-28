@@ -7,6 +7,7 @@ Codion Change Log
 - ColumnConditionModel, add/removeListener methods replaced with methods that return the underlying event observer.
 - TableConditionModel, add/removeListener methods replaced with methods that return the underlying event observer.
 - FilteredModel.Refresher, add/removeListener methods replaced with methods that return the underlying event observer.
+- LoadTest, add/removeListener methods replaced with methods that return the underlying event observer.
 ### is.codion.framework.model
 - EntityEditModel.setDefaults() renamed defaults().
 - EntityEditModel.setDefault() renamed defaultValue(), now Value based.

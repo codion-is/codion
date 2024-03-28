@@ -19,6 +19,7 @@
 package is.codion.common.model.loadtest;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.state.State;
@@ -227,8 +228,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	@Override
-	public void addResultListener(Consumer<Result> listener) {
-		resultEvent.addDataListener(listener);
+	public EventObserver<Result> resultObserver() {
+		return resultEvent.observer();
 	}
 
 	private int initialDelay() {

@@ -76,7 +76,7 @@ public final class DefaultLoadTestTest {
 						.applicationBatchSize(2)
 						.build();
 		Map<String, List<Scenario.Result>> results = new HashMap<>();
-		model.addResultListener(result -> results.computeIfAbsent(result.scenario(), scenarioName -> new ArrayList<>()).add(result));
+		model.resultObserver().addDataListener(result -> results.computeIfAbsent(result.scenario(), scenarioName -> new ArrayList<>()).add(result));
 		assertEquals(2, model.applicationBatchSize().get());
 
 		assertEquals(2, model.loginDelayFactor().get());

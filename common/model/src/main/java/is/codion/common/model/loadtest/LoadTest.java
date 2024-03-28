@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.loadtest;
 
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.loadtest.DefaultScenario.DefaultRunResult;
 import is.codion.common.model.loadtest.LoadTest.Scenario.Result;
 import is.codion.common.model.randomizer.ItemRandomizer;
@@ -96,9 +97,9 @@ public interface LoadTest<T> {
 	Scenario<T> scenario(String scenarioName);
 
 	/**
-	 * @param listener a listener notified each time a run result is produced
+	 * @return an observer notified each time a run result is produced
 	 */
-	void addResultListener(Consumer<Result> listener);
+	EventObserver<Result> resultObserver();
 
 	/**
 	 * @param listener a listener notified when this load test model has been shutdown.
