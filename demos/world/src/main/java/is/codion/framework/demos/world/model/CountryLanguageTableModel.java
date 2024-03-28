@@ -32,7 +32,7 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 	CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
 		super(CountryLanguage.TYPE, connectionProvider);
 		editModel().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
-		refresher().addRefreshListener(this::refreshChartDataset);
+		refresher().refreshObserver().addListener(this::refreshChartDataset);
 	}
 
 	public PieDataset<String> chartDataset() {

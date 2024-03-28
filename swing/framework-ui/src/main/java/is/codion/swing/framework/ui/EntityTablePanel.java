@@ -1092,7 +1092,7 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisible);
 		tableModel.conditionModel().changeObserver().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
-		tableModel.refresher().addRefreshFailedListener(this::onException);
+		tableModel.refresher().refreshFailedObserver().addDataListener(this::onException);
 		tableModel.editModel().insertUpdateOrDeleteObserver().addListener(table::repaint);
 		if (conditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();

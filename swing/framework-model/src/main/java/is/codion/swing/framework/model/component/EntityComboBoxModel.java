@@ -371,7 +371,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 				foreignKeyModel.select(selected.referencedKey(foreignKey));
 			}
 		});
-		refresher().addRefreshListener(foreignKeyModel::refresh);
+		refresher().refreshObserver().addListener(foreignKeyModel::refresh);
 	}
 
 	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {

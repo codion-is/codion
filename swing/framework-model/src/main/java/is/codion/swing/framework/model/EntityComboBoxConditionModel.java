@@ -75,7 +75,7 @@ public final class EntityComboBoxConditionModel extends AbstractForeignKeyCondit
 	private void bindComboBoxEvents() {
 		entityComboBoxModel.addSelectionListener(new SelectedEntityListener());
 		equalValues().addDataListener(new EqualValuesListener());
-		entityComboBoxModel.refresher().addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
+		entityComboBoxModel.refresher().refreshObserver().addListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
 	}
 
 	private final class SelectedEntityListener implements Consumer<Entity> {

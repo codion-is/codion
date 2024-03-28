@@ -275,7 +275,7 @@ public final class EntityComboBoxModelTest {
 	void test() throws DatabaseException {
 		AtomicInteger refreshed = new AtomicInteger();
 		Runnable refreshListener = refreshed::incrementAndGet;
-		comboBoxModel.refresher().addRefreshListener(refreshListener);
+		comboBoxModel.refresher().refreshObserver().addListener(refreshListener);
 		assertEquals(Employee.TYPE, comboBoxModel.entityType());
 		comboBoxModel.toString();
 		assertEquals(0, comboBoxModel.getSize());
@@ -301,7 +301,7 @@ public final class EntityComboBoxModelTest {
 		comboBoxModel.refresh();
 		assertEquals(16, comboBoxModel.getSize());
 		assertEquals(3, refreshed.get());
-		comboBoxModel.refresher().removeRefreshListener(refreshListener);
+		comboBoxModel.refresher().refreshObserver().removeListener(refreshListener);
 	}
 
 	@Test

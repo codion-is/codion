@@ -158,8 +158,8 @@ public final class DefaultFilteredTableModelTest {
 		Runnable successfulListener = done::incrementAndGet;
 		Consumer<Throwable> failedListener = exception -> {};
 		Runnable clearedListener = cleared::incrementAndGet;
-		tableModel.refresher().addRefreshListener(successfulListener);
-		tableModel.refresher().addRefreshFailedListener(failedListener);
+		tableModel.refresher().refreshObserver().addListener(successfulListener);
+		tableModel.refresher().refreshFailedObserver().addDataListener(failedListener);
 		tableModel.addClearListener(clearedListener);
 		tableModel.refresh();
 		assertTrue(tableModel.getRowCount() > 0);
@@ -173,8 +173,8 @@ public final class DefaultFilteredTableModelTest {
 		assertEquals(1, done.get());
 		assertEquals(0, cleared.get());
 
-		tableModel.refresher().removeRefreshListener(successfulListener);
-		tableModel.refresher().removeRefreshFailedListener(failedListener);
+		tableModel.refresher().refreshObserver().removeListener(successfulListener);
+		tableModel.refresher().refreshFailedObserver().removeDataListener(failedListener);
 		tableModel.removeClearListener(clearedListener);
 	}
 
