@@ -373,7 +373,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final void refreshEntity() {
+	public final void refresh() {
 		try {
 			if (states.entityExists.get()) {
 				set(connection().select(entity.primaryKey()));

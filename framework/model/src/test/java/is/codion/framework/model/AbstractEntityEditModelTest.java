@@ -144,16 +144,16 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void refreshEntity() throws DatabaseException {
+	void refresh() throws DatabaseException {
 		EntityConnection connection = employeeEditModel.connection();
 		connection.beginTransaction();
 		try {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-			employeeEditModel.refreshEntity();
+			employeeEditModel.refresh();
 			employeeEditModel.set(employee);
 			employee.put(Employee.NAME, "NOONE");
 			connection.update(employee);
-			employeeEditModel.refreshEntity();
+			employeeEditModel.refresh();
 			assertEquals("NOONE", employeeEditModel.get(Employee.NAME));
 		}
 		finally {

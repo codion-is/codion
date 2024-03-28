@@ -106,7 +106,7 @@ public interface EntityEditModel {
 	 * Refreshes the active Entity from the database, discarding all changes.
 	 * If the active Entity is new then calling this method has no effect.
 	 */
-	void refreshEntity();
+	void refresh();
 
 	/**
 	 * @return an immutable version of the {@link Entity} instance being edited
