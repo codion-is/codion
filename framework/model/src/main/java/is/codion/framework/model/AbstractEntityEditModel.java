@@ -314,32 +314,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final Entity insert() throws DatabaseException, ValidationException {
-		return new DefaultInsert().insert().iterator().next();
+		return new DefaultInsert().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException {
-		return new DefaultInsert(entities).insert();
+		return new DefaultInsert(entities).prepare().perform().handle();
 	}
 
 	@Override
 	public final Entity update() throws DatabaseException, ValidationException {
-		return new DefaultUpdate().update().iterator().next();
+		return new DefaultUpdate().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException {
-		return new DefaultUpdate(entities).update();
+		return new DefaultUpdate(entities).prepare().perform().handle();
 	}
 
 	@Override
 	public final void delete() throws DatabaseException {
-		new DefaultDelete().delete();
+		new DefaultDelete().prepare().perform().handle();
 	}
 
 	@Override
 	public final void delete(Collection<Entity> entities) throws DatabaseException {
-		new DefaultDelete(entities).delete();
+		new DefaultDelete(entities).prepare().perform().handle();
 	}
 
 	@Override
@@ -868,27 +868,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public void before() {
+		public Task prepare() {
 			AbstractEntityEditModel.this.notifyBeforeInsert(entities);
-		}
 
-		@Override
-		public Collection<Entity> perform() throws DatabaseException {
-			LOG.debug("{} - insert {}", this, entities);
-			Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
-			if (!entities.isEmpty() && inserted.isEmpty()) {
-				throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
-			}
-
-			return inserted;
-		}
-
-		@Override
-		public void after(Collection<Entity> insertedEntities) {
-			AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
-			if (activeEntity) {
-				setEntity(insertedEntities.iterator().next());
-			}
+			return new DefaultTask();
 		}
 
 		private Entity activeEntity() {
@@ -900,12 +883,37 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return toInsert;
 		}
 
-		private Collection<Entity> insert() throws DatabaseException {
-			before();
-			Collection<Entity> inserted = perform();
-			after(inserted);
+		private final class DefaultTask implements Task {
 
-			return inserted;
+			@Override
+			public Result perform() throws DatabaseException {
+				LOG.debug("{} - insert {}", this, entities);
+				Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
+				if (!entities.isEmpty() && inserted.isEmpty()) {
+					throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
+				}
+
+				return new DefaultResult(inserted);
+			}
+		}
+
+		private final class DefaultResult implements Result {
+
+			private final Collection<Entity> insertedEntities;
+
+			private DefaultResult(Collection<Entity> insertedEntities) {
+				this.insertedEntities = insertedEntities;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
+				if (activeEntity) {
+					setEntity(insertedEntities.iterator().next());
+				}
+
+				return insertedEntities;
+			}
 		}
 	}
 
@@ -928,24 +936,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public void before() {
+		public Task prepare() {
 			AbstractEntityEditModel.this.notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
-		}
 
-		@Override
-		public Collection<Entity> perform() throws DatabaseException {
-			LOG.debug("{} - update {}", this, entities);
-			return new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection()));
-		}
-
-		@Override
-		public void after(Collection<Entity> updatedEntities) {
-			AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
-			Entity activeEntity = entity();
-			updatedEntities.stream()
-							.filter(updatedEntity -> updatedEntity.equals(activeEntity))
-							.findFirst()
-							.ifPresent(AbstractEntityEditModel.this::setEntity);
+			return new DefaultTask();
 		}
 
 		private void verifyModified(Collection<Entity> entities) {
@@ -956,12 +950,35 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private Collection<Entity> update() throws DatabaseException {
-			before();
-			Collection<Entity> updatedEntities = perform();
-			after(updatedEntities);
+		private final class DefaultTask implements Task {
 
-			return updatedEntities;
+			@Override
+			public Result perform() throws DatabaseException {
+				LOG.debug("{} - update {}", this, entities);
+
+				return new DefaultResult(new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection())));
+			}
+		}
+
+		private final class DefaultResult implements Result {
+
+			private final Collection<Entity> updatedEntities;
+
+			private DefaultResult(Collection<Entity> updatedEntities) {
+				this.updatedEntities = updatedEntities;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
+				Entity activeEntity = entity();
+				updatedEntities.stream()
+								.filter(updatedEntity -> updatedEntity.equals(activeEntity))
+								.findFirst()
+								.ifPresent(AbstractEntityEditModel.this::setEntity);
+
+				return updatedEntities;
+			}
 		}
 	}
 
@@ -983,24 +1000,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public void before() {
+		public Task prepare() {
 			AbstractEntityEditModel.this.notifyBeforeDelete(entities);
-		}
 
-		@Override
-		public Collection<Entity> perform() throws DatabaseException {
-			LOG.debug("{} - delete {}", this, entities);
-			AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
-
-			return entities;
-		}
-
-		@Override
-		public void after(Collection<Entity> deletedEntities) {
-			AbstractEntityEditModel.this.notifyAfterDelete(deletedEntities);
-			if (activeEntity) {
-				defaults();
-			}
+			return new DefaultTask();
 		}
 
 		private Entity activeEntity() {
@@ -1010,9 +1013,26 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return copy;
 		}
 
-		private void delete() throws DatabaseException {
-			before();
-			after(perform());
+		private final class DefaultTask implements Task {
+
+			@Override
+			public Result perform() throws DatabaseException {
+				LOG.debug("{} - delete {}", this, entities);
+				AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
+
+				return new DefaultResult();
+			}
+		}
+
+		private final class DefaultResult implements Result {
+
+			@Override
+			public void handle() {
+				AbstractEntityEditModel.this.notifyAfterDelete(entities);
+				if (activeEntity) {
+					defaults();
+				}
+			}
 		}
 	}
 

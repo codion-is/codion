@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditModel.Update;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
@@ -346,14 +346,12 @@ public final class EntityDialogs {
 
 			@Override
 			public void update(SwingEntityEditModel editModel, Collection<Entity> entities) throws ValidationException {
-				EntityEditModel.Update update = editModel.createUpdate(entities);
-				update.before();
-				progressWorkerDialog(update::perform)
+				progressWorkerDialog(editModel.createUpdate(entities).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("updating"))
 								.owner(dialogOwner)
 								.locationRelativeTo(locationRelativeTo)
 								.onException(exceptionHandler)
-								.onResult(update::after)
+								.onResult(Update.Result::handle)
 								.execute();
 			}
 		}

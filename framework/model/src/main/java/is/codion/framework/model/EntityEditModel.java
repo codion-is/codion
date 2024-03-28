@@ -643,37 +643,50 @@ public interface EntityEditModel {
 	 * <pre>
 	 *   Insert insert = editModel.createInsert();
 	 *
-	 *   insert.before();
+	 *   Insert.Task task = insert.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   Collection&lt;Entity&gt; insertedEntities = insert.perform();
+	 *   Insert.Result result = task.perform();
 	 *
-	 *   insert.after(insertedEntities);
+	 *   Collection&lt;Entity&gt; insertedEntities = result.handle();
 	 * </pre>
-	 * {@link #perform()} may be called on a background thread while {@link #before()}
-	 * and {@link #after(Collection)} must be called on the UI thread.
+	 * {@link Task#perform()} may be called on a background thread while {@link Insert#prepare()}
+	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
 	interface Insert {
 
 		/**
 		 * Notifies listeners that an insert is about to be performed.
 		 * Must be called on the UI thread if this model has a panel based on it.
+		 * @return the insert task
 		 */
-		void before();
+		Task prepare();
 
 		/**
-		 * May be called in a background thread.
-		 * @return the inserted entities
-		 * @throws DatabaseException in case of a database exception
+		 * The task performing the insert operation
 		 */
-		Collection<Entity> perform() throws DatabaseException;
+		interface Task {
+
+			/**
+			 * May be called in a background thread.
+			 * @return the insert result
+			 * @throws DatabaseException in case of a database exception
+			 */
+			Result perform() throws DatabaseException;
+		}
 
 		/**
-		 * Notifies listeners that an insert has been performed.
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @param insertedEntities the entities returned by {@link #perform()}
+		 * The insert task result
 		 */
-		void after(Collection<Entity> insertedEntities);
+		interface Result {
+
+			/**
+			 * Notifies listeners that an insert has been performed.
+			 * Must be called on the UI thread if this model has a panel based on it.
+			 * @return the inserted entities
+			 */
+			Collection<Entity> handle();
+		}
 	}
 
 	/**
@@ -681,37 +694,50 @@ public interface EntityEditModel {
 	 * <pre>
 	 *   Update update = editModel.createUpdate();
 	 *
-	 *   update.before();
+	 *   Update.Task task = update.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   Collection&lt;Entity&gt; updatedEntities = update.perform();
+	 *   Update.Result result = task.perform();
 	 *
-	 *   update.after(updatedEntities);
+	 *   Collection&lt;Entity&gt; updatedEntities = result.handle();
 	 * </pre>
-	 * {@link #perform()} may be called on a background thread while {@link #before()}
-	 * and {@link #after(Collection)} must be called on the UI thread.
+	 * {@link Task#perform()} may be called on a background thread while {@link Update#prepare()}
+	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
 	interface Update {
 
 		/**
 		 * Notifies listeners that an update is about to be performed.
 		 * Must be called on the UI thread if this model has a panel based on it.
+		 * @return the update task
 		 */
-		void before();
+		Task prepare();
 
 		/**
-		 * May be called in a background thread.
-		 * @return the updated entities
-		 * @throws DatabaseException in case of a database exception
+		 * The task performing the update operation
 		 */
-		Collection<Entity> perform() throws DatabaseException;
+		interface Task {
+
+			/**
+			 * May be called in a background thread.
+			 * @return the update result
+			 * @throws DatabaseException in case of a database exception
+			 */
+			Result perform() throws DatabaseException;
+		}
 
 		/**
-		 * Notifies listeners that an update has been performed.
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @param updatedEntities the entities returned by {@link #perform()}
+		 * The update task result
 		 */
-		void after(Collection<Entity> updatedEntities);
+		interface Result {
+
+			/**
+			 * Notifies listeners that an update has been performed.
+			 * Must be called on the UI thread if this model has a panel based on it.
+			 * @return the updated entities
+			 */
+			Collection<Entity> handle();
+		}
 	}
 
 	/**
@@ -719,35 +745,48 @@ public interface EntityEditModel {
 	 * <pre>
 	 *   Delete delete = editModel.createDelete();
 	 *
-	 *   delete.before();
+	 *   Delete.Task task = delete.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   Collection&lt;Entity&gt; deletedEntities = delete.perform();
+	 *   Delete.Result result = task.perform();
 	 *
-	 *   delete.after(deletedEntities);
+	 *   result.handle();
 	 * </pre>
-	 * {@link #perform()} may be called on a background thread while {@link #before()}
-	 * and {@link #after(Collection)} must be called on the UI thread.
+	 * {@link Task#perform()} may be called on a background thread while {@link Delete#prepare()}
+	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
 	interface Delete {
 
 		/**
 		 * Notifies listeners that a delete is about to be performed.
 		 * Must be called on the UI thread if this model has a panel based on it.
+		 * @return the delete task
 		 */
-		void before();
+		Task prepare();
 
 		/**
-		 * May be called in a background thread.
-		 * @return the deleted entities
-		 * @throws DatabaseException in case of a database exception
+		 * The task performing the delete operation
 		 */
-		Collection<Entity> perform() throws DatabaseException;
+		interface Task {
+
+			/**
+			 * May be called in a background thread.
+			 * @return the delete result
+			 * @throws DatabaseException in case of a database exception
+			 */
+			Result perform() throws DatabaseException;
+		}
 
 		/**
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @param deletedEntities the entities returned by {@link #perform()}
+		 * The delete task result
 		 */
-		void after(Collection<Entity> deletedEntities);
+		interface Result {
+
+			/**
+			 * Notifies listeners that a delete has been performed.
+			 * Must be called on the UI thread if this model has a panel based on it.
+			 */
+			void handle();
+		}
 	}
 }

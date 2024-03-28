@@ -29,6 +29,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditModel.Delete;
+import is.codion.framework.model.EntityEditModel.Insert;
+import is.codion.framework.model.EntityEditModel.Update;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -48,7 +51,6 @@ import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -744,19 +746,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		@Override
 		public void execute() throws ValidationException {
 			if (confirmInsert()) {
-				EntityEditModel.Insert insert = editModel().createInsert();
-				insert.before();
-				progressWorkerDialog(insert::perform)
+				progressWorkerDialog(editModel().createInsert().prepare()::perform)
 								.title(MESSAGES.getString("inserting"))
 								.owner(EntityEditPanel.this)
-								.onResult(entities -> afterInsert(entities, insert))
+								.onResult(this::handleResult)
 								.onException(this::onException)
 								.execute();
 			}
 		}
 
-		private void afterInsert(Collection<Entity> insertedEntities, EntityEditModel.Insert insert) {
-			insert.after(insertedEntities);
+		private void handleResult(Insert.Result result) {
+			result.handle();
 			if (configuration.clearAfterInsert) {
 				editModel().defaults();
 			}
@@ -776,19 +776,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		@Override
 		public void execute() throws ValidationException {
 			if (confirmUpdate()) {
-				EntityEditModel.Update update = editModel().createUpdate();
-				update.before();
-				progressWorkerDialog(update::perform)
+				progressWorkerDialog(editModel().createUpdate().prepare()::perform)
 								.title(MESSAGES.getString("updating"))
 								.owner(EntityEditPanel.this)
-								.onResult(entities -> afterUpdate(entities, update))
+								.onResult(this::handleResult)
 								.onException(this::onException)
 								.execute();
 			}
 		}
 
-		private void afterUpdate(Collection<Entity> updatedEntities, EntityEditModel.Update update) {
-			update.after(updatedEntities);
+		private void handleResult(Update.Result result) {
+			result.handle();
 			requestAfterUpdateFocus();
 		}
 
@@ -803,19 +801,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		@Override
 		public void execute() {
 			if (confirmDelete()) {
-				EntityEditModel.Delete delete = editModel().createDelete();
-				delete.before();
-				progressWorkerDialog(delete::perform)
+				progressWorkerDialog(editModel().createDelete().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(EntityEditPanel.this)
-								.onResult(entities -> afterDelete(entities, delete))
+								.onResult(this::handleResult)
 								.onException(this::onException)
 								.execute();
 			}
 		}
 
-		private void afterDelete(Collection<Entity> deletedEntities, EntityEditModel.Delete delete) {
-			delete.after(deletedEntities);
+		private void handleResult(Delete.Result result) {
+			result.handle();
 			requestInitialFocus();
 		}
 

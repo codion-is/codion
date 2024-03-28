@@ -35,6 +35,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditModel.Delete;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
@@ -1360,13 +1361,12 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public void execute() {
 			if (confirmDelete()) {
-				EntityEditModel.Delete delete = tableModel().editModel().createDelete(tableModel().selectionModel().getSelectedItems());
-				delete.before();
-				progressWorkerDialog(delete::perform)
+				List<Entity> selectedItems = tableModel().selectionModel().getSelectedItems();
+				progressWorkerDialog(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)
-								.onResult(delete::after)
+								.onResult(Delete.Result::handle)
 								.execute();
 			}
 		}
