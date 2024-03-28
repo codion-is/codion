@@ -187,6 +187,7 @@ public interface EntityEditModel {
 	/**
 	 * @return a state controlling whether this edit model triggers a warning before overwriting unsaved data
 	 * @see #WARN_ABOUT_UNSAVED_DATA
+	 * @see #addConfirmOverwriteListener(Consumer)
 	 */
 	State overwriteWarning();
 

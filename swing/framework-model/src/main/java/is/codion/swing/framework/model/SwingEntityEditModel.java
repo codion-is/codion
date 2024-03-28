@@ -212,10 +212,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		requireNonNull(foreignKey);
 		requireNonNull(entities);
 		if (comboBoxModels.containsKey(foreignKey)) {
-			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
-			for (Entity inserted : entities) {
-				comboBoxModel.add(inserted);
-			}
+			entities.forEach(foreignKeyComboBoxModel(foreignKey)::add);
 		}
 	}
 
