@@ -280,7 +280,7 @@ public final class EntityComboBoxPanel extends JPanel {
 
 			private EntityComboBoxPanelValue(EntityComboBoxPanel component) {
 				super(component);
-				component.comboBox.getModel().addSelectionListener(entity -> notifyListeners());
+				component.comboBox.getModel().selectionObserver().addListener(this::notifyListeners);
 			}
 
 			@Override

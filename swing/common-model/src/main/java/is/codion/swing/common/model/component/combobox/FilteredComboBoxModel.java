@@ -21,6 +21,7 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -472,17 +473,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	}
 
 	/**
-	 * @param listener a listener notified each time the selection changes
+	 * @return an observer notified each time the selection changes
 	 */
-	public final void addSelectionListener(Consumer<T> listener) {
-		selectionChangedEvent.addDataListener(listener);
-	}
-
-	/**
-	 * @param listener a selection listener to remove
-	 */
-	public final void removeSelectionListener(Consumer<T> listener) {
-		selectionChangedEvent.removeDataListener(listener);
+	public final EventObserver<T> selectionObserver() {
+		return selectionChangedEvent.observer();
 	}
 
 	private void fireContentsChanged() {
@@ -553,7 +547,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			addSelectionListener(selected -> notifyListeners());
+			selectionChangedEvent.addListener(this::notifyListeners);
 		}
 
 		@Override
