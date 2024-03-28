@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.property.PropertyValue;
@@ -509,17 +510,10 @@ public final class FilteredTable<R, C> extends JTable {
 	}
 
 	/**
-	 * @param listener a listener notified each time the table is double-clicked
+	 * @return an observer notified each time the table is double-clicked
 	 */
-	public void addDoubleClickListener(Consumer<MouseEvent> listener) {
-		doubleClickEvent.addDataListener(listener);
-	}
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	public void removeDoubleClickListener(Consumer<MouseEvent> listener) {
-		doubleClickEvent.removeDataListener(listener);
+	public EventObserver<MouseEvent> doubleClickObserver() {
+		return doubleClickEvent.observer();
 	}
 
 	/**

@@ -497,7 +497,7 @@ public final class EntityDialogs {
 																							boolean singleSelection) {
 			EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 			tablePanel.initialize();
-			tablePanel.table().addDoubleClickListener(mouseEvent -> {
+			tablePanel.table().doubleClickObserver().addListener(() -> {
 				if (!tableModel.selectionModel().isSelectionEmpty()) {
 					okControl.actionPerformed(null);
 				}
