@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -58,7 +59,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -220,10 +220,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	}
 
 	/**
-	 * @param listener listener notified when this condition panels input fields receive focus
+	 * @return an observer notified when this condition panels input fields receive focus
 	 */
-	public void addFocusGainedListener(Consumer<C> listener) {
-		focusGainedEvent.addDataListener(listener);
+	public EventObserver<C> focusGainedObserver() {
+		return focusGainedEvent.observer();
 	}
 
 	/**

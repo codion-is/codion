@@ -105,7 +105,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 	 * @param listener a listener notified when a condition panel receives focus
 	 */
 	public void addFocusGainedListener(Consumer<C> listener) {
-		componentPanel.components().values().forEach(panel -> panel.addFocusGainedListener(listener));
+		componentPanel.components().values().forEach(panel -> panel.focusGainedObserver().addDataListener(listener));
 	}
 
 	/**
