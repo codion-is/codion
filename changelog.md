@@ -26,6 +26,7 @@ Codion Change Log
 - FilteredTableColumnModel, add/removeListener methods replaced with methods that return the underlying event observer.
 ### is.codion.swing.common.ui
 - TemporalField, add/removeListener methods replaced with methods that return the underlying event observer.
+- CalendarPanel, add/removeListener methods replaced with methods that return the underlying event observer.
 
 ## 0.17.34
 ### is.codion.common.core

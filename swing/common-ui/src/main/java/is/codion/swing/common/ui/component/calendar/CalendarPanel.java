@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.calendar;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
@@ -60,7 +61,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -258,31 +258,17 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * @param listener a listener notified each time the date changes
+	 * @return an observer notified each time the date changes
 	 */
-	public void addLocalDateListener(Consumer<LocalDate> listener) {
-		localDateValue.addDataListener(listener);
+	public ValueObserver<LocalDate> localDateObserver() {
+		return localDateValue.observer();
 	}
 
 	/**
-	 * @param listener a listener notified each time the date or time changes
+	 * @return an observer notified each time the date or time changes
 	 */
-	public void addLocalDateTimeListener(Consumer<LocalDateTime> listener) {
-		localDateTimeValue.addDataListener(listener);
-	}
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	public void removeLocalDateListener(Consumer<LocalDate> listener) {
-		localDateValue.removeDataListener(listener);
-	}
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	public void removeLocalDateTimeListener(Consumer<LocalDateTime> listener) {
-		localDateTimeValue.removeDataListener(listener);
+	public ValueObserver<LocalDateTime> localDateTimeObserver() {
+		return localDateTimeValue.observer();
 	}
 
 	/**
