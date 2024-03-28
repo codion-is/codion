@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.35-SNAPSHOT
+### is.codion.common.model
+- TableSelectionModel, add/removeListener methods replaced with methods that return the underlying event observer.
 ### is.codion.framework.model
 - EntityEditModel.setDefaults() renamed defaults().
 - EntityEditModel.setDefault() renamed defaultValue(), now Value based.

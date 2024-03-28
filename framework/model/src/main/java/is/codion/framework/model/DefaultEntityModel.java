@@ -262,7 +262,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 		editModel.afterUpdateObserver().addDataListener(this::onUpdate);
 		editModel.afterDeleteObserver().addDataListener(this::onDelete);
 		if (containsTableModel()) {
-			tableModel.addSelectionListener(this::onMasterSelectionChanged);
+			tableModel.selectionObserver().addListener(this::onMasterSelectionChanged);
 		}
 		else {
 			editModel.entityObserver().addDataListener(entity -> onMasterSelectionChanged());

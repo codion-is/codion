@@ -21,6 +21,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -460,8 +461,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final void addSelectionListener(Runnable listener) {
-		selectionModel().addSelectionListener(listener);
+	public final EventObserver<?> selectionObserver() {
+		return selectionModel().selectionObserver();
 	}
 
 	@Override
@@ -865,7 +866,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		editModel.afterUpdateObserver().addDataListener(this::onUpdate);
 		editModel.afterDeleteObserver().addDataListener(this::onDelete);
 		editModel.entityObserver().addDataListener(this::onEntitySet);
-		selectionModel().addSelectedItemListener(editModel::set);
+		selectionModel().selectedItemObserver().addDataListener(editModel::set);
 		addTableModelListener(this::onTableModelEvent);
 	}
 

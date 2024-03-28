@@ -108,7 +108,7 @@ public final class ClientMonitorPanel extends JPanel {
 						.rightComponent(clientInstancePanel)
 						.build();
 
-		model.clientInstanceTableModel().selectionModel().addSelectedItemListener(remoteClient -> {
+		model.clientInstanceTableModel().selectionModel().selectedItemObserver().addDataListener(remoteClient -> {
 			clientInstancePanel.removeAll();
 			try {
 				if (model != null && remoteClient != null) {

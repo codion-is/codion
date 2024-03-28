@@ -99,8 +99,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().addSelectionListener(definitionTableModel::refresh);
-		definitionTableModel.selectionModel().addSelectionListener(this::updateCodeValue);
+		schemaTableModel.selectionModel().selectionObserver().addListener(definitionTableModel::refresh);
+		definitionTableModel.selectionModel().selectionObserver().addListener(this::updateCodeValue);
 	}
 
 	/**

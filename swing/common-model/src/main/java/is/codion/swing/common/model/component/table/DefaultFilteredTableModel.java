@@ -667,7 +667,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		@Override
 		public void addListener(Runnable listener) {
 			tableModel.addDataChangedListener(listener);
-			tableModel.selectionModel().addSelectionListener(listener);
+			tableModel.selectionModel().selectionObserver().addListener(listener);
 		}
 
 		@Override

@@ -18,13 +18,13 @@
  */
 package is.codion.common.model.table;
 
+import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -60,76 +60,46 @@ public interface TableSelectionModel<R> {
 
 	/**
 	 * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.
-	 * @param listener a listener to be notified before the selection changes
+	 * @return an observer notified before the selection changes
 	 */
-	void addBeforeSelectionChangeListener(Runnable listener);
+	EventObserver<?> beforeSelectionChangeObserver();
 
 	/**
-	 * @param listener the listener to remove
+	 * @return an observer notified each time the selection changes
 	 */
-	void removeBeforeSelectionChangeListener(Runnable listener);
+	EventObserver<?> selectionObserver();
 
 	/**
-	 * @param listener a listener to be notified each time the selection changes
+	 * @return an observer notified each time the selected index changes
 	 */
-	void addSelectionListener(Runnable listener);
+	EventObserver<Integer> selectedIndexObserver();
 
 	/**
-	 * @param listener the listener to remove
+	 * @return an observer notified each time the selected indexes change
 	 */
-	void removeSelectionListener(Runnable listener);
+	EventObserver<List<Integer>> selectedIndexesObserver();
 
 	/**
-	 * @param listener a listener to be notified each time the selected index changes
+	 * @return an observer notified each time the selected item changes
 	 */
-	void addSelectedIndexListener(Consumer<Integer> listener);
+	EventObserver<R> selectedItemObserver();
 
 	/**
-	 * @param listener the listener to remove
+	 * @return an observer notified each time the selected items change
 	 */
-	void removeSelectedIndexListener(Consumer<Integer> listener);
-
-	/**
-	 * @param listener a listener to be notified each time the selected indexes change
-	 */
-	void addSelectedIndexesListener(Consumer<List<Integer>> listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeSelectedIndexesListener(Consumer<List<Integer>> listener);
-
-	/**
-	 * @param listener a listener to be notified each time the selected item changes
-	 */
-	void addSelectedItemListener(Consumer<R> listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeSelectedItemListener(Consumer<R> listener);
-
-	/**
-	 * @param listener a listener to be notified each time the selected items change
-	 */
-	void addSelectedItemsListener(Consumer<List<R>> listener);
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	void removeSelectedItemsListener(Consumer<List<R>> listener);
+	EventObserver<List<R>> selectedItemsObserver();
 
 	/**
 	 * Moves all selected indexes down one index, wraps around.
 	 * If the selection is empty the first item in this model is selected.
-	 * @see #addSelectionListener(Runnable)
+	 * @see #selectionObserver()
 	 */
 	void moveSelectionDown();
 
 	/**
 	 * Moves all selected indexes up one index, wraps around.
 	 * If the selection is empty the last item in this model is selected.
-	 * @see #addSelectionListener(Runnable)
+	 * @see #selectionObserver()
 	 */
 	void moveSelectionUp();
 
@@ -176,7 +146,7 @@ public interface TableSelectionModel<R> {
 
 	/**
 	 * Selects all visible rows
-	 * @see #addSelectionListener(Runnable)
+	 * @see #selectionObserver()
 	 */
 	void selectAll();
 

@@ -186,7 +186,7 @@ public final class DefaultFilteredTableModelTest {
 						FilteredTableModel.<TestRow, Integer>builder(() -> createColumns(null), (row, columnIdentifier) -> row.value)
 										.itemSupplier(() -> items)
 										.build();
-		testModel.selectionModel().addSelectionListener(selectionEvents::incrementAndGet);
+		testModel.selectionModel().selectionObserver().addListener(selectionEvents::incrementAndGet);
 		testModel.mergeOnRefresh().set(true);
 		testModel.refresh();
 		testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
@@ -259,7 +259,7 @@ public final class DefaultFilteredTableModelTest {
 		Runnable listener = dataChangedEvents::incrementAndGet;
 		tableModel.addDataChangedListener(listener);
 		State selectionChangedState = State.state();
-		tableModel.selectionModel().addSelectedItemListener((item) -> selectionChangedState.set(true));
+		tableModel.selectionModel().selectedItemObserver().addDataListener((item) -> selectionChangedState.set(true));
 		tableModel.refresh();
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selectionModel().setSelectedItem(B);
@@ -564,10 +564,10 @@ public final class DefaultFilteredTableModelTest {
 		Runnable listener = events::incrementAndGet;
 		Consumer dataListener = Event.dataListener(listener);
 		FilteredTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
-		selectionModel.addSelectedIndexListener(dataListener);
-		selectionModel.addSelectionListener(listener);
-		selectionModel.addSelectedItemListener(dataListener);
-		selectionModel.addSelectedItemsListener(dataListener);
+		selectionModel.selectedIndexObserver().addDataListener(dataListener);
+		selectionModel.selectionObserver().addListener(listener);
+		selectionModel.selectedItemObserver().addDataListener(dataListener);
+		selectionModel.selectedItemsObserver().addDataListener(dataListener);
 
 		assertFalse(selectionModel.singleSelection().get());
 		assertTrue(selectionModel.selectionEmpty().get());
@@ -694,10 +694,10 @@ public final class DefaultFilteredTableModelTest {
 		assertNull(selectionModel.getSelectedItem());
 
 		selectionModel.clearSelection();
-		selectionModel.removeSelectedIndexListener(dataListener);
-		selectionModel.removeSelectionListener(listener);
-		selectionModel.removeSelectedItemListener(dataListener);
-		selectionModel.removeSelectedItemsListener(dataListener);
+		selectionModel.selectedIndexObserver().removeDataListener(dataListener);
+		selectionModel.selectionObserver().removeListener(listener);
+		selectionModel.selectedItemObserver().removeDataListener(dataListener);
+		selectionModel.selectedItemsObserver().removeDataListener(dataListener);
 	}
 
 	@Test

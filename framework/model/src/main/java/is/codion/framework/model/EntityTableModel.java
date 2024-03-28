@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -325,9 +326,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 	StateObserver conditionChanged();
 
 	/**
-	 * @param listener notified when the selection changes in the underlying selection model
+	 * @return an observer notified when the selection changes in the underlying selection model
 	 */
-	void addSelectionListener(Runnable listener);
+	EventObserver<?> selectionObserver();
 
 	/**
 	 * Represents preferences for an Attribute based table column.

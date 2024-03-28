@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -27,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -320,63 +320,33 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 	}
 
 	@Override
-	public void addBeforeSelectionChangeListener(Runnable listener) {
-		beforeSelectionChangeEvent.addListener(listener);
+	public EventObserver<?> beforeSelectionChangeObserver() {
+		return beforeSelectionChangeEvent.observer();
 	}
 
 	@Override
-	public void removeBeforeSelectionChangeListener(Runnable listener) {
-		beforeSelectionChangeEvent.removeListener(listener);
+	public EventObserver<Integer> selectedIndexObserver() {
+		return selectedIndexEvent.observer();
 	}
 
 	@Override
-	public void addSelectedIndexListener(Consumer<Integer> listener) {
-		selectedIndexEvent.addDataListener(listener);
+	public EventObserver<List<Integer>> selectedIndexesObserver() {
+		return selectedIndexesEvent.observer();
 	}
 
 	@Override
-	public void removeSelectedIndexListener(Consumer<Integer> listener) {
-		selectedIndexEvent.removeDataListener(listener);
+	public EventObserver<?> selectionObserver() {
+		return selectionEvent.observer();
 	}
 
 	@Override
-	public void addSelectedIndexesListener(Consumer<List<Integer>> listener) {
-		selectedIndexesEvent.addDataListener(listener);
+	public EventObserver<R> selectedItemObserver() {
+		return selectedItemEvent.observer();
 	}
 
 	@Override
-	public void removeSelectedIndexesListener(Consumer<List<Integer>> listener) {
-		selectedIndexesEvent.removeDataListener(listener);
-	}
-
-	@Override
-	public void addSelectionListener(Runnable listener) {
-		selectionEvent.addListener(listener);
-	}
-
-	@Override
-	public void removeSelectionListener(Runnable listener) {
-		selectionEvent.removeListener(listener);
-	}
-
-	@Override
-	public void addSelectedItemListener(Consumer<R> listener) {
-		selectedItemEvent.addDataListener(listener);
-	}
-
-	@Override
-	public void removeSelectedItemListener(Consumer<R> listener) {
-		selectedItemEvent.removeDataListener(listener);
-	}
-
-	@Override
-	public void addSelectedItemsListener(Consumer<List<R>> listener) {
-		selectedItemsEvent.addDataListener(listener);
-	}
-
-	@Override
-	public void removeSelectedItemsListener(Consumer<List<R>> listener) {
-		selectedItemsEvent.removeDataListener(listener);
+	public EventObserver<List<R>> selectedItemsObserver() {
+		return selectedItemsEvent.observer();
 	}
 
 	@Override
