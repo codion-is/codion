@@ -36,7 +36,6 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -98,10 +97,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 	final ValueObserver<T> valueObserver() {
 		return getDocumentFilter().value.observer();
-	}
-
-	final void addListener(Consumer<T> listener) {
-		getDocumentFilter().value.addDataListener(listener);
 	}
 
 	void setTextComponent(JTextComponent textComponent) {
