@@ -64,7 +64,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 										.splitPaneResizeWeight(0.3)
 										.build()));
 		EntityPanel tablePanel = new EntityPanel(tableModel,
-						config -> config.detailLayout(WindowDetailLayout::windowDetailLayout));
+						config -> config.detailLayout(entityPanel -> WindowDetailLayout.builder(entityPanel)
+										.build()));
 		EntityPanel columnPanel = new EntityPanel(columnModel);
 		EntityPanel constraintPanel = new EntityPanel(constraintModel);
 		EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);

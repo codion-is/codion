@@ -98,23 +98,6 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	/**
 	 * @param entityPanel the entity panel
-	 * @return a new {@link WindowDetailLayout} instance based on {@link WindowType#DIALOG}.
-	 */
-	public static WindowDetailLayout windowDetailLayout(EntityPanel entityPanel) {
-		return windowDetailLayout(entityPanel, DIALOG);
-	}
-
-	/**
-	 * @param entityPanel the entity panel
-	 * @param windowType the window type
-	 * @return a new {@link WindowDetailLayout} instance based on the given window type.
-	 */
-	public static WindowDetailLayout windowDetailLayout(EntityPanel entityPanel, WindowType windowType) {
-		return builder(entityPanel).windowType(windowType).build();
-	}
-
-	/**
-	 * @param entityPanel the entity panel
 	 * @return a new {@link Builder} instance
 	 */
 	public static Builder builder(EntityPanel entityPanel) {
