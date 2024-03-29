@@ -189,6 +189,7 @@ public class EntityPanel extends JPanel {
 	private final EntityTablePanel tablePanel;
 	private final JPanel editControlPanel;
 	private final JPanel mainPanel;
+	private final DetailLayout detailLayout;
 	private final Event<EntityPanel> activateEvent = Event.event();
 	private final Value<String> caption;
 	private final Value<String> description;
@@ -288,6 +289,7 @@ public class EntityPanel extends JPanel {
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
 		this.mainPanel = borderLayoutPanel().build();
+		this.detailLayout = this.configuration.detailLayout.apply(this);
 		editPanelState.addListener(this::updateEditPanelState);
 	}
 
@@ -298,8 +300,8 @@ public class EntityPanel extends JPanel {
 		if (detailPanels != null) {
 			Utilities.updateUI(detailPanels);
 		}
-		if (configuration != null) {
-			configuration.detailLayout.updateUI();
+		if (detailLayout != null) {
+			detailLayout.updateUI();
 		}
 	}
 
@@ -360,7 +362,7 @@ public class EntityPanel extends JPanel {
 		}
 		addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
 		detailPanel.setParentPanel(this);
-		detailPanel.activateEvent().addDataListener(configuration.detailLayout::select);
+		detailPanel.activateEvent().addDataListener(detailLayout::select);
 	}
 
 	/**
@@ -634,7 +636,12 @@ public class EntityPanel extends JPanel {
 	 */
 	protected void initializeUI() {
 		setLayout(borderLayout());
-		add(detailLayout().layout(this), BorderLayout.CENTER);
+		if (detailPanels.isEmpty()) {
+			add(mainPanel(), BorderLayout.CENTER);
+		}
+		else {
+			add(detailLayout().layout().orElse(mainPanel()), BorderLayout.CENTER);
+		}
 	}
 
 	/**
@@ -890,7 +897,7 @@ public class EntityPanel extends JPanel {
 	 * @return the detail layout used by this panel
 	 */
 	protected final <T extends DetailLayout> T detailLayout() {
-		return (T) configuration.detailLayout;
+		return (T) detailLayout;
 	}
 
 	private JPanel createEditControlPanel() {
@@ -1175,7 +1182,7 @@ public class EntityPanel extends JPanel {
 
 		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
-		private DetailLayout detailLayout = TabbedDetailLayout.builder().build();
+		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private boolean toolbarControls = TOOLBAR_CONTROLS.get();
 		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
 		private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
@@ -1198,10 +1205,10 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @param detailLayout the detail panel layout
+		 * @param detailLayout provides the detail panel layout
 		 * @return this Config instance
 		 */
-		public Config detailLayout(DetailLayout detailLayout) {
+		public Config detailLayout(Function<EntityPanel, DetailLayout> detailLayout) {
 			this.detailLayout = requireNonNull(detailLayout);
 			return this;
 		}
@@ -1326,6 +1333,14 @@ public class EntityPanel extends JPanel {
 					throw new IllegalArgumentException();
 			}
 		}
+
+		private static final class DefaultDetailLayout implements Function<EntityPanel, DetailLayout> {
+
+			@Override
+			public DetailLayout apply(EntityPanel entityPanel) {
+				return TabbedDetailLayout.builder(entityPanel).build();
+			}
+		}
 	}
 
 	/**
@@ -1341,13 +1356,13 @@ public class EntityPanel extends JPanel {
 		default void updateUI() {}
 
 		/**
-		 * Creates and lays out the component to use as the main component of the given entity panel, including its detail panels.
-		 * In case of no detail panels, this method should return the {@link EntityPanel#mainPanel()}.
-		 * @param entityPanel the panel to lay out and configure
-		 * @return the main component
+		 * Lays out a given EntityPanel along with its detail panels.
+		 * In case of no special detail panel layout requirements, this method should return an empty Optional.
+		 * @return the panel laid out with it detail panels or an empty Optional in case of no special layout component.
 		 * @throws IllegalStateException in case the panel has already been laid out
+		 * @throws IllegalArgumentException in case the panel has no detail panels
 		 */
-		JComponent layout(EntityPanel entityPanel);
+		Optional<JComponent> layout();
 
 		/**
 		 * Note that the detail panel state may be shared between detail panels,
@@ -1421,10 +1436,10 @@ public class EntityPanel extends JPanel {
 		Builder filterPanelVisible(boolean filterPanelVisible);
 
 		/**
-		 * @param detailLayout the detail panel layout to use
+		 * @param detailLayout provides the detail panel layout to use
 		 * @return this builder instane
 		 */
-		Builder detailLayout(DetailLayout detailLayout);
+		Builder detailLayout(Function<EntityPanel, DetailLayout> detailLayout);
 
 		/**
 		 * @param preferredSize the preferred panel size

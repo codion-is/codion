@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditModel.delete() now returns the deleted entities.
 - EntityTableModel.deleteSelected() now returns the deleted entities.
+### is.codion.swing.framework.ui
+- EntityPanel.DetailLayout.layout(), entityPanel parameter removed, now returns Optional, related changes.
 
 ## 0.17.35
 ### is.codion.common.model

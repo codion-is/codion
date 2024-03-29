@@ -34,6 +34,7 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
+import is.codion.swing.framework.ui.WindowDetailLayout;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
@@ -41,8 +42,6 @@ import javax.swing.JTable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static is.codion.swing.framework.ui.WindowDetailLayout.windowDetailLayout;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
@@ -61,11 +60,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
 		EntityPanel schemaPanel = new EntityPanel(schemaModel,
-						config -> config.detailLayout(TabbedDetailLayout.builder()
+						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 										.splitPaneResizeWeight(0.3)
 										.build()));
 		EntityPanel tablePanel = new EntityPanel(tableModel,
-						config -> config.detailLayout(windowDetailLayout()));
+						config -> config.detailLayout(WindowDetailLayout::windowDetailLayout));
 		EntityPanel columnPanel = new EntityPanel(columnModel);
 		EntityPanel constraintPanel = new EntityPanel(constraintModel);
 		EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);

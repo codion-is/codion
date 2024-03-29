@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,7 +48,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private Dimension preferredSize;
 	private boolean conditionPanelVisible = EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.get();
 	private boolean filterPanelVisible = EntityTablePanel.Config.FILTER_PANEL_VISIBLE.get();
-	private DetailLayout detailLayout = TabbedDetailLayout.builder().build();
+	private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 
 	private Class<? extends EntityPanel> panelClass;
 	private Class<? extends EntityTablePanel> tablePanelClass;
@@ -113,7 +114,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	@Override
-	public EntityPanel.Builder detailLayout(DetailLayout detailLayout) {
+	public EntityPanel.Builder detailLayout(Function<EntityPanel, DetailLayout> detailLayout) {
 		this.detailLayout = requireNonNull(detailLayout);
 		return this;
 	}
@@ -355,5 +356,13 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private static final class EmptyOnBuild<T> implements Consumer<T> {
 		@Override
 		public void accept(T panel) {/*Do nothing*/}
+	}
+
+	private static final class DefaultDetailLayout implements Function<EntityPanel, DetailLayout> {
+
+		@Override
+		public DetailLayout apply(EntityPanel entityPanel) {
+			return TabbedDetailLayout.builder(entityPanel).build();
+		}
 	}
 }

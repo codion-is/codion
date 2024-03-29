@@ -33,6 +33,7 @@ import javax.swing.JComponent;
 import java.awt.Window;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
@@ -67,41 +68,34 @@ public final class WindowDetailLayout implements DetailLayout {
 		DIALOG
 	}
 
+	private final EntityPanel entityPanel;
 	private final Map<EntityPanel, DetailWindow> panelWindows = new HashMap<>();
 	private final WindowType windowType;
 
-	private EntityPanel entityPanel;
-
 	private WindowDetailLayout(DefaultBuilder builder) {
+		this.entityPanel = builder.entityPanel;
 		this.windowType = builder.windowType;
 	}
 
 	@Override
-	public JComponent layout(EntityPanel entityPanel) {
-		requireNonNull(entityPanel);
-		if (this.entityPanel != null) {
-			throw new IllegalStateException("EntityPanel has already been laid out: " + entityPanel);
+	public Optional<JComponent> layout() {
+		if (entityPanel.detailPanels().isEmpty()) {
+			throw new IllegalArgumentException("EntityPanel " + entityPanel + " has no detail panels");
 		}
-		this.entityPanel = entityPanel;
-		if (!entityPanel.detailPanels().isEmpty()) {
-			entityPanel.detailPanels().forEach(detailPanel ->
-							panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
-			setupControls(entityPanel);
-		}
+		entityPanel.detailPanels().forEach(detailPanel ->
+						panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
+		setupControls(entityPanel);
 
-		return entityPanel.mainPanel();
+		return Optional.empty();
 	}
 
 	@Override
 	public Value<PanelState> panelState(EntityPanel detailPanel) {
-		throwIfNotLaidOut();
-
 		return detailWindow(detailPanel).panelState;
 	}
 
 	@Override
 	public void select(EntityPanel entityPanel) {
-		throwIfNotLaidOut();
 		Window panelWindow = detailWindow(entityPanel).window;
 		if (panelWindow.isShowing()) {
 			panelWindow.toFront();
@@ -109,31 +103,28 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	/**
+	 * @param entityPanel the entity panel
 	 * @return a new {@link WindowDetailLayout} instance based on {@link WindowType#DIALOG}.
 	 */
-	public static WindowDetailLayout windowDetailLayout() {
-		return windowDetailLayout(DIALOG);
+	public static WindowDetailLayout windowDetailLayout(EntityPanel entityPanel) {
+		return windowDetailLayout(entityPanel, DIALOG);
 	}
 
 	/**
+	 * @param entityPanel the entity panel
 	 * @param windowType the window type
 	 * @return a new {@link WindowDetailLayout} instance based on the given window type.
 	 */
-	public static WindowDetailLayout windowDetailLayout(WindowType windowType) {
-		return builder().windowType(windowType).build();
-	}
-
-	private void throwIfNotLaidOut() {
-		if (entityPanel == null) {
-			throw new IllegalStateException("EntityPanel has not been laid out");
-		}
+	public static WindowDetailLayout windowDetailLayout(EntityPanel entityPanel, WindowType windowType) {
+		return builder(entityPanel).windowType(windowType).build();
 	}
 
 	/**
+	 * @param entityPanel the entity panel
 	 * @return a new {@link Builder} instance
 	 */
-	public static Builder builder() {
-		return new DefaultBuilder();
+	public static Builder builder(EntityPanel entityPanel) {
+		return new DefaultBuilder(entityPanel);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -233,7 +224,13 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
+		private final EntityPanel entityPanel;
+
 		private WindowType windowType = EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
+
+		private DefaultBuilder(EntityPanel entityPanel) {
+			this.entityPanel = requireNonNull(entityPanel);
+		}
 
 		@Override
 		public Builder windowType(WindowType windowType) {

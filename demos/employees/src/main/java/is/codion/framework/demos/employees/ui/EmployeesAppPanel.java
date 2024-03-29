@@ -67,7 +67,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 		EntityPanel departmentPanel = new EntityPanel(departmentModel,
 						new DepartmentEditPanel(departmentModel.editModel()),
 						new DepartmentTablePanel(departmentModel.tableModel()),
-						config -> config.detailLayout(TabbedDetailLayout.builder()
+						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 										.splitPaneResizeWeight(0.4)
 										.build()));
 		departmentPanel.addDetailPanel(employeePanel);

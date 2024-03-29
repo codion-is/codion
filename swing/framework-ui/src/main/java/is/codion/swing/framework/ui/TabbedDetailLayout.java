@@ -126,19 +126,20 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private static final int DETAIL_WINDOW_OFFSET = 38;//titlebar height
 	private static final double DETAIL_WINDOW_SIZE_RATIO = 0.66;
 
+	private final EntityPanel entityPanel;
 	private final TabbedDetailController detailController;
 	private final boolean includeTabbedPane;
 	private final boolean includeControls;
 	private final double splitPaneResizeWeight;
 	private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
 
-	private EntityPanel entityPanel;
 	private JTabbedPane tabbedPane;
 	private JSplitPane splitPane;
 	private Window panelWindow;
 	private PanelState panelState = EMBEDDED;
 
 	private TabbedDetailLayout(DefaultBuilder builder) {
+		this.entityPanel = builder.entityPanel;
 		this.panelState = builder.panelState;
 		this.includeTabbedPane = builder.includeTabbedPane;
 		this.includeControls = builder.includeControls;
@@ -153,44 +154,35 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	@Override
-	public JComponent layout(EntityPanel entityPanel) {
-		requireNonNull(entityPanel);
-		if (this.entityPanel != null) {
-			throw new IllegalStateException("EntityPanel has already been laid out: " + entityPanel);
+	public Optional<JComponent> layout() {
+		if (entityPanel.detailPanels().isEmpty()) {
+			throw new IllegalArgumentException("EntityPanel " + entityPanel + " has no detail panels");
 		}
-		this.entityPanel = entityPanel;
-		if (!includeTabbedPane || entityPanel.detailPanels().isEmpty()) {
-			return entityPanel.mainPanel();
+		if (!includeTabbedPane) {
+			return Optional.empty();
 		}
 
-		return layoutPanel(entityPanel);
+		return Optional.of(layoutPanel(entityPanel));
 	}
 
 	@Override
 	public void select(EntityPanel entityPanel) {
-		throwIfNotLaidOut();
 		detailController.select(requireNonNull(entityPanel));
 	}
 
 	@Override
 	public Value<PanelState> panelState(EntityPanel detailPanel) {
 		requireNonNull(detailPanel);
-		throwIfNotLaidOut();
 
 		return detailController.panelState();
 	}
 
-	private void throwIfNotLaidOut() {
-		if (entityPanel == null) {
-			throw new IllegalStateException("EntityPanel has not been laid out");
-		}
-	}
-
 	/**
+	 * @param entityPanel the entity panel
 	 * @return a new {@link TabbedDetailLayout.Builder} instance
 	 */
-	public static Builder builder() {
-		return new DefaultBuilder();
+	public static Builder builder(EntityPanel entityPanel) {
+		return new DefaultBuilder(entityPanel);
 	}
 
 	/**
@@ -447,7 +439,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private Optional<Control> toggleDetailControl() {
-			if (includeControls && !entityPanel.detailPanels().isEmpty()) {
+			if (includeControls) {
 				return Optional.of(createToggleDetailControl());
 			}
 
@@ -456,7 +448,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 
 		private Optional<Controls> detailControls() {
-			if (includeControls && !entityPanel.detailPanels().isEmpty()) {
+			if (includeControls) {
 				return Optional.of(createDetailControls());
 			}
 
@@ -572,10 +564,16 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
+		private final EntityPanel entityPanel;
+
 		private PanelState panelState = EMBEDDED;
 		private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
 		private boolean includeTabbedPane = true;
 		private boolean includeControls = INCLUDE_CONTROLS.get();
+
+		private DefaultBuilder(EntityPanel entityPanel) {
+			this.entityPanel = requireNonNull(entityPanel);
+		}
 
 		@Override
 		public Builder panelState(PanelState panelState) {

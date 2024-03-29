@@ -29,7 +29,7 @@ public final class PlaylistPanel extends EntityPanel {
 		super(playlistModel,
 						new PlaylistEditPanel(playlistModel.editModel()),
 						new PlaylistTablePanel(playlistModel.tableModel()),
-						config -> config.detailLayout(TabbedDetailLayout.builder()
+						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 										.splitPaneResizeWeight(0.25)
 										.build()));
 

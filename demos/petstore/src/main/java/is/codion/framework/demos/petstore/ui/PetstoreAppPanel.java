@@ -53,14 +53,14 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 
 		EntityPanel categoryPanel = new EntityPanel(categoryModel,
 						new CategoryEditPanel(categoryModel.editModel()),
-						config -> config.detailLayout(TabbedDetailLayout.builder()
+						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 										.splitPaneResizeWeight(0.3)
 										.build()));
 		EntityPanel productPanel = new EntityPanel(productModel,
 						new ProductEditPanel(productModel.editModel()));
 		EntityPanel itemPanel = new EntityPanel(itemModel,
 						new ItemEditPanel(itemModel.editModel()),
-						config -> config.detailLayout(TabbedDetailLayout.builder()
+						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 										.panelState(PanelState.HIDDEN)
 										.build()));
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
@@ -92,14 +92,14 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 														.editPanel(ItemEditPanel.class)
 														.detailPanel(EntityPanel.builder(TagItem.TYPE)
 																		.editPanel(TagItemEditPanel.class))
-														.detailLayout(TabbedDetailLayout.builder()
+														.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 																		.panelState(PanelState.HIDDEN)
 																		.build())),
 						EntityPanel.builder(tagModelBuilder)
 										.editPanel(TagEditPanel.class)
 										.detailPanel(EntityPanel.builder(TagItem.TYPE)
 														.editPanel(TagItemEditPanel.class))
-										.detailLayout(TabbedDetailLayout.builder()
+										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 														.panelState(PanelState.HIDDEN)
 														.build()));
 	}
