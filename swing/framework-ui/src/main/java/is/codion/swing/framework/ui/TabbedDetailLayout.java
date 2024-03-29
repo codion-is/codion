@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -156,7 +157,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	@Override
 	public Optional<JComponent> layout() {
 		if (entityPanel.detailPanels().isEmpty()) {
-			throw new IllegalArgumentException("EntityPanel " + entityPanel + " has no detail panels");
+			throw new IllegalStateException("EntityPanel " + entityPanel + " has no detail panels");
 		}
 		if (!includeTabbedPane) {
 			return Optional.empty();
@@ -166,15 +167,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	@Override
-	public void select(EntityPanel entityPanel) {
-		detailController.select(requireNonNull(entityPanel));
-	}
-
-	@Override
-	public Value<PanelState> panelState(EntityPanel detailPanel) {
-		requireNonNull(detailPanel);
-
-		return detailController.panelState();
+	public Optional<DetailController> controller() {
+		return Optional.of(detailController);
 	}
 
 	/**
@@ -250,7 +244,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private void initializePanelState() {
 		selectedDetailPanel().ifPresent(selectedDetailPanel -> {
-			Value<PanelState> detailPanelStateValue = detailController.panelState();
+			Value<PanelState> detailPanelStateValue = detailController.panelState(selectedDetailPanel);
 			if (detailPanelStateValue.isNotEqualTo(panelState)) {
 				detailPanelStateValue.set(panelState);
 			}
@@ -355,16 +349,16 @@ public final class TabbedDetailLayout implements DetailLayout {
 		public void mouseReleased(MouseEvent e) {
 			selectedDetailPanel().ifPresent(selectedDetailPanel -> {
 				if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-					detailController.panelState().map(state -> state == WINDOW ? EMBEDDED : WINDOW);
+					detailController.panelState(selectedDetailPanel).map(state -> state == WINDOW ? EMBEDDED : WINDOW);
 				}
 				else if (e.getButton() == MouseEvent.BUTTON2) {
-					detailController.panelState().map(state -> state == EMBEDDED ? HIDDEN : EMBEDDED);
+					detailController.panelState(selectedDetailPanel).map(state -> state == EMBEDDED ? HIDDEN : EMBEDDED);
 				}
 			});
 		}
 	}
 
-	private final class TabbedDetailController {
+	private final class TabbedDetailController implements DetailController {
 
 		/**
 		 * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
@@ -375,7 +369,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 			panelState.addListener(this::updateDetailState);
 		}
 
-		private void select(EntityPanel detailPanel) {
+		@Override
+		public void select(EntityPanel detailPanel) {
+			requireNonNull(detailPanel);
 			if (tabbedPane != null) {
 				tabbedPane.setFocusable(true);
 				tabbedPane.setSelectedComponent(detailPanel);
@@ -384,7 +380,10 @@ public final class TabbedDetailLayout implements DetailLayout {
 			activateDetailModelLink(detailPanel.model());
 		}
 
-		private Value<PanelState> panelState() {
+		@Override
+		public Value<PanelState> panelState(EntityPanel detailPanel) {
+			requireNonNull(detailPanel);
+
 			return panelState;
 		}
 

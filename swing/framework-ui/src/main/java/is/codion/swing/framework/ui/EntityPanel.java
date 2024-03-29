@@ -190,6 +190,7 @@ public class EntityPanel extends JPanel {
 	private final JPanel editControlPanel;
 	private final JPanel mainPanel;
 	private final DetailLayout detailLayout;
+	private final DetailController detailController;
 	private final Event<EntityPanel> activateEvent = Event.event();
 	private final Value<String> caption;
 	private final Value<String> description;
@@ -290,6 +291,7 @@ public class EntityPanel extends JPanel {
 		this.editControlPanel = createEditControlPanel();
 		this.mainPanel = borderLayoutPanel().build();
 		this.detailLayout = this.configuration.detailLayout.apply(this);
+		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		editPanelState.addListener(this::updateEditPanelState);
 	}
 
@@ -362,7 +364,7 @@ public class EntityPanel extends JPanel {
 		}
 		addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
 		detailPanel.setParentPanel(this);
-		detailPanel.activateEvent().addDataListener(detailLayout::select);
+		detailPanel.activateEvent().addDataListener(detailController::select);
 	}
 
 	/**
@@ -1346,7 +1348,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Handles the layout of a EntityPanel with one or more detail panels.
 	 */
-	public interface DetailLayout extends Selector {
+	public interface DetailLayout {
 
 		/**
 		 * Updates the UI of all associated components.
@@ -1359,19 +1361,18 @@ public class EntityPanel extends JPanel {
 		 * Lays out a given EntityPanel along with its detail panels.
 		 * In case of no special detail panel layout requirements, this method should return an empty Optional.
 		 * @return the panel laid out with it detail panels or an empty Optional in case of no special layout component.
-		 * @throws IllegalStateException in case the panel has already been laid out
-		 * @throws IllegalArgumentException in case the panel has no detail panels
+		 * @throws IllegalStateException in case the panel has no detail panels
 		 */
-		Optional<JComponent> layout();
+		default Optional<JComponent> layout() {
+			return Optional.empty();
+		}
 
 		/**
-		 * Note that the detail panel state may be shared between detail panels,
-		 * as they may be displayed in a shared window.
-		 * @param detailPanel the detail panel
-		 * @return the value controlling the state of the given detail panel
-		 * @throws IllegalStateException in case the panel has not been laid out
+		 * @return the detail controller for this layout, an empty Optional if one is none is available
 		 */
-		Value<PanelState> panelState(EntityPanel detailPanel);
+		default Optional<DetailController> controller() {
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -1385,6 +1386,25 @@ public class EntityPanel extends JPanel {
 		 * @param entityPanel the entity panel to select
 		 */
 		void select(EntityPanel entityPanel);
+	}
+
+	/**
+	 * Controls the detail panel states.
+	 */
+	public interface DetailController extends Selector {
+
+		/**
+		 * Note that the detail panel state may be shared between detail panels,
+		 * as they may be displayed in a shared window.
+		 * @param detailPanel the detail panel
+		 * @return the value controlling the state of the given detail panel
+		 */
+		default Value<PanelState> panelState(EntityPanel detailPanel) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		default void select(EntityPanel detailPanel) {}
 	}
 
 	/**

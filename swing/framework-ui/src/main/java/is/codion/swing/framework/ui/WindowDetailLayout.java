@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -71,6 +72,7 @@ public final class WindowDetailLayout implements DetailLayout {
 	private final EntityPanel entityPanel;
 	private final Map<EntityPanel, DetailWindow> panelWindows = new HashMap<>();
 	private final WindowType windowType;
+	private final WindowDetailController detailController = new WindowDetailController();
 
 	private WindowDetailLayout(DefaultBuilder builder) {
 		this.entityPanel = builder.entityPanel;
@@ -80,7 +82,7 @@ public final class WindowDetailLayout implements DetailLayout {
 	@Override
 	public Optional<JComponent> layout() {
 		if (entityPanel.detailPanels().isEmpty()) {
-			throw new IllegalArgumentException("EntityPanel " + entityPanel + " has no detail panels");
+			throw new IllegalStateException("EntityPanel " + entityPanel + " has no detail panels");
 		}
 		entityPanel.detailPanels().forEach(detailPanel ->
 						panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
@@ -90,16 +92,8 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	@Override
-	public Value<PanelState> panelState(EntityPanel detailPanel) {
-		return detailWindow(detailPanel).panelState;
-	}
-
-	@Override
-	public void select(EntityPanel entityPanel) {
-		Window panelWindow = detailWindow(entityPanel).window;
-		if (panelWindow.isShowing()) {
-			panelWindow.toFront();
-		}
+	public Optional<DetailController> controller() {
+		return Optional.of(detailController);
 	}
 
 	/**
@@ -147,6 +141,22 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 
 		return detailWindow;
+	}
+
+	private final class WindowDetailController implements DetailController {
+
+		@Override
+		public Value<PanelState> panelState(EntityPanel detailPanel) {
+			return detailWindow(detailPanel).panelState;
+		}
+
+		@Override
+		public void select(EntityPanel detailPanel) {
+			Window panelWindow = detailWindow(detailPanel).window;
+			if (panelWindow.isShowing()) {
+				panelWindow.toFront();
+			}
+		}
 	}
 
 	/**

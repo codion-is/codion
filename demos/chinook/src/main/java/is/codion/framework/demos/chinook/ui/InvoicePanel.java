@@ -22,7 +22,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 public final class InvoicePanel extends EntityPanel {
 
@@ -31,10 +30,7 @@ public final class InvoicePanel extends EntityPanel {
 						new EntityTablePanel(invoiceModel.tableModel(), config -> config
 										.editable(attributes -> attributes.remove(Invoice.TOTAL))),
 						config -> config
-										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.includeTabbedPane(false)
-														.includeControls(false)
-														.build()));
+										.detailLayout(entityPanel -> new DetailLayout() {}));
 		addDetailPanel(invoiceLinePanel);
 	}
 }
