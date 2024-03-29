@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.35-SNAPSHOT
+## 0.17.35
 ### is.codion.common.model
 - TableSelectionModel, add/removeListener methods replaced with methods that return the underlying event observer.
 - ColumnConditionModel, add/removeListener methods replaced with methods that return the underlying event observer.
