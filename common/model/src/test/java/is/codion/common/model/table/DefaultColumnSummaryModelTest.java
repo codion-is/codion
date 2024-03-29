@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.table;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 
@@ -43,7 +45,9 @@ public class DefaultColumnSummaryModelTest {
 		}
 
 		@Override
-		public void addListener(Runnable event) {}
+		public EventObserver<?> changeObserver() {
+			return Event.event().observer();
+		}
 	});
 
 	final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Double>() {
@@ -56,7 +60,9 @@ public class DefaultColumnSummaryModelTest {
 		}
 
 		@Override
-		public void addListener(Runnable event) {}
+		public EventObserver<?> changeObserver() {
+			return Event.event().observer();
+		}
 	});
 
 	@Test

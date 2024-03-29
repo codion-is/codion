@@ -8,6 +8,7 @@ Codion Change Log
 - TableConditionModel, add/removeListener methods replaced with methods that return the underlying event observer.
 - FilteredModel.Refresher, add/removeListener methods replaced with methods that return the underlying event observer.
 - LoadTest, add/removeListener methods replaced with methods that return the underlying event observer.
+- ColumnSummaryModel.SummaryValueProvider, add/removeListener methods replaced with methods that return the underlying event observer.
 ### is.codion.framework.db
 - EntityConnectionProvider, add/removeListener methods replaced with methods that return the underlying event observer.
 ### is.codion.framework.model

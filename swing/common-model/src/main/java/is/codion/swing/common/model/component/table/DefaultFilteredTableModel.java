@@ -638,6 +638,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		private final C columnIdentifier;
 		private final FilteredTableModel<?, C> tableModel;
 		private final Format format;
+		private final Event<?> changeEvent = Event.event();
 
 		/**
 		 * @param columnIdentifier the identifier of the column which values are provided
@@ -648,6 +649,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			this.columnIdentifier = requireNonNull(columnIdentifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
+			this.tableModel.dataChangedObserver().addListener(changeEvent);
+			this.tableModel.selectionModel().selectionObserver().addListener(changeEvent);
 		}
 
 		@Override
@@ -656,9 +659,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public void addListener(Runnable listener) {
-			tableModel.dataChangedObserver().addListener(listener);
-			tableModel.selectionModel().selectionObserver().addListener(listener);
+		public EventObserver<?> changeObserver() {
+			return changeEvent.observer();
 		}
 
 		@Override

@@ -47,7 +47,7 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 				throw new IllegalStateException("Summary model is locked");
 			}
 		});
-		this.valueProvider.addListener(this::updateSummary);
+		this.valueProvider.changeObserver().addListener(this::updateSummary);
 		this.summary.addListener(this::updateSummary);
 	}
 
