@@ -111,7 +111,7 @@ public final class AbstractEntityEditModelTest {
 			employeeEditModel.put(Employee.NAME, "Another");
 			employeeEditModel.update();
 			assertEquals(1, updateEvents.get());
-			employeeEditModel.delete();
+			assertNotNull(employeeEditModel.delete());
 			assertEquals(1, deleteEvents.get());
 		}
 		finally {
@@ -419,7 +419,7 @@ public final class AbstractEntityEditModelTest {
 
 	@Test
 	void delete() throws Exception {
-		employeeEditModel.delete(emptyList());
+		assertTrue(employeeEditModel.delete(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.beginTransaction();
 		try {

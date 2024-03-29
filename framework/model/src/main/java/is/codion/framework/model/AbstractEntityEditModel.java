@@ -329,13 +329,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final void delete() throws DatabaseException {
-		new DefaultDelete().prepare().perform().handle();
+	public final Entity delete() throws DatabaseException {
+		return new DefaultDelete().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final void delete(Collection<Entity> entities) throws DatabaseException {
-		new DefaultDelete(entities).prepare().perform().handle();
+	public final Collection<Entity> delete(Collection<Entity> entities) throws DatabaseException {
+		return new DefaultDelete(entities).prepare().perform().handle();
 	}
 
 	@Override
@@ -958,11 +958,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final class DefaultResult implements Result {
 
 			@Override
-			public void handle() {
+			public Collection<Entity> handle() {
 				AbstractEntityEditModel.this.notifyAfterDelete(entities);
 				if (activeEntity) {
 					defaults();
 				}
+
+				return entities;
 			}
 		}
 	}

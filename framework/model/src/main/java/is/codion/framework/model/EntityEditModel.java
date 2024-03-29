@@ -325,22 +325,24 @@ public interface EntityEditModel {
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * @return the deleted entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
 	 * @see #beforeDeleteEvent()
 	 * @see #afterDeleteEvent()
 	 */
-	void delete() throws DatabaseException;
+	Entity delete() throws DatabaseException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
 	 * @param entities the entities to delete
+	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
 	 * @see #beforeDeleteEvent()
 	 * @see #afterDeleteEvent()
 	 */
-	void delete(Collection<Entity> entities) throws DatabaseException;
+	Collection<Entity> delete(Collection<Entity> entities) throws DatabaseException;
 
 	/**
 	 * Creates a new {@link Insert} instance for inserting the active entity.
@@ -696,8 +698,9 @@ public interface EntityEditModel {
 			/**
 			 * Notifies listeners that a delete has been performed.
 			 * Must be called on the UI thread if this model has a panel based on it.
+			 * @return the deleted entities
 			 */
-			void handle();
+			Collection<Entity> handle();
 		}
 	}
 }
