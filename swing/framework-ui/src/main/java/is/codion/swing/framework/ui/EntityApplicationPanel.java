@@ -22,6 +22,7 @@ import is.codion.common.Configuration;
 import is.codion.common.Memory;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
@@ -281,11 +282,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * @param listener notified when this application panel has been initialized
+	 * @return an observer notified when this application panel is initialized
 	 * @see #initialize()
 	 */
-	public final void addInitializationListener(Consumer<EntityApplicationPanel<?>> listener) {
-		onInitialized.addDataListener(listener);
+	public final EventObserver<EntityApplicationPanel<?>> initializedObserver() {
+		return onInitialized.observer();
 	}
 
 	/**
