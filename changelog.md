@@ -37,6 +37,8 @@ Codion Change Log
 - LoadTestPanel, add/removeSelectedItemListener() methods replaced selectedItemsObserver() method.
 ### is.codion.swing.framework.ui
 - EntityPanel, add/removeListener methods replaced with methods that return the underlying event observer.
+### is.codion.swing.framework.server.monitor
+- ConnectionPoolMonitoring, add/removeStatisticsListener() methods replaced statisticsObserver() method.
 
 ## 0.17.34
 ### is.codion.common.core
