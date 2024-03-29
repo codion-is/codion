@@ -117,15 +117,6 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 	}
 
-	private DetailWindow detailWindow(EntityPanel detailPanel) {
-		DetailWindow detailWindow = panelWindows.get(requireNonNull(detailPanel));
-		if (detailWindow == null) {
-			throw new IllegalArgumentException("Detail panel not found: " + detailPanel);
-		}
-
-		return detailWindow;
-	}
-
 	private final class WindowDetailController implements DetailController {
 
 		@Override
@@ -139,6 +130,15 @@ public final class WindowDetailLayout implements DetailLayout {
 			if (panelWindow != null && panelWindow.isShowing()) {
 				panelWindow.toFront();
 			}
+		}
+
+		private DetailWindow detailWindow(EntityPanel detailPanel) {
+			DetailWindow detailWindow = panelWindows.get(requireNonNull(detailPanel));
+			if (detailWindow == null) {
+				throw new IllegalArgumentException("Detail panel not found: " + detailPanel);
+			}
+
+			return detailWindow;
 		}
 	}
 
