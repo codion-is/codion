@@ -713,6 +713,7 @@ public class EntityPanel extends JPanel {
 		if (tablePanel != null && mainPanel.getComponents().length == 0) {
 			mainPanel.add(tablePanel, BorderLayout.CENTER);
 		}
+		mainPanel.setMinimumSize(new Dimension(0, 0));
 
 		return mainPanel;
 	}
@@ -895,7 +896,6 @@ public class EntityPanel extends JPanel {
 		if (tablePanel != null) {
 			tablePanel.table().doubleClickAction().mapNull(() -> Control.control(new ShowHiddenEditPanel()));
 			tablePanel.initialize();
-			tablePanel.setMinimumSize(new Dimension(0, 0));
 		}
 	}
 

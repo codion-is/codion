@@ -10,6 +10,7 @@ Codion Change Log
 - EntityPanel.DetailController reintroduced, related changes.
 - WindowDetailLayout.WindowDetailController.select() bug fixed, null check added.
 - WindowDetailLayout static factory methods removed.
+- EntityPanel bug fixed, minimum panel size restricted detail split pane adjustment.
 
 ## 0.17.35
 ### is.codion.common.model
