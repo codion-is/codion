@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.36-SNAPSHOT
 ### is.codion.framework.model
 - EntityEditModel.delete() now returns the deleted entities.
+- EntityTableModel.deleteSelected() now returns the deleted entities.
 
 ## 0.17.35
 ### is.codion.common.model

@@ -222,11 +222,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
 	/**
 	 * Deletes the selected entities
+	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
 	 * @throws is.codion.common.model.CancelException in case the user cancels the operation
 	 * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
 	 */
-	void deleteSelected() throws DatabaseException;
+	Collection<Entity> deleteSelected() throws DatabaseException;
 
 	/**
 	 * Returns a State controlling whether this table model should display all underlying entities

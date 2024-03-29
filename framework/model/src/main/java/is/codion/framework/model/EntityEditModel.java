@@ -663,7 +663,7 @@ public interface EntityEditModel {
 	 *   // Can safely be called in a background thread
 	 *   Delete.Result result = task.perform();
 	 *
-	 *   result.handle();
+	 *   Collection&lt;Entity&gt; deletedEntities = result.handle();
 	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link Delete#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.

@@ -174,7 +174,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 			tableModel.select(singletonList(pk2));
 			selected = tableModel.selectionModel().getSelectedItem();
 			tableModel.removeDeleted().set(false);
-			tableModel.deleteSelected();
+			assertEquals(1, tableModel.deleteSelected().size());
 			assertTrue(tableModel.containsItem(selected));
 		}
 		finally {
