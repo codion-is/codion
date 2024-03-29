@@ -153,7 +153,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		@Override
 		public void select(EntityPanel detailPanel) {
 			Window panelWindow = detailWindow(detailPanel).window;
-			if (panelWindow.isShowing()) {
+			if (panelWindow != null && panelWindow.isShowing()) {
 				panelWindow.toFront();
 			}
 		}

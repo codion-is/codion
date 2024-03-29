@@ -8,6 +8,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPanel.DetailLayout.layout(), entityPanel parameter removed, now returns Optional, related changes.
 - EntityPanel.DetailController reintroduced, related changes.
+- WindowDetailLayout.WindowDetailController.select() bug fixed, null check added.
 
 ## 0.17.35
 ### is.codion.common.model
