@@ -517,7 +517,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
 	 * It is up the panel or application layout to make sure this panel is made visible when activated.
-	 * @see #addActivateListener(Consumer)
+	 * @see #activateObserver()
 	 */
 	public final void activate() {
 		activateEvent.accept(this);

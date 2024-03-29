@@ -38,7 +38,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
 		super(Country.TYPE, connectionProvider);
 		initializeComboBoxModels(Country.CAPITAL_FK);
-		entityObserver().addDataListener(country -> averageCityPopulation.set(averageCityPopulation(country)));
+		entityObserver().addDataListener(country ->
+						averageCityPopulation.set(averageCityPopulation(country)));
 	}
 
 	@Override
