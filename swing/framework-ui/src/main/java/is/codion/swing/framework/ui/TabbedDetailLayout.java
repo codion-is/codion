@@ -268,14 +268,14 @@ public final class TabbedDetailLayout implements DetailLayout {
 		return splitPane;
 	}
 
-	private JSplitPane createSplitPane(JPanel editControlTablePanel) {
+	private JSplitPane createSplitPane(JPanel mainPanel) {
 		return splitPane()
 						.orientation(JSplitPane.HORIZONTAL_SPLIT)
 						.continuousLayout(true)
 						.oneTouchExpandable(true)
 						.dividerSize(GAP.get() * 2)
 						.resizeWeight(splitPaneResizeWeight)
-						.leftComponent(editControlTablePanel)
+						.leftComponent(mainPanel)
 						.build();
 	}
 

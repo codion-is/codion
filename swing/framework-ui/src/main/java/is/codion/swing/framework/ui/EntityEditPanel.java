@@ -25,7 +25,6 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -159,7 +158,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Clears the underlying edit model and requests the initial focus.
-	 * @see EntityEditModel#set(Entity)
+	 * @see EntityEditModel#defaults()
 	 * @see #requestInitialFocus()
 	 */
 	public final void clearAndRequestFocus() {
