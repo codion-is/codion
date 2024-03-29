@@ -19,6 +19,8 @@
 package is.codion.framework.demos.manual.notes;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.dbms.h2.H2DatabaseFactory;
@@ -172,12 +174,16 @@ public final class NotesDemo {
 
 		private NoteTableModel(EntityConnectionProvider connectionProvider) {
 			super(new NoteEditModel(connectionProvider));
-			//configure the table model and columns
+			// Configure the table model and columns
 			sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
 			onInsert().set(OnInsert.ADD_TOP_SORTED);
 			columnModel().column(Note.NOTE).setPreferredWidth(280);
 			columnModel().column(Note.CREATED).setPreferredWidth(130);
 			columnModel().column(Note.UPDATED).setPreferredWidth(130);
+			// Case-insensitive note search with automatic wildcards
+			ColumnConditionModel<?, ?> noteConditionModel = conditionModel().conditionModel(Note.NOTE);
+			noteConditionModel.caseSensitive().set(false);
+			noteConditionModel.automaticWildcard().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
 		}
 	}
 
@@ -309,8 +315,8 @@ public final class NotesDemo {
 
 	private static Database createSchema(Database database) {
 		List<String> dataStatements = asList(
-						"insert into notes.note(note, created) values " +
-										"('My first note', '2023-10-03 10:40')",
+						"insert into notes.note(note, created) " +
+										"values ('My first note', '2023-10-03 10:40')",
 						"insert into notes.note(note, created) " +
 										"values ('My second note', '2023-10-03 12:20')",
 						"insert into notes.note(note, created, updated) " +
