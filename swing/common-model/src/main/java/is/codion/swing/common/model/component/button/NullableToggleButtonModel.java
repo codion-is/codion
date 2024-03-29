@@ -19,11 +19,11 @@
 package is.codion.swing.common.model.component.button;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * A ToggleButtonModel implementation, which allows the null state.
@@ -113,18 +113,9 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	}
 
 	/**
-	 * Adds a listener notified each time the state changes.
-	 * @param listener the listener
+	 * @return an observer notified each time the state changes
 	 */
-	public void addListener(Consumer<Boolean> listener) {
-		buttonState.addDataListener(listener);
-	}
-
-	/**
-	 * Removes the given listener.
-	 * @param listener the listener to remove
-	 */
-	public void removeListener(Consumer<Boolean> listener) {
-		buttonState.removeDataListener(listener);
+	public ValueObserver<Boolean> stateObserver() {
+		return buttonState.observer();
 	}
 }
