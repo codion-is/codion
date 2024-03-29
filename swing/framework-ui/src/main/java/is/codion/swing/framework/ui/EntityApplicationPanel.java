@@ -743,6 +743,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
+	 * To cancel the exit add a listener throwing a {@link CancelException}.
+	 * @return an observer notified when the application is about to exit.
+	 */
+	protected final EventObserver<?> exitObserver() {
+		return onExitEvent.observer();
+	}
+
+	/**
 	 * Adds a listener notified when the application is about to exit.
 	 * To cancel the exit throw a {@link CancelException}.
 	 * @param listener a listener notified when the application is about to exit

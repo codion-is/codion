@@ -38,6 +38,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityPanel, add/removeListener methods replaced with methods that return the underlying event observer.
 - EntityApplicationPanel.addInitializationListener() replaced with initializedObserver().
+- EntityApplicationPanel.addExitListener() replaced with exitObserver().
 ### is.codion.swing.framework.server.monitor
 - ConnectionPoolMonitoring, add/removeStatisticsListener() methods replaced statisticsObserver() method.
 - HostMonitor, add/removeServerAddedListener() and add/removeServerRemovedListener() methods replaced with serverAddedObserver() and serverRemovedObserver().
