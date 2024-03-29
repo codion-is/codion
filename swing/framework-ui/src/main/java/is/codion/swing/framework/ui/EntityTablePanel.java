@@ -1096,7 +1096,7 @@ public class EntityTablePanel extends JPanel {
 		tableModel.editModel().insertUpdateOrDeleteObserver().addListener(table::repaint);
 		if (conditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();
-			conditionPanel.addFocusGainedListener(table::scrollToColumn);
+			conditionPanel.focusGainedObserver().addDataListener(table::scrollToColumn);
 			conditionPanel.advanced().addDataListener(advanced -> {
 				if (conditionPanelVisibleState.get()) {
 					revalidate();
@@ -1104,7 +1104,7 @@ public class EntityTablePanel extends JPanel {
 			});
 		}
 		if (configuration.includeFilterPanel) {
-			table.filterPanel().addFocusGainedListener(table::scrollToColumn);
+			table.filterPanel().focusGainedObserver().addDataListener(table::scrollToColumn);
 			table.filterPanel().advanced().addDataListener(advanced -> {
 				if (filterPanelVisibleState.get()) {
 					revalidate();

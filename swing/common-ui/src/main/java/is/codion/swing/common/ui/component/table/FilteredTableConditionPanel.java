@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
@@ -37,7 +39,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,6 +56,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 	private final TableConditionModel<C> conditionModel;
 	private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
 	private final State advanced = State.state();
+	private final Event<C> focusGainedEvent = Event.event();
 
 	private FilteredTableConditionPanel(TableConditionModel<C> conditionModel, FilteredTableColumnModel<C> columnModel,
 																			ColumnConditionPanel.Factory<C> conditionPanelFactory) {
@@ -64,6 +66,8 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
 		advanced.addDataListener(this::onAdvancedChanged);
+		componentPanel.components().values().forEach(panel ->
+						panel.focusGainedObserver().addDataListener(focusGainedEvent));
 	}
 
 	/**
@@ -102,10 +106,10 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @param listener a listener notified when a condition panel receives focus
+	 * @return an observer notified when a condition panel receives focus
 	 */
-	public void addFocusGainedListener(Consumer<C> listener) {
-		componentPanel.components().values().forEach(panel -> panel.focusGainedObserver().addDataListener(listener));
+	public EventObserver<C> focusGainedObserver() {
+		return focusGainedEvent.observer();
 	}
 
 	/**

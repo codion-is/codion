@@ -31,6 +31,7 @@ Codion Change Log
 - CalendarPanel, add/removeListener methods replaced with methods that return the underlying event observer.
 - ColumnConditionPanel, add/removeListener methods replaced with methods that return the underlying event observer.
 - FilteredTable, add/removeListener methods replaced with methods that return the underlying event observer.
+- FilteredTableConditionPanel, add/removeFocusGainedListener() methods replaced focusGainedObserver() method.
 ### is.codion.swing.framework.ui
 - EntityPanel, add/removeListener methods replaced with methods that return the underlying event observer.
 
