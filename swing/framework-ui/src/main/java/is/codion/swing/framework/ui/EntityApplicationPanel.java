@@ -292,7 +292,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	/**
 	 * Exits this application
 	 * @throws CancelException if the exit is cancelled
-	 * @see #addOnExitListener(Runnable)
+	 * @see #exitEvent()
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
 	 * @see EntityApplicationModel#warnAboutUnsavedData()
 	 */
