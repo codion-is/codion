@@ -634,16 +634,12 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Initializes this EntityPanels UI.
 	 * @see #detailLayout()
+	 * @see #createMainComponent()
 	 * @see #mainPanel()
 	 */
 	protected void initializeUI() {
 		setLayout(borderLayout());
-		if (detailPanels.isEmpty()) {
-			add(mainPanel(), BorderLayout.CENTER);
-		}
-		else {
-			add(detailLayout().layout().orElse(mainPanel()), BorderLayout.CENTER);
-		}
+		add(createMainComponent(), BorderLayout.CENTER);
 	}
 
 	/**
@@ -696,6 +692,15 @@ public class EntityPanel extends JPanel {
 		}
 
 		return controls;
+	}
+
+	/**
+	 * Creates the main component, which is {@link #mainPanel()} in case of no detail panels
+	 * or the result of {@link DetailLayout#layout()} in case of one or more detail panels.
+	 * @return the main component to base this entity panel on
+	 */
+	protected final JComponent createMainComponent() {
+		return detailPanels.isEmpty() ? mainPanel() : detailLayout().layout().orElse(mainPanel());
 	}
 
 	/**
@@ -1347,8 +1352,14 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Handles the layout of a EntityPanel with one or more detail panels.
+	 * @see #NO_LAYOUT
 	 */
 	public interface DetailLayout {
+
+		/**
+		 * A convenience instance for indicating no detail layout.
+		 */
+		Function<EntityPanel, DetailLayout> NO_LAYOUT = entityPanel -> new DetailLayout() {};
 
 		/**
 		 * Updates the UI of all associated components.
