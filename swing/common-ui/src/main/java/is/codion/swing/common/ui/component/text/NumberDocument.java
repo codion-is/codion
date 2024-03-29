@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -93,6 +94,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	final ValueObserver<T> valueObserver() {
+		return getDocumentFilter().value.observer();
 	}
 
 	final void addListener(Consumer<T> listener) {

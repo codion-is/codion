@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -31,7 +32,6 @@ import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.function.Consumer;
 
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
@@ -201,10 +201,10 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * @param listener a listener notified when the underlying value changes
+	 * @return an observer notified each time the underlying value changes
 	 */
-	public void addListener(Consumer<T> listener) {
-		getTypedDocument().addListener(listener);
+	public ValueObserver<T> numberObserver() {
+		return getTypedDocument().valueObserver();
 	}
 
 	/**

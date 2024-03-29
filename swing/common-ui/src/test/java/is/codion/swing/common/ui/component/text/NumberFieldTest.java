@@ -80,7 +80,7 @@ public final class NumberFieldTest {
 		assertEquals(987654321, (int) integerField.getNumber());
 
 		integerField.setNumber(null);
-		integerField.addListener(value -> assertEquals(42, value));
+		integerField.numberObserver().addDataListener(value -> assertEquals(42, value));
 		integerField.setNumber(42);
 	}
 
