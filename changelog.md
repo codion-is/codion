@@ -42,6 +42,8 @@ Codion Change Log
 ### is.codion.swing.framework.server.monitor
 - ConnectionPoolMonitoring, add/removeStatisticsListener() methods replaced statisticsObserver() method.
 - HostMonitor, add/removeServerAddedListener() and add/removeServerRemovedListener() methods replaced with serverAddedObserver() and serverRemovedObserver().
+### is.codion.*
+- Observer replaced with Event as suffix for methods returning EventObserver instances, related changes.
 
 ## 0.17.34
 ### is.codion.common.core

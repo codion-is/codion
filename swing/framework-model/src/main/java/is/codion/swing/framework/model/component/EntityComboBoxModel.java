@@ -366,12 +366,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		else {
 			linkCondition(foreignKey, foreignKeyModel);
 		}
-		selectionObserver().addDataListener(selected -> {
+		selectionEvent().addDataListener(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				foreignKeyModel.select(selected.referencedKey(foreignKey));
 			}
 		});
-		refresher().refreshObserver().addListener(foreignKeyModel::refresh);
+		refresher().refreshEvent().addListener(foreignKeyModel::refresh);
 	}
 
 	private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
@@ -379,7 +379,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		if (strictForeignKeyFiltering.get()) {
 			includeCondition().set(filterAllCondition);
 		}
-		foreignKeyModel.selectionObserver().addDataListener(selected -> {
+		foreignKeyModel.selectionEvent().addDataListener(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
 				includeCondition().set(filterAllCondition);
 			}
@@ -394,7 +394,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 			conditionSupplier.set(() -> foreignKey.equalTo(selected));
 			refresh();
 		};
-		foreignKeyModel.selectionObserver().addDataListener(listener);
+		foreignKeyModel.selectionEvent().addDataListener(listener);
 		//initialize
 		listener.accept(selectedValue());
 	}

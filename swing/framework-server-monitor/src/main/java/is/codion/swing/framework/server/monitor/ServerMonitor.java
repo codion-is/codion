@@ -200,14 +200,14 @@ public final class ServerMonitor {
 	/**
 	 * @return the amount of memory being used by the server
 	 */
-	public ValueObserver<String> memoryUsageObserver() {
+	public ValueObserver<String> memoryUsage() {
 		return memoryUsageValue;
 	}
 
 	/**
 	 * @return the number of connected clients
 	 */
-	public ValueObserver<Integer> connectionCountObserver() {
+	public ValueObserver<Integer> connectionCount() {
 		return connectionCountValue;
 	}
 

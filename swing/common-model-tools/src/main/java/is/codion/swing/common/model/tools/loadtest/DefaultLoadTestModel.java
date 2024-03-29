@@ -284,7 +284,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	private void bindEvents() {
-		loadTest.resultObserver().addDataListener(counter::addScenarioResults);
+		loadTest.resultEvent().addDataListener(counter::addScenarioResults);
 		loadTest.addShutdownListener(() -> {
 			applicationsRefreshScheduler.stop();
 			chartUpdateScheduler.stop();

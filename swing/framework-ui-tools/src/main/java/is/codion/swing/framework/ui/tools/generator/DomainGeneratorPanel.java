@@ -131,7 +131,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		setLayout(borderLayout());
 		add(splitPane, BorderLayout.CENTER);
 
-		model.domainSourceObserver().addDataListener(textArea::setText);
+		model.domainSource().addDataListener(textArea::setText);
 	}
 
 	public void showFrame() {

@@ -67,7 +67,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 		add(componentPanel, BorderLayout.CENTER);
 		advanced.addDataListener(this::onAdvancedChanged);
 		componentPanel.components().values().forEach(panel ->
-						panel.focusGainedObserver().addDataListener(focusGainedEvent));
+						panel.focusGainedEvent().addDataListener(focusGainedEvent));
 	}
 
 	/**
@@ -108,7 +108,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 	/**
 	 * @return an observer notified when a condition panel receives focus
 	 */
-	public EventObserver<C> focusGainedObserver() {
+	public EventObserver<C> focusGainedEvent() {
 		return focusGainedEvent.observer();
 	}
 

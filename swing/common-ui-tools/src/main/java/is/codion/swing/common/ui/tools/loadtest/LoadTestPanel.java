@@ -112,7 +112,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private LoadTestPanel(LoadTestModel<T> loadTestModel) {
 		this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
 		this.loadTest = loadTestModel.loadTest();
-		this.loadTestModel.applicationTableModel().refresher().refreshFailedObserver().addDataListener(this::displayException);
+		this.loadTestModel.applicationTableModel().refresher().refreshFailedEvent().addDataListener(this::displayException);
 		initializeUI();
 	}
 
@@ -189,7 +189,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
 		ItemRandomizerPanel<Scenario<T>> panel = itemRandomizerPanel(loadTest.scenarioChooser());
 		panel.setBorder(createTitledBorder("Usage scenarios"));
-		panel.selectedItemsObserver().addDataListener(this::onScenarioSelectionChanged);
+		panel.selectedItemsEvent().addDataListener(this::onScenarioSelectionChanged);
 
 		return panel;
 	}

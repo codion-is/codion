@@ -74,7 +74,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
 		if (updateOn == UpdateOn.VALUE_CHANGE) {
 			Document document = component.getDocument();
 			if (document instanceof NumberDocument) {
-				((NumberDocument<Number>) document).valueObserver().addDataListener(new NotifyOnNumberChanged());
+				((NumberDocument<Number>) document).numberValue().addDataListener(new NotifyOnNumberChanged());
 			}
 			else {
 				document.addDocumentListener(new NotifyOnContentsChanged());

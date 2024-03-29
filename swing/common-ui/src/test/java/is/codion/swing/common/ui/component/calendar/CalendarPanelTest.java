@@ -41,8 +41,8 @@ public final class CalendarPanelTest {
 		Consumer<LocalDate> dataListener = date -> dateChangedCounter.incrementAndGet();
 		Consumer<LocalDateTime> dateTimeListener = dateTime -> dateTimeChangedCounter.incrementAndGet();
 
-		panel.localDateObserver().addDataListener(dataListener);
-		panel.localDateTimeObserver().addDataListener(dateTimeListener);
+		panel.localDateValue().addDataListener(dataListener);
+		panel.localDateTimeValue().addDataListener(dateTimeListener);
 
 		panel.setLocalDate(startDate.toLocalDate());
 
@@ -62,8 +62,8 @@ public final class CalendarPanelTest {
 
 		assertEquals(2, dateChangedCounter.get());
 
-		panel.localDateObserver().removeDataListener(dataListener);
-		panel.localDateTimeObserver().removeDataListener(dateTimeListener);
+		panel.localDateValue().removeDataListener(dataListener);
+		panel.localDateTimeValue().removeDataListener(dateTimeListener);
 	}
 
 	@Test

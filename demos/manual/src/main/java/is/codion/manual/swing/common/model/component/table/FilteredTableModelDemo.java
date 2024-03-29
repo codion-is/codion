@@ -113,7 +113,7 @@ public final class FilteredTableModelDemo {
 		FilteredTableSearchModel searchModel = tableModel.searchModel();
 		searchModel.searchPredicate().set(value -> value.equals("43"));
 
-		RowColumn searchResult = searchModel.currentResult();
+		RowColumn searchResult = searchModel.currentResult().get();
 		System.out.println(searchResult); // row: 1, column: 1
 
 		return tableModel;

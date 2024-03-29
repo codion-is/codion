@@ -291,7 +291,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 		private TemporalFieldPanelValue(TemporalFieldPanel<T> inputPanel) {
 			super(inputPanel);
-			inputPanel.temporalField().valueObserver().addListener(this::notifyListeners);
+			inputPanel.temporalField().temporalValue().addListener(this::notifyListeners);
 		}
 
 		@Override

@@ -41,7 +41,7 @@ public class CustomerModel extends SwingEntityModel {
 			}
 		});
 
-		editModel().valueObserver(Customer.FIRST_NAME).addDataListener(value ->
+		editModel().changeEvent(Customer.FIRST_NAME).addDataListener(value ->
 						System.out.println("First name changed to " + value));
 	}
 	// end::bindEvents[]

@@ -34,7 +34,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 	}
 
 	private void bindEvents() {
-		editObserver(Invoice.CUSTOMER_FK).addDataListener(this::setAddress);
+		editEvent(Invoice.CUSTOMER_FK).addDataListener(this::setAddress);
 	}
 
 	private void setAddress(Entity customer) {

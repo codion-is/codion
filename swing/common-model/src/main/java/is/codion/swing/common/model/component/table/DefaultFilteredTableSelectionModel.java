@@ -320,32 +320,32 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 	}
 
 	@Override
-	public EventObserver<?> beforeSelectionChangeObserver() {
+	public EventObserver<?> beforeSelectionChangeEvent() {
 		return beforeSelectionChangeEvent.observer();
 	}
 
 	@Override
-	public EventObserver<Integer> selectedIndexObserver() {
+	public EventObserver<Integer> selectedIndexEvent() {
 		return selectedIndexEvent.observer();
 	}
 
 	@Override
-	public EventObserver<List<Integer>> selectedIndexesObserver() {
+	public EventObserver<List<Integer>> selectedIndexesEvent() {
 		return selectedIndexesEvent.observer();
 	}
 
 	@Override
-	public EventObserver<?> selectionObserver() {
+	public EventObserver<?> selectionEvent() {
 		return selectionEvent.observer();
 	}
 
 	@Override
-	public EventObserver<R> selectedItemObserver() {
+	public EventObserver<R> selectedItemEvent() {
 		return selectedItemEvent.observer();
 	}
 
 	@Override
-	public EventObserver<List<R>> selectedItemsObserver() {
+	public EventObserver<List<R>> selectedItemsEvent() {
 		return selectedItemsEvent.observer();
 	}
 

@@ -45,12 +45,12 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	/**
 	 * @return an observer notified each time the table data changes
 	 */
-	EventObserver<?> dataChangedObserver();
+	EventObserver<?> dataChangedEvent();
 
 	/**
 	 * @return an observer notified each time the table model is cleared
 	 */
-	EventObserver<?> clearObserver();
+	EventObserver<?> clearedEvent();
 
 	/**
 	 * @param item the item

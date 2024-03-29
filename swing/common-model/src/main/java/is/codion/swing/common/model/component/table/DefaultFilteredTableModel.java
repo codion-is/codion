@@ -60,7 +60,7 @@ import static java.util.stream.Collectors.toList;
 final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
 	private final Event<?> dataChangedEvent = Event.event();
-	private final Event<?> clearEvent = Event.event();
+	private final Event<?> clearedEvent = Event.event();
 	private final ColumnValueProvider<R, C> columnValueProvider;
 	private final List<R> visibleItems = new ArrayList<>();
 	private final List<R> filteredItems = new ArrayList<>();
@@ -170,7 +170,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			visibleItems.clear();
 			fireTableRowsDeleted(0, size - 1);
 		}
-		clearEvent.run();
+		clearedEvent.run();
 	}
 
 	@Override
@@ -388,13 +388,13 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public EventObserver<?> dataChangedObserver() {
+	public EventObserver<?> dataChangedEvent() {
 		return dataChangedEvent.observer();
 	}
 
 	@Override
-	public EventObserver<?> clearObserver() {
-		return clearEvent.observer();
+	public EventObserver<?> clearedEvent() {
+		return clearedEvent.observer();
 	}
 
 	@Override
@@ -424,8 +424,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			}
 		});
 		addTableModelListener(removeSelectionListener);
-		filterModel.changeObserver().addListener(this::filterItems);
-		sortModel.sortingChangedObserver().addListener(this::sortItems);
+		filterModel.conditionChangedEvent().addListener(this::filterItems);
+		sortModel.sortingChangedEvent().addListener(this::sortItems);
 	}
 
 	private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
@@ -649,8 +649,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			this.columnIdentifier = requireNonNull(columnIdentifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
-			this.tableModel.dataChangedObserver().addListener(changeEvent);
-			this.tableModel.selectionModel().selectionObserver().addListener(changeEvent);
+			this.tableModel.dataChangedEvent().addListener(changeEvent);
+			this.tableModel.selectionModel().selectionEvent().addListener(changeEvent);
 		}
 
 		@Override
@@ -659,7 +659,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public EventObserver<?> changeObserver() {
+		public EventObserver<?> changeEvent() {
 			return changeEvent.observer();
 		}
 

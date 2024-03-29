@@ -115,7 +115,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	/**
 	 * @return an observer notified each time the state changes
 	 */
-	public ValueObserver<Boolean> stateObserver() {
+	public ValueObserver<Boolean> stateValue() {
 		return buttonState.observer();
 	}
 }

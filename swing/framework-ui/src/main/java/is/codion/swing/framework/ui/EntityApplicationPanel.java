@@ -285,7 +285,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return an observer notified when this application panel is initialized
 	 * @see #initialize()
 	 */
-	public final EventObserver<EntityApplicationPanel<?>> initializedObserver() {
+	public final EventObserver<EntityApplicationPanel<?>> initializedEvent() {
 		return onInitialized.observer();
 	}
 
@@ -746,17 +746,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * To cancel the exit add a listener throwing a {@link CancelException}.
 	 * @return an observer notified when the application is about to exit.
 	 */
-	protected final EventObserver<?> exitObserver() {
+	protected final EventObserver<?> exitEvent() {
 		return onExitEvent.observer();
-	}
-
-	/**
-	 * Adds a listener notified when the application is about to exit.
-	 * To cancel the exit throw a {@link CancelException}.
-	 * @param listener a listener notified when the application is about to exit
-	 */
-	protected final void addOnExitListener(Runnable listener) {
-		onExitEvent.addListener(listener);
 	}
 
 	/**
@@ -805,7 +796,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.activateObserver().addDataListener(applicationLayout::select);
+		entityPanel.activateEvent().addDataListener(applicationLayout::select);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
 		}

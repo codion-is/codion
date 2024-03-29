@@ -741,7 +741,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Column<T> column) {
 		FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
-		comboBoxModel.refresher().refreshFailedObserver().addDataListener(this::onException);
+		comboBoxModel.refresher().refreshFailedEvent().addDataListener(this::onException);
 
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
 						.preferredWidth(defaults.comboBoxPreferredWidth.get())
@@ -756,7 +756,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
-		comboBoxModel.refresher().refreshFailedObserver().addDataListener(this::onException);
+		comboBoxModel.refresher().refreshFailedEvent().addDataListener(this::onException);
 
 		return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
 						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
@@ -772,7 +772,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
 																																						Supplier<EntityEditPanel> editPanelSupplier) {
 		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
-		comboBoxModel.refresher().refreshFailedObserver().addDataListener(this::onException);
+		comboBoxModel.refresher().refreshFailedEvent().addDataListener(this::onException);
 
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanelSupplier))
 						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())

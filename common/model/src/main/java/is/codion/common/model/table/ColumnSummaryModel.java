@@ -113,7 +113,7 @@ public interface ColumnSummaryModel {
 		/**
 		 * @return an observer notified when underlying data changes, requiring a summary refresh
 		 */
-		EventObserver<?> changeObserver();
+		EventObserver<?> changeEvent();
 
 		/**
 		 * @param <C> the column identifier type

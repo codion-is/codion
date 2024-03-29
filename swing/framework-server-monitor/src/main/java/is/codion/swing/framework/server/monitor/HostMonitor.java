@@ -118,14 +118,14 @@ public final class HostMonitor {
 	/**
 	 * @return an observer notified each time a server is added
 	 */
-	public EventObserver<ServerMonitor> serverAddedObserver() {
+	public EventObserver<ServerMonitor> serverAddedEvent() {
 		return serverAddedEvent.observer();
 	}
 
 	/**
 	 * @return an observer notified each time a server is removed
 	 */
-	public EventObserver<ServerMonitor> serverRemovedObserver() {
+	public EventObserver<ServerMonitor> serverRemovedEvent() {
 		return serverRemovedEvent.observer();
 	}
 

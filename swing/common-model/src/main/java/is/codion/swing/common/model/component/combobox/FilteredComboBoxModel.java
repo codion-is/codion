@@ -475,7 +475,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	/**
 	 * @return an observer notified each time the selection changes
 	 */
-	public final EventObserver<T> selectionObserver() {
+	public final EventObserver<T> selectionEvent() {
 		return selectionChangedEvent.observer();
 	}
 

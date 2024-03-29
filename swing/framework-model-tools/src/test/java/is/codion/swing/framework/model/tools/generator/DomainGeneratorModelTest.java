@@ -72,21 +72,21 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void address() {
 		model.definitionModel().selectionModel().setSelectedIndex(0);
-		String addressDef = model.domainSourceObserver().get().trim();
+		String addressDef = model.domainSource().get().trim();
 		assertEquals(ADDRESS_DEF, addressDef);
 	}
 
 	@Test
 	void product() {
 		model.definitionModel().selectionModel().setSelectedIndex(3);
-		String productDef = model.domainSourceObserver().get().trim();
+		String productDef = model.domainSource().get().trim();
 		assertEquals(PRODUCT_DEF, productDef);
 	}
 
 	@Test
 	void tagItem() {
 		model.definitionModel().selectionModel().setSelectedIndex(6);
-		String tagItemDef = model.domainSourceObserver().get().trim();
+		String tagItemDef = model.domainSource().get().trim();
 		assertEquals(TAG_ITEM_DEF, tagItemDef);
 	}
 }

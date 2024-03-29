@@ -248,12 +248,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	/* TableColumnModel implementation ends */
 
 	@Override
-	public EventObserver<C> columnHiddenObserver() {
+	public EventObserver<C> columnHiddenEvent() {
 		return columnHiddenEvent.observer();
 	}
 
 	@Override
-	public EventObserver<C> columnShownObserver() {
+	public EventObserver<C> columnShownEvent() {
 		return columnShownEvent.observer();
 	}
 

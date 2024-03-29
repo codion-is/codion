@@ -328,7 +328,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 	/**
 	 * @return an observer notified when the selection changes in the underlying selection model
 	 */
-	EventObserver<?> selectionObserver();
+	EventObserver<?> selectionEvent();
 
 	/**
 	 * Represents preferences for an Attribute based table column.

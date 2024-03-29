@@ -106,7 +106,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	/**
 	 * @return an observer notified when a connection is established
 	 */
-	EventObserver<EntityConnection> connectObserver();
+	EventObserver<EntityConnection> connectedEvent();
 
 	/**
 	 * Closes the underlying connection and performs cleanup if required

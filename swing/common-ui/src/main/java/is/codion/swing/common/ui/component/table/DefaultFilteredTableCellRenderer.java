@@ -117,7 +117,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	}
 
 	private static boolean isSearchResult(FilteredTableModel<?, ?> tableModel, int row, int column) {
-		return tableModel.searchModel().currentResult().equals(row, column);
+		return tableModel.searchModel().currentResult().get().equals(row, column);
 	}
 
 	/**

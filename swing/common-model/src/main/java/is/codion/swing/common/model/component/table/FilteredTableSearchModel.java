@@ -81,16 +81,12 @@ public interface FilteredTableSearchModel {
 	List<RowColumn> searchResults();
 
 	/**
-	 * @return the selected search result row/column if available, otherwise one with row: -1 and column: -1
-	 */
-	RowColumn currentResult();
-
-	/**
+	 * Returns the Value holding the selected search result row/column if available, otherwise one with row: -1 and column: -1
 	 * @return an observer notified each time the current search result changes
 	 * @see #nextResult()
 	 * @see #previousResult()
 	 */
-	ValueObserver<RowColumn> currentResultObserver();
+	ValueObserver<RowColumn> currentResult();
 
 	/**
 	 * Holds a row/column coordinate

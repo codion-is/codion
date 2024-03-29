@@ -222,7 +222,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	/**
 	 * @return an observer notified when this condition panels input fields receive focus
 	 */
-	public EventObserver<C> focusGainedObserver() {
+	public EventObserver<C> focusGainedEvent() {
 		return focusGainedEvent.observer();
 	}
 
@@ -518,7 +518,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
 						.toolTipText(operatorComboBoxModel.selectedValue().get().description())
-						.onBuild(comboBox -> operatorComboBoxModel.selectionObserver().addDataListener(selectedOperator ->
+						.onBuild(comboBox -> operatorComboBoxModel.selectionEvent().addDataListener(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.get().description())))
 						.build();
 	}

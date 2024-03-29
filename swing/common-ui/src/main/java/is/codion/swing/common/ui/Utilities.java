@@ -154,7 +154,7 @@ public final class Utilities {
 	 * @param <T> the property data type
 	 * @return a {@link EventObserver} notified each time the value of the given property changes
 	 */
-	public static <T> EventObserver<T> propertyChangeObserver(JComponent component, String property) {
+	public static <T> EventObserver<T> propertyChangeEvent(JComponent component, String property) {
 		requireNonNull(component, COMPONENT);
 		requireNonNull(property, "property");
 		Event<T> event = Event.event();

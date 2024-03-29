@@ -67,7 +67,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 	/**
 	 * @return an observer notified each time the selected items change
 	 */
-	public EventObserver<List<ItemRandomizer.RandomItem<T>>> selectedItemsObserver() {
+	public EventObserver<List<ItemRandomizer.RandomItem<T>>> selectedItemsEvent() {
 		return selectedItemChangedEvent.observer();
 	}
 
@@ -93,7 +93,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 		items.sort(Comparator.comparing(item -> item.item().toString()));
 		items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
 		itemList.addListSelectionListener(e -> selectedItemChangedEvent.accept(itemList.getSelectedValuesList()));
-		selectedItemsObserver().addDataListener(selectedItems -> {
+		selectedItemsEvent().addDataListener(selectedItems -> {
 			configPanel.removeAll();
 			for (ItemRandomizer.RandomItem<T> item : selectedItems) {
 				configPanel.add(createWeightPanel(item));

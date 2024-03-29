@@ -41,7 +41,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
 
 	private final Object lock = new Object();
-	private final Event<EntityConnection> onConnectEvent = Event.event();
+	private final Event<EntityConnection> connectedEvent = Event.event();
 
 	private final User user;
 	private final DomainType domainType;
@@ -116,8 +116,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final EventObserver<EntityConnection> connectObserver() {
-		return onConnectEvent.observer();
+	public final EventObserver<EntityConnection> connectedEvent() {
+		return connectedEvent.observer();
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private void doConnect() {
 		entityConnection = connect();
 		entities = entityConnection.entities();
-		onConnectEvent.accept(entityConnection);
+		connectedEvent.accept(entityConnection);
 	}
 
 	public abstract static class AbstractBuilder<T extends EntityConnectionProvider,

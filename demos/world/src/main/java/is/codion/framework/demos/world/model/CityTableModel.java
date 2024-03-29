@@ -48,9 +48,9 @@ public final class CityTableModel extends SwingEntityTableModel {
 
 	CityTableModel(EntityConnectionProvider connectionProvider) {
 		super(new CityEditModel(connectionProvider));
-		selectionModel().selectedItemsObserver().addDataListener(displayLocationEvent);
-		selectionModel().selectionObserver().addListener(this::updateCitiesWithoutLocationSelected);
-		refresher().refreshObserver().addListener(this::refreshChartDataset);
+		selectionModel().selectedItemsEvent().addDataListener(displayLocationEvent);
+		selectionModel().selectionEvent().addListener(this::updateCitiesWithoutLocationSelected);
+		refresher().refreshEvent().addListener(this::refreshChartDataset);
 	}
 
 	public PieDataset<String> chartDataset() {

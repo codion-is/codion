@@ -53,7 +53,7 @@ public final class QueryLoadTestModelTest {
 		QueryLoadTestModel queryLoadTest = new QueryLoadTestModel(Database.instance(), UNIT_TEST_USER,
 						asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
 		Map<String, AtomicInteger> counters = new HashMap<>();
-		queryLoadTest.loadTest().resultObserver().addDataListener(result ->
+		queryLoadTest.loadTest().resultEvent().addDataListener(result ->
 						counters.computeIfAbsent(result.scenario(), scenarioName -> new AtomicInteger()).incrementAndGet());
 		queryLoadTest.loadTest().minimumThinkTime().set(10);
 		queryLoadTest.loadTest().maximumThinkTime().set(30);

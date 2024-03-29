@@ -59,7 +59,7 @@ public class DefaultColumnConditionModelTest {
 		model.equalValues().value().addDataListener(equalToListener);
 		model.upperBoundValue().addDataListener(upperBoundListener);
 		model.lowerBoundValue().addDataListener(lowerBoundListener);
-		model.changeObserver().addListener(conditionChangedListener);
+		model.conditionChangedEvent().addListener(conditionChangedListener);
 
 		model.setUpperBound("hello");
 		assertEquals(1, conditionChangedCounter.get());
@@ -96,7 +96,7 @@ public class DefaultColumnConditionModelTest {
 		model.equalValues().value().removeDataListener(equalToListener);
 		model.upperBoundValue().removeDataListener(upperBoundListener);
 		model.lowerBoundValue().removeDataListener(lowerBoundListener);
-		model.changeObserver().removeListener(conditionChangedListener);
+		model.conditionChangedEvent().removeListener(conditionChangedListener);
 	}
 
 	@Test

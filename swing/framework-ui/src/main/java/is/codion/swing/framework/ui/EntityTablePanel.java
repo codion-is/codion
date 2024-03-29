@@ -1090,13 +1090,13 @@ public class EntityTablePanel extends JPanel {
 		conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
 		filterPanelVisibleState.addDataListener(this::setFilterPanelVisible);
 		summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisible);
-		tableModel.conditionModel().changeObserver().addListener(this::onConditionChanged);
+		tableModel.conditionModel().conditionChangedEvent().addListener(this::onConditionChanged);
 		tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
-		tableModel.refresher().refreshFailedObserver().addDataListener(this::onException);
-		tableModel.editModel().insertUpdateOrDeleteObserver().addListener(table::repaint);
+		tableModel.refresher().refreshFailedEvent().addDataListener(this::onException);
+		tableModel.editModel().insertUpdateOrDeleteEvent().addListener(table::repaint);
 		if (conditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();
-			conditionPanel.focusGainedObserver().addDataListener(table::scrollToColumn);
+			conditionPanel.focusGainedEvent().addDataListener(table::scrollToColumn);
 			conditionPanel.advanced().addDataListener(advanced -> {
 				if (conditionPanelVisibleState.get()) {
 					revalidate();
@@ -1104,7 +1104,7 @@ public class EntityTablePanel extends JPanel {
 			});
 		}
 		if (configuration.includeFilterPanel) {
-			table.filterPanel().focusGainedObserver().addDataListener(table::scrollToColumn);
+			table.filterPanel().focusGainedEvent().addDataListener(table::scrollToColumn);
 			table.filterPanel().advanced().addDataListener(advanced -> {
 				if (filterPanelVisibleState.get()) {
 					revalidate();
@@ -2079,7 +2079,7 @@ public class EntityTablePanel extends JPanel {
 				setComponentPopupMenu(createPopupMenu());
 			}
 			tableModel.selectionModel().addListSelectionListener(e -> updateStatusMessage());
-			tableModel.dataChangedObserver().addListener(this::updateStatusMessage);
+			tableModel.dataChangedEvent().addListener(this::updateStatusMessage);
 			updateStatusMessage();
 		}
 

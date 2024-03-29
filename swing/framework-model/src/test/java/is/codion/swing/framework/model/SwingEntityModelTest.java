@@ -183,7 +183,7 @@ public final class SwingEntityModelTest
 
 		public EntityComboBoxModelValue(EntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
-			comboBoxModel.selectionObserver().addListener(this::notifyListeners);
+			comboBoxModel.selectionEvent().addListener(this::notifyListeners);
 		}
 
 		@Override

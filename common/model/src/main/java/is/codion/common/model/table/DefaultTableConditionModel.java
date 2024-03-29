@@ -36,7 +36,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
 		this.conditionModels = initializeColumnConditionModels(conditionModels);
 		this.conditionModels.values().forEach(conditionModel ->
-						conditionModel.changeObserver().addListener(changeEvent));
+						conditionModel.conditionChangedEvent().addListener(changeEvent));
 	}
 
 	@Override
@@ -71,7 +71,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 	}
 
 	@Override
-	public EventObserver<?> changeObserver() {
+	public EventObserver<?> conditionChangedEvent() {
 		return changeEvent.observer();
 	}
 

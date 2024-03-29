@@ -187,7 +187,7 @@ public interface EntityEditModel {
 	/**
 	 * @return a state controlling whether this edit model triggers a warning before overwriting unsaved data
 	 * @see #WARN_ABOUT_UNSAVED_DATA
-	 * @see #confirmOverwriteObserver()
+	 * @see #confirmOverwriteEvent()
 	 */
 	State overwriteWarning();
 
@@ -289,8 +289,8 @@ public interface EntityEditModel {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see #beforeInsertObserver()
-	 * @see #afterInsertObserver()
+	 * @see #beforeInsertEvent()
+	 * @see #afterInsertEvent()
 	 * @see EntityValidator#validate(Entity)
 	 */
 	Collection<Entity> insert(Collection<Entity> entities) throws DatabaseException, ValidationException;
@@ -317,8 +317,8 @@ public interface EntityEditModel {
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified since it was loaded
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
-	 * @see #beforeUpdateObserver()
-	 * @see #afterUpdateObserver()
+	 * @see #beforeUpdateEvent()
+	 * @see #afterUpdateEvent()
 	 * @see EntityValidator#validate(Entity)
 	 */
 	Collection<Entity> update(Collection<Entity> entities) throws DatabaseException, ValidationException;
@@ -327,8 +327,8 @@ public interface EntityEditModel {
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
-	 * @see #beforeDeleteObserver()
-	 * @see #afterDeleteObserver()
+	 * @see #beforeDeleteEvent()
+	 * @see #afterDeleteEvent()
 	 */
 	void delete() throws DatabaseException;
 
@@ -337,8 +337,8 @@ public interface EntityEditModel {
 	 * @param entities the entities to delete
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
-	 * @see #beforeDeleteObserver()
-	 * @see #afterDeleteObserver()
+	 * @see #beforeDeleteEvent()
+	 * @see #afterDeleteEvent()
 	 */
 	void delete(Collection<Entity> entities) throws DatabaseException;
 
@@ -490,7 +490,7 @@ public interface EntityEditModel {
 	 * @param <T> the value type
 	 * @return an observer for the given attribute value edits
 	 */
-	<T> EventObserver<T> editObserver(Attribute<T> attribute);
+	<T> EventObserver<T> editEvent(Attribute<T> attribute);
 
 	/**
 	 * Returns an observer notified each time the value associated with the given attribute changes, either
@@ -500,54 +500,54 @@ public interface EntityEditModel {
 	 * @return an observer for the given attribute value changes
 	 * @see #set(Entity)
 	 */
-	<T> EventObserver<T> valueObserver(Attribute<T> attribute);
+	<T> EventObserver<T> changeEvent(Attribute<T> attribute);
 
 	/**
 	 * @return an observer notified each time the entity is set via {@link #set(Entity)} or {@link #defaults()}.
 	 * @see #set(Entity)
 	 * @see #defaults()
 	 */
-	EventObserver<Entity> entityObserver();
+	EventObserver<Entity> entityEvent();
 
 	/**
 	 * @return an observer notified before an insert is performed
 	 */
-	EventObserver<Collection<Entity>> beforeInsertObserver();
+	EventObserver<Collection<Entity>> beforeInsertEvent();
 
 	/**
 	 * @return an observer notified after an insert is performed
 	 */
-	EventObserver<Collection<Entity>> afterInsertObserver();
+	EventObserver<Collection<Entity>> afterInsertEvent();
 
 	/**
 	 * @return an observer notified before an update is performed
 	 */
-	EventObserver<Map<Entity.Key, Entity>> beforeUpdateObserver();
+	EventObserver<Map<Entity.Key, Entity>> beforeUpdateEvent();
 
 	/**
 	 * @return an observer notified after an update is performed
 	 */
-	EventObserver<Map<Entity.Key, Entity>> afterUpdateObserver();
+	EventObserver<Map<Entity.Key, Entity>> afterUpdateEvent();
 
 	/**
 	 * @return an observer notified before a delete is performed
 	 */
-	EventObserver<Collection<Entity>> beforeDeleteObserver();
+	EventObserver<Collection<Entity>> beforeDeleteEvent();
 
 	/**
 	 * @return an observer notified after a delete is performed
 	 */
-	EventObserver<Collection<Entity>> afterDeleteObserver();
+	EventObserver<Collection<Entity>> afterDeleteEvent();
 
 	/**
 	 * @return an observer notified each time one or more entities are updated, inserted or deleted via this model
 	 */
-	EventObserver<?> insertUpdateOrDeleteObserver();
+	EventObserver<?> insertUpdateOrDeleteEvent();
 
 	/**
 	 * @return an observer notified each time the active entity is about to be set
 	 */
-	EventObserver<State> confirmOverwriteObserver();
+	EventObserver<State> confirmOverwriteEvent();
 
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.

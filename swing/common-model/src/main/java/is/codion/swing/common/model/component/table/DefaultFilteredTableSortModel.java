@@ -126,7 +126,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 	}
 
 	@Override
-	public EventObserver<C> sortingChangedObserver() {
+	public EventObserver<C> sortingChangedEvent() {
 		return sortingChangedEvent.observer();
 	}
 

@@ -81,7 +81,7 @@ public final class DomainGeneratorModel {
 		return definitionTableModel;
 	}
 
-	public ValueObserver<String> domainSourceObserver() {
+	public ValueObserver<String> domainSource() {
 		return domainSourceValue.observer();
 	}
 
@@ -99,8 +99,8 @@ public final class DomainGeneratorModel {
 	}
 
 	private void bindEvents() {
-		schemaTableModel.selectionModel().selectionObserver().addListener(definitionTableModel::refresh);
-		definitionTableModel.selectionModel().selectionObserver().addListener(this::updateCodeValue);
+		schemaTableModel.selectionModel().selectionEvent().addListener(definitionTableModel::refresh);
+		definitionTableModel.selectionModel().selectionEvent().addListener(this::updateDomainSource);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class DomainGeneratorModel {
 		return new DomainGeneratorModel(database, user);
 	}
 
-	private void updateCodeValue() {
+	private void updateDomainSource() {
 		domainSourceValue.set(definitionTableModel.selectionModel().getSelectedItems().stream()
 						.map(definitionRow -> DomainToString.toString(definitionRow.definition))
 						.collect(Collectors.joining(LINE_SEPARATOR + LINE_SEPARATOR)));

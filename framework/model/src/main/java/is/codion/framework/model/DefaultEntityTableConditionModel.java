@@ -145,8 +145,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 	}
 
 	@Override
-	public EventObserver<?> changeObserver() {
-		return conditionModel.changeObserver();
+	public EventObserver<?> conditionChangedEvent() {
+		return conditionModel.conditionChangedEvent();
 	}
 
 	@Override
@@ -169,7 +169,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
 	private void bindEvents() {
 		conditionModel.conditionModels().values().forEach(columnConditionModel ->
-						columnConditionModel.changeObserver().addListener(conditionChangedEvent));
+						columnConditionModel.conditionChangedEvent().addListener(conditionChangedEvent));
 		additionalWhere.addListener(conditionChangedEvent);
 		additionalHaving.addListener(conditionChangedEvent);
 	}

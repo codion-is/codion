@@ -172,7 +172,7 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 	}
 
 	@Override
-	public final EventObserver<?> changeObserver() {
-		return conditionModel.changeObserver();
+	public final EventObserver<?> conditionChangedEvent() {
+		return conditionModel.conditionChangedEvent();
 	}
 }

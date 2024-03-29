@@ -416,57 +416,57 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final <T> EventObserver<T> editObserver(Attribute<T> attribute) {
-		return events.editObserver(attribute);
+	public final <T> EventObserver<T> editEvent(Attribute<T> attribute) {
+		return events.editEvent(attribute);
 	}
 
 	@Override
-	public final <T> EventObserver<T> valueObserver(Attribute<T> attribute) {
-		return events.valueObserver(attribute);
+	public final <T> EventObserver<T> changeEvent(Attribute<T> attribute) {
+		return events.valueChangeEvent(attribute);
 	}
 
 	@Override
-	public final EventObserver<Entity> entityObserver() {
+	public final EventObserver<Entity> entityEvent() {
 		return events.entity.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> beforeInsertObserver() {
+	public final EventObserver<Collection<Entity>> beforeInsertEvent() {
 		return events.beforeInsert.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> afterInsertObserver() {
+	public final EventObserver<Collection<Entity>> afterInsertEvent() {
 		return events.afterInsert.observer();
 	}
 
 	@Override
-	public final EventObserver<Map<Entity.Key, Entity>> beforeUpdateObserver() {
+	public final EventObserver<Map<Entity.Key, Entity>> beforeUpdateEvent() {
 		return events.beforeUpdate.observer();
 	}
 
 	@Override
-	public final EventObserver<Map<Entity.Key, Entity>> afterUpdateObserver() {
+	public final EventObserver<Map<Entity.Key, Entity>> afterUpdateEvent() {
 		return events.afterUpdate.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> beforeDeleteObserver() {
+	public final EventObserver<Collection<Entity>> beforeDeleteEvent() {
 		return events.beforeDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<Collection<Entity>> afterDeleteObserver() {
+	public final EventObserver<Collection<Entity>> afterDeleteEvent() {
 		return events.afterDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<?> insertUpdateOrDeleteObserver() {
+	public final EventObserver<?> insertUpdateOrDeleteEvent() {
 		return events.insertUpdateOrDelete.observer();
 	}
 
 	@Override
-	public final EventObserver<State> confirmOverwriteObserver() {
+	public final EventObserver<State> confirmOverwriteEvent() {
 		return events.confirmOverwrite.observer();
 	}
 
@@ -563,7 +563,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that insert is about to be performed
 	 * @param entitiesToInsert the entities about to be inserted
-	 * @see #beforeInsertObserver()
+	 * @see #beforeInsertEvent()
 	 */
 	protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
 		events.beforeInsert.accept(requireNonNull(entitiesToInsert));
@@ -572,7 +572,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that insert has been performed
 	 * @param insertedEntities the inserted entities
-	 * @see #afterInsertObserver()
+	 * @see #afterInsertEvent()
 	 */
 	protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
 		events.afterInsert.accept(requireNonNull(insertedEntities));
@@ -581,7 +581,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that update is about to be performed
 	 * @param entitiesToUpdate the entities about to be updated
-	 * @see #beforeUpdateObserver()
+	 * @see #beforeUpdateEvent()
 	 */
 	protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
 		events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
@@ -590,7 +590,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that update has been performed
 	 * @param updatedEntities the updated entities
-	 * @see #afterUpdateObserver()
+	 * @see #afterUpdateEvent()
 	 */
 	protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
 		events.afterUpdate.accept(requireNonNull(updatedEntities));
@@ -599,7 +599,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that delete is about to be performed
 	 * @param entitiesToDelete the entities about to be deleted
-	 * @see #beforeDeleteObserver()
+	 * @see #beforeDeleteEvent()
 	 */
 	protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
 		events.beforeDelete.accept(requireNonNull(entitiesToDelete));
@@ -608,7 +608,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	/**
 	 * Notifies that delete has been performed
 	 * @param deletedEntities the deleted entities
-	 * @see #afterDeleteObserver()
+	 * @see #afterDeleteEvent()
 	 */
 	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
 		events.afterDelete.accept(requireNonNull(deletedEntities));
@@ -1024,12 +1024,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			existsPredicate.addListener(states::updateExistsState);
 		}
 
-		private <T> EventObserver<T> editObserver(Attribute<T> attribute) {
+		private <T> EventObserver<T> editEvent(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return ((Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}
 
-		private <T> EventObserver<T> valueObserver(Attribute<T> attribute) {
+		private <T> EventObserver<T> valueChangeEvent(Attribute<T> attribute) {
 			entityDefinition().attributes().definition(attribute);
 			return ((Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event())).observer();
 		}
@@ -1180,7 +1180,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = editModel;
 			this.attribute = attribute;
-			this.editModel.valueObserver(attribute).addListener(this::notifyListeners);
+			this.editModel.changeEvent(attribute).addListener(this::notifyListeners);
 		}
 
 		@Override

@@ -260,14 +260,14 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * @return an observer notified each time the date changes
 	 */
-	public ValueObserver<LocalDate> localDateObserver() {
+	public ValueObserver<LocalDate> localDateValue() {
 		return localDateValue.observer();
 	}
 
 	/**
 	 * @return an observer notified each time the date or time changes
 	 */
-	public ValueObserver<LocalDateTime> localDateTimeObserver() {
+	public ValueObserver<LocalDateTime> localDateTimeValue() {
 		return localDateTimeValue.observer();
 	}
 

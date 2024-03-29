@@ -512,7 +512,7 @@ public final class FilteredTable<R, C> extends JTable {
 	/**
 	 * @return an observer notified each time the table is double-clicked
 	 */
-	public EventObserver<MouseEvent> doubleClickObserver() {
+	public EventObserver<MouseEvent> doubleClickEvent() {
 		return doubleClickEvent.observer();
 	}
 
@@ -694,10 +694,10 @@ public final class FilteredTable<R, C> extends JTable {
 	}
 
 	private void bindEvents() {
-		tableModel.selectionModel().selectedIndexesObserver().addDataListener(new ScrollToSelectedListener());
-		tableModel.filterModel().changeObserver().addListener(getTableHeader()::repaint);
-		tableModel.searchModel().currentResultObserver().addListener(this::repaint);
-		tableModel.sortModel().sortingChangedObserver().addListener(getTableHeader()::repaint);
+		tableModel.selectionModel().selectedIndexesEvent().addDataListener(new ScrollToSelectedListener());
+		tableModel.filterModel().conditionChangedEvent().addListener(getTableHeader()::repaint);
+		tableModel.searchModel().currentResult().addListener(this::repaint);
+		tableModel.sortModel().sortingChangedEvent().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilteredTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener());
 		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(COPY_CELL).get())

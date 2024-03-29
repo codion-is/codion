@@ -461,8 +461,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EventObserver<?> selectionObserver() {
-		return selectionModel().selectionObserver();
+	public final EventObserver<?> selectionEvent() {
+		return selectionModel().selectionEvent();
 	}
 
 	@Override
@@ -706,13 +706,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final EventObserver<?> dataChangedObserver() {
-		return tableModel.dataChangedObserver();
+	public final EventObserver<?> dataChangedEvent() {
+		return tableModel.dataChangedEvent();
 	}
 
 	@Override
-	public final EventObserver<?> clearObserver() {
-		return tableModel.clearObserver();
+	public final EventObserver<?> clearedEvent() {
+		return tableModel.clearedEvent();
 	}
 
 	@Override
@@ -849,14 +849,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	private void bindEvents() {
-		columnModel().columnHiddenObserver().addDataListener(this::onColumnHidden);
+		columnModel().columnHiddenEvent().addDataListener(this::onColumnHidden);
 		editEvents.addDataListener(new HandleEditEventsListener());
-		conditionModel.changeObserver().addListener(() -> onConditionChanged(createSelect(conditionModel)));
-		editModel.afterInsertObserver().addDataListener(this::onInsert);
-		editModel.afterUpdateObserver().addDataListener(this::onUpdate);
-		editModel.afterDeleteObserver().addDataListener(this::onDelete);
-		editModel.entityObserver().addDataListener(this::onEntitySet);
-		selectionModel().selectedItemObserver().addDataListener(editModel::set);
+		conditionModel.conditionChangedEvent().addListener(() -> onConditionChanged(createSelect(conditionModel)));
+		editModel.afterInsertEvent().addDataListener(this::onInsert);
+		editModel.afterUpdateEvent().addDataListener(this::onUpdate);
+		editModel.afterDeleteEvent().addDataListener(this::onDelete);
+		editModel.entityEvent().addDataListener(this::onEntitySet);
+		selectionModel().selectedItemEvent().addDataListener(editModel::set);
 		addTableModelListener(this::onTableModelEvent);
 	}
 

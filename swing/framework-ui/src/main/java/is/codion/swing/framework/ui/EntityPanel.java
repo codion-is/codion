@@ -360,7 +360,7 @@ public class EntityPanel extends JPanel {
 		}
 		addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
 		detailPanel.setParentPanel(this);
-		detailPanel.activateObserver().addDataListener(configuration.detailLayout::select);
+		detailPanel.activateEvent().addDataListener(configuration.detailLayout::select);
 	}
 
 	/**
@@ -510,14 +510,14 @@ public class EntityPanel extends JPanel {
 	 * @return an observer notified before this panel is activated
 	 * @see #activate()
 	 */
-	public final EventObserver<EntityPanel> activateObserver() {
+	public final EventObserver<EntityPanel> activateEvent() {
 		return activateEvent.observer();
 	}
 
 	/**
 	 * Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
 	 * It is up the panel or application layout to make sure this panel is made visible when activated.
-	 * @see #activateObserver()
+	 * @see #activateEvent()
 	 */
 	public final void activate() {
 		activateEvent.accept(this);

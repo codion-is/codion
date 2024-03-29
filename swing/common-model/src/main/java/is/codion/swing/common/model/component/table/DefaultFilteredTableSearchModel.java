@@ -81,11 +81,6 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	@Override
-	public RowColumn currentResult() {
-		return searchResultIndex == -1 ? NULL_COORDINATE : searchResult.get();
-	}
-
-	@Override
 	public Optional<RowColumn> nextResult() {
 		return nextResult(false);
 	}
@@ -106,7 +101,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	@Override
-	public ValueObserver<RowColumn> currentResultObserver() {
+	public ValueObserver<RowColumn> currentResult() {
 		return searchResult.observer();
 	}
 
@@ -186,7 +181,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 		regularExpression.addListener(() -> searchString.set(null));
 		caseSensitive.addListener(this::performSearch);
 		tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
-		tableModel.dataChangedObserver().addListener(() -> {
+		tableModel.dataChangedEvent().addListener(() -> {
 			clearSearchResults();
 			performSearch();
 		});

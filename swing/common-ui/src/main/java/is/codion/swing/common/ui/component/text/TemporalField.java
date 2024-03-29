@@ -182,7 +182,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * @return an observer notified each time the value changes
 	 */
-	public ValueObserver<T> valueObserver() {
+	public ValueObserver<T> temporalValue() {
 		return value.observer();
 	}
 

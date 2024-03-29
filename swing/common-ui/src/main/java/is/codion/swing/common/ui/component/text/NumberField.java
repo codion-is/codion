@@ -203,8 +203,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 	/**
 	 * @return an observer notified each time the underlying value changes
 	 */
-	public ValueObserver<T> numberObserver() {
-		return getTypedDocument().valueObserver();
+	public ValueObserver<T> numberValue() {
+		return getTypedDocument().numberValue();
 	}
 
 	/**
