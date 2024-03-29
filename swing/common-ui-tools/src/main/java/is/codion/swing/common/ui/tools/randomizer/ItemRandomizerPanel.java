@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.tools.randomizer;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.model.randomizer.ItemRandomizer;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
@@ -34,7 +35,6 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -65,17 +65,10 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 	}
 
 	/**
-	 * @param listener a listener notified each time the selected item changes
+	 * @return an observer notified each time the selected items change
 	 */
-	public void addSelectedItemListener(Consumer<List<ItemRandomizer.RandomItem<T>>> listener) {
-		selectedItemChangedEvent.addDataListener(listener);
-	}
-
-	/**
-	 * @param listener the listener to remove
-	 */
-	public void removeSelectedItemListener(Consumer<List<ItemRandomizer.RandomItem<T>>> listener) {
-		selectedItemChangedEvent.removeDataListener(listener);
+	public EventObserver<List<ItemRandomizer.RandomItem<T>>> selectedItemsObserver() {
+		return selectedItemChangedEvent.observer();
 	}
 
 	/**
@@ -100,7 +93,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 		items.sort(Comparator.comparing(item -> item.item().toString()));
 		items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
 		itemList.addListSelectionListener(e -> selectedItemChangedEvent.accept(itemList.getSelectedValuesList()));
-		addSelectedItemListener(selectedItems -> {
+		selectedItemsObserver().addDataListener(selectedItems -> {
 			configPanel.removeAll();
 			for (ItemRandomizer.RandomItem<T> item : selectedItems) {
 				configPanel.add(createWeightPanel(item));

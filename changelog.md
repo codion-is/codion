@@ -33,6 +33,8 @@ Codion Change Log
 - FilteredTable, add/removeListener methods replaced with methods that return the underlying event observer.
 - FilteredTableConditionPanel, add/removeFocusGainedListener() methods replaced focusGainedObserver() method.
 - NumberField.addListener() replaced with numberObserver() method.
+### is.codion.swing.common.ui.tools
+- LoadTestPanel, add/removeSelectedItemListener() methods replaced selectedItemsObserver() method.
 ### is.codion.swing.framework.ui
 - EntityPanel, add/removeListener methods replaced with methods that return the underlying event observer.
 
