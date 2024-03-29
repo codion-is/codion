@@ -19,6 +19,7 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
@@ -37,7 +38,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -116,17 +116,17 @@ public final class HostMonitor {
 	}
 
 	/**
-	 * @param listener a listener notified when a server is added to this monitor
+	 * @return an observer notified each time a server is added
 	 */
-	public void addServerAddedListener(Consumer<ServerMonitor> listener) {
-		serverAddedEvent.addDataListener(listener);
+	public EventObserver<ServerMonitor> serverAddedObserver() {
+		return serverAddedEvent.observer();
 	}
 
 	/**
-	 * @param listener a listener notified when a server is removed from this monitor
+	 * @return an observer notified each time a server is removed
 	 */
-	public void addServerRemovedListener(Consumer<ServerMonitor> listener) {
-		serverRemovedEvent.addDataListener(listener);
+	public EventObserver<ServerMonitor> serverRemovedObserver() {
+		return serverRemovedEvent.observer();
 	}
 
 	private void addServer(ServerMonitor serverMonitor) {

@@ -68,7 +68,7 @@ public final class HostMonitorPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		model.addServerAddedListener(serverMonitor -> {
+		model.serverAddedObserver().addDataListener(serverMonitor -> {
 			try {
 				addServerTab(serverMonitor);
 			}
@@ -76,7 +76,7 @@ public final class HostMonitorPanel extends JPanel {
 				throw new RuntimeException(e);
 			}
 		});
-		model.addServerRemovedListener(serverMonitor -> {
+		model.serverRemovedObserver().addDataListener(serverMonitor -> {
 			for (int i = 0; i < serverPane.getTabCount(); i++) {
 				ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
 				if (panel.model() == serverMonitor) {
