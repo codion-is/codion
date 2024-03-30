@@ -243,15 +243,14 @@ public final class NotesDemo {
 	public static final class NotesApplicationPanel extends EntityApplicationPanel<NotesApplicationModel> {
 
 		public NotesApplicationPanel(NotesApplicationModel applicationModel) {
-			super(applicationModel, applicationPanel -> {
-				// Override the default JTabbedPane based layout,
-				// since we're only displaying a single panel
-				NotePanel notePanel = applicationPanel.entityPanel(Note.TYPE);
-				notePanel.initialize();// Lazy initialization of UI components
-				applicationPanel.setLayout(Layouts.borderLayout());
-				applicationPanel.add(notePanel, BorderLayout.CENTER);
-				applicationPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-			});
+			super(applicationModel, applicationPanel -> () ->
+							// Override the default JTabbedPane based layout,
+							// since we're only displaying a single panel
+							Components.borderLayoutPanel()
+											// Lazy initialization of UI components
+											.centerComponent(applicationPanel.entityPanel(Note.TYPE).initialize())
+											.border(BorderFactory.createEmptyBorder(5, 5, 0, 5))
+											.build());
 		}
 
 		@Override

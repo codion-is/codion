@@ -184,12 +184,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private boolean initialized = false;
 
 	public EntityApplicationPanel(M applicationModel) {
-		this(applicationModel, new TabbedApplicationLayout());
+		this(applicationModel, TabbedApplicationLayout::new);
 	}
 
-	public EntityApplicationPanel(M applicationModel, ApplicationLayout applicationLayout) {
+	public EntityApplicationPanel(M applicationModel, Function<EntityApplicationPanel<?>, ApplicationLayout> applicationLayout) {
 		this.applicationModel = requireNonNull(applicationModel);
-		this.applicationLayout = requireNonNull(applicationLayout);
+		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
 		this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
 		this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
 		this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
@@ -369,7 +369,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			try {
 				createEntityPanels().forEach(this::addEntityPanel);
 				supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
-				applicationLayout.layout(this);
+				setLayout(new BorderLayout());
+				add(applicationLayout.layout(), BorderLayout.CENTER);
 				bindEventsInternal();
 				bindEvents();
 				onInitialized.accept(this);
@@ -1018,11 +1019,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	public interface ApplicationLayout {
 
 		/**
-		 * Lays out the given application panel
-		 * @param applicationPanel the application panel
+		 * Lays out the main component for a given application panel
+		 * @return the main application panel
 		 * @throws IllegalStateException in case the panel has already been laid out
 		 */
-		void layout(EntityApplicationPanel<?> applicationPanel);
+		JComponent layout();
 
 		/**
 		 * Called when the given entity panel is activated.

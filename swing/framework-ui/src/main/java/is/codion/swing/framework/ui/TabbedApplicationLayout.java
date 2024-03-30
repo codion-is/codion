@@ -23,6 +23,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -46,31 +47,40 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	public static final PropertyValue<Integer> TAB_PLACEMENT =
 					Configuration.integerValue("is.codion.swing.framework.ui.TabbedApplicationLayout.tabPlacement", SwingConstants.TOP);
 
+	private final EntityApplicationPanel<?> applicationPanel;
+
 	private JTabbedPane tabbedPane;
+
+	/**
+	 * @param applicationPanel the application panel to layout
+	 */
+	public TabbedApplicationLayout(EntityApplicationPanel<?> applicationPanel) {
+		this.applicationPanel = requireNonNull(applicationPanel);
+	}
 
 	/**
 	 * Sets the layout to a {@link BorderLayout} and lays out the given application panel, by adding all root entity panels to a tabbed pane.
 	 * Note that this method is responsible for initializing any visible entity panels using {@link EntityPanel#initialize()}.
-	 * @param applicationPanel the application panel to layout
 	 */
 	@Override
-	public void layout(EntityApplicationPanel<?> applicationPanel) {
-		requireNonNull(applicationPanel);
+	public JComponent layout() {
 		if (tabbedPane != null) {
 			throw new IllegalStateException("EntityApplicationPanel has already been laid out: " + applicationPanel);
 		}
 		tabbedPane = Components.tabbedPane()
 						.tabPlacement(TAB_PLACEMENT.get())
 						.focusable(false)
+						// InitializeSelectedPanelListener initializes first panel
 						.changeListener(new InitializeSelectedPanelListener())
 						.build();
-		applicationPanel.entityPanels().forEach(this::addTab);//InitializeSelectedPanelListener initializes first panel
-		applicationPanel.setBorder(createEmptyBorder(0, Layouts.GAP.get(), 0, Layouts.GAP.get()));
-		applicationPanel.setLayout(new BorderLayout());
+
+		applicationPanel.entityPanels().forEach(this::addTab);
+
 		//tab pane added to a base panel for correct Look&Feel rendering
-		applicationPanel.add(borderLayoutPanel(new BorderLayout())
+		return borderLayoutPanel(new BorderLayout())
 						.centerComponent(tabbedPane)
-						.build(), BorderLayout.CENTER);
+						.border(createEmptyBorder(0, Layouts.GAP.get(), 0, Layouts.GAP.get()))
+						.build();
 	}
 
 	@Override
