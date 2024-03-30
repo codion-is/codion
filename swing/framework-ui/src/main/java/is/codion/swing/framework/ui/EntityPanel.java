@@ -110,7 +110,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * The navigation and resizing directions.
+	 * The navigation directions.
 	 */
 	public enum Direction {
 		UP, DOWN, RIGHT, LEFT
@@ -364,7 +364,6 @@ public class EntityPanel extends JPanel {
 		}
 		addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
 		detailPanel.setParentPanel(this);
-		detailPanel.activateEvent().addDataListener(detailController::select);
 	}
 
 	/**
@@ -1372,7 +1371,7 @@ public class EntityPanel extends JPanel {
 		 * Lays out a given EntityPanel along with its detail panels.
 		 * In case of no special detail panel layout requirements, this method should return an empty Optional.
 		 * @return the panel laid out with it detail panels or an empty Optional in case of no special layout component.
-		 * @throws IllegalStateException in case the panel has no detail panels
+		 * @throws IllegalStateException in case the panel has no detail panels or if it has already been laid out
 		 */
 		default Optional<JComponent> layout() {
 			return Optional.empty();
@@ -1387,22 +1386,11 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Selects an entity panel.
+	 * Controls the detail panels for a EntityPanel instance.
+	 * Provides a way to change the {@link PanelState} and to
+	 * select one detail panel.
 	 */
-	public interface Selector {
-
-		/**
-		 * Selects the given entity panel. If the entityPanel
-		 * is not available, calling this method has no effect.
-		 * @param entityPanel the entity panel to select
-		 */
-		void select(EntityPanel entityPanel);
-	}
-
-	/**
-	 * Controls the detail panel states.
-	 */
-	public interface DetailController extends Selector {
+	public interface DetailController {
 
 		/**
 		 * Note that the detail panel state may be shared between detail panels,
@@ -1411,11 +1399,16 @@ public class EntityPanel extends JPanel {
 		 * @return the value controlling the state of the given detail panel
 		 */
 		default Value<PanelState> panelState(EntityPanel detailPanel) {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("panelState() has not been implemented for detail controller: " + getClass());
 		}
 
-		@Override
-		default void select(EntityPanel detailPanel) {}
+		/**
+		 * Called when the given detail panel is activated.
+		 * @param detailPanel the detail panel to select
+		 * @see EntityPanel#activate()
+		 * @see EntityPanel#activateEvent()
+		 */
+		default void activated(EntityPanel detailPanel) {}
 	}
 
 	/**

@@ -796,7 +796,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.activateEvent().addDataListener(applicationLayout::select);
+		entityPanel.activateEvent().addDataListener(applicationLayout::activated);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
 		}
@@ -937,7 +937,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		@Override
 		public void accept(Boolean active) {
 			if (active) {
-				applicationLayout.select(entityPanel);
+				applicationLayout.activated(entityPanel);
 			}
 		}
 	}
@@ -1015,7 +1015,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	/**
 	 * Handles laying out an EntityApplicationPanel.
 	 */
-	public interface ApplicationLayout extends EntityPanel.Selector {
+	public interface ApplicationLayout {
 
 		/**
 		 * Lays out the given application panel
@@ -1025,10 +1025,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		void layout(EntityApplicationPanel<?> applicationPanel);
 
 		/**
-		 * Select the given entity panel by making it visible
+		 * Called when the given entity panel is activated.
 		 * @param entityPanel the entity panel to select
+		 * @see EntityPanel#activate()
+		 * @see EntityPanel#activateEvent()
 		 */
-		default void select(EntityPanel entityPanel) {}
+		default void activated(EntityPanel entityPanel) {}
 	}
 
 	/**

@@ -22,6 +22,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -84,8 +85,11 @@ public final class WindowDetailLayout implements DetailLayout {
 		if (entityPanel.detailPanels().isEmpty()) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has no detail panels");
 		}
-		entityPanel.detailPanels().forEach(detailPanel ->
-						panelWindows.put(detailPanel, new DetailWindow(detailPanel)));
+		if (!panelWindows.isEmpty()) {
+			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
+		}
+		entityPanel.detailPanels().forEach(this::addDetailPanel);
+		entityPanel.detailPanels().forEach(this::bindEvents);
 		setupControls(entityPanel);
 
 		return Optional.empty();
@@ -104,17 +108,30 @@ public final class WindowDetailLayout implements DetailLayout {
 		return new DefaultBuilder(entityPanel);
 	}
 
+	private void addDetailPanel(EntityPanel detailPanel) {
+		panelWindows.put(detailPanel, new DetailWindow(detailPanel));
+	}
+
+	private void bindEvents(EntityPanel detailPanel) {
+		detailPanel.activateEvent().addDataListener(detailController::activated);
+	}
+
 	private void setupControls(EntityPanel entityPanel) {
 		if (entityPanel.containsTablePanel()) {
-			Controls.Builder controls = Controls.builder()
+			entityPanel.tablePanel().addPopupMenuControls(Controls.builder()
 							.name(MESSAGES.getString(DETAIL_TABLES))
-							.smallIcon(FrameworkIcons.instance().detail());
-			entityPanel.detailPanels().forEach(detailPanel ->
-							controls.control(Control.builder(() -> panelWindows.get(detailPanel).panelState.set(WINDOW))
-											.name(detailPanel.caption().get())
-											.build()));
-			entityPanel.tablePanel().addPopupMenuControls(controls.build());
+							.smallIcon(FrameworkIcons.instance().detail())
+							.controls(entityPanel.detailPanels().stream()
+											.map(detailPanel -> Control.builder(windowCommand(detailPanel))
+															.name(detailPanel.caption().get())
+															.build())
+											.toArray(Control[]::new))
+							.build());
 		}
+	}
+
+	private Command windowCommand(EntityPanel detailPanel) {
+		return () -> panelWindows.get(detailPanel).panelState.set(WINDOW);
 	}
 
 	private final class WindowDetailController implements DetailController {
@@ -125,7 +142,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public void select(EntityPanel detailPanel) {
+		public void activated(EntityPanel detailPanel) {
 			Window panelWindow = detailWindow(detailPanel).window;
 			if (panelWindow != null && panelWindow.isShowing()) {
 				panelWindow.toFront();
@@ -190,9 +207,9 @@ public final class WindowDetailLayout implements DetailLayout {
 			else {
 				window.setVisible(false);
 			}
-			SwingEntityModel model = detailPanel.model();
-			if (entityPanel.model().containsDetailModel(model)) {
-				entityPanel.model().detailModelLink(model).active().set(panelState == WINDOW);
+			SwingEntityModel detailModel = detailPanel.model();
+			if (entityPanel.model().containsDetailModel(detailModel)) {
+				entityPanel.model().detailModelLink(detailModel).active().set(panelState == WINDOW);
 			}
 		}
 
