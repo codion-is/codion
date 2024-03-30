@@ -105,6 +105,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private T initialValue;
 	private Consumer<C> onSetVisible;
 	private TransferHandler transferHandler;
+	private boolean focusCycleRoot = false;
 
 	/**
 	 * When a linked value is set via the constructor, it is locked and cannot be changed.
@@ -355,6 +356,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
+	public final B focusCycleRoot(boolean focusCycleRoot) {
+		this.focusCycleRoot = focusCycleRoot;
+		return (B) this;
+	}
+
+	@Override
 	public final B onSetVisible(Consumer<C> onSetVisible) {
 		this.onSetVisible = requireNonNull(onSetVisible);
 		return (B) this;
@@ -460,6 +467,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 		if (transferHandler != null) {
 			component.setTransferHandler(transferHandler);
+		}
+		if (focusCycleRoot) {
+			component.setFocusCycleRoot(true);
 		}
 		validators.forEach(validator -> componentValue(component).addValidator(validator));
 		if (initialValue != null) {

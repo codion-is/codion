@@ -279,7 +279,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		TabbedPaneBuilder builder = tabbedPane()
 						.focusable(false)
 						.changeListener(e -> selectedDetailPanel().activate())
-						.onBuild(tabbedPane -> tabbedPane.setFocusCycleRoot(true));
+						.focusCycleRoot(true);
 		detailPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
 						.toolTipText(detailPanel.description().get())
 						.add());

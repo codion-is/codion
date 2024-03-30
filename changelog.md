@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.36-SNAPSHOT
+### is.codion.swing.common.ui
+- ComponentBuilder.focusCycleRoot() added.
 ### is.codion.framework.model
 - EntityEditModel.delete() now returns the deleted entities.
 - EntityTableModel.deleteSelected() now returns the deleted entities.

@@ -327,6 +327,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B transferHandler(TransferHandler transferHandler);
 
 	/**
+	 * @param focusCycleRoot true if the component should be the root of a focus traversal cycle
+	 * @return this builder instance
+	 * @see java.awt.Container#setFocusCycleRoot(boolean)
+	 */
+	B focusCycleRoot(boolean focusCycleRoot);
+
+	/**
 	 * @param onSetVisible called when the component is made visible for the first time
 	 * @return this builder instance
 	 */
