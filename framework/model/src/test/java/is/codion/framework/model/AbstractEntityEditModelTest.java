@@ -124,9 +124,9 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void changeEvent() {
-		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.changeEvent(Department.ID));
-		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.changeEvent(Department.ID));
+	void valueEvent() {
+		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.valueEvent(Department.ID));
+		assertThrows(IllegalArgumentException.class, () -> employeeEditModel.valueEvent(Department.ID));
 	}
 
 	@Test
@@ -555,7 +555,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger derivedCounter = new AtomicInteger();
 		AtomicInteger derivedEditCounter = new AtomicInteger();
 
-		editModel.changeEvent(Detail.INT_DERIVED).addDataListener(value -> derivedCounter.incrementAndGet());
+		editModel.valueEvent(Detail.INT_DERIVED).addDataListener(value -> derivedCounter.incrementAndGet());
 		editModel.editEvent(Detail.INT_DERIVED).addDataListener(value -> derivedEditCounter.incrementAndGet());
 
 		editModel.put(Detail.INT, 1);
@@ -583,9 +583,9 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void foreignKeys() throws DatabaseException {
 		AtomicInteger deptNoChange = new AtomicInteger();
-		employeeEditModel.changeEvent(Employee.DEPARTMENT).addDataListener(value -> deptNoChange.incrementAndGet());
+		employeeEditModel.valueEvent(Employee.DEPARTMENT).addDataListener(value -> deptNoChange.incrementAndGet());
 		AtomicInteger deptChange = new AtomicInteger();
-		employeeEditModel.changeEvent(Employee.DEPARTMENT_FK).addDataListener(value -> deptChange.incrementAndGet());
+		employeeEditModel.valueEvent(Employee.DEPARTMENT_FK).addDataListener(value -> deptChange.incrementAndGet());
 		AtomicInteger deptEdit = new AtomicInteger();
 		employeeEditModel.editEvent(Employee.DEPARTMENT_FK).addDataListener(value -> deptEdit.incrementAndGet());
 
@@ -684,9 +684,9 @@ public final class AbstractEntityEditModelTest {
 		editModel.editEvent(Derived.INT4).addDataListener(value -> editedValues.put(Derived.INT4, value));
 
 		Map<Attribute<?>, Object> changedValues = new LinkedHashMap<>();
-		editModel.changeEvent(Derived.INT2).addDataListener(value -> changedValues.put(Derived.INT2, value));
-		editModel.changeEvent(Derived.INT3).addDataListener(value -> changedValues.put(Derived.INT3, value));
-		editModel.changeEvent(Derived.INT4).addDataListener(value -> changedValues.put(Derived.INT4, value));
+		editModel.valueEvent(Derived.INT2).addDataListener(value -> changedValues.put(Derived.INT2, value));
+		editModel.valueEvent(Derived.INT3).addDataListener(value -> changedValues.put(Derived.INT3, value));
+		editModel.valueEvent(Derived.INT4).addDataListener(value -> changedValues.put(Derived.INT4, value));
 
 		editModel.put(Derived.INT, 2);
 		assertTrue(editedValues.containsKey(Derived.INT2));
