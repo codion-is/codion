@@ -906,6 +906,16 @@ public class EntityPanel extends JPanel {
 		return (T) detailLayout;
 	}
 
+	/**
+	 * @param <T> the detail controller type
+	 * @return the detail controller used by this panel
+	 */
+	protected final <T extends DetailController> T detailController() {
+		return (T) detailController;
+	}
+
+
+
 	private JPanel createEditControlPanel() {
 		if (editPanel == null) {
 			return null;

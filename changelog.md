@@ -14,6 +14,7 @@ Codion Change Log
 - EntityPanel.Selector removed.
 - EntityPanel.DetailLayout.select() and EntityApplicationPanel.select() renamed activated().
 - TabbedDetailLayout and WindowDetailLayout refactored and simplified.
+- EntityPanel.detailController() added.
 
 ## 0.17.35
 ### is.codion.common.model
