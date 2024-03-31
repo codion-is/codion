@@ -22,7 +22,6 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -46,11 +45,8 @@ import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -188,22 +184,17 @@ final class EntityControls {
 
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 		private final JComponent component;
-		private final EntityConnectionProvider connectionProvider;
-		private final Consumer<List<Entity>> onInsert;
-		private final List<Entity> insertedEntities = new ArrayList<>();
-		private final Consumer<Collection<Entity>> populateInsertedEntities = new PopulateInsertedEntities();
+		private final Consumer<Entity> onInsert;
 
 		private AddEntityCommand(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = editPanelSupplier;
 			this.component = comboBox;
-			this.connectionProvider = comboBox.getModel().connectionProvider();
 			this.onInsert = new EntityComboBoxOnInsert();
 		}
 
 		private AddEntityCommand(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = editPanelSupplier;
 			this.component = searchField;
-			this.connectionProvider = searchField.model().connectionProvider();
 			this.onInsert = new EntitySearchFieldOnInsert();
 		}
 
@@ -212,45 +203,38 @@ final class EntityControls {
 			EntityEditPanel editPanel = initializeEditPanel();
 			editPanel.editModel().defaults();
 			State cancelled = State.state();
-			Value<Attribute<?>> invalidAttribute = Value.value();
+			Value<Attribute<?>> invalid = Value.value();
 			JDialog dialog = Dialogs.okCancelDialog(editPanel)
 							.owner(component)
-							.title(connectionProvider.entities().definition(editPanel.editModel().entityType()).caption())
-							.onShown(d -> invalidAttribute.optional()
+							.title(editPanel.editModel().entities().definition(editPanel.editModel().entityType()).caption())
+							.okEnabled(editPanel.editModel().valid())
+							.onShown(d -> invalid.optional()
 											.ifPresent(editPanel::requestComponentFocus))
 							.onCancel(() -> cancelled.set(true))
 							.build();
-			try {
-				boolean successfulInsert = false;
-				while (!successfulInsert) {
-					dialog.setVisible(true);
-					if (cancelled.get()) {
-						return;//cancelled
-					}
-					successfulInsert = insert(editPanel.editModel(), invalidAttribute);
-					if (successfulInsert && !insertedEntities.isEmpty()) {
-						onInsert.accept(insertedEntities);
-					}
+			Entity inserted = null;
+			while (inserted == null) {
+				dialog.setVisible(true);
+				if (cancelled.get()) {
+					return;
 				}
-			}
-			finally {
-				insertedEntities.clear();
+				inserted = insert(editPanel.editModel(), invalid);
+				if (inserted != null) {
+					onInsert.accept(inserted);
+				}
 			}
 		}
 
 		private EntityEditPanel initializeEditPanel() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			editPanel.setBorder(emptyBorder());
-			editPanel.editModel().afterInsertEvent().addDataListener(populateInsertedEntities);
 
 			return editPanel;
 		}
 
-		private boolean insert(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
+		private Entity insert(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
 			try {
-				editModel.insert();
-
-				return true;
+				return editModel.insert();
 			}
 			catch (ValidationException e) {
 				attributeWithInvalidValue.set(e.attribute());
@@ -260,34 +244,24 @@ final class EntityControls {
 				Dialogs.displayExceptionDialog(e, Utilities.parentWindow(component));
 			}
 
-			return false;
+			return null;
 		}
 
-		private final class PopulateInsertedEntities implements Consumer<Collection<Entity>> {
+		private class EntityComboBoxOnInsert implements Consumer<Entity> {
 
 			@Override
-			public void accept(Collection<Entity> inserted) {
-				insertedEntities.clear();
-				insertedEntities.addAll(inserted);
-			}
-		}
-
-		private class EntityComboBoxOnInsert implements Consumer<List<Entity>> {
-
-			@Override
-			public void accept(List<Entity> inserted) {
+			public void accept(Entity inserted) {
 				EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
-				Entity item = inserted.get(0);
-				comboBoxModel.add(item);
-				comboBoxModel.setSelectedItem(item);
+				comboBoxModel.add(inserted);
+				comboBoxModel.setSelectedItem(inserted);
 			}
 		}
 
-		private class EntitySearchFieldOnInsert implements Consumer<List<Entity>> {
+		private class EntitySearchFieldOnInsert implements Consumer<Entity> {
 
 			@Override
-			public void accept(List<Entity> inserted) {
-				((EntitySearchField) component).model().entities().set(inserted);
+			public void accept(Entity inserted) {
+				((EntitySearchField) component).model().entity().set(inserted);
 			}
 		}
 	}
@@ -296,29 +270,23 @@ final class EntityControls {
 
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 		private final JComponent component;
-		private final EntityConnectionProvider connectionProvider;
-		private final Consumer<List<Entity>> onUpdate;
-		private final List<Entity> updatedEntities = new ArrayList<>();
-		private final PopulateUpdatedEntities populateUpdatedEntities = new PopulateUpdatedEntities();
-
-		private Entity entityToUpdate;
+		private final Consumer<Entity> onUpdate;
 
 		private EditEntityCommand(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = editPanelSupplier;
 			this.component = comboBox;
-			this.connectionProvider = comboBox.getModel().connectionProvider();
 			this.onUpdate = new EntityComboBoxOnUpdate();
 		}
 
 		private EditEntityCommand(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = editPanelSupplier;
 			this.component = searchField;
-			this.connectionProvider = searchField.model().connectionProvider();
 			this.onUpdate = new EntitySearchFieldOnUpdate();
 		}
 
 		@Override
 		public void execute() throws Exception {
+			Entity entityToUpdate;
 			if (component instanceof EntityComboBox) {
 				if (((EntityComboBox) component).isPopupVisible()) {
 					((EntityComboBox) component).hidePopup();
@@ -329,51 +297,45 @@ final class EntityControls {
 				entityToUpdate = ((EntitySearchField) component).model().entity().get();
 			}
 			EntityEditPanel editPanel = initializeEditPanel();
-			editPanel.editModel().set(connectionProvider.connection().select(entityToUpdate.primaryKey()));
+			SwingEntityEditModel editModel = editPanel.editModel();
+			editModel.set(editModel.connection().select(entityToUpdate.primaryKey()));
 			State cancelled = State.state();
-			Value<Attribute<?>> invalidAttribute = Value.value();
+			Value<Attribute<?>> invalid = Value.value();
 			JDialog dialog = Dialogs.okCancelDialog(editPanel)
 							.owner(component)
-							.title(connectionProvider.entities().definition(editPanel.editModel().entityType()).caption())
-							.okEnabled(editPanel.editModel().modified())
-							.onShown(d -> invalidAttribute.optional()
+							.title(editModel.entities().definition(editModel.entityType()).caption())
+							.okEnabled(State.and(editModel.modified(), editModel.valid()))
+							.onShown(d -> invalid.optional()
 											.ifPresent(editPanel::requestComponentFocus))
 							.onCancel(() -> cancelled.set(true))
 							.build();
-			try {
-				boolean successfulUpdate = false;
-				while (!successfulUpdate) {
-					dialog.setVisible(true);
-					if (cancelled.get()) {
-						return;//cancelled
-					}
-					successfulUpdate = update(editPanel.editModel(), invalidAttribute);
-					if (successfulUpdate && !updatedEntities.isEmpty()) {
-						onUpdate.accept(updatedEntities);
-					}
+			Entity updated = null;
+			while (updated == null) {
+				dialog.setVisible(true);
+				if (cancelled.get()) {
+					return;
 				}
-			}
-			finally {
-				entityToUpdate = null;
-				updatedEntities.clear();
+				updated = update(editModel, invalid);
+				if (updated != null) {
+					onUpdate.accept(updated);
+				}
 			}
 		}
 
 		private EntityEditPanel initializeEditPanel() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			editPanel.setBorder(emptyBorder());
-			editPanel.editModel().afterUpdateEvent().addDataListener(populateUpdatedEntities);
 
 			return editPanel;
 		}
 
-		private boolean update(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
+		private Entity update(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
 			try {
 				if (editModel.modified().get()) {
 					editModel.update();
 				}
 
-				return true;
+				return editModel.entity();
 			}
 			catch (ValidationException e) {
 				attributeWithInvalidValue.set(e.attribute());
@@ -383,34 +345,24 @@ final class EntityControls {
 				Dialogs.displayExceptionDialog(e, Utilities.parentWindow(component));
 			}
 
-			return false;
+			return null;
 		}
 
-		private final class EntityComboBoxOnUpdate implements Consumer<List<Entity>> {
+		private final class EntityComboBoxOnUpdate implements Consumer<Entity> {
 
 			@Override
-			public void accept(List<Entity> updated) {
+			public void accept(Entity updated) {
 				EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
-				Entity item = updated.get(0);
-				comboBoxModel.replace(entityToUpdate, item);
-				comboBoxModel.setSelectedItem(item);
+				comboBoxModel.replace(comboBoxModel.selectedValue(), updated);
+				comboBoxModel.setSelectedItem(updated);
 			}
 		}
 
-		private final class EntitySearchFieldOnUpdate implements Consumer<List<Entity>> {
+		private final class EntitySearchFieldOnUpdate implements Consumer<Entity> {
 
 			@Override
-			public void accept(List<Entity> updated) {
-				((EntitySearchField) component).model().entities().set(updated);
-			}
-		}
-
-		private final class PopulateUpdatedEntities implements Consumer<Map<Entity.Key, Entity>> {
-
-			@Override
-			public void accept(Map<Entity.Key, Entity> updated) {
-				updatedEntities.clear();
-				updatedEntities.addAll(updated.values());
+			public void accept(Entity updated) {
+				((EntitySearchField) component).model().entity().set(updated);
 			}
 		}
 	}

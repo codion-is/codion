@@ -20,6 +20,7 @@ Codion Change Log
 - EntityPanel.detailController() added.
 - EntityApplicationPanel applicationLayout constructor parameter now function based, related refactoring.
 - EntityPanel.Config.editPanelState() added.
+- EntityControls, OK button now only enabled when input is valid, refactoring.
 
 ## 0.17.35
 ### is.codion.common.model
