@@ -815,8 +815,8 @@ public class EntityTablePanel extends JPanel {
 	 * @param <T> the attribute type
 	 * @return a edit dialog builder
 	 */
-	protected <T> EntityDialogs.EditDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
-		return EntityDialogs.editDialog(tableModel.editModel(), attribute)
+	protected <T> EntityDialogs.EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
+		return EntityDialogs.editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
 						.componentFactory((EntityComponentFactory<T, Attribute<T>, ?>) configuration.editComponentFactories.get(attribute));
 	}

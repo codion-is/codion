@@ -21,6 +21,8 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -68,8 +70,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.button;
 import static is.codion.swing.common.ui.component.Components.flowLayoutPanel;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
@@ -96,8 +100,26 @@ public final class EntityDialogs {
 	 * @param <T> the attribute type
 	 * @return a new builder
 	 */
-	public static <T> EditDialogBuilder<T> editDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
-		return new DefaultEntityEditDialogBuilder<>(editModel, attribute);
+	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
+		return new DefaultEditAttributeDialogBuilder<>(editModel, attribute);
+	}
+
+	/**
+	 * Creates a new {@link AddEntityDialogBuilder} instance.
+	 * @param editPanel supplies the edit panel to use
+	 * @return a new builder instance
+	 */
+	public static AddEntityDialogBuilder addEntityDialog(Supplier<EntityEditPanel> editPanel) {
+		return new DefaultAddEntityDialogBuilder(editPanel);
+	}
+
+	/**
+	 * Creates a new {@link EditEntityDialogBuilder} instance.
+	 * @param editPanel supplies the edit panel to use
+	 * @return a new builder instance
+	 */
+	public static EditEntityDialogBuilder editEntityDialog(Supplier<EntityEditPanel> editPanel) {
+		return new DefaultEditEntityDialogBuilder(editPanel);
 	}
 
 	/**
@@ -113,32 +135,32 @@ public final class EntityDialogs {
 	 * Builds a dialog for editing single attributes for one or more entities
 	 * @param <T> the attribute type
 	 */
-	public interface EditDialogBuilder<T> extends DialogBuilder<EditDialogBuilder<T>> {
+	public interface EditAttributeDialogBuilder<T> extends DialogBuilder<EditAttributeDialogBuilder<T>> {
 
 		/**
 		 * @param componentFactory the component factory, if null then the default is used
 		 * @return this builder
 		 */
-		EditDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory);
+		EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory);
 
 		/**
 		 * @param onValidationException called on validation exception
 		 * @return this builder
 		 */
-		EditDialogBuilder<T> onValidationException(Consumer<ValidationException> onValidationException);
+		EditAttributeDialogBuilder<T> onValidationException(Consumer<ValidationException> onValidationException);
 
 		/**
 		 * @param onException called on exception
 		 * @return this builder
 		 */
-		EditDialogBuilder<T> onException(Consumer<Throwable> onException);
+		EditAttributeDialogBuilder<T> onException(Consumer<Throwable> onException);
 
 		/**
 		 * @param updater the updater to use
 		 * @param <E> the edit model type
 		 * @return this builder
 		 */
-		<E extends SwingEntityEditModel> EditDialogBuilder<T> updater(Updater<E> updater);
+		<E extends SwingEntityEditModel> EditAttributeDialogBuilder<T> updater(Updater<E> updater);
 
 		/**
 		 * Displays a dialog for editing the given entity
@@ -170,6 +192,46 @@ public final class EntityDialogs {
 	}
 
 	/**
+	 * A builder for a dialog for inserting entities.
+	 */
+	public interface AddEntityDialogBuilder extends DialogBuilder<AddEntityDialogBuilder> {
+
+		/**
+		 * @param onInsert called after a successful insert
+		 * @return this builder instance
+		 */
+		AddEntityDialogBuilder onInsert(Consumer<Entity> onInsert);
+
+		/**
+		 * Displays the dialog.
+		 */
+		void addEntity();
+	}
+
+	/**
+	 * A builder for a dialog for editing entities.
+	 */
+	public interface EditEntityDialogBuilder extends DialogBuilder<EditEntityDialogBuilder> {
+
+		/**
+		 * @param entity supplies the entity to edit
+		 * @return this builder instance
+		 */
+		EditEntityDialogBuilder entity(Supplier<Entity> entity);
+
+		/**
+		 * @param onUpdate called after a successful update
+		 * @return this builder instance
+		 */
+		EditEntityDialogBuilder onUpdate(Consumer<Entity> onUpdate);
+
+		/**
+		 * Displays the dialog.
+		 */
+		void editEntity();
+	}
+
+	/**
 	 * A builder for a selection dialog.
 	 */
 	public interface SelectionDialogBuilder extends DialogBuilder<SelectionDialogBuilder> {
@@ -193,10 +255,10 @@ public final class EntityDialogs {
 		Optional<Entity> selectSingle();
 	}
 
-	private static final class DefaultEntityEditDialogBuilder<T> extends AbstractDialogBuilder<EditDialogBuilder<T>>
-					implements EditDialogBuilder<T> {
+	private static final class DefaultEditAttributeDialogBuilder<T> extends AbstractDialogBuilder<EditAttributeDialogBuilder<T>>
+					implements EditAttributeDialogBuilder<T> {
 
-		private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditDialogBuilder.class);
+		private static final Logger LOG = LoggerFactory.getLogger(DefaultEditAttributeDialogBuilder.class);
 
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
@@ -206,31 +268,31 @@ public final class EntityDialogs {
 		private Consumer<Throwable> onException = new DefaultExceptionHandler();
 		private Updater<SwingEntityEditModel> updater;
 
-		private DefaultEntityEditDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
+		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
 			this.attribute = requireNonNull(attribute);
 		}
 
 		@Override
-		public EditDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory) {
+		public EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, Attribute<T>, ?> componentFactory) {
 			this.componentFactory = componentFactory == null ? new EditEntityComponentFactory<>() : componentFactory;
 			return this;
 		}
 
 		@Override
-		public EditDialogBuilder<T> onValidationException(Consumer<ValidationException> onValidationException) {
+		public EditAttributeDialogBuilder<T> onValidationException(Consumer<ValidationException> onValidationException) {
 			this.onValidationException = requireNonNull(onValidationException);
 			return this;
 		}
 
 		@Override
-		public EditDialogBuilder<T> onException(Consumer<Throwable> onException) {
+		public EditAttributeDialogBuilder<T> onException(Consumer<Throwable> onException) {
 			this.onException = requireNonNull(onException);
 			return this;
 		}
 
 		@Override
-		public <E extends SwingEntityEditModel> EditDialogBuilder<T> updater(Updater<E> updater) {
+		public <E extends SwingEntityEditModel> EditAttributeDialogBuilder<T> updater(Updater<E> updater) {
 			this.updater = (Updater<SwingEntityEditModel>) requireNonNull(updater);
 			return this;
 		}
@@ -534,6 +596,156 @@ public final class EntityDialogs {
 			dialog.setVisible(true);
 
 			return selectedEntities;
+		}
+	}
+
+	private static final class DefaultAddEntityDialogBuilder extends AbstractDialogBuilder<AddEntityDialogBuilder>
+					implements AddEntityDialogBuilder {
+
+		private final Supplier<EntityEditPanel> editPanelSupplier;
+
+		private Consumer<Entity> onInsert;
+
+		private DefaultAddEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
+			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		}
+
+		@Override
+		public AddEntityDialogBuilder onInsert(Consumer<Entity> onInsert) {
+			this.onInsert = requireNonNull(onInsert);
+			return this;
+		}
+
+		@Override
+		public void addEntity() {
+			EntityEditPanel editPanel = initializeEditPanel();
+			editPanel.editModel().defaults();
+			State cancelled = State.state();
+			Value<Attribute<?>> invalid = Value.value();
+			JDialog dialog = Dialogs.okCancelDialog(editPanel)
+							.owner(owner)
+							.locationRelativeTo(locationRelativeTo)
+							.title(editPanel.editModel().entities().definition(editPanel.editModel().entityType()).caption())
+							.okEnabled(editPanel.editModel().valid())
+							.onShown(d -> invalid.optional()
+											.ifPresent(editPanel::requestComponentFocus))
+							.onCancel(() -> cancelled.set(true))
+							.build();
+			Entity inserted = null;
+			while (inserted == null) {
+				dialog.setVisible(true);
+				if (cancelled.get()) {
+					return;
+				}
+				inserted = insert(editPanel.editModel(), invalid);
+				if (inserted != null && onInsert != null) {
+					onInsert.accept(inserted);
+				}
+			}
+		}
+
+		private EntityEditPanel initializeEditPanel() {
+			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
+			editPanel.setBorder(emptyBorder());
+
+			return editPanel;
+		}
+
+		private Entity insert(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
+			try {
+				return editModel.insert();
+			}
+			catch (ValidationException e) {
+				attributeWithInvalidValue.set(e.attribute());
+				JOptionPane.showMessageDialog(locationRelativeTo, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
+			}
+			catch (Exception e) {
+				Dialogs.displayExceptionDialog(e, owner);
+			}
+
+			return null;
+		}
+	}
+
+	private static final class DefaultEditEntityDialogBuilder extends AbstractDialogBuilder<EditEntityDialogBuilder>
+					implements EditEntityDialogBuilder {
+
+		private final Supplier<EntityEditPanel> editPanelSupplier;
+
+		private Supplier<Entity> entity;
+		private Consumer<Entity> onUpdate;
+
+		private DefaultEditEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
+			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		}
+
+		@Override
+		public EditEntityDialogBuilder entity(Supplier<Entity> entity) {
+			this.entity = requireNonNull(entity);
+			return this;
+		}
+
+		@Override
+		public EditEntityDialogBuilder onUpdate(Consumer<Entity> onUpdate) {
+			this.onUpdate = requireNonNull(onUpdate);
+			return this;
+		}
+
+		@Override
+		public void editEntity() {
+			EntityEditPanel editPanel = initializeEditPanel();
+			SwingEntityEditModel editModel = editPanel.editModel();
+			if (entity != null) {
+				editModel.set(entity.get());
+			}
+			State cancelled = State.state();
+			Value<Attribute<?>> invalid = Value.value();
+			JDialog dialog = Dialogs.okCancelDialog(editPanel)
+							.owner(owner)
+							.locationRelativeTo(locationRelativeTo)
+							.title(editModel.entities().definition(editModel.entityType()).caption())
+							.okEnabled(State.and(editModel.modified(), editModel.valid()))
+							.onShown(d -> invalid.optional()
+											.ifPresent(editPanel::requestComponentFocus))
+							.onCancel(() -> cancelled.set(true))
+							.build();
+			Entity updated = null;
+			while (updated == null) {
+				dialog.setVisible(true);
+				if (cancelled.get()) {
+					return;
+				}
+				updated = update(editModel, invalid);
+				if (updated != null && onUpdate != null) {
+					onUpdate.accept(updated);
+				}
+			}
+		}
+
+		private EntityEditPanel initializeEditPanel() {
+			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
+			editPanel.setBorder(emptyBorder());
+
+			return editPanel;
+		}
+
+		private Entity update(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
+			try {
+				if (editModel.modified().get()) {
+					editModel.update();
+				}
+
+				return editModel.entity();
+			}
+			catch (ValidationException e) {
+				attributeWithInvalidValue.set(e.attribute());
+				JOptionPane.showMessageDialog(locationRelativeTo, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
+			}
+			catch (Exception e) {
+				Dialogs.displayExceptionDialog(e, owner);
+			}
+
+			return null;
 		}
 	}
 }
