@@ -68,7 +68,7 @@ final class EntityControls {
 		return createAddControl(() -> addEntityDialog(editPanelSupplier)
 						.owner(comboBox)
 						.onInsert(new EntityComboBoxOnInsert(comboBox.getModel()))
-						.addEntity(), comboBox, keyStroke);
+						.show(), comboBox, keyStroke);
 	}
 
 	/**
@@ -84,7 +84,7 @@ final class EntityControls {
 		return createAddControl(() -> addEntityDialog(editPanelSupplier)
 						.owner(searchField)
 						.onInsert(new EntitySearchFieldOnInsert(searchField.model()))
-						.addEntity(), searchField, keyStroke);
+						.show(), searchField, keyStroke);
 	}
 
 	/**
@@ -101,7 +101,7 @@ final class EntityControls {
 						.owner(comboBox)
 						.entity(() -> comboBox.getModel().selectedValue())
 						.onUpdate(new EntityComboBoxOnUpdate(comboBox.getModel()))
-						.editEntity(), comboBox, comboBox.getModel().selectionEmpty().not(), keyStroke);
+						.show(), comboBox, comboBox.getModel().selectionEmpty().not(), keyStroke);
 	}
 
 	/**
@@ -118,7 +118,7 @@ final class EntityControls {
 						.owner(searchField)
 						.entity(() -> searchField.model().entity().get())
 						.onUpdate(new EntitySearchFieldOnUpdate(searchField.model()))
-						.editEntity(), searchField, searchField.model().selectionEmpty().not(), keyStroke);
+						.show(), searchField, searchField.model().selectionEmpty().not(), keyStroke);
 	}
 
 	static String validateButtonLocation(String buttonLocation) {

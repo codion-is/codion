@@ -22,7 +22,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
-import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -65,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -72,6 +72,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.Utilities.parentDialog;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.button;
@@ -203,9 +204,15 @@ public final class EntityDialogs {
 		AddEntityDialogBuilder onInsert(Consumer<Entity> onInsert);
 
 		/**
+		 * @param closeDialog false if the dialog should not be closed after insert, default true
+		 * @return this builder instance
+		 */
+		AddEntityDialogBuilder closeDialog(boolean closeDialog);
+
+		/**
 		 * Displays the dialog.
 		 */
-		void addEntity();
+		void show();
 	}
 
 	/**
@@ -228,7 +235,7 @@ public final class EntityDialogs {
 		/**
 		 * Displays the dialog.
 		 */
-		void editEntity();
+		void show();
 	}
 
 	/**
@@ -605,6 +612,7 @@ public final class EntityDialogs {
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 
 		private Consumer<Entity> onInsert;
+		private boolean closeDialog = true;
 
 		private DefaultAddEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = requireNonNull(editPanelSupplier);
@@ -617,31 +625,26 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public void addEntity() {
+		public AddEntityDialogBuilder closeDialog(boolean closeDialog) {
+			this.closeDialog = closeDialog;
+			return this;
+		}
+
+		@Override
+		public void show() {
 			EntityEditPanel editPanel = initializeEditPanel();
-			editPanel.editModel().defaults();
-			State cancelled = State.state();
-			Value<Attribute<?>> invalid = Value.value();
-			JDialog dialog = Dialogs.okCancelDialog(editPanel)
+			Runnable disposeDialog = () -> parentDialog(editPanel).dispose();
+			Consumer<Collection<Entity>> insertListener = createInsertListener(disposeDialog);
+			editPanel.editModel().afterInsertEvent().addDataListener(insertListener);
+			Dialogs.actionDialog(editPanel)
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
+							.defaultAction(createInsertControl(editPanel))
+							.escapeAction(createCancelControl(disposeDialog))
 							.title(editPanel.editModel().entities().definition(editPanel.editModel().entityType()).caption())
-							.okEnabled(editPanel.editModel().valid())
-							.onShown(d -> invalid.optional()
-											.ifPresent(editPanel::requestComponentFocus))
-							.onCancel(() -> cancelled.set(true))
-							.build();
-			Entity inserted = null;
-			while (inserted == null) {
-				dialog.setVisible(true);
-				if (cancelled.get()) {
-					return;
-				}
-				inserted = insert(editPanel.editModel(), invalid);
-				if (inserted != null && onInsert != null) {
-					onInsert.accept(inserted);
-				}
-			}
+							.onShown(dialog -> editPanel.clearAndRequestFocus())
+							.show();
+			editPanel.editModel().afterInsertEvent().removeDataListener(insertListener);
 		}
 
 		private EntityEditPanel initializeEditPanel() {
@@ -651,19 +654,30 @@ public final class EntityDialogs {
 			return editPanel;
 		}
 
-		private Entity insert(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
-			try {
-				return editModel.insert();
-			}
-			catch (ValidationException e) {
-				attributeWithInvalidValue.set(e.attribute());
-				JOptionPane.showMessageDialog(locationRelativeTo, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
-			}
-			catch (Exception e) {
-				Dialogs.displayExceptionDialog(e, owner);
-			}
+		private Consumer<Collection<Entity>> createInsertListener(Runnable disposeDialog) {
+			return inserted -> {
+				if (onInsert != null) {
+					onInsert.accept(inserted.iterator().next());
+				}
+				if (closeDialog) {
+					disposeDialog.run();
+				}
+			};
+		}
 
-			return null;
+		private static Control createInsertControl(EntityEditPanel editPanel) {
+			return Control.builder(editPanel.insertCommand(false))
+							.name(FrameworkMessages.add())
+							.mnemonic(FrameworkMessages.addMnemonic())
+							.enabled(editPanel.editModel().valid())
+							.build();
+		}
+
+		private static Control createCancelControl(Runnable disposeDialog) {
+			return Control.builder(disposeDialog::run)
+							.name(Messages.cancel())
+							.mnemonic(Messages.cancelMnemonic())
+							.build();
 		}
 	}
 
@@ -692,60 +706,56 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public void editEntity() {
+		public void show() {
 			EntityEditPanel editPanel = initializeEditPanel();
-			SwingEntityEditModel editModel = editPanel.editModel();
-			if (entity != null) {
-				editModel.set(entity.get());
-			}
-			State cancelled = State.state();
-			Value<Attribute<?>> invalid = Value.value();
-			JDialog dialog = Dialogs.okCancelDialog(editPanel)
+			Runnable disposeDialog = () -> parentDialog(editPanel).dispose();
+			Consumer<Map<Entity.Key, Entity>> updateListener = createUpdateListener(disposeDialog);
+			editPanel.editModel().afterUpdateEvent().addDataListener(updateListener);
+			Dialogs.actionDialog(editPanel)
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
-							.title(editModel.entities().definition(editModel.entityType()).caption())
-							.okEnabled(State.and(editModel.modified(), editModel.valid()))
-							.onShown(d -> invalid.optional()
-											.ifPresent(editPanel::requestComponentFocus))
-							.onCancel(() -> cancelled.set(true))
-							.build();
-			Entity updated = null;
-			while (updated == null) {
-				dialog.setVisible(true);
-				if (cancelled.get()) {
-					return;
-				}
-				updated = update(editModel, invalid);
-				if (updated != null && onUpdate != null) {
-					onUpdate.accept(updated);
-				}
-			}
+							.defaultAction(createUpdateControl(editPanel))
+							.escapeAction(createCancelControl(disposeDialog))
+							.title(editPanel.editModel().entities().definition(editPanel.editModel().entityType()).caption())
+							.onShown(dialog -> editPanel.requestInitialFocus())
+							.show();
+			editPanel.editModel().afterUpdateEvent().removeDataListener(updateListener);
 		}
 
 		private EntityEditPanel initializeEditPanel() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			editPanel.setBorder(emptyBorder());
+			if (entity != null) {
+				editPanel.editModel().set(entity.get());
+			}
 
 			return editPanel;
 		}
 
-		private Entity update(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
-			try {
-				if (editModel.modified().get()) {
-					editModel.update();
+		private Consumer<Map<Entity.Key, Entity>> createUpdateListener(Runnable disposeDialog) {
+			return updated -> {
+				if (onUpdate != null) {
+					onUpdate.accept(updated.values().iterator().next());
 				}
+				disposeDialog.run();
+			};
+		}
 
-				return editModel.entity();
-			}
-			catch (ValidationException e) {
-				attributeWithInvalidValue.set(e.attribute());
-				JOptionPane.showMessageDialog(locationRelativeTo, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
-			}
-			catch (Exception e) {
-				Dialogs.displayExceptionDialog(e, owner);
-			}
+		private static Control createUpdateControl(EntityEditPanel editPanel) {
+			SwingEntityEditModel editModel = editPanel.editModel();
 
-			return null;
+			return Control.builder(editPanel.updateCommand(false))
+							.name(FrameworkMessages.update())
+							.mnemonic(FrameworkMessages.updateMnemonic())
+							.enabled(State.and(editModel.modified(), editModel.valid()))
+							.build();
+		}
+
+		private static Control createCancelControl(Runnable disposeDialog) {
+			return Control.builder(disposeDialog::run)
+							.name(Messages.cancel())
+							.mnemonic(Messages.cancelMnemonic())
+							.build();
 		}
 	}
 }

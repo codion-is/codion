@@ -362,6 +362,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
+	 * Returns an async insert command
+	 * @param confirm true if confirmation should be performed
+	 * @return a new async insert command
+	 */
+	protected final Control.Command insertCommand(boolean confirm) {
+		return new InsertCommand(confirm);
+	}
+
+	/**
+	 * Returns an async update command
+	 * @param confirm true if confirmation should be performed
+	 * @return a new async update command
+	 */
+	protected final Control.Command updateCommand(boolean confirm) {
+		return new UpdateCommand(confirm);
+	}
+
+	/**
+	 * Returns an async delete command
+	 * @param confirm true if confirmation should be performed
+	 * @return a new async delete command
+	 */
+	protected final Control.Command deleteCommand(boolean confirm) {
+		return new DeleteCommand(confirm);
+	}
+
+	/**
 	 * Propagates the exception to {@link #onValidationException(ValidationException)} or
 	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
 	 * otherwise forwards to the super implementation.
@@ -473,7 +500,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createDeleteControl() {
-		return Control.builder(new DeleteCommand())
+		return Control.builder(deleteCommand(true))
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editModel().deleteEnabled(),
@@ -495,7 +522,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createUpdateControl() {
-		return Control.builder(new UpdateCommand())
+		return Control.builder(updateCommand(true))
 						.name(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
@@ -511,7 +538,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		boolean useSaveCaption = Config.USE_SAVE_CAPTION.get();
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
-		return Control.builder(new InsertCommand())
+		return Control.builder(insertCommand(true))
 						.name(caption)
 						.enabled(State.and(active, editModel().insertEnabled()))
 						.description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
@@ -742,9 +769,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private final class InsertCommand implements Control.Command {
 
+		private final boolean confirm;
+
+		private InsertCommand(boolean confirm) {
+			this.confirm = confirm;
+		}
+
 		@Override
 		public void execute() throws ValidationException {
-			if (confirmInsert()) {
+			if (!confirm || confirmInsert()) {
 				progressWorkerDialog(editModel().createInsert().prepare()::perform)
 								.title(MESSAGES.getString("inserting"))
 								.owner(EntityEditPanel.this)
@@ -772,9 +805,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private final class UpdateCommand implements Control.Command {
 
+		private final boolean confirm;
+
+		private UpdateCommand(boolean confirm) {
+			this.confirm = confirm;
+		}
+
 		@Override
 		public void execute() throws ValidationException {
-			if (confirmUpdate()) {
+			if (!confirm || confirmUpdate()) {
 				progressWorkerDialog(editModel().createUpdate().prepare()::perform)
 								.title(MESSAGES.getString("updating"))
 								.owner(EntityEditPanel.this)
@@ -797,9 +836,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private final class DeleteCommand implements Control.Command {
 
+		private final boolean confirm;
+
+		private DeleteCommand(boolean confirm) {
+			this.confirm = confirm;
+		}
+
 		@Override
 		public void execute() {
-			if (confirmDelete()) {
+			if (!confirm || confirmDelete()) {
 				progressWorkerDialog(editModel().createDelete().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(EntityEditPanel.this)

@@ -24,6 +24,8 @@ Codion Change Log
 - EntityDialogs.editDialog() renamed editAttributeDialog(), addEntityDialog() and editEntityDialog() added.
 - EntityControls now uses EntityDialogs, related refactoring.
 - EntityPanel.DetailLayout.NO_LAYOUT renamed NONE.
+- EntityEditPanel.insertCommand(), updateCommand() and deleteCommand() added.
+- EntityDialogs, minor improvements and refactoring.
 
 ## 0.17.35
 ### is.codion.common.model
