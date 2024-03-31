@@ -194,7 +194,7 @@ public class EntityPanel extends JPanel {
 	private final Event<EntityPanel> activateEvent = Event.event();
 	private final Value<String> caption;
 	private final Value<String> description;
-	private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
+	private final Value<PanelState> editPanelState;
 	private final State disposeEditDialogOnEscape = State.state(Config.DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
 	private final Config configuration;
@@ -292,6 +292,7 @@ public class EntityPanel extends JPanel {
 		this.mainPanel = borderLayoutPanel().build();
 		this.detailLayout = this.configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
+		editPanelState = Value.value(this.configuration.editPanelState, EMBEDDED);
 		editPanelState.addListener(this::updateEditPanelState);
 	}
 
@@ -671,7 +672,7 @@ public class EntityPanel extends JPanel {
 			return null;
 		}
 
-		return configuration.toolbarControls ? createControlToolbar(controls) : createControlPanel(controls);
+		return configuration.toolbarControls ? createControlToolBar(controls) : createControlPanel(controls);
 	}
 
 	/**
@@ -955,7 +956,7 @@ public class EntityPanel extends JPanel {
 		entityPanels.add(detailPanel);
 	}
 
-	private JToolBar createControlToolbar(Controls controls) {
+	private JToolBar createControlToolBar(Controls controls) {
 		return toolBar(controls)
 						.orientation(configuration.horizontalControlLayout() ? HORIZONTAL : VERTICAL)
 						.build();
@@ -1205,6 +1206,7 @@ public class EntityPanel extends JPanel {
 						CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
 		private boolean includeControls = INCLUDE_CONTROLS.get();
 		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+		private PanelState editPanelState = EMBEDDED;
 
 		private Config() {
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
@@ -1218,6 +1220,7 @@ public class EntityPanel extends JPanel {
 			this.controlComponentConstraints = config.controlComponentConstraints;
 			this.includeControls = config.includeControls;
 			this.useKeyboardNavigation = config.useKeyboardNavigation;
+			this.editPanelState = config.editPanelState;
 		}
 
 		/**
@@ -1309,6 +1312,15 @@ public class EntityPanel extends JPanel {
 		 */
 		public Config keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
 			requireNonNull(shortcuts).accept(this.shortcuts);
+			return this;
+		}
+
+		/**
+		 * @param editPanelState the initial edit panel state
+		 * @return this Config instance
+		 */
+		public Config editPanelState(PanelState editPanelState) {
+			this.editPanelState = requireNonNull(editPanelState);
 			return this;
 		}
 

@@ -19,6 +19,7 @@ Codion Change Log
 - TabbedDetailLayout and WindowDetailLayout refactored and simplified.
 - EntityPanel.detailController() added.
 - EntityApplicationPanel applicationLayout constructor parameter now function based, related refactoring.
+- EntityPanel.Config.editPanelState() added.
 
 ## 0.17.35
 ### is.codion.common.model
