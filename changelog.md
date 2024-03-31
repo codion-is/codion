@@ -23,6 +23,7 @@ Codion Change Log
 - EntityControls, OK button now only enabled when input is valid, refactoring.
 - EntityDialogs.editDialog() renamed editAttributeDialog(), addEntityDialog() and editEntityDialog() added.
 - EntityControls now uses EntityDialogs, related refactoring.
+- EntityPanel.DetailLayout.NO_LAYOUT renamed NONE.
 
 ## 0.17.35
 ### is.codion.common.model

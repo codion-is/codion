@@ -30,7 +30,7 @@ public final class InvoicePanel extends EntityPanel {
 						new EntityTablePanel(invoiceModel.tableModel(), config -> config
 										.editable(attributes -> attributes.remove(Invoice.TOTAL))),
 						config -> config
-										.detailLayout(DetailLayout.NO_LAYOUT));
+										.detailLayout(DetailLayout.NONE));
 		addDetailPanel(invoiceLinePanel);
 	}
 }

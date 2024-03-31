@@ -1373,14 +1373,14 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Handles the layout of a EntityPanel with one or more detail panels.
-	 * @see #NO_LAYOUT
+	 * @see #NONE
 	 */
 	public interface DetailLayout {
 
 		/**
 		 * A convenience instance for indicating no detail layout.
 		 */
-		Function<EntityPanel, DetailLayout> NO_LAYOUT = entityPanel -> new DetailLayout() {};
+		Function<EntityPanel, DetailLayout> NONE = entityPanel -> new DetailLayout() {};
 
 		/**
 		 * Updates the UI of all associated components.
