@@ -38,10 +38,10 @@ final class ControlBuilder<C extends Control, B extends Control.Builder<C, B>> e
 	@Override
 	protected C createControl() {
 		if (command != null) {
-			return (C) new DefaultControl(command, name, enabled);
+			return (C) new DefaultControl(command, name, enabled, onException);
 		}
 		else {
-			return (C) new DefaultActionControl(actionCommand, name, enabled);
+			return (C) new DefaultActionControl(actionCommand, name, enabled, onException);
 		}
 	}
 }

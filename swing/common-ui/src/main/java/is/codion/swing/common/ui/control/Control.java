@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -320,6 +321,12 @@ public interface Control extends Action {
 		 * @see Action#putValue(String, Object)
 		 */
 		B value(String key, Object value);
+
+		/**
+		 * @param onException the exception handler for this control
+		 * @return this builder
+		 */
+		B onException(Consumer<Throwable> onException);
 
 		/**
 		 * @return a new Control instance

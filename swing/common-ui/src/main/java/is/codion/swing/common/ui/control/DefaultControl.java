@@ -18,20 +18,23 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.state.StateObserver;
 
 import java.awt.event.ActionEvent;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultControl extends AbstractControl {
 
 	private final Command command;
+	private final Consumer<Throwable> onException;
 
-	DefaultControl(Command command, String name, StateObserver enabled) {
+	DefaultControl(Command command, String name, StateObserver enabled,
+								 Consumer<Throwable> onException) {
 		super(name, enabled);
 		this.command = requireNonNull(command);
+		this.onException = requireNonNull(onException);
 	}
 
 	@Override
@@ -39,12 +42,8 @@ final class DefaultControl extends AbstractControl {
 		try {
 			command.execute();
 		}
-		catch (CancelException ce) {/*Operation cancelled*/}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception ex) {
-			throw new RuntimeException(ex);
+		catch (Throwable throwable) {
+			onException.accept(throwable);
 		}
 	}
 }

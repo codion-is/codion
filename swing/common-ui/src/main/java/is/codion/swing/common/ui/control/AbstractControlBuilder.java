@@ -18,19 +18,26 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.model.CancelException;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 abstract class AbstractControlBuilder<C extends Control, B extends Control.Builder<C, B>> implements Control.Builder<C, B> {
+
+	private static final Consumer<Throwable> DEFAULT_ON_EXCEPTION = new DefaultOnException();
 
 	private final Map<String, Object> values = new HashMap<>();
 
 	protected String name;
 	protected StateObserver enabled;
+	protected Consumer<Throwable> onException = DEFAULT_ON_EXCEPTION;
 	private char mnemonic;
 	private Icon smallIcon;
 	private Icon largeIcon;
@@ -89,6 +96,12 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 	}
 
 	@Override
+	public final B onException(Consumer<Throwable> onException) {
+		this.onException = requireNonNull(onException);
+		return (B) this;
+	}
+
+	@Override
 	public C build() {
 		C control = createControl();
 		control.setMnemonic(mnemonic);
@@ -102,4 +115,19 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 	}
 
 	protected abstract C createControl();
+
+	private static final class DefaultOnException implements Consumer<Throwable> {
+
+		@Override
+		public void accept(Throwable throwable) {
+			if (throwable instanceof CancelException) {
+				return; // Operation cancelled
+			}
+			if (throwable instanceof RuntimeException) {
+				throw (RuntimeException) throwable;
+			}
+
+			throw new RuntimeException(throwable);
+		}
+	}
 }
