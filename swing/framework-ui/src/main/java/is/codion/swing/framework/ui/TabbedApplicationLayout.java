@@ -101,6 +101,14 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 		return tabbedPane;
 	}
 
+	/**
+	 * @return the application panel
+	 * @param <T> the application panel type
+	 */
+	protected final <T extends EntityApplicationPanel<?>> T applicationPanel() {
+		return (T) applicationPanel;
+	}
+
 	private void addTab(EntityPanel entityPanel) {
 		tabbedPane.addTab(entityPanel.caption().get(), entityPanel);
 		tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, entityPanel.description().get());
