@@ -641,7 +641,8 @@ public final class EntityDialogs {
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createInsertControl(editPanel))
 							.escapeAction(createCancelControl(disposeDialog))
-							.title(editPanel.editModel().entities().definition(editPanel.editModel().entityType()).caption())
+							.title(FrameworkMessages.add() + " - " + editPanel.editModel().entities()
+											.definition(editPanel.editModel().entityType()).caption())
 							.onShown(dialog -> editPanel.clearAndRequestFocus())
 							.show();
 			editPanel.editModel().afterInsertEvent().removeDataListener(insertListener);
@@ -716,7 +717,8 @@ public final class EntityDialogs {
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createUpdateControl(editPanel))
 							.escapeAction(createCancelControl(disposeDialog))
-							.title(editPanel.editModel().entities().definition(editPanel.editModel().entityType()).caption())
+							.title(FrameworkMessages.edit() + " - " + editPanel.editModel().entities()
+											.definition(editPanel.editModel().entityType()).caption())
 							.onShown(dialog -> editPanel.requestInitialFocus())
 							.show();
 			editPanel.editModel().afterUpdateEvent().removeDataListener(updateListener);

@@ -118,6 +118,8 @@ final class KeyboardShortcutsPanel extends JPanel {
 
 	private static JPanel tablePanel() {
 		return gridLayoutPanel(0, 2)
+						.addAll(new JLabel(MESSAGES.getString("add_new_item")), new JLabel(INSERT))
+						.addAll(new JLabel(MESSAGES.getString("edit_selected_item")), new JLabel(CTRL + INSERT))
 						.addAll(new JLabel(MESSAGES.getString("delete_selected")), new JLabel("Delete"))
 						.addAll(new JLabel(MESSAGES.getString("copy_selected_rows")), new JLabel(CTRL + "C"))
 						.addAll(new JLabel(MESSAGES.getString("copy_selected_cell")), new JLabel(CTRL + ALT + "C"))

@@ -31,6 +31,8 @@ Codion Change Log
 - EntityEditPanel.insertCommand(), updateCommand() and deleteCommand() added.
 - EntityDialogs, minor improvements and refactoring.
 - FrameworkMessages.insert() added.
+- EntityTablePanel constructor overloaded with edit panel parameter, adds Add and Edit controls when one is provided.
+- EntityEditPanel.KEYBOARD_SHORTCUTS added.
 
 ## 0.17.35
 ### is.codion.common.model

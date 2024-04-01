@@ -127,6 +127,8 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |===
 2+|Table panel
 
+|kbd:[Insert]|Add new item
+|kbd:[Ctrl + Insert]|Edit selected item
 |kbd:[Del]|Delete selected
 |kbd:[Ctrl + C]|Copy selected rows to clipboard
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard

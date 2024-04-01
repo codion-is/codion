@@ -114,6 +114,8 @@ import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
+import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
+import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static is.codion.swing.framework.ui.EntityTablePanel.KeyboardShortcut.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -165,6 +167,14 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
+		 * Add a new entity instance
+		 */
+		ADD,
+		/**
+		 * Edit the selected entity instance
+		 */
+		EDIT,
+		/**
 		 * Requests focus for the table.
 		 */
 		REQUEST_TABLE_FOCUS,
@@ -205,6 +215,8 @@ public class EntityTablePanel extends JPanel {
 		PRINT,
 		DELETE_SELECTED,
 		VIEW_DEPENDENCIES,
+		ADD,
+		EDIT,
 		EDIT_SELECTED,
 		SELECT_COLUMNS,
 		RESET_COLUMNS,
@@ -256,11 +268,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
+	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final State conditionPanelVisibleState = State.state(Config.CONDITION_PANEL_VISIBLE.get());
 	private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
 
+	private final EntityEditPanel editPanel;
 	private final Map<TableControl, Value<Control>> controls = createControlsMap();
 	private final Config configuration;
 	private final SwingEntityTableModel tableModel;
@@ -286,7 +300,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param tableModel the SwingEntityTableModel instance
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel) {
-		this(tableModel, c -> {});
+		this(tableModel, NO_CONFIGURATION);
 	}
 
 	/**
@@ -296,6 +310,30 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
+		this.editPanel = null;
+		this.conditionRefreshControl = createConditionRefreshControl();
+		this.configuration = configure(tableModel, configuration);
+		this.refreshButtonToolBar = createRefreshButtonToolBar();
+	}
+
+	/**
+	 * Initializes a new EntityTablePanel instance
+	 * @param tableModel the SwingEntityTableModel instance
+	 * @param editPanel the edit panel
+	 */
+	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel) {
+		this(tableModel, editPanel, NO_CONFIGURATION);
+	}
+
+	/**
+	 * Initializes a new EntityTablePanel instance
+	 * @param tableModel the SwingEntityTableModel instance
+	 * @param editPanel the edit panel
+	 * @param configuration provides access to the table panel configuration
+	 */
+	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
+		this.tableModel = requireNonNull(tableModel, "tableModel");
+		this.editPanel = requireNonNull(editPanel, "editPanel");
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(tableModel, configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
@@ -564,6 +602,26 @@ public class EntityTablePanel extends JPanel {
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(control)
 										.enable(this));
+		control(TableControl.ADD).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(ADD).get())
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(control)
+										.enable(table));
+		control(TableControl.EDIT).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(EDIT).get())
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(control)
+										.enable(table));
+		control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE_SELECTED).get())
+										.action(control)
+										.enable(table));
+		if (configuration.includeEntityMenu) {
+			KeyEvents.builder(VK_V)
+							.modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+							.action(Control.control(this::showEntityMenu))
+							.enable(table);
+		}
 	}
 
 	protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
@@ -614,11 +672,23 @@ public class EntityTablePanel extends JPanel {
 		}
 		addAdditionalControls(popupControls, additionalPopupMenuControls);
 		State separatorRequired = State.state();
-		control(TableControl.EDIT_SELECTED).optional().ifPresent(control -> {
+		control(TableControl.ADD).optional().ifPresent(control -> {
+			popupControls.add(control);
+			separatorRequired.set(true);
+		});
+		control(TableControl.EDIT).optional().ifPresent(control -> {
 			popupControls.add(control);
 			separatorRequired.set(true);
 		});
 		control(TableControl.DELETE_SELECTED).optional().ifPresent(control -> {
+			popupControls.add(control);
+			separatorRequired.set(true);
+		});
+		if (separatorRequired.get()) {
+			popupControls.addSeparator();
+			separatorRequired.set(false);
+		}
+		control(TableControl.EDIT_SELECTED).optional().ifPresent(control -> {
 			popupControls.add(control);
 			separatorRequired.set(true);
 		});
@@ -843,6 +913,36 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
+	 * Creates a {@link Control} for adding a new entity via the available edit panel.
+	 * @return the add control
+	 */
+	private Control createAddControl() {
+		return Control.builder(() -> addEntityDialog(() -> editPanel)
+										.owner(this)
+										.closeDialog(false)
+										.show())
+						.name(FrameworkMessages.add())
+						.mnemonic(FrameworkMessages.addMnemonic())
+						.smallIcon(FrameworkIcons.instance().add())
+						.build();
+	}
+
+	/**
+	 * Creates a {@link Control} for editing the selected component via the available edit panel.
+	 * @return the edit control
+	 */
+	private Control createEditControl() {
+		return Control.builder(() -> editEntityDialog(() -> editPanel)
+										.owner(this)
+										.show())
+						.name(FrameworkMessages.edit())
+						.mnemonic(FrameworkMessages.editMnemonic())
+						.smallIcon(FrameworkIcons.instance().edit())
+						.enabled(tableModel().selectionModel().singleSelection())
+						.build();
+	}
+
+	/**
 	 * Creates a {@link Controls} containing controls for editing the value of a single attribute
 	 * for the selected entities. These controls are enabled as long as the selection is not empty
 	 * and {@link EntityEditModel#updateEnabled()} is enabled.
@@ -893,6 +993,7 @@ public class EntityTablePanel extends JPanel {
 	private Control createDeleteSelectedControl() {
 		return Control.builder(new DeleteCommand())
 						.name(FrameworkMessages.delete())
+						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.enabled(State.and(
 										tableModel.editModel().deleteEnabled(),
 										tableModel.selectionModel().selectionNotEmpty()))
@@ -1029,6 +1130,14 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
+	private boolean includeAddControl() {
+		return editPanel != null && configuration.includeAddControl;
+	}
+
+	private boolean includeEditControl() {
+		return editPanel != null && configuration.includeEditControl;
+	}
+
 	private boolean includeEditSelectedControls() {
 		return !configuration.editable.empty() &&
 						!tableModel.editModel().readOnly().get() &&
@@ -1077,16 +1186,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		if (configuration.includeEntityMenu) {
-			KeyEvents.builder(VK_V)
-							.modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-							.action(Control.control(this::showEntityMenu))
-							.enable(table);
-		}
-		control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
-						KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE_SELECTED).get())
-										.action(control)
-										.enable(table));
 		conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
 		filterPanelVisibleState.addDataListener(this::setFilterPanelVisible);
 		summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisible);
@@ -1169,6 +1268,12 @@ public class EntityTablePanel extends JPanel {
 	private void setupStandardControls() {
 		if (includeDeleteSelectedControl()) {
 			controls.get(TableControl.DELETE_SELECTED).mapNull(this::createDeleteSelectedControl);
+		}
+		if (includeAddControl()) {
+			controls.get(TableControl.ADD).mapNull(this::createAddControl);
+		}
+		if (includeEditControl()) {
+			controls.get(TableControl.EDIT).mapNull(this::createEditControl);
 		}
 		if (includeEditSelectedControls()) {
 			controls.get(TableControl.EDIT_SELECTED).mapNull(this::createEditSelectedControls);
@@ -1647,6 +1752,8 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
 		private boolean includePopupMenu = INCLUDE_POPUP_MENU.get();
 		private boolean includeSelectionModeControl = false;
+		private boolean includeAddControl = true;
+		private boolean includeEditControl = true;
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
 		private RefreshButtonVisible refreshButtonVisible;
@@ -1683,6 +1790,8 @@ public class EntityTablePanel extends JPanel {
 			this.includeEntityMenu = config.includeEntityMenu;
 			this.includePopupMenu = config.includePopupMenu;
 			this.includeSelectionModeControl = config.includeSelectionModeControl;
+			this.includeAddControl = config.includeAddControl;
+			this.includeEditControl = config.includeEditControl;
 			this.columnSelection = config.columnSelection;
 			this.editComponentFactories = new HashMap<>(config.editComponentFactories);
 			this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
@@ -1781,6 +1890,24 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config includeSelectionModeControl(boolean includeSelectionModeControl) {
 			this.includeSelectionModeControl = includeSelectionModeControl;
+			return this;
+		}
+
+		/**
+		 * @param includeAddControl true a Add control should be included if a edit panel is available<br>
+		 * @return this Config instance
+		 */
+		public Config includeAddControl(boolean includeAddControl) {
+			this.includeAddControl = includeAddControl;
+			return this;
+		}
+
+		/**
+		 * @param includeEditControl true a Edit control should be included if a edit panel is available<br>
+		 * @return this Config instance
+		 */
+		public Config includeEditControl(boolean includeEditControl) {
+			this.includeEditControl = includeEditControl;
 			return this;
 		}
 
@@ -1906,6 +2033,10 @@ public class EntityTablePanel extends JPanel {
 
 		private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
 			switch (shortcut) {
+				case ADD:
+					return keyStroke(VK_INSERT);
+				case EDIT:
+					return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
 				case REQUEST_TABLE_FOCUS:
 					return keyStroke(VK_T, CTRL_DOWN_MASK);
 				case SELECT_CONDITION_PANEL:

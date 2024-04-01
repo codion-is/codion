@@ -42,6 +42,7 @@ public final class FrameworkMessages {
 	private static final String UPDATE_MNEMONIC = "update_mnemonic";
 	private static final String UPDATE_TIP = "update_tip";
 	private static final String EDIT = "edit";
+	private static final String EDIT_MNEMONIC = "edit_mnemonic";
 	private static final String EDIT_SELECTED_TIP = "edit_selected_tip";
 	private static final String DELETE = "delete";
 	private static final String DELETE_MNEMONIC = "delete_mnemonic";
@@ -169,6 +170,13 @@ public final class FrameworkMessages {
 	 */
 	public static String edit() {
 		return get(EDIT);
+	}
+
+	/**
+	 * @return edit mnemonic
+	 */
+	public static char editMnemonic() {
+		return get(EDIT_MNEMONIC).charAt(0);
 	}
 
 	/**

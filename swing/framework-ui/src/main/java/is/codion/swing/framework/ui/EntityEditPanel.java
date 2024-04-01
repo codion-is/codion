@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -45,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
@@ -61,9 +63,13 @@ import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
+import static is.codion.swing.framework.ui.EntityEditPanel.KeyboardShortcut.SELECT_INPUT_FIELD;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_I;
 import static java.awt.event.KeyEvent.VK_V;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -84,6 +90,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	public enum EditControl {
 		INSERT, UPDATE, DELETE, CLEAR
+	}
+
+	/**
+	 * The keyboard shortcuts available for {@link EntityEditPanel}s.
+	 * Note that changing the shortcut keystroke after the panel
+	 * has been initialized has no effect.
+	 */
+	public enum KeyboardShortcut {
+		/**
+		 * Displays a dialog for selecting an input field.
+		 */
+		SELECT_INPUT_FIELD
 	}
 
 	private static final String ALT_PREFIX = " (ALT-";
@@ -139,6 +157,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		this.active = State.state(!this.configuration.focusActivation);
 		this.controls = createControlsMap();
 		setupFocusActivation();
+		setupKeyboardActions();
 		if (editModel.exists().not().get()) {
 			editModel.defaults();
 		}
@@ -571,6 +590,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 	}
 
+	private void setupKeyboardActions() {
+		KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).get())
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.action(Control.control(this::selectInputComponent))
+						.enable(this);
+	}
+
 	private void showEntityMenu() {
 		new EntityPopupMenu(editModel().entity(), editModel().connection()).show(this, 0, 0);
 	}
@@ -626,11 +652,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
 						Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
 
+		/**
+		 * The default keyboard shortcut keyStrokes.
+		 */
+		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
+						keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
+
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
 		private final Set<EditControl> editControls;
+		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
@@ -643,9 +676,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		private Config() {
 			this.editControls = new HashSet<>(Arrays.asList(EditControl.values()));
+			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 		}
 
 		private Config(Config config) {
+			this.shortcuts = config.shortcuts.copy();
 			this.editControls = new HashSet<>(config.editControls);
 			this.clearAfterInsert = config.clearAfterInsert;
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
@@ -740,6 +775,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 
 			return new HashSet<>(Arrays.asList(editControls));
+		}
+
+		private static KeyStroke defaultKeyStroke(KeyboardShortcut keyboardShortcut) {
+			if (keyboardShortcut == SELECT_INPUT_FIELD) {
+				return keyStroke(VK_I, CTRL_DOWN_MASK);
+			}
+
+			throw new IllegalArgumentException();
 		}
 	}
 
