@@ -6,6 +6,7 @@ Codion Change Log
 - Control.Builder.onException() added.
 ### is.codion.swing.framework.ui
 - FrameworkIcons.columns() added, used in EntityTablePanel popup menu control.
+- EntityDialogs, edit panel now used as exception handler for the add and edit actions.
 
 ## 0.17.36
 ### is.codion.swing.common.ui

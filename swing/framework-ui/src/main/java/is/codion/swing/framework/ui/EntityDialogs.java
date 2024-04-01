@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.state.State;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -670,7 +669,7 @@ public final class EntityDialogs {
 			return Control.builder(editPanel.insertCommand(false))
 							.name(FrameworkMessages.insert())
 							.mnemonic(FrameworkMessages.insertMnemonic())
-							.enabled(editPanel.editModel().valid())
+							.onException(editPanel::onException)
 							.build();
 		}
 
@@ -749,7 +748,8 @@ public final class EntityDialogs {
 			return Control.builder(editPanel.updateCommand(false))
 							.name(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
-							.enabled(State.and(editModel.modified(), editModel.valid()))
+							.onException(editPanel::onException)
+							.enabled(editModel.modified())
 							.build();
 		}
 
