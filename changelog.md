@@ -34,6 +34,7 @@ Codion Change Log
 - EntityTablePanel constructor overloaded with edit panel parameter, adds Add and Edit controls when one is provided.
 - EntityEditPanel.KEYBOARD_SHORTCUTS added.
 - TabbedApplicationLayout.applicationPanel() added.
+- EntityTablePanel, add and edit controls added to toolbar.
 
 ## 0.17.35
 ### is.codion.common.model
