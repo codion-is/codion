@@ -72,7 +72,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 
 	public DefaultFrameworkIcons() {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
-						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT);
+						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
 	}
 
 	@Override
@@ -188,6 +188,11 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 	@Override
 	public ImageIcon editText() {
 		return icon(EDIT_TEXT);
+	}
+
+	@Override
+	public ImageIcon columns() {
+		return icon(COLUMNS);
 	}
 
 	@Override

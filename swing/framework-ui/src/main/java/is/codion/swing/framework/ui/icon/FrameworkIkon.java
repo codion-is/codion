@@ -41,6 +41,7 @@ enum FrameworkIkon implements Ikon {
 	SETTINGS("fr-settings", '\uf214'),
 	CALENDAR("fr-calendar", '\uf124'),
 	EDIT_TEXT("fr-edit-text", '\uf129'),
+	COLUMNS("fr-columns", '\uf169'),
 	LOGO("fr-logo", '\uf208');
 
 	private final String description;

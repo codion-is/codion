@@ -1091,7 +1091,8 @@ public class EntityTablePanel extends JPanel {
 
 	private Controls createColumnControls() {
 		Controls.Builder builder = Controls.builder()
-						.name(MESSAGES.getString("columns"));
+						.name(MESSAGES.getString("columns"))
+						.smallIcon(FrameworkIcons.instance().columns());
 		control(TableControl.SELECT_COLUMNS).optional().ifPresent(builder::control);
 		control(TableControl.RESET_COLUMNS).optional().ifPresent(builder::control);
 		control(TableControl.COLUMN_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);

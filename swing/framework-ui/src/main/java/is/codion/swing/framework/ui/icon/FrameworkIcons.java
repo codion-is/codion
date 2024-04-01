@@ -146,6 +146,11 @@ public interface FrameworkIcons extends Icons, Logos {
 	ImageIcon editText();
 
 	/**
+	 * @return icon for a 'columns' action
+	 */
+	ImageIcon columns();
+
+	/**
 	 * @return the logo icon.
 	 */
 	ImageIcon logo();
