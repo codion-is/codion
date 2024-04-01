@@ -4,6 +4,10 @@ Codion Change Log
 ## 0.17.36-SNAPSHOT
 ### is.codion.swing.common.ui
 - ComponentBuilder.focusCycleRoot() added.
+### is.codion.framework.domain
+- AbstractCondition no longer validates that all columns are from the same entity type, custom conditions require more flexibility.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.definitions() now accepts conditions with columns from multiple entity types.
 ### is.codion.framework.model
 - EntityEditModel.delete() now returns the deleted entities.
 - EntityTableModel.deleteSelected() now returns the deleted entities.

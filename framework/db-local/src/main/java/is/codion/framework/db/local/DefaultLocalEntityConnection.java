@@ -302,7 +302,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 		EntityDefinition entityDefinition = definition(condition.entityType());
 		List<?> statementValues = condition.values();
-		List<ColumnDefinition<?>> statementColumns = definitions(entityDefinition, condition.columns());
+		List<ColumnDefinition<?>> statementColumns = definitions(condition.columns());
 		String deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
 		synchronized (connection) {
 			try (PreparedStatement statement = prepareStatement(deleteQuery)) {
@@ -347,7 +347,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 					for (int i = 0; i < keysToDelete.size(); i += keysPerStatement) {
 						condition = keys(keysToDelete.subList(i, Math.min(i + keysPerStatement, keysToDelete.size())));
 						statementValues = condition.values();
-						statementColumns = definitions(entityDefinition, condition.columns());
+						statementColumns = definitions(condition.columns());
 						deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
 						statement = prepareStatement(deleteQuery);
 						deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
@@ -475,7 +475,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						.groupBy(columnDefinition.expression())
 						.build();
 		List<Object> statementValues = statementValues(combinedCondition, select.having());
-		List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, combinedCondition, select.having());
+		List<ColumnDefinition<?>> statementColumns = statementColumns(combinedCondition, select.having());
 		synchronized (connection) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
@@ -505,7 +505,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 										.build())
 						.build();
 		List<Object> statementValues = statementValues(count.where(), count.having());
-		List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, count.where(), count.having());
+		List<ColumnDefinition<?>> statementColumns = statementColumns(count.where(), count.having());
 		synchronized (connection) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
@@ -771,7 +771,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						Condition condition = key(entity.originalPrimaryKey());
 						updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, condition.toString(entityDefinition));
 						statement = prepareStatement(updateQuery);
-						statementColumns.addAll(definitions(entityDefinition, condition.columns()));
+						statementColumns.addAll(definitions(condition.columns()));
 						statementValues.addAll(condition.values());
 						int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
 						if (updatedRows == 0) {
@@ -868,7 +868,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			statementValues.add(columnDefinition.attribute().type().validateType(columnValue.getValue()));
 		}
 		String updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
-		statementColumns.addAll(definitions(entityDefinition, update.where().columns()));
+		statementColumns.addAll(definitions(update.where().columns()));
 		statementValues.addAll(update.where().values());
 
 		return updateQuery;
@@ -1009,7 +1009,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						.select(select);
 		String selectQuery = queryBuilder.build();
 		List<Object> statementValues = statementValues(select.where(), select.having());
-		List<ColumnDefinition<?>> statementColumns = statementColumns(entityDefinition, select.where(), select.having());
+		List<ColumnDefinition<?>> statementColumns = statementColumns(select.where(), select.having());
 		try {
 			statement = prepareStatement(selectQuery, false, select.queryTimeout());
 			resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
@@ -1066,18 +1066,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private static List<ColumnDefinition<?>> statementColumns(EntityDefinition entityDefinition, Condition where, Condition having) {
-		List<ColumnDefinition<?>> whereColumns = definitions(entityDefinition, where.columns());
+	private List<ColumnDefinition<?>> statementColumns(Condition where, Condition having) {
+		List<ColumnDefinition<?>> whereColumns = definitions(where.columns());
 		if (having == null || having instanceof Condition.All) {
 			return whereColumns;
 		}
 
-		List<ColumnDefinition<?>> havingColumns = definitions(entityDefinition, having.columns());
+		List<ColumnDefinition<?>> havingColumns = definitions(having.columns());
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>(whereColumns.size() + havingColumns.size());
 		statementColumns.addAll(whereColumns);
 		statementColumns.addAll(havingColumns);
 
 		return statementColumns;
+	}
+
+	private List<ColumnDefinition<?>> definitions(List<Column<?>> columns) {
+		return columns.stream()
+						.map(column -> entities().definition(column.entityType()).columns().definition(column))
+						.collect(toList());
 	}
 
 	private static List<Object> statementValues(Condition where, Condition having) {
@@ -1354,13 +1360,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 																		boolean includeNonUpdatable) {
 		return column.insertable() && (includeNonUpdatable || column.updatable())
 						&& (includePrimaryKeyColumns || !column.primaryKey());
-	}
-
-	private static List<ColumnDefinition<?>> definitions(EntityDefinition entityDefinition,
-																											 List<Column<?>> columns) {
-		return columns.stream()
-						.map(entityDefinition.columns()::definition)
-						.collect(toList());
 	}
 
 	private static <T> ResultPacker<T> resultPacker(ColumnDefinition<T> columnDefinition) {

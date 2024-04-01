@@ -60,13 +60,6 @@ public final class ConditionTest {
 	}
 
 	@Test
-	void combinationEntityTypeMismatch() {
-		assertThrows(IllegalArgumentException.class, () -> Condition.and(
-						Employee.ID.equalTo(8),
-						Department.NAME.equalTo("name")));
-	}
-
-	@Test
 	void foreignKeyCondition() {
 		Entity master = ENTITIES.builder(Master2.TYPE)
 						.with(Master2.ID_1, 1)
