@@ -536,8 +536,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private Control createInsertControl() {
 		boolean useSaveCaption = Config.USE_SAVE_CAPTION.get();
-		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
-		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
+		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
+		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
 		return Control.builder(insertCommand(true))
 						.name(caption)
 						.enabled(State.and(active, editModel().insertEnabled()))

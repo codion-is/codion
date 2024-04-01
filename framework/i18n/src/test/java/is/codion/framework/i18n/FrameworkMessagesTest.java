@@ -44,6 +44,9 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.deleteSelectedTip();
 		FrameworkMessages.dependencies();
 		FrameworkMessages.dependenciesTip();
+		FrameworkMessages.insert();
+		FrameworkMessages.insertMnemonic();
+		FrameworkMessages.insertTip();
 		FrameworkMessages.add();
 		FrameworkMessages.addMnemonic();
 		FrameworkMessages.addTip();

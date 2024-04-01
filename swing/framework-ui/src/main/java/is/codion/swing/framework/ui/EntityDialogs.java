@@ -667,8 +667,8 @@ public final class EntityDialogs {
 
 		private static Control createInsertControl(EntityEditPanel editPanel) {
 			return Control.builder(editPanel.insertCommand(false))
-							.name(FrameworkMessages.add())
-							.mnemonic(FrameworkMessages.addMnemonic())
+							.name(FrameworkMessages.insert())
+							.mnemonic(FrameworkMessages.insertMnemonic())
 							.enabled(editPanel.editModel().valid())
 							.build();
 		}

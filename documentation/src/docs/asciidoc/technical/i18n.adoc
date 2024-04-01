@@ -251,9 +251,9 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |===
 |key|default|is_IS
 
-|add|Add|Vista
-|add_mnemonic|A|V
-|add_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
+|add|Add|Ný færsla
+|add_mnemonic|A|N
+|add_tip|Add a new record|Útbúa nýja færslu
 |confirm_delete|Delete {0, choice, 1#record\|1<{0, number, integer} records}?|Eyða {0, choice, 1#færslu\|1<{0, number, integer} færslum}?
 |confirm_exit|Are you sure you want to close the application?|Ertu viss um að þú viljir hætta?
 |confirm_exit_title|Exit?|Hætta?
@@ -275,6 +275,9 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |file|File|Skrá
 |file_mnemonic|F|K
 |filter|Filter|Sýja
+|insert|Add|Vista
+|insert_mnemonic|A|V
+|insert_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
 |no_search_results|Search did not return any results|Leit skilaði engum niðurstöðum
 |save|Save|Vista
 |save_mnemonic|S|V

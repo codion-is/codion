@@ -49,6 +49,9 @@ public final class FrameworkMessages {
 	private static final String DELETE_SELECTED_TIP = "delete_selected_tip";
 	private static final String DEPENDENCIES = "dependencies";
 	private static final String DEPENDENCIES_TIP = "dependencies_tip";
+	private static final String INSERT = "insert";
+	private static final String INSERT_MNEMONIC = "insert_mnemonic";
+	private static final String INSERT_TIP = "insert_tip";
 	private static final String ADD = "add";
 	private static final String ADD_MNEMONIC = "add_mnemonic";
 	private static final String ADD_TIP = "add_tip";
@@ -215,6 +218,27 @@ public final class FrameworkMessages {
 	 */
 	public static String dependenciesTip() {
 		return get(DEPENDENCIES_TIP);
+	}
+
+	/**
+	 * @return insert
+	 */
+	public static String insert() {
+		return get(INSERT);
+	}
+
+	/**
+	 * @return insert mnemonic
+	 */
+	public static char insertMnemonic() {
+		return get(INSERT_MNEMONIC).charAt(0);
+	}
+
+	/**
+	 * @return insert tip
+	 */
+	public static String insertTip() {
+		return get(INSERT_TIP);
 	}
 
 	/**

@@ -30,6 +30,7 @@ Codion Change Log
 - EntityPanel.DetailLayout.NO_LAYOUT renamed NONE.
 - EntityEditPanel.insertCommand(), updateCommand() and deleteCommand() added.
 - EntityDialogs, minor improvements and refactoring.
+- FrameworkMessages.insert() added.
 
 ## 0.17.35
 ### is.codion.common.model
