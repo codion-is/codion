@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.plugin.jasperreports.JRReportType;
 import is.codion.plugin.jasperreports.JasperReports;
@@ -159,6 +160,8 @@ public interface Chinook {
 		ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", GENRE_ID, Genre.ID);
 
 		FunctionType<EntityConnection, RaisePriceParameters, Collection<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
+
+		ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
 
 		final class RaisePriceParameters implements Serializable {
 

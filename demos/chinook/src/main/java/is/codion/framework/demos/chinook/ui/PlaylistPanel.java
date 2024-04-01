@@ -21,23 +21,33 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.TabbedDetailLayout;
+
+import java.awt.BorderLayout;
+
+import static is.codion.swing.common.ui.component.Components.splitPane;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class PlaylistPanel extends EntityPanel {
 
 	public PlaylistPanel(SwingEntityModel playlistModel) {
 		super(playlistModel,
-						new PlaylistEditPanel(playlistModel.editModel()),
 						new PlaylistTablePanel(playlistModel.tableModel()),
-						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-										.splitPaneResizeWeight(0.25)
-										.build()));
+						config -> config.detailLayout(DetailLayout.NONE));
 
 		SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
 		EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,
-						new PlaylistTrackEditPanel(playlistTrackModel.editModel()),
 						new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));
 
 		addDetailPanel(playlistTrackPanel);
+	}
+
+	@Override
+	protected void initializeUI() {
+		setLayout(borderLayout());
+		add(splitPane()
+						.leftComponent(mainPanel())
+						.rightComponent(detailPanel(PlaylistTrack.TYPE).initialize())
+						.continuousLayout(true)
+						.build(), BorderLayout.CENTER);
 	}
 }

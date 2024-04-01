@@ -26,10 +26,12 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-		super(tableModel, config -> config
-						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
-						// No confirmation needed when deleting
-						.deleteConfirmer(dialogOwner -> true));
+		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()),
+						config -> config
+										.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
+										// No confirmation needed when deleting
+										.deleteConfirmer(dialogOwner -> true)
+										.includeEditControl(false));
 		configureTrackConditionPanel();
 	}
 

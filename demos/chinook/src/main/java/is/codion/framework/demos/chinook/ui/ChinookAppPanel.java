@@ -133,7 +133,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 		EntityPanel.Builder employeePanelBuilder =
 						EntityPanel.builder(employeeModelBuilder)
-										.editPanel(EmployeeEditPanel.class)
+										.tablePanel(EmployeeTablePanel.class)
 										.detailPanel(customerPanelBuilder)
 										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
 														.panelState(PanelState.HIDDEN)

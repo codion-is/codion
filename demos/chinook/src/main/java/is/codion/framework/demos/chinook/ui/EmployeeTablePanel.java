@@ -14,22 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2004 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
-import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-public final class InvoicePanel extends EntityPanel {
+public final class EmployeeTablePanel extends EntityTablePanel {
 
-	public InvoicePanel(SwingEntityModel invoiceModel, EntityPanel invoiceLinePanel) {
-		super(invoiceModel, new InvoiceEditPanel(invoiceModel.editModel(), invoiceLinePanel),
-						new EntityTablePanel(invoiceModel.tableModel(), config -> config
-										.editable(attributes -> attributes.remove(Invoice.TOTAL))),
-						config -> config.detailLayout(DetailLayout.NONE));
-		addDetailPanel(invoiceLinePanel);
+	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
+		super(tableModel, new EmployeeEditPanel(tableModel.editModel()));
 	}
 }

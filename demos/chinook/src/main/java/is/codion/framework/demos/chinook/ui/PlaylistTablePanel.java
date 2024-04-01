@@ -38,24 +38,24 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(PlaylistTablePanel.class.getName());
 
 	public PlaylistTablePanel(SwingEntityTableModel tableModel) {
-		super(tableModel);
+		super(tableModel, new PlaylistEditPanel(tableModel.editModel()));
 	}
 
 	@Override
 	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
 		return super.createPopupMenuControls(additionalPopupMenuControls)
-						.addAt(0, Control.builder(this::createRandomPlaylist)
-										.name(BUNDLE.getString("create_random_playlist"))
+						.addAt(6, Control.builder(this::randomPlaylist)
+										.name(BUNDLE.getString("random_playlist"))
 										.smallIcon(FrameworkIcons.instance().add())
 										.build())
-						.addSeparatorAt(1);
+						.addSeparatorAt(7);
 	}
 
-	private void createRandomPlaylist() throws DatabaseException {
+	private void randomPlaylist() throws DatabaseException {
 		RandomPlaylistParametersValue playlistParametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
 		RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(playlistParametersValue)
 						.owner(this)
-						.title(BUNDLE.getString("create_random_playlist"))
+						.title(BUNDLE.getString("random_playlist"))
 						.inputValid(playlistParametersValue.component().parametersValid())
 						.show();
 

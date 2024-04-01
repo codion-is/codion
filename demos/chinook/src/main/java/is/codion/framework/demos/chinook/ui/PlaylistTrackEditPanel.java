@@ -19,30 +19,38 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.framework.demos.chinook.model.PlaylistTrackEditModel;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import javax.swing.border.EmptyBorder;
+import java.awt.BorderLayout;
 
-public final class PlaylistTrackEditPanel extends EntityEditPanel {
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
-	public PlaylistTrackEditPanel(SwingEntityEditModel editModel) {
+final class PlaylistTrackEditPanel extends EntityEditPanel {
+
+	PlaylistTrackEditPanel(PlaylistTrackEditModel editModel) {
 		super(editModel, config -> config
 						// No confirmation needed when deleting
 						.deleteConfirmer(dialogOwner -> true));
+		editModel.persist(PlaylistTrack.TRACK_FK).set(false);
 	}
 
 	@Override
 	protected void initializeUI() {
-		initialFocusAttribute().set(PlaylistTrack.PLAYLIST_FK);
-
-		createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
+		initialFocusAttribute().set(PlaylistTrack.TRACK_FK);
 		createForeignKeySearchField(PlaylistTrack.TRACK_FK)
 						.selectorFactory(new TrackSelectorFactory())
-						.columns(30);
+						.transferFocusOnEnter(false)
+						.columns(25);
 
-		setLayout(gridLayout(2, 1));
-		addInputPanel(PlaylistTrack.PLAYLIST_FK);
-		addInputPanel(PlaylistTrack.TRACK_FK);
+		setLayout(borderLayout());
+		add(borderLayoutPanel()
+						.westComponent(createLabel(PlaylistTrack.TRACK_FK).build())
+						.centerComponent(component(PlaylistTrack.TRACK_FK).get())
+						.border(new EmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
+						.build(), BorderLayout.CENTER);
 	}
 }
