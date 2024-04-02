@@ -105,8 +105,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 * @param editPanelSupplier the edit panel supplier
 	 * @return a new builder instance
 	 */
-	public static ComponentBuilder<Entity, EntitySearchFieldPanel, Builder> builder(EntitySearchModel entitySearchModel,
-																																									Supplier<EntityEditPanel> editPanelSupplier) {
+	public static EntitySearchFieldPanel.Builder builder(EntitySearchModel entitySearchModel,
+																											 Supplier<EntityEditPanel> editPanelSupplier) {
 		return new DefaultBuilder(entitySearchModel, editPanelSupplier, null);
 	}
 
@@ -116,9 +116,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 * @param linkedValue the linked value
 	 * @return a new builder instance
 	 */
-	public static ComponentBuilder<Entity, EntitySearchFieldPanel, Builder> builder(EntitySearchModel entitySearchModel,
-																																									Supplier<EntityEditPanel> editPanelSupplier,
-																																									Value<Entity> linkedValue) {
+	public static EntitySearchFieldPanel.Builder builder(EntitySearchModel entitySearchModel,
+																											 Supplier<EntityEditPanel> editPanelSupplier,
+																											 Value<Entity> linkedValue) {
 		return new DefaultBuilder(entitySearchModel, editPanelSupplier, requireNonNull(linkedValue));
 	}
 

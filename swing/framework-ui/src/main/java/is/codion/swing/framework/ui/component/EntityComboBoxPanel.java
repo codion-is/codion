@@ -105,8 +105,8 @@ public final class EntityComboBoxPanel extends JPanel {
 	 * @param editPanelSupplier the edit panel supplier
 	 * @return a new builder instance
 	 */
-	public static ComponentBuilder<Entity, EntityComboBoxPanel, Builder> builder(EntityComboBoxModel comboBoxModel,
-																																							 Supplier<EntityEditPanel> editPanelSupplier) {
+	public static EntityComboBoxPanel.Builder builder(EntityComboBoxModel comboBoxModel,
+																										Supplier<EntityEditPanel> editPanelSupplier) {
 		return new DefaultBuilder(comboBoxModel, editPanelSupplier, null);
 	}
 
@@ -116,9 +116,9 @@ public final class EntityComboBoxPanel extends JPanel {
 	 * @param linkedValue the linked value
 	 * @return a new builder instance
 	 */
-	public static ComponentBuilder<Entity, EntityComboBoxPanel, Builder> builder(EntityComboBoxModel comboBoxModel,
-																																							 Supplier<EntityEditPanel> editPanelSupplier,
-																																							 Value<Entity> linkedValue) {
+	public static EntityComboBoxPanel.Builder builder(EntityComboBoxModel comboBoxModel,
+																										Supplier<EntityEditPanel> editPanelSupplier,
+																										Value<Entity> linkedValue) {
 		return new DefaultBuilder(comboBoxModel, editPanelSupplier, requireNonNull(linkedValue));
 	}
 
