@@ -632,8 +632,8 @@ public final class EntityDialogs {
 		@Override
 		public void show() {
 			EntityEditPanel editPanel = initializeEditPanel();
-			Runnable disposeDialog = () -> parentDialog(editPanel).dispose();
-			Consumer<Collection<Entity>> insertListener = createInsertListener(disposeDialog);
+			Runnable disposeDialog = new DisposeDialog(editPanel);
+			Consumer<Collection<Entity>> insertListener = new InsertListener(disposeDialog);
 			editPanel.editModel().afterInsertEvent().addDataListener(insertListener);
 			Dialogs.actionDialog(editPanel)
 							.owner(owner)
@@ -642,7 +642,7 @@ public final class EntityDialogs {
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.add() + " - " + editPanel.editModel().entities()
 											.definition(editPanel.editModel().entityType()).caption())
-							.onShown(dialog -> editPanel.clearAndRequestFocus())
+							.onShown(new ClearAndRequestFocus(editPanel))
 							.show();
 			editPanel.editModel().afterInsertEvent().removeDataListener(insertListener);
 		}
@@ -654,29 +654,30 @@ public final class EntityDialogs {
 			return editPanel;
 		}
 
-		private Consumer<Collection<Entity>> createInsertListener(Runnable disposeDialog) {
-			return inserted -> {
+		private final class InsertListener implements Consumer<Collection<Entity>> {
+
+			private final Runnable disposeDialog;
+
+			private InsertListener(Runnable disposeDialog) {
+				this.disposeDialog = disposeDialog;
+			}
+
+			@Override
+			public void accept(Collection<Entity> inserted) {
 				if (onInsert != null) {
 					onInsert.accept(inserted.iterator().next());
 				}
 				if (closeDialog) {
 					disposeDialog.run();
 				}
-			};
+			}
 		}
 
 		private static Control createInsertControl(EntityEditPanel editPanel) {
 			return Control.builder(editPanel.insertCommand(false))
 							.name(FrameworkMessages.insert())
 							.mnemonic(FrameworkMessages.insertMnemonic())
-							.onException(editPanel::onException)
-							.build();
-		}
-
-		private static Control createCancelControl(Runnable disposeDialog) {
-			return Control.builder(disposeDialog::run)
-							.name(Messages.cancel())
-							.mnemonic(Messages.cancelMnemonic())
+							.onException(new EditPanelExceptionHandler(editPanel))
 							.build();
 		}
 	}
@@ -708,8 +709,8 @@ public final class EntityDialogs {
 		@Override
 		public void show() {
 			EntityEditPanel editPanel = initializeEditPanel();
-			Runnable disposeDialog = () -> parentDialog(editPanel).dispose();
-			Consumer<Map<Entity.Key, Entity>> updateListener = createUpdateListener(disposeDialog);
+			Runnable disposeDialog = new DisposeDialog(editPanel);
+			Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener(disposeDialog);
 			editPanel.editModel().afterUpdateEvent().addDataListener(updateListener);
 			Dialogs.actionDialog(editPanel)
 							.owner(owner)
@@ -718,7 +719,7 @@ public final class EntityDialogs {
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.edit() + " - " + editPanel.editModel().entities()
 											.definition(editPanel.editModel().entityType()).caption())
-							.onShown(dialog -> editPanel.requestInitialFocus())
+							.onShown(new RequestFocus(editPanel))
 							.show();
 			editPanel.editModel().afterUpdateEvent().removeDataListener(updateListener);
 		}
@@ -733,31 +734,107 @@ public final class EntityDialogs {
 			return editPanel;
 		}
 
-		private Consumer<Map<Entity.Key, Entity>> createUpdateListener(Runnable disposeDialog) {
-			return updated -> {
+		private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
+
+			private final Runnable disposeDialog;
+
+			private UpdateListener(Runnable disposeDialog) {
+				this.disposeDialog = disposeDialog;
+			}
+
+			@Override
+			public void accept(Map<Entity.Key, Entity> updated) {
 				if (onUpdate != null) {
 					onUpdate.accept(updated.values().iterator().next());
 				}
 				disposeDialog.run();
-			};
+			}
 		}
 
 		private static Control createUpdateControl(EntityEditPanel editPanel) {
-			SwingEntityEditModel editModel = editPanel.editModel();
-
 			return Control.builder(editPanel.updateCommand(false))
 							.name(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
-							.onException(editPanel::onException)
-							.enabled(editModel.modified())
+							.onException(new EditPanelExceptionHandler(editPanel))
+							.enabled(editPanel.editModel().modified())
 							.build();
 		}
+	}
 
-		private static Control createCancelControl(Runnable disposeDialog) {
-			return Control.builder(disposeDialog::run)
-							.name(Messages.cancel())
-							.mnemonic(Messages.cancelMnemonic())
-							.build();
+	private static Control createCancelControl(Runnable disposeDialog) {
+		return Control.builder(new RunnableCommand(disposeDialog))
+						.name(Messages.cancel())
+						.mnemonic(Messages.cancelMnemonic())
+						.build();
+	}
+
+	private static final class EditPanelExceptionHandler implements Consumer<Throwable> {
+
+		private final EntityEditPanel editPanel;
+
+		private EditPanelExceptionHandler(EntityEditPanel editPanel) {
+			this.editPanel = editPanel;
+		}
+
+		@Override
+		public void accept(Throwable throwable) {
+			editPanel.onException(throwable);
+		}
+	}
+
+	private static final class ClearAndRequestFocus implements Consumer<JDialog> {
+
+		private final EntityEditPanel editPanel;
+
+		private ClearAndRequestFocus(EntityEditPanel editPanel) {
+			this.editPanel = editPanel;
+		}
+
+		@Override
+		public void accept(JDialog dialog) {
+			editPanel.clearAndRequestFocus();
+		}
+	}
+
+	private static final class RequestFocus implements Consumer<JDialog> {
+
+		private final EntityEditPanel editPanel;
+
+		private RequestFocus(EntityEditPanel editPanel) {
+			this.editPanel = editPanel;
+		}
+
+		@Override
+		public void accept(JDialog dialog) {
+			editPanel.requestInitialFocus();
+		}
+	}
+
+	private static final class RunnableCommand implements Control.Command {
+
+		private final Runnable runnable;
+
+		private RunnableCommand(Runnable runnable) {
+			this.runnable = runnable;
+		}
+
+		@Override
+		public void execute() throws Exception {
+			runnable.run();
+		}
+	}
+
+	private static final class DisposeDialog implements Runnable {
+
+		private final EntityEditPanel editPanel;
+
+		private DisposeDialog(EntityEditPanel editPanel) {
+			this.editPanel = editPanel;
+		}
+
+		@Override
+		public void run() {
+			parentDialog(editPanel).dispose();
 		}
 	}
 }

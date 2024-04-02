@@ -8,6 +8,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - FrameworkIcons.columns() added, used in EntityTablePanel popup menu control.
 - EntityDialogs, edit panel now used as exception handler for the add and edit actions.
+- EntityDialogs, lambdas replaced with named classes.
 
 ## 0.17.36
 ### is.codion.swing.common.ui
