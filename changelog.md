@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Control.Builder.onException() added.
 - AbstractControl now uses a weak listener on the enabled state in order to prevent memory leaks.
+- Control.Builder.onException() now handles Exception instead of Throwable.
 ### is.codion.framework.model
 - EntityEditModel.revert() added.
 - AbstractEntityEditModel.Insert, Update and Delete, refactoring and renaming.

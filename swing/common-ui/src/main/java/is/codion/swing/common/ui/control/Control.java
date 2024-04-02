@@ -326,7 +326,7 @@ public interface Control extends Action {
 		 * @param onException the exception handler for this control
 		 * @return this builder
 		 */
-		B onException(Consumer<Throwable> onException);
+		B onException(Consumer<Exception> onException);
 
 		/**
 		 * @return a new Control instance

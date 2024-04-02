@@ -28,10 +28,10 @@ import static java.util.Objects.requireNonNull;
 final class DefaultActionControl extends AbstractControl {
 
 	private final ActionCommand command;
-	private final Consumer<Throwable> onException;
+	private final Consumer<Exception> onException;
 
 	DefaultActionControl(ActionCommand command, String name, StateObserver enabled,
-											 Consumer<Throwable> onException) {
+											 Consumer<Exception> onException) {
 		super(name, enabled);
 		this.command = requireNonNull(command);
 		this.onException = requireNonNull(onException);
@@ -42,8 +42,8 @@ final class DefaultActionControl extends AbstractControl {
 		try {
 			command.execute(e);
 		}
-		catch (Throwable throwable) {
-			onException.accept(throwable);
+		catch (Exception exception) {
+			onException.accept(exception);
 		}
 	}
 }

@@ -31,13 +31,13 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractControlBuilder<C extends Control, B extends Control.Builder<C, B>> implements Control.Builder<C, B> {
 
-	private static final Consumer<Throwable> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
+	private static final Consumer<Exception> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
 
 	private final Map<String, Object> values = new HashMap<>();
 
 	protected String name;
 	protected StateObserver enabled;
-	protected Consumer<Throwable> onException = DEFAULT_EXCEPTION_HANDLER;
+	protected Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 	private char mnemonic;
 	private Icon smallIcon;
 	private Icon largeIcon;
@@ -96,7 +96,7 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 	}
 
 	@Override
-	public final B onException(Consumer<Throwable> onException) {
+	public final B onException(Consumer<Exception> onException) {
 		this.onException = requireNonNull(onException);
 		return (B) this;
 	}
@@ -116,18 +116,18 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 
 	protected abstract C createControl();
 
-	private static final class DefaultExceptionHandler implements Consumer<Throwable> {
+	private static final class DefaultExceptionHandler implements Consumer<Exception> {
 
 		@Override
-		public void accept(Throwable throwable) {
-			if (throwable instanceof CancelException) {
+		public void accept(Exception exception) {
+			if (exception instanceof CancelException) {
 				return; // Operation cancelled
 			}
-			if (throwable instanceof RuntimeException) {
-				throw (RuntimeException) throwable;
+			if (exception instanceof RuntimeException) {
+				throw (RuntimeException) exception;
 			}
 
-			throw new RuntimeException(throwable);
+			throw new RuntimeException(exception);
 		}
 	}
 }

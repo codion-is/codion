@@ -768,7 +768,7 @@ public final class EntityDialogs {
 						.build();
 	}
 
-	private static final class EditPanelExceptionHandler implements Consumer<Throwable> {
+	private static final class EditPanelExceptionHandler implements Consumer<Exception> {
 
 		private final EntityEditPanel editPanel;
 
@@ -777,8 +777,8 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public void accept(Throwable throwable) {
-			editPanel.onException(throwable);
+		public void accept(Exception exception) {
+			editPanel.onException(exception);
 		}
 	}
 
