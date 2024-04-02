@@ -65,7 +65,8 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 		createTextField(Employee.EMAIL)
 						.columns(12);
 		createForeignKeyComboBox(Employee.REPORTSTO_FK)
-						.preferredWidth(120);
+						.preferredWidth(120)
+						.transferFocusOnEnter(false);
 
 		JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
 						.add(createInputPanel(Employee.FIRSTNAME))
