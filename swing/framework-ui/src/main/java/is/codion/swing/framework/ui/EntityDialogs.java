@@ -74,8 +74,7 @@ import java.util.function.Supplier;
 import static is.codion.swing.common.ui.Utilities.parentDialog;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
-import static is.codion.swing.common.ui.component.Components.button;
-import static is.codion.swing.common.ui.component.Components.flowLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -631,27 +630,24 @@ public final class EntityDialogs {
 
 		@Override
 		public void show() {
-			EntityEditPanel editPanel = initializeEditPanel();
+			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
+			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			Consumer<Collection<Entity>> insertListener = new InsertListener(disposeDialog);
-			editPanel.editModel().afterInsertEvent().addDataListener(insertListener);
-			Dialogs.actionDialog(editPanel)
+			editModel.afterInsertEvent().addDataListener(insertListener);
+			Dialogs.actionDialog(borderLayoutPanel()
+											.centerComponent(editPanel)
+											.border(emptyBorder())
+											.build())
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createInsertControl(editPanel))
 							.escapeAction(createCancelControl(disposeDialog))
-							.title(FrameworkMessages.add() + " - " + editPanel.editModel().entities()
-											.definition(editPanel.editModel().entityType()).caption())
+							.title(FrameworkMessages.add() + " - " + editModel.entities()
+											.definition(editModel.entityType()).caption())
 							.onShown(new ClearAndRequestFocus(editPanel))
 							.show();
-			editPanel.editModel().afterInsertEvent().removeDataListener(insertListener);
-		}
-
-		private EntityEditPanel initializeEditPanel() {
-			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
-			editPanel.setBorder(emptyBorder());
-
-			return editPanel;
+			editModel.afterInsertEvent().removeDataListener(insertListener);
 		}
 
 		private final class InsertListener implements Consumer<Collection<Entity>> {
@@ -708,30 +704,27 @@ public final class EntityDialogs {
 
 		@Override
 		public void show() {
-			EntityEditPanel editPanel = initializeEditPanel();
+			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
+			SwingEntityEditModel editModel = editPanel.editModel();
+			if (entity != null) {
+				editModel.set(entity.get());
+			}
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener(disposeDialog);
-			editPanel.editModel().afterUpdateEvent().addDataListener(updateListener);
-			Dialogs.actionDialog(editPanel)
+			editModel.afterUpdateEvent().addDataListener(updateListener);
+			Dialogs.actionDialog(borderLayoutPanel()
+											.centerComponent(editPanel)
+											.border(emptyBorder())
+											.build())
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
 							.defaultAction(createUpdateControl(editPanel))
 							.escapeAction(createCancelControl(disposeDialog))
-							.title(FrameworkMessages.edit() + " - " + editPanel.editModel().entities()
-											.definition(editPanel.editModel().entityType()).caption())
+							.title(FrameworkMessages.edit() + " - " + editModel.entities()
+											.definition(editModel.entityType()).caption())
 							.onShown(new RequestFocus(editPanel))
 							.show();
-			editPanel.editModel().afterUpdateEvent().removeDataListener(updateListener);
-		}
-
-		private EntityEditPanel initializeEditPanel() {
-			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
-			editPanel.setBorder(emptyBorder());
-			if (entity != null) {
-				editPanel.editModel().set(entity.get());
-			}
-
-			return editPanel;
+			editModel.afterUpdateEvent().removeDataListener(updateListener);
 		}
 
 		private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
