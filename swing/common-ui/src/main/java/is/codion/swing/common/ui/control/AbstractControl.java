@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -50,6 +51,9 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 	protected final StateObserver enabledObserver;
 
+	// Keep this in a field since it's added as a weak listener
+	private final Enabler enabler = new Enabler();
+
 	/**
 	 * Constructs a new Control.
 	 * @param name the control name
@@ -58,7 +62,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	AbstractControl(String name, StateObserver enabled) {
 		super(name);
 		this.enabledObserver = enabled == null ? State.state(true) : enabled;
-		this.enabledObserver.addDataListener(super::setEnabled);
+		this.enabledObserver.addWeakDataListener(enabler);
 		super.setEnabled(this.enabledObserver.get());
 	}
 
@@ -219,5 +223,13 @@ abstract class AbstractControl extends AbstractAction implements Control {
 						.forEach(key -> builder.value(key, getValue(key)));
 
 		return builder;
+	}
+
+	private final class Enabler implements Consumer<Boolean> {
+
+		@Override
+		public void accept(Boolean enabled) {
+			AbstractControl.super.setEnabled(enabled);
+		}
 	}
 }
