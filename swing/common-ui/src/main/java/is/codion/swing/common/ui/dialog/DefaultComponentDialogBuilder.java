@@ -195,12 +195,26 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		}
 		dialog.setModal(modal);
 		dialog.setResizable(resizable);
-		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(dialog.getRootPane()));
+		keyEventBuilders.forEach(new EnableKeyEvent(dialog));
 		if (onShown != null) {
 			dialog.addComponentListener(new OnShownAdapter(dialog, onShown));
 		}
 
 		return dialog;
+	}
+
+	private static final class EnableKeyEvent implements Consumer<KeyEvents.Builder> {
+
+		private final JDialog dialog;
+
+		private EnableKeyEvent(JDialog dialog) {
+			this.dialog = dialog;
+		}
+
+		@Override
+		public void accept(KeyEvents.Builder builder) {
+			builder.enable(dialog.getRootPane());
+		}
 	}
 
 	private static final class DialogSupplier implements Supplier<JDialog> {
