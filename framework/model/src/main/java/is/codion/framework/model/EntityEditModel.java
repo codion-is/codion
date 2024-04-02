@@ -127,6 +127,16 @@ public interface EntityEditModel {
 	StateObserver isNotNull(Attribute<?> attribute);
 
 	/**
+	 * Reverts all attribute value changes.
+	 */
+	void revert();
+
+	/**
+	 * @param attribute the attribute to revert
+	 */
+	<T> void revert(Attribute<T> attribute);
+
+	/**
 	 * @param attribute the attribute
 	 * @return true if this value is allowed to be null in the underlying entity
 	 */

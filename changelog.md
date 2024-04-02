@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Control.Builder.onException() added.
 - AbstractControl now uses a weak listener on the enabled state in order to prevent memory leaks.
+### is.codion.framework.model
+- EntityEditModel.revert() added.
 ### is.codion.swing.framework.ui
 - FrameworkIcons.columns() added, used in EntityTablePanel popup menu control.
 - EntityDialogs, edit panel now used as exception handler for the add and edit actions.

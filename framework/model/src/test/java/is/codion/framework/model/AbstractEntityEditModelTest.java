@@ -713,6 +713,25 @@ public final class AbstractEntityEditModelTest {
 		assertEquals(Derived.INT4, attributes.get(2));
 	}
 
+	@Test
+	public void revert() throws DatabaseException {
+		EntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityConnection connection = employeeEditModel.connection();
+		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
+		editModel.set(martin);
+
+		editModel.put(Employee.NAME, "newname");
+		assertTrue(editModel.modified().get());
+		editModel.revert(Employee.NAME);
+		assertFalse(editModel.modified().get());
+
+		editModel.put(Employee.NAME, "another");
+		editModel.put(Employee.HIREDATE, LocalDate.now());
+		assertTrue(editModel.modified().get());
+		editModel.revert();
+		assertFalse(editModel.modified().get());
+	}
+
 	private static final class TestEntityEditModel extends AbstractEntityEditModel {
 
 		private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {

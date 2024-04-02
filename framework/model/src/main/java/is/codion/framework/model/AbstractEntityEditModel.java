@@ -257,6 +257,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
+	public final void revert() {
+		entityDefinition().attributes().get().forEach(this::revert);
+	}
+
+	@Override
+	public final <T> void revert(Attribute<T> attribute) {
+		if (modified(attribute).get()) {
+			put(attribute, entity.original(attribute));
+		}
+	}
+
+	@Override
 	public final boolean nullable(Attribute<?> attribute) {
 		return validator.get().nullable(entity, attribute);
 	}
