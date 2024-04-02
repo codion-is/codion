@@ -706,9 +706,7 @@ public final class EntityDialogs {
 		public void show() {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
-			if (entity != null) {
-				editModel.set(entity.get());
-			}
+			initializeEditModel(editModel);
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener(disposeDialog);
 			editModel.afterUpdateEvent().addDataListener(updateListener);
@@ -725,6 +723,15 @@ public final class EntityDialogs {
 							.onShown(new RequestFocus(editPanel))
 							.show();
 			editModel.afterUpdateEvent().removeDataListener(updateListener);
+		}
+
+		private void initializeEditModel(SwingEntityEditModel editModel) {
+			if (entity != null) {
+				editModel.set(entity.get());
+			}
+			else {
+				editModel.revert();
+			}
 		}
 
 		private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
