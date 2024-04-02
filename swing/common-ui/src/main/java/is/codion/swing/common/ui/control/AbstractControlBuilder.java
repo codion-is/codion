@@ -31,13 +31,13 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractControlBuilder<C extends Control, B extends Control.Builder<C, B>> implements Control.Builder<C, B> {
 
-	private static final Consumer<Throwable> DEFAULT_ON_EXCEPTION = new DefaultOnException();
+	private static final Consumer<Throwable> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
 
 	private final Map<String, Object> values = new HashMap<>();
 
 	protected String name;
 	protected StateObserver enabled;
-	protected Consumer<Throwable> onException = DEFAULT_ON_EXCEPTION;
+	protected Consumer<Throwable> onException = DEFAULT_EXCEPTION_HANDLER;
 	private char mnemonic;
 	private Icon smallIcon;
 	private Icon largeIcon;
@@ -116,7 +116,7 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 
 	protected abstract C createControl();
 
-	private static final class DefaultOnException implements Consumer<Throwable> {
+	private static final class DefaultExceptionHandler implements Consumer<Throwable> {
 
 		@Override
 		public void accept(Throwable throwable) {

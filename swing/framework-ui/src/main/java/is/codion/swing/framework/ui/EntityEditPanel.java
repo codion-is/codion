@@ -933,7 +933,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private EntityPanel entityPanel(Component focusedComponent) {
+		private static EntityPanel entityPanel(Component focusedComponent) {
 			if (focusedComponent instanceof JTabbedPane) {
 				Component selectedComponent = ((JTabbedPane) focusedComponent).getSelectedComponent();
 				if (selectedComponent instanceof EntityPanel) {
