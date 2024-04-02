@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
@@ -131,6 +132,11 @@ public class EntityEditComponentPanel extends JPanel {
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
 					Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.defaultTextFieldColumns", 12);
 
+	static {
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+						.addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
+	}
+
 	private final SwingEntityEditModel editModel;
 	private final EntityComponents entityComponents;
 	private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
@@ -171,7 +177,6 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 		selectableComponents = ValueSet.valueSet(new HashSet<>(editModel.entityDefinition().attributes().get()));
 		selectableComponents.addValidator(new SelectableComponentValidator(editModel.entityDefinition()));
-		addFocusedComponentListener();
 	}
 
 	/**
@@ -907,11 +912,6 @@ public class EntityEditComponentPanel extends JPanel {
 		return component.get();
 	}
 
-	private void addFocusedComponentListener() {
-		KeyboardFocusManager.getCurrentKeyboardFocusManager()
-						.addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
-	}
-
 	/**
 	 * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
 	 * this returns all (non-excluded) attributes that have an associated component in this panel
@@ -924,6 +924,13 @@ public class EntityEditComponentPanel extends JPanel {
 						.filter(selectableComponents::contains)
 						.filter(attribute -> componentSelectable(component(attribute).get()))
 						.collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
+	}
+
+	private boolean isInputComponent(JComponent component) {
+		return components.values().stream()
+						.filter(Value::isNotNull)
+						.map(Value::get)
+						.anyMatch(comp -> sameOrParentOf(comp, component));
 	}
 
 	/**
@@ -1060,21 +1067,18 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private final class FocusedInputComponentListener implements PropertyChangeListener {
+	private static final class FocusedInputComponentListener implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			Component component = (Component) event.getNewValue();
-			if (component instanceof JComponent && inputComponent((JComponent) component)) {
-				focusedInputComponent.set((JComponent) component);
+			Component focusedComponent = (Component) event.getNewValue();
+			if (focusedComponent instanceof JComponent) {
+				JComponent component = (JComponent) focusedComponent;
+				EntityEditComponentPanel parent = Utilities.parentOfType(EntityEditComponentPanel.class, component);
+				if (parent != null && parent.isInputComponent(component)) {
+					parent.focusedInputComponent.set(component);
+				}
 			}
-		}
-
-		private boolean inputComponent(JComponent component) {
-			return components.values().stream()
-							.filter(Value::isNotNull)
-							.map(Value::get)
-							.anyMatch(comp -> sameOrParentOf(comp, component));
 		}
 	}
 

@@ -104,6 +104,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		SELECT_INPUT_FIELD
 	}
 
+	static {
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+						.addPropertyChangeListener("focusOwner", new FocusActivationListener());
+	}
+
 	private static final String ALT_PREFIX = " (ALT-";
 
 	/**
@@ -585,8 +590,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private void setupFocusActivation() {
 		if (configuration.focusActivation) {
 			ACTIVE_STATE_GROUP.add(active);
-			KeyboardFocusManager.getCurrentKeyboardFocusManager()
-							.addPropertyChangeListener("focusOwner", new FocusActivationListener());
 		}
 	}
 
@@ -908,7 +911,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 	}
 
-	private class FocusActivationListener implements PropertyChangeListener {
+	private static final class FocusActivationListener implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent changeEvent) {
@@ -924,8 +927,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				else {
 					editPanel = parentOfType(EntityEditPanel.class, focusedComponent);
 				}
-
-				if (editPanel == EntityEditPanel.this && configuration.focusActivation) {
+				if (editPanel != null && editPanel.configuration.focusActivation) {
 					editPanel.active.set(true);
 				}
 			}

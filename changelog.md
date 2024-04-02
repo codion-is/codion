@@ -10,6 +10,7 @@ Codion Change Log
 - EntityDialogs, edit panel now used as exception handler for the add and edit actions.
 - EntityDialogs, lambdas replaced with named classes.
 - EntityComboBoxPanel and EntitySearchFieldPanel bug fixed, builder() did not return correct type.
+- EntityEditComponentPanel, EntityEditPanel, memory leak fixed, FocusActivationListener and FocusedInputComponentListener now static.
 
 ## 0.17.36
 ### is.codion.swing.common.ui
