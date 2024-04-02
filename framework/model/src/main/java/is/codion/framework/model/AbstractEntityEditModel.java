@@ -55,11 +55,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -787,6 +789,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		return null;
 	}
 
+	private static Collection<Entity> entityForInsert(AbstractEntityEditModel editModel) {
+		Entity toInsert = editModel.entity.copy();
+		if (toInsert.definition().primaryKey().generated()) {
+			toInsert.clearPrimaryKey();
+		}
+
+		return singleton(toInsert);
+	}
+
 	private interface ValueSupplier {
 		<T> T get(AttributeDefinition<T> attributeDefinition);
 	}
@@ -797,60 +808,52 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final boolean activeEntity;
 
 		private DefaultInsert() throws ValidationException {
-			this.entities = singleton(activeEntity());
-			this.activeEntity = true;
-			states.verifyInsertEnabled();
-			validate(entities);
+			this(entityForInsert(AbstractEntityEditModel.this), true);
 		}
 
 		private DefaultInsert(Collection<Entity> entities) throws ValidationException {
+			this(entities, false);
+		}
+
+		private DefaultInsert(Collection<Entity> entities, boolean activeEntity) throws ValidationException {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			this.activeEntity = false;
+			this.activeEntity = activeEntity;
 			states.verifyInsertEnabled();
 			validate(entities);
 		}
 
 		@Override
 		public Task prepare() {
-			AbstractEntityEditModel.this.notifyBeforeInsert(entities);
+			notifyBeforeInsert(entities);
 
-			return new DefaultTask();
+			return new InsertTask();
 		}
 
-		private Entity activeEntity() {
-			Entity toInsert = entity.copy();
-			if (entity.definition().primaryKey().generated()) {
-				toInsert.clearPrimaryKey();
-			}
-
-			return toInsert;
-		}
-
-		private final class DefaultTask implements Task {
+		private final class InsertTask implements Task {
 
 			@Override
 			public Result perform() throws DatabaseException {
 				LOG.debug("{} - insert {}", this, entities);
-				Collection<Entity> inserted = AbstractEntityEditModel.this.insert(entities, connectionProvider.connection());
+				Collection<Entity> inserted = unmodifiableCollection(insert(entities, connectionProvider.connection()));
 				if (!entities.isEmpty() && inserted.isEmpty()) {
 					throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
 				}
 
-				return new DefaultResult(inserted);
+				return new InsertResult(inserted);
 			}
 		}
 
-		private final class DefaultResult implements Result {
+		private final class InsertResult implements Result {
 
 			private final Collection<Entity> insertedEntities;
 
-			private DefaultResult(Collection<Entity> insertedEntities) {
+			private InsertResult(Collection<Entity> insertedEntities) {
 				this.insertedEntities = insertedEntities;
 			}
 
 			@Override
 			public Collection<Entity> handle() {
-				AbstractEntityEditModel.this.notifyAfterInsert(insertedEntities);
+				notifyAfterInsert(insertedEntities);
 				if (activeEntity) {
 					setEntity(insertedEntities.iterator().next());
 				}
@@ -865,24 +868,24 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdate() throws ValidationException {
-			this.entities = singleton(entity().copy());
-			states.verifyUpdateEnabled(entities);
+			this.entities = singleton(entity.copy());
+			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
 			verifyModified(entities);
 		}
 
 		private DefaultUpdate(Collection<Entity> entities) throws ValidationException {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			states.verifyUpdateEnabled(entities);
+			states.verifyUpdateEnabled(entities.size());
 			validate(entities);
 			verifyModified(entities);
 		}
 
 		@Override
 		public Task prepare() {
-			AbstractEntityEditModel.this.notifyBeforeUpdate(mapToOriginalPrimaryKey(entities, entities));
+			notifyBeforeUpdate(unmodifiableMap(entities.stream().collect(toMap(Entity::originalPrimaryKey, Function.identity()))));
 
-			return new DefaultTask();
+			return new UpdateTask();
 		}
 
 		private void verifyModified(Collection<Entity> entities) {
@@ -893,27 +896,27 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private final class DefaultTask implements Task {
+		private final class UpdateTask implements Task {
 
 			@Override
 			public Result perform() throws DatabaseException {
 				LOG.debug("{} - update {}", this, entities);
 
-				return new DefaultResult(new ArrayList<>(AbstractEntityEditModel.this.update(entities, connectionProvider.connection())));
+				return new UpdateResult(update(entities, connectionProvider.connection()));
 			}
 		}
 
-		private final class DefaultResult implements Result {
+		private final class UpdateResult implements Result {
 
 			private final Collection<Entity> updatedEntities;
 
-			private DefaultResult(Collection<Entity> updatedEntities) {
+			private UpdateResult(Collection<Entity> updatedEntities) {
 				this.updatedEntities = updatedEntities;
 			}
 
 			@Override
 			public Collection<Entity> handle() {
-				AbstractEntityEditModel.this.notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
+				notifyAfterUpdate(mapToOriginalPrimaryKey(entities, updatedEntities));
 				Entity activeEntity = entity();
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(activeEntity))
@@ -944,9 +947,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			AbstractEntityEditModel.this.notifyBeforeDelete(entities);
+			notifyBeforeDelete(entities);
 
-			return new DefaultTask();
+			return new DeleteTask();
 		}
 
 		private Entity activeEntity() {
@@ -956,27 +959,33 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			return copy;
 		}
 
-		private final class DefaultTask implements Task {
+		private final class DeleteTask implements Task {
 
 			@Override
 			public Result perform() throws DatabaseException {
 				LOG.debug("{} - delete {}", this, entities);
-				AbstractEntityEditModel.this.delete(entities, connectionProvider.connection());
+				delete(entities, connectionProvider.connection());
 
-				return new DefaultResult();
+				return new DeleteResult(entities);
 			}
 		}
 
-		private final class DefaultResult implements Result {
+		private final class DeleteResult implements Result {
+
+			private final Collection<Entity> deletedEntities;
+
+			private DeleteResult(Collection<Entity> deletedEntities) {
+				this.deletedEntities = deletedEntities;
+			}
 
 			@Override
 			public Collection<Entity> handle() {
-				AbstractEntityEditModel.this.notifyAfterDelete(entities);
+				notifyAfterDelete(deletedEntities);
 				if (activeEntity) {
 					defaults();
 				}
 
-				return entities;
+				return deletedEntities;
 			}
 		}
 	}
@@ -1170,11 +1179,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private void verifyUpdateEnabled(Collection<Entity> entities) {
+		private void verifyUpdateEnabled(int entityCount) {
 			if (readOnly.get() || !updateEnabled.get()) {
 				throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
 			}
-			if (entities.size() > 1 && !updateMultipleEnabled.get()) {
+			if (entityCount > 1 && !updateMultipleEnabled.get()) {
 				throw new IllegalStateException("Batch update of entities is not enabled");
 			}
 		}
