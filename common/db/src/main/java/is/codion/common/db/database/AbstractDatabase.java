@@ -93,7 +93,7 @@ public abstract class AbstractDatabase implements Database {
 		}
 		catch (SQLException e) {
 			if (isAuthenticationException(e)) {
-				throw new AuthenticationException(e.getMessage());
+				throw new AuthenticationException(errorMessage(e, Operation.OTHER));
 			}
 			throw new DatabaseException(e, errorMessage(e, Operation.OTHER));
 		}

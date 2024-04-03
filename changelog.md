@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.37-SNAPSHOT
+### is.codion.common.db
+- AbstractDatabase.createConnection() bug fixed, did not use errorMessage() for authentication errors.
 ### is.codion.swing.common.ui
 - Control.Builder.onException() added.
 - AbstractControl now uses a weak listener on the enabled state in order to prevent memory leaks.
