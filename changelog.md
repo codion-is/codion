@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.37-SNAPSHOT
+## 0.17.37
 ### is.codion.common.core
 - MethodLogger now Exception based instead of Throwable.
 ### is.codion.common.db
