@@ -297,7 +297,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private static final Runnable EMPTY_RUNNABLE = new EmptyRunnable();
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
-		private static final Consumer<Exception> RETHROW_EXCEPTION = new RethrowException();
+		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
 		private final ProgressTask<T, V> task;
@@ -308,7 +308,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
 		private Consumer<Integer> onProgress = (Consumer<Integer>) EMPTY_CONSUMER;
 		private Consumer<List<V>> onPublish = (Consumer<List<V>>) EMPTY_CONSUMER;
-		private Consumer<Exception> onException = RETHROW_EXCEPTION;
+		private Consumer<Exception> onException = RETHROW_HANDLER;
 		private Runnable onCancelled = EMPTY_RUNNABLE;
 		private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
 
@@ -399,7 +399,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		public void accept(T result) {}
 	}
 
-	private static final class RethrowException implements Consumer<Exception> {
+	private static final class RethrowHandler implements Consumer<Exception> {
 
 		@Override
 		public void accept(Exception exception) {
