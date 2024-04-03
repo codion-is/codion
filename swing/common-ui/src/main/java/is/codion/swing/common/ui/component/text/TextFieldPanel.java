@@ -22,6 +22,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -30,6 +31,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -77,20 +79,21 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private final JTextField textField;
-	private final JButton button;
+	private final Value<AbstractButton> button = Value.value();
+	private final Control textAreaControl;
 	private final String dialogTitle;
 	private final String caption;
 	private final Dimension textAreaSize;
 	private final int maximumLength;
 
 	private TextFieldPanel(DefaultBuilder builder) {
-		this.textField = builder.textFieldBuilder.build();
+		this.textAreaControl = createTextAreaControl(builder);
+		this.textField = createTextField(builder);
 		this.dialogTitle = builder.dialogTitle;
 		this.textAreaSize = builder.textAreaSize;
-		this.button = createButton(builder.buttonFocusable, builder.buttonIcon, builder.keyboardShortcuts);
 		this.caption = builder.caption;
 		this.maximumLength = builder.maximumLength;
-		initializeUI();
+		initializeUI(builder.buttonFocusable);
 	}
 
 	/**
@@ -124,14 +127,14 @@ public final class TextFieldPanel extends JPanel {
 	 * @return the input dialog button
 	 */
 	public JButton button() {
-		return button;
+		return (JButton) button.get();
 	}
 
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		textField.setEnabled(enabled);
-		button.setEnabled(enabled);
+		button.get().setEnabled(enabled);
 	}
 
 	@Override
@@ -145,11 +148,11 @@ public final class TextFieldPanel extends JPanel {
 	public void transferFocusOnEnter(boolean transferFocusOnEnter) {
 		if (transferFocusOnEnter) {
 			TransferFocusOnEnter.enable(textField);
-			TransferFocusOnEnter.enable(button);
+			TransferFocusOnEnter.enable(button.get());
 		}
 		else {
 			TransferFocusOnEnter.disable(textField);
-			TransferFocusOnEnter.disable(button);
+			TransferFocusOnEnter.disable(button.get());
 		}
 	}
 
@@ -250,10 +253,29 @@ public final class TextFieldPanel extends JPanel {
 		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
 	}
 
-	private void initializeUI() {
+	private Control createTextAreaControl(DefaultBuilder builder) {
+		return Control.builder(this::inputFromUser)
+						.name(builder.buttonIcon == null ? "..." : "")
+						.smallIcon(builder.buttonIcon)
+						.build();
+	}
+
+	private JTextField createTextField(DefaultBuilder builder) {
+		return builder.textFieldBuilder
+						.keyEvent(KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DISPLAY_TEXT_AREA).get())
+										.action(textAreaControl))
+						.build();
+	}
+
+	private void initializeUI(boolean buttonFocusable) {
 		setLayout(new BorderLayout());
 		add(textField, BorderLayout.CENTER);
-		add(button, BorderLayout.EAST);
+		add(ButtonPanelBuilder.builder(textAreaControl)
+						.buttonsFocusable(buttonFocusable)
+						.toolTipText(MESSAGES.getString("show_input_dialog"))
+						.preferredButtonSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))
+						.buttonBuilder(buttonBuilder -> buttonBuilder.onBuild(button::set))
+						.build(), BorderLayout.EAST);
 		if (caption != null) {
 			setBorder(BorderFactory.createTitledBorder(caption));
 		}
@@ -263,22 +285,6 @@ public final class TextFieldPanel extends JPanel {
 				textField.requestFocusInWindow();
 			}
 		});
-	}
-
-	private JButton createButton(boolean buttonFocusable, ImageIcon buttonIcon, KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts) {
-		Control buttonControl = Control.builder(this::inputFromUser)
-						.name(buttonIcon == null ? "..." : "")
-						.smallIcon(buttonIcon)
-						.build();
-		KeyEvents.builder(keyboardShortcuts.keyStroke(DISPLAY_TEXT_AREA).get())
-						.action(buttonControl)
-						.enable(textField);
-		JButton actionButton = new JButton(buttonControl);
-		actionButton.setFocusable(buttonFocusable);
-		actionButton.setToolTipText(MESSAGES.getString("show_input_dialog"));
-		actionButton.setPreferredSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height));
-
-		return actionButton;
 	}
 
 	private void inputFromUser() {

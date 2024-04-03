@@ -6,6 +6,7 @@ Codion Change Log
 - Control.Builder.onException() added.
 - AbstractControl now uses a weak listener on the enabled state in order to prevent memory leaks.
 - Control.Builder.onException() now handles Exception instead of Throwable.
+- TemporalFieldPanel and TextFieldPanel, button now consistent with other input field related buttons. 
 ### is.codion.framework.model
 - EntityEditModel.revert() added.
 - AbstractEntityEditModel.Insert, Update and Delete, refactoring and renaming.

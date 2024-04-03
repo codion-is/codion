@@ -21,12 +21,14 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -50,19 +52,11 @@ import static java.util.Objects.requireNonNull;
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 	private final TemporalField<T> temporalField;
-	private final JButton calendarButton;
+	private final Value<AbstractButton> button = Value.value();
 
 	TemporalFieldPanel(DefaultBuilder<T> builder) {
-		super(new BorderLayout());
 		temporalField = requireNonNull(builder.createTemporalField());
-		add(temporalField, BorderLayout.CENTER);
-		Control calendarControl = temporalField.calendarControl()
-						.orElseThrow(() -> new IllegalArgumentException("TemporalField does not support a calendar for: " + temporalField.temporalClass()));
-		calendarButton = new JButton(calendarControl);
-		calendarButton.setPreferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height));
-		calendarButton.setFocusable(builder.buttonFocusable);
-		add(calendarButton, BorderLayout.EAST);
-		addFocusListener(new InputFocusAdapter(temporalField));
+		initializeUI(builder);
 	}
 
 	/**
@@ -76,7 +70,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @return the calendar button
 	 */
 	public JButton calendarButton() {
-		return calendarButton;
+		return (JButton) button.get();
 	}
 
 	/**
@@ -107,15 +101,11 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	public void transferFocusOnEnter(boolean transferFocusOnEnter) {
 		if (transferFocusOnEnter) {
 			TransferFocusOnEnter.enable(temporalField);
-			if (calendarButton != null) {
-				TransferFocusOnEnter.enable(calendarButton);
-			}
+			TransferFocusOnEnter.enable(button.get());
 		}
 		else {
 			TransferFocusOnEnter.disable(temporalField);
-			if (calendarButton != null) {
-				TransferFocusOnEnter.disable(calendarButton);
-			}
+			TransferFocusOnEnter.disable(button.get());
 		}
 	}
 
@@ -200,6 +190,19 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		 * @return this builder instance
 		 */
 		Builder<T> calendarIcon(ImageIcon calendarIcon);
+	}
+
+	private void initializeUI(DefaultBuilder<T> builder) {
+		setLayout(new BorderLayout());
+		Control calendarControl = temporalField.calendarControl()
+						.orElseThrow(() -> new IllegalArgumentException("TemporalField does not support a calendar for: " + temporalField.temporalClass()));
+		add(temporalField, BorderLayout.CENTER);
+		add(ButtonPanelBuilder.builder(calendarControl)
+						.buttonsFocusable(builder.buttonFocusable)
+						.preferredButtonSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height))
+						.buttonBuilder(buttonBuilder -> buttonBuilder.onBuild(button::set))
+						.build(), BorderLayout.EAST);
+		addFocusListener(new InputFocusAdapter(temporalField));
 	}
 
 	private static final class InputFocusAdapter extends FocusAdapter {
