@@ -542,7 +542,7 @@ public class EntityPanel extends JPanel {
 	 * or this panel if none is available.
 	 * @param exception the exception to display
 	 */
-	public final void displayException(Throwable exception) {
+	public final void displayException(Exception exception) {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner == null) {
 			focusOwner = EntityPanel.this;

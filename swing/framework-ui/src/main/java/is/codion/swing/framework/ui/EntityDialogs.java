@@ -152,7 +152,7 @@ public final class EntityDialogs {
 		 * @param onException called on exception
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> onException(Consumer<Throwable> onException);
+		EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException);
 
 		/**
 		 * @param updater the updater to use
@@ -270,7 +270,7 @@ public final class EntityDialogs {
 
 		private EntityComponentFactory<T, Attribute<T>, ?> componentFactory = new EditEntityComponentFactory<>();
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
-		private Consumer<Throwable> onException = new DefaultExceptionHandler();
+		private Consumer<Exception> onException = new DefaultExceptionHandler();
 		private Updater<SwingEntityEditModel> updater;
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
@@ -291,7 +291,7 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> onException(Consumer<Throwable> onException) {
+		public EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException) {
 			this.onException = requireNonNull(onException);
 			return this;
 		}
@@ -376,9 +376,9 @@ public final class EntityDialogs {
 			return false;
 		}
 
-		private final class DefaultExceptionHandler implements Consumer<Throwable> {
+		private final class DefaultExceptionHandler implements Consumer<Exception> {
 			@Override
-			public void accept(Throwable exception) {
+			public void accept(Exception exception) {
 				Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 				if (focusOwner == null) {
 					focusOwner = owner;
@@ -403,9 +403,9 @@ public final class EntityDialogs {
 
 			private final Window dialogOwner;
 			private final Component locationRelativeTo;
-			private final Consumer<Throwable> exceptionHandler;
+			private final Consumer<Exception> exceptionHandler;
 
-			private DefaultUpdater(Window dialogOwner, Component locationRelativeTo, Consumer<Throwable> exceptionHandler) {
+			private DefaultUpdater(Window dialogOwner, Component locationRelativeTo, Consumer<Exception> exceptionHandler) {
 				this.dialogOwner = dialogOwner;
 				this.locationRelativeTo = locationRelativeTo;
 				this.exceptionHandler = exceptionHandler;

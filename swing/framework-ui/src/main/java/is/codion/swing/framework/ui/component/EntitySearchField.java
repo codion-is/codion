@@ -446,7 +446,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private void handleException(Throwable exception) {
+	private void handleException(Exception exception) {
 		endSearch();
 		updateColors();
 		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));

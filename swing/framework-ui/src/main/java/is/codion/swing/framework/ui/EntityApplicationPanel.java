@@ -201,7 +201,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Displays the exception in a dialog
 	 * @param exception the exception to display
 	 */
-	public final void displayException(Throwable exception) {
+	public final void displayException(Exception exception) {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner == null) {
 			focusOwner = EntityApplicationPanel.this;

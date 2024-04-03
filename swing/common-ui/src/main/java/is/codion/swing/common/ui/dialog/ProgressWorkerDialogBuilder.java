@@ -114,7 +114,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * @param onException the exception handler
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> onException(Consumer<Throwable> onException);
+	ProgressWorkerDialogBuilder<T, V> onException(Consumer<Exception> onException);
 
 	/**
 	 * @param exceptionTitle the title of the exception dialog

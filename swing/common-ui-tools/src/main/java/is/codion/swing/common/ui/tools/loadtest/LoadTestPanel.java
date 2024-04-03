@@ -476,11 +476,11 @@ public final class LoadTestPanel<T> extends JPanel {
 		System.exit(0);
 	}
 
-	private void displayException(Throwable exception) {
+	private void displayException(Exception exception) {
 		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
 	}
 
-	private static Throwable exception(ApplicationRow application) {
+	private static Exception exception(ApplicationRow application) {
 		List<Scenario.Result> results = application.results();
 
 		return results.isEmpty() ? null : results.get(results.size() - 1).exception().orElse(null);
@@ -537,7 +537,7 @@ public final class LoadTestPanel<T> extends JPanel {
 		@Override
 		public void execute() {
 			exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
-			for (Throwable exception : loadTestModel.exceptions(scenario.name())) {
+			for (Exception exception : loadTestModel.exceptions(scenario.name())) {
 				exceptionsTextArea.append(exception.getMessage());
 				exceptionsTextArea.append(Separators.LINE_SEPARATOR);
 				exceptionsTextArea.append(Separators.LINE_SEPARATOR);

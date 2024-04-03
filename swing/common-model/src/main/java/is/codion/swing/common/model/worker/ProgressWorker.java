@@ -61,7 +61,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	private final Consumer<T> onResult;
 	private final Consumer<Integer> onProgress;
 	private final Consumer<List<V>> onPublish;
-	private final Consumer<Throwable> onException;
+	private final Consumer<Exception> onException;
 	private final Runnable onCancelled;
 	private final Runnable onInterrupted;
 
@@ -120,7 +120,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 			onInterrupted.run();
 		}
 		catch (ExecutionException e) {
-			onException.accept(e.getCause());
+			Throwable cause = e.getCause();
+			if (cause instanceof Exception) {
+				onException.accept((Exception) cause);
+			}
+			else {
+				onException.accept(new RuntimeException(cause));
+			}
 		}
 	}
 
@@ -242,7 +248,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 * @param onException called on the EDT if an exception occurred
 		 * @return this builder instance
 		 */
-		Builder<T, V> onException(Consumer<Throwable> onException);
+		Builder<T, V> onException(Consumer<Exception> onException);
 
 		/**
 		 * @param onCancelled called on the EDT if the background task was cancelled
@@ -291,7 +297,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private static final Runnable EMPTY_RUNNABLE = new EmptyRunnable();
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
-		private static final Consumer<Throwable> RETHROW_ON_THROWABLE = new RethrowOnThrowable();
+		private static final Consumer<Exception> RETHROW_EXCEPTION = new RethrowException();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
 		private final ProgressTask<T, V> task;
@@ -302,7 +308,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
 		private Consumer<Integer> onProgress = (Consumer<Integer>) EMPTY_CONSUMER;
 		private Consumer<List<V>> onPublish = (Consumer<List<V>>) EMPTY_CONSUMER;
-		private Consumer<Throwable> onException = RETHROW_ON_THROWABLE;
+		private Consumer<Exception> onException = RETHROW_EXCEPTION;
 		private Runnable onCancelled = EMPTY_RUNNABLE;
 		private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
 
@@ -350,7 +356,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 
 		@Override
-		public Builder<T, V> onException(Consumer<Throwable> onException) {
+		public Builder<T, V> onException(Consumer<Exception> onException) {
 			this.onException = requireNonNull(onException);
 			return this;
 		}
@@ -393,10 +399,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		public void accept(T result) {}
 	}
 
-	private static final class RethrowOnThrowable implements Consumer<Throwable> {
+	private static final class RethrowException implements Consumer<Exception> {
 
 		@Override
-		public void accept(Throwable exception) {
+		public void accept(Exception exception) {
 			if (exception instanceof RuntimeException) {
 				throw (RuntimeException) exception;
 			}

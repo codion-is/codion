@@ -836,9 +836,9 @@ public class EntityTablePanel extends JPanel {
 	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
 	 * otherwise displays the exception.
 	 * @param exception the exception to handle
-	 * @see #displayException(Throwable)
+	 * @see #displayException(Exception)
 	 */
-	protected void onException(Throwable exception) {
+	protected void onException(Exception exception) {
 		if (exception instanceof ValidationException) {
 			onValidationException((ValidationException) exception);
 		}
@@ -853,7 +853,7 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
 	 * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-	 * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+	 * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Exception)} is called.
 	 * @param exception the exception
 	 * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
 	 */
@@ -898,7 +898,7 @@ public class EntityTablePanel extends JPanel {
 	 * or this panel if none is available.
 	 * @param exception the exception to display
 	 */
-	protected final void displayException(Throwable exception) {
+	protected final void displayException(Exception exception) {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner == null) {
 			focusOwner = EntityTablePanel.this;
@@ -1479,7 +1479,7 @@ public class EntityTablePanel extends JPanel {
 			}
 		}
 
-		private void onException(Throwable exception) {
+		private void onException(Exception exception) {
 			LOG.error(exception.getMessage(), exception);
 			EntityTablePanel.this.onException(exception);
 		}

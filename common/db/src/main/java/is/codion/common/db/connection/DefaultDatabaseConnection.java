@@ -240,7 +240,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 	}
 
-	private MethodLogger.Entry logExit(String method, Throwable exception) {
+	private MethodLogger.Entry logExit(String method, Exception exception) {
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			return methodLogger.exit(method, exception);
 		}

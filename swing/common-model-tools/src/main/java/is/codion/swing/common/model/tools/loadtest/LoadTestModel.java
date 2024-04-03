@@ -103,7 +103,7 @@ public interface LoadTestModel<T> {
 	 * @param scenarioName the scenario name
 	 * @return the exceptions collected from running the scenario
 	 */
-	List<Throwable> exceptions(String scenarioName);
+	List<Exception> exceptions(String scenarioName);
 
 	/**
 	 * Clears the exceptions collected from running the given scenario

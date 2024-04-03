@@ -419,7 +419,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @param exception the exception to handle
 	 */
 	@Override
-	protected void onException(Throwable exception) {
+	protected void onException(Exception exception) {
 		if (exception instanceof ValidationException) {
 			onValidationException((ValidationException) exception);
 		}
@@ -434,7 +434,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Called when a {@link ReferentialIntegrityException} occurs. If a {@link Operation#DELETE} operation is being
 	 * performed and the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-	 * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+	 * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Exception)} is called.
 	 * @param exception the exception
 	 * @see Config#referentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
 	 */
@@ -843,7 +843,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void onException(Throwable exception) {
+		private void onException(Exception exception) {
 			LOG.error(exception.getMessage(), exception);
 			EntityEditPanel.this.onException(exception);
 		}
@@ -874,7 +874,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			requestAfterUpdateFocus();
 		}
 
-		private void onException(Throwable exception) {
+		private void onException(Exception exception) {
 			LOG.error(exception.getMessage(), exception);
 			EntityEditPanel.this.onException(exception);
 		}
@@ -905,7 +905,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			requestInitialFocus();
 		}
 
-		private void onException(Throwable exception) {
+		private void onException(Exception exception) {
 			LOG.error(exception.getMessage(), exception);
 			EntityEditPanel.this.onException(exception);
 		}

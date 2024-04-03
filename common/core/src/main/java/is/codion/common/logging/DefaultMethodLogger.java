@@ -74,12 +74,12 @@ final class DefaultMethodLogger implements MethodLogger {
 	}
 
 	@Override
-	public Entry exit(String method, Throwable exception) {
+	public Entry exit(String method, Exception exception) {
 		return exit(method, exception, null);
 	}
 
 	@Override
-	public synchronized Entry exit(String method, Throwable exception, String exitMessage) {
+	public synchronized Entry exit(String method, Exception exception, String exitMessage) {
 		if (!enabled) {
 			return null;
 		}
@@ -253,7 +253,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		/**
 		 * @param exception the exception that occurred during the method call logged by this entry
 		 */
-		private void setException(Throwable exception) {
+		private void setException(Exception exception) {
 			if (exception != null) {
 				stackTrace = stackTrace(exception);
 			}
@@ -279,7 +279,7 @@ final class DefaultMethodLogger implements MethodLogger {
 			}
 		}
 
-		private static String stackTrace(Throwable exception) {
+		private static String stackTrace(Exception exception) {
 			StringWriter writer = new StringWriter();
 			exception.printStackTrace(new PrintWriter(writer));
 

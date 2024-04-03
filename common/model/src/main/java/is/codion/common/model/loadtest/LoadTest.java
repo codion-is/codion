@@ -389,7 +389,7 @@ public interface LoadTest<T> {
 			/**
 			 * @return the exception in case the run was unsuccessful, otherwise an empty optional
 			 */
-			Optional<Throwable> exception();
+			Optional<Exception> exception();
 
 			/**
 			 * @param scenarioName the name of the usage scenario
@@ -405,7 +405,7 @@ public interface LoadTest<T> {
 			 * @param exception the exception
 			 * @return a new {@link Result} instance
 			 */
-			static Result failure(String scenarioName, Throwable exception) {
+			static Result failure(String scenarioName, Exception exception) {
 				return new DefaultRunResult(scenarioName, -1, exception);
 			}
 		}

@@ -73,7 +73,7 @@ final class CityTablePanel extends ChartTablePanel {
 						.execute();
 	}
 
-	private void displayPopulateException(Throwable exception) {
+	private void displayPopulateException(Exception exception) {
 		Dialogs.exceptionDialog()
 						.owner(this)
 						.title("Unable to populate location")

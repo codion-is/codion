@@ -71,7 +71,7 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 		}
 	}
 
-	private static void logExit(MethodLogger methodLogger, Throwable exception) {
+	private static void logExit(MethodLogger methodLogger, Exception exception) {
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.exit("selectAndPopulate", exception);
 		}

@@ -42,7 +42,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	private int maximumProgress = 100;
 	private Consumer<T> onResult;
-	private Consumer<Throwable> onException;
+	private Consumer<Exception> onException;
 
 	DefaultProgressWorkerDialogBuilder(ProgressTask<T, V> progressTask) {
 		this.progressTask = requireNonNull(progressTask);
@@ -123,7 +123,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> onException(Consumer<Throwable> onException) {
+	public ProgressWorkerDialogBuilder<T, V> onException(Consumer<Exception> onException) {
 		this.onException = onException;
 		return this;
 	}
@@ -181,7 +181,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		}
 	}
 
-	private void onException(Throwable exception, ProgressDialog progressDialog) {
+	private void onException(Exception exception, ProgressDialog progressDialog) {
 		closeDialog(progressDialog);
 		if (!(exception instanceof CancelException)) {
 			if (onException != null) {

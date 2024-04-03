@@ -2,15 +2,23 @@ Codion Change Log
 ==================
 
 ## 0.17.37-SNAPSHOT
+### is.codion.common.core
+- MethodLogger now Exception based instead of Throwable.
 ### is.codion.common.db
 - AbstractDatabase.createConnection() bug fixed, did not use errorMessage() for authentication errors.
+### is.codion.common.model
+- FilteredModel.Refresher.refreshFailedEvent() now Exception based instead of Throwable.
+- LoadTest.Result now Exception based instead of Throwable.
 ### is.codion.dbms.h2
 - Localized error messages added for a few error types.
+### is.codion.swing.common.model
+- ProgressWorker.Builder.onException() now Exception based instead of Throwable.
 ### is.codion.swing.common.ui
 - Control.Builder.onException() added.
 - AbstractControl now uses a weak listener on the enabled state in order to prevent memory leaks.
 - Control.Builder.onException() now handles Exception instead of Throwable.
-- TemporalFieldPanel and TextFieldPanel, button now consistent with other input field related buttons. 
+- TemporalFieldPanel and TextFieldPanel, button now consistent with other input field related buttons.
+- ProgressWorkerDialogBuilder.onException() now Exception based instead of Throwable.
 ### is.codion.framework.model
 - EntityEditModel.revert() added.
 - AbstractEntityEditModel.Insert, Update and Delete, refactoring and renaming.
@@ -21,6 +29,10 @@ Codion Change Log
 - EntityComboBoxPanel and EntitySearchFieldPanel bug fixed, builder() did not return correct type.
 - EntityEditComponentPanel, EntityEditPanel, memory leak fixed, FocusActivationListener and FocusedInputComponentListener now static.
 - EntityDialogs.DefaultEditEntityDialogBuilder now reverts all changes before dialog is shown when no entity is provided.
+- EntityEditComponentPanel.onException() now Exception based instead of Throwable.
+- EntityDialogs, exception handlers now Exception based instead of Throwable.
+- EntityPanel.displayException() now Exception based instead of Throwable.
+- EntityTablePanel.onException() and displayException() now Exception based instead of Throwable.
 
 ## 0.17.36
 ### is.codion.swing.common.ui

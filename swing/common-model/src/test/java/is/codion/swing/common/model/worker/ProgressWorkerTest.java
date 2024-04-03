@@ -63,7 +63,7 @@ public final class ProgressWorkerTest {
 						})
 						.onCancelled(() -> {})
 						.onInterrupted(() -> {})
-						.onException(throwable -> {})
+						.onException(exception -> {})
 						.execute()
 						.get();
 	}

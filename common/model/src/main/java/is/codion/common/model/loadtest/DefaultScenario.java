@@ -64,7 +64,7 @@ final class DefaultScenario<T> implements Scenario<T> {
 
 			return Result.success(name, (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
 		}
-		catch (Throwable e) {
+		catch (Exception e) {
 			return Result.failure(name, e);
 		}
 		finally {
@@ -138,9 +138,9 @@ final class DefaultScenario<T> implements Scenario<T> {
 
 		private final String scenario;
 		private final int duration;
-		private final Throwable exception;
+		private final Exception exception;
 
-		DefaultRunResult(String scenario, int duration, Throwable exception) {
+		DefaultRunResult(String scenario, int duration, Exception exception) {
 			this.scenario = requireNonNull(scenario);
 			this.duration = duration;
 			this.exception = exception;
@@ -162,7 +162,7 @@ final class DefaultScenario<T> implements Scenario<T> {
 		}
 
 		@Override
-		public Optional<Throwable> exception() {
+		public Optional<Exception> exception() {
 			return Optional.ofNullable(exception);
 		}
 	}

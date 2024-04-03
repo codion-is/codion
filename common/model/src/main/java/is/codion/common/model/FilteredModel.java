@@ -190,7 +190,7 @@ public interface FilteredModel<T> {
 		 * @return an observer notified each time an asynchronous refresh has failed
 		 * @see #refresh()
 		 */
-		EventObserver<Throwable> refreshFailedEvent();
+		EventObserver<Exception> refreshFailedEvent();
 	}
 
 	/**
@@ -200,7 +200,7 @@ public interface FilteredModel<T> {
 	abstract class AbstractRefresher<T> implements Refresher<T> {
 
 		private final Event<?> refreshEvent = Event.event();
-		private final Event<Throwable> refreshFailedEvent = Event.event();
+		private final Event<Exception> refreshFailedEvent = Event.event();
 		private final State refreshingState = State.state();
 		private final Value<Supplier<Collection<T>>> itemSupplier;
 		private final State async = State.state(ASYNC_REFRESH.get());
@@ -248,7 +248,7 @@ public interface FilteredModel<T> {
 		}
 
 		@Override
-		public EventObserver<Throwable> refreshFailedEvent() {
+		public EventObserver<Exception> refreshFailedEvent() {
 			return refreshFailedEvent.observer();
 		}
 
@@ -270,11 +270,11 @@ public interface FilteredModel<T> {
 
 		/**
 		 * Triggers the refresh failed event
-		 * @param throwable the refresh exception
+		 * @param exception the refresh exception
 		 * @see #refreshFailedEvent()
 		 */
-		protected final void notifyFailure(Throwable throwable) {
-			refreshFailedEvent.accept(throwable);
+		protected final void notifyFailure(Exception exception) {
+			refreshFailedEvent.accept(exception);
 		}
 
 		/**

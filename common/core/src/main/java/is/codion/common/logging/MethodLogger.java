@@ -53,7 +53,7 @@ public interface MethodLogger {
 	 * @param exception the exception, if any
 	 * @return the Entry
 	 */
-	Entry exit(String method, Throwable exception);
+	Entry exit(String method, Exception exception);
 
 	/**
 	 * @param method the method being exited
@@ -61,7 +61,7 @@ public interface MethodLogger {
 	 * @param exitMessage the message to associate with exiting the method
 	 * @return the Entry, or null if this logger is not enabled
 	 */
-	Entry exit(String method, Throwable exception, String exitMessage);
+	Entry exit(String method, Exception exception, String exitMessage);
 
 	/**
 	 * @return true if this logger is enabled

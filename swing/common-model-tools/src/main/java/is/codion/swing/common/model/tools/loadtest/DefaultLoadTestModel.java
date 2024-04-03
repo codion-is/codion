@@ -224,9 +224,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public List<Throwable> exceptions(String scenarioName) {
+	public List<Exception> exceptions(String scenarioName) {
 		synchronized (counter) {
-			Collection<Throwable> exceptions = counter.scenarioExceptions.get(scenarioName);
+			Collection<Exception> exceptions = counter.scenarioExceptions.get(scenarioName);
 			return exceptions == null ? Collections.emptyList() : new ArrayList<>(exceptions);
 		}
 	}
@@ -234,7 +234,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	@Override
 	public void clearExceptions(String scenarioName) {
 		synchronized (counter) {
-			Collection<Throwable> exceptions = counter.scenarioExceptions.get(scenarioName);
+			Collection<Exception> exceptions = counter.scenarioExceptions.get(scenarioName);
 			if (exceptions != null) {
 				exceptions.clear();
 			}
@@ -358,7 +358,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 										.build(),
 						FilteredTableColumn.builder(ApplicationRow.EXCEPTION_INDEX)
 										.headerValue("Exception")
-										.columnClass(Throwable.class)
+										.columnClass(Exception.class)
 										.build(),
 						FilteredTableColumn.builder(ApplicationRow.MESSAGE_INDEX)
 										.headerValue("Message")
@@ -383,7 +383,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		private final Map<String, List<Integer>> scenarioDurations = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
-		private final Map<String, List<Throwable>> scenarioExceptions = new HashMap<>();
+		private final Map<String, List<Exception>> scenarioExceptions = new HashMap<>();
 		private final AtomicInteger workRequestCounter = new AtomicInteger();
 
 		private double workRequestsPerSecond = 0;
@@ -442,7 +442,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			else {
 				scenarioFailureCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
 				result.exception().ifPresent(exception -> {
-					List<Throwable> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
+					List<Exception> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
 					exceptions.add(exception);
 					if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
 						exceptions.remove(0);

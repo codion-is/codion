@@ -1234,11 +1234,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		logExit(method, null);
 	}
 
-	private void logExit(String method, Throwable exception) {
+	private void logExit(String method, Exception exception) {
 		logExit(method, exception, null);
 	}
 
-	private void logExit(String method, Throwable exception, String exitMessage) {
+	private void logExit(String method, Exception exception, String exitMessage) {
 		MethodLogger methodLogger = connection.getMethodLogger();
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.exit(method, exception, exitMessage);

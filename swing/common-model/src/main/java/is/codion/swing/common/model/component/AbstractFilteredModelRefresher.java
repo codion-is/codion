@@ -69,19 +69,19 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
 		setRefreshing(true);
 	}
 
-	private void onRefreshFailedAsync(Throwable throwable) {
+	private void onRefreshFailedAsync(Exception exception) {
 		refreshWorker = null;
 		setRefreshing(false);
-		notifyFailure(throwable);
+		notifyFailure(exception);
 	}
 
-	private void onRefreshFailedSync(Throwable throwable) {
+	private void onRefreshFailedSync(Exception exception) {
 		setRefreshing(false);
-		if (throwable instanceof RuntimeException) {
-			throw (RuntimeException) throwable;
+		if (exception instanceof RuntimeException) {
+			throw (RuntimeException) exception;
 		}
 
-		throw new RuntimeException(throwable);
+		throw new RuntimeException(exception);
 	}
 
 	private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> afterRefresh) {
