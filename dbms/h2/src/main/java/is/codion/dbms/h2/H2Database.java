@@ -24,9 +24,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
@@ -37,6 +40,8 @@ import static java.util.Objects.requireNonNull;
  */
 final class H2Database extends AbstractDatabase {
 
+	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(H2Database.class.getName());
+
 	/**
 	 * The error code representing incorrect login credentials
 	 */
@@ -45,6 +50,10 @@ final class H2Database extends AbstractDatabase {
 	private static final int REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING = 23506;
 	private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
 	private static final int TIMEOUT_ERROR = 57014;
+	private static final int NULL_NOT_ALLOWED = 23502;
+	private static final int CHECK_CONSTRAINT_INVALID = 23514;
+	private static final int WRONG_USER_OR_PASSWORD = 28000;
+
 	private static final Set<String> INITIALIZED_DATABASES = new HashSet<>();
 
 	private static final String JDBC_URL_PREFIX = "jdbc:h2:";
@@ -60,6 +69,17 @@ final class H2Database extends AbstractDatabase {
 	static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 	static final String SYSADMIN_USERNAME = "sa";
+
+	private static final Map<Integer, String> ERROR_MESSAGES = new HashMap<>();
+
+	static {
+		ERROR_MESSAGES.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString("unique_key_error"));
+		ERROR_MESSAGES.put(REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS, MESSAGES.getString("child_record_error"));
+		ERROR_MESSAGES.put(REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING, MESSAGES.getString("integrity_constraint_error"));
+		ERROR_MESSAGES.put(NULL_NOT_ALLOWED, MESSAGES.getString("value_missing"));
+		ERROR_MESSAGES.put(CHECK_CONSTRAINT_INVALID, MESSAGES.getString("check_constraint_invalid"));
+		ERROR_MESSAGES.put(WRONG_USER_OR_PASSWORD, MESSAGES.getString("wrong_user_or_password"));
+	}
 
 	private final boolean nowait;
 
@@ -129,6 +149,23 @@ final class H2Database extends AbstractDatabase {
 	@Override
 	public boolean isTimeoutException(SQLException exception) {
 		return requireNonNull(exception).getErrorCode() == TIMEOUT_ERROR;
+	}
+
+	@Override
+	public String errorMessage(SQLException exception, Operation operation) {
+		if (exception.getErrorCode() == NULL_NOT_ALLOWED) {
+			// NULL not allowed for column "NAME;"
+			String exceptionMessage = exception.getMessage();
+			String columnName = exceptionMessage.substring(exceptionMessage.indexOf('"') + 1, exceptionMessage.lastIndexOf('"'));
+
+			return MESSAGES.getString("value_missing") + ": " + columnName;
+		}
+
+		if (ERROR_MESSAGES.containsKey(exception.getErrorCode())) {
+			return ERROR_MESSAGES.get(exception.getErrorCode());
+		}
+
+		return exception.getMessage();
 	}
 
 	static String databaseName(String url) {

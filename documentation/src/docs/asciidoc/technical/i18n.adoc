@@ -118,6 +118,27 @@ is/codion/common/rmi/server/exception/ConnectionNotAvailableException_is_IS.prop
 |connection_not_available|This server is not accepting more connections|Þessi þjónn tekur ekki við fleiri tengingum
 |===
 
+== codion-dbms-h2
+
+=== is/codion/dbms/h2/H2Database.java
+
+[source]
+----
+is/codion/dbms/h2/H2Database.properties
+is/codion/dbms/h2/H2Database_is_IS.properties
+----
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|check_constraint_invalid|The value or values attempted to be entered in a field or fields violate a defined check constraint|Óleyfilegt gildi
+|child_record_error|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
+|integrity_constraint_error|A foreign key value has no matching primary key value|Reynt var að vísa í færslu sem ekki er til
+|unique_key_error|This value combination already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|value_missing|Value missing|Gildi vantar
+|wrong_user_or_password|Wrong username or password|Rangt notendanafn eða lykilorð
+|===
+
 == codion-dbms-oracle
 
 === is/codion/dbms/oracle/OracleDatabase.java
