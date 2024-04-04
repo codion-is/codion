@@ -672,7 +672,6 @@ public class EntityTablePanel extends JPanel {
 		if (popupControls.notEmpty()) {
 			popupControls.addSeparator();
 		}
-		addAdditionalControls(popupControls, additionalPopupMenuControls);
 		State separatorRequired = State.state();
 		control(TableControl.ADD).optional().ifPresent(control -> {
 			popupControls.add(control);
@@ -706,6 +705,7 @@ public class EntityTablePanel extends JPanel {
 			popupControls.addSeparator();
 			separatorRequired.set(false);
 		}
+		addAdditionalControls(popupControls, additionalPopupMenuControls);
 		Controls printControls = createPrintMenuControls();
 		if (printControls != null && printControls.notEmpty()) {
 			popupControls.add(printControls);
