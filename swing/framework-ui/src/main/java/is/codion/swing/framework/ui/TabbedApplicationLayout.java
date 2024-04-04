@@ -110,9 +110,9 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	}
 
 	private void addTab(EntityPanel entityPanel) {
-		tabbedPane.addTab(entityPanel.caption().get(), entityPanel);
-		tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, entityPanel.description().get());
-		tabbedPane.setIconAt(tabbedPane.getTabCount() - 1, entityPanel.icon().get());
+		tabbedPane.addTab(entityPanel.caption(), entityPanel);
+		tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, entityPanel.description().orElse(null));
+		tabbedPane.setIconAt(tabbedPane.getTabCount() - 1, entityPanel.icon().orElse(null));
 	}
 
 	private final class InitializeSelectedPanelListener implements ChangeListener {

@@ -239,7 +239,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 								.smallIcon(FrameworkIcons.instance().detail())
 								.controls(entityPanel.detailPanels().stream()
 												.map(detailPanel -> Control.builder(new ActivateDetailPanel(detailPanel))
-																.name(detailPanel.caption().get())
+																.name(detailPanel.caption())
 																.build())
 												.toArray(Control[]::new))
 								.build());
@@ -280,9 +280,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 						.focusable(false)
 						.changeListener(e -> selectedDetailPanel().activate())
 						.focusCycleRoot(true);
-		detailPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
-						.toolTipText(detailPanel.description().get())
-						.icon(detailPanel.icon().get())
+		detailPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption(), detailPanel)
+						.toolTipText(detailPanel.description().orElse(null))
+						.icon(detailPanel.icon().orElse(null))
 						.add());
 		if (includeControls) {
 			builder.mouseListener(new TabbedPaneMouseReleasedListener());
@@ -475,7 +475,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private Window createDetailWindow() {
 			if (EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get()) {
 				return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
-								.title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
+								.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 								.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 								.onClosed(windowEvent -> {
 									//the frame can be closed when embedding the panel, don't hide if that's the case
@@ -488,7 +488,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 			return Dialogs.componentDialog(createEmptyBorderBasePanel(tabbedPane))
 							.owner(entityPanel)
-							.title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
+							.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 							.modal(false)
 							.onClosed(e -> {
 								//the dialog can be closed when embedding the panel, don't hide if that's the case

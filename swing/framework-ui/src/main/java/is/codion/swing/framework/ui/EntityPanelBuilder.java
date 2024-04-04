@@ -45,6 +45,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
 	private String caption;
+	private String description;
 	private ImageIcon icon;
 	private boolean refreshWhenInitialized = true;
 	private Dimension preferredSize;
@@ -80,6 +81,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	@Override
 	public EntityPanelBuilder caption(String caption) {
 		this.caption = caption;
+		return this;
+	}
+
+	@Override
+	public Optional<String> description() {
+		return Optional.ofNullable(description);
+	}
+
+	@Override
+	public EntityPanelBuilder description(String description) {
+		this.description = description;
 		return this;
 	}
 
@@ -255,12 +267,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			else {
 				entityPanel = findModelConstructor(panelClass()).newInstance(entityModel);
 			}
-			if (caption != null) {
-				entityPanel.caption().set(caption);
-			}
-			if (icon != null) {
-				entityPanel.icon().set(icon);
-			}
 			if (preferredSize != null) {
 				entityPanel.setPreferredSize(preferredSize);
 			}
@@ -276,7 +282,18 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	private EntityPanel createPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) throws Exception {
-		Consumer<EntityPanel.Config> configure = config -> config.detailLayout(detailLayout);
+		Consumer<EntityPanel.Config> configure = config -> {
+			config.detailLayout(detailLayout);
+			if (caption != null) {
+				config.caption(caption);
+			}
+			if (description != null) {
+				config.description(description);
+			}
+			if (icon != null) {
+				config.icon(icon);
+			}
+		};
 
 		return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, Consumer.class)
 						.newInstance(entityModel, editPanel, tablePanel, configure);

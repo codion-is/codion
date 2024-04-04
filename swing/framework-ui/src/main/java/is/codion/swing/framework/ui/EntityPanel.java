@@ -193,9 +193,6 @@ public class EntityPanel extends JPanel {
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
 	private final Event<EntityPanel> activateEvent = Event.event();
-	private final Value<String> caption;
-	private final Value<String> description;
-	private final Value<ImageIcon> icon;
 	private final Value<PanelState> editPanelState;
 	private final State disposeEditDialogOnEscape = State.state(Config.DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
@@ -283,12 +280,8 @@ public class EntityPanel extends JPanel {
 										 Consumer<Config> configuration) {
 		requireNonNull(entityModel, "entityModel");
 		setFocusCycleRoot(true);
-		this.configuration = configure(configuration);
+		this.configuration = configure(entityModel.entityDefinition().caption(), configuration);
 		this.entityModel = entityModel;
-		String defaultCaption = entityModel.editModel().entityDefinition().caption();
-		this.caption = Value.value(defaultCaption, defaultCaption);
-		this.description = Value.value(entityModel.editModel().entityDefinition().description());
-		this.icon = Value.value();
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
@@ -494,30 +487,28 @@ public class EntityPanel extends JPanel {
 
 	@Override
 	public final String toString() {
-		return getClass().getSimpleName() + ": " + caption.get();
+		return getClass().getSimpleName() + ": " + caption();
 	}
 
 	/**
-	 * Setting this caption Value to null reverts back to the default entity caption.
-	 * @return a Value for the caption used when presenting this entity panel
+	 * @return the caption used when presenting this entity panel
 	 */
-	public final Value<String> caption() {
-		return caption;
+	public final String caption() {
+		return configuration.caption;
 	}
 
 	/**
-	 * Setting this description Value to null reverts back to the default entity description.
-	 * @return a Value for the description used when presenting this entity panel
+	 * @return the description used when presenting this entity panel
 	 */
-	public final Value<String> description() {
-		return description;
+	public final Optional<String> description() {
+		return Optional.ofNullable(configuration.description);
 	}
 
 	/**
-	 * @return a Value controlling the icon used when presenting this entity panel
+	 * @return the icon used when presenting this entity panel
 	 */
-	public final Value<ImageIcon> icon() {
-		return icon;
+	public final Optional<ImageIcon> icon() {
+		return Optional.ofNullable(configuration.icon);
 	}
 
 	/**
@@ -1050,7 +1041,8 @@ public class EntityPanel extends JPanel {
 		if (Config.USE_FRAME_PANEL_DISPLAY.get()) {
 			return Windows.frame(basePanel)
 							.locationRelativeTo(tablePanel == null ? this : tablePanel)
-							.title(caption.get())
+							.title(caption())
+							.icon(icon().orElse(null))
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 							.onClosed(windowEvent -> editPanelState.set(HIDDEN))
 							.build();
@@ -1059,7 +1051,8 @@ public class EntityPanel extends JPanel {
 		return Dialogs.componentDialog(basePanel)
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
-						.title(caption.get())
+						.title(caption())
+						.icon(icon().orElse(null))
 						.modal(false)
 						.disposeOnEscape(disposeEditDialogOnEscape.get())
 						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
@@ -1072,8 +1065,8 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
-	private static Config configure(Consumer<Config> configuration) {
-		Config config = new Config();
+	private static Config configure(String caption, Consumer<Config> configuration) {
+		Config config = new Config(caption);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -1217,9 +1210,13 @@ public class EntityPanel extends JPanel {
 		private boolean includeControls = INCLUDE_CONTROLS.get();
 		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 		private PanelState editPanelState = EMBEDDED;
+		private String caption;
+		private String description;
+		private ImageIcon icon;
 
-		private Config() {
+		private Config(String caption) {
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
+			this.caption = caption;
 		}
 
 		private Config(Config config) {
@@ -1231,6 +1228,36 @@ public class EntityPanel extends JPanel {
 			this.includeControls = config.includeControls;
 			this.useKeyboardNavigation = config.useKeyboardNavigation;
 			this.editPanelState = config.editPanelState;
+			this.caption = config.caption;
+			this.description = config.description;
+			this.icon = config.icon;
+		}
+
+		/**
+		 * @param caption the caption to use when presenting this panel
+		 * @return this Config instance
+		 */
+		public Config caption(String caption) {
+			this.caption = requireNonNull(caption);
+			return this;
+		}
+
+		/**
+		 * @param description the description to use when presenting this panel
+		 * @return this Config instance
+		 */
+		public Config description(String description) {
+			this.description = requireNonNull(description);
+			return this;
+		}
+
+		/**
+		 * @param icon the icon to use when presenting this panel
+		 * @return this Config instance
+		 */
+		public Config icon(ImageIcon icon) {
+			this.icon = requireNonNull(icon);
+			return this;
 		}
 
 		/**
@@ -1463,6 +1490,17 @@ public class EntityPanel extends JPanel {
 		 * @return the caption, an empty Optional if none has been set
 		 */
 		Optional<String> caption();
+
+		/**
+		 * @param description the panel description
+		 * @return this builder instance
+		 */
+		Builder description(String description);
+
+		/**
+		 * @return the description, an empty Optional if none has been set
+		 */
+		Optional<String> description();
 
 		/**
 		 * @param icon the panel icon

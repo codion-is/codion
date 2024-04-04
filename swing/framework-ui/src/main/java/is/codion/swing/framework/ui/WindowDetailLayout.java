@@ -123,8 +123,8 @@ public final class WindowDetailLayout implements DetailLayout {
 							.smallIcon(FrameworkIcons.instance().detail())
 							.controls(entityPanel.detailPanels().stream()
 											.map(detailPanel -> Control.builder(windowCommand(detailPanel))
-															.name(detailPanel.caption().get())
-															.smallIcon(detailPanel.icon().get())
+															.name(detailPanel.caption())
+															.smallIcon(detailPanel.icon().orElse(null))
 															.build())
 											.toArray(Control[]::new))
 							.build());
@@ -218,8 +218,8 @@ public final class WindowDetailLayout implements DetailLayout {
 			if (windowType == FRAME) {
 				return Windows.frame(detailPanel)
 								.locationRelativeTo(entityPanel)
-								.title(detailPanel.caption().get())
-								.icon(detailPanel.icon().get())
+								.title(detailPanel.caption())
+								.icon(detailPanel.icon().orElse(null))
 								.onClosing(windowEvent -> panelWindows.get(detailPanel).panelState.set(HIDDEN))
 								.build();
 			}
@@ -227,8 +227,8 @@ public final class WindowDetailLayout implements DetailLayout {
 			return Dialogs.componentDialog(detailPanel)
 							.owner(entityPanel)
 							.locationRelativeTo(entityPanel)
-							.title(detailPanel.caption().get())
-							.icon(detailPanel.icon().get())
+							.title(detailPanel.caption())
+							.icon(detailPanel.icon().orElse(null))
 							.modal(false)
 							.onClosed(windowEvent -> panelWindows.get(detailPanel).panelState.set(HIDDEN))
 							.build();
