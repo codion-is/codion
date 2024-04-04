@@ -286,8 +286,8 @@ public class EntityPanel extends JPanel {
 		this.mainPanel = borderLayoutPanel().build();
 		this.detailLayout = this.configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
-		editPanelState = Value.value(this.configuration.editPanelState, EMBEDDED);
-		editPanelState.addListener(this::updateEditPanelState);
+		this.editPanelState = Value.value(this.configuration.editPanelState, EMBEDDED);
+		this.editPanelState.addListener(this::updateEditPanelState);
 	}
 
 	@Override
@@ -485,7 +485,7 @@ public class EntityPanel extends JPanel {
 
 	@Override
 	public final String toString() {
-		return getClass().getSimpleName() + ": " + caption();
+		return getClass().getSimpleName() + ": " + configuration.caption;
 	}
 
 	/**
@@ -906,8 +906,6 @@ public class EntityPanel extends JPanel {
 		return (T) detailController;
 	}
 
-
-
 	private JPanel createEditControlPanel() {
 		if (editPanel == null) {
 			return null;
@@ -999,54 +997,62 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void updateEditPanelState() {
-		if (editPanelState.isNotEqualTo(WINDOW)) {
-			Window editPanelWindow = parentWindow(editControlPanel);
-			if (editPanelWindow != null) {
-				editPanelWindow.dispose();
-			}
+		switch (editPanelState.get()) {
+			case WINDOW:
+				showEditWindow();
+				break;
+			case EMBEDDED:
+				hideEditWindow();
+				mainPanel.add(editControlPanel, BorderLayout.NORTH);
+				break;
+			case HIDDEN:
+				hideEditWindow();
+				mainPanel.remove(editControlPanel);
+				break;
+			default:
+				throw new IllegalStateException("Unkown panel state: " + editPanelState.get());
 		}
-		if (editPanelState.isEqualTo(EMBEDDED)) {
-			mainPanel.add(editControlPanel, BorderLayout.NORTH);
-		}
-		else if (editPanelState.isEqualTo(HIDDEN)) {
-			mainPanel.remove(editControlPanel);
-		}
-		else {
-			createEditWindow().setVisible(true);
-		}
-		requestInitialFocus();
-
 		revalidate();
+		requestInitialFocus();
 	}
 
 	private void toggleEditPanelState() {
 		editPanelState.map(PANEL_STATE_MAPPER);
 	}
 
-	private Window createEditWindow() {
+	private void showEditWindow() {
 		JPanel basePanel = Components.borderLayoutPanel()
 						.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
 						.centerComponent(editControlPanel)
 						.build();
 		if (Config.USE_FRAME_PANEL_DISPLAY.get()) {
-			return Windows.frame(basePanel)
+			Windows.frame(basePanel)
 							.locationRelativeTo(tablePanel == null ? this : tablePanel)
-							.title(caption())
-							.icon(icon().orElse(null))
+							.title(configuration.caption)
+							.icon(configuration.icon)
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 							.onClosed(windowEvent -> editPanelState.set(HIDDEN))
-							.build();
+							.build()
+							.setVisible(true);
 		}
 
-		return Dialogs.componentDialog(basePanel)
+		Dialogs.componentDialog(basePanel)
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
-						.title(caption())
-						.icon(icon().orElse(null))
+						.title(configuration.caption)
+						.icon(configuration.icon)
 						.modal(false)
 						.disposeOnEscape(configuration.disposeEditDialogOnEscape)
 						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
-						.build();
+						.build()
+						.setVisible(true);
+	}
+
+	private void hideEditWindow() {
+		Window editPanelWindow = parentWindow(editControlPanel);
+		if (editPanelWindow != null) {
+			editPanelWindow.dispose();
+		}
 	}
 
 	private void throwIfInitialized() {
@@ -1068,6 +1074,10 @@ public class EntityPanel extends JPanel {
 		public void execute() {
 			if (containsEditPanel() && editPanelState.isEqualTo(HIDDEN)) {
 				editPanelState.set(WINDOW);
+			}
+			Window editPanelWindow = parentWindow(editControlPanel);
+			if (editPanelWindow != null) {
+				editPanelWindow.toFront();
 			}
 		}
 	}
