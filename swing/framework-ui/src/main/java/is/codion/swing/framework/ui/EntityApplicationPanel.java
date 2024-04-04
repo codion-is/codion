@@ -683,6 +683,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			Windows.frame(createEmptyBorderBasePanel(entityPanel))
 							.locationRelativeTo(this)
 							.title(entityPanel.caption().get())
+							.icon(entityPanel.icon().get())
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 							.onClosed(windowEvent -> {
 								entityPanel.model().savePreferences();
@@ -717,6 +718,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 			Dialogs.componentDialog(createEmptyBorderBasePanel(entityPanel))
 							.owner(parentWindow().orElse(null))
 							.title(entityPanel.caption().get())
+							.icon(entityPanel.icon().get())
 							.onClosed(e -> {
 								entityPanel.model().savePreferences();
 								entityPanel.savePreferences();
@@ -792,6 +794,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
 		return Control.builder(() -> displayEntityPanel(panelBuilder))
 						.name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
+						.smallIcon(panelBuilder.icon().orElse(null))
 						.build();
 	}
 

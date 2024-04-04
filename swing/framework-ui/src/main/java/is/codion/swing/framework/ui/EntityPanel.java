@@ -43,6 +43,7 @@ import is.codion.swing.framework.ui.EntityTablePanel.TableControl;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -194,6 +195,7 @@ public class EntityPanel extends JPanel {
 	private final Event<EntityPanel> activateEvent = Event.event();
 	private final Value<String> caption;
 	private final Value<String> description;
+	private final Value<ImageIcon> icon;
 	private final Value<PanelState> editPanelState;
 	private final State disposeEditDialogOnEscape = State.state(Config.DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
@@ -286,6 +288,7 @@ public class EntityPanel extends JPanel {
 		String defaultCaption = entityModel.editModel().entityDefinition().caption();
 		this.caption = Value.value(defaultCaption, defaultCaption);
 		this.description = Value.value(entityModel.editModel().entityDefinition().description());
+		this.icon = Value.value();
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
@@ -508,6 +511,13 @@ public class EntityPanel extends JPanel {
 	 */
 	public final Value<String> description() {
 		return description;
+	}
+
+	/**
+	 * @return a Value controlling the icon used when presenting this entity panel
+	 */
+	public final Value<ImageIcon> icon() {
+		return icon;
 	}
 
 	/**
@@ -1453,6 +1463,17 @@ public class EntityPanel extends JPanel {
 		 * @return the caption, an empty Optional if none has been set
 		 */
 		Optional<String> caption();
+
+		/**
+		 * @param icon the panel icon
+		 * @return this builder instance
+		 */
+		Builder icon(ImageIcon icon);
+
+		/**
+		 * @return the icon, an empty Optional if none has been set
+		 */
+		Optional<ImageIcon> icon();
 
 		/**
 		 * Adds the given detail panel builder to this panel builder, if it hasn't been previously added

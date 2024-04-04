@@ -25,6 +25,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 
+import javax.swing.ImageIcon;
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
 	private String caption;
+	private ImageIcon icon;
 	private boolean refreshWhenInitialized = true;
 	private Dimension preferredSize;
 	private boolean conditionPanelVisible = EntityTablePanel.Config.CONDITION_PANEL_VISIBLE.get();
@@ -84,6 +86,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	@Override
 	public Optional<String> caption() {
 		return Optional.ofNullable(caption);
+	}
+
+	@Override
+	public EntityPanel.Builder icon(ImageIcon icon) {
+		this.icon = icon;
+		return this;
+	}
+
+	@Override
+	public Optional<ImageIcon> icon() {
+		return Optional.ofNullable(icon);
 	}
 
 	@Override
@@ -244,6 +257,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			}
 			if (caption != null) {
 				entityPanel.caption().set(caption);
+			}
+			if (icon != null) {
+				entityPanel.icon().set(icon);
 			}
 			if (preferredSize != null) {
 				entityPanel.setPreferredSize(preferredSize);

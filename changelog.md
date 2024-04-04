@@ -6,6 +6,9 @@ Codion Change Log
 - Event.listener() and dataListener() removed, no longer necessary.
 ### is.codion.framework.model
 - EntityEditModel.valueEvent() added.
+### is.codion.swing.framework.ui
+- EntityPanel.icon() added, used when panel is displayed in windows or tabbed panes.
+- EntityPanel.Builder.icon() added.
 
 ## 0.17.37
 ### is.codion.common.core
