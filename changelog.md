@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.38-SNAPSHOT
+### is.codion.common.core
+- Event.listener() and dataListener() removed, no longer necessary.
 ### is.codion.framework.model
 - EntityEditModel.valueEvent() added.
 

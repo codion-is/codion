@@ -63,25 +63,4 @@ public interface Event<T> extends Runnable, Consumer<T>, EventObserver<T> {
 	static <T> Event<T> event() {
 		return new DefaultEvent<>();
 	}
-
-	/**
-	 * Creates a {@link Runnable} causing the {@code listener}s {@link Consumer#accept(Object)} to be called with a null argument on each occurrence.
-	 * @param listener the data listener
-	 * @param <T> the value type
-	 * @return a {@link Runnable} causing the given {@link Consumer} to be called with null data on each occurrence
-	 */
-	static <T> Runnable listener(Consumer<T> listener) {
-		return () -> listener.accept(null);
-	}
-
-	/**
-	 * Creates a {@link Consumer} causing the {@code listener}s {@link Runnable#run()} to be called on each occurrence.
-	 * Note that any event data will get discarded along the way.
-	 * @param <T> the type of data propagated to listeners on event occurrence
-	 * @param listener the listener
-	 * @return a {@link Consumer} causing the given {@link Runnable} to be called on each occurrence
-	 */
-	static <T> Consumer<T> dataListener(Runnable listener) {
-		return data -> listener.run();
-	}
 }

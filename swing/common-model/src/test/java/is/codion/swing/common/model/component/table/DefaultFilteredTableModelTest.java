@@ -19,7 +19,6 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.Separators;
-import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
@@ -562,7 +561,7 @@ public final class DefaultFilteredTableModelTest {
 	void selection() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		Consumer dataListener = Event.dataListener(listener);
+		Consumer dataListener = data -> listener.run();
 		FilteredTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
 		selectionModel.selectedIndexEvent().addDataListener(dataListener);
 		selectionModel.selectionEvent().addListener(listener);

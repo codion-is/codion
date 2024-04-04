@@ -43,7 +43,6 @@ public class EventsTest {
 		event.run();
 		assertEquals(2, counter.get(), "Removed listener should not have been notified");
 		event.removeDataListener(dataListener);
-		Event.listener(Event.dataListener(listener));
 	}
 
 	@Test
