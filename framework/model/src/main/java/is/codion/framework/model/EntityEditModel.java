@@ -515,6 +515,11 @@ public interface EntityEditModel {
 	<T> EventObserver<T> valueEvent(Attribute<T> attribute);
 
 	/**
+	 * @return an observer for attribute value changes
+	 */
+	EventObserver<Attribute<?>> valueEvent();
+
+	/**
 	 * @return an observer notified each time the entity is set via {@link #set(Entity)} or {@link #defaults()}.
 	 * @see #set(Entity)
 	 * @see #defaults()

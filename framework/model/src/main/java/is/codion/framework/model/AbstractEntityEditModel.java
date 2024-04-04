@@ -440,6 +440,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
+	public final EventObserver<Attribute<?>> valueEvent() {
+		return events.valueChange.observer();
+	}
+
+	@Override
 	public final EventObserver<Entity> entityEvent() {
 		return events.entity.observer();
 	}

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.38-SNAPSHOT
+### is.codion.framework.model
+- EntityEditModel.valueEvent() added.
 
 ## 0.17.37
 ### is.codion.common.core
