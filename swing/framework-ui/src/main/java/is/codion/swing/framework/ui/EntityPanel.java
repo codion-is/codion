@@ -23,7 +23,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
@@ -194,7 +193,6 @@ public class EntityPanel extends JPanel {
 	private final DetailController detailController;
 	private final Event<EntityPanel> activateEvent = Event.event();
 	private final Value<PanelState> editPanelState;
-	private final State disposeEditDialogOnEscape = State.state(Config.DISPOSE_EDIT_DIALOG_ON_ESCAPE.get());
 
 	private final Config configuration;
 
@@ -549,14 +547,6 @@ public class EntityPanel extends JPanel {
 			focusOwner = EntityPanel.this;
 		}
 		Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
-	}
-
-	/**
-	 * @return the State controlling whtether the edit dialog is disposed of on ESC
-	 * @see Config#DISPOSE_EDIT_DIALOG_ON_ESCAPE
-	 */
-	public final State disposeEditDialogOnEscape() {
-		return disposeEditDialogOnEscape;
 	}
 
 	/**
@@ -1054,7 +1044,7 @@ public class EntityPanel extends JPanel {
 						.title(caption())
 						.icon(icon().orElse(null))
 						.modal(false)
-						.disposeOnEscape(disposeEditDialogOnEscape.get())
+						.disposeOnEscape(configuration.disposeEditDialogOnEscape)
 						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
 						.build();
 	}
@@ -1203,6 +1193,7 @@ public class EntityPanel extends JPanel {
 		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
+		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
 		private boolean toolbarControls = TOOLBAR_CONTROLS.get();
 		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
 		private String controlComponentConstraints = TOOLBAR_CONTROLS.get() ?
@@ -1231,6 +1222,7 @@ public class EntityPanel extends JPanel {
 			this.caption = config.caption;
 			this.description = config.description;
 			this.icon = config.icon;
+			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
 		}
 
 		/**
@@ -1358,6 +1350,15 @@ public class EntityPanel extends JPanel {
 		 */
 		public Config editPanelState(PanelState editPanelState) {
 			this.editPanelState = requireNonNull(editPanelState);
+			return this;
+		}
+
+		/**
+		 * @param disposeEditDialogOnEscape specifies whether entity edit panel dialogs should be closed on escape
+		 * @return this Config instance
+		 */
+		public Config disposeEditDialogOnEscape(boolean disposeEditDialogOnEscape) {
+			this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
 			return this;
 		}
 

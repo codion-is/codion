@@ -10,6 +10,7 @@ Codion Change Log
 - EntityPanel.icon() added, used when panel is displayed in windows or tabbed panes.
 - EntityPanel.Builder.icon() added.
 - EntityPanel, caption, description and icon moved to Config, related changes.
+- EntityPanel.disposeEditDialogOnEscape moved to Config.
 
 ## 0.17.37
 ### is.codion.common.core
