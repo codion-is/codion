@@ -40,6 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
@@ -421,7 +422,7 @@ public final class TextFieldPanel extends JPanel {
 
 		private TextFieldPanelValue(TextFieldPanel textFieldPanel) {
 			super(textFieldPanel);
-			textFieldPanel.textField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+			textFieldPanel.textField().getDocument().addDocumentListener(new NotifyListeners());
 		}
 
 		@Override
@@ -432,6 +433,14 @@ public final class TextFieldPanel extends JPanel {
 		@Override
 		protected void setComponentValue(String value) {
 			component().setText(value);
+		}
+
+		private final class NotifyListeners implements DocumentAdapter {
+
+			@Override
+			public void contentsChanged(DocumentEvent e) {
+				notifyListeners();
+			}
 		}
 	}
 
