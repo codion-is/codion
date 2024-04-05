@@ -134,7 +134,7 @@ is/codion/dbms/h2/H2Database_is_IS.properties
 |check_constraint_invalid|The value or values attempted to be entered in a field or fields violate a defined check constraint|Óleyfilegt gildi
 |child_record_error|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
 |integrity_constraint_error|A foreign key value has no matching primary key value|Reynt var að vísa í færslu sem ekki er til
-|unique_key_error|This value combination already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|unique_key_error|This combination of values already exists|Þessi samsetning gilda er nú þegar til í töflunni
 |value_missing|Value missing|Gildi vantar
 |wrong_user_or_password|Wrong username or password|Rangt notendanafn eða lykilorð
 |===
@@ -159,7 +159,7 @@ is/codion/dbms/oracle/OracleDatabase_is_IS.properties
 |missing_privileges_error|You are not authorized to perform this action|Þig vantar réttindi til að framkvæma umbeðna aðgerð
 |null_value_error|An attempt was made to insert or update a required column to NULL|Ekki er hægt að vista færslu með tómum gildum, tiltaktu öll gildi fyrst
 |table_not_found_error|Table or view does not exist|Tafla eða view finnst ekki
-|unique_key_error|This value combination already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|unique_key_error|This combination of values already exists|Þessi samsetning gilda er nú þegar til í töflunni
 |user_cannot_connect|User does not have session privileges|Notandi hefur ekki réttindi til að tengjast
 |value_missing|Value missing|Gildi vantar
 |value_too_large_for_column_error|The value entered is larger than the maximum width defined for the column|Gildi er of stórt fyrir dálk
@@ -184,7 +184,7 @@ is/codion/dbms/postgresql/PostgreSQLDatabase_is_IS.properties
 |foreign_key_violation_delete|This record is referenced by records in other tables, delete those first|Vísað er í þessa færslu úr öðrum töflum, eyddu þeim færslum fyrst
 |missing_privileges_error|You are not authorized to perform this action|Þig vantar réttindi til að framkvæma umbeðna aðgerð
 |null_value_error|An attempt was made to insert or update a required column to NULL|Ekki er hægt að vista færslu með tómum gildum, tiltaktu öll gildi fyrst
-|unique_key_error|This value combination already exists|Þessi samsetning gilda er nú þegar til í töflunni
+|unique_key_error|This combination of values already exists|Þessi samsetning gilda er nú þegar til í töflunni
 |value_missing|Value missing|Gildi vantar
 |value_too_large_for_column_error|The value entered is larger than the maximum defined for the column|Gildi er of stórt fyrir dálk
 |===
