@@ -548,6 +548,7 @@ public final class FilteredTable<R, C> extends JTable {
 
 		return Components.stringField(tableModel.searchModel().searchString())
 						.minimumWidth(SEARCH_FIELD_MINIMUM_WIDTH)
+						.preferredWidth(SEARCH_FIELD_MINIMUM_WIDTH)
 						.selectAllOnFocusGained(true)
 						.keyEvent(KeyEvents.builder(VK_ENTER)
 										.action(nextResult))
