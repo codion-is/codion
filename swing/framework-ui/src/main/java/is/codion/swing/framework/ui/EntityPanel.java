@@ -303,7 +303,6 @@ public class EntityPanel extends JPanel {
 	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
 										 Consumer<Config> configuration) {
 		requireNonNull(entityModel, "entityModel");
-		setFocusCycleRoot(true);
 		this.configuration = configure(entityModel.entityDefinition().caption(), configuration);
 		this.entityModel = entityModel;
 		this.editPanel = editPanel;
@@ -396,6 +395,7 @@ public class EntityPanel extends JPanel {
 	public final <T extends EntityPanel> T initialize() {
 		if (!initialized) {
 			try {
+				setFocusCycleRoot(true);
 				setupToggleEditPanelControl();
 				initializeUI();
 				initializeEditPanel();
@@ -609,12 +609,6 @@ public class EntityPanel extends JPanel {
 	 */
 	public void savePreferences() {
 		detailPanels.forEach(EntityPanel::savePreferences);
-	}
-
-	@Override
-	public final void setFocusCycleRoot(boolean focusCycleRoot) {
-		//override as final since it's called in constructor
-		super.setFocusCycleRoot(focusCycleRoot);
 	}
 
 	/**
