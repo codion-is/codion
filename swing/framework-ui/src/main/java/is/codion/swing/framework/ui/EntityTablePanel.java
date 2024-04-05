@@ -1771,6 +1771,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeSelectionModeControl = false;
 		private boolean includeAddControl = true;
 		private boolean includeEditControl = true;
+		private boolean includeToolBar = true;
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
 		private RefreshButtonVisible refreshButtonVisible;
@@ -1817,6 +1818,7 @@ public class EntityTablePanel extends JPanel {
 			this.statusMessage = config.statusMessage;
 			this.showRefreshProgressBar = config.showRefreshProgressBar;
 			this.deleteConfirmer = config.deleteConfirmer;
+			this.includeToolBar = config.includeToolBar;
 		}
 
 		/**
@@ -1893,7 +1895,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEntityMenu true a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.<br>
+		 * @param includeEntityMenu true if a {@link EntityPopupMenu} should be available in this table, triggered with CTRL-ALT-V.<br>
 		 * @return this Config instance
 		 */
 		public Config includeEntityMenu(boolean includeEntityMenu) {
@@ -1911,7 +1913,16 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeAddControl true a Add control should be included if a edit panel is available<br>
+		 * @param includeToolBar true if a toolbar should be included on the south panel<br>
+		 * @return this Config instance
+		 */
+		public Config includeToolBar(boolean includeToolBar) {
+			this.includeToolBar = includeToolBar;
+			return this;
+		}
+
+		/**
+		 * @param includeAddControl true if a Add control should be included if a edit panel is available<br>
 		 * @return this Config instance
 		 */
 		public Config includeAddControl(boolean includeAddControl) {
@@ -1920,7 +1931,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEditControl true a Edit control should be included if a edit panel is available<br>
+		 * @param includeEditControl true if a Edit control should be included if a edit panel is available<br>
 		 * @return this Config instance
 		 */
 		public Config includeEditControl(boolean includeEditControl) {
@@ -2191,9 +2202,11 @@ public class EntityTablePanel extends JPanel {
 							.rightComponent(statusPanel())
 							.build(), BorderLayout.CENTER);
 			add(refreshButtonToolBar, BorderLayout.WEST);
-			JToolBar southToolBar = createToolBar();
-			if (southToolBar != null) {
-				add(southToolBar, BorderLayout.EAST);
+			if (configuration.includeToolBar) {
+				JToolBar southToolBar = createToolBar();
+				if (southToolBar != null) {
+					add(southToolBar, BorderLayout.EAST);
+				}
 			}
 		}
 

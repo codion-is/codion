@@ -25,6 +25,7 @@ Codion Change Log
 - WindowDetailLayout.WindowType moved to EntityPanel, EntityPanel.Config.USE_FRAME_PANEL_DISPLAY replaced with WINDOW_TYPE.
 - TabbedDetailLayout, WindowDetailLayout, windowType now defaults to the one specified by the EntityPanel.
 - KeyboardShortcuts, default keystroke added to javadoc.
+- EntityTablePanel.Config.includeToolBar added.
 
 ## 0.17.37
 ### is.codion.common.core
