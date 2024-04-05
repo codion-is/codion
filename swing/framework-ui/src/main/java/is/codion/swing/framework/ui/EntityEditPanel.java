@@ -66,6 +66,7 @@ import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
+import static is.codion.swing.framework.ui.EntityEditPanel.KeyboardShortcut.DISPLAY_ENTITY_MENU;
 import static is.codion.swing.framework.ui.EntityEditPanel.KeyboardShortcut.SELECT_INPUT_FIELD;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -101,7 +102,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * Displays a dialog for selecting an input field.
 		 */
-		SELECT_INPUT_FIELD
+		SELECT_INPUT_FIELD,
+		/**
+		 * Displays the entity menu, if available
+		 * @see Config#INCLUDE_ENTITY_MENU
+		 */
+		DISPLAY_ENTITY_MENU
 	}
 
 	static {
@@ -575,9 +581,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void bindEvents() {
-		if (Config.INCLUDE_ENTITY_MENU.get()) {
-			KeyEvents.builder(VK_V)
-							.modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+		if (configuration.includeEntityMenu) {
+			KeyEvents.builder(configuration.shortcuts.keyStroke(DISPLAY_ENTITY_MENU).get())
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.action(Control.control(this::showEntityMenu))
 							.enable(this);
@@ -642,8 +647,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
 						Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveCaption", false);
+
 		/**
-		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V.<br>
+		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V by default.<br>
 		 * Value type: Boolean<br>
 		 * Default value: true
 		 */
@@ -674,6 +680,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.get();
+		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.get();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
@@ -695,6 +702,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.insertConfirmer = config.insertConfirmer;
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
+			this.includeEntityMenu = config.includeEntityMenu;
 		}
 
 		/**
@@ -746,6 +754,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
+		 * @param includeEntityMenu true if a entity menu should be included
+		 * @return this Config instance
+		 * @see #INCLUDE_ENTITY_MENU
+		 */
+		public Config includeEntityMenu(boolean includeEntityMenu) {
+			this.includeEntityMenu = includeEntityMenu;
+			return this;
+		}
+
+		/**
 		 * @param insertConfirmer the insert confirmer
 		 * @return this Config instance
 		 */
@@ -784,11 +802,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		private static KeyStroke defaultKeyStroke(KeyboardShortcut keyboardShortcut) {
-			if (keyboardShortcut == SELECT_INPUT_FIELD) {
-				return keyStroke(VK_I, CTRL_DOWN_MASK);
+			switch (keyboardShortcut) {
+				case SELECT_INPUT_FIELD:
+					return keyStroke(VK_I, CTRL_DOWN_MASK);
+				case DISPLAY_ENTITY_MENU:
+					return keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK);
+				default:
+					throw new IllegalArgumentException();
 			}
-
-			throw new IllegalArgumentException();
 		}
 	}
 

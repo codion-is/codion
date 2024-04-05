@@ -16,6 +16,8 @@ Codion Change Log
 - DefaultEntityApplicationPanelBuilder, lambdas replaced with classes.
 - EntityComponentValidators merged with EntityEditComponentPanel, FormattedTextValidator removed.
 - EntityEditPanel bug fixed, insert, update and delete control exception handlers set.
+- EntityEditPanel.KeyboardShortcut.DISPLAY_ENTITY_MENU added.
+- EntityEditPanel.Config.includeEntityMenu added.
 
 ## 0.17.37
 ### is.codion.common.core
