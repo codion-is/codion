@@ -116,6 +116,20 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
+	 * Specifies the window type.
+	 */
+	public enum WindowType {
+		/**
+		 * Display panels in a JFrame
+		 */
+		FRAME,
+		/**
+		 * Display panels in a JDialog
+		 */
+		DIALOG
+	}
+
+	/**
 	 * The keyboard shortcuts available for {@link EntityPanel}s.
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
@@ -1024,7 +1038,7 @@ public class EntityPanel extends JPanel {
 						.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
 						.centerComponent(editControlPanel)
 						.build();
-		if (Config.USE_FRAME_PANEL_DISPLAY.get()) {
+		if (configuration.windowType == WindowType.FRAME) {
 			showEditFrame(basePanel);
 		}
 		else {
@@ -1169,12 +1183,12 @@ public class EntityPanel extends JPanel {
 						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarControls", false);
 
 		/**
-		 * Specifies whether detail and edit panels should be displayed in a frame instead of the default dialog<br>
-		 * Value type: Boolean<br>
-		 * Default value: false
+		 * Specifies how detail and edit panels should be displayed.<br>
+		 * Value type: {@link WindowType}<br>
+		 * Default value: {@link WindowType#DIALOG}
 		 */
-		public static final PropertyValue<Boolean> USE_FRAME_PANEL_DISPLAY =
-						Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFramePanelDisplay", false);
+		public static final PropertyValue<WindowType> WINDOW_TYPE =
+						Configuration.enumValue("is.codion.swing.framework.ui.EntityPanel.windowType", WindowType.class, WindowType.DIALOG);
 
 		/**
 		 * Specifies where the control panel should be placed in a BorderLayout<br>
@@ -1218,6 +1232,7 @@ public class EntityPanel extends JPanel {
 						CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
 		private boolean includeControls = INCLUDE_CONTROLS.get();
 		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+		private WindowType windowType = WINDOW_TYPE.get();
 		private PanelState editPanelState = EMBEDDED;
 		private String caption;
 		private String description;
@@ -1241,6 +1256,7 @@ public class EntityPanel extends JPanel {
 			this.description = config.description;
 			this.icon = config.icon;
 			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
+			this.windowType = config.windowType;
 		}
 
 		/**
@@ -1350,6 +1366,16 @@ public class EntityPanel extends JPanel {
 		 */
 		public Config useKeyboardNavigation(boolean useKeyboardNavigation) {
 			this.useKeyboardNavigation = useKeyboardNavigation;
+			return this;
+		}
+
+		/**
+		 * @param windowType the window type to use when presenting panels
+		 * @return this Config instance
+		 * @see Config#WINDOW_TYPE
+		 */
+		public Config windowType(WindowType windowType) {
+			this.windowType = requireNonNull(windowType);
 			return this;
 		}
 

@@ -35,6 +35,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
+import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
@@ -473,7 +474,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private Window createDetailWindow() {
-			if (EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get()) {
+			if (EntityPanel.Config.WINDOW_TYPE.isEqualTo(WindowType.FRAME)) {
 				return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
 								.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 								.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)

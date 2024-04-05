@@ -34,7 +34,7 @@
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#TOOLBAR_CONTROLS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_PANEL_CONSTRAINTS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_TOOLBAR_CONSTRAINTS}<br>
- * {@link is.codion.swing.framework.ui.EntityPanel.Config#USE_FRAME_PANEL_DISPLAY}<br>
+ * {@link is.codion.swing.framework.ui.EntityPanel.Config#WINDOW_TYPE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#FILTER_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel.Config#SUMMARY_PANEL_VISIBLE}<br>

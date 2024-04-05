@@ -29,6 +29,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
+import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JComponent;
@@ -39,8 +40,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static is.codion.swing.framework.ui.WindowDetailLayout.WindowType.DIALOG;
-import static is.codion.swing.framework.ui.WindowDetailLayout.WindowType.FRAME;
+import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -53,22 +53,6 @@ public final class WindowDetailLayout implements DetailLayout {
 	private static final String DETAIL_TABLES = "detail_tables";
 
 	private static final Value.Validator<PanelState> PANEL_STATE_VALIDATOR = new RejectEmbedded();
-
-	/**
-	 * Specifies the window type.
-	 */
-	public enum WindowType {
-
-		/**
-		 * Display detail panels in a JFrame
-		 */
-		FRAME,
-
-		/**
-		 * Display detail panels in a JDialog
-		 */
-		DIALOG
-	}
 
 	private final EntityPanel entityPanel;
 	private final Map<EntityPanel, DetailWindow> panelWindows = new HashMap<>();
@@ -239,7 +223,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		private final EntityPanel entityPanel;
 
-		private WindowType windowType = EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get() ? FRAME : DIALOG;
+		private WindowType windowType = EntityPanel.Config.WINDOW_TYPE.get();
 
 		private DefaultBuilder(EntityPanel entityPanel) {
 			this.entityPanel = requireNonNull(entityPanel);
@@ -247,7 +231,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		@Override
 		public Builder windowType(WindowType windowType) {
-			this.windowType = windowType;
+			this.windowType = requireNonNull(windowType);
 			return this;
 		}
 

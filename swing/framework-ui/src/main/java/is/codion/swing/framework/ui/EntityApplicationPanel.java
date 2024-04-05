@@ -52,6 +52,7 @@ import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -646,7 +647,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * Displays the panel provided by the given builder in a frame or dialog,
-	 * depending on {@link EntityPanel.Config#USE_FRAME_PANEL_DISPLAY}.
+	 * depending on {@link EntityPanel.Config#WINDOW_TYPE}.
 	 * @param panelBuilder the entity panel builder
 	 */
 	protected final void displayEntityPanel(EntityPanel.Builder panelBuilder) {
@@ -655,11 +656,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * Displays the given panel in a frame or dialog,
-	 * depending on {@link EntityPanel.Config#USE_FRAME_PANEL_DISPLAY}.
+	 * depending on {@link EntityPanel.Config#WINDOW_TYPE}.
 	 * @param entityPanel the entity panel
 	 */
 	protected final void displayEntityPanel(EntityPanel entityPanel) {
-		if (EntityPanel.Config.USE_FRAME_PANEL_DISPLAY.get()) {
+		if (EntityPanel.Config.WINDOW_TYPE.isEqualTo(WindowType.FRAME)) {
 			displayEntityPanelFrame(entityPanel);
 		}
 		else {

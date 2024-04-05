@@ -19,6 +19,7 @@ Codion Change Log
 - EntityEditPanel.KeyboardShortcut.DISPLAY_ENTITY_MENU added.
 - EntityEditPanel.Config.includeEntityMenu added.
 - EntityTablePanel.KeyboardShortcut.DISPLAY_ENTITY_MENU added.
+- WindowDetailLayout.WindowType moved to EntityPanel, EntityPanel.Config.USE_FRAME_PANEL_DISPLAY replaced with WINDOW_TYPE.
 
 ## 0.17.37
 ### is.codion.common.core
