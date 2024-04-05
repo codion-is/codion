@@ -13,6 +13,7 @@ Codion Change Log
 - EntityPanel.disposeEditDialogOnEscape moved to Config.
 - EntityPanel.updateEditPanelState() refactored, ShowHiddenEditPanel now brings window to front if available, minor related changes.
 - EntityPanel.updateEditPanelState() refactoring mistake fixed. 
+- DefaultEntityApplicationPanelBuilder, lambdas replaced with classes.
 
 ## 0.17.37
 ### is.codion.common.core

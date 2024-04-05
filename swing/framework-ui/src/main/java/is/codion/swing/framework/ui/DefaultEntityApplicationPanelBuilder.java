@@ -28,6 +28,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.model.EntityApplicationModel;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
@@ -287,7 +288,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	@Override
 	public void start(boolean onEventDispatchThread) {
 		if (onEventDispatchThread) {
-			SwingUtilities.invokeLater(this::startApplication);
+			SwingUtilities.invokeLater(new ApplicationStarter());
 		}
 		else {
 			startApplication();
@@ -297,7 +298,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private void startApplication() {
 		LOG.debug("{} application starting", applicationName);
 		if (setUncaughtExceptionHandler) {
-			setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
+			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionAndExit());
 		}
 		setVersionProperty();
 		enableLookAndFeel();
@@ -308,13 +309,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		EntityConnectionProvider connectionProvider = initializeConnectionProvider(initializeUser());
 		long initializationStarted = System.currentTimeMillis();
 		if (displayStartupDialog) {
-			Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
+			Dialogs.progressWorkerDialog(new InitializeApplicationModel(connectionProvider))
 							.title(applicationName)
 							.icon(applicationIcon)
 							.border(emptyBorder())
 							.westPanel(createStartupIconPanel())
-							.onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
-							.onException(DefaultEntityApplicationPanelBuilder::displayExceptionAndExit)
+							.onResult(new StartApplication(initializationStarted))
+							.onException(new DisplayExceptionAndExit())
 							.execute();
 		}
 		else {
@@ -371,7 +372,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		P applicationPanel = initializeApplicationPanel(applicationModel);
 		JFrame applicationFrame = applicationFrame(applicationPanel);
 		if (setUncaughtExceptionHandler) {
-			setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
+			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionHandler(applicationFrame));
 		}
 		LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
 		if (displayFrame) {
@@ -413,15 +414,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		JFrame frame = frameSupplier.get();
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.setIconImage(applicationIcon.getImage());
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				try {
-					applicationPanel.exit();
-				}
-				catch (CancelException ignored) {/*ignored*/}
-			}
-		});
+		frame.addWindowListener(new ExitOnClose(applicationPanel));
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
 		if (frameSize != null) {
@@ -437,8 +430,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 		if (frameTitleProvider != null) {
 			frame.setTitle(frameTitleProvider.get());
-			frameTitleProvider.addDataListener(title ->
-							SwingUtilities.invokeLater(() -> frame.setTitle(title)));
+			frameTitleProvider.addDataListener(new FrameTitleListener(frame));
 		}
 		else {
 			frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));
@@ -605,6 +597,50 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 	}
 
+	private final class ApplicationStarter implements Runnable {
+
+		@Override
+		public void run() {
+			startApplication();
+		}
+	}
+
+	private final class StartApplication implements Consumer<M> {
+
+		private final long initializationStarted;
+
+		private StartApplication(long initializationStarted) {
+			this.initializationStarted = initializationStarted;
+		}
+
+		@Override
+		public void accept(M applicationModel) {
+			startApplication(applicationModel, initializationStarted);
+		}
+	}
+
+	private final class InitializeApplicationModel implements ProgressWorker.Task<M> {
+
+		private final EntityConnectionProvider connectionProvider;
+
+		private InitializeApplicationModel(EntityConnectionProvider connectionProvider) {
+			this.connectionProvider = connectionProvider;
+		}
+
+		@Override
+		public M execute() throws Exception {
+			return initializeApplicationModel(connectionProvider);
+		}
+	}
+
+	private static class DisplayExceptionAndExit implements Consumer<Exception> {
+
+		@Override
+		public void accept(Exception e) {
+			displayExceptionAndExit(e);
+		}
+	}
+
 	private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {}
 
 	private static final class DefaultSouthComponentSupplier implements Supplier<JComponent> {
@@ -620,6 +656,75 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		@Override
 		public JFrame get() {
 			return new JFrame();
+		}
+	}
+
+	private static class DisplayUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+		private final JFrame applicationFrame;
+
+		private DisplayUncaughtExceptionHandler(JFrame applicationFrame) {
+			this.applicationFrame = applicationFrame;
+		}
+
+		@Override
+		public void uncaughtException(Thread thread, Throwable exception) {
+			displayException(exception, applicationFrame);
+		}
+	}
+
+	private static class DisplayUncaughtExceptionAndExit implements Thread.UncaughtExceptionHandler {
+
+		@Override
+		public void uncaughtException(Thread thread, Throwable e) {
+			displayExceptionAndExit(e);
+		}
+	}
+
+	private static final class ExitOnClose extends WindowAdapter {
+
+		private final EntityApplicationPanel<?> applicationPanel;
+
+		private ExitOnClose(EntityApplicationPanel<?> applicationPanel) {
+			this.applicationPanel = applicationPanel;
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			try {
+				applicationPanel.exit();
+			}
+			catch (CancelException ignored) {/*ignored*/}
+		}
+	}
+
+	private static final class FrameTitleListener implements Consumer<String> {
+
+		private final JFrame frame;
+
+		public FrameTitleListener(JFrame frame) {
+			this.frame = frame;
+		}
+
+		@Override
+		public void accept(String title) {
+			SwingUtilities.invokeLater(new SetFrameTitle(frame, title));
+		}
+	}
+
+	private static class SetFrameTitle implements Runnable {
+
+		private final JFrame frame;
+		private final String title;
+
+		private SetFrameTitle(JFrame frame, String title) {
+			this.frame = frame;
+			this.title = title;
+		}
+
+		@Override
+		public void run() {
+			frame.setTitle(title);
 		}
 	}
 }
