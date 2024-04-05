@@ -958,6 +958,10 @@ public class EntityPanel extends JPanel {
 		entityPanels.add(detailPanel);
 	}
 
+	final WindowType windowType() {
+		return configuration.windowType;
+	}
+
 	private JToolBar createControlToolBar(Controls controls) {
 		return toolBar(controls)
 						.orientation(configuration.horizontalControlLayout() ? HORIZONTAL : VERTICAL)

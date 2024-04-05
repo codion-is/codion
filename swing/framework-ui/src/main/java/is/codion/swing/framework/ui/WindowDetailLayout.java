@@ -223,10 +223,11 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		private final EntityPanel entityPanel;
 
-		private WindowType windowType = EntityPanel.Config.WINDOW_TYPE.get();
+		private WindowType windowType;
 
 		private DefaultBuilder(EntityPanel entityPanel) {
 			this.entityPanel = requireNonNull(entityPanel);
+			this.windowType = entityPanel.windowType();
 		}
 
 		@Override

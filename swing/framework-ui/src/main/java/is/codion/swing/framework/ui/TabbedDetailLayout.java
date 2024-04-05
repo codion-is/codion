@@ -131,6 +131,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private final boolean includeControls;
 	private final double splitPaneResizeWeight;
 	private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
+	private final WindowType windowType;
 
 	private JTabbedPane tabbedPane;
 	private JSplitPane splitPane;
@@ -139,6 +140,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private TabbedDetailLayout(DefaultBuilder builder) {
 		this.entityPanel = builder.entityPanel;
+		this.windowType = builder.windowType;
 		this.panelState = builder.panelState;
 		this.includeControls = builder.includeControls;
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
@@ -191,6 +193,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * @return this builder instance
 		 */
 		Builder panelState(PanelState panelState);
+
+		/**
+		 * @param windowType the window type to use
+		 * @return this builder instance
+		 */
+		Builder windowType(WindowType windowType);
 
 		/**
 		 * @param splitPaneResizeWeight the detail panel split pane size weight
@@ -474,7 +482,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private Window createDetailWindow() {
-			if (EntityPanel.Config.WINDOW_TYPE.isEqualTo(WindowType.FRAME)) {
+			if (windowType == WindowType.FRAME) {
 				return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
 								.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 								.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -516,16 +524,24 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private final EntityPanel entityPanel;
 
 		private PanelState panelState = EMBEDDED;
+		private WindowType windowType;
 		private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
 		private boolean includeControls = INCLUDE_CONTROLS.get();
 
 		private DefaultBuilder(EntityPanel entityPanel) {
 			this.entityPanel = requireNonNull(entityPanel);
+			this.windowType = entityPanel.windowType();
 		}
 
 		@Override
 		public Builder panelState(PanelState panelState) {
 			this.panelState = requireNonNull(panelState);
+			return this;
+		}
+
+		@Override
+		public Builder windowType(WindowType windowType) {
+			this.windowType = requireNonNull(windowType);
 			return this;
 		}
 
