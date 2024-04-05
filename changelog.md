@@ -14,6 +14,7 @@ Codion Change Log
 - EntityPanel.updateEditPanelState() refactored, ShowHiddenEditPanel now brings window to front if available, minor related changes.
 - EntityPanel.updateEditPanelState() refactoring mistake fixed. 
 - DefaultEntityApplicationPanelBuilder, lambdas replaced with classes.
+- EntityComponentValidators merged with EntityEditComponentPanel, FormattedTextValidator removed.
 
 ## 0.17.37
 ### is.codion.common.core

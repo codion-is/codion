@@ -30,7 +30,9 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -70,7 +72,10 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
@@ -92,10 +97,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.component.EntityComponentValidators.addFormattedValidator;
-import static is.codion.swing.framework.ui.component.EntityComponentValidators.addValidator;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -538,7 +543,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute)
-						.onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.temporalField(), editModel())));
+						.onBuild(inputPanel -> addValidator(attribute, inputPanel.temporalField(), editModel())));
 	}
 
 	/**
@@ -550,7 +555,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
 		return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute, dateTimePattern)
-						.onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.temporalField(), editModel())));
+						.onBuild(inputPanel -> addValidator(attribute, inputPanel.temporalField(), editModel())));
 	}
 
 	/**
@@ -564,7 +569,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
 						.columns(defaults.textFieldColumns.get())
-						.onBuild(field -> addFormattedValidator(attribute, field, editModel())));
+						.onBuild(field -> addValidator(attribute, field, editModel())));
 	}
 
 	/**
@@ -575,7 +580,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, entityComponents.temporalField(attribute)
-						.onBuild(field -> addFormattedValidator(attribute, field, editModel())));
+						.onBuild(field -> addValidator(attribute, field, editModel())));
 	}
 
 	/**
@@ -587,7 +592,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute, String dateTimePattern) {
 		return setComponentBuilder(attribute, entityComponents.temporalField(attribute, dateTimePattern)
-						.onBuild(field -> addFormattedValidator(attribute, field, editModel())));
+						.onBuild(field -> addValidator(attribute, field, editModel())));
 	}
 
 	/**
@@ -689,7 +694,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final MaskedTextFieldBuilder createMaskedTextField(Attribute<String> attribute) {
 		return setComponentBuilder(attribute, entityComponents.maskedTextField(attribute)
-						.onBuild(textField -> addFormattedValidator(attribute, textField, editModel())));
+						.onBuild(textField -> addValidator(attribute, textField, editModel())));
 	}
 
 	/**
@@ -992,6 +997,30 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
+	 * Adds a validator to the given text component, based on the given value link and edit model
+	 * @param attribute the attribute of the value to validate
+	 * @param textComponent the text component
+	 * @param editModel the edit model
+	 * @param <T> the value type
+	 */
+	private static <T> void addValidator(Attribute<T> attribute, JTextComponent textComponent, EntityEditModel editModel) {
+		addValidator(attribute, textComponent, editModel, textComponent.getToolTipText());
+	}
+
+	/**
+	 * Adds a validator to the given text component, based on the given value link and edit model
+	 * @param attribute the attribute of the value to validate
+	 * @param textComponent the text component
+	 * @param editModel the edit model
+	 * @param defaultToolTip the tooltip to use while the value is valid
+	 * @param <T> the value type
+	 */
+	private static <T> void addValidator(Attribute<T> attribute, JTextComponent textComponent,
+																			 EntityEditModel editModel, String defaultToolTip) {
+		new TextValidator<>(attribute, textComponent, editModel, defaultToolTip).validate();
+	}
+
+	/**
 	 * Specifies the availible default values for component builders.
 	 */
 	protected static final class Defaults {
@@ -1125,6 +1154,114 @@ public class EntityEditComponentPanel extends JPanel {
 		@Override
 		public void validate(Set<Attribute<?>> attributes) {
 			attributes.forEach(attribute -> definition.attributes().definition(attribute));
+		}
+	}
+
+	private static class DefaultValidator<T> {
+
+		private final Attribute<T> attribute;
+		private final JComponent component;
+		private final EntityEditModel editModel;
+		private final String defaultToolTip;
+
+		private DefaultValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
+														 String defaultToolTip) {
+			this.attribute = attribute;
+			this.component = component;
+			this.editModel = editModel;
+			this.defaultToolTip = defaultToolTip;
+		}
+
+		/**
+		 * If the current value is invalid this method returns a string describing the nature of
+		 * the invalidity, if the value is valid this method returns null
+		 * @return a validation string if the value is invalid, null otherwise
+		 */
+		protected final String validationMessage() {
+			try {
+				editModel.validate(attribute);
+				return null;
+			}
+			catch (ValidationException e) {
+				return e.getMessage();
+			}
+		}
+
+		protected boolean nullable() {
+			return editModel.nullable(attribute);
+		}
+
+		protected boolean isNull() {
+			return editModel.isNull(attribute).get();
+		}
+
+		/**
+		 * @return the component associated with the value being validated
+		 */
+		protected final JComponent component() {
+			return component;
+		}
+
+		protected void setToolTipText(String validationMessage) {
+			if (validationMessage == null) {
+				component.setToolTipText(defaultToolTip);
+			}
+			else if (nullOrEmpty(defaultToolTip)) {
+				component.setToolTipText(validationMessage);
+			}
+			else {
+				component.setToolTipText(validationMessage + ": " + defaultToolTip);
+			}
+		}
+	}
+
+	private static class TextValidator<T> extends DefaultValidator<T> {
+
+		protected Color backgroundColor;
+		protected Color inactiveBackgroundColor;
+		protected Color invalidBackgroundColor;
+
+		/**
+		 * Instantiates a new TextValidator
+		 * @param attribute the attribute of the value to validate
+		 * @param textComponent the text component bound to the value
+		 * @param editModel the edit model handling the value editing
+		 * @param defaultToolTip the default tooltip to show when the field value is valid
+		 */
+		protected TextValidator(Attribute<T> attribute, JTextComponent textComponent, EntityEditModel editModel,
+														String defaultToolTip) {
+			super(attribute, textComponent, editModel, defaultToolTip);
+			editModel.value(attribute).addListener(this::validate);
+			configureColors();
+			textComponent.addPropertyChangeListener("UI", event -> configureColors());
+		}
+
+		/**
+		 * Updates the underlying component indicating the validity of the value being displayed
+		 */
+		protected void validate() {
+			JComponent component = component();
+			boolean enabled = component.isEnabled();
+			boolean stringValid = valid();
+			String validationMessage = validationMessage();
+			if (stringValid && validationMessage == null) {
+				component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
+			}
+			else {
+				component.setBackground(invalidBackgroundColor);
+			}
+			setToolTipText(validationMessage);
+		}
+
+		protected boolean valid() {
+			return !isNull() || nullable();
+		}
+
+		private void configureColors() {
+			this.backgroundColor = UIManager.getColor("TextField.background");
+			this.inactiveBackgroundColor = UIManager.getColor("TextField.inactiveBackground");
+			this.invalidBackgroundColor = darker(backgroundColor);
+			validate();
 		}
 	}
 }
