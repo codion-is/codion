@@ -1187,11 +1187,11 @@ public class EntityEditComponentPanel extends JPanel {
 			}
 		}
 
-		protected boolean nullable() {
+		protected final boolean nullable() {
 			return editModel.nullable(attribute);
 		}
 
-		protected boolean isNull() {
+		protected final boolean isNull() {
 			return editModel.isNull(attribute).get();
 		}
 
@@ -1202,7 +1202,7 @@ public class EntityEditComponentPanel extends JPanel {
 			return component;
 		}
 
-		protected void setToolTipText(String validationMessage) {
+		protected final void setToolTipText(String validationMessage) {
 			if (validationMessage == null) {
 				component.setToolTipText(defaultToolTip);
 			}
@@ -1240,11 +1240,10 @@ public class EntityEditComponentPanel extends JPanel {
 		 * Updates the underlying component indicating the validity of the value being displayed
 		 */
 		protected void validate() {
-			JComponent component = component();
+			JComponent component = super.component();
 			boolean enabled = component.isEnabled();
-			boolean stringValid = valid();
 			String validationMessage = validationMessage();
-			if (stringValid && validationMessage == null) {
+			if (nullValid() && validationMessage == null) {
 				component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
 			}
 			else {
@@ -1253,7 +1252,7 @@ public class EntityEditComponentPanel extends JPanel {
 			setToolTipText(validationMessage);
 		}
 
-		protected boolean valid() {
+		protected boolean nullValid() {
 			return !isNull() || nullable();
 		}
 
