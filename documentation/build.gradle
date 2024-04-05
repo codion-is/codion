@@ -23,7 +23,7 @@ tasks.register("copyModuleDependencyGraphs") {
     }
 }
 
-tasks.register("populateI18nPage") {
+tasks.register("generateI18nPage") {
     group "documentation"
     doLast {
         def file = file("src/docs/asciidoc/technical/i18n.adoc")
@@ -44,7 +44,7 @@ tasks.register("populateI18nPage") {
 }
 
 asciidoctor {
-    dependsOn copyModuleDependencyGraphs, populateI18nPage
+    dependsOn copyModuleDependencyGraphs, generateI18nPage
     // since the sources included in the docs may have changed, there"s definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"))

@@ -563,7 +563,7 @@ Localized messages are available in English (default) and Icelandic. There are a
 
 [source,shell]
 ----
-gradlew documentation:populateI18nPage
+gradlew documentation:generateI18nPage
 ----
 
 == Versioning
