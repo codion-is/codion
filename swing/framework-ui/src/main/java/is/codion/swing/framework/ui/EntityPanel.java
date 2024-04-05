@@ -28,7 +28,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -1021,21 +1020,30 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void showEditWindow() {
-		JPanel basePanel = Components.borderLayoutPanel()
+		JPanel basePanel = borderLayoutPanel()
 						.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
 						.centerComponent(editControlPanel)
 						.build();
 		if (Config.USE_FRAME_PANEL_DISPLAY.get()) {
-			Windows.frame(basePanel)
-							.locationRelativeTo(tablePanel == null ? this : tablePanel)
-							.title(configuration.caption)
-							.icon(configuration.icon)
-							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-							.onClosed(windowEvent -> editPanelState.set(HIDDEN))
-							.build()
-							.setVisible(true);
+			showEditFrame(basePanel);
 		}
+		else {
+			showEditDialog(basePanel);
+		}
+	}
 
+	private void showEditFrame(JPanel basePanel) {
+		Windows.frame(basePanel)
+						.locationRelativeTo(tablePanel == null ? this : tablePanel)
+						.title(configuration.caption)
+						.icon(configuration.icon)
+						.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
+						.build()
+						.setVisible(true);
+	}
+
+	private void showEditDialog(JPanel basePanel) {
 		Dialogs.componentDialog(basePanel)
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
