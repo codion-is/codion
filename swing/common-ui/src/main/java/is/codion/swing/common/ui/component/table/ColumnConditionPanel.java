@@ -96,15 +96,18 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Toggle the enabled status on/off.
+		 * Toggle the enabled status on/off.<br>
+		 * Default: CTRL-ENTER
 		 */
 		TOGGLE_ENABLED,
 		/**
-		 * Select the previous condition operator.
+		 * Select the previous condition operator.<br>
+		 * Default: CTRL-UP ARROW
 		 */
 		PREVIOUS_OPERATOR,
 		/**
-		 * Select the next condition operator.
+		 * Select the next condition operator.<br>
+		 * Default: CTRL-DOWN ARROW
 		 */
 		NEXT_OPERATOR
 	}

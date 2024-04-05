@@ -76,11 +76,13 @@ public final class EntityDependenciesPanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Navigates to the dependencies panel on the left (with wrap-around).
+		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
+		 * Default: CTRL-ALT-LEFT ARROW
 		 */
 		NAVIGATE_LEFT,
 		/**
-		 * Navigates to the dependencies panel on the right (with wrap-around).
+		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
+		 * Default: CTRL-ALT-RIGHT ARROW
 		 */
 		NAVIGATE_RIGHT
 	}

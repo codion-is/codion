@@ -111,11 +111,13 @@ public final class TabbedDetailLayout implements DetailLayout {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Resizes this panel to the right.
+		 * Resizes this panel to the right.<br>
+		 * Default: SHIFT-ALT-RIGHT ARROW
 		 */
 		RESIZE_RIGHT,
 		/**
-		 * Resizes this panel to the left.
+		 * Resizes this panel to the left.<br>
+		 * Default: SHIFT-ALT-LEFT ARROW
 		 */
 		RESIZE_LEFT
 	}

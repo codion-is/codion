@@ -134,15 +134,18 @@ public final class FilteredTable<R, C> extends JTable {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Copy the selected cell contents to the clipboard.
+		 * Copy the selected cell contents to the clipboard.<br>
+		 * Default: CTRL-ALT-C
 		 */
 		COPY_CELL,
 		/**
-		 * Toggles the sort on the selected column.
+		 * Toggles the sort on the selected column.<br>
+		 * Default: ALT-DOWN ARROW
 		 */
 		TOGGLE_SORT_COLUMN,
 		/**
-		 * Toggles the sort on the selected column adding it to any already sorted columns.
+		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
+		 * Default: ALT-UP ARROW
 		 */
 		TOGGLE_SORT_COLUMN_ADD
 	}

@@ -100,11 +100,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Displays a dialog for selecting an input field.
+		 * Displays a dialog for selecting an input field.<br>
+		 * Default: CTRL-I
 		 */
 		SELECT_INPUT_FIELD,
 		/**
-		 * Displays the entity menu, if available
+		 * Displays the entity menu, if available.<br>
+		 * Default: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
 		DISPLAY_ENTITY_MENU

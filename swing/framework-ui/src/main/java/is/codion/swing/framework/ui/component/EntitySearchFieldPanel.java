@@ -64,11 +64,13 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Displays a dialog for adding a new record.
+		 * Displays a dialog for adding a new record.<br>
+		 * Default: INSERT
 		 */
 		ADD,
 		/**
-		 * Displays a dialog for editing the selected record.
+		 * Displays a dialog for editing the selected record.<br>
+		 * Default: CTRL-INSERT
 		 */
 		EDIT
 	}

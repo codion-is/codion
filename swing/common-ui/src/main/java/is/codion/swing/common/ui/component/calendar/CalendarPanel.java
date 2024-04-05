@@ -104,51 +104,63 @@ public final class CalendarPanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Select the previous year.
+		 * Select the previous year.<br>
+		 * Default: CTRL-DOWN ARROW
 		 */
 		PREVIOUS_YEAR,
 		/**
-		 * Select the next year.
+		 * Select the next year.<br>
+		 * Default: CTRL-UP ARROW
 		 */
 		NEXT_YEAR,
 		/**
-		 * Select the previous month.
+		 * Select the previous month.<br>
+		 * Default: SHIFT-DOWN ARROW
 		 */
 		PREVIOUS_MONTH,
 		/**
-		 * Select the next month.
+		 * Select the next month.<br>
+		 * Default: SHIFT-UP ARROW
 		 */
 		NEXT_MONTH,
 		/**
-		 * Select the previous week.
+		 * Select the previous week.<br>
+		 * Default: ALT-UP ARROW
 		 */
 		PREVIOUS_WEEK,
 		/**
-		 * Select the next week.
+		 * Select the next week.<br>
+		 * Default: ALT-DOWN ARROW
 		 */
 		NEXT_WEEK,
 		/**
-		 * Select the previous day.
+		 * Select the previous day.<br>
+		 * Default: ALT-LEFT ARROW
 		 */
 		PREVIOUS_DAY,
 		/**
-		 * Select the next day.
+		 * Select the next day.<br>
+		 * Default: ALT-RIGHT ARROW
 		 */
 		NEXT_DAY,
 		/**
-		 * Select the previous hour.
+		 * Select the previous hour.<br>
+		 * Default: SHIFT-ALT-DOWN ARROW
 		 */
 		PREVIOUS_HOUR,
 		/**
-		 * Select the next hour.
+		 * Select the next hour.<br>
+		 * Default: SHIFT-ALT-UP ARROW
 		 */
 		NEXT_HOUR,
 		/**
-		 * Select the previous minute.
+		 * Select the previous minute.<br>
+		 * Default: CTRL-ALT-DOWN ARROW
 		 */
 		PREVIOUS_MINUTE,
 		/**
-		 * Select the next minute.
+		 * Select the next minute.<br>
+		 * Default: CTRL-ALT-UP ARROW
 		 */
 		NEXT_MINUTE
 	}

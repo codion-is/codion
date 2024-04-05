@@ -136,55 +136,68 @@ public class EntityPanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Requests focus for the table.
+		 * Requests focus for the table.<br>
+		 * Default: CTRL-T
 		 */
 		REQUEST_TABLE_FOCUS,
 		/**
-		 * Toggles the condition panel between hidden, visible and advanced.
+		 * Toggles the condition panel between hidden, visible and advanced.<br>
+		 * Default: CTRL-ALT-S
 		 */
 		TOGGLE_CONDITION_PANEL,
 		/**
-		 * Displays a dialog for selecting a column condition panel.
+		 * Displays a dialog for selecting a column condition panel.<br>
+		 * Default: CTRL-S
 		 */
 		SELECT_CONDITION_PANEL,
 		/**
-		 * Toggles the filter panel between hidden, visible and advanced.
+		 * Toggles the filter panel between hidden, visible and advanced.<br>
+		 * Default: CTRL-ALT-F
 		 */
 		TOGGLE_FILTER_PANEL,
 		/**
-		 * Displays a dialog for selecting a column filter panel.
+		 * Displays a dialog for selecting a column filter panel.<br>
+		 * Default: CTRL-SHIFT-F
 		 */
 		SELECT_FILTER_PANEL,
 		/**
-		 * Requests focus for the table search field.
+		 * Requests focus for the table search field.<br>
+		 * Default: CTRL-F
 		 */
 		REQUEST_SEARCH_FIELD_FOCUS,
 		/**
-		 * Requests focus for the edit panel (intial focus component).
+		 * Requests focus for the edit panel (intial focus component).<br>
+		 * Default: CTRL-E
 		 */
 		REQUEST_EDIT_PANEL_FOCUS,
 		/**
-		 * Displays a dialog for selecting an input field.
+		 * Displays a dialog for selecting an input field.<br>
+		 * Default: CTRL-I
 		 */
 		SELECT_INPUT_FIELD,
 		/**
-		 * Toggles the edit panel between hidden, embedded and dialog.
+		 * Toggles the edit panel between hidden, embedded and dialog.<br>
+		 * Default: CTRL-ALT-E
 		 */
 		TOGGLE_EDIT_PANEL,
 		/**
-		 * Navigates to the parent panel, if one is available.
+		 * Navigates to the parent panel, if one is available.<br>
+		 * Default: CTRL-ALT-UP ARROW
 		 */
 		NAVIGATE_UP,
 		/**
-		 * Navigates to the selected child panel, if one is available.
+		 * Navigates to the selected child panel, if one is available.<br>
+		 * Default: CTRL-ALT-DOWN ARROW
 		 */
 		NAVIGATE_DOWN,
 		/**
-		 * Navigates to the sibling panel on the right, if one is available.
+		 * Navigates to the sibling panel on the right, if one is available.<br>
+		 * Default: CTRL-ALT-RIGHT ARROW
 		 */
 		NAVIGATE_RIGHT,
 		/**
-		 * Navigates to the sibling panel on the left, if one is available.
+		 * Navigates to the sibling panel on the left, if one is available.<br>
+		 * Default: CTRL-ALT-LEFT ARROW
 		 */
 		NAVIGATE_LEFT
 	}

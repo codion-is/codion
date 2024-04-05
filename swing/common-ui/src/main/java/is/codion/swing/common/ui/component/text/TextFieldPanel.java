@@ -73,7 +73,8 @@ public final class TextFieldPanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Displays a text area for longer text input.
+		 * Displays a text area for longer text input.<br>
+		 * Default: INSERT
 		 */
 		DISPLAY_TEXT_AREA
 	}

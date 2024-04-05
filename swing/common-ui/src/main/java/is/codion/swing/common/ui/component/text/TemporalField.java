@@ -77,15 +77,18 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Display a calendar for date/time input.
+		 * Display a calendar for date/time input.<br>
+		 * Default: INSERT
 		 */
 		DISPLAY_CALENDAR,
 		/**
-		 * Increments the date component under the cursor.
+		 * Increments the date component under the cursor.<br>
+		 * Default: UP ARROW
 		 */
 		INCREMENT,
 		/**
-		 * Decrements the date component under the cursor.
+		 * Decrements the date component under the cursor.<br>
+		 * Default: DOWN ARROW
 		 */
 		DECREMENT
 	}

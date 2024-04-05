@@ -6,6 +6,8 @@ Codion Change Log
 - Event.listener() and dataListener() removed, no longer necessary.
 ### is.codion.framework.model
 - EntityEditModel.valueEvent() added.
+### is.codion.swing.common.ui
+- KeyboardShortcuts, default keystroke added to javadoc.
 ### is.codion.swing.framework.ui
 - EntityPanel.icon() added, used when panel is displayed in windows or tabbed panes.
 - EntityPanel.Builder.icon() added.
@@ -21,6 +23,7 @@ Codion Change Log
 - EntityTablePanel.KeyboardShortcut.DISPLAY_ENTITY_MENU added.
 - WindowDetailLayout.WindowType moved to EntityPanel, EntityPanel.Config.USE_FRAME_PANEL_DISPLAY replaced with WINDOW_TYPE.
 - TabbedDetailLayout, WindowDetailLayout, windowType now defaults to the one specified by the EntityPanel.
+- KeyboardShortcuts, default keystroke added to javadoc.
 
 ## 0.17.37
 ### is.codion.common.core

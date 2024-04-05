@@ -167,47 +167,58 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public enum KeyboardShortcut {
 		/**
-		 * Add a new entity instance
+		 * Add a new entity instance.<br>
+		 * Default: INSERT
 		 */
 		ADD,
 		/**
-		 * Edit the selected entity instance
+		 * Edit the selected entity instance.<br>
+		 * Default: CTRL-INSERT
 		 */
 		EDIT,
 		/**
-		 * Requests focus for the table.
+		 * Requests focus for the table.<br>
+		 * Default: CTRL-T
 		 */
 		REQUEST_TABLE_FOCUS,
 		/**
-		 * Toggles the condition panel between hidden, visible and advanced.
+		 * Toggles the condition panel between hidden, visible and advanced.<br>
+		 * Default: CTRL-ALT-S
 		 */
 		TOGGLE_CONDITION_PANEL,
 		/**
-		 * Displays a dialog for selecting a column condition panel.
+		 * Displays a dialog for selecting a column condition panel.<br>
+		 * Default: CTRL-S
 		 */
 		SELECT_CONDITION_PANEL,
 		/**
-		 * Toggles the filter panel between hidden, visible and advanced.
+		 * Toggles the filter panel between hidden, visible and advanced.<br>
+		 * Default: CTRL-ALT-F
 		 */
 		TOGGLE_FILTER_PANEL,
 		/**
-		 * Displays a dialog for selecting a column filter panel.
+		 * Displays a dialog for selecting a column filter panel.<br>
+		 * Default: CTRL-SHIFT-F
 		 */
 		SELECT_FILTER_PANEL,
 		/**
-		 * Triggers the {@link TableControl#PRINT} control.
+		 * Triggers the {@link TableControl#PRINT} control.<br>
+		 * Default: CTRL-P
 		 */
 		PRINT,
 		/**
-		 * Triggers the {@link TableControl#DELETE_SELECTED} control.
+		 * Triggers the {@link TableControl#DELETE_SELECTED} control.<br>
+		 * Default: DELETE
 		 */
 		DELETE_SELECTED,
 		/**
-		 * Displays the table popup menu, if one is available.
+		 * Displays the table popup menu, if one is available.<br>
+		 * Default: CTRL-G
 		 */
 		DISPLAY_POPUP_MENU,
 		/**
-		 * Displays the entity menu, if one is available.
+		 * Displays the entity menu, if one is available.<br>
+		 * Default: CTRL-ALT-V
 		 */
 		DISPLAY_ENTITY_MENU
 	}
