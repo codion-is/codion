@@ -532,6 +532,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.smallIcon(FrameworkIcons.instance().delete())
+						.onException(this::onException)
 						.build();
 	}
 
@@ -555,6 +556,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.smallIcon(FrameworkIcons.instance().update())
+						.onException(this::onException)
 						.build();
 	}
 
@@ -568,6 +570,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
 						.smallIcon(FrameworkIcons.instance().add())
+						.onException(this::onException)
 						.build();
 	}
 
