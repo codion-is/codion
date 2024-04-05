@@ -18,6 +18,7 @@ Codion Change Log
 - EntityEditPanel bug fixed, insert, update and delete control exception handlers set.
 - EntityEditPanel.KeyboardShortcut.DISPLAY_ENTITY_MENU added.
 - EntityEditPanel.Config.includeEntityMenu added.
+- EntityTablePanel.KeyboardShortcut.DISPLAY_ENTITY_MENU added.
 
 ## 0.17.37
 ### is.codion.common.core

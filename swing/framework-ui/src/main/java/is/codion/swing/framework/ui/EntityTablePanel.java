@@ -205,7 +205,11 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Displays the table popup menu, if one is available.
 		 */
-		DISPLAY_POPUP_MENU
+		DISPLAY_POPUP_MENU,
+		/**
+		 * Displays the entity menu, if one is available.
+		 */
+		DISPLAY_ENTITY_MENU
 	}
 
 	/**
@@ -617,8 +621,7 @@ public class EntityTablePanel extends JPanel {
 										.action(control)
 										.enable(table));
 		if (configuration.includeEntityMenu) {
-			KeyEvents.builder(VK_V)
-							.modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+			KeyEvents.builder(configuration.shortcuts.keyStroke(DISPLAY_ENTITY_MENU).get())
 							.action(Control.control(this::showEntityMenu))
 							.enable(table);
 		}
@@ -2056,6 +2059,8 @@ public class EntityTablePanel extends JPanel {
 					return keyStroke(VK_DELETE);
 				case DISPLAY_POPUP_MENU:
 					return keyStroke(VK_G, CTRL_DOWN_MASK);
+				case DISPLAY_ENTITY_MENU:
+					return keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK);
 				default:
 					throw new IllegalArgumentException();
 			}
