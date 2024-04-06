@@ -22,7 +22,8 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 
 import java.sql.Connection;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper for a report
@@ -86,7 +87,7 @@ public interface Report<T, R, P> {
 	 * @throws IllegalStateException in case {@link Report#REPORT_PATH} is not specified
 	 */
 	static String fullReportPath(String reportPath) {
-		Objects.requireNonNull(reportPath);
+		requireNonNull(reportPath);
 		String slash = "/";
 		String reportLocation = reportPath();
 		StringBuilder builder = new StringBuilder(reportLocation);

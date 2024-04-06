@@ -22,7 +22,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -44,6 +43,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
@@ -65,7 +65,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		this.columnModel = columnModel;
 		this.visibleStates = createVisibleStates();
 		this.checkBoxes = visibleStates.entrySet().stream()
-						.map(entry -> Components.checkBox(entry.getValue())
+						.map(entry -> checkBox(entry.getValue())
 										.text(String.valueOf(entry.getKey().getHeaderValue()))
 										.toolTipText(entry.getKey().toolTipText())
 										.build())
@@ -104,12 +104,12 @@ final class ColumnSelectionPanel<C> extends JPanel {
 	}
 
 	private JPanel createNorthPanel(Insets insets) {
-		JCheckBox selectAllBox = Components.checkBox()
+		JCheckBox selectAllBox = checkBox()
 						.linkedValue(State.and(visibleStates.values()))
 						.text(MESSAGES.getString("select_all"))
 						.mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
 						.build();
-		JCheckBox selectNoneBox = Components.checkBox()
+		JCheckBox selectNoneBox = checkBox()
 						.linkedValue(State.and(visibleStates.values().stream()
 										.map(StateObserver::not)
 										.collect(Collectors.toList())))
@@ -129,7 +129,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 						.action(control(new TransferFocusCommand(selectCheckBoxes, true)))
 						.enable(selectAllBox, selectNoneBox);
 
-		return Components.gridLayoutPanel(2, 1)
+		return gridLayoutPanel(2, 1)
 						.addAll(selectAllBox, selectNoneBox)
 						.border(createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right))
 						.build();
@@ -144,7 +144,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 	}
 
 	private JScrollPane createCheckBoxPanel() {
-		JPanel northPanel = Components.gridLayoutPanel(0, 1)
+		JPanel northPanel = gridLayoutPanel(0, 1)
 						.addAll(checkBoxes)
 						.build();
 		KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)
@@ -164,7 +164,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
 			});
 		});
 
-		return Components.borderLayoutPanel()
+		return borderLayoutPanel()
 						.northComponent(northPanel)
 						.scrollPane()
 						.preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)

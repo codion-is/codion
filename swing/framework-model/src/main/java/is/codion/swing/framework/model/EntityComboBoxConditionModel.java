@@ -23,9 +23,10 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link is.codion.common.model.table.ColumnConditionModel} based on a {@link EntityComboBoxModel}.
@@ -40,7 +41,7 @@ public final class EntityComboBoxConditionModel extends AbstractForeignKeyCondit
 
 	private EntityComboBoxConditionModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
 		super(foreignKey);
-		this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
+		this.entityComboBoxModel = requireNonNull(comboBoxModel, "comboBoxModel");
 		if (entityComboBoxModel.cleared()) {
 			entityComboBoxModel.setSelectedItem(getEqualValue());
 		}
