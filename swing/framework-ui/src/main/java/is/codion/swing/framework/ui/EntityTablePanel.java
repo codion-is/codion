@@ -348,7 +348,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
-		this.editPanel = requireNonNull(editPanel, "editPanel");
+		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(tableModel, configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
@@ -1148,11 +1148,15 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean includeAddControl() {
-		return editPanel != null && configuration.includeAddControl;
+		return editPanel != null && configuration.includeAddControl &&
+						!tableModel.editModel().readOnly().get() &&
+						tableModel.editModel().insertEnabled().get();
 	}
 
 	private boolean includeEditControl() {
-		return editPanel != null && configuration.includeEditControl;
+		return editPanel != null && configuration.includeEditControl &&
+						!tableModel.editModel().readOnly().get() &&
+						tableModel.editModel().updateEnabled().get();
 	}
 
 	private boolean includeEditSelectedControls() {
@@ -1470,6 +1474,14 @@ public class EntityTablePanel extends JPanel {
 
 							return value;
 						}));
+	}
+
+	private EntityEditPanel validateEditModel(EntityEditPanel editPanel) {
+		if (editPanel.editModel() != tableModel.editModel()) {
+			throw new IllegalArgumentException("Edit panel model must be the same as the table edit model");
+		}
+
+		return editPanel;
 	}
 
 	private void throwIfInitialized() {

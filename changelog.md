@@ -32,6 +32,8 @@ Codion Change Log
 - EntityEditComponentPanel.addValidator() overloaded for combo boxes, now protected, validator added to all combo boxes.
 - EntitySearchField.DefaultTableSelector refactored.
 - EntitySearchField.DefaultListSelector refactored.
+- EntityTablePanel constructor now throws exception if the edit models don't match.
+- EntityTablePanel no longer creates Add and Edit controls if the edit model doesn't allow insert or update.
 
 ## 0.17.37
 ### is.codion.common.core
