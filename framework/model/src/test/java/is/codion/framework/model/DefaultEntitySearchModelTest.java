@@ -212,6 +212,13 @@ public final class DefaultEntitySearchModelTest {
 		result = searchModel.search();
 		assertTrue(contains(result, "John"));
 		assertFalse(contains(result, "johnson"));
+
+		searchModel.condition().set(null);
+		searchModel.settings().get(Employee.NAME).caseSensitive().set(false);
+		searchModel.searchString().set("jo on");// space as wildcard
+		result = searchModel.search();
+		assertEquals(1, result.size());
+		assertTrue(contains(result, "johnson"));
 	}
 
 	@Test

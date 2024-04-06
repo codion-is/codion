@@ -42,6 +42,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
@@ -542,16 +543,13 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private static JPanel createSouthPanel(EntitySearchModel searchModel) {
-			PanelBuilder southPanelBuilder = gridLayoutPanel(1, 0);
+			BorderLayoutPanelBuilder panelBuilder = borderLayoutPanel();
 			if (!searchModel.singleSelection()) {
-				southPanelBuilder.add(createSeparatorPanel(searchModel));
+				panelBuilder.centerComponent(createSeparatorPanel(searchModel));
 			}
-			else {
-				southPanelBuilder.add(new JLabel());
-			}
-			southPanelBuilder.add(createLimitPanel(searchModel));
+			panelBuilder.eastComponent(createLimitPanel(searchModel));
 
-			return southPanelBuilder.build();
+			return panelBuilder.build();
 		}
 
 		private static JPanel createSeparatorPanel(EntitySearchModel searchModel) {
@@ -574,7 +572,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private static JPanel createSettingsPanel(EntitySearchModel.Settings settings) {
-			return Components.gridLayoutPanel(3, 1)
+			return Components.gridLayoutPanel(4, 1)
 							.add(Components.checkBox(settings.caseSensitive())
 											.text(MESSAGES.getString("case_sensitive"))
 											.build())
@@ -583,6 +581,9 @@ public final class EntitySearchField extends HintTextField {
 											.build())
 							.add(Components.checkBox(settings.wildcardPostfix())
 											.text(MESSAGES.getString("postfix_wildcard"))
+											.build())
+							.add(Components.checkBox(settings.spaceAsWildcard())
+											.text(MESSAGES.getString("space_as_wildcard"))
 											.build())
 							.build();
 		}

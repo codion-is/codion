@@ -6,6 +6,7 @@ Codion Change Log
 - Event.listener() and dataListener() removed, no longer necessary.
 ### is.codion.framework.model
 - EntityEditModel.valueEvent() added.
+- EntitySearchModel.Settings.spaceAsWildcard() added.
 ### is.codion.swing.common.ui
 - KeyboardShortcuts, default keystroke added to javadoc.
 - FilteredTable, Metal Look and Feel related bug fixed, searchField minimum width also used as preferred width.
@@ -34,6 +35,7 @@ Codion Change Log
 - EntitySearchField.DefaultListSelector refactored.
 - EntityTablePanel constructor now throws exception if the edit models don't match.
 - EntityTablePanel no longer creates Add and Edit controls if the edit model doesn't allow insert or update.
+- EntitySearchField, spaceAsWildcard() setting added to settings panel.
 
 ## 0.17.37
 ### is.codion.common.core

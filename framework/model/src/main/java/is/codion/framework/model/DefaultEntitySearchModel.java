@@ -224,6 +224,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private String prepareSearchString(String rawSearchString, Settings settings) {
 		boolean wildcardPrefix = settings.wildcardPrefix().get();
 		boolean wildcardPostfix = settings.wildcardPostfix().get();
+		rawSearchString = settings.spaceAsWildcard().get() ? rawSearchString.replace(' ', wildcard.get()) : rawSearchString;
 
 		return rawSearchString.equals(String.valueOf(wildcard.get())) ? String.valueOf(wildcard.get()) :
 						((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
@@ -284,6 +285,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final State wildcardPrefixState = State.state(true);
 		private final State wildcardPostfixState = State.state(true);
 		private final State caseSensitiveState = State.state(false);
+		private final State spaceAsWildcard = State.state(true);
 
 		@Override
 		public State wildcardPrefix() {
@@ -293,6 +295,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public State wildcardPostfix() {
 			return wildcardPostfixState;
+		}
+
+		@Override
+		public State spaceAsWildcard() {
+			return spaceAsWildcard;
 		}
 
 		@Override

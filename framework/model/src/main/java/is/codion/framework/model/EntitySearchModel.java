@@ -165,6 +165,11 @@ public interface EntitySearchModel {
 		State wildcardPostfix();
 
 		/**
+		 * @return a State representing whether spaces in the search string are automatically replaced with wildcards
+		 */
+		State spaceAsWildcard();
+
+		/**
 		 * @return a State representing whether the search is case-sensitive
 		 */
 		State caseSensitive();

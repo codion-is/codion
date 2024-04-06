@@ -912,4 +912,5 @@ is/codion/swing/framework/ui/component/EntitySearchField_is_IS.properties
 |search_columns|Search columns|Leitardálkar
 |searching|Searching|Leita
 |select_entity|Select record|Veldu færslu
+|space_as_wildcard|Space as wildcard|Stafabil sem algildi
 |===
