@@ -650,7 +650,6 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultListSelector implements ListSelector {
 
 		private final EntitySearchModel searchModel;
-		private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
 		private final JList<Entity> list;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
@@ -675,6 +674,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(JComponent dialogOwner, List<Entity> entities) {
+			DefaultListModel<Entity> listModel = (DefaultListModel<Entity>) list.getModel();
 			requireNonNull(entities).forEach(listModel::addElement);
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
@@ -694,7 +694,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private JList<Entity> createList(EntitySearchModel searchModel) {
-			return Components.list(listModel)
+			return Components.list(new DefaultListModel<Entity>())
 							.selectionMode(searchModel.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
 							.mouseListener(new DoubleClickListener())
@@ -740,7 +740,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private DefaultTableSelector(EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
-			table = createTable(new DefaultTableModel());
+			table = createTable();
 			selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane(table).build())
 							.southComponent(borderLayoutPanel()
@@ -779,10 +779,8 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private FilteredTable<Entity, Attribute<?>> createTable(SwingEntityTableModel tableModel) {
-			configureTableModel(tableModel);
-
-			return FilteredTable.builder(tableModel)
+		private FilteredTable<Entity, Attribute<?>> createTable() {
+			return FilteredTable.builder(createTableModel())
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.selectionMode(searchModel.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
@@ -796,18 +794,21 @@ public final class EntitySearchField extends HintTextField {
 							.keyEvent(KeyEvents.builder(VK_F)
 											.modifiers(CTRL_DOWN_MASK)
 											.action(control(this::requestSearchFieldFocus)))
-							.onBuild(table -> KeyEvents.builder(VK_ENTER)
+							.onBuild(t -> KeyEvents.builder(VK_ENTER)
 											.action(selectControl)
-											.enable(table.searchField()))
+											.enable(t.searchField()))
 							.build();
 		}
 
-		private void configureTableModel(SwingEntityTableModel tableModel) {
+		private SwingEntityTableModel createTableModel() {
+			SwingEntityTableModel tableModel = new DefaultTableModel();
 			tableModel.columnModel().columns().forEach(column ->
 							column.setCellRenderer(EntityTableCellRenderer.builder(tableModel, column.getIdentifier()).build()));
 			Collection<Column<String>> columns = searchModel.columns();
 			tableModel.columnModel().setVisibleColumns(columns.toArray(new Attribute[0]));
 			tableModel.sortModel().setSortOrder(columns.iterator().next(), SortOrder.ASCENDING);
+
+			return tableModel;
 		}
 
 		private void requestSearchFieldFocus() {
