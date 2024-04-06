@@ -68,7 +68,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -96,10 +95,12 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
+import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -650,35 +651,21 @@ public final class EntitySearchField extends HintTextField {
 
 		private final EntitySearchModel searchModel;
 		private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
-		private final JList<Entity> list = new JList<>(listModel);
-		private final JScrollPane scrollPane = new JScrollPane(list);
-		private final JPanel basePanel = new JPanel(borderLayout());
-		private final JLabel resultLimitLabel = Components.label()
+		private final JList<Entity> list;
+		private final JPanel selectorPanel;
+		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
 						.build();
-		private final Control selectControl;
+		private final Control selectControl = control(new SelectCommand());
 
 		private DefaultListSelector(EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
-			selectControl = Control.builder(new SelectCommand(searchModel, list))
-							.name(Messages.ok())
+			this.list = createList(searchModel);
+			this.selectorPanel = borderLayoutPanel()
+							.centerComponent(scrollPane(list).build())
+							.southComponent(resultLimitLabel)
+							.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
 							.build();
-			list.setSelectionMode(searchModel.singleSelection() ?
-							ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-							KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
-			list.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() == 2) {
-						selectControl.actionPerformed(null);
-					}
-				}
-			});
-			basePanel.add(scrollPane, BorderLayout.CENTER);
-			basePanel.add(resultLimitLabel, BorderLayout.SOUTH);
-			int gap = Layouts.GAP.get();
-			basePanel.setBorder(createEmptyBorder(gap, gap, 0, gap));
 		}
 
 		@Override
@@ -692,7 +679,7 @@ public final class EntitySearchField extends HintTextField {
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
-			Dialogs.okCancelDialog(basePanel)
+			Dialogs.okCancelDialog(selectorPanel)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
@@ -703,23 +690,40 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void preferredSize(Dimension preferredSize) {
-			basePanel.setPreferredSize(preferredSize);
+			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private static final class SelectCommand implements Control.Command {
+		private JList<Entity> createList(EntitySearchModel searchModel) {
+			return Components.list(listModel)
+							.selectionMode(searchModel.singleSelection() ?
+											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+							.mouseListener(new DoubleClickListener())
+							.onBuild(new RemoveDefaultEnterAction())
+							.build();
+		}
 
-			private final EntitySearchModel searchModel;
-			private final JList<Entity> list;
-
-			private SelectCommand(EntitySearchModel searchModel, JList<Entity> list) {
-				this.searchModel = searchModel;
-				this.list = list;
-			}
-
+		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
 				searchModel.entities().set(list.getSelectedValuesList());
-				Utilities.disposeParentWindow(list);
+				disposeParentWindow(list);
+			}
+		}
+
+		private final class DoubleClickListener extends MouseAdapter {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					selectControl.actionPerformed(null);
+				}
+			}
+		}
+
+		private static final class RemoveDefaultEnterAction implements Consumer<JList<Entity>> {
+			@Override
+			public void accept(JList list) {
+				list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+								.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			}
 		}
 	}
@@ -729,16 +733,14 @@ public final class EntitySearchField extends HintTextField {
 		private final EntitySearchModel searchModel;
 		private final FilteredTable<Entity, Attribute<?>> table;
 		private final JPanel selectorPanel;
-		private final JLabel resultLimitLabel = Components.label()
+		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
 						.build();
-		private final Control selectControl = Control.builder(new SelectCommand())
-						.name(Messages.ok())
-						.build();
+		private final Control selectControl = control(new SelectCommand());
 
 		private DefaultTableSelector(EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
-			table = createTable(new DefaultTableModel(searchModel));
+			table = createTable(new DefaultTableModel());
 			selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane(table).build())
 							.southComponent(borderLayoutPanel()
@@ -793,7 +795,7 @@ public final class EntitySearchField extends HintTextField {
 											.action(selectControl))
 							.keyEvent(KeyEvents.builder(VK_F)
 											.modifiers(CTRL_DOWN_MASK)
-											.action(Control.control(this::requestSearchFieldFocus)))
+											.action(control(this::requestSearchFieldFocus)))
 							.onBuild(table -> KeyEvents.builder(VK_ENTER)
 											.action(selectControl)
 											.enable(table.searchField()))
@@ -816,13 +818,13 @@ public final class EntitySearchField extends HintTextField {
 			@Override
 			public void execute() throws Exception {
 				searchModel.entities().set(table.getModel().selectionModel().getSelectedItems());
-				Utilities.disposeParentWindow(table);
+				disposeParentWindow(table);
 			}
 		}
 
-		private static final class DefaultTableModel extends SwingEntityTableModel {
+		private final class DefaultTableModel extends SwingEntityTableModel {
 
-			private DefaultTableModel(EntitySearchModel searchModel) {
+			private DefaultTableModel() {
 				super(searchModel.entityType(), searchModel.connectionProvider());
 			}
 
