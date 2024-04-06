@@ -34,7 +34,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
@@ -99,8 +98,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
-import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.menu;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
@@ -110,6 +108,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A UI component based on the EntitySearchModel.
@@ -136,8 +135,8 @@ public final class EntitySearchField extends HintTextField {
 	 * Value type: {@link SearchIndicator}<br>
 	 * Default value: {@link SearchIndicator#WAIT_CURSOR}
 	 */
-	public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR = Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator",
-					SearchIndicator.class, WAIT_CURSOR);
+	public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR =
+					Configuration.enumValue("is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator", SearchIndicator.class, WAIT_CURSOR);
 
 	/**
 	 * The ways which a search field can indicate that a search is in progress.
@@ -679,7 +678,7 @@ public final class EntitySearchField extends HintTextField {
 			basePanel.add(scrollPane, BorderLayout.CENTER);
 			basePanel.add(resultLimitLabel, BorderLayout.SOUTH);
 			int gap = Layouts.GAP.get();
-			basePanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
+			basePanel.setBorder(createEmptyBorder(gap, gap, 0, gap));
 		}
 
 		@Override
@@ -729,53 +728,25 @@ public final class EntitySearchField extends HintTextField {
 
 		private final EntitySearchModel searchModel;
 		private final FilteredTable<Entity, Attribute<?>> table;
-		private final JScrollPane scrollPane;
-		private final JPanel searchPanel = new JPanel(borderLayout());
-		private final JPanel basePanel = new JPanel(borderLayout());
+		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = Components.label()
 						.horizontalAlignment(SwingConstants.RIGHT)
 						.build();
-		private final Control selectControl;
+		private final Control selectControl = Control.builder(new SelectCommand())
+						.name(Messages.ok())
+						.build();
 
 		private DefaultTableSelector(EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
-			SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.entityType(), searchModel.connectionProvider()) {
-				@Override
-				protected Collection<Entity> refreshItems() {
-					return emptyList();
-				}
-			};
-			selectControl = Control.builder(createSelectCommand(searchModel, tableModel))
-							.name(Messages.ok())
+			table = createTable(new DefaultTableModel(searchModel));
+			selectorPanel = borderLayoutPanel()
+							.centerComponent(scrollPane(table).build())
+							.southComponent(borderLayoutPanel()
+											.westComponent(table.searchField())
+											.centerComponent(resultLimitLabel)
+											.build())
+							.border(createEmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
 							.build();
-			table = FilteredTable.builder(tableModel)
-							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-							.selectionMode(searchModel.singleSelection() ?
-											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-							.doubleClickAction(selectControl)
-							.build();
-			KeyEvents.builder(VK_ENTER)
-							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.action(selectControl)
-							.enable(table);
-			KeyEvents.builder(VK_ENTER)
-							.action(selectControl)
-							.enable(table.searchField());
-			KeyEvents.builder(VK_F)
-							.modifiers(CTRL_DOWN_MASK)
-							.action(Control.control(table.searchField()::requestFocusInWindow))
-							.enable(table);
-			tableModel.columnModel().columns().forEach(this::configureColumn);
-			Collection<Column<String>> columns = searchModel.columns();
-			tableModel.columnModel().setVisibleColumns(columns.toArray(new Attribute[0]));
-			tableModel.sortModel().setSortOrder(columns.iterator().next(), SortOrder.ASCENDING);
-			scrollPane = new JScrollPane(table);
-			searchPanel.add(table.searchField(), BorderLayout.WEST);
-			searchPanel.add(resultLimitLabel, BorderLayout.CENTER);
-			basePanel.add(scrollPane, BorderLayout.CENTER);
-			basePanel.add(searchPanel, BorderLayout.SOUTH);
-			int gap = Layouts.GAP.get();
-			basePanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
 		}
 
 		/**
@@ -791,7 +762,7 @@ public final class EntitySearchField extends HintTextField {
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
-			Dialogs.okCancelDialog(basePanel)
+			Dialogs.okCancelDialog(selectorPanel)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
@@ -803,18 +774,62 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void preferredSize(Dimension preferredSize) {
-			basePanel.setPreferredSize(preferredSize);
+			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
-			return () -> {
-				searchModel.entities().set(tableModel.selectionModel().getSelectedItems());
+		private FilteredTable<Entity, Attribute<?>> createTable(SwingEntityTableModel tableModel) {
+			configureTableModel(tableModel);
+
+			return FilteredTable.builder(tableModel)
+							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+							.selectionMode(searchModel.singleSelection() ?
+											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+							.doubleClickAction(selectControl)
+							.keyEvent(KeyEvents.builder(VK_ENTER)
+											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.action(selectControl))
+							.keyEvent(KeyEvents.builder(VK_ENTER)
+											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.action(selectControl))
+							.keyEvent(KeyEvents.builder(VK_F)
+											.modifiers(CTRL_DOWN_MASK)
+											.action(Control.control(this::requestSearchFieldFocus)))
+							.onBuild(table -> KeyEvents.builder(VK_ENTER)
+											.action(selectControl)
+											.enable(table.searchField()))
+							.build();
+		}
+
+		private void configureTableModel(SwingEntityTableModel tableModel) {
+			tableModel.columnModel().columns().forEach(column ->
+							column.setCellRenderer(EntityTableCellRenderer.builder(tableModel, column.getIdentifier()).build()));
+			Collection<Column<String>> columns = searchModel.columns();
+			tableModel.columnModel().setVisibleColumns(columns.toArray(new Attribute[0]));
+			tableModel.sortModel().setSortOrder(columns.iterator().next(), SortOrder.ASCENDING);
+		}
+
+		private void requestSearchFieldFocus() {
+			table.searchField().requestFocusInWindow();
+		}
+
+		private final class SelectCommand implements Control.Command {
+			@Override
+			public void execute() throws Exception {
+				searchModel.entities().set(table.getModel().selectionModel().getSelectedItems());
 				Utilities.disposeParentWindow(table);
-			};
+			}
 		}
 
-		private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
-			column.setCellRenderer(EntityTableCellRenderer.builder((SwingEntityTableModel) table.getModel(), column.getIdentifier()).build());
+		private static final class DefaultTableModel extends SwingEntityTableModel {
+
+			private DefaultTableModel(EntitySearchModel searchModel) {
+				super(searchModel.entityType(), searchModel.connectionProvider());
+			}
+
+			@Override
+			protected Collection<Entity> refreshItems() {
+				return emptyList();
+			}
 		}
 	}
 

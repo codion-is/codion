@@ -29,6 +29,7 @@ Codion Change Log
 - KeyboardShortcuts, default keystroke added to javadoc.
 - EntityTablePanel.Config.includeToolBar added.
 - EntityEditComponentPanel.addValidator() overloaded for combo boxes, now protected, validator added to all combo boxes.
+- EntitySearchField.DefaultTableSelector refactored.
 
 ## 0.17.37
 ### is.codion.common.core
