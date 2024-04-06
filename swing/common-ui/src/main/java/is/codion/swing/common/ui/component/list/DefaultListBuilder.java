@@ -42,7 +42,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
 	private ListCellRenderer<T> cellRenderer;
 	private ListSelectionModel selectionModel;
 
-	private int visibleRowCount;
+	private Integer visibleRowCount;
 	private int layoutOrientation = JList.VERTICAL;
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
@@ -111,7 +111,9 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
 			list.setSelectionModel(selectionModel);
 		}
 		listSelectionListeners.forEach(new AddListSelectionListener(list));
-		list.setVisibleRowCount(visibleRowCount);
+		if (visibleRowCount != null) {
+			list.setVisibleRowCount(visibleRowCount);
+		}
 		list.setLayoutOrientation(layoutOrientation);
 		list.setFixedCellHeight(fixedCellHeight);
 		list.setFixedCellWidth(fixedCellWidth);
