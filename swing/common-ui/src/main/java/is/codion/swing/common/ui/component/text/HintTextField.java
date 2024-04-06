@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.value.Value;
 
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.text.Document;
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -38,12 +37,12 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 /**
- * A text field which displays a hint text when it is not the focus owner and contains no text.
- * The hint text foreground color is a simplistic average of the text field background and foreground color.
+ * A text field which displays a hint when it is not the focus owner and contains no text.
+ * The hint foreground color is a simplistic average of the text field background and foreground color.
  */
 public class HintTextField extends JTextField {
 
-	private final Value<String> hintText;
+	private final Value<String> hint;
 
 	private Color hintColor;
 
@@ -55,37 +54,35 @@ public class HintTextField extends JTextField {
 	}
 
 	/**
-	 * @param hintText the hint text
+	 * @param hint the hint text
 	 */
-	public HintTextField(String hintText) {
-		this(null, hintText);
+	public HintTextField(String hint) {
+		this(null, hint);
 	}
 
 	/**
 	 * @param document the document
-	 * @param hintText the hint text
+	 * @param hint the hint text
 	 */
-	public HintTextField(Document document, String hintText) {
+	public HintTextField(Document document, String hint) {
 		super(document, null, 0);
-		this.hintText = Value.value(hintText, "");
-		this.hintText.addListener(this::repaint);
-		updateHintTextColor();
-		addPropertyChangeListener("UI", new UpdateHintTextColorOnUIChange());
-		addFocusListener(new UpdateHintFocusListener());
+		this.hint = Value.value(hint, "");
+		setupListeners();
+		updateHintColor();
 	}
 
 	/**
 	 * @return the Value controlling the hint text
 	 */
-	public final Value<String> hintText() {
-		return hintText;
+	public final Value<String> hint() {
+		return hint;
 	}
 
 	@Override
 	public final void paint(Graphics graphics) {
 		super.paint(graphics);
-		if (!hintText.get().isEmpty() && !isFocusOwner() && getText().isEmpty()) {
-			paintHintText(graphics);
+		if (!hint.get().isEmpty() && !isFocusOwner() && getText().isEmpty()) {
+			paintHint(graphics);
 		}
 	}
 
@@ -99,17 +96,17 @@ public class HintTextField extends JTextField {
 		super.addFocusListener(listener);
 	}
 
-	private void paintHintText(Graphics graphics) {
+	private void paintHint(Graphics graphics) {
 		((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		Insets insets = getInsets();
 		FontMetrics fontMetrics = graphics.getFontMetrics();
 		graphics.setColor(hintColor);
-		graphics.drawString(adjustHintTextLength(fontMetrics, insets.left + insets.right),
+		graphics.drawString(adjustHintLength(fontMetrics, insets.left + insets.right),
 						insets.left, getHeight() - fontMetrics.getDescent() - insets.bottom);
 	}
 
-	private String adjustHintTextLength(FontMetrics fontMetrics, int insets) {
-		String adjustedText = hintText.get();
+	private String adjustHintLength(FontMetrics fontMetrics, int insets) {
+		String adjustedText = hint.get();
 		int hintWidth = fontMetrics.stringWidth(adjustedText) + insets;
 		while (hintWidth > getWidth() && !adjustedText.isEmpty()) {
 			adjustedText = adjustedText.substring(0, adjustedText.length() - 1);
@@ -119,14 +116,14 @@ public class HintTextField extends JTextField {
 		return adjustedText;
 	}
 
-	private void updateHintTextColor() {
+	private void updateHintColor() {
 		hintColor = hintForegroundColor();
 		repaint();
 	}
 
-	private static Color hintForegroundColor() {
-		Color foreground = UIManager.getColor("TextField.foreground");
-		Color background = UIManager.getColor("TextField.background");
+	private Color hintForegroundColor() {
+		Color foreground = getForeground();
+		Color background = getBackground();
 
 		//simplistic averaging of background and foreground
 		int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);
@@ -136,15 +133,29 @@ public class HintTextField extends JTextField {
 		return new Color(r, g, b, foreground.getAlpha());
 	}
 
-	private final class UpdateHintTextColorOnUIChange implements PropertyChangeListener {
+	private void setupListeners() {
+		hint.addListener(this::repaint);
+		addPropertyChangeListener(new UpdateHintColor());
+		addFocusListener(new RepaintFocusListener());
+	}
+
+	private final class UpdateHintColor implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			updateHintTextColor();
+			switch (evt.getPropertyName()) {
+				case "UI":
+				case "foreground":
+				case "background":
+					updateHintColor();
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
-	private final class UpdateHintFocusListener implements FocusListener {
+	private final class RepaintFocusListener implements FocusListener {
 
 		@Override
 		public void focusGained(FocusEvent e) {

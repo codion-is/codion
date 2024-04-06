@@ -122,7 +122,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 			setSelector(textField, selector);
 		}
 		if (hintText != null && textField instanceof HintTextField) {
-			((HintTextField) textField).hintText().set(hintText);
+			((HintTextField) textField).hint().set(hintText);
 		}
 
 		return textField;
