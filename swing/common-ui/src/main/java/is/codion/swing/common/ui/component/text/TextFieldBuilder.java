@@ -82,10 +82,10 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	B horizontalAlignment(int horizontalAlignment);
 
 	/**
-	 * @param hintText the hint text to display when the field is empty and unfocused
+	 * @param hint the hint to display when the field is empty and unfocused
 	 * @return this builder instance
 	 */
-	B hintText(String hintText);
+	B hint(String hint);
 
 	/**
 	 * @param <T> the value type

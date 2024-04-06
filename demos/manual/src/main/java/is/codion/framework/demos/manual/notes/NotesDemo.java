@@ -141,7 +141,7 @@ public final class NotesDemo {
 			initialFocusAttribute().set(Note.NOTE);
 
 			createTextField(Note.NOTE)
-							.hintText("Take note...")
+							.hint("Take note...")
 							// Use the Enter key for inserting, updating
 							// and deleting, depending on the edit model state
 							.action(Control.control(this::insertDeleteOrUpdate));

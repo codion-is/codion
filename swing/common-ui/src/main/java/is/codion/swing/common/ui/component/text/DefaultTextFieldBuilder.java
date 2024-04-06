@@ -48,7 +48,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	private SingleSelector<T> selector;
 	private Format format;
 	private int horizontalAlignment = SwingConstants.LEADING;
-	private String hintText;
+	private String hint;
 
 	DefaultTextFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
 		super(linkedValue);
@@ -97,11 +97,11 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	}
 
 	@Override
-	public final B hintText(String hintText) {
-		if (nullOrEmpty(hintText)) {
-			throw new IllegalArgumentException("Hint text is null or empty");
+	public final B hint(String hint) {
+		if (nullOrEmpty(hint)) {
+			throw new IllegalArgumentException("Hint is null or empty");
 		}
-		this.hintText = hintText;
+		this.hint = hint;
 		return (B) this;
 	}
 
@@ -121,8 +121,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 		if (selector != null) {
 			setSelector(textField, selector);
 		}
-		if (hintText != null && textField instanceof HintTextField) {
-			((HintTextField) textField).hint().set(hintText);
+		if (hint != null && textField instanceof HintTextField) {
+			((HintTextField) textField).hint().set(hint);
 		}
 
 		return textField;

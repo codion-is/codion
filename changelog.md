@@ -10,6 +10,7 @@ Codion Change Log
 - KeyboardShortcuts, default keystroke added to javadoc.
 - FilteredTable, Metal Look and Feel related bug fixed, searchField minimum width also used as preferred width.
 - HintTextField.hintText() renamed hint(), refactoring with minor improvements.
+- TextFieldBuilder.hintText() renamed hint().
 ### is.codion.swing.framework.ui
 - EntityPanel.icon() added, used when panel is displayed in windows or tabbed panes.
 - EntityPanel.Builder.icon() added.
