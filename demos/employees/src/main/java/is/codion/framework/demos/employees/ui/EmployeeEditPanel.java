@@ -73,6 +73,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 		EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
 		NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPARTMENT_NO)
 						.transferFocusOnEnter(true)
+						.onBuild(field -> addValidator(Employee.DEPARTMENT, field))
 						.build();
 
 		component(Employee.DEPARTMENT_FK).set(departmentNumberField);

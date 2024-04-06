@@ -26,6 +26,7 @@ Codion Change Log
 - TabbedDetailLayout, WindowDetailLayout, windowType now defaults to the one specified by the EntityPanel.
 - KeyboardShortcuts, default keystroke added to javadoc.
 - EntityTablePanel.Config.includeToolBar added.
+- EntityEditComponentPanel.addValidator() overloaded for combo boxes, now protected, validator added to all combo boxes.
 
 ## 0.17.37
 ### is.codion.common.core
