@@ -44,11 +44,17 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	@Override
 	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
 		return super.createPopupMenuControls(additionalPopupMenuControls)
-						.addAt(6, Control.builder(this::randomPlaylist)
+						.addAt(8, Control.builder(this::randomPlaylist)
 										.name(BUNDLE.getString("random_playlist"))
 										.smallIcon(FrameworkIcons.instance().add())
 										.build())
-						.addSeparatorAt(7);
+						.addSeparatorAt(9);
+	}
+
+	@Override
+	protected void setupControls() {
+		// No need for the edit selected control in the popup menu
+		control(TableControl.EDIT_SELECTED).set(null);
 	}
 
 	private void randomPlaylist() throws DatabaseException {

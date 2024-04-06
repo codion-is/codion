@@ -55,7 +55,6 @@ import static is.codion.framework.demos.world.model.LookupTableModel.ExportForma
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static java.util.stream.Collectors.toSet;
-import static javax.swing.BorderFactory.createTitledBorder;
 
 final class LookupTablePanel extends EntityTablePanel {
 
@@ -210,7 +209,6 @@ final class LookupTablePanel extends EntityTablePanel {
 						.orientation(SwingConstants.VERTICAL)
 						.toggleButtonType(ToggleButtonType.CHECKBOX)
 						.includeButtonText(true)
-						.border(createTitledBorder("Columns"))
 						.build();
 	}
 

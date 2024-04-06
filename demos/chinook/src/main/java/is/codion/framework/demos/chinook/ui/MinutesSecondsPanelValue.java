@@ -58,12 +58,12 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
 		private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
 
-		private final NumberField<Integer> minutesField = integerField()
+		final NumberField<Integer> minutesField = integerField()
 						.transferFocusOnEnter(true)
 						.selectAllOnFocusGained(true)
 						.columns(2)
 						.build();
-		private final NumberField<Integer> secondsField = integerField()
+		final NumberField<Integer> secondsField = integerField()
 						.valueRange(0, 59)
 						.transferFocusOnEnter(true)
 						.selectAllOnFocusGained(true)

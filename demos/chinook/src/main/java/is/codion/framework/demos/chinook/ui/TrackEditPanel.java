@@ -67,6 +67,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.columns(5);
 
 		ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
+		addValidator(Track.MILLISECONDS, minutesSecondsValue.component().minutesField);
+		addValidator(Track.MILLISECONDS, minutesSecondsValue.component().secondsField);
 		minutesSecondsValue.link(editModel().value(Track.MILLISECONDS));
 
 		createIntegerField(Track.BYTES)

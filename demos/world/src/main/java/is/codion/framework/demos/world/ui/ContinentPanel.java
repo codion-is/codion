@@ -72,7 +72,9 @@ final class ContinentPanel extends EntityPanel {
 
 		EntityTablePanel countryTablePanel =
 						new EntityTablePanel(model.detailModel(Country.TYPE).tableModel(),
-										config -> config.includeConditionPanel(false));
+										config -> config
+														.includeConditionPanel(false)
+														.includeToolBar(false));
 		setPreferredHeight(countryTablePanel, 300);
 
 		JTabbedPane tabbedPane = tabbedPane()
