@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.38-SNAPSHOT
+## 0.17.38
 ### is.codion.common.core
 - Event.listener() and dataListener() removed, no longer necessary.
 ### is.codion.framework.model
