@@ -1379,6 +1379,20 @@ public class DefaultLocalEntityConnectionTest {
 		assertEquals("CLERK", jobs.get(0).get(Job.JOB));
 	}
 
+	@Test
+	void nullConverter() throws DatabaseException {
+		Entity entity = DOMAIN.entities().builder(NullConverter.TYPE)
+						.with(NullConverter.ID, -1)
+						.with(NullConverter.NAME, null)
+						.build();
+		entity = connection.insertSelect(entity);
+		entity.put(NullConverter.NAME, "name");
+		entity = connection.updateSelect(entity);
+		entity.put(NullConverter.NAME, "null");
+		entity = connection.updateSelect(entity);
+		assertTrue(entity.isNull(NullConverter.NAME));
+	}
+
 	private static LocalEntityConnection createConnection() throws DatabaseException {
 		return createConnection(false);
 	}

@@ -414,19 +414,11 @@ public final class WorldImpl extends DefaultDomain {
 		@Override
 		public String toColumnValue(Location location,
 																Statement statement) {
-			if (location == null) {
-				return null;
-			}
-
 			return "POINT (" + location.longitude() + " " + location.latitude() + ")";
 		}
 
 		@Override
 		public Location fromColumnValue(String columnValue) {
-			if (columnValue == null) {
-				return null;
-			}
-
 			String[] latLon = columnValue
 							.replace("POINT (", "")
 							.replace(")", "")

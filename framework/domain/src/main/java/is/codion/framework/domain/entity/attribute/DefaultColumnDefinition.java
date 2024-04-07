@@ -163,7 +163,12 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	@Override
 	public final T get(ResultSet resultSet, int index) throws SQLException {
-		return converter.fromColumnValue(fetcher.get(resultSet, index));
+		Object columnValue = fetcher.get(resultSet, index);
+		if (columnValue != null || converter.handlesNull()) {
+			return converter.fromColumnValue(columnValue);
+		}
+
+		return null;
 	}
 
 	private static final class DefaultConverter implements Converter<Object, Object> {

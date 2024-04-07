@@ -193,17 +193,27 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	}
 
 	/**
-	 * Converts to and from SQL values, such as integers being used to represent booleans in a database.
+	 * Converts to and from SQL values, such as integers being used to represent booleans in a database.<br>
+	 * By default a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.<br>
+	 * If a {@link Converter} needs to handle null values as well as non-null values {@link #handlesNull()} must be overridden to return true.
 	 * @param <T> the type of the value
 	 * @param <C> the type of the underlying column
 	 */
 	interface Converter<T, C> {
 
 		/**
+		 * Unless a Converter handles null, null values are automatically converted to null column values.
+		 * @return true if this Converter handles the null value, default false
+		 */
+		default boolean handlesNull() {
+			return false;
+		}
+
+		/**
 		 * Translates the given value into a sql value, usually this is not required
 		 * but for certain types this may be necessary, such as boolean values where
 		 * the values are represented by a non-boolean data type in the underlying database
-		 * @param value the value to translate
+		 * @param value the value to translate, not null unless {@link #handlesNull()} is overridden
 		 * @param statement the statement using the value, may be null
 		 * @return the sql value used to represent the given value
 		 * @throws SQLException in case of an exception
@@ -212,7 +222,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 
 		/**
 		 * Translates the given sql column value into a column value.
-		 * @param columnValue the sql value to translate from
+		 * @param columnValue the sql value to translate from, not null unless {@link #handlesNull()} is overridden
 		 * @return the value of sql {@code columnValue}
 		 * @throws SQLException in case of an exception
 		 */

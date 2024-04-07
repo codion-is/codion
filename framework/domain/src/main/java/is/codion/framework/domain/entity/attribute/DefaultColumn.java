@@ -243,19 +243,15 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 			if (Objects.equals(trueValue, columnValue)) {
 				return true;
 			}
-			else if (Objects.equals(falseValue, columnValue)) {
+			if (Objects.equals(falseValue, columnValue)) {
 				return false;
 			}
 
-			return null;
+			throw new IllegalArgumentException("Unrecognized boolean value: " + columnValue);
 		}
 
 		@Override
 		public T toColumnValue(Boolean value, Statement statement) {
-			if (value == null) {
-				return null;
-			}
-
 			if (value) {
 				return trueValue;
 			}

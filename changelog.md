@@ -5,8 +5,14 @@ Codion Change Log
 ### is.codion.framework.domain
 - TypeReference added.
 - Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.
+### is.codion.framework.domain
+- Column.Converter.handlesNull() added, default implementation returns false.
+- DefaultColumnDefinition.get() now only uses the Converter to convert null values in case it handles null.
+- DefaultColumn.BooleanConverter now throws exception if it comes across an unrecognized value.
 ### is.codion.framework.domain.test
 - EntityTestUnit.testInsert() now asserts all inserted values.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.setParameterValue() now only uses the Converter to convert null values in case it handles null.
 
 ## 0.17.38
 ### is.codion.common.core

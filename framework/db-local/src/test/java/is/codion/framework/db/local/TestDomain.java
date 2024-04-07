@@ -93,6 +93,7 @@ public final class TestDomain extends DefaultDomain {
 		masterFk();
 		detailFk();
 		employeeNonOpt();
+		nullConverter();
 	}
 
 	public interface Department {
@@ -626,5 +627,46 @@ public final class TestDomain extends DefaultDomain {
 														.column())
 						.tableName("employees.employee")
 						.optimisticLocking(false));
+	}
+
+	public interface NullConverter {
+		EntityType TYPE = DOMAIN.entityType("null_converter");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
+	void nullConverter() {
+		class NullColumnConverter implements Column.Converter<String, String> {
+			@Override
+			public boolean handlesNull() {
+				return true;
+			}
+
+			@Override
+			public String toColumnValue(String value, Statement statement) throws SQLException {
+				if (value == null) {
+					return "null";
+				}
+
+				return value;
+			}
+
+			@Override
+			public String fromColumnValue(String columnValue) throws SQLException {
+				if ("null".equals(columnValue)) {
+					return null;
+				}
+
+				return columnValue;
+			}
+		}
+		add(NullConverter.TYPE.define(
+										NullConverter.ID.define()
+														.primaryKey(),
+										NullConverter.NAME.define()
+														.column()
+														.columnClass(String.class, new NullColumnConverter()))
+						.tableName("employees.master_fk"));
 	}
 }
