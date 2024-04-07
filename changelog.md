@@ -2,6 +2,9 @@ Codion Change Log
 ==================
 
 ## 0.17.39
+### is.codion.framework.domain
+- TypeReference added.
+- Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.
 
 ## 0.17.38
 ### is.codion.common.core

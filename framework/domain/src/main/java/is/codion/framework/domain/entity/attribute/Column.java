@@ -25,6 +25,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An {@link Attribute} representing a table column.
  * @param <T> the column value type
@@ -35,6 +37,18 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	 * @return a {@link ColumnDefiner} for this column
 	 */
 	ColumnDefiner<T> define();
+
+	/**
+	 * Creates a new {@link Column}, associated with the given entityType.
+	 * @param entityType the entityType owning this column
+	 * @param name the column name
+	 * @param typeReference the {@link TypeReference} representing the column value type
+	 * @param <T> the column type
+	 * @return a new {@link Column}
+	 */
+	static <T> Column<T> column(EntityType entityType, String name, TypeReference<T> typeReference) {
+		return new DefaultColumn<>(name, requireNonNull(typeReference).rawType(), entityType);
+	}
 
 	/**
 	 * Creates a new {@link Column}, associated with the given entityType.

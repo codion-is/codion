@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Typed {@link Attribute}.
  * Note that attribute names are case-sensitive and Attributes are equal if their
@@ -48,6 +50,18 @@ public interface Attribute<T> {
 	 * @return the entity type this Attribute is associated with
 	 */
 	EntityType entityType();
+
+	/**
+	 * Creates a new {@link Attribute}, associated with the given entityType.
+	 * @param entityType the entityType owning this attribute
+	 * @param name the attribute name
+	 * @param typeReference the {@link TypeReference} representing the attribute value type
+	 * @param <T> the attribute type
+	 * @return a new {@link Attribute}
+	 */
+	static <T> Attribute<T> attribute(EntityType entityType, String name, TypeReference<T> typeReference) {
+		return attribute(entityType, name, requireNonNull(typeReference).rawType());
+	}
 
 	/**
 	 * Creates a new {@link Attribute}, associated with the given entityType.

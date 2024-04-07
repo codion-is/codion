@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 
 import java.io.Serializable;
@@ -92,6 +93,11 @@ final class DefaultEntityType implements EntityType, Serializable {
 	@Override
 	public <T> Attribute<T> attribute(String name, Class<T> valueClass) {
 		return Attribute.attribute(this, name, valueClass);
+	}
+
+	@Override
+	public <T> Attribute<T> attribute(String name, TypeReference<T> typeReference) {
+		return Attribute.attribute(this, name, typeReference);
 	}
 
 	@Override
@@ -167,6 +173,11 @@ final class DefaultEntityType implements EntityType, Serializable {
 	@Override
 	public <T> Column<T> column(String name, Class<T> valueClass) {
 		return Column.column(this, name, valueClass);
+	}
+
+	@Override
+	public <T> Column<T> column(String name, TypeReference<T> typeReference) {
+		return Column.column(this, name, typeReference);
 	}
 
 	@Override

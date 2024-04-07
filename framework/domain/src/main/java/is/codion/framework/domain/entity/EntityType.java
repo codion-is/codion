@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 
 import java.math.BigDecimal;
@@ -79,6 +80,15 @@ public interface EntityType {
 	 * @return a new {@link Attribute}
 	 */
 	<T> Attribute<T> attribute(String name, Class<T> valueClass);
+
+	/**
+	 * Creates a new {@link Attribute}, associated with this EntityType.
+	 * @param name the attribute name
+	 * @param typeReference the {@link TypeReference} representing the attribute value type
+	 * @param <T> the column type
+	 * @return a new {@link Column}
+	 */
+	<T> Attribute<T> attribute(String name, TypeReference<T> typeReference);
 
 	/**
 	 * Creates a new Long based attribute, associated with this EntityType.
@@ -186,6 +196,15 @@ public interface EntityType {
 	 * @return a new {@link Column}
 	 */
 	<T> Column<T> column(String name, Class<T> valueClass);
+
+	/**
+	 * Creates a new {@link Column}, associated with this EntityType.
+	 * @param name the column name
+	 * @param typeReference the {@link TypeReference} representing the column value type
+	 * @param <T> the column type
+	 * @return a new {@link Column}
+	 */
+	<T> Column<T> column(String name, TypeReference<T> typeReference);
 
 	/**
 	 * Creates a new Long based column, associated with this EntityType.
