@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - TypeReference added.
 - Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.
+### is.codion.framework.domain.test
+- EntityTestUnit.testInsert() now asserts all inserted values.
 
 ## 0.17.38
 ### is.codion.common.core

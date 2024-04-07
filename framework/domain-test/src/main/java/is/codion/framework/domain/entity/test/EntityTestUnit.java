@@ -209,9 +209,14 @@ public class EntityTestUnit {
 	 * @throws DatabaseException in case of an exception
 	 */
 	private static Entity testInsert(Entity testEntity, EntityConnection connection) throws DatabaseException {
-		Entity.Key key = connection.insert(testEntity);
 		try {
-			return connection.select(key);
+			Entity insertedEntity = connection.insertSelect(testEntity);
+			assertEquals(testEntity.primaryKey(), insertedEntity.primaryKey());
+			testEntity.definition().columns().definitions().stream()
+							.filter(ColumnDefinition::insertable)
+							.forEach(columnDefinition -> assertValueEqual(testEntity, insertedEntity, columnDefinition));
+
+			return insertedEntity;
 		}
 		catch (RecordNotFoundException e) {
 			fail("Inserted entity of type " + testEntity.entityType() + " not returned by select after insert");
