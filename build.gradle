@@ -61,7 +61,7 @@ configure(project.frameworkModules) {
     javadoc {
         options.links "https://docs.oracle.com/javase/$jdkVersion/docs/api/"
         options.encoding = "UTF-8"
-        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption("Xdoclint:none", "-quiet")
     }
 
     jar {
@@ -205,11 +205,11 @@ configure(subprojects) {
     apply plugin: "com.diffplug.spotless"
     spotless {
         java {
-            licenseHeaderFile("${rootDir}/documentation/src/misc/license_header").yearSeparator(' - ')
+            licenseHeaderFile("${rootDir}/documentation/src/misc/license_header").yearSeparator(" - ")
         }
-        format 'javaMisc', {
-            target 'src/**/package-info.java', 'src/**/module-info.java'
-            licenseHeaderFile("${rootDir}/documentation/src/misc/license_header", '\\/\\*\\*').yearSeparator(' - ')
+        format "javaMisc", {
+            target "src/**/package-info.java", "src/**/module-info.java"
+            licenseHeaderFile("${rootDir}/documentation/src/misc/license_header", "\\/\\*\\*").yearSeparator(" - ")
         }
     }
 }
