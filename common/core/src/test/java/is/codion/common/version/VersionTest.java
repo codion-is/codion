@@ -32,28 +32,29 @@ public final class VersionTest {
 
 	@Test
 	void parse() {
-		Version version = Version.parse("2.12.4 2018.01.02 15:27");
+		Version version = Version.parse("2.12.4+2018.01.02 15:27");
 		assertEquals(version.major(), 2);
 		assertEquals(version.minor(), 12);
 		assertEquals(version.patch(), 4);
-		assertEquals("2018.01.02 15:27", version.metadata().orElse(null));
+		assertEquals("2018.01.02 15:27", version.build().orElse(null));
 
 		version = Version.parse("2.12.4");
 		assertEquals(version.major(), 2);
 		assertEquals(version.minor(), 12);
 		assertEquals(version.patch(), 4);
 
-		version = Version.parse("0.2-build 23");
+		version = Version.parse("0.2-RC23");
 		assertEquals(version.major(), 0);
 		assertEquals(version.minor(), 2);
 		assertEquals(version.patch(), 0);
-		assertEquals("build 23", version.metadata().orElse(null));
+		assertEquals("RC23", version.metadata().orElse(null));
 
-		version = Version.parse("1-RC");
+		version = Version.parse("1-RC+10-10");
 		assertEquals(version.major(), 1);
 		assertEquals(version.minor(), 0);
 		assertEquals(version.patch(), 0);
 		assertEquals("RC", version.metadata().orElse(null));
+		assertEquals("10-10", version.build().orElse(null));
 	}
 
 	@Test

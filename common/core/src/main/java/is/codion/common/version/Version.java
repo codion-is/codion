@@ -57,6 +57,11 @@ public interface Version extends Comparable<Version> {
 	Optional<String> metadata();
 
 	/**
+	 * @return the build informatio part of this version or an empty Optional in case of no build information
+	 */
+	Optional<String> build();
+
+	/**
 	 * Creates a new version [major].0.0
 	 * @param major the major version
 	 * @return a Version
@@ -91,11 +96,24 @@ public interface Version extends Comparable<Version> {
 	 * @param major the major version
 	 * @param minor the minor version
 	 * @param patch the patch version
-	 * @param metadata the metadata, fx. build information
+	 * @param metadata the metadata
 	 * @return a Version
 	 */
 	static Version version(int major, int minor, int patch, String metadata) {
-		return new DefaultVersion(major, minor, patch, metadata);
+		return new DefaultVersion(major, minor, patch, metadata, null);
+	}
+
+	/**
+	 * Creates a new version [major].[minor].[patch]-[metadata]
+	 * @param major the major version
+	 * @param minor the minor version
+	 * @param patch the patch version
+	 * @param metadata the metadata
+	 * @param build the build information
+	 * @return a Version
+	 */
+	static Version version(int major, int minor, int patch, String metadata, String build) {
+		return new DefaultVersion(major, minor, patch, metadata, build);
 	}
 
 	/**
@@ -125,7 +143,7 @@ public interface Version extends Comparable<Version> {
 	}
 
 	/**
-	 * Parses a string on the form x.y.z-metadata
+	 * Parses a string on the form x.y.z-metadata+build
 	 * @param versionString the version string
 	 * @return a Version based on the given string
 	 */
@@ -135,21 +153,32 @@ public interface Version extends Comparable<Version> {
 		}
 		String version;
 		String metadata;
+		String build;
 		int dashIndex = versionString.indexOf('-');
-		if (dashIndex > 0) {
+		int plusIndex = versionString.indexOf('+');
+		if (dashIndex != -1 && plusIndex != -1) {
+			// Both metadata and build info
+			version = versionString.substring(0, dashIndex);
+			metadata = versionString.substring(dashIndex + 1, plusIndex);
+			build = versionString.substring(plusIndex + 1);
+		}
+		else if (dashIndex != -1) {
+			// Only metadata
 			version = versionString.substring(0, dashIndex);
 			metadata = versionString.substring(dashIndex + 1);
+			build = null;
+		}
+		else if (plusIndex != -1) {
+			// Only build info
+			version = versionString.substring(0, plusIndex);
+			build = versionString.substring(plusIndex + 1);
+			metadata = null;
 		}
 		else {
-			int spaceIndex = versionString.indexOf(' ');
-			if (spaceIndex > 0) {
-				version = versionString.substring(0, spaceIndex);
-				metadata = versionString.substring(spaceIndex + 1);
-			}
-			else {
-				version = versionString;
-				metadata = null;
-			}
+			// Neither metadata nor build info
+			version = versionString;
+			metadata = null;
+			build = null;
 		}
 		String[] versionSplit = version.split("\\.");
 
@@ -157,7 +186,7 @@ public interface Version extends Comparable<Version> {
 		int minor = versionSplit.length > 1 ? Integer.parseInt(versionSplit[1]) : 0;
 		int patch = versionSplit.length > 2 ? Integer.parseInt(versionSplit[2]) : 0;
 
-		return new DefaultVersion(major, minor, patch, metadata);
+		return new DefaultVersion(major, minor, patch, metadata, build);
 	}
 
 	/**

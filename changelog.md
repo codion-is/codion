@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.39
 ### is.codion.common.core
 - Version.metadata() now returns Optional.
+- Version.build() added, parsing no longer supports space as metadata delimiter.
 ### is.codion.framework.domain
 - TypeReference added.
 - Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.

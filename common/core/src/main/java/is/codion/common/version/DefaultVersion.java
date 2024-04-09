@@ -32,15 +32,17 @@ final class DefaultVersion implements Version, Serializable {
 	private final int minor;
 	private final int patch;
 	private final String metadata;
+	private final String build;
 
 	/**
-	 * Creates a new version [major].[minor].[patch]-[metadata]
+	 * Creates a new version [major].[minor].[patch]-[metadata]+[build]
 	 * @param major the major version
 	 * @param minor the minor version
 	 * @param patch the patch version
-	 * @param metadata the metadata, fx. build information
+	 * @param metadata the metadata
+	 * @param build the build information
 	 */
-	DefaultVersion(int major, int minor, int patch, String metadata) {
+	DefaultVersion(int major, int minor, int patch, String metadata, String build) {
 		if (major < 0 || minor < 0 || patch < 0) {
 			throw new IllegalArgumentException("Major, minor and patch must be non-negative integers");
 		}
@@ -48,6 +50,7 @@ final class DefaultVersion implements Version, Serializable {
 		this.minor = minor;
 		this.patch = patch;
 		this.metadata = metadata;
+		this.build = build;
 	}
 
 	@Override
@@ -71,8 +74,13 @@ final class DefaultVersion implements Version, Serializable {
 	}
 
 	@Override
+	public Optional<String> build() {
+		return Optional.ofNullable(build);
+	}
+
+	@Override
 	public String toString() {
-		return major + "." + minor + "." + patch + (metadata == null ? "" : "-" + metadata);
+		return major + "." + minor + "." + patch + (metadata == null ? "" : "-" + metadata) + (build == null ? "" : "+" + build);
 	}
 
 	@Override
@@ -85,12 +93,13 @@ final class DefaultVersion implements Version, Serializable {
 		}
 		DefaultVersion that = (DefaultVersion) obj;
 
-		return major == that.major && minor == that.minor && patch == that.patch && Objects.equals(metadata, that.metadata);
+		return major == that.major && minor == that.minor && patch == that.patch &&
+						Objects.equals(metadata, that.metadata) && Objects.equals(build, that.build);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(major, minor, patch, metadata);
+		return Objects.hash(major, minor, patch, metadata, build);
 	}
 
 	@Override
