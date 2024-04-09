@@ -34,23 +34,12 @@ final class DefaultVersion implements Version, Serializable {
 	private final String metadata;
 	private final String build;
 
-	/**
-	 * Creates a new version [major].[minor].[patch]-[metadata]+[build]
-	 * @param major the major version
-	 * @param minor the minor version
-	 * @param patch the patch version
-	 * @param metadata the metadata
-	 * @param build the build information
-	 */
-	DefaultVersion(int major, int minor, int patch, String metadata, String build) {
-		if (major < 0 || minor < 0 || patch < 0) {
-			throw new IllegalArgumentException("Major, minor and patch must be non-negative integers");
-		}
-		this.major = major;
-		this.minor = minor;
-		this.patch = patch;
-		this.metadata = metadata;
-		this.build = build;
+	private DefaultVersion(DefaulBuilder builder) {
+		this.major = builder.major;
+		this.minor = builder.minor;
+		this.patch = builder.patch;
+		this.metadata = builder.metadata;
+		this.build = builder.build;
 	}
 
 	@Override
@@ -130,5 +119,58 @@ final class DefaultVersion implements Version, Serializable {
 		}
 
 		return 0;
+	}
+
+	static final class DefaulBuilder implements Builder {
+
+		private int major = 0;
+		private int minor = 0;
+		private int patch = 0;
+		private String metadata;
+		private String build;
+
+		@Override
+		public Builder major(int major) {
+			if (major < 0) {
+				throw new IllegalArgumentException("Major must be a non-negative integer");
+			}
+			this.major = major;
+			return this;
+		}
+
+		@Override
+		public Builder minor(int minor) {
+			if (minor < 0) {
+				throw new IllegalArgumentException("Minor must be a non-negative integer");
+			}
+			this.minor = minor;
+			return this;
+		}
+
+		@Override
+		public Builder patch(int patch) {
+			if (patch < 0) {
+				throw new IllegalArgumentException("Patch must be a non-negative integer");
+			}
+			this.patch = patch;
+			return this;
+		}
+
+		@Override
+		public Builder metadata(String metadata) {
+			this.metadata = metadata;
+			return this;
+		}
+
+		@Override
+		public Builder build(String build) {
+			this.build = build;
+			return this;
+		}
+
+		@Override
+		public Version build() {
+			return new DefaultVersion(this);
+		}
 	}
 }

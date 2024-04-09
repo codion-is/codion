@@ -229,7 +229,7 @@ public final class NotesDemo {
 
 	public static final class NotesApplicationModel extends SwingEntityApplicationModel {
 
-		private static final Version VERSION = Version.version(1, 0);
+		private static final Version VERSION = Version.builder().major(1).build();
 
 		public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider, VERSION);

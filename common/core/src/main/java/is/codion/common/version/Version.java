@@ -26,7 +26,7 @@ import java.util.Properties;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a version and serves as a factory class for {@link Version} instances.
+ * Specifies a version and serves as a factory for {@link Version.Builder} instances.
  */
 public interface Version extends Comparable<Version> {
 
@@ -62,58 +62,51 @@ public interface Version extends Comparable<Version> {
 	Optional<String> build();
 
 	/**
-	 * Creates a new version [major].0.0
-	 * @param major the major version
-	 * @return a Version
+	 * Builds a Version.
 	 */
-	static Version version(int major) {
-		return version(major, 0);
+	interface Builder {
+
+		/**
+		 * @param major the major version component
+		 * @return this builder instance
+		 */
+		Builder major(int major);
+
+		/**
+		 * @param minor the minor version component
+		 * @return this builder instance
+		 */
+		Builder minor(int minor);
+
+		/**
+		 * @param patch the patch version component
+		 * @return this builder instance
+		 */
+		Builder patch(int patch);
+
+		/**
+		 * @param metadata the metadata version component
+		 * @return this builder instance
+		 */
+		Builder metadata(String metadata);
+
+		/**
+		 * @param build the build information version component
+		 * @return this builder instance
+		 */
+		Builder build(String build);
+
+		/**
+		 * @return a new {@link Version} instance based on this builder
+		 */
+		Version build();
 	}
 
 	/**
-	 * Creates a new version [major].[minor].0
-	 * @param major the major version
-	 * @param minor the minor version
-	 * @return a Version
+	 * @return a new {@link Version.Builder} instance.
 	 */
-	static Version version(int major, int minor) {
-		return version(major, minor, 0);
-	}
-
-	/**
-	 * Creates a new version [major].[minor].[patch]
-	 * @param major the major version
-	 * @param minor the minor version
-	 * @param patch the patch version
-	 * @return a Version
-	 */
-	static Version version(int major, int minor, int patch) {
-		return version(major, minor, patch, null);
-	}
-
-	/**
-	 * Creates a new version [major].[minor].[patch]-[metadata]
-	 * @param major the major version
-	 * @param minor the minor version
-	 * @param patch the patch version
-	 * @param metadata the metadata
-	 * @return a Version
-	 */
-	static Version version(int major, int minor, int patch, String metadata) {
-		return new DefaultVersion(major, minor, patch, metadata, null);
-	}
-
-	/**
-	 * Creates a new version [major].[minor].[patch]-[metadata]
-	 * @param major the major version
-	 * @param minor the minor version
-	 * @param patch the patch version
-	 * @param metadata the metadata
-	 * @param build the build information
-	 * @return a Version
-	 */
-	static Version version(int major, int minor, int patch, String metadata, String build) {
-		return new DefaultVersion(major, minor, patch, metadata, build);
+	static Builder builder() {
+		return new DefaultVersion.DefaulBuilder();
 	}
 
 	/**
@@ -186,7 +179,13 @@ public interface Version extends Comparable<Version> {
 		int minor = versionSplit.length > 1 ? Integer.parseInt(versionSplit[1]) : 0;
 		int patch = versionSplit.length > 2 ? Integer.parseInt(versionSplit[2]) : 0;
 
-		return new DefaultVersion(major, minor, patch, metadata, build);
+		return builder()
+						.major(major)
+						.minor(minor)
+						.patch(patch)
+						.metadata(metadata)
+						.build(build)
+						.build();
 	}
 
 	/**

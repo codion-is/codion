@@ -62,7 +62,7 @@ public final class VersionTest {
 		assertThrows(IllegalArgumentException.class, () -> Version.parsePropertiesFile(Version.class, "/version_non_existing.properties"));
 		assertThrows(IllegalArgumentException.class, () -> Version.parsePropertiesFile(Version.class, "/version_invalid_test.properties"));
 		Version version = Version.parsePropertiesFile(Version.class, "/version_test.properties");
-		assertEquals(version, Version.version(0, 1, 0));
+		assertEquals(version, Version.builder().minor(1).build());
 		assertThrows(NullPointerException.class, () -> Version.parsePropertiesFile(null, "/version_test.properties"));
 		assertThrows(NullPointerException.class, () -> Version.parsePropertiesFile(Version.class, null));
 	}
@@ -79,17 +79,17 @@ public final class VersionTest {
 
 	@Test
 	void constructor() {
-		Version version = Version.version(1);
+		Version version = Version.builder().major(1).build();
 		assertEquals(version.major(), 1);
 		assertEquals(version.minor(), 0);
 		assertEquals(version.patch(), 0);
 
-		version = Version.version(1, 0, 23);
+		version = Version.builder().major(1).patch(23).build();
 		assertEquals(version.major(), 1);
 		assertEquals(version.minor(), 0);
 		assertEquals(version.patch(), 23);
 
-		version = Version.version(0, 2, 1);
+		version = Version.builder().minor(2).patch(1).build();
 		assertEquals(version.major(), 0);
 		assertEquals(version.minor(), 2);
 		assertEquals(version.patch(), 1);
@@ -97,11 +97,11 @@ public final class VersionTest {
 
 	@Test
 	void compare() {
-		Version version0 = Version.version(0, 0, 1);
-		Version version1 = Version.version(0, 1, 0);
-		Version version2 = Version.version(0, 1, 1);
-		Version version3 = Version.version(1, 0, 1);
-		Version version4 = Version.version(1, 1, 0);
+		Version version0 = Version.builder().patch(1).build();
+		Version version1 = Version.builder().minor(1).build();
+		Version version2 = Version.builder().minor(1).patch(1).build();
+		Version version3 = Version.builder().major(1).patch(1).build();
+		Version version4 = Version.builder().major(1).minor(1).build();
 
 		List<Version> versions = asList(version3, version4, version0, version2, version1);
 		Collections.sort(versions);
@@ -115,24 +115,24 @@ public final class VersionTest {
 
 	@Test
 	void equalsHashCodeToString() {
-		Version version0 = Version.version(2, 1, 5, "RC");
+		Version version0 = Version.builder().major(2).minor(1).patch(5).metadata("RC").build();
 		Version version1 = Version.parse("2.1.5");
 		assertNotEquals(version0, version1);
 		assertNotEquals(version0.hashCode(), version1.hashCode());
 		assertEquals("2.1.5-RC", version0.toString());
 		assertEquals("2.1.5", version1.toString());
-		assertEquals(version1, Version.version(2, 1, 5));
-		assertNotEquals(version0, Version.version(2, 1, 5, "SNAPSHOT"));
+		assertEquals(version1, Version.builder().major(2).minor(1).patch(5).build());
+		assertNotEquals(version0, Version.builder().major(2).minor(1).patch(5).metadata("SNAPSHOT").build());
 
-		Version v111 = Version.version(1, 1, 1);
-		Version v111rc = Version.version(1, 1, 1, "RC");
-		Version v111snap = Version.version(1, 1, 1, "snapshot");
+		Version v111 = Version.builder().major(1).minor(1).patch(1).build();
+		Version v111rc = Version.builder().major(1).minor(1).patch(1).metadata("RC").build();
+		Version v111snap = Version.builder().major(1).minor(1).patch(1).metadata("snapshot").build();
 
-		Version v121 = Version.version(1, 2, 1);
-		Version v121rc = Version.version(1, 2, 1, "RC");
-		Version v121snap = Version.version(1, 2, 1, "snapshot");
+		Version v121 = Version.builder().major(1).minor(2).patch(1).build();
+		Version v121rc = Version.builder().major(1).minor(2).patch(1).metadata("RC").build();
+		Version v121snap = Version.builder().major(1).minor(2).patch(1).metadata("snapshot").build();
 
-		Version v112 = Version.version(1, 1, 2);
+		Version v112 = Version.builder().major(1).minor(1).patch(2).build();
 
 		List<Version> versions = new ArrayList<>(Arrays.asList(v112, v121, v121snap, v121rc, v111rc, v111snap, v111));
 
@@ -149,16 +149,16 @@ public final class VersionTest {
 
 	@Test
 	void constructorIllegalMajor() {
-		assertThrows(IllegalArgumentException.class, () -> Version.version(-1, 0, 0));
+		assertThrows(IllegalArgumentException.class, () -> Version.builder().major(-1));
 	}
 
 	@Test
 	void constructorIllegalMinor() {
-		assertThrows(IllegalArgumentException.class, () -> Version.version(0, -1, 0));
+		assertThrows(IllegalArgumentException.class, () -> Version.builder().minor(-1));
 	}
 
 	@Test
 	void constructorIllegalPatch() {
-		assertThrows(IllegalArgumentException.class, () -> Version.version(0, 0, -1));
+		assertThrows(IllegalArgumentException.class, () -> Version.builder().patch(-1));
 	}
 }
