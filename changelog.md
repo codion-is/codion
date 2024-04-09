@@ -6,6 +6,7 @@ Codion Change Log
 - Version.metadata() now returns Optional.
 - Version.build() added, parsing no longer supports space as metadata delimiter.
 - Version, static factory methods replaced with a builder.
+- Version.parsePropertiesFile() renamed parse().
 ### is.codion.framework.domain
 - TypeReference added.
 - Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.

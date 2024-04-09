@@ -28,7 +28,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookAppModel extends SwingEntityApplicationModel {
 
-	public static final Version VERSION = Version.parsePropertiesFile(ChinookAppModel.class, "/version.properties");
+	public static final Version VERSION = Version.parse(ChinookAppModel.class, "/version.properties");
 
 	public ChinookAppModel(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider, VERSION);

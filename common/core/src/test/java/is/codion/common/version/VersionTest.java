@@ -59,12 +59,12 @@ public final class VersionTest {
 
 	@Test
 	void parsePropertiesFile() {
-		assertThrows(IllegalArgumentException.class, () -> Version.parsePropertiesFile(Version.class, "/version_non_existing.properties"));
-		assertThrows(IllegalArgumentException.class, () -> Version.parsePropertiesFile(Version.class, "/version_invalid_test.properties"));
-		Version version = Version.parsePropertiesFile(Version.class, "/version_test.properties");
+		assertThrows(IllegalArgumentException.class, () -> Version.parse(Version.class, "/version_non_existing.properties"));
+		assertThrows(IllegalArgumentException.class, () -> Version.parse(Version.class, "/version_invalid_test.properties"));
+		Version version = Version.parse(Version.class, "/version_test.properties");
 		assertEquals(version, Version.builder().minor(1).build());
-		assertThrows(NullPointerException.class, () -> Version.parsePropertiesFile(null, "/version_test.properties"));
-		assertThrows(NullPointerException.class, () -> Version.parsePropertiesFile(Version.class, null));
+		assertThrows(NullPointerException.class, () -> Version.parse(null, "/version_test.properties"));
+		assertThrows(NullPointerException.class, () -> Version.parse(Version.class, null));
 	}
 
 	@Test

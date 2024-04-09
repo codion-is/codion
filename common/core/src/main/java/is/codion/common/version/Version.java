@@ -32,7 +32,7 @@ public interface Version extends Comparable<Version> {
 
 	/**
 	 * The key for a version property in a properties file.
-	 * @see #parsePropertiesFile(Class, String)
+	 * @see #parse(Class, String)
 	 */
 	String VERSION_PROPERTY_KEY = "version";
 
@@ -195,7 +195,7 @@ public interface Version extends Comparable<Version> {
 	 * @return a {@link Version} instance parsed from the value associated with the 'version' property key found in the given resource
 	 * @throws IllegalArgumentException in case the properties resource is not found or if no 'version' property key is found
 	 */
-	static Version parsePropertiesFile(Class<?> resourceOwner, String resourcePath) {
+	static Version parse(Class<?> resourceOwner, String resourcePath) {
 		try (InputStream resourceStream = requireNonNull(resourceOwner).getResourceAsStream(requireNonNull(resourcePath))) {
 			if (resourceStream == null) {
 				throw new IllegalArgumentException("Version resource not found: " + resourceOwner + ", " + resourcePath);

@@ -26,7 +26,7 @@ final class DefaultVersion implements Version, Serializable {
 
 	private static final long serialVersionUID = 1;
 
-	static final Version VERSION = Version.parsePropertiesFile(DefaultVersion.class, "version.properties");
+	static final Version VERSION = Version.parse(DefaultVersion.class, "version.properties");
 
 	private final int major;
 	private final int minor;

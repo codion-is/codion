@@ -25,7 +25,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class WorldAppModel extends SwingEntityApplicationModel {
 
-	public static final Version VERSION = Version.parsePropertiesFile(WorldAppModel.class, "/version.properties");
+	public static final Version VERSION = Version.parse(WorldAppModel.class, "/version.properties");
 
 	public WorldAppModel(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider, VERSION);
