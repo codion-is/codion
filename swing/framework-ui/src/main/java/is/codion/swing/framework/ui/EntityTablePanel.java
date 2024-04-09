@@ -1009,7 +1009,6 @@ public class EntityTablePanel extends JPanel {
 	private Control createDeleteSelectedControl() {
 		return Control.builder(new DeleteCommand())
 						.name(FrameworkMessages.delete())
-						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.enabled(State.and(
 										tableModel.editModel().deleteEnabled(),
 										tableModel.selectionModel().selectionNotEmpty()))

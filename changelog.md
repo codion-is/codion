@@ -15,6 +15,8 @@ Codion Change Log
 - DefaultLocalEntityConnection.setParameterValue() now only uses the Converter to convert null values in case it handles null.
 ### is.codion.swing.common.model
 - DefaultFilteredTableColumnModel.setVisibleColumns() bug fixed, now throws IllegalArgumentException in case a column is not found, instead of NullPointerException.
+### is.codion.swing.framework.ui
+- EntityTablePanel, mnemonic removed from deleteSelected control.
 
 ## 0.17.38
 ### is.codion.common.core
