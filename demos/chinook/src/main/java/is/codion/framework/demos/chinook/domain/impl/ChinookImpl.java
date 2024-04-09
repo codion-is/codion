@@ -276,8 +276,6 @@ public final class ChinookImpl extends DefaultDomain {
 		add(Track.TYPE.define(
 										Track.ID.define()
 														.primaryKey(),
-										Track.ARTIST_DENORM.define()
-														.denormalized(Track.ALBUM_FK, Album.ARTIST_FK),
 										Track.ALBUM_ID.define()
 														.column(),
 										// tag::fetchDepth2[]
@@ -285,6 +283,8 @@ public final class ChinookImpl extends DefaultDomain {
 														.foreignKey(2)
 														.attributes(Album.ARTIST_FK, Album.TITLE),
 										// end::fetchDepth2[]
+										Track.ARTIST.define()
+														.denormalized(Track.ALBUM_FK, Album.ARTIST_FK),
 										Track.NAME.define()
 														.column()
 														.searchable(true)
@@ -306,7 +306,7 @@ public final class ChinookImpl extends DefaultDomain {
 														.column()
 														.nullable(false)
 														.format(NumberFormat.getIntegerInstance()),
-										Track.MINUTES_SECONDS_DERIVED.define()
+										Track.MINUTES_SECONDS.define()
 														.derived(new TrackMinSecProvider(), Track.MILLISECONDS),
 										Track.BYTES.define()
 														.column()
@@ -440,14 +440,14 @@ public final class ChinookImpl extends DefaultDomain {
 														.nullable(false),
 										PlaylistTrack.PLAYLIST_FK.define()
 														.foreignKey(),
-										PlaylistTrack.ARTIST_DENORM.define()
-														.denormalized(PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK),
+										PlaylistTrack.ARTIST.define()
+														.denormalized(PlaylistTrack.ALBUM, Album.ARTIST_FK),
 										PlaylistTrack.TRACK_ID.define()
 														.column()
 														.nullable(false),
 										PlaylistTrack.TRACK_FK.define()
 														.foreignKey(3),
-										PlaylistTrack.ALBUM_DENORM.define()
+										PlaylistTrack.ALBUM.define()
 														.denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
 						.tableName("chinook.playlisttrack")
 						.keyGenerator(identity())

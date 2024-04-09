@@ -38,8 +38,8 @@ final class TrackSelectorFactory implements Function<EntitySearchModel, Selector
 	public TableSelector apply(EntitySearchModel searchModel) {
 		TableSelector selector = tableSelector(searchModel);
 		FilteredTableModel<Entity, Attribute<?>> tableModel = selector.table().getModel();
-		tableModel.columnModel().setVisibleColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
-		tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
+		tableModel.columnModel().setVisibleColumns(Track.ARTIST, Track.ALBUM_FK, Track.NAME);
+		tableModel.sortModel().setSortOrder(Track.ARTIST, ASCENDING);
 		tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);
 		tableModel.sortModel().addSortOrder(Track.NAME, ASCENDING);
 		selector.preferredSize(new Dimension(500, 300));

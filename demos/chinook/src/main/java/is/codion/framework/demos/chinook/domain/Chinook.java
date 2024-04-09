@@ -144,13 +144,13 @@ public interface Chinook {
 
 		Column<Long> ID = TYPE.longColumn("trackid");
 		Column<String> NAME = TYPE.stringColumn("name");
-		Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
+		Attribute<Entity> ARTIST = TYPE.entityAttribute("artist");
 		Column<Long> ALBUM_ID = TYPE.longColumn("albumid");
 		Column<Long> MEDIATYPE_ID = TYPE.longColumn("mediatypeid");
 		Column<Long> GENRE_ID = TYPE.longColumn("genreid");
 		Column<String> COMPOSER = TYPE.stringColumn("composer");
 		Column<Integer> MILLISECONDS = TYPE.integerColumn("milliseconds");
-		Attribute<String> MINUTES_SECONDS_DERIVED = TYPE.stringAttribute("minutes_seconds_derived");
+		Attribute<String> MINUTES_SECONDS = TYPE.stringAttribute("minutes_seconds");
 		Column<Integer> BYTES = TYPE.integerColumn("bytes");
 		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
 		Column<Void> RANDOM = TYPE.column("random()", Void.class);
@@ -262,8 +262,8 @@ public interface Chinook {
 		Column<Long> ID = TYPE.longColumn("playlisttrackid");
 		Column<Long> PLAYLIST_ID = TYPE.longColumn("playlistid");
 		Column<Long> TRACK_ID = TYPE.longColumn("trackid");
-		Attribute<Entity> ALBUM_DENORM = TYPE.entityAttribute("album_denorm");
-		Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
+		Attribute<Entity> ALBUM = TYPE.entityAttribute("album");
+		Attribute<Entity> ARTIST = TYPE.entityAttribute("artist");
 
 		ForeignKey PLAYLIST_FK = TYPE.foreignKey("playlist_fk", PLAYLIST_ID, Playlist.ID);
 		ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", TRACK_ID, Track.ID);
