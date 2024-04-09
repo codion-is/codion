@@ -147,13 +147,15 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Fetcher<C> fetcher);
 
 		/**
-		 * Sets the actual string used as column when querying
+		 * Sets the actual string used as column name when inserting and updating.
+		 * This column name is also used when selecting unless an {@link #expression(String)} has been specified.
 		 * @param name the column name
 		 * @return this instance
 		 */
 		B name(String name);
 
 		/**
+		 * The expression is used when the column is being selected or used in query conditions.
 		 * @param expression the column expression to use when selecting
 		 * @return this instance
 		 */
