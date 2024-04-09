@@ -30,7 +30,6 @@ configure(project.frameworkModules) {
     apply plugin: "com.github.ben-manes.versions"
     apply plugin: "project-report"
     apply plugin: "com.vanniktech.dependency.graph.generator"
-    apply plugin: "com.diffplug.spotless"
     apply plugin: "signing"
 
     dependencies {
