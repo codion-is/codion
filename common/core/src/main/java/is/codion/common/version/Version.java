@@ -20,6 +20,7 @@ package is.codion.common.version;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 import static java.util.Objects.requireNonNull;
@@ -51,9 +52,9 @@ public interface Version extends Comparable<Version> {
 	int patch();
 
 	/**
-	 * @return the metadata part of this version
+	 * @return the metadata part of this version or an empty Optional in case of no metadata
 	 */
-	String metadata();
+	Optional<String> metadata();
 
 	/**
 	 * Creates a new version [major].0.0

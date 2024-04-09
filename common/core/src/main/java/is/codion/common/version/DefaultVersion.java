@@ -20,6 +20,7 @@ package is.codion.common.version;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 
 final class DefaultVersion implements Version, Serializable {
 
@@ -49,36 +50,24 @@ final class DefaultVersion implements Version, Serializable {
 		this.metadata = metadata;
 	}
 
-	/**
-	 * @return the major part of this version
-	 */
 	@Override
 	public int major() {
 		return major;
 	}
 
-	/**
-	 * @return the minor part of this version
-	 */
 	@Override
 	public int minor() {
 		return minor;
 	}
 
-	/**
-	 * @return the patch part of this version
-	 */
 	@Override
 	public int patch() {
 		return patch;
 	}
 
-	/**
-	 * @return the metadata part of this version
-	 */
 	@Override
-	public String metadata() {
-		return metadata;
+	public Optional<String> metadata() {
+		return Optional.ofNullable(metadata);
 	}
 
 	@Override
@@ -113,7 +102,7 @@ final class DefaultVersion implements Version, Serializable {
 				result = Integer.compare(patch, version.patch());
 			}
 			if (result == 0) {
-				result = compareMetadata(metadata, version.metadata());
+				result = compareMetadata(metadata, version.metadata().orElse(null));
 			}
 		}
 

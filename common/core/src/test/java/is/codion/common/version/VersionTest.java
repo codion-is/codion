@@ -36,7 +36,7 @@ public final class VersionTest {
 		assertEquals(version.major(), 2);
 		assertEquals(version.minor(), 12);
 		assertEquals(version.patch(), 4);
-		assertEquals("2018.01.02 15:27", version.metadata());
+		assertEquals("2018.01.02 15:27", version.metadata().orElse(null));
 
 		version = Version.parse("2.12.4");
 		assertEquals(version.major(), 2);
@@ -47,13 +47,13 @@ public final class VersionTest {
 		assertEquals(version.major(), 0);
 		assertEquals(version.minor(), 2);
 		assertEquals(version.patch(), 0);
-		assertEquals("build 23", version.metadata());
+		assertEquals("build 23", version.metadata().orElse(null));
 
 		version = Version.parse("1-RC");
 		assertEquals(version.major(), 1);
 		assertEquals(version.minor(), 0);
 		assertEquals(version.patch(), 0);
-		assertEquals("RC", version.metadata());
+		assertEquals("RC", version.metadata().orElse(null));
 	}
 
 	@Test
