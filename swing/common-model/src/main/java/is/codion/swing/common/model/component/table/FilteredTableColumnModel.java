@@ -59,12 +59,14 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
 	/**
 	 * Arranges the columns so that only the given columns are visible and in the given order
 	 * @param columnIdentifiers the column identifiers
+	 * @throws IllegalArgumentException in case a column is not found
 	 */
 	void setVisibleColumns(C... columnIdentifiers);
 
 	/**
 	 * Arranges the columns so that only the given columns are visible and in the given order
 	 * @param columnIdentifiers the column identifiers
+	 * @throws IllegalArgumentException in case a column is not found
 	 */
 	void setVisibleColumns(List<C> columnIdentifiers);
 
@@ -83,6 +85,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
 	 * Returns the State for controlling the column visibility
 	 * @param columnIdentifier the column identifier
 	 * @return a State for controlling the column visibility
+	 * @throws IllegalArgumentException in case the column is not found
 	 */
 	State visible(C columnIdentifier);
 

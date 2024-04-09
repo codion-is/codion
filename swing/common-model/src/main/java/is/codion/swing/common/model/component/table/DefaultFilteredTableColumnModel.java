@@ -78,6 +78,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	@Override
 	public void setVisibleColumns(List<C> columnIdentifiers) {
 		requireNonNull(columnIdentifiers);
+		columnIdentifiers.forEach(this::validateColumn);
 		int columnIndex = 0;
 		for (C identifier : columnIdentifiers) {
 			visibleStates.get(identifier).set(true);
@@ -125,12 +126,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
 	@Override
 	public State visible(C columnIdentifier) {
-		State visibleState = visibleStates.get(requireNonNull(columnIdentifier));
-		if (visibleState != null) {
-			return visibleState;
-		}
-
-		throw new IllegalArgumentException("Column not found: " + columnIdentifier);
+		return validateColumn(requireNonNull(columnIdentifier));
 	}
 
 	@Override
@@ -269,6 +265,15 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 		State visibleState = State.state(true);
 		visibleState.addValidator(value -> checkIfLocked());
 		visibleState.addDataListener(visible -> setColumnVisibleInternal(identifier, visible));
+
+		return visibleState;
+	}
+
+	private State validateColumn(C columnIdentifier) {
+		State visibleState = visibleStates.get(columnIdentifier);
+		if (visibleState == null) {
+			throw new IllegalArgumentException("Column not found: " + columnIdentifier);
+		}
 
 		return visibleState;
 	}

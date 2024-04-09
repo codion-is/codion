@@ -145,6 +145,13 @@ public class DefaultFilteredTableColumnModelTest {
 		assertThrows(IllegalStateException.class, () -> columnModel.setVisibleColumns(1, 0, 2));
 	}
 
+	@Test
+	void visibleColumns() {
+		FilteredTableColumnModel<Integer> testModel = createTestModel();
+		assertThrows(IllegalArgumentException.class, () -> testModel.setVisibleColumns(0, 1));
+		assertThrows(IllegalArgumentException.class, () -> testModel.visible(1));
+	}
+
 	private static FilteredTableColumnModel<Integer> createTestModel() {
 		return new DefaultFilteredTableColumnModel<>(singletonList(filteredTableColumn(0)));
 	}

@@ -291,12 +291,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 	/**
 	 * Arranges the column model so that only the given columns are visible and in the given order
 	 * @param attributes the column attributes
+	 * @throws IllegalArgumentException in case a column is not found
 	 */
 	void setVisibleColumns(Attribute<?>... attributes);
 
 	/**
 	 * Arranges the column model so that only the given columns are visible and in the given order
 	 * @param attributes the column attributes
+	 * @throws IllegalArgumentException in case a column is not found
 	 */
 	void setVisibleColumns(List<Attribute<?>> attributes);
 

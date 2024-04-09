@@ -13,6 +13,8 @@ Codion Change Log
 - EntityTestUnit.testInsert() now asserts all inserted values.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.setParameterValue() now only uses the Converter to convert null values in case it handles null.
+### is.codion.swing.common.model
+- DefaultFilteredTableColumnModel.setVisibleColumns() bug fixed, now throws IllegalArgumentException in case a column is not found, instead of NullPointerException.
 
 ## 0.17.38
 ### is.codion.common.core
