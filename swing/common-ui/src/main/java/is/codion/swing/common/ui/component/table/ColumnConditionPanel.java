@@ -88,28 +88,38 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, ColumnConditionPanel::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Toggle the enabled status on/off.<br>
 		 * Default: CTRL-ENTER
 		 */
-		TOGGLE_ENABLED,
+		TOGGLE_ENABLED(keyStroke(VK_ENTER, CTRL_DOWN_MASK)),
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default: CTRL-UP ARROW
 		 */
-		PREVIOUS_OPERATOR,
+		PREVIOUS_OPERATOR(keyStroke(VK_UP, CTRL_DOWN_MASK)),
 		/**
 		 * Select the next condition operator.<br>
 		 * Default: CTRL-DOWN ARROW
 		 */
-		NEXT_OPERATOR
+		NEXT_OPERATOR(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private final ColumnConditionModel<? extends C, T> conditionModel;
@@ -693,19 +703,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 			if (!e.isTemporary()) {
 				focusGainedEvent.accept(conditionModel.columnIdentifier());
 			}
-		}
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case TOGGLE_ENABLED:
-				return keyStroke(VK_ENTER, CTRL_DOWN_MASK);
-			case PREVIOUS_OPERATOR:
-				return keyStroke(VK_UP, CTRL_DOWN_MASK);
-			case NEXT_OPERATOR:
-				return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
-			default:
-				throw new IllegalArgumentException();
 		}
 	}
 

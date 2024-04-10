@@ -32,30 +32,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class KeyboardShortcutsTest {
 
-	enum Shortcut {
-		ONE, TWO
+	enum Shortcut implements KeyboardShortcuts.Shortcut {
+		ONE(keyStroke(KeyEvent.VK_1)),
+		TWO(keyStroke(KeyEvent.VK_2));
+
+		private final KeyStroke defaultKeystroke;
+
+		Shortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	@Test
 	void test() {
-		assertThrows(IllegalArgumentException.class, () -> keyboardShortcuts(Shortcut.class, shortcut -> {
-			if (shortcut == Shortcut.ONE) {
-				return keyStroke(KeyEvent.VK_1);
-			}
-
-			return null;
-		}));
-
-		KeyboardShortcuts<Shortcut> shortcuts = keyboardShortcuts(Shortcut.class, shortcut -> {
-			switch (shortcut) {
-				case ONE:
-					return keyStroke(KeyEvent.VK_1);
-				case TWO:
-					return keyStroke(KeyEvent.VK_2);
-				default:
-					throw new IllegalArgumentException();
-			}
-		});
+		KeyboardShortcuts<Shortcut> shortcuts = keyboardShortcuts(Shortcut.class);
 
 		assertEquals(KeyEvent.VK_1, shortcuts.keyStroke(Shortcut.ONE).get().getKeyCode());
 		assertEquals(KeyEvent.VK_2, shortcuts.keyStroke(Shortcut.TWO).get().getKeyCode());

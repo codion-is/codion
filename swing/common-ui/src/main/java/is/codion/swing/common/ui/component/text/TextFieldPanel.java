@@ -66,18 +66,28 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, TextFieldPanel::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Displays a text area for longer text input.<br>
 		 * Default: INSERT
 		 */
-		DISPLAY_TEXT_AREA
+		DISPLAY_TEXT_AREA(keyStroke(VK_INSERT));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private final JTextField textField;
@@ -442,13 +452,5 @@ public final class TextFieldPanel extends JPanel {
 				notifyListeners();
 			}
 		}
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		if (shortcut == DISPLAY_TEXT_AREA) {
-			return keyStroke(VK_INSERT, 0);
-		}
-
-		throw new IllegalArgumentException();
 	}
 }

@@ -56,23 +56,33 @@ public final class EntityComboBoxPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, EntityComboBoxPanel::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Displays a dialog for adding a new record.<br>
 		 * Default: INSERT
 		 */
-		ADD,
+		ADD(keyStroke(VK_INSERT)),
 		/**
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default: CTRL-INSERT
 		 */
-		EDIT
+		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private final EntityComboBox comboBox;
@@ -186,17 +196,6 @@ public final class EntityComboBoxPanel extends JPanel {
 		@Override
 		public void focusGained(FocusEvent e) {
 			comboBox.requestFocusInWindow();
-		}
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case ADD:
-				return keyStroke(VK_INSERT);
-			case EDIT:
-				return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
-			default:
-				throw new IllegalArgumentException();
 		}
 	}
 

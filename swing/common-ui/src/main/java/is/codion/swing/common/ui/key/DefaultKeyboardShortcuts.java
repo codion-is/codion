@@ -28,35 +28,35 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
-final class DefaultKeyboardShortcuts<T extends Enum<T>> implements KeyboardShortcuts<T> {
+final class DefaultKeyboardShortcuts<T extends Enum<T> & KeyboardShortcuts.Shortcut> implements KeyboardShortcuts<T> {
 
-	private final Class<T> shortcutsClass;
+	private final Class<T> shortcutClass;
 	private final Map<T, Value<KeyStroke>> keyStrokes;
 
-	DefaultKeyboardShortcuts(Class<T> shortcutsClass, Function<T, KeyStroke> defaultKeystrokes) {
-		this(requireNonNull(shortcutsClass), Stream.of(shortcutsClass.getEnumConstants())
-						.collect(toMap(Function.identity(), shortcutKey -> keyStrokeValue(defaultKeystrokes, shortcutKey))));
+	DefaultKeyboardShortcuts(Class<T> shortcutClass) {
+		this(requireNonNull(shortcutClass), Stream.of(shortcutClass.getEnumConstants())
+						.collect(toMap(Function.identity(), DefaultKeyboardShortcuts::keyStrokeValue)));
 	}
 
-	private DefaultKeyboardShortcuts(Class<T> shortcutsClass, Map<T, Value<KeyStroke>> keyStrokes) {
-		this.shortcutsClass = shortcutsClass;
+	private DefaultKeyboardShortcuts(Class<T> shortcutClass, Map<T, Value<KeyStroke>> keyStrokes) {
+		this.shortcutClass = shortcutClass;
 		this.keyStrokes = keyStrokes;
 	}
 
 	@Override
-	public Value<KeyStroke> keyStroke(T keyboardShortcut) {
-		return keyStrokes.get(requireNonNull(keyboardShortcut));
+	public Value<KeyStroke> keyStroke(T shortcut) {
+		return keyStrokes.get(requireNonNull(shortcut));
 	}
 
 	@Override
 	public KeyboardShortcuts<T> copy() {
-		return new DefaultKeyboardShortcuts<>(shortcutsClass, keyStrokes.entrySet().stream()
+		return new DefaultKeyboardShortcuts<>(shortcutClass, keyStrokes.entrySet().stream()
 						.collect(toMap(Map.Entry::getKey, entry ->
 										Value.value(entry.getValue().get(), entry.getValue().get()))));
 	}
 
-	private static <T extends Enum<T>> Value<KeyStroke> keyStrokeValue(Function<T, KeyStroke> defaultKeystrokes, T shortcutKey) {
-		KeyStroke keyStroke = requireNonNull(defaultKeystrokes).apply(shortcutKey);
+	private static <T extends Enum<T> & Shortcut> Value<KeyStroke> keyStrokeValue(T shortcutKey) {
+		KeyStroke keyStroke = shortcutKey.defaultKeystroke();
 		if (keyStroke == null) {
 			throw new IllegalArgumentException("No default keystroke provided for shortcut key: " + shortcutKey);
 		}

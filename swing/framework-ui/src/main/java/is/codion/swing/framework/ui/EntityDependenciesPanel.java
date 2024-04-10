@@ -68,23 +68,33 @@ public final class EntityDependenciesPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, EntityDependenciesPanel::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default: CTRL-ALT-LEFT ARROW
 		 */
-		NAVIGATE_LEFT,
+		NAVIGATE_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default: CTRL-ALT-RIGHT ARROW
 		 */
-		NAVIGATE_RIGHT
+		NAVIGATE_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
@@ -188,17 +198,6 @@ public final class EntityDependenciesPanel extends JPanel {
 							.title(FrameworkMessages.dependencies())
 							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
 							.show();
-		}
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case NAVIGATE_LEFT:
-				return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-			case NAVIGATE_RIGHT:
-				return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-			default:
-				throw new IllegalArgumentException();
 		}
 	}
 

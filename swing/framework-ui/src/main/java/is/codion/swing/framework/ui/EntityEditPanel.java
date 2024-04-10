@@ -98,18 +98,29 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default: CTRL-I
 		 */
-		SELECT_INPUT_FIELD,
+		SELECT_INPUT_FIELD(keyStroke(VK_I, CTRL_DOWN_MASK)),
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		DISPLAY_ENTITY_MENU
+		DISPLAY_ENTITY_MENU(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	static {
@@ -669,8 +680,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-						keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
+		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
@@ -801,17 +811,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 
 			return new HashSet<>(Arrays.asList(editControls));
-		}
-
-		private static KeyStroke defaultKeyStroke(KeyboardShortcut keyboardShortcut) {
-			switch (keyboardShortcut) {
-				case SELECT_INPUT_FIELD:
-					return keyStroke(VK_I, CTRL_DOWN_MASK);
-				case DISPLAY_ENTITY_MENU:
-					return keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				default:
-					throw new IllegalArgumentException();
-			}
 		}
 	}
 

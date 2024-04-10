@@ -126,28 +126,38 @@ public final class FilteredTable<R, C> extends JTable {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> DEFAULT_KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, FilteredTable::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> DEFAULT_KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default: CTRL-ALT-C
 		 */
-		COPY_CELL,
+		COPY_CELL(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Toggles the sort on the selected column.<br>
 		 * Default: ALT-DOWN ARROW
 		 */
-		TOGGLE_SORT_COLUMN,
+		TOGGLE_SORT_COLUMN(keyStroke(VK_DOWN, ALT_DOWN_MASK)),
 		/**
 		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
 		 * Default: ALT-UP ARROW
 		 */
-		TOGGLE_SORT_COLUMN_ADD
+		TOGGLE_SORT_COLUMN_ADD(keyStroke(VK_UP, ALT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	/**
@@ -1067,19 +1077,6 @@ public final class FilteredTable<R, C> extends JTable {
 		@Override
 		public TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column) {
 			return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.columnClass()).build();
-		}
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case COPY_CELL:
-				return keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-			case TOGGLE_SORT_COLUMN:
-				return keyStroke(VK_DOWN, ALT_DOWN_MASK);
-			case TOGGLE_SORT_COLUMN_ADD:
-				return keyStroke(VK_UP, ALT_DOWN_MASK);
-			default:
-				throw new IllegalArgumentException();
 		}
 	}
 

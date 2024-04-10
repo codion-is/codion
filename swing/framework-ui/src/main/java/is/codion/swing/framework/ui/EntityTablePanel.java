@@ -165,62 +165,73 @@ public class EntityTablePanel extends JPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Add a new entity instance.<br>
 		 * Default: INSERT
 		 */
-		ADD,
+		ADD(keyStroke(VK_INSERT)),
 		/**
 		 * Edit the selected entity instance.<br>
 		 * Default: CTRL-INSERT
 		 */
-		EDIT,
+		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK)),
 		/**
 		 * Requests focus for the table.<br>
 		 * Default: CTRL-T
 		 */
-		REQUEST_TABLE_FOCUS,
+		REQUEST_TABLE_FOCUS(keyStroke(VK_T, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default: CTRL-ALT-S
 		 */
-		TOGGLE_CONDITION_PANEL,
+		TOGGLE_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default: CTRL-S
 		 */
-		SELECT_CONDITION_PANEL,
+		SELECT_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default: CTRL-ALT-F
 		 */
-		TOGGLE_FILTER_PANEL,
+		TOGGLE_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default: CTRL-SHIFT-F
 		 */
-		SELECT_FILTER_PANEL,
+		SELECT_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
 		 * Triggers the {@link TableControl#PRINT} control.<br>
 		 * Default: CTRL-P
 		 */
-		PRINT,
+		PRINT(keyStroke(VK_P, CTRL_DOWN_MASK)),
 		/**
 		 * Triggers the {@link TableControl#DELETE_SELECTED} control.<br>
 		 * Default: DELETE
 		 */
-		DELETE_SELECTED,
+		DELETE_SELECTED(keyStroke(VK_DELETE)),
 		/**
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default: CTRL-G
 		 */
-		DISPLAY_POPUP_MENU,
+		DISPLAY_POPUP_MENU(keyStroke(VK_G, CTRL_DOWN_MASK)),
 		/**
 		 * Displays the entity menu, if one is available.<br>
 		 * Default: CTRL-ALT-V
 		 */
-		DISPLAY_ENTITY_MENU
+		DISPLAY_ENTITY_MENU(keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	/**
@@ -1758,8 +1769,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-						keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
+		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
@@ -2067,35 +2077,6 @@ public class EntityTablePanel extends JPanel {
 			public void validate(Set<Attribute<?>> attributes) {
 				//validate that the attributes exists
 				attributes.forEach(attribute -> entityDefinition.attributes().definition(attribute));
-			}
-		}
-
-		private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-			switch (shortcut) {
-				case ADD:
-					return keyStroke(VK_INSERT);
-				case EDIT:
-					return keyStroke(VK_INSERT, CTRL_DOWN_MASK);
-				case REQUEST_TABLE_FOCUS:
-					return keyStroke(VK_T, CTRL_DOWN_MASK);
-				case SELECT_CONDITION_PANEL:
-					return keyStroke(VK_S, CTRL_DOWN_MASK);
-				case TOGGLE_CONDITION_PANEL:
-					return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case SELECT_FILTER_PANEL:
-					return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-				case TOGGLE_FILTER_PANEL:
-					return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case PRINT:
-					return keyStroke(VK_P, CTRL_DOWN_MASK);
-				case DELETE_SELECTED:
-					return keyStroke(VK_DELETE);
-				case DISPLAY_POPUP_MENU:
-					return keyStroke(VK_G, CTRL_DOWN_MASK);
-				case DISPLAY_ENTITY_MENU:
-					return keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				default:
-					throw new IllegalArgumentException();
 			}
 		}
 	}

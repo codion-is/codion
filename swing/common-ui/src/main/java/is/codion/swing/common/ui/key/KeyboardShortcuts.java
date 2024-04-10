@@ -21,22 +21,21 @@ package is.codion.swing.common.ui.key;
 import is.codion.common.value.Value;
 
 import javax.swing.KeyStroke;
-import java.util.function.Function;
 
 import static javax.swing.KeyStroke.getKeyStroke;
 
 /**
- * Holds keyboard shortcut keyStrokes, mapped to enum based shortcut keys.
+ * Holds mutable keyboard shortcut keyStrokes, mapped to enum based shortcut keys.
  * @param <T> the shortcut key type
- * @see #keyboardShortcuts(Class, Function)
+ * @see #keyboardShortcuts(Class)
  */
-public interface KeyboardShortcuts<T extends Enum<T>> {
+public interface KeyboardShortcuts<T extends Enum<T> & KeyboardShortcuts.Shortcut> {
 
 	/**
-	 * @param keyboardShortcut the shortcut key
+	 * @param shortcut the shortcut key
 	 * @return the {@link Value} controlling the key stroke for the given shortcut key
 	 */
-	Value<KeyStroke> keyStroke(T keyboardShortcut);
+	Value<KeyStroke> keyStroke(T shortcut);
 
 	/**
 	 * @return a copy of this {@link KeyboardShortcuts} instance
@@ -44,14 +43,24 @@ public interface KeyboardShortcuts<T extends Enum<T>> {
 	KeyboardShortcuts<T> copy();
 
 	/**
+	 * Specifies a keyboard shortcut providing a default key stroke.
+	 */
+	interface Shortcut {
+
+		/**
+		 * @return the default keystroke for this shortcut
+		 */
+		KeyStroke defaultKeystroke();
+	}
+
+	/**
 	 * @param shortcutKeyClass the shortcut key class
-	 * @param defaultKeyStrokes provides the default keystroke for each shortcut key
 	 * @param <T> the shortcut key type
 	 * @return a new {@link KeyboardShortcuts} instance
-	 * @throws IllegalArgumentException in case the default keyStrokes function does not provide keyStrokes for all shortcut keys
+	 * @throws IllegalArgumentException in case any of the shortcut keys is missing a default keystroke
 	 */
-	static <T extends Enum<T>> KeyboardShortcuts<T> keyboardShortcuts(Class<T> shortcutKeyClass, Function<T, KeyStroke> defaultKeyStrokes) {
-		return new DefaultKeyboardShortcuts<>(shortcutKeyClass, defaultKeyStrokes);
+	static <T extends Enum<T> & Shortcut> KeyboardShortcuts<T> keyboardShortcuts(Class<T> shortcutKeyClass) {
+		return new DefaultKeyboardShortcuts<>(shortcutKeyClass);
 	}
 
 	/**

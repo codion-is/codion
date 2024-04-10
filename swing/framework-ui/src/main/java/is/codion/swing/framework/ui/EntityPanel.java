@@ -134,72 +134,83 @@ public class EntityPanel extends JPanel {
 	 * Note that changing the shortcut keystroke after the panel
 	 * has been initialized has no effect.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Requests focus for the table.<br>
 		 * Default: CTRL-T
 		 */
-		REQUEST_TABLE_FOCUS,
+		REQUEST_TABLE_FOCUS(keyStroke(VK_T, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the condition panel between hidden, visible and advanced.<br>
 		 * Default: CTRL-ALT-S
 		 */
-		TOGGLE_CONDITION_PANEL,
+		TOGGLE_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default: CTRL-S
 		 */
-		SELECT_CONDITION_PANEL,
+		SELECT_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the filter panel between hidden, visible and advanced.<br>
 		 * Default: CTRL-ALT-F
 		 */
-		TOGGLE_FILTER_PANEL,
+		TOGGLE_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default: CTRL-SHIFT-F
 		 */
-		SELECT_FILTER_PANEL,
+		SELECT_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
 		 * Requests focus for the table search field.<br>
 		 * Default: CTRL-F
 		 */
-		REQUEST_SEARCH_FIELD_FOCUS,
+		REQUEST_SEARCH_FIELD_FOCUS(keyStroke(VK_F, CTRL_DOWN_MASK)),
 		/**
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default: CTRL-E
 		 */
-		REQUEST_EDIT_PANEL_FOCUS,
+		REQUEST_EDIT_PANEL_FOCUS(keyStroke(VK_E, CTRL_DOWN_MASK)),
 		/**
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default: CTRL-I
 		 */
-		SELECT_INPUT_FIELD,
+		SELECT_INPUT_FIELD(keyStroke(VK_I, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default: CTRL-ALT-E
 		 */
-		TOGGLE_EDIT_PANEL,
+		TOGGLE_EDIT_PANEL(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
 		 * Default: CTRL-ALT-UP ARROW
 		 */
-		NAVIGATE_UP,
+		NAVIGATE_UP(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
 		 * Default: CTRL-ALT-DOWN ARROW
 		 */
-		NAVIGATE_DOWN,
+		NAVIGATE_DOWN(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
 		 * Default: CTRL-ALT-RIGHT ARROW
 		 */
-		NAVIGATE_RIGHT,
+		NAVIGATE_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
 		 * Default: CTRL-ALT-LEFT ARROW
 		 */
-		NAVIGATE_LEFT
+		NAVIGATE_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
@@ -1230,8 +1241,7 @@ public class EntityPanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-						keyboardShortcuts(KeyboardShortcut.class, Config::defaultKeyStroke);
+		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
@@ -1422,39 +1432,6 @@ public class EntityPanel extends JPanel {
 							controlComponentConstraints.equals(BorderLayout.NORTH);
 		}
 
-		private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-			switch (shortcut) {
-				case REQUEST_TABLE_FOCUS:
-					return keyStroke(VK_T, CTRL_DOWN_MASK);
-				case TOGGLE_CONDITION_PANEL:
-					return keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case SELECT_CONDITION_PANEL:
-					return keyStroke(VK_S, CTRL_DOWN_MASK);
-				case TOGGLE_FILTER_PANEL:
-					return keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case SELECT_FILTER_PANEL:
-					return keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK);
-				case REQUEST_SEARCH_FIELD_FOCUS:
-					return keyStroke(VK_F, CTRL_DOWN_MASK);
-				case REQUEST_EDIT_PANEL_FOCUS:
-					return keyStroke(VK_E, CTRL_DOWN_MASK);
-				case SELECT_INPUT_FIELD:
-					return keyStroke(VK_I, CTRL_DOWN_MASK);
-				case TOGGLE_EDIT_PANEL:
-					return keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case NAVIGATE_UP:
-					return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case NAVIGATE_DOWN:
-					return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case NAVIGATE_RIGHT:
-					return keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				case NAVIGATE_LEFT:
-					return keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
 		private static final class DefaultDetailLayout implements Function<EntityPanel, DetailLayout> {
 
 			@Override
@@ -1493,7 +1470,7 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @return the detail controller for this layout, an empty Optional if one is none is available
+		 * @return the detail controller for this layout, an empty Optional if none is available
 		 */
 		default Optional<DetailController> controller() {
 			return Optional.empty();

@@ -103,23 +103,33 @@ public final class TabbedDetailLayout implements DetailLayout {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, TabbedDetailLayout::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Resizes this panel to the right.<br>
 		 * Default: SHIFT-ALT-RIGHT ARROW
 		 */
-		RESIZE_RIGHT,
+		RESIZE_RIGHT(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
 		 * Resizes this panel to the left.<br>
 		 * Default: SHIFT-ALT-LEFT ARROW
 		 */
-		RESIZE_LEFT
+		RESIZE_LEFT(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private static final int RESIZE_AMOUNT = 30;
@@ -300,17 +310,6 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		return builder.build();
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case RESIZE_LEFT:
-				return keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
-			case RESIZE_RIGHT:
-				return keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK);
-			default:
-				throw new IllegalArgumentException();
-		}
 	}
 
 	private final class ActivateDetailPanel implements Control.Command {

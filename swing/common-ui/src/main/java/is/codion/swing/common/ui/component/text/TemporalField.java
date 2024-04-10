@@ -69,28 +69,38 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, TemporalField::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Display a calendar for date/time input.<br>
 		 * Default: INSERT
 		 */
-		DISPLAY_CALENDAR,
+		DISPLAY_CALENDAR(keyStroke(VK_INSERT)),
 		/**
 		 * Increments the date component under the cursor.<br>
 		 * Default: UP ARROW
 		 */
-		INCREMENT,
+		INCREMENT(keyStroke(VK_UP)),
 		/**
 		 * Decrements the date component under the cursor.<br>
 		 * Default: DOWN ARROW
 		 */
-		DECREMENT
+		DECREMENT(keyStroke(VK_DOWN));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private static final char DAY = 'd';
@@ -505,19 +515,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 		catch (ParseException e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case DISPLAY_CALENDAR:
-				return keyStroke(VK_INSERT);
-			case INCREMENT:
-				return keyStroke(VK_UP);
-			case DECREMENT:
-				return keyStroke(VK_DOWN);
-			default:
-				throw new IllegalArgumentException();
 		}
 	}
 

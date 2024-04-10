@@ -96,73 +96,84 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS =
-					keyboardShortcuts(KeyboardShortcut.class, CalendarPanel::defaultKeyStroke);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
 	/**
 	 * The available keyboard shortcuts.
 	 */
-	public enum KeyboardShortcut {
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+
 		/**
 		 * Select the previous year.<br>
 		 * Default: CTRL-DOWN ARROW
 		 */
-		PREVIOUS_YEAR,
+		PREVIOUS_YEAR(keyStroke(VK_DOWN, CTRL_DOWN_MASK)),
 		/**
 		 * Select the next year.<br>
 		 * Default: CTRL-UP ARROW
 		 */
-		NEXT_YEAR,
+		NEXT_YEAR(keyStroke(VK_UP, CTRL_DOWN_MASK)),
 		/**
 		 * Select the previous month.<br>
 		 * Default: SHIFT-DOWN ARROW
 		 */
-		PREVIOUS_MONTH,
+		PREVIOUS_MONTH(keyStroke(VK_DOWN, SHIFT_DOWN_MASK)),
 		/**
 		 * Select the next month.<br>
 		 * Default: SHIFT-UP ARROW
 		 */
-		NEXT_MONTH,
+		NEXT_MONTH(keyStroke(VK_UP, SHIFT_DOWN_MASK)),
 		/**
 		 * Select the previous week.<br>
 		 * Default: ALT-UP ARROW
 		 */
-		PREVIOUS_WEEK,
+		PREVIOUS_WEEK(keyStroke(VK_UP, ALT_DOWN_MASK)),
 		/**
 		 * Select the next week.<br>
 		 * Default: ALT-DOWN ARROW
 		 */
-		NEXT_WEEK,
+		NEXT_WEEK(keyStroke(VK_DOWN, ALT_DOWN_MASK)),
 		/**
 		 * Select the previous day.<br>
 		 * Default: ALT-LEFT ARROW
 		 */
-		PREVIOUS_DAY,
+		PREVIOUS_DAY(keyStroke(VK_LEFT, ALT_DOWN_MASK)),
 		/**
 		 * Select the next day.<br>
 		 * Default: ALT-RIGHT ARROW
 		 */
-		NEXT_DAY,
+		NEXT_DAY(keyStroke(VK_RIGHT, ALT_DOWN_MASK)),
 		/**
 		 * Select the previous hour.<br>
 		 * Default: SHIFT-ALT-DOWN ARROW
 		 */
-		PREVIOUS_HOUR,
+		PREVIOUS_HOUR(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Select the next hour.<br>
 		 * Default: SHIFT-ALT-UP ARROW
 		 */
-		NEXT_HOUR,
+		NEXT_HOUR(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Select the previous minute.<br>
 		 * Default: CTRL-ALT-DOWN ARROW
 		 */
-		PREVIOUS_MINUTE,
+		PREVIOUS_MINUTE(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Select the next minute.<br>
 		 * Default: CTRL-ALT-UP ARROW
 		 */
-		NEXT_MINUTE
+		NEXT_MINUTE(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
 	}
 
 	private static final Set<Class<? extends Temporal>> SUPPORTED_TYPES =
@@ -760,37 +771,6 @@ public final class CalendarPanel extends JPanel {
 		return Arrays.stream(Month.values())
 						.map(month -> Item.item(month, month.getDisplayName(TextStyle.SHORT, Locale.getDefault())))
 						.collect(Collectors.toList());
-	}
-
-	private static KeyStroke defaultKeyStroke(KeyboardShortcut shortcut) {
-		switch (shortcut) {
-			case PREVIOUS_YEAR:
-				return keyStroke(VK_DOWN, CTRL_DOWN_MASK);
-			case NEXT_YEAR:
-				return keyStroke(VK_UP, CTRL_DOWN_MASK);
-			case PREVIOUS_MONTH:
-				return keyStroke(VK_DOWN, SHIFT_DOWN_MASK);
-			case NEXT_MONTH:
-				return keyStroke(VK_UP, SHIFT_DOWN_MASK);
-			case PREVIOUS_WEEK:
-				return keyStroke(VK_UP, ALT_DOWN_MASK);
-			case NEXT_WEEK:
-				return keyStroke(VK_DOWN, ALT_DOWN_MASK);
-			case PREVIOUS_DAY:
-				return keyStroke(VK_LEFT, ALT_DOWN_MASK);
-			case NEXT_DAY:
-				return keyStroke(VK_RIGHT, ALT_DOWN_MASK);
-			case PREVIOUS_HOUR:
-				return keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
-			case NEXT_HOUR:
-				return keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK);
-			case PREVIOUS_MINUTE:
-				return keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-			case NEXT_MINUTE:
-				return keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK);
-			default:
-				throw new IllegalArgumentException();
-		}
 	}
 
 	private final class LayoutDayPanelListener implements Runnable {
