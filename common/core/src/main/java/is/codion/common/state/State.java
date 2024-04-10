@@ -36,7 +36,7 @@ import java.util.Collection;
  * state.set(false);
  * state.set(null); //translates to false
  * </pre>
- * A factory class for {@link State} objects.
+ * A factory for {@link State} objects.
  */
 public interface State extends StateObserver, Value<Boolean> {
 

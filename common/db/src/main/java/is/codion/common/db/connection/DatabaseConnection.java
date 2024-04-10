@@ -28,7 +28,7 @@ import java.sql.SQLException;
 
 /**
  * Manages a {@link Connection} instance, providing basic transaction control.
- * A factory class for DatabaseConnection instances.
+ * A factory for DatabaseConnection instances.
  */
 public interface DatabaseConnection extends AutoCloseable {
 
@@ -71,26 +71,26 @@ public interface DatabaseConnection extends AutoCloseable {
 
 	/**
 	 * Performs a commit and ends the current transaction
-	 * @throws IllegalStateException in case transaction is not open
+	 * @throws IllegalStateException in case a transaction is not open
 	 */
 	void commitTransaction();
 
 	/**
 	 * Performs a rollback and ends the current transaction
-	 * @throws IllegalStateException in case transaction is not open
+	 * @throws IllegalStateException in case a transaction is not open
 	 */
 	void rollbackTransaction();
 
 	/**
 	 * Performs a commit
-	 * @throws java.sql.SQLException thrown if anything goes wrong during the execution
-	 * @throws IllegalStateException in case a transaction is open
+	 * @throws java.sql.SQLException thrown if anything goes wrong during the commit
+	 * @throws IllegalStateException in case a transaction is already open
 	 */
 	void commit() throws SQLException;
 
 	/**
 	 * Performs a rollback
-	 * @throws SQLException thrown if anything goes wrong during the execution
+	 * @throws SQLException thrown if anything goes wrong during the rollback
 	 * @throws IllegalStateException in case a transaction is open
 	 */
 	void rollback() throws SQLException;

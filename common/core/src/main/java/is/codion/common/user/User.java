@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Encapsulates a username and password.
- * Factory class for {@link User} instances.
+ * Factory for {@link User} instances.
  * Note that a {@link User} instance is mutable as the password can be cleared.
  * @see #user(String)
  * @see #user(String, char[])

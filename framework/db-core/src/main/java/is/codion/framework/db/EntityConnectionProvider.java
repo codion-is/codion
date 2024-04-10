@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 /**
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
  * {@link #connection()} is guaranteed to return a healthy connection or throw an exception.
- * A factory class for handing out EntityConnectionProviders according to system properties.
+ * A factory for EntityConnectionProviders based on system properties.
  */
 public interface EntityConnectionProvider extends AutoCloseable {
 

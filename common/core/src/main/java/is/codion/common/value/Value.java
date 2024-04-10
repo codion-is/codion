@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An observable wrapper for a value.
- * A factory class for {@link Value} instances.
+ * A factory for {@link Value} instances.
  * @param <T> the type of the wrapped value
  * @see #value()
  */
@@ -38,18 +38,18 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	enum Notify {
 		/**
 		 * Notify listeners when the underlying value is set via {@link Value#set(Object)},
-		 * regardless of whether or not the new value is equal to the previous value.
+		 * regardless of whether the new value is equal to the previous value.
 		 */
 		WHEN_SET,
 		/**
 		 * Notify listeners when the underlying value is changed via {@link Value#set(Object)},
-		 * that is, only when the new value is not equal to the previous value.
+		 * that is, only when the new value differs from the previous value.
 		 */
 		WHEN_CHANGED
 	}
 
 	/**
-	 * Sets the value
+	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
 	 * @param value the value
 	 * @throws IllegalArgumentException in case the given value is invalid
 	 * @see #addValidator(Validator)
@@ -60,8 +60,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	}
 
 	/**
-	 * Sets the value. Note that if the value is equal to the current value according to {@link java.util.Objects#equals}
-	 * the underlying value is still set, but no change event is triggered.
+	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
 	 * @param value the value
 	 * @return true if the underlying value changed
 	 * @throws IllegalArgumentException in case the given value is invalid

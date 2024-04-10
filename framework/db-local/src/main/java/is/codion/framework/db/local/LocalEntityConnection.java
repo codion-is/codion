@@ -43,7 +43,7 @@ import java.sql.Connection;
  *   List&lt;Entity&gt; customers = connection.select(all(Customer.TYPE));
  * }
  * </pre>
- * A factory class for creating LocalEntityConnection instances.
+ * A factory for LocalEntityConnection instances.
  */
 public interface LocalEntityConnection extends EntityConnection {
 

@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 
 /**
- * A factory class for http based EntityConnection builder.
+ * A factory for http based EntityConnection builder.
  * @see #HOSTNAME
  * @see #PORT
  * @see #SECURE

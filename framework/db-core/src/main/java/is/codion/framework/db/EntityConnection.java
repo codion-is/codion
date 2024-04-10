@@ -539,7 +539,7 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * A class encapsulating select query parameters.
-	 * A factory class for {@link Builder} instances via
+	 * A factory for {@link Builder} instances via
 	 * {@link Select#all(EntityType)}, {@link Select#where(Condition)}.
 	 */
 	interface Select {
@@ -711,7 +711,7 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * A class encapsulating a where clause along with columns and their associated values for update.
-	 * A factory class for {@link Builder} instances via
+	 * A factory for {@link Builder} instances via
 	 * {@link Update#all(EntityType)}, {@link Update#where(Condition)}.
 	 */
 	interface Update {
@@ -767,9 +767,9 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * A class encapsulating count query parameters.
-	 * A factory class for {@link Count} instances via {@link Count#all(EntityType)},
+	 * A factory for {@link Count} instances via {@link Count#all(EntityType)},
 	 * {@link Count#where(Condition)} and {@link Count#having(Condition)}.
-	 * A factory class for {@link Count.Builder} instances via {@link Count#builder(Condition)}.
+	 * A factory for {@link Count.Builder} instances via {@link Count#builder(Condition)}.
 	 */
 	interface Count {
 

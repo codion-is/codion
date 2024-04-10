@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  * An observable wrapper for one or more values, including a possible null value.
- * A factory class for {@link ValueSet} instances.
+ * A factory for {@link ValueSet} instances.
  * @param <T> the value type
  */
 public interface ValueSet<T> extends Value<Set<T>>, ValueSetObserver<T> {

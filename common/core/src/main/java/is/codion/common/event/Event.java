@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  *
  * event.accept(true);
  * </pre>
- * A factory class for {@link Event} instances.
+ * A factory for {@link Event} instances.
  * @param <T> the type of data propagated with this event
  */
 public interface Event<T> extends Runnable, Consumer<T>, EventObserver<T> {

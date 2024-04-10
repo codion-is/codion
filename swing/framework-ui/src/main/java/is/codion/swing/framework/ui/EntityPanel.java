@@ -498,7 +498,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Returns the first detail panel based on the given {@code entityType}
+	 * Returns the first detail panel found based on the given {@code entityType}
 	 * @param <T> the entity panel type
 	 * @param entityType the entityType of the detail panel to retrieve
 	 * @return the detail panel of the given type
@@ -623,7 +623,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Instantiates a new EntityPanel.Builder
+	 * Instantiates a new {@link EntityPanel.Builder}
 	 * @param entityType the entity type to base this panel builder on
 	 * @return a panel builder
 	 */
@@ -632,8 +632,8 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Instantiates a new EntityPanel.Builder
-	 * @param modelBuilder the SwingEntityModel.Builder to base this panel builder on
+	 * Instantiates a new {@link EntityPanel.Builder}
+	 * @param modelBuilder the {@link SwingEntityModel.Builder} to base this panel builder on
 	 * @return a panel builder
 	 */
 	public static EntityPanel.Builder builder(SwingEntityModel.Builder modelBuilder) {
@@ -641,8 +641,8 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Instantiates a new EntityPanel.Builder
-	 * @param model the SwingEntityModel to base this panel builder on
+	 * Instantiates a new {@link EntityPanel.Builder}
+	 * @param model the {@link SwingEntityModel} to base this panel builder on
 	 * @return a panel builder
 	 */
 	public static EntityPanel.Builder builder(SwingEntityModel model) {
@@ -699,8 +699,9 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Creates the {@link Controls} instance on which to base the controls component.
-	 * By default all controls from {@link EntityEditPanel#controls} are included and if a
-	 * table panel is available a table refresh controls is included as well.
+	 * By default all controls from {@link EntityEditPanel#controls()} are included and if a
+	 * table panel is available a table refresh control is included as well.
+	 * Override to customize the controls presented on this panel.
 	 * @return the control component controls, an empty {@link Controls} instance in case of no controls.
 	 * @see #createControlComponent(Controls)
 	 */
@@ -741,12 +742,8 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Sets up the keyboard navigation actions.
-	 * CTRL-T transfers focus to the table in case one is available,
-	 * CTR-E transfers focus to the edit panel in case one is available,
-	 * CTR-S opens a select search condition panel dialog, in case one is available,
-	 * CTR-I opens a select input field dialog and
-	 * CTR-F selects the table search field
+	 * Sets up the keyboard actions.
+	 * @see KeyboardShortcut
 	 */
 	protected final void setupKeyboardActions() {
 		if (containsTablePanel()) {
