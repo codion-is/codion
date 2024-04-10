@@ -88,7 +88,28 @@ public interface EntityConnection extends AutoCloseable {
 	boolean transactionOpen();
 
 	/**
-	 * Starts a transaction on this connection
+	 * Starts a transaction on this connection.<br><br>
+	 * NOTE: A transaction should ALWAYS be used in conjunction with a try/catch block,<br>
+	 * in order for the transaction to be properly ended in case of an exception.<br>
+	 * A transaction should always be started OUTSIDE the try/catch block.
+	 * <pre>
+	 * EntityConnection connection = connectionProvider().connection();
+	 *
+	 * connection.startTransaction(); // Very important, should NOT be inside the try block
+	 * try {
+	 *     connection.insert(entity);
+	 *
+	 *     connection.commitTransaction();
+	 * }
+	 * catch (DatabaseException e) {
+   *     connection.rollbackTransaction();
+	 *     throw e;
+	 * }
+	 * catch (Exception e) {          // Very important to catch Exception
+	 *     connection.rollbackTransaction();
+	 *     throw new RuntimeException(e);
+	 * }
+	 * </pre>
 	 * @throws IllegalStateException if a transaction is already open
 	 */
 	void startTransaction();

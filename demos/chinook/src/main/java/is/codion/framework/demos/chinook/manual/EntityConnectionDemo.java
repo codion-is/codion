@@ -382,6 +382,7 @@ public final class EntityConnectionDemo {
 
 		Entities entities = connection.entities();
 
+		// It is very important to start the transaction here, outside of the try/catch block.
 		connection.startTransaction();
 		try {
 			Entity artist = entities.builder(Artist.TYPE)
@@ -402,6 +403,8 @@ public final class EntityConnectionDemo {
 			throw e;
 		}
 		catch (Exception e) {
+			// Always add a catch for the top level Exception, otherwise unexpected
+			// exceptions may cause a transaction to remain open, which is a very serious bug.
 			connection.rollbackTransaction();
 			throw new RuntimeException(e);
 		}
