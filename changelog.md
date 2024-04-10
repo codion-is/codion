@@ -7,6 +7,7 @@ Codion Change Log
 - Version.build() added, parsing no longer supports space as metadata delimiter.
 - Version, static factory methods replaced with a builder.
 - Version.parsePropertiesFile() renamed parse().
+- Configuration.ConfigurationFileNotFoundException now thrown instead of RuntimeException when a required configuration file is not found.
 ### is.codion.framework.domain
 - TypeReference added.
 - Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.

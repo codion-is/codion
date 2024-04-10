@@ -32,7 +32,9 @@ import static java.util.Collections.emptyList;
 
 /**
  * A utility class for central configuration values.
- * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.
+ * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.<br>
+ * Note that if {@link #CONFIGURATION_FILE_REQUIRED} is true and the file referenced by {@link #CONFIGURATION_FILE}<br>
+ * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.<br>
  * @see #CONFIGURATION_FILE_REQUIRED
  */
 public final class Configuration {
@@ -48,7 +50,7 @@ public final class Configuration {
 	/**
 	 * Specifies whether the application requires a configuration file to run.<br>
 	 * If this is set to true and the file referenced by {@link #CONFIGURATION_FILE}<br>
-	 * is not found a FileNotFoundException is thrown when this class is loaded.<br>
+	 * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.<br>
 	 * Value type: Boolean<br>
 	 * Default value: false
 	 */
@@ -263,7 +265,7 @@ public final class Configuration {
 		try (InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
 			if (configurationFileStream == null) {
 				if (configurationRequired) {
-					throw new RuntimeException("Required configuration file not found on classpath: " + filePath);
+					throw new ConfigurationFileNotFoundException(filePath);
 				}
 
 				return PropertyStore.propertyStore();
@@ -304,5 +306,15 @@ public final class Configuration {
 		}
 
 		return path;
+	}
+
+	/**
+	 * Indicates that a required configuration file was not found.
+	 */
+	public static final class ConfigurationFileNotFoundException extends RuntimeException {
+
+		private ConfigurationFileNotFoundException(String filePath) {
+			super("Required configuration file not found on classpath: " + filePath);
+		}
 	}
 }

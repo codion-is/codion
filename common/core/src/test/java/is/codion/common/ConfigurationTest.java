@@ -40,7 +40,7 @@ public final class ConfigurationTest {
 						Configuration.loadFromClasspath("classpath:is/codion/common/item/item_config_test_non_existing.config", true));
 		assertThrows(IllegalArgumentException.class, () ->
 						Configuration.loadFromClasspath("classpath:/is/codion/common/item/item_config_test_non_existing.config", true));
-		assertThrows(RuntimeException.class, () ->
+		assertThrows(Configuration.ConfigurationFileNotFoundException.class, () ->
 						Configuration.loadFromClasspath("classpath:config_test_non_existing.config", true));
 	}
 
