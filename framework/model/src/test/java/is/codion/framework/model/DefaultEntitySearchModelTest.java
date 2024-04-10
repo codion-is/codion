@@ -251,7 +251,7 @@ public final class DefaultEntitySearchModelTest {
 						.columns(searchable)
 						.build();
 
-		CONNECTION_PROVIDER.connection().beginTransaction();
+		CONNECTION_PROVIDER.connection().startTransaction();
 		setupData();
 	}
 

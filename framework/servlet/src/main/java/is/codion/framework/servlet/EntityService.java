@@ -207,9 +207,9 @@ public final class EntityService implements AuxiliaryServer {
 		javalin.post(URL_JSON_SERIALIZATION + "close", closeHandler);
 		javalin.post(URL_JAVA_SERIALIZATION + "isTransactionOpen", new IsTransactionOpenHandler());
 		javalin.post(URL_JSON_SERIALIZATION + "isTransactionOpen", new IsTransactionOpenJsonHandler());
-		BeginTransactionHandler beginTransactionHandler = new BeginTransactionHandler();
-		javalin.post(URL_JAVA_SERIALIZATION + "beginTransaction", beginTransactionHandler);
-		javalin.post(URL_JSON_SERIALIZATION + "beginTransaction", beginTransactionHandler);
+		StartTransactionHandler startTransactionHandler = new StartTransactionHandler();
+		javalin.post(URL_JAVA_SERIALIZATION + "startTransaction", startTransactionHandler);
+		javalin.post(URL_JSON_SERIALIZATION + "startTransaction", startTransactionHandler);
 		RollbackTransactionHandler rollbackTransactionHandler = new RollbackTransactionHandler();
 		javalin.post(URL_JAVA_SERIALIZATION + "rollbackTransaction", rollbackTransactionHandler);
 		javalin.post(URL_JSON_SERIALIZATION + "rollbackTransaction", rollbackTransactionHandler);
@@ -317,13 +317,13 @@ public final class EntityService implements AuxiliaryServer {
 		}
 	}
 
-	private final class BeginTransactionHandler implements Handler {
+	private final class StartTransactionHandler implements Handler {
 
 		@Override
 		public void handle(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				connection.beginTransaction();
+				connection.startTransaction();
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {

@@ -78,11 +78,11 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	boolean transactionOpen() throws RemoteException;
 
 	/**
-	 * Begins a transaction on this connection
+	 * Starts a transaction on this connection
 	 * @throws IllegalStateException if a transaction is already open
 	 * @throws RemoteException in case of a remote exception
 	 */
-	void beginTransaction() throws RemoteException;
+	void startTransaction() throws RemoteException;
 
 	/**
 	 * Performs a rollback and ends the current transaction

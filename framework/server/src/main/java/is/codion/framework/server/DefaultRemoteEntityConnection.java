@@ -131,9 +131,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public void beginTransaction() {
+	public void startTransaction() {
 		synchronized (connectionProxy) {
-			connectionProxy.beginTransaction();
+			connectionProxy.startTransaction();
 		}
 	}
 

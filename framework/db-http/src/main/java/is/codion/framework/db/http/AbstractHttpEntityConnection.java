@@ -143,10 +143,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final void beginTransaction() {
+	public final void startTransaction() {
 		try {
 			synchronized (httpClient) {
-				handleResponse(execute(createRequest("beginTransaction")));
+				handleResponse(execute(createRequest("startTransaction")));
 			}
 		}
 		catch (InterruptedException e) {

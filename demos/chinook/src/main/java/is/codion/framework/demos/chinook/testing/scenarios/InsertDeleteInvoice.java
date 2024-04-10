@@ -61,7 +61,7 @@ public final class InsertDeleteInvoice implements Performer<EntityConnectionProv
 						.collect(toSet());
 		List<Entity> invoiceLines = new ArrayList<>();
 		for (Entity track : connection.select(Track.ID.in(invoiceTrackIds))) {
-			connection.beginTransaction();
+			connection.startTransaction();
 			try {
 				invoiceLines.add(connection.insertSelect(connection.entities().builder(InvoiceLine.TYPE)
 								.with(InvoiceLine.INVOICE_FK, invoice)

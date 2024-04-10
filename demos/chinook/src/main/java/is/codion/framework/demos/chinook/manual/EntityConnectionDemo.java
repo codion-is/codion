@@ -382,7 +382,7 @@ public final class EntityConnectionDemo {
 
 		Entities entities = connection.entities();
 
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity artist = entities.builder(Artist.TYPE)
 							.with(Artist.NAME, "The Band")

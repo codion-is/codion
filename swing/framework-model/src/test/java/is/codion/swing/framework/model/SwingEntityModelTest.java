@@ -91,7 +91,7 @@ public final class SwingEntityModelTest
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey));
 		Entity operations = departmentModel.tableModel().selectionModel().getSelectedItem();
 		EntityConnection connection = departmentModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			departmentModel.editModel().delete();
 			assertFalse(departmentsComboBoxModel.containsItem(operations));
@@ -127,7 +127,7 @@ public final class SwingEntityModelTest
 	public void test() throws Exception {
 		super.test();
 		EntityConnection connection = departmentModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			departmentModel.tableModel().refresh();
 			Entity department = connection.selectSingle(Department.NAME.equalTo("OPERATIONS"));

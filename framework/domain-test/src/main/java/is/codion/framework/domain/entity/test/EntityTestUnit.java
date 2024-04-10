@@ -104,7 +104,7 @@ public class EntityTestUnit {
 	 */
 	public final void test(EntityType entityType) throws DatabaseException {
 		EntityConnection connection = connectionProvider.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
 			Entity testEntity = null;

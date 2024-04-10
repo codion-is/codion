@@ -161,7 +161,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void delete() throws Exception {
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 40);
 			connection.delete(new ArrayList<>());
@@ -175,7 +175,7 @@ public class DefaultLocalEntityConnectionTest {
 		finally {
 			connection.rollbackTransaction();
 		}
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 40);
 			assertEquals(1, connection.delete(key(key)));
@@ -188,7 +188,7 @@ public class DefaultLocalEntityConnectionTest {
 		finally {
 			connection.rollbackTransaction();
 		}
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			//scott, james, adams
 			assertEquals(3, connection.delete(and(
@@ -583,7 +583,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void insertOnlyNullValues() {
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity department = ENTITIES.entity(Department.TYPE);
 			assertThrows(DatabaseException.class, () -> connection.insert(department));
@@ -667,7 +667,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void updateDifferentEntities() throws DatabaseException {
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
 			Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
@@ -731,7 +731,7 @@ public class DefaultLocalEntityConnectionTest {
 						.set(Employee.COMMISSION, 500d)
 						.set(Employee.SALARY, 4200d)
 						.build();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			connection.update(update);
 			assertEquals(0, connection.count(Count.where(condition)));
@@ -751,7 +751,7 @@ public class DefaultLocalEntityConnectionTest {
 		Update update = Update.where(Employee.ID.isNull())
 						.set(Employee.SALARY, 4200d)
 						.build();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			assertEquals(0, connection.update(update));
 		}
@@ -1216,8 +1216,8 @@ public class DefaultLocalEntityConnectionTest {
 							.with(Department.DEPTNO, -42)
 							.with(Department.DNAME, "hello")
 							.build();
-			connection1.beginTransaction();
-			assertThrows(IllegalStateException.class, connection1::beginTransaction);
+			connection1.startTransaction();
+			assertThrows(IllegalStateException.class, connection1::startTransaction);
 			assertTrue(connection1.transactionOpen());
 			assertFalse(connection2.transactionOpen());
 			connection1.insert(department);
@@ -1227,7 +1227,7 @@ public class DefaultLocalEntityConnectionTest {
 			assertThrows(IllegalStateException.class, connection1::commitTransaction);
 			assertFalse(connection1.transactionOpen());
 			assertFalse(connection2.select(Department.DEPTNO.equalTo(-42)).isEmpty());
-			connection2.beginTransaction();
+			connection2.startTransaction();
 			assertTrue(connection2.transactionOpen());
 			assertFalse(connection1.transactionOpen());
 			connection2.delete(department.primaryKey());

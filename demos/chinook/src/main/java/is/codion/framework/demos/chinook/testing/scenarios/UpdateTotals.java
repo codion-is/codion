@@ -53,7 +53,7 @@ public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 	}
 
 	private static void updateInvoiceLines(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Collection<Entity> updated = connection.updateSelect(invoiceLines);
 			connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, updated));

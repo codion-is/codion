@@ -57,7 +57,7 @@ public final class RandomPlaylist implements Performer<EntityConnectionProvider>
 
 	private static Entity createPlaylist(EntityConnection connection,
 																			 RandomPlaylistParameters parameters) throws DatabaseException {
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
 			connection.commitTransaction();

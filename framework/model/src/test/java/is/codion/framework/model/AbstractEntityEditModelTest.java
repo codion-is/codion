@@ -101,7 +101,7 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.editEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));
 			employeeEditModel.set(jones);
@@ -146,7 +146,7 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void refresh() throws DatabaseException {
 		EntityConnection connection = employeeEditModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
 			employeeEditModel.refresh();
@@ -336,7 +336,7 @@ public final class AbstractEntityEditModelTest {
 	void insert() throws Exception {
 		assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			employeeEditModel.put(Employee.COMMISSION, 1000d);
 			employeeEditModel.put(Employee.HIREDATE, LocalDate.now());
@@ -385,7 +385,7 @@ public final class AbstractEntityEditModelTest {
 	void update() throws Exception {
 		assertTrue(employeeEditModel.update(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			employeeEditModel.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			employeeEditModel.put(Employee.NAME, "BJORN");
@@ -421,7 +421,7 @@ public final class AbstractEntityEditModelTest {
 	void delete() throws Exception {
 		assertTrue(employeeEditModel.delete(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			employeeEditModel.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			List<Entity> toDelete = singletonList(employeeEditModel.entity());
@@ -656,7 +656,7 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.set(martin);
 		employeeEditModel.put(Employee.NAME, "MARTINEZ");
 		assertTrue(nameModifiedObserver.get());
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			employeeEditModel.update();
 			assertFalse(nameModifiedObserver.get());

@@ -96,7 +96,7 @@ public class ChinookTest extends EntityTestUnit {
 	@Test
 	void randomPlaylist() throws Exception {
 		EntityConnection connection = connection();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			Entity genre = connection.selectSingle(Genre.NAME.equalTo("Metal"));
 			int noOfTracks = 10;

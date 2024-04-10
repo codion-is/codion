@@ -19,6 +19,8 @@ Codion Change Log
 - DefaultColumn.BooleanConverter now throws exception if it comes across an unrecognized value.
 ### is.codion.framework.domain.test
 - EntityTestUnit.testInsert() now asserts all inserted values.
+### is.codion.framework.db.core
+- EntityConnection.beginTransaction() renamed startTransaction().
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.setParameterValue() now only uses the Converter to convert null values in case it handles null.
 ### is.codion.swing.common.model

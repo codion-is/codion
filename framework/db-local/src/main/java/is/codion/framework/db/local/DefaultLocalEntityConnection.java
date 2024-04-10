@@ -171,7 +171,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void beginTransaction() {
+	public void startTransaction() {
 		synchronized (connection) {
 			connection.startTransaction();
 		}

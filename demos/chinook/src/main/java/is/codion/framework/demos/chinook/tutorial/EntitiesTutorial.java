@@ -215,7 +215,7 @@ public final class EntitiesTutorial {
 		myBand.put(Artist.NAME, "My band name");
 
 		// we start a transaction
-		connection.beginTransaction();
+		connection.startTransaction();
 
 		// we insert the Entity
 		myBand = connection.insertSelect(myBand);

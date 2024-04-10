@@ -162,7 +162,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		Entities entities = tableModel.entities();
 		Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
 		Entity.Key pk2 = entities.primaryKey(Employee.TYPE, 2);
-		tableModel.connection().beginTransaction();
+		tableModel.connection().startTransaction();
 		try {
 			tableModel.select(singletonList(pk1));
 			tableModel.selectionModel().setSelectedIndex(0);

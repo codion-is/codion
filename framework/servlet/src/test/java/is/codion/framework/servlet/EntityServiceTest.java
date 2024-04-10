@@ -140,26 +140,26 @@ public class EntityServiceTest {
 	}
 
 	@Test
-	void beginRollbackTransaction() throws Exception {
-		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("beginTransaction"), BodyHandlers.ofByteArray());
+	void startRollbackTransaction() throws Exception {
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("startTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 		response = HTTP_CLIENT.send(createRequest("rollbackTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 
-		response = HTTP_CLIENT.send(createJsonRequest("beginTransaction"), BodyHandlers.ofByteArray());
+		response = HTTP_CLIENT.send(createJsonRequest("startTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 		response = HTTP_CLIENT.send(createJsonRequest("rollbackTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 	}
 
 	@Test
-	void beginCommitTransaction() throws Exception {
-		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("beginTransaction"), BodyHandlers.ofByteArray());
+	void startCommitTransaction() throws Exception {
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("startTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 		response = HTTP_CLIENT.send(createRequest("commitTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 
-		response = HTTP_CLIENT.send(createJsonRequest("beginTransaction"), BodyHandlers.ofByteArray());
+		response = HTTP_CLIENT.send(createJsonRequest("startTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 		response = HTTP_CLIENT.send(createJsonRequest("commitTransaction"), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());

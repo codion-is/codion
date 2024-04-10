@@ -146,7 +146,7 @@ abstract class AbstractHttpEntityConnectionTest {
 						.set(Employee.COMMISSION, 500d)
 						.set(Employee.SALARY, 4200d)
 						.build();
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			connection.update(update);
 			assertEquals(0, connection.count(where(Employee.COMMISSION.isNull())));
@@ -164,7 +164,7 @@ abstract class AbstractHttpEntityConnectionTest {
 	@Test
 	void deleteByKey() throws DatabaseException {
 		Entity employee = connection.selectSingle(Employee.NAME.equalTo("ADAMS"));
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			connection.delete(employee.primaryKey());
 			Collection<Entity> selected = connection.select(singletonList(employee.primaryKey()));
@@ -179,7 +179,7 @@ abstract class AbstractHttpEntityConnectionTest {
 	void deleteByKeyDifferentEntityTypes() throws DatabaseException {
 		Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 40L);
 		Entity.Key empKey = connection.entities().primaryKey(Employee.TYPE, 1);
-		connection.beginTransaction();
+		connection.startTransaction();
 		try {
 			assertEquals(2, connection.select(asList(deptKey, empKey)).size());
 			connection.delete(asList(deptKey, empKey));
@@ -216,11 +216,11 @@ abstract class AbstractHttpEntityConnectionTest {
 	@Test
 	void transactions() {
 		assertFalse(connection.transactionOpen());
-		connection.beginTransaction();
+		connection.startTransaction();
 		assertTrue(connection.transactionOpen());
 		connection.rollbackTransaction();
 		assertFalse(connection.transactionOpen());
-		connection.beginTransaction();
+		connection.startTransaction();
 		assertTrue(connection.transactionOpen());
 		connection.commitTransaction();
 		assertFalse(connection.transactionOpen());

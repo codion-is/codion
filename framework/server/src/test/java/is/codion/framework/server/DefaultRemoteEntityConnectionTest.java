@@ -75,7 +75,7 @@ public class DefaultRemoteEntityConnectionTest {
 						.build());
 		DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
 		Condition condition = Condition.all(Employee.TYPE);
-		connection.beginTransaction();
+		connection.startTransaction();
 		connection.delete(condition);
 		assertTrue(connection.select(condition).isEmpty());
 		connection.close();
@@ -113,7 +113,7 @@ public class DefaultRemoteEntityConnectionTest {
 							});
 
 			Condition condition = all(Employee.TYPE);
-			proxy.beginTransaction();
+			proxy.startTransaction();
 			proxy.select(condition);
 			proxy.delete(condition);
 			proxy.select(condition);
