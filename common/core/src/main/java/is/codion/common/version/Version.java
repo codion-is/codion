@@ -191,20 +191,20 @@ public interface Version extends Comparable<Version> {
 	/**
 	 * Reads a properties file from the classpath and parses the value associated with the 'version' key.
 	 * @param resourceOwner the resource owning class
-	 * @param resourcePath the resource path, prefix with '/' for classpath root
+	 * @param versionFileResourcePath the resource path to the file containing the version, prefix with '/' for classpath root
 	 * @return a {@link Version} instance parsed from the value associated with the 'version' property key found in the given resource
 	 * @throws IllegalArgumentException in case the properties resource is not found or if no 'version' property key is found
 	 */
-	static Version parse(Class<?> resourceOwner, String resourcePath) {
-		try (InputStream resourceStream = requireNonNull(resourceOwner).getResourceAsStream(requireNonNull(resourcePath))) {
+	static Version parse(Class<?> resourceOwner, String versionFileResourcePath) {
+		try (InputStream resourceStream = requireNonNull(resourceOwner).getResourceAsStream(requireNonNull(versionFileResourcePath))) {
 			if (resourceStream == null) {
-				throw new IllegalArgumentException("Version resource not found: " + resourceOwner + ", " + resourcePath);
+				throw new IllegalArgumentException("Version resource not found: " + resourceOwner + ", " + versionFileResourcePath);
 			}
 			Properties properties = new Properties();
 			properties.load(resourceStream);
 			String version = properties.getProperty(VERSION_PROPERTY_KEY);
 			if (version == null) {
-				throw new IllegalArgumentException("No '" + VERSION_PROPERTY_KEY + "' property found: " + resourceOwner + ", " + resourcePath);
+				throw new IllegalArgumentException("No '" + VERSION_PROPERTY_KEY + "' property found: " + resourceOwner + ", " + versionFileResourcePath);
 			}
 
 			return Version.parse(version);
