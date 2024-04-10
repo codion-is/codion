@@ -59,10 +59,10 @@ public interface DatabaseConnection extends AutoCloseable {
 	void setConnection(Connection connection);
 
 	/**
-	 * Begins a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
+	 * Starts a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
 	 * @throws IllegalStateException in case a transaction is already open
 	 */
-	void beginTransaction();
+	void startTransaction();
 
 	/**
 	 * @return true if a transaction is open

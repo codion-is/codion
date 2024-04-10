@@ -8,6 +8,8 @@ Codion Change Log
 - Version, static factory methods replaced with a builder.
 - Version.parsePropertiesFile() renamed parse().
 - Configuration.ConfigurationFileNotFoundException now thrown instead of RuntimeException when a required configuration file is not found.
+### is.codion.common.db
+- DatabaseConnection.beginTransaction() renamed startTransaction().
 ### is.codion.framework.domain
 - TypeReference added.
 - Attribute.attribute(), Column.column(), EntityType.attribute() and column() overloaded with TypeReference.

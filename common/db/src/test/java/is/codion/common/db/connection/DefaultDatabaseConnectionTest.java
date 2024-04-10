@@ -102,11 +102,11 @@ public class DefaultDatabaseConnectionTest {
 	void transaction() {
 		try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
 			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
-			connection.beginTransaction();
-			assertThrows(IllegalStateException.class, () -> connection.beginTransaction());
+			connection.startTransaction();
+			assertThrows(IllegalStateException.class, () -> connection.startTransaction());
 			connection.commitTransaction();
 			assertThrows(IllegalStateException.class, () -> connection.commitTransaction());
-			connection.beginTransaction();
+			connection.startTransaction();
 			connection.rollbackTransaction();
 			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
 		}
@@ -154,7 +154,7 @@ public class DefaultDatabaseConnectionTest {
 		dbConnection.close();
 		assertFalse(dbConnection.connected());
 		assertNull(dbConnection.getConnection());
-		assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
+		assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
 		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
 		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
 		assertThrows(IllegalStateException.class, () -> dbConnection.commit());
@@ -167,40 +167,40 @@ public class DefaultDatabaseConnectionTest {
 	}
 
 	@Test
-	void beginTransactionAlreadyOpen() {
-		dbConnection.beginTransaction();
-		assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
+	void startTransactionAlreadyOpen() {
+		dbConnection.startTransaction();
+		assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
 	}
 
 	@Test
 	void commitWithinTransaction() {
-		dbConnection.beginTransaction();
+		dbConnection.startTransaction();
 		assertThrows(IllegalStateException.class, () -> dbConnection.commit());
 	}
 
 	@Test
 	void rollbackWithinTransaction() {
-		dbConnection.beginTransaction();
+		dbConnection.startTransaction();
 		assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
 	}
 
 	@Test
 	void commitTransactionAlreadyCommitted() {
-		dbConnection.beginTransaction();
+		dbConnection.startTransaction();
 		dbConnection.commitTransaction();
 		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
 	}
 
 	@Test
 	void rollbackTransactionAlreadyRollbacked() {
-		dbConnection.beginTransaction();
+		dbConnection.startTransaction();
 		dbConnection.rollbackTransaction();
 		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
 	}
 
 	@Test
 	void commitTransaction() {
-		dbConnection.beginTransaction();
+		dbConnection.startTransaction();
 		assertTrue(dbConnection.transactionOpen());
 		dbConnection.commitTransaction();
 		assertFalse(dbConnection.transactionOpen());
@@ -208,7 +208,7 @@ public class DefaultDatabaseConnectionTest {
 
 	@Test
 	void rollbackTransaction() {
-		dbConnection.beginTransaction();
+		dbConnection.startTransaction();
 		assertTrue(dbConnection.transactionOpen());
 		dbConnection.rollbackTransaction();
 		assertFalse(dbConnection.transactionOpen());

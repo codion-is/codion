@@ -133,15 +133,15 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	}
 
 	@Override
-	public void beginTransaction() {
+	public void startTransaction() {
 		verifyOpenConnection();
 		if (transactionOpen) {
 			throw new IllegalStateException("Transaction already open");
 		}
 
-		logEntry("beginTransaction");
+		logEntry("startTransaction");
 		transactionOpen = true;
-		logExit("beginTransaction", null);
+		logExit("startTransaction", null);
 	}
 
 	@Override
