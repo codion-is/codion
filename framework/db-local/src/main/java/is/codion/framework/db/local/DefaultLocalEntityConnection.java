@@ -543,8 +543,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
 					List<Entity> dependencies = query(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
 					if (!dependencies.isEmpty()) {
-						dependencyMap.putIfAbsent(foreignKeyReference.entityType(), new HashSet<>());
-						dependencyMap.get(foreignKeyReference.entityType()).addAll(dependencies);
+						dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
 					}
 				}
 				commitIfTransactionIsNotOpen();
@@ -1180,17 +1179,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition,
 																											boolean includePrimaryKeyColumns) {
-		return insertableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
+		return insertableColumnsCache.computeIfAbsent(entityDefinition.entityType(), k ->
 						writableColumnDefinitions(entityDefinition, includePrimaryKeyColumns, true));
 	}
 
 	private List<ColumnDefinition<?>> updatableColumns(EntityDefinition entityDefinition) {
-		return updatableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
+		return updatableColumnsCache.computeIfAbsent(entityDefinition.entityType(), k ->
 						writableColumnDefinitions(entityDefinition, true, false));
 	}
 
 	private List<Attribute<?>> primaryKeyAndWritableColumns(EntityType entityType) {
-		return primaryKeyAndWritableColumnsCache.computeIfAbsent(entityType, e ->
+		return primaryKeyAndWritableColumnsCache.computeIfAbsent(entityType, k ->
 						collectPrimaryKeyAndWritableColumns(entityType));
 	}
 
