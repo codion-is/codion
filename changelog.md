@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.40-SNAPSHOT
+
 ## 0.17.39
 ### is.codion.common.core
 - Version.metadata() now returns Optional.
