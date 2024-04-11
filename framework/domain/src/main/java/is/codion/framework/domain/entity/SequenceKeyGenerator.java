@@ -35,7 +35,7 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
 	@Override
 	public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-		selectAndPopulate(entity, entity.definition().primaryKey().definitions().get(0), connection);
+		selectAndPopulate(entity, connection);
 	}
 
 	@Override

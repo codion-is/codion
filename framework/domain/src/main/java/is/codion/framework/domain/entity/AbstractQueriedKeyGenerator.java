@@ -32,8 +32,7 @@ import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DAT
 
 abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-	protected final <T> void selectAndPopulate(Entity entity, ColumnDefinition<T> primaryKeyColumn,
-																						 DatabaseConnection databaseConnection) throws SQLException {
+	protected final void selectAndPopulate(Entity entity, DatabaseConnection databaseConnection) throws SQLException {
 		MethodLogger methodLogger = databaseConnection.getMethodLogger();
 		Connection connection = databaseConnection.getConnection();
 		if (connection == null) {
@@ -50,7 +49,7 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 			if (!resultSet.next()) {
 				throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
 			}
-
+			ColumnDefinition<Object> primaryKeyColumn = (ColumnDefinition<Object>) entity.definition().primaryKey().definitions().get(0);
 			entity.put(primaryKeyColumn.attribute(), primaryKeyColumn.get(resultSet, 1));
 		}
 		catch (SQLException e) {

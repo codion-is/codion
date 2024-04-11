@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.17.40-SNAPSHOT
 ### is.codion.framework.domain
 - QueryKeyGenerator, SequenceKeyGenerator, now overwrite a current value instead of silently skipping it.
+- AbstractQueriedKeyGenerator.selectAndPopulate() primary key column definition parameter removed.
 
 ## 0.17.39
 ### is.codion.common.core
