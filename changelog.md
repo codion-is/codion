@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.40-SNAPSHOT
+### is.codion.framework.domain
+- QueryKeyGenerator, SequenceKeyGenerator, now overwrite a current value instead of silently skipping it.
 
 ## 0.17.39
 ### is.codion.common.core

@@ -20,7 +20,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import java.sql.SQLException;
 
@@ -36,10 +35,7 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
 	@Override
 	public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-		ColumnDefinition<?> primaryKeyColumn = entity.definition().primaryKey().definitions().get(0);
-		if (entity.isNull(primaryKeyColumn.attribute())) {
-			selectAndPopulate(entity, primaryKeyColumn, connection);
-		}
+		selectAndPopulate(entity, entity.definition().primaryKey().definitions().get(0), connection);
 	}
 
 	@Override
