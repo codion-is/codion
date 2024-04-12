@@ -228,32 +228,24 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	@Override
 	public EntityPanel build(SwingEntityModel model) {
 		requireNonNull(model, "model");
-		try {
-			EntityPanel entityPanel = createPanel(model);
-			if (entityPanel.containsTablePanel()) {
-				entityPanel.tablePanel().conditionPanelVisible().set(conditionPanelVisible);
-				entityPanel.tablePanel().filterPanelVisible().set(filterPanelVisible);
+		EntityPanel entityPanel = createPanel(model);
+		if (entityPanel.containsTablePanel()) {
+			entityPanel.tablePanel().conditionPanelVisible().set(conditionPanelVisible);
+			entityPanel.tablePanel().filterPanelVisible().set(filterPanelVisible);
+		}
+		if (!detailPanelBuilders.isEmpty()) {
+			for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
+				SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
+				EntityPanel detailPanel = detailPanelBuilder.build(detailModel);
+				entityPanel.addDetailPanel(detailPanel);
 			}
-			if (!detailPanelBuilders.isEmpty()) {
-				for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
-					SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
-					EntityPanel detailPanel = detailPanelBuilder.build(detailModel);
-					entityPanel.addDetailPanel(detailPanel);
-				}
-			}
-			onBuildPanel.accept(entityPanel);
-			if (refreshWhenInitialized && model.containsTableModel()) {
-				model.tableModel().refresh();
-			}
+		}
+		onBuildPanel.accept(entityPanel);
+		if (refreshWhenInitialized && model.containsTableModel()) {
+			model.tableModel().refresh();
+		}
 
-			return entityPanel;
-		}
-		catch (RuntimeException e) {
-			throw e;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return entityPanel;
 	}
 
 	private EntityPanel createPanel(SwingEntityModel entityModel) {
@@ -272,9 +264,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			}
 
 			return entityPanel;
-		}
-		catch (RuntimeException e) {
-			throw e;
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
@@ -312,9 +301,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
 			return editPanel;
 		}
-		catch (RuntimeException e) {
-			throw e;
-		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -329,9 +315,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			onBuildTablePanel.accept(tablePanel);
 
 			return tablePanel;
-		}
-		catch (RuntimeException e) {
-			throw e;
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);

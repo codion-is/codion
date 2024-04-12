@@ -80,13 +80,13 @@ public final class CountryReportDataSourceTest {
 			assertEquals("Nordic Countries", countryReportDataSource.getFieldValue(field(Country.REGION)));
 			assertEquals(43094d, countryReportDataSource.getFieldValue(field(Country.SURFACEAREA)));
 			assertEquals(5330000, countryReportDataSource.getFieldValue(field(Country.POPULATION)));
-			assertThrows(IllegalArgumentException.class, () -> countryReportDataSource.getFieldValue(field(City.LOCATION)));
+			assertThrows(JRException.class, () -> countryReportDataSource.getFieldValue(field(City.LOCATION)));
 
 			JRDataSource denmarkCityDataSource = countryReportDataSource.cityDataSource();
 			denmarkCityDataSource.next();
 			assertEquals("København", denmarkCityDataSource.getFieldValue(field(City.NAME)));
 			assertEquals(495699, denmarkCityDataSource.getFieldValue(field(City.POPULATION)));
-			assertThrows(IllegalArgumentException.class, () -> denmarkCityDataSource.getFieldValue(field(Country.REGION)));
+			assertThrows(JRException.class, () -> denmarkCityDataSource.getFieldValue(field(Country.REGION)));
 			denmarkCityDataSource.next();
 			assertEquals("Århus", denmarkCityDataSource.getFieldValue(field(City.NAME)));
 

@@ -381,9 +381,6 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 				catch (RuntimeException e) {
 					throw e;
 				}
-				catch (Exception e) {
-					throw new RuntimeException(e);
-				}
 			}
 		}
 

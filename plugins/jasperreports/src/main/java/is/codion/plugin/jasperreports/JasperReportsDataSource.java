@@ -86,10 +86,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 			return valueProvider.apply(currentItem, field);
 		}
 		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new JRException("Unable to get field value: " + field.getName(), e);
+			throw new JRException("Unable to get field value: " + field.getName(), re);
 		}
 	}
 

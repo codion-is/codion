@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.stream.Collectors.joining;
@@ -289,7 +288,7 @@ final class SelectQueries {
 							definition.columns().definitions().stream()
 											.filter(ColumnDefinition::groupBy)
 											.map(ColumnDefinition::expression)
-											.collect(Collectors.joining(", ")));
+											.collect(joining(", ")));
 		}
 
 		private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {
@@ -323,9 +322,6 @@ final class SelectQueries {
 
 		private String createOrderByClause(OrderBy orderBy) {
 			List<OrderBy.OrderByColumn> orderByColumns = orderBy.orderByColumns();
-			if (orderByColumns.isEmpty()) {
-				throw new IllegalArgumentException("An order by clause must contain at least a single column");
-			}
 			if (orderByColumns.size() == 1) {
 				return columnOrderByClause(definition, orderByColumns.get(0));
 			}
