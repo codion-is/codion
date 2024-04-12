@@ -876,7 +876,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	private List<Entity> query(Select select) throws SQLException {
 		List<Entity> result = cachedResult(select);
 		if (result != null) {
-			LOG.debug("Returning cached result: " + select.where().entityType());
+			LOG.debug("Returning cached result: {}", select.where().entityType());
 			return result;
 		}
 
@@ -1327,7 +1327,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private List<Entity> cacheResult(Select select, List<Entity> result) {
 		if (queryCacheEnabled && !select.forUpdate()) {
-			LOG.debug("Caching result: " + select.where().entityType());
+			LOG.debug("Caching result: {}", select.where().entityType());
 			queryCache.put(select, result);
 		}
 
@@ -1394,7 +1394,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			}
 		}
 		catch (SQLException e) {
-			LOG.error("Unable to set parameter: " + columnDefinition + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
+			LOG.error("Unable to set parameter: {}, value: {}, value class: {}", columnDefinition, value, value == null ? "null" : value.getClass(), e);
 			throw e;
 		}
 	}

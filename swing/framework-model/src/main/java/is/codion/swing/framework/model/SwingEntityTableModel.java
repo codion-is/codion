@@ -1044,7 +1044,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 							columnModel().column(attribute).setPreferredWidth(columnWidth));
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying column preferences: " + preferencesString, e);
+			LOG.error("Error while applying column preferences: {}", preferencesString, e);
 		}
 	}
 
@@ -1056,7 +1056,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 			ConditionPreferences.apply(this, columnAttributes, preferencesString);
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying condition preferences: " + preferencesString, e);
+			LOG.error("Error while applying condition preferences: {}", preferencesString, e);
 		}
 	}
 

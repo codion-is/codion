@@ -469,7 +469,7 @@ public final class ServerMonitor {
 			return serverAdmin;
 		}
 		catch (RemoteException e) {
-			LOG.error("Server \"" + serverName + "\" is unreachable, host: " + hostName + ", registry port: " + registryPort, e);
+			LOG.error("Server \"{}\" is unreachable, host: {}, registry port: {}", serverName, hostName, registryPort, e);
 			throw e;
 		}
 		catch (NotBoundException e) {

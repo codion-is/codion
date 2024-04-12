@@ -107,10 +107,10 @@ final class SerializationWhitelist {
 								.map(Class::getName)
 								.sorted()
 								.collect(toList()), StandardOpenOption.CREATE);
-				LOG.debug("Serialization whitelist written: " + whitelistFile);
+				LOG.debug("Serialization whitelist written: {}", whitelistFile);
 			}
 			catch (Exception e) {
-				LOG.error("Error while writing serialization filter dry run results: " + whitelistFile, e);
+				LOG.error("Error while writing serialization filter dry run results: {}", whitelistFile, e);
 			}
 		}
 	}
@@ -160,7 +160,7 @@ final class SerializationWhitelist {
 			if (allowedClassnames.contains(classname) || allowWildcard(classname)) {
 				return Status.ALLOWED;
 			}
-			LOG.error("Serialization rejected: " + classname);
+			LOG.error("Serialization rejected: {}", classname);
 
 			return Status.REJECTED;
 		}
@@ -220,7 +220,7 @@ final class SerializationWhitelist {
 				return new HashSet<>(Files.readAllLines(Paths.get(whitelistFile)));
 			}
 			catch (IOException e) {
-				LOG.error("Unable to read serialization whitelist: " + whitelistFile);
+				LOG.error("Unable to read serialization whitelist: {}", whitelistFile);
 				throw new RuntimeException(e);
 			}
 		}

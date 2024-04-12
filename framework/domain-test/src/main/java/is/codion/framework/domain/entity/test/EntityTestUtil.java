@@ -166,7 +166,7 @@ public final class EntityTestUtil {
 			return null;
 		}
 		catch (RuntimeException e) {
-			LOG.error("Exception while creating random value for: " + attributeDefinition.attribute(), e);
+			LOG.error("Exception while creating random value for: {}", attributeDefinition.attribute(), e);
 			throw e;
 		}
 	}

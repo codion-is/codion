@@ -238,7 +238,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 				disconnect(clientId);
 			}
 			catch (RemoteException e) {
-				LOG.debug("Error while disconnecting a client on shutdown: " + clientId, e);
+				LOG.debug("Error while disconnecting a client on shutdown: {}", clientId, e);
 			}
 		}
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
@@ -475,7 +475,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			}
 			else {
 				ObjectInputFilter.Config.setSerialFilter(SerializationWhitelist.whitelistFilter(whitelistFile));
-				LOG.info("Serialization filter whitelist set: " + whitelistFile);
+				LOG.info("Serialization filter whitelist set: {}", whitelistFile);
 			}
 		}
 	}
@@ -485,14 +485,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			authenticator.close();
 		}
 		catch (Exception e) {
-			LOG.error("Exception while closing authenticator for client type: " + authenticator.clientTypeId(), e);
+			LOG.error("Exception while closing authenticator for client type: {}", authenticator.clientTypeId(), e);
 		}
 	}
 
 	private static Object startAuxiliaryServer(AuxiliaryServer server) throws Exception {
 		try {
 			server.startServer();
-			LOG.info("Auxiliary server started: " + server);
+			LOG.info("Auxiliary server started: {}", server);
 
 			return null;
 		}
@@ -505,7 +505,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private static void stopAuxiliaryServer(AuxiliaryServer server) {
 		try {
 			server.stopServer();
-			LOG.info("Auxiliary server stopped: " + server);
+			LOG.info("Auxiliary server stopped: {}", server);
 		}
 		catch (Exception e) {
 			LOG.error("Stopping auxiliary server", e);
@@ -519,7 +519,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 					unexportObject(remote, true);
 				}
 				catch (NoSuchObjectException e) {
-					LOG.error("Exception while unexporting " + remote + " on shutdown", e);
+					LOG.error("Exception while unexporting {} on shutdown", remote, e);
 				}
 			}
 		}
@@ -539,8 +539,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private void loadAuthenticators() {
 		Authenticator.authenticators().forEach(authenticator -> {
 			String clientTypeId = authenticator.clientTypeId().orElse(null);
-			LOG.info("Server loading authenticator '" + authenticator.getClass().getName() + "' as service, " +
-							(clientTypeId == null ? "shared" : "(clientTypeId: '" + clientTypeId + "'"));
+			LOG.info("Server loading authenticator '{}' as service, {}", authenticator.getClass()
+							.getName(), clientTypeId == null ? "shared" : "(clientTypeId: '" + clientTypeId + "'");
 			addAuthenticator(authenticator);
 		});
 	}

@@ -245,7 +245,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 			EntityServerConfiguration.LOG.info("No admin user specified");
 		}
 		else {
-			EntityServerConfiguration.LOG.info("Admin user: " + adminUser);
+			EntityServerConfiguration.LOG.info("Admin user: {}", adminUser);
 			builder.adminUser(adminUser);
 		}
 

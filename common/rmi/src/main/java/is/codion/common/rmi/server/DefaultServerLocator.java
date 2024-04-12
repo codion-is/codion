@@ -120,7 +120,7 @@ final class DefaultServerLocator implements Server.Locator {
 			}
 		}
 		catch (Exception e) {
-			LOG.error("Server \"" + serverName + "\" is unreachable", e);
+			LOG.error("Server \"{}\" is unreachable", serverName, e);
 		}
 	}
 

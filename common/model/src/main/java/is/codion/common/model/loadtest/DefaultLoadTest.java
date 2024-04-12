@@ -323,7 +323,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 				scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
 			}
 			catch (Exception e) {
-				LOG.debug("Exception during run " + application, e);
+				LOG.debug("Exception during run {}", application, e);
 			}
 		}
 

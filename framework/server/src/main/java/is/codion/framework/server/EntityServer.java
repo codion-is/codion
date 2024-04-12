@@ -150,7 +150,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			throw e;
 		}
 		catch (Exception e) {
-			LOG.debug(remoteClient + " unable to connect", e);
+			LOG.debug("{} unable to connect", remoteClient, e);
 			throw new LoginException(e.getMessage());
 		}
 	}
@@ -386,11 +386,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		List<Domain> serviceDomains = Domain.domains();
 		try {
 			serviceDomains.forEach(domain -> {
-				LOG.info("Server loading domain model '" + domain.type() + "' as a service");
+				LOG.info("Server loading domain model '{}' as a service", domain.type());
 				domains.put(domain.type(), domain);
 			});
 			for (String className : domainModelClassNames) {
-				LOG.info("Server loading domain model '" + className + "' from classpath");
+				LOG.info("Server loading domain model '{}' from classpath", className);
 				Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
 				domains.put(domain.type(), domain);
 			}

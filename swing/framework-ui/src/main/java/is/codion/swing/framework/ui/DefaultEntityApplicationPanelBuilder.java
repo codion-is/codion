@@ -374,7 +374,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (setUncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionHandler(applicationFrame));
 		}
-		LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+		LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), System.currentTimeMillis() - initializationStarted);
 		if (displayFrame) {
 			applicationFrame.setVisible(true);
 		}
