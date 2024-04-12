@@ -174,6 +174,7 @@ include::{dir-source}/is/codion/framework/demos/world/model/LookupTableModel.jav
 include::{dir-test-source}/is/codion/framework/demos/world/model/CountryEditModelTest.java[tag=**]
 ----
 
+[#_ui]
 == UI
 
 [#_main_application_panel]

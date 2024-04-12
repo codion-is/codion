@@ -109,7 +109,7 @@ tasks.register("combinedJavadoc") {
     group "documentation"
 
     def tempDir = project.layout.buildDirectory.dir("tmp").get()
-    def combinedSrcDir = "${tempDir}/combinedSource";
+    def combinedSrcDir = "${tempDir}/combinedSource"
     def outputDirectory = project.layout.buildDirectory.dir("javadoc").get()
     def optionsFile = new File(tempDir.asFile, "javadoc.options")
 
@@ -128,10 +128,10 @@ tasks.register("combinedJavadoc") {
                 fileset(dir: "${module.projectDir}/src/main/java")
             }
         }
-        def options = new StandardJavadocDocletOptions();
+        def options = new StandardJavadocDocletOptions()
         options.setSourceNames(getProject().getObjects().fileCollection().from(combinedSrcDir).asFileTree.stream()
                 .map(file -> file.getAbsolutePath())
-                .collect());
+                .collect())
         options.modulePath(new ArrayList(classpath.getFiles()))
         options.addStringOption("-module-source-path", combinedSrcDir)
         options.destinationDirectory(file(outputDirectory))

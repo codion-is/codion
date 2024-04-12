@@ -99,6 +99,7 @@ include::{dir-test-source}/is/codion/framework/demos/chinook/model/InvoiceLineEd
 include::{dir-test-source}/is/codion/framework/demos/chinook/model/TrackTableModelTest.java[lines=19..-1]
 ----
 
+[#_ui]
 == UI
 
 [source,java]
