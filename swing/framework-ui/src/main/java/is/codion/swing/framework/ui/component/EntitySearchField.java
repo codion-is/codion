@@ -103,6 +103,7 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -523,7 +524,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
 			CardLayout cardLayout = new CardLayout(5, 5);
-			PanelBuilder columnBasePanelBuilder = Components.panel(cardLayout);
+			PanelBuilder columnBasePanelBuilder = panel(cardLayout);
 			FilteredComboBoxModel<Item<Column<String>>> columnComboBoxModel = new FilteredComboBoxModel<>();
 			EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
 			for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
@@ -536,9 +537,9 @@ public final class EntitySearchField extends HintTextField {
 				columnComboBoxModel.setSelectedItem(columnComboBoxModel.getElementAt(0));
 			}
 
-			return Components.borderLayoutPanel()
+			return borderLayoutPanel()
 							.border(BorderFactory.createTitledBorder(MESSAGES.getString("search_columns")))
-							.northComponent(Components.comboBox(columnComboBoxModel).build())
+							.northComponent(comboBox(columnComboBoxModel).build())
 							.centerComponent(columnBasePanel)
 							.build();
 		}
@@ -554,9 +555,9 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private static JPanel createSeparatorPanel(EntitySearchModel searchModel) {
-			return Components.borderLayoutPanel()
+			return borderLayoutPanel()
 							.westComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
-							.centerComponent(Components.stringField(searchModel.separator())
+							.centerComponent(stringField(searchModel.separator())
 											.columns(1)
 											.maximumLength(1)
 											.build())
@@ -564,26 +565,26 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private static JPanel createLimitPanel(EntitySearchModel searchModel) {
-			return Components.borderLayoutPanel()
+			return borderLayoutPanel()
 							.westComponent(new JLabel(MESSAGES.getString("result_limit")))
-							.centerComponent(Components.integerField(searchModel.limit())
+							.centerComponent(integerField(searchModel.limit())
 											.columns(4)
 											.build())
 							.build();
 		}
 
 		private static JPanel createSettingsPanel(EntitySearchModel.Settings settings) {
-			return Components.gridLayoutPanel(4, 1)
-							.add(Components.checkBox(settings.caseSensitive())
+			return gridLayoutPanel(4, 1)
+							.add(checkBox(settings.caseSensitive())
 											.text(MESSAGES.getString("case_sensitive"))
 											.build())
-							.add(Components.checkBox(settings.wildcardPrefix())
+							.add(checkBox(settings.wildcardPrefix())
 											.text(MESSAGES.getString("prefix_wildcard"))
 											.build())
-							.add(Components.checkBox(settings.wildcardPostfix())
+							.add(checkBox(settings.wildcardPostfix())
 											.text(MESSAGES.getString("postfix_wildcard"))
 											.build())
-							.add(Components.checkBox(settings.spaceAsWildcard())
+							.add(checkBox(settings.spaceAsWildcard())
 											.text(MESSAGES.getString("space_as_wildcard"))
 											.build())
 							.build();
@@ -681,7 +682,7 @@ public final class EntitySearchField extends HintTextField {
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
-			Dialogs.okCancelDialog(selectorPanel)
+			okCancelDialog(selectorPanel)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
@@ -767,7 +768,7 @@ public final class EntitySearchField extends HintTextField {
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 
-			Dialogs.okCancelDialog(selectorPanel)
+			okCancelDialog(selectorPanel)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
@@ -943,7 +944,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private final class ProgressBarWhileSearching implements Consumer<Boolean> {
 
-		private final JProgressBar progressBar = Components.progressBar()
+		private final JProgressBar progressBar = progressBar()
 						.indeterminate(true)
 						.string(MESSAGES.getString("searching") + "...")
 						.stringPainted(true)
