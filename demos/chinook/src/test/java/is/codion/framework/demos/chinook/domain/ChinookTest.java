@@ -22,13 +22,18 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -112,6 +117,24 @@ public class ChinookTest extends EntityTestUnit {
 		}
 		finally {
 			connection.rollbackTransaction();
+		}
+	}
+
+	@Override
+	protected Entity initializeTestEntity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities) {
+		Entity testEntity = super.initializeTestEntity(entityType, foreignKeyEntities);
+		if (entityType.equals(Album.TYPE)) {
+			testEntity.put(Album.TAGS, new HashSet<>(asList("tag_one", "tag_two")));
+		}
+
+		return testEntity;
+	}
+
+	@Override
+	protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
+		super.modifyEntity(testEntity, foreignKeyEntities);
+		if (testEntity.entityType().equals(Album.TYPE)) {
+			testEntity.put(Album.TAGS, new HashSet<>(asList("tag_one", "tag_two", "tag_three")));
 		}
 	}
 }

@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.plugin.jasperreports.JRReportType;
@@ -48,6 +49,7 @@ import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -77,6 +79,7 @@ public interface Chinook {
 		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
 		Attribute<Image> COVERIMAGE = TYPE.attribute("coverimage", Image.class);
 		Column<Integer> NUMBER_OF_TRACKS = TYPE.integerColumn("number_of_tracks");
+		Column<Set<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
 
 		ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
 	}

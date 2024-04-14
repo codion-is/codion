@@ -37,7 +37,8 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private final NavigableImagePanel imagePanel;
 
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
-		super(tableModel);
+		super(tableModel, config -> config
+						.editable(attributes -> attributes.remove(Album.TAGS)));
 		imagePanel = new NavigableImagePanel();
 		imagePanel.setPreferredSize(Windows.screenSizeRatio(0.5));
 		table().doubleClickAction().set(viewCoverControl());

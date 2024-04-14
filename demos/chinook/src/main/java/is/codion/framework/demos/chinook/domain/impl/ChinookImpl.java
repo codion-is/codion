@@ -20,6 +20,7 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.db.result.ResultPacker;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
@@ -32,12 +33,19 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.condition.ConditionProvider;
 
 import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
@@ -111,7 +119,10 @@ public final class ChinookImpl extends DefaultDomain {
 														.derived(new CoverArtImageProvider(), Album.COVER),
 										Album.NUMBER_OF_TRACKS.define()
 														.subquery("SELECT COUNT(*) FROM chinook.track " +
-																		"WHERE track.albumid = album.albumid"))
+																		"WHERE track.albumid = album.albumid"),
+										Album.TAGS.define()
+														.column()
+														.columnClass(Array.class, new TagsConverter(), ResultSet::getArray))
 						.tableName("chinook.album")
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
@@ -457,6 +468,26 @@ public final class ChinookImpl extends DefaultDomain {
 										.text(" - ")
 										.value(PlaylistTrack.TRACK_FK)
 										.build()));
+	}
+
+	private static final class TagsConverter implements Converter<Set<String>, Array> {
+
+		private static final int ARRAY_VALUE_INDEX = 2;
+
+		private final ResultPacker<String> packer = resultSet -> resultSet.getString(ARRAY_VALUE_INDEX);
+
+		@Override
+		public Array toColumnValue(Set<String> value, Statement statement) throws SQLException {
+			return value.isEmpty() ? null :
+							statement.getConnection().createArrayOf("VARCHAR", value.toArray(new Object[0]));
+		}
+
+		@Override
+		public Set<String> fromColumnValue(Array columnValue) throws SQLException {
+			try (ResultSet resultSet = columnValue.getResultSet()) {
+				return new LinkedHashSet<>(packer.pack(resultSet));
+			}
+		}
 	}
 
 	private static final class NotInPlaylistConditionProvider implements ConditionProvider {
