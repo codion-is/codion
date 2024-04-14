@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2021 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.ValueSet;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -29,12 +28,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList<T>, ListBuilder<T>> implements ListBuilder<T> {
+abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends AbstractComponentBuilder<V, JList<T>, B> implements ListBuilder<T, V, B> {
 
 	private final ListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
@@ -46,63 +43,55 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
 	private int layoutOrientation = JList.VERTICAL;
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
-	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-	DefaultListBuilder(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
-		super(linkedValueSet);
+	AbstractListBuilder(ListModel<T> listModel, Value<V> value) {
+		super(value);
 		this.listModel = requireNonNull(listModel);
 	}
 
 	@Override
-	public ListBuilder<T> visibleRowCount(int visibleRowCount) {
+	public final B visibleRowCount(int visibleRowCount) {
 		this.visibleRowCount = visibleRowCount;
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public ListBuilder<T> layoutOrientation(int layoutOrientation) {
+	public final B layoutOrientation(int layoutOrientation) {
 		this.layoutOrientation = layoutOrientation;
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public ListBuilder<T> fixedCellHeight(int fixedCellHeight) {
+	public final B fixedCellHeight(int fixedCellHeight) {
 		this.fixedCellHeight = fixedCellHeight;
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public ListBuilder<T> fixedCellWidth(int fixedCellWidth) {
+	public final B fixedCellWidth(int fixedCellWidth) {
 		this.fixedCellWidth = fixedCellWidth;
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public ListBuilder<T> cellRenderer(ListCellRenderer<T> cellRenderer) {
+	public final B cellRenderer(ListCellRenderer<T> cellRenderer) {
 		this.cellRenderer = requireNonNull(cellRenderer);
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public ListBuilder<T> selectionMode(int selectionMode) {
-		this.selectionMode = selectionMode;
-		return this;
-	}
-
-	@Override
-	public ListBuilder<T> selectionModel(ListSelectionModel selectionModel) {
+	public final B selectionModel(ListSelectionModel selectionModel) {
 		this.selectionModel = requireNonNull(selectionModel);
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener) {
-		this.listSelectionListeners.add(requireNonNull(listSelectionListener));
-		return this;
+	public final B listSelectionListener(ListSelectionListener listSelectionListener) {
+		listSelectionListeners.add(requireNonNull(listSelectionListener));
+		return (B) this;
 	}
 
-	@Override
-	protected JList<T> createComponent() {
+	protected final JList<T> createList() {
 		JList<T> list = new JList<>(listModel);
 		if (cellRenderer != null) {
 			list.setCellRenderer(cellRenderer);
@@ -117,32 +106,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
 		list.setLayoutOrientation(layoutOrientation);
 		list.setFixedCellHeight(fixedCellHeight);
 		list.setFixedCellWidth(fixedCellWidth);
-		list.setSelectionMode(selectionMode);
 
 		return list;
-	}
-
-	@Override
-	protected ComponentValue<Set<T>, JList<T>> createComponentValue(JList<T> component) {
-		return new ListValue<>(component);
-	}
-
-	@Override
-	protected void setInitialValue(JList<T> component, Set<T> initialValue) {
-		ListValue.selectValues(component, initialValue);
-	}
-
-	private static final class AddListSelectionListener implements Consumer<ListSelectionListener> {
-
-		private final JList<?> list;
-
-		private AddListSelectionListener(JList<?> list) {
-			this.list = list;
-		}
-
-		@Override
-		public void accept(ListSelectionListener listener) {
-			list.addListSelectionListener(listener);
-		}
 	}
 }

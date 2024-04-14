@@ -42,6 +42,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -695,10 +696,11 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private JList<Entity> createList(EntitySearchModel searchModel) {
-			return Components.list(new DefaultListModel<Entity>())
-							.selectionMode(searchModel.singleSelection() ?
-											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-							.mouseListener(new DoubleClickListener())
+			DefaultListModel<Entity> listModel = new DefaultListModel<>();
+			ListBuilder<Entity, ?, ?> listBuilder = searchModel.singleSelection() ?
+							Components.list(listModel).selectedItem() : Components.list(listModel).selectedItems();
+
+			return listBuilder.mouseListener(new DoubleClickListener())
 							.onBuild(new RemoveDefaultEnterAction())
 							.build();
 		}

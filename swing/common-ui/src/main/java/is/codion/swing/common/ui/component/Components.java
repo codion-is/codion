@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -844,24 +843,12 @@ public final class Components {
 	}
 
 	/**
-	 * A multi selection JList builder.
-	 * @param <T> the value type
-	 * @param listModel the list model
-	 * @return a JList builder
+	 * @param listModel the list model to base the list on
+	 * @return a new list builder factory
+	 * @param <T> the list value type
 	 */
-	public static <T> ListBuilder<T> list(ListModel<T> listModel) {
-		return ListBuilder.builder(listModel, null);
-	}
-
-	/**
-	 * A multi selection JList builder.
-	 * @param <T> the value type
-	 * @param listModel the list model
-	 * @param linkedValueSet the value set to link to the component
-	 * @return a JList builder
-	 */
-	public static <T> ListBuilder<T> list(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
-		return ListBuilder.builder(listModel, requireNonNull(linkedValueSet));
+	public static <T> ListBuilder.Factory<T> list(ListModel<T> listModel) {
+		return ListBuilder.factory(listModel);
 	}
 
 	/**

@@ -36,7 +36,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
@@ -104,8 +103,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	}
 
 	private JList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
-		return Components.list(createGenreListModel(connectionProvider), model.genres)
-						.selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+		return Components.list(createGenreListModel(connectionProvider))
+						.selectedItems(model.genres)
 						.visibleRowCount(5)
 						.build();
 	}

@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - QueryKeyGenerator, SequenceKeyGenerator, now overwrite a current value instead of silently skipping it.
 - AbstractQueriedKeyGenerator.selectAndPopulate() primary key column definition parameter removed.
+### is.codion.swing.common.ui
+- ListBuilder overhaul, ListBuilder.Factory added, provides list builders depending on whether the value should be represented by the list items or selected item(s).
 
 ## 0.17.39
 ### is.codion.common.core

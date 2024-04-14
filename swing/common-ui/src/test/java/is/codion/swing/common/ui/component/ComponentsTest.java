@@ -770,14 +770,15 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void list() {
+	void listSelectedItems() {
 		DefaultListModel<String> listModel = new DefaultListModel<>();
 		listModel.addElement("one");
 		listModel.addElement("two");
 		listModel.addElement("three");
 
 		ValueSet<String> textValue = ValueSet.valueSet(new HashSet<>(singletonList("two")));
-		ListBuilder<String> listBuilder = Components.list(listModel)
+		ListBuilder.SelectedItems<String> listBuilder = Components.list(listModel)
+						.selectedItems()
 						.visibleRowCount(4)
 						.layoutOrientation(JList.VERTICAL)
 						.fixedCellHeight(10)
@@ -791,6 +792,59 @@ public final class ComponentsTest {
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
 		assertEquals(new HashSet<>(asList("two", "three")), componentValue.get());
+		listBuilder.scrollPane().build();
+	}
+
+	@Test
+	void listSelectedItem() {
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		listModel.addElement("one");
+		listModel.addElement("two");
+		listModel.addElement("three");
+
+		Value<String> textValue = Value.value("two");
+		ListBuilder.SelectedItem<String> listBuilder = Components.list(listModel)
+						.selectedItem()
+						.visibleRowCount(4)
+						.layoutOrientation(JList.VERTICAL)
+						.fixedCellHeight(10)
+						.fixedCellWidth(10)
+						.linkedValue(textValue);
+		ComponentValue<String, JList<String>> componentValue = listBuilder
+						.buildValue();
+		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+		assertEquals("two", componentValue.get());
+		textValue.set("three");
+		assertFalse(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
+		assertEquals("three", componentValue.get());
+		componentValue.set("one");
+		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("one")));
+		assertFalse(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+		assertFalse(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
+		listBuilder.scrollPane().build();
+	}
+
+	@Test
+	void listItems() {
+		ValueSet<String> textValue = ValueSet.valueSet(new HashSet<>(asList("one", "two", "three")));
+		ListBuilder.Items<String> listBuilder = Components.list(new DefaultListModel<String>())
+						.items()
+						.visibleRowCount(4)
+						.layoutOrientation(JList.VERTICAL)
+						.fixedCellHeight(10)
+						.fixedCellWidth(10)
+						.linkedValue(textValue);
+		ComponentValue<Set<String>, JList<String>> componentValue = listBuilder
+						.buildValue();
+		assertEquals(new HashSet<>(asList("one", "two", "three")), componentValue.get());
+		textValue.add("four");
+		assertEquals(new HashSet<>(asList("one", "two", "three", "four")), componentValue.get());
+		DefaultListModel<String> listModel = (DefaultListModel<String>) componentValue.component().getModel();
+		listModel.removeElement("two");
+		assertEquals(new HashSet<>(asList("one", "three", "four")), componentValue.get());
+		listModel.removeElement("one");
+		assertEquals(new HashSet<>(asList("three", "four")), componentValue.get());
 		listBuilder.scrollPane().build();
 	}
 

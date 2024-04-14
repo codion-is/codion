@@ -42,6 +42,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
@@ -59,6 +60,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntityComponents;
+import is.codion.swing.framework.ui.component.EntityComponents.EntityListBuilderFactory;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
@@ -69,6 +71,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -830,6 +833,16 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
+	 * Creates a list builder factory
+	 * @param listModel the list model to base the list on
+	 * @return a list builder factory
+	 * @param <T> the value type
+	 */
+	protected final <T> EntityListBuilderFactory<T> createList(ListModel<T> listModel) {
+		return new DefaultEntityListBuilderFactory<>(listModel);
+	}
+
+	/**
 	 * Creates a builder for a read-only foreign key label.
 	 * @param foreignKey the foreign key for which to build a label
 	 * @return a foreign key label builder
@@ -1077,6 +1090,30 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public Value<Integer> foreignKeyComboBoxPreferredWidth() {
 			return foreignKeyComboBoxPreferredWidth;
+		}
+	}
+
+	private final class DefaultEntityListBuilderFactory<T> implements EntityListBuilderFactory<T> {
+
+		private final EntityListBuilderFactory<T> builderFactory;
+
+		private DefaultEntityListBuilderFactory(ListModel<T> listModel) {
+			this.builderFactory = entityComponents.list(listModel);
+		}
+
+		@Override
+		public ListBuilder.Items<T> items(Attribute<Set<T>> attribute) {
+			return setComponentBuilder(attribute, builderFactory.items(attribute));
+		}
+
+		@Override
+		public ListBuilder.SelectedItems<T> selectedItems(Attribute<Set<T>> attribute) {
+			return setComponentBuilder(attribute, builderFactory.selectedItems(attribute));
+		}
+
+		@Override
+		public ListBuilder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
+			return setComponentBuilder(attribute, builderFactory.selectedItem(attribute));
 		}
 	}
 
