@@ -19,18 +19,26 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.component.EntityComponentFactory;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 public final class AlbumTablePanel extends EntityTablePanel {
 
@@ -38,7 +46,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.editable(attributes -> attributes.remove(Album.TAGS)));
+						.editComponentFactory(Album.TAGS, new TagEditComponentFactory()));
 		imagePanel = new NavigableImagePanel();
 		imagePanel.setPreferredSize(Windows.screenSizeRatio(0.5));
 		table().doubleClickAction().set(viewCoverControl());
@@ -77,6 +85,37 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private static final class TagEditComponentFactory
+					implements EntityComponentFactory<Set<String>, Attribute<Set<String>>, AlbumTagPanel> {
+
+		@Override
+		public ComponentValue<Set<String>, AlbumTagPanel> componentValue(Attribute<Set<String>> attribute,
+																																		 SwingEntityEditModel editModel,
+																																		 Set<String> initialValue) {
+			return new TagComponentValue(initialValue);
+		}
+	}
+
+	private static final class TagComponentValue extends AbstractComponentValue<Set<String>, AlbumTagPanel> {
+
+		private TagComponentValue(Set<String> initialValue) {
+			super(new AlbumTagPanel(Components.list(new DefaultListModel<String>())
+							.items()
+							.initialValue(initialValue)
+							.buildValue()));
+		}
+
+		@Override
+		protected Set<String> getComponentValue() {
+			return component().tagsValue().get();
+		}
+
+		@Override
+		protected void setComponentValue(Set<String> value) {
+			component().tagsValue().set(value);
 		}
 	}
 }
