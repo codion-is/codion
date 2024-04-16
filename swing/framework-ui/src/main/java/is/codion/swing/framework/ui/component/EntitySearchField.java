@@ -169,6 +169,7 @@ public final class EntitySearchField extends HintTextField {
 	private MultiSelectionValue multiSelectionValue;
 	private ProgressWorker<List<Entity>, ?> searchWorker;
 	private Consumer<Boolean> searchIndicatorListener;
+	private Control searchControl;
 
 	private Color backgroundColor;
 	private Color invalidBackgroundColor;
@@ -235,6 +236,20 @@ public final class EntitySearchField extends HintTextField {
 			transferForward.disable(this);
 			transferBackward.disable(this);
 		}
+	}
+
+	/**
+	 * @return a Control for triggering a search
+	 */
+	public Control searchControl() {
+		if (searchControl == null) {
+			searchControl = Control.builder(() -> performSearch(true))
+							.smallIcon(FrameworkIcons.instance().search())
+							.enabled(model.searchStringModified())
+							.build();
+		}
+
+		return searchControl;
 	}
 
 	/**

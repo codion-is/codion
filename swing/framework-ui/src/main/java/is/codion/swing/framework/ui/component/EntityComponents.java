@@ -257,6 +257,21 @@ public class EntityComponents {
 	}
 
 	/**
+	 * Creates a builder for a foreign key search field panel with an optional button for performing a search.
+	 * @param foreignKey the foreign key
+	 * @param searchModel the search model
+	 * @return a foreign key search field panel builder
+	 */
+	public final EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
+																																				 EntitySearchModel searchModel) {
+		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+
+		return EntitySearchFieldPanel.builder(searchModel)
+						.toolTipText(foreignKeyDefinition.description());
+
+	}
+
+	/**
 	 * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model

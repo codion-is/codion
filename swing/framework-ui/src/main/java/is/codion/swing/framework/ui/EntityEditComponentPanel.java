@@ -810,6 +810,17 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
+	 * Creates a builder for a foreign key search field panel with an optional button for performing a search.
+	 * @param foreignKey the foreign key
+	 * @return a foreign key combo box panel builder
+	 */
+	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey) {
+		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
+										editModel().foreignKeySearchModel(foreignKey))
+						.columns(defaults.foreignKeySearchFieldColumns.get()));
+	}
+
+	/**
 	 * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons

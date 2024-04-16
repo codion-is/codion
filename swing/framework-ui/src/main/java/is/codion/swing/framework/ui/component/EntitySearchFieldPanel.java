@@ -49,7 +49,7 @@ import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link EntitySearchField} based panel, with optional buttons for adding and editing items.
+ * A {@link EntitySearchField} based panel, with optional buttons for searching, adding and editing items.
  */
 public final class EntitySearchFieldPanel extends JPanel {
 
@@ -91,6 +91,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 	private EntitySearchFieldPanel(DefaultBuilder builder) {
 		searchField = builder.createSearchField();
 		List<Action> actions = new ArrayList<>();
+		if (builder.search) {
+			actions.add(searchField.searchControl());
+		}
 		if (builder.add) {
 			actions.add(createAddControl(searchField, builder.editPanelSupplier,
 							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
@@ -110,6 +113,14 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 */
 	public EntitySearchField searchField() {
 		return searchField;
+	}
+
+	/**
+	 * @param entitySearchModel the search model
+	 * @return a new builder instance
+	 */
+	public static EntitySearchFieldPanel.Builder builder(EntitySearchModel entitySearchModel) {
+		return new DefaultBuilder(entitySearchModel, null);
 	}
 
 	/**
@@ -140,14 +151,22 @@ public final class EntitySearchFieldPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntitySearchFieldPanel, Builder> {
 
 		/**
+		 * @param add true if a search button should be included
+		 * @return this builder instance
+		 */
+		Builder search(boolean search);
+
+		/**
 		 * @param add true if a 'Add' button should be included
 		 * @return this builder instance
+		 * @throws IllegalStateException in case no edit panel supplier is available
 		 */
 		Builder add(boolean add);
 
 		/**
 		 * @param edit true if a 'Edit' button should be included
 		 * @return this builder instance
+		 * @throws IllegalStateException in case no edit panel supplier is available
 		 */
 		Builder edit(boolean edit);
 
@@ -255,10 +274,17 @@ public final class EntitySearchFieldPanel extends JPanel {
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
+		private boolean search;
 		private boolean add;
 		private boolean edit;
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
+
+		private DefaultBuilder(EntitySearchModel searchModel, Value<Entity> linkedValue) {
+			super(linkedValue);
+			this.searchFieldBuilder = EntitySearchField.builder(searchModel);
+			this.editPanelSupplier = null;
+		}
 
 		private DefaultBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
@@ -267,13 +293,25 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
+		public Builder search(boolean search) {
+			this.search = search;
+			return this;
+		}
+
+		@Override
 		public Builder add(boolean add) {
+			if (editPanelSupplier == null) {
+				throw new IllegalStateException("A EditPanel supplier is required for the add action");
+			}
 			this.add = add;
 			return this;
 		}
 
 		@Override
 		public Builder edit(boolean edit) {
+			if (editPanelSupplier == null) {
+				throw new IllegalStateException("A EditPanelSupplier is required for the edit action");
+			}
 			this.edit = edit;
 			return this;
 		}
