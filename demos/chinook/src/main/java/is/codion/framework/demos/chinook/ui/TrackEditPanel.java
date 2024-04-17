@@ -55,12 +55,12 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.columns(12);
 		createForeignKeyComboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
 						.preferredWidth(160)
-						.addButton(true)
-						.editButton(true);
+						.includeAddButton(true)
+						.includeEditButton(true);
 		createForeignKeyComboBoxPanel(Track.GENRE_FK, this::createGenreEditPanel)
 						.preferredWidth(160)
-						.addButton(true)
-						.editButton(true);
+						.includeAddButton(true)
+						.includeEditButton(true);
 		createTextFieldPanel(Track.COMPOSER)
 						.columns(12);
 		createIntegerField(Track.MILLISECONDS)

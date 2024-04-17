@@ -53,13 +53,13 @@ public final class EntitySearchFieldPanel extends JPanel {
 	private EntitySearchFieldPanel(DefaultBuilder builder) {
 		searchField = builder.createSearchField();
 		List<Action> actions = new ArrayList<>();
-		if (builder.searchButton) {
+		if (builder.includeSearchButton) {
 			actions.add(searchField.searchControl());
 		}
-		if (builder.addButton) {
+		if (builder.includeAddButton) {
 			searchField.addControl().ifPresent(actions::add);
 		}
-		if (builder.editButton) {
+		if (builder.includeEditButton) {
 			searchField.editControl().ifPresent(actions::add);
 		}
 		setLayout(new BorderLayout());
@@ -111,24 +111,24 @@ public final class EntitySearchFieldPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntitySearchFieldPanel, Builder> {
 
 		/**
-		 * @param searchButton true if a search button should be included
+		 * @param includeSearchButton true if a search button should be included
 		 * @return this builder instance
 		 */
-		Builder searchButton(boolean searchButton);
+		Builder includeSearchButton(boolean includeSearchButton);
 
 		/**
-		 * @param addButton true if a 'Add' button should be included
+		 * @param includeAddButton true if a 'Add' button should be included
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no edit panel supplier is available
 		 */
-		Builder addButton(boolean addButton);
+		Builder includeAddButton(boolean includeAddButton);
 
 		/**
-		 * @param editButton true if a 'Edit' button should be included
+		 * @param includeEditButton true if a 'Edit' button should be included
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no edit panel supplier is available
 		 */
-		Builder editButton(boolean editButton);
+		Builder includeEditButton(boolean includeEditButton);
 
 		/**
 		 * Default false
@@ -225,9 +225,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 		private final EntitySearchField.Builder searchFieldBuilder;
 
-		private boolean searchButton;
-		private boolean addButton;
-		private boolean editButton;
+		private boolean includeSearchButton;
+		private boolean includeAddButton;
+		private boolean includeEditButton;
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
@@ -243,20 +243,20 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		public Builder searchButton(boolean searchButton) {
-			this.searchButton = searchButton;
+		public Builder includeSearchButton(boolean includeSearchButton) {
+			this.includeSearchButton = includeSearchButton;
 			return this;
 		}
 
 		@Override
-		public Builder addButton(boolean addButton) {
-			this.addButton = addButton;
+		public Builder includeAddButton(boolean includeAddButton) {
+			this.includeAddButton = includeAddButton;
 			return this;
 		}
 
 		@Override
-		public Builder editButton(boolean editButton) {
-			this.editButton = editButton;
+		public Builder includeEditButton(boolean includeEditButton) {
+			this.includeEditButton = includeEditButton;
 			return this;
 		}
 

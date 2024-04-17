@@ -52,10 +52,10 @@ public final class EntityComboBoxPanel extends JPanel {
 	private EntityComboBoxPanel(DefaultBuilder builder) {
 		comboBox = builder.createComboBox();
 		List<Action> actions = new ArrayList<>();
-		if (builder.addButton) {
+		if (builder.includeAddButton) {
 			comboBox.addControl().ifPresent(actions::add);
 		}
-		if (builder.editButton) {
+		if (builder.includeEditButton) {
 			comboBox.editControl().ifPresent(actions::add);
 		}
 		setLayout(new BorderLayout());
@@ -99,16 +99,16 @@ public final class EntityComboBoxPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
 
 		/**
-		 * @param addButton true if a 'Add' button should be included
+		 * @param includeAddButton true if a 'Add' button should be included
 		 * @return this builder instance
 		 */
-		Builder addButton(boolean addButton);
+		Builder includeAddButton(boolean includeAddButton);
 
 		/**
-		 * @param editButton true if a 'Edit' button should be included
+		 * @param includeEditButton true if a 'Edit' button should be included
 		 * @return this builder instance
 		 */
-		Builder editButton(boolean editButton);
+		Builder includeEditButton(boolean includeEditButton);
 
 		/**
 		 * Default false
@@ -155,8 +155,8 @@ public final class EntityComboBoxPanel extends JPanel {
 
 		private final EntityComboBox.Builder entityComboBoxBuilder;
 
-		private boolean addButton;
-		private boolean editButton;
+		private boolean includeAddButton;
+		private boolean includeEditButton;
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
@@ -167,14 +167,14 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		public Builder addButton(boolean addButton) {
-			this.addButton = addButton;
+		public Builder includeAddButton(boolean includeAddButton) {
+			this.includeAddButton = includeAddButton;
 			return this;
 		}
 
 		@Override
-		public Builder editButton(boolean editButton) {
-			this.editButton = editButton;
+		public Builder includeEditButton(boolean includeEditButton) {
+			this.includeEditButton = includeEditButton;
 			return this;
 		}
 

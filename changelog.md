@@ -17,6 +17,7 @@ Codion Change Log
 - EntityComboBoxPanel, EntitySearchFieldPanel.Builder.add() and edit() renamed addButton() and editButton().
 - EntityComboBox.Builder added.
 - EntityComboBox, EntitySearchField, add and edit actions moved from respective panel classes, Builder.editPanelSupplier() added.
+- EntityComboBoxPanel, EntitySearchFieldPanel.Builder.addButton() and editButton() renamed includeAddButton() and includeEditButton().
 
 ## 0.17.39
 ### is.codion.common.core
