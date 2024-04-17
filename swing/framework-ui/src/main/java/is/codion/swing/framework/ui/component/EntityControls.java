@@ -58,7 +58,7 @@ final class EntityControls {
 	/**
 	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog and if insert is performed
 	 * adds the new entity to the {@code comboBox} and selects it.
-	 * Creates a INSERT key binding on the given component for triggering the resulting Control.
+	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param comboBox the combo box in which to select the new entity
 	 * @param editPanelSupplier the edit panel supplier
 	 * @param keyStroke the control keyStroke
@@ -74,7 +74,7 @@ final class EntityControls {
 	/**
 	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog and if insert is performed
 	 * selects the new entity in the {@code searchField}.
-	 * Creates a INSERT key binding on the given component for triggering the resulting Control.
+	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param searchField the search field in which to select the new entity
 	 * @param editPanelSupplier the edit panel supplier
 	 * @param keyStroke the control keyStroke
@@ -90,7 +90,7 @@ final class EntityControls {
 	/**
 	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog displaying
 	 * the selected item for editing, and replaces the updated entity in the combo box.
-	 * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
+	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param comboBox the combo box which selected item to edit
 	 * @param editPanelSupplier the edit panel supplier
 	 * @param keyStroke the control keyStroke
@@ -107,7 +107,7 @@ final class EntityControls {
 	/**
 	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog displaying
 	 * the selected item for editing, and replaces the updated entity in the search field.
-	 * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
+	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param searchField the search field which selected item to edit
 	 * @param editPanelSupplier the edit panel supplier
 	 * @param keyStroke the control keyStroke
