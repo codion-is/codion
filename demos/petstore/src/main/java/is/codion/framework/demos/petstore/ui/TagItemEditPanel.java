@@ -36,7 +36,7 @@ public class TagItemEditPanel extends EntityEditPanel {
 		createForeignKeyComboBox(TagItem.ITEM_FK)
 						.preferredWidth(180);
 		createForeignKeyComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
-						.add(true);
+						.addButton(true);
 		setLayout(Layouts.flexibleGridLayout(2, 1));
 		addInputPanel(TagItem.ITEM_FK);
 		addInputPanel(TagItem.TAG_FK);

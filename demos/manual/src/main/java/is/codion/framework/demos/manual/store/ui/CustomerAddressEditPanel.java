@@ -38,7 +38,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 
 		createForeignKeyComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
 						.preferredWidth(280)
-						.add(true);
+						.addButton(true);
 
 		setLayout(borderLayout());
 

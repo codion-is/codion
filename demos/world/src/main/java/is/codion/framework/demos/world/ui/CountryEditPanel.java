@@ -76,7 +76,7 @@ final class CountryEditPanel extends EntityEditPanel {
 		//create a panel with a button for adding a new city
 		createForeignKeyComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
 						.comboBoxPreferredWidth(PREFERRED_COMBO_BOX_WIDTH)
-						.add(true);
+						.addButton(true);
 		//add a field displaying the avarage city population for the selected country
 		CountryEditModel editModel = editModel();
 		NumberField<Double> averageCityPopulationField = doubleField()

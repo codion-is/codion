@@ -12,6 +12,7 @@ Codion Change Log
 - EntitySearchFieldPanel, search button added.
 - EntityPanel, EntityEditPanel, EntityTablePanel.Config now provides access the the panel being configured.
 - EntityEditPanel.Confirmer.NONE added.
+- EntityComboBoxPanel, EntitySearchFieldPanel.Builder.add() and edit() renamed addButton() and editButton().
 
 ## 0.17.39
 ### is.codion.common.core

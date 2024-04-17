@@ -91,14 +91,14 @@ public final class EntitySearchFieldPanel extends JPanel {
 	private EntitySearchFieldPanel(DefaultBuilder builder) {
 		searchField = builder.createSearchField();
 		List<Action> actions = new ArrayList<>();
-		if (builder.search) {
+		if (builder.searchButton) {
 			actions.add(searchField.searchControl());
 		}
-		if (builder.add) {
+		if (builder.addButton) {
 			actions.add(createAddControl(searchField, builder.editPanelSupplier,
 							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
 		}
-		if (builder.edit) {
+		if (builder.editButton) {
 			actions.add(createEditControl(searchField, builder.editPanelSupplier,
 							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
 		}
@@ -151,24 +151,24 @@ public final class EntitySearchFieldPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntitySearchFieldPanel, Builder> {
 
 		/**
-		 * @param add true if a search button should be included
+		 * @param searchButton true if a search button should be included
 		 * @return this builder instance
 		 */
-		Builder search(boolean search);
+		Builder searchButton(boolean searchButton);
 
 		/**
-		 * @param add true if a 'Add' button should be included
+		 * @param addButton true if a 'Add' button should be included
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no edit panel supplier is available
 		 */
-		Builder add(boolean add);
+		Builder addButton(boolean addButton);
 
 		/**
-		 * @param edit true if a 'Edit' button should be included
+		 * @param editButton true if a 'Edit' button should be included
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no edit panel supplier is available
 		 */
-		Builder edit(boolean edit);
+		Builder editButton(boolean editButton);
 
 		/**
 		 * Default false
@@ -274,9 +274,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
-		private boolean search;
-		private boolean add;
-		private boolean edit;
+		private boolean searchButton;
+		private boolean addButton;
+		private boolean editButton;
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
@@ -293,26 +293,26 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		public Builder search(boolean search) {
-			this.search = search;
+		public Builder searchButton(boolean searchButton) {
+			this.searchButton = searchButton;
 			return this;
 		}
 
 		@Override
-		public Builder add(boolean add) {
+		public Builder addButton(boolean addButton) {
 			if (editPanelSupplier == null) {
-				throw new IllegalStateException("A EditPanel supplier is required for the add action");
+				throw new IllegalStateException("A EditPanel supplier is required for the add button");
 			}
-			this.add = add;
+			this.addButton = addButton;
 			return this;
 		}
 
 		@Override
-		public Builder edit(boolean edit) {
+		public Builder editButton(boolean editButton) {
 			if (editPanelSupplier == null) {
-				throw new IllegalStateException("A EditPanelSupplier is required for the edit action");
+				throw new IllegalStateException("A EditPanelSupplier is required for the edit button");
 			}
-			this.edit = edit;
+			this.editButton = editButton;
 			return this;
 		}
 

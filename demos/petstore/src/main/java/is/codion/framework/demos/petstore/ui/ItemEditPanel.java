@@ -42,9 +42,9 @@ public class ItemEditPanel extends EntityEditPanel {
 						.buttonFocusable(false);
 		createTextField(Item.PRICE);
 		createForeignKeyComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
-						.add(true);
+						.addButton(true);
 		createForeignKeyComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
-						.add(true);
+						.addButton(true);
 		createTextField(Item.IMAGE_URL);
 		createTextField(Item.IMAGE_THUMB_URL);
 		createCheckBox(Item.DISABLED);

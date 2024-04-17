@@ -91,11 +91,11 @@ public final class EntityComboBoxPanel extends JPanel {
 	private EntityComboBoxPanel(DefaultBuilder builder) {
 		comboBox = builder.createComboBox();
 		List<Action> actions = new ArrayList<>();
-		if (builder.add) {
+		if (builder.addButton) {
 			actions.add(createAddControl(comboBox, builder.editPanelSupplier,
 							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
 		}
-		if (builder.edit) {
+		if (builder.editButton) {
 			actions.add(createEditControl(comboBox, builder.editPanelSupplier,
 							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
 		}
@@ -140,16 +140,16 @@ public final class EntityComboBoxPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
 
 		/**
-		 * @param add true if a 'Add' button should be included
+		 * @param addButton true if a 'Add' button should be included
 		 * @return this builder instance
 		 */
-		Builder add(boolean add);
+		Builder addButton(boolean addButton);
 
 		/**
-		 * @param edit true if a 'Edit' button should be included
+		 * @param editButton true if a 'Edit' button should be included
 		 * @return this builder instance
 		 */
-		Builder edit(boolean edit);
+		Builder editButton(boolean editButton);
 
 		/**
 		 * Default false
@@ -205,8 +205,8 @@ public final class EntityComboBoxPanel extends JPanel {
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
-		private boolean add;
-		private boolean edit;
+		private boolean addButton;
+		private boolean editButton;
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
@@ -217,14 +217,14 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		public Builder add(boolean add) {
-			this.add = add;
+		public Builder addButton(boolean addButton) {
+			this.addButton = addButton;
 			return this;
 		}
 
 		@Override
-		public Builder edit(boolean edit) {
-			this.edit = edit;
+		public Builder editButton(boolean editButton) {
+			this.editButton = editButton;
 			return this;
 		}
 
