@@ -94,7 +94,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -306,18 +305,20 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	public final void selectInputComponent() {
 		Entities entities = editModel().entities();
-		List<AttributeDefinition<?>> attributeDefinitions = selectComponentAttributes().stream()
-						.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
-						.sorted(AttributeDefinition.definitionComparator())
-						.collect(Collectors.toList());
-		if (!attributeDefinitions.isEmpty()) {
-			Optional<AttributeDefinition<?>> optionalAttribute =
-							attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
-											Dialogs.selectionDialog(attributeDefinitions)
-															.owner(this)
-															.title(FrameworkMessages.selectInputField())
-															.selectSingle();
-			optionalAttribute.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
+		Collection<Attribute<?>> attributes = selectComponentAttributes();
+		if (attributes.size() == 1) {
+			requestComponentFocus(attributes.iterator().next());
+		}
+		else if (!attributes.isEmpty()) {
+			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
+							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
+							.sorted(AttributeDefinition.definitionComparator())
+							.collect(Collectors.toList());
+			Dialogs.selectionDialog(sortedDefinitions)
+							.owner(this)
+							.title(FrameworkMessages.selectInputField())
+							.selectSingle()
+							.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
 		}
 	}
 
@@ -846,8 +847,8 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a list builder factory
 	 * @param listModel the list model to base the list on
-	 * @return a list builder factory
 	 * @param <T> the value type
+	 * @return a list builder factory
 	 */
 	protected final <T> EntityListBuilderFactory<T> createList(ListModel<T> listModel) {
 		return new DefaultEntityListBuilderFactory<>(listModel);
@@ -1276,17 +1277,17 @@ public class EntityEditComponentPanel extends JPanel {
 		/**
 		 * Instantiates a new TextValidator
 		 * @param attribute the attribute of the value to validate
-		 * @param textComponent the text component bound to the value
+		 * @param component the component bound to the value
 		 * @param editModel the edit model handling the value editing
 		 * @param defaultToolTip the default tooltip to show when the field value is valid
 		 */
-		private ComponentValidator(Attribute<T> attribute, JComponent textComponent, EntityEditModel editModel,
+		private ComponentValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
 															 String defaultToolTip, String uiComponentKey) {
-			super(attribute, textComponent, editModel, defaultToolTip);
+			super(attribute, component, editModel, defaultToolTip);
 			this.uiComponentKey = uiComponentKey;
 			editModel.value(attribute).addListener(this::validate);
 			configureColors();
-			textComponent.addPropertyChangeListener("UI", event -> configureColors());
+			component.addPropertyChangeListener("UI", event -> configureColors());
 		}
 
 		/**

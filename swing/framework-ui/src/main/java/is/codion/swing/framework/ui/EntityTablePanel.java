@@ -1526,18 +1526,21 @@ public class EntityTablePanel extends JPanel {
 																								 State conditionPanelVisibleState, SwingEntityTableModel tableModel,
 																								 JComponent dialogOwner, String dialogTitle) {
 		if (tableConditionPanel != null) {
-			List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.conditionPanels().stream()
-							.filter(panel -> tableModel.columnModel().visible(panel.model().columnIdentifier()).get())
-							.map(panel -> tableModel.entityDefinition().attributes().definition(panel.model().columnIdentifier()))
-							.sorted(AttributeDefinition.definitionComparator())
+			List<Attribute<?>> attributes = tableConditionPanel.conditionPanels().stream()
+							.map(panel -> panel.model().columnIdentifier())
+							.filter(attribute -> tableModel.columnModel().visible(attribute).get())
 							.collect(toList());
-			if (attributeDefinitions.size() == 1) {
+			if (attributes.size() == 1) {
 				displayConditionPanel(conditionPanelScrollPane, conditionPanelAdvancedState, conditionPanelVisibleState);
-				tableConditionPanel.conditionPanel(attributeDefinitions.get(0).attribute())
+				tableConditionPanel.conditionPanel(attributes.get(0))
 								.ifPresent(ColumnConditionPanel::requestInputFocus);
 			}
-			else if (!attributeDefinitions.isEmpty()) {
-				Dialogs.selectionDialog(attributeDefinitions)
+			else if (!attributes.isEmpty()) {
+				List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
+								.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
+								.sorted(AttributeDefinition.definitionComparator())
+								.collect(toList());
+				Dialogs.selectionDialog(sortedDefinitions)
 								.owner(dialogOwner)
 								.title(dialogTitle)
 								.selectSingle()
