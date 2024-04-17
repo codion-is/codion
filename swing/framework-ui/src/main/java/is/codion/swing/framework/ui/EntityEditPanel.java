@@ -177,7 +177,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
 		super(editModel, entityComponents);
-		this.configuration = configure(configuration);
+		this.configuration = configure(this, configuration);
 		this.active = State.state(!this.configuration.focusActivation);
 		this.controls = createControlsMap();
 		setupFocusActivation();
@@ -641,8 +641,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						})));
 	}
 
-	private static Config configure(Consumer<Config> configuration) {
-		Config config = new Config();
+	private static Config configure(EntityEditPanel editPanel, Consumer<Config> configuration) {
+		Config config = new Config(editPanel);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -686,6 +686,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
+		private final EntityEditPanel editPanel;
 		private final Set<EditControl> editControls;
 		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
@@ -699,12 +700,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 
-		private Config() {
+		private Config(EntityEditPanel editPanel) {
+			this.editPanel = editPanel;
 			this.editControls = new HashSet<>(Arrays.asList(EditControl.values()));
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 		}
 
 		private Config(Config config) {
+			this.editPanel = config.editPanel;
 			this.shortcuts = config.shortcuts.copy();
 			this.editControls = new HashSet<>(config.editControls);
 			this.clearAfterInsert = config.clearAfterInsert;

@@ -314,12 +314,12 @@ public class EntityPanel extends JPanel {
 	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
 										 Consumer<Config> configuration) {
 		requireNonNull(entityModel, "entityModel");
-		this.configuration = configure(entityModel.entityDefinition().caption(), configuration);
 		this.entityModel = entityModel;
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
 		this.mainPanel = borderLayoutPanel().build();
+		this.configuration = configure(this, configuration);
 		this.detailLayout = this.configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		this.editPanelState = Value.value(this.configuration.editPanelState, EMBEDDED);
@@ -1102,8 +1102,8 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
-	private static Config configure(String caption, Consumer<Config> configuration) {
-		Config config = new Config(caption);
+	private static Config configure(EntityPanel entityPanel, Consumer<Config> configuration) {
+		Config config = new Config(entityPanel);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -1240,6 +1240,7 @@ public class EntityPanel extends JPanel {
 		 */
 		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
+		private final EntityPanel entityPanel;
 		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
@@ -1256,12 +1257,14 @@ public class EntityPanel extends JPanel {
 		private String description;
 		private ImageIcon icon;
 
-		private Config(String caption) {
+		private Config(EntityPanel entityPanel) {
+			this.entityPanel = entityPanel;
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
-			this.caption = caption;
+			this.caption = entityPanel.model().entityDefinition().caption();
 		}
 
 		private Config(Config config) {
+			this.entityPanel = config.entityPanel;
 			this.shortcuts = config.shortcuts.copy();
 			this.detailLayout = config.detailLayout;
 			this.toolbarControls = config.toolbarControls;
@@ -1275,6 +1278,13 @@ public class EntityPanel extends JPanel {
 			this.icon = config.icon;
 			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
 			this.windowType = config.windowType;
+		}
+
+		/**
+		 * @return the entity panel
+		 */
+		public EntityPanel entityPanel () {
+			return entityPanel;
 		}
 
 		/**

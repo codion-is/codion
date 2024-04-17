@@ -338,7 +338,7 @@ public class EntityTablePanel extends JPanel {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = null;
 		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(tableModel, configuration);
+		this.configuration = configure(this, configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 	}
 
@@ -361,7 +361,7 @@ public class EntityTablePanel extends JPanel {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
 		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(tableModel, configuration);
+		this.configuration = configure(this, configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 	}
 
@@ -1600,8 +1600,8 @@ public class EntityTablePanel extends JPanel {
 		return new Point(x, y + table.getRowHeight() / 2);
 	}
 
-	private static Config configure(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
-		Config config = new Config(tableModel);
+	private static Config configure(EntityTablePanel tablePanel, Consumer<Config> configuration) {
+		Config config = new Config(tablePanel);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -1773,6 +1773,7 @@ public class EntityTablePanel extends JPanel {
 
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
+		private final EntityTablePanel tablePanel;
 		private final EntityDefinition entityDefinition;
 
 		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
@@ -1800,8 +1801,9 @@ public class EntityTablePanel extends JPanel {
 		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 		private Confirmer deleteConfirmer;
 
-		private Config(SwingEntityTableModel tableModel) {
-			this.entityDefinition = tableModel.entityDefinition();
+		private Config(EntityTablePanel tablePanel) {
+			this.tablePanel = tablePanel;
+			this.entityDefinition = tablePanel.tableModel.entityDefinition();
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
@@ -1812,10 +1814,11 @@ public class EntityTablePanel extends JPanel {
 			this.cellEditorComponentFactories = new HashMap<>();
 			this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 			this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
-			this.deleteConfirmer = new DeleteConfirmer(tableModel.selectionModel());
+			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selectionModel());
 		}
 
 		private Config(Config config) {
+			this.tablePanel = config.tablePanel;
 			this.entityDefinition = config.entityDefinition;
 			this.shortcuts = config.shortcuts.copy();
 			this.editable = valueSet(config.editable.get());
@@ -1840,6 +1843,13 @@ public class EntityTablePanel extends JPanel {
 			this.showRefreshProgressBar = config.showRefreshProgressBar;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
+		}
+
+		/**
+		 * @return the table panel
+		 */
+		public EntityTablePanel tablePanel() {
+			return tablePanel;
 		}
 
 		/**
