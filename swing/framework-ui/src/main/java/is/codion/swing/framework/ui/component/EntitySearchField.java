@@ -169,7 +169,7 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * The available keyboard shortcuts.
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
@@ -218,9 +218,9 @@ public final class EntitySearchField extends HintTextField {
 	private EntitySearchField(DefaultEntitySearchFieldBuilder builder) {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = requireNonNull(builder.searchModel);
-		addControl = createAddControl(builder.editPanelSupplier,
+		addControl = createAddControl(builder.editPanel,
 						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get());
-		editControl = createEditControl(builder.editPanelSupplier,
+		editControl = createEditControl(builder.editPanel,
 						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get());
 		if (builder.columns != -1) {
 			setColumns(builder.columns);
@@ -244,12 +244,12 @@ public final class EntitySearchField extends HintTextField {
 		bindEvents();
 	}
 
-	private Control createAddControl(Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return editPanelSupplier == null ? null : EntityControls.createAddControl(this, editPanelSupplier, keyStroke);
+	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke);
 	}
 
-	private Control createEditControl(Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return editPanelSupplier == null ? null : EntityControls.createEditControl(this, editPanelSupplier, keyStroke);
+	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke);
 	}
 
 	@Override
@@ -307,7 +307,7 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * @return a Control for inserting a new record, if one is available
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public Optional<Control> addControl() {
 		return Optional.ofNullable(addControl);
@@ -315,7 +315,7 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * @return a Control for editing the selected record, if one is available
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public Optional<Control> editControl() {
 		return Optional.ofNullable(editControl);
@@ -442,11 +442,11 @@ public final class EntitySearchField extends HintTextField {
 		Builder selectorFactory(Function<EntitySearchModel, Selector> selectorFactory);
 
 		/**
-		 * A edit panel supplier is required for the add and edit controls.
-		 * @param editPanelSupplier the edit panel supplier
+		 * A edit panel is required for the add and edit controls.
+		 * @param editPanel the edit panel supplier
 		 * @return this builder instance
 		 */
-		Builder editPanelSupplier(Supplier<EntityEditPanel> editPanelSupplier);
+		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
 		 * @param keyboardShortcut the keyboard shortcut key
@@ -1076,7 +1076,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean selectAllOnFocusGained = true;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
 		private Function<EntitySearchModel, Selector> selectorFactory = new ListSelectorFactory();
-		private Supplier<EntityEditPanel> editPanelSupplier;
+		private Supplier<EntityEditPanel> editPanel;
 
 		private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
 			this.searchModel = searchModel;
@@ -1137,8 +1137,8 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public Builder editPanelSupplier(Supplier<EntityEditPanel> editPanelSupplier) {
-			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		public Builder editPanel(Supplier<EntityEditPanel> editPanel) {
+			this.editPanel = requireNonNull(editPanel);
 			return this;
 		}
 

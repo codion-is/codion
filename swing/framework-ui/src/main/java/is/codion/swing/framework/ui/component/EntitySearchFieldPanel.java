@@ -79,30 +79,30 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 * @param entitySearchModel the search model
 	 * @return a new builder instance
 	 */
-	public static EntitySearchFieldPanel.Builder builder(EntitySearchModel entitySearchModel) {
+	public static Builder builder(EntitySearchModel entitySearchModel) {
 		return new DefaultBuilder(entitySearchModel, null);
 	}
 
 	/**
 	 * @param entitySearchModel the search model
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @return a new builder instance
 	 */
-	public static EntitySearchFieldPanel.Builder builder(EntitySearchModel entitySearchModel,
-																											 Supplier<EntityEditPanel> editPanelSupplier) {
-		return new DefaultBuilder(entitySearchModel, editPanelSupplier, null);
+	public static Builder builder(EntitySearchModel entitySearchModel,
+																Supplier<EntityEditPanel> editPanel) {
+		return new DefaultBuilder(entitySearchModel, editPanel, null);
 	}
 
 	/**
 	 * @param entitySearchModel the search model
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @param linkedValue the linked value
 	 * @return a new builder instance
 	 */
-	public static EntitySearchFieldPanel.Builder builder(EntitySearchModel entitySearchModel,
-																											 Supplier<EntityEditPanel> editPanelSupplier,
-																											 Value<Entity> linkedValue) {
-		return new DefaultBuilder(entitySearchModel, editPanelSupplier, requireNonNull(linkedValue));
+	public static Builder builder(EntitySearchModel entitySearchModel,
+																Supplier<EntityEditPanel> editPanel,
+																Value<Entity> linkedValue) {
+		return new DefaultBuilder(entitySearchModel, editPanel, requireNonNull(linkedValue));
 	}
 
 	/**
@@ -239,7 +239,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		private DefaultBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
 			this.searchFieldBuilder = EntitySearchField.builder(searchModel)
-							.editPanelSupplier(editPanelSupplier);
+							.editPanel(editPanelSupplier);
 		}
 
 		@Override

@@ -73,24 +73,24 @@ public final class EntityComboBoxPanel extends JPanel {
 
 	/**
 	 * @param comboBoxModel the combo box model
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @return a new builder instance
 	 */
-	public static EntityComboBoxPanel.Builder builder(EntityComboBoxModel comboBoxModel,
-																										Supplier<EntityEditPanel> editPanelSupplier) {
-		return new DefaultBuilder(comboBoxModel, editPanelSupplier, null);
+	public static Builder builder(EntityComboBoxModel comboBoxModel,
+																Supplier<EntityEditPanel> editPanel) {
+		return new DefaultBuilder(comboBoxModel, editPanel, null);
 	}
 
 	/**
 	 * @param comboBoxModel the combo box model
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @param linkedValue the linked value
 	 * @return a new builder instance
 	 */
-	public static EntityComboBoxPanel.Builder builder(EntityComboBoxModel comboBoxModel,
-																										Supplier<EntityEditPanel> editPanelSupplier,
-																										Value<Entity> linkedValue) {
-		return new DefaultBuilder(comboBoxModel, editPanelSupplier, requireNonNull(linkedValue));
+	public static Builder builder(EntityComboBoxModel comboBoxModel,
+																Supplier<EntityEditPanel> editPanel,
+																Value<Entity> linkedValue) {
+		return new DefaultBuilder(comboBoxModel, editPanel, requireNonNull(linkedValue));
 	}
 
 	/**
@@ -163,7 +163,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
 			this.entityComboBoxBuilder = EntityComboBox.builder(comboBoxModel)
-							.editPanelSupplier(editPanelSupplier);
+							.editPanel(editPanelSupplier);
 		}
 
 		@Override

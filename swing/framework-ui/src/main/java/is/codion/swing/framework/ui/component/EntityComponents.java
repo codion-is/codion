@@ -230,15 +230,15 @@ public class EntityComponents {
 	 * Creates a builder for a foreign key combo box panel with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param comboBoxModel the combo box model
-	 * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
+	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
 	public final EntityComboBoxPanel.Builder foreignKeyComboBoxPanel(ForeignKey foreignKey,
 																																	 EntityComboBoxModel comboBoxModel,
-																																	 Supplier<EntityEditPanel> editPanelSupplier) {
+																																	 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return EntityComboBoxPanel.builder(comboBoxModel, editPanelSupplier)
+		return EntityComboBoxPanel.builder(comboBoxModel, editPanel)
 						.toolTipText(foreignKeyDefinition.description());
 	}
 
@@ -274,15 +274,15 @@ public class EntityComponents {
 	 * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
-	 * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
+	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key search field panel builder
 	 */
 	public final EntitySearchFieldPanel.Builder foreignKeySearchFieldPanel(ForeignKey foreignKey,
 																																				 EntitySearchModel searchModel,
-																																				 Supplier<EntityEditPanel> editPanelSupplier) {
+																																				 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return EntitySearchFieldPanel.builder(searchModel, editPanelSupplier)
+		return EntitySearchFieldPanel.builder(searchModel, editPanel)
 						.toolTipText(foreignKeyDefinition.description());
 	}
 

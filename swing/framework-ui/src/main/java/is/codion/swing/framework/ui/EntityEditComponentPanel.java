@@ -784,15 +784,15 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a builder for a foreign key combo box panel with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
-	 * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
+	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
 	protected final EntityComboBoxPanel.Builder createForeignKeyComboBoxPanel(ForeignKey foreignKey,
-																																						Supplier<EntityEditPanel> editPanelSupplier) {
+																																						Supplier<EntityEditPanel> editPanel) {
 		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
 		comboBoxModel.refresher().refreshFailedEvent().addDataListener(this::onException);
 
-		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanelSupplier))
+		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.comboBoxPreferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()))
 						.onBuild(comboBoxPanel -> addValidator(foreignKey, comboBoxPanel.comboBox()));
@@ -823,13 +823,13 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a builder for a foreign key search field panel with optional buttons for adding and editing items.
 	 * @param foreignKey the foreign key
-	 * @param editPanelSupplier the edit panel supplier to use for the add and/or edit buttons
+	 * @param editPanel the edit panel supplier to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
 	protected final EntitySearchFieldPanel.Builder createForeignKeySearchFieldPanel(ForeignKey foreignKey,
-																																									Supplier<EntityEditPanel> editPanelSupplier) {
+																																									Supplier<EntityEditPanel> editPanel) {
 		return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchFieldPanel(foreignKey,
-										editModel().foreignKeySearchModel(foreignKey), editPanelSupplier)
+										editModel().foreignKeySearchModel(foreignKey), editPanel)
 						.columns(defaults.foreignKeySearchFieldColumns.get()));
 	}
 

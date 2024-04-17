@@ -66,7 +66,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	/**
 	 * The available keyboard shortcuts.
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
 		/**
@@ -97,9 +97,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private EntityComboBox(DefaultBuilder builder) {
 		super(builder.comboBoxModel());
-		addControl = createAddControl(builder.editPanelSupplier,
+		addControl = createAddControl(builder.editPanel,
 						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get());
-		editControl = createEditControl(builder.editPanelSupplier,
+		editControl = createEditControl(builder.editPanel,
 						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get());
 	}
 
@@ -110,7 +110,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	/**
 	 * @return a Control for inserting a new record, if one is available
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public Optional<Control> addControl() {
 		return Optional.ofNullable(addControl);
@@ -118,7 +118,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	/**
 	 * @return a Control for editing the selected record, if one is available
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public Optional<Control> editControl() {
 		return Optional.ofNullable(editControl);
@@ -254,16 +254,16 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	/**
 	 * Builds a {@link EntityComboBox} instance.
-	 * @see Builder#editPanelSupplier(Supplier)
+	 * @see Builder#editPanel(Supplier)
 	 */
 	public interface Builder extends ComboBoxBuilder<Entity, EntityComboBox, Builder> {
 
 		/**
-		 * A edit panel supplier is required for the add and edit controls.
-		 * @param editPanelSupplier the edit panel supplier
+		 * A edit panel is required for the add and edit controls.
+		 * @param editPanel the edit panel supplier
 		 * @return this builder instance
 		 */
-		Builder editPanelSupplier(Supplier<EntityEditPanel> editPanelSupplier);
+		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
 		 * @param keyboardShortcut the keyboard shortcut key
@@ -273,12 +273,12 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
 	}
 
-	private Control createAddControl(Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return editPanelSupplier == null ? null : EntityControls.createAddControl(this, editPanelSupplier, keyStroke);
+	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke);
 	}
 
-	private Control createEditControl(Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return editPanelSupplier == null ? null : EntityControls.createEditControl(this, editPanelSupplier, keyStroke);
+	private Control createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke);
 	}
 
 	private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
@@ -296,7 +296,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
-		private Supplier<EntityEditPanel> editPanelSupplier;
+		private Supplier<EntityEditPanel> editPanel;
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
 			super(comboBoxModel, linkedValue);
@@ -308,8 +308,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 
 		@Override
-		public Builder editPanelSupplier(Supplier<EntityEditPanel> editPanelSupplier) {
-			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		public Builder editPanel(Supplier<EntityEditPanel> editPanel) {
+			this.editPanel = requireNonNull(editPanel);
 			return this;
 		}
 

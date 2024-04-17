@@ -46,7 +46,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
 		createForeignKeySearchField(Album.ARTIST_FK)
 						.columns(15)
-						.editPanelSupplier(this::createArtistEditPanel);
+						.editPanel(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
 		ComponentValue<Set<String>, JList<String>> tagList = createList(new DefaultListModel<String>())

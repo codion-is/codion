@@ -33,7 +33,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
@@ -44,7 +43,6 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static java.awt.ComponentOrientation.getOrientation;
@@ -57,48 +55,48 @@ final class EntityControls {
 	private EntityControls() {}
 
 	/**
-	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog and if insert is performed
+	 * Creates a new Control which displays the edit panel provided by the {@code editPanel} in a dialog and if insert is performed
 	 * adds the new entity to the {@code comboBox} and selects it.
 	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param comboBox the combo box in which to select the new entity
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
 	 * @return the add Control
 	 */
-	static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return createAddControl(() -> addEntityDialog(editPanelSupplier)
+	static Control createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return createAddControl(() -> addEntityDialog(editPanel)
 						.owner(comboBox)
 						.onInsert(new EntityComboBoxOnInsert(comboBox.getModel()))
 						.show(), comboBox, keyStroke);
 	}
 
 	/**
-	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog and if insert is performed
+	 * Creates a new Control which displays the edit panel provided by the {@code editPanel} in a dialog and if insert is performed
 	 * selects the new entity in the {@code searchField}.
 	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param searchField the search field in which to select the new entity
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
 	 * @return the add Control
 	 */
-	static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return createAddControl(() -> addEntityDialog(editPanelSupplier)
+	static Control createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return createAddControl(() -> addEntityDialog(editPanel)
 						.owner(searchField)
 						.onInsert(new EntitySearchFieldOnInsert(searchField.model()))
 						.show(), searchField, keyStroke);
 	}
 
 	/**
-	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog displaying
+	 * Creates a new Control which displays the edit panel provided by the {@code editPanel} in a dialog displaying
 	 * the selected item for editing, and replaces the updated entity in the combo box.
 	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param comboBox the combo box which selected item to edit
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
 	 * @return the edit Control
 	 */
-	static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return createEditControl(() -> editEntityDialog(editPanelSupplier)
+	static Control createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(comboBox)
 						.entity(() -> comboBox.getModel().selectedValue())
 						.onUpdate(new EntityComboBoxOnUpdate(comboBox.getModel()))
@@ -106,16 +104,16 @@ final class EntityControls {
 	}
 
 	/**
-	 * Creates a new Control which displays the edit panel provided by the {@code editPanelSupplier} in a dialog displaying
+	 * Creates a new Control which displays the edit panel provided by the {@code editPanel} in a dialog displaying
 	 * the selected item for editing, and replaces the updated entity in the search field.
 	 * Creates a key binding on the given component for triggering the resulting Control.
 	 * @param searchField the search field which selected item to edit
-	 * @param editPanelSupplier the edit panel supplier
+	 * @param editPanel the edit panel supplier
 	 * @param keyStroke the control keyStroke
 	 * @return the edit Control
 	 */
-	static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
-		return createEditControl(() -> editEntityDialog(editPanelSupplier)
+	static Control createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
+		return createEditControl(() -> editEntityDialog(editPanel)
 						.owner(searchField)
 						.entity(() -> searchField.model().entity().get())
 						.onUpdate(new EntitySearchFieldOnUpdate(searchField.model()))
@@ -130,13 +128,11 @@ final class EntityControls {
 		return buttonLocation;
 	}
 
-	static JPanel createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
-																	String borderLayoutConstraints, List<AbstractButton> buttons,
-																	Action... buttonActions) {
+	static JComponent createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
+																			String borderLayoutConstraints, List<AbstractButton> buttons,
+																			Action... buttonActions) {
 		if (buttonActions.length == 0) {
-			return borderLayoutPanel()
-							.centerComponent(centerComponent)
-							.build();
+			return centerComponent;
 		}
 		Dimension preferredSize = centerComponent.getPreferredSize();
 
