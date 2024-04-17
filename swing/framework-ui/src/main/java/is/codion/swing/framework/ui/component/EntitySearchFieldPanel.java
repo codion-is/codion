@@ -25,14 +25,12 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -41,49 +39,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.component.EntityControls.*;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link EntitySearchField} based panel, with optional buttons for searching, adding and editing items.
  */
 public final class EntitySearchFieldPanel extends JPanel {
-
-	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
-
-	/**
-	 * The available keyboard shortcuts.
-	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
-		/**
-		 * Displays a dialog for adding a new record.<br>
-		 * Default: INSERT
-		 */
-		ADD(keyStroke(VK_INSERT)),
-		/**
-		 * Displays a dialog for editing the selected record.<br>
-		 * Default: CTRL-INSERT
-		 */
-		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
-		}
-	}
 
 	private final EntitySearchField searchField;
 	private final List<AbstractButton> buttons = new ArrayList<>(0);
@@ -95,12 +57,10 @@ public final class EntitySearchFieldPanel extends JPanel {
 			actions.add(searchField.searchControl());
 		}
 		if (builder.addButton) {
-			actions.add(createAddControl(searchField, builder.editPanelSupplier,
-							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
+			searchField.addControl().ifPresent(actions::add);
 		}
 		if (builder.editButton) {
-			actions.add(createEditControl(searchField, builder.editPanelSupplier,
-							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
+			searchField.editControl().ifPresent(actions::add);
 		}
 		setLayout(new BorderLayout());
 		add(createButtonPanel(searchField, builder.buttonsFocusable, builder.buttonLocation,
@@ -242,13 +202,6 @@ public final class EntitySearchFieldPanel extends JPanel {
 		Builder limit(int limit);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
-		 * @return this builder instance
-		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
-
-		/**
 		 * @return a new {@link EntitySearchFieldPanel} based on this builder
 		 */
 		EntitySearchFieldPanel build();
@@ -271,8 +224,6 @@ public final class EntitySearchFieldPanel extends JPanel {
 	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntitySearchFieldPanel, Builder> implements Builder {
 
 		private final EntitySearchField.Builder searchFieldBuilder;
-		private final Supplier<EntityEditPanel> editPanelSupplier;
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private boolean searchButton;
 		private boolean addButton;
@@ -283,13 +234,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		private DefaultBuilder(EntitySearchModel searchModel, Value<Entity> linkedValue) {
 			super(linkedValue);
 			this.searchFieldBuilder = EntitySearchField.builder(searchModel);
-			this.editPanelSupplier = null;
 		}
 
 		private DefaultBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
-			this.searchFieldBuilder = EntitySearchField.builder(searchModel);
-			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+			this.searchFieldBuilder = EntitySearchField.builder(searchModel)
+							.editPanelSupplier(editPanelSupplier);
 		}
 
 		@Override
@@ -300,18 +250,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 		@Override
 		public Builder addButton(boolean addButton) {
-			if (editPanelSupplier == null) {
-				throw new IllegalStateException("A EditPanel supplier is required for the add button");
-			}
 			this.addButton = addButton;
 			return this;
 		}
 
 		@Override
 		public Builder editButton(boolean editButton) {
-			if (editPanelSupplier == null) {
-				throw new IllegalStateException("A EditPanelSupplier is required for the edit button");
-			}
 			this.editButton = editButton;
 			return this;
 		}
@@ -379,12 +323,6 @@ public final class EntitySearchFieldPanel extends JPanel {
 		@Override
 		public Builder limit(int limit) {
 			searchFieldBuilder.limit(limit);
-			return this;
-		}
-
-		@Override
-		public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
 			return this;
 		}
 

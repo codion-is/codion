@@ -44,10 +44,9 @@ public final class AlbumEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		initialFocusAttribute().set(Album.ARTIST_FK);
 
-		createForeignKeySearchFieldPanel(Album.ARTIST_FK, this::createArtistEditPanel)
+		createForeignKeySearchField(Album.ARTIST_FK)
 						.columns(15)
-						.addButton(true)
-						.editButton(true);
+						.editPanelSupplier(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
 		ComponentValue<Set<String>, JList<String>> tagList = createList(new DefaultListModel<String>())

@@ -44,6 +44,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static java.awt.ComponentOrientation.getOrientation;
@@ -132,6 +133,11 @@ final class EntityControls {
 	static JPanel createButtonPanel(JComponent centerComponent, boolean buttonFocusable,
 																	String borderLayoutConstraints, List<AbstractButton> buttons,
 																	Action... buttonActions) {
+		if (buttonActions.length == 0) {
+			return borderLayoutPanel()
+							.centerComponent(centerComponent)
+							.build();
+		}
 		Dimension preferredSize = centerComponent.getPreferredSize();
 
 		return Components.panel(new BorderLayout())

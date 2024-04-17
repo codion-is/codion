@@ -22,10 +22,8 @@ import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -33,7 +31,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -41,49 +38,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
-import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.component.EntityControls.*;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link EntityComboBox} based panel, with optional buttons for adding and editing items.
  */
 public final class EntityComboBoxPanel extends JPanel {
-
-	/**
-	 * The default keyboard shortcut keyStrokes.
-	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
-
-	/**
-	 * The available keyboard shortcuts.
-	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
-		/**
-		 * Displays a dialog for adding a new record.<br>
-		 * Default: INSERT
-		 */
-		ADD(keyStroke(VK_INSERT)),
-		/**
-		 * Displays a dialog for editing the selected record.<br>
-		 * Default: CTRL-INSERT
-		 */
-		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
-
-		private final KeyStroke defaultKeystroke;
-
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
-			this.defaultKeystroke = defaultKeystroke;
-		}
-
-		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
-		}
-	}
 
 	private final EntityComboBox comboBox;
 	private final List<AbstractButton> buttons = new ArrayList<>(0);
@@ -92,12 +53,10 @@ public final class EntityComboBoxPanel extends JPanel {
 		comboBox = builder.createComboBox();
 		List<Action> actions = new ArrayList<>();
 		if (builder.addButton) {
-			actions.add(createAddControl(comboBox, builder.editPanelSupplier,
-							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get()));
+			comboBox.addControl().ifPresent(actions::add);
 		}
 		if (builder.editButton) {
-			actions.add(createEditControl(comboBox, builder.editPanelSupplier,
-							builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get()));
+			comboBox.editControl().ifPresent(actions::add);
 		}
 		setLayout(new BorderLayout());
 		add(createButtonPanel(comboBox, builder.buttonsFocusable, builder.buttonLocation,
@@ -167,13 +126,6 @@ public final class EntityComboBoxPanel extends JPanel {
 		Builder buttonLocation(String buttonLocation);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
-		 * @return this builder instance
-		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
-
-		/**
 		 * @param comboBoxPreferredWidth the preferred combo box width
 		 * @return this builder instance
 		 */
@@ -201,9 +153,7 @@ public final class EntityComboBoxPanel extends JPanel {
 
 	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
 
-		private final ComboBoxBuilder<Entity, EntityComboBox, ?> entityComboBoxBuilder;
-		private final Supplier<EntityEditPanel> editPanelSupplier;
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final EntityComboBox.Builder entityComboBoxBuilder;
 
 		private boolean addButton;
 		private boolean editButton;
@@ -212,8 +162,8 @@ public final class EntityComboBoxPanel extends JPanel {
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
-			this.entityComboBoxBuilder = EntityComboBox.builder(comboBoxModel);
-			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+			this.entityComboBoxBuilder = EntityComboBox.builder(comboBoxModel)
+							.editPanelSupplier(editPanelSupplier);
 		}
 
 		@Override
@@ -237,12 +187,6 @@ public final class EntityComboBoxPanel extends JPanel {
 		@Override
 		public Builder buttonLocation(String buttonLocation) {
 			this.buttonLocation = validateButtonLocation(buttonLocation);
-			return this;
-		}
-
-		@Override
-		public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
 			return this;
 		}
 

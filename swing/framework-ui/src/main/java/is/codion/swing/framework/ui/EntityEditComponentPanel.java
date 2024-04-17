@@ -769,14 +769,13 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a builder for foreign key combo boxes.
 	 * @param foreignKey the foreign key for which to build a combo box
-	 * @param <B> the builder type
 	 * @return a foreign key combo box builder
 	 */
-	protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(ForeignKey foreignKey) {
+	protected final EntityComboBox.Builder createForeignKeyComboBox(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
 		comboBoxModel.refresher().refreshFailedEvent().addDataListener(this::onException);
 
-		return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
+		return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
 						.preferredWidth(defaults.foreignKeyComboBoxPreferredWidth.get())
 						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
 						.onBuild(comboBox -> addValidator(foreignKey, comboBox));

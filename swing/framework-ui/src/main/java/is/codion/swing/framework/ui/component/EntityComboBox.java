@@ -31,15 +31,24 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import java.awt.event.FocusListener;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
+import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -51,16 +60,68 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName());
 
 	/**
-	 * Instantiates a new EntityComboBox
-	 * @param model the {@link EntityComboBoxModel}
+	 * The default keyboard shortcut keyStrokes.
 	 */
-	EntityComboBox(EntityComboBoxModel model) {
-		super(model);
+	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+
+	/**
+	 * The available keyboard shortcuts.
+	 * @see Builder#editPanelSupplier(Supplier)
+	 */
+	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+		/**
+		 * Displays a dialog for adding a new record.<br>
+		 * Default: INSERT
+		 */
+		ADD(keyStroke(VK_INSERT)),
+		/**
+		 * Displays a dialog for editing the selected record.<br>
+		 * Default: CTRL-INSERT
+		 */
+		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+
+		private final KeyStroke defaultKeystroke;
+
+		KeyboardShortcut(KeyStroke defaultKeystroke) {
+			this.defaultKeystroke = defaultKeystroke;
+		}
+
+		@Override
+		public KeyStroke defaultKeystroke() {
+			return defaultKeystroke;
+		}
+	}
+
+	private final Control addControl;
+	private final Control editControl;
+
+	private EntityComboBox(DefaultBuilder builder) {
+		super(builder.comboBoxModel());
+		addControl = createAddControl(builder.editPanelSupplier,
+						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get());
+		editControl = createEditControl(builder.editPanelSupplier,
+						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get());
 	}
 
 	@Override
 	public EntityComboBoxModel getModel() {
 		return (EntityComboBoxModel) super.getModel();
+	}
+
+	/**
+	 * @return a Control for inserting a new record, if one is available
+	 * @see Builder#editPanelSupplier(Supplier)
+	 */
+	public Optional<Control> addControl() {
+		return Optional.ofNullable(addControl);
+	}
+
+	/**
+	 * @return a Control for editing the selected record, if one is available
+	 * @see Builder#editPanelSupplier(Supplier)
+	 */
+	public Optional<Control> editControl() {
+		return Optional.ofNullable(editControl);
 	}
 
 	/**
@@ -175,10 +236,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	/**
 	 * Instantiates a new {@link EntityComboBox} builder
 	 * @param comboBoxModel the combo box model
-	 * @param <B> the builder type
 	 * @return a builder for a {@link EntityComboBox}
 	 */
-	public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(EntityComboBoxModel comboBoxModel) {
+	public static Builder builder(EntityComboBoxModel comboBoxModel) {
 		return builder(comboBoxModel, null);
 	}
 
@@ -186,12 +246,39 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * Instantiates a new {@link EntityComboBox} builder
 	 * @param comboBoxModel the combo box model
 	 * @param linkedValue the linked value
-	 * @param <B> the builder type
 	 * @return a builder for a {@link EntityComboBox}
 	 */
-	public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(EntityComboBoxModel comboBoxModel,
-																																																													Value<Entity> linkedValue) {
-		return new DefaultBuilder<>(comboBoxModel, linkedValue);
+	public static Builder builder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+		return new DefaultBuilder(comboBoxModel, linkedValue);
+	}
+
+	/**
+	 * Builds a {@link EntityComboBox} instance.
+	 * @see Builder#editPanelSupplier(Supplier)
+	 */
+	public interface Builder extends ComboBoxBuilder<Entity, EntityComboBox, Builder> {
+
+		/**
+		 * A edit panel supplier is required for the add and edit controls.
+		 * @param editPanelSupplier the edit panel supplier
+		 * @return this builder instance
+		 */
+		Builder editPanelSupplier(Supplier<EntityEditPanel> editPanelSupplier);
+
+		/**
+		 * @param keyboardShortcut the keyboard shortcut key
+		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @return this builder instance
+		 */
+		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+	}
+
+	private Control createAddControl(Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
+		return editPanelSupplier == null ? null : EntityControls.createAddControl(this, editPanelSupplier, keyStroke);
+	}
+
+	private Control createEditControl(Supplier<EntityEditPanel> editPanelSupplier, KeyStroke keyStroke) {
+		return editPanelSupplier == null ? null : EntityControls.createEditControl(this, editPanelSupplier, keyStroke);
 	}
 
 	private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
@@ -205,7 +292,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		};
 	}
 
-	private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
+	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
+
+		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+
+		private Supplier<EntityEditPanel> editPanelSupplier;
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
 			super(comboBoxModel, linkedValue);
@@ -213,7 +304,23 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 		@Override
 		protected EntityComboBox createComboBox() {
-			return new EntityComboBox((EntityComboBoxModel) comboBoxModel);
+			return new EntityComboBox(this);
+		}
+
+		@Override
+		public Builder editPanelSupplier(Supplier<EntityEditPanel> editPanelSupplier) {
+			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+			return this;
+		}
+
+		@Override
+		public Builder keyStroke(EntityComboBox.KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+			return this;
+		}
+
+		private EntityComboBoxModel comboBoxModel() {
+			return (EntityComboBoxModel) comboBoxModel;
 		}
 	}
 }

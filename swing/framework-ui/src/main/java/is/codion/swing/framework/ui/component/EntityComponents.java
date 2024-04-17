@@ -216,14 +216,13 @@ public class EntityComponents {
 	 * Creates a foreign key ComboBox builder based on the given foreign key.
 	 * @param foreignKey the foreign key
 	 * @param comboBoxModel the combo box model
-	 * @param <B> the builder type
 	 * @return a foreign key JComboBox builder
 	 */
-	public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
-																																																																		EntityComboBoxModel comboBoxModel) {
+	public final EntityComboBox.Builder foreignKeyComboBox(ForeignKey foreignKey,
+																												 EntityComboBoxModel comboBoxModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)
+		return EntityComboBox.builder(comboBoxModel)
 						.toolTipText(foreignKeyDefinition.description());
 	}
 
