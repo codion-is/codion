@@ -134,7 +134,7 @@ configure(project.frameworkModules) {
     }
 
     if (hasSonarqubeProperties()) {
-        sonarqube {
+        sonar {
             System.setProperty("sonar.host.url", "${sonarHostUrl}")
             System.setProperty("sonar.login", "${sonarLogin}")
             System.setProperty("sonar.password", "${sonarPassword}")
