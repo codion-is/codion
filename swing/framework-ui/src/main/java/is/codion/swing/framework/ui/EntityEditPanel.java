@@ -682,7 +682,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
 
-		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
+		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
@@ -819,8 +819,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Handles displaying confirmation messages for common actions to the user.
+	 * @see #NONE
 	 */
 	public interface Confirmer {
+
+		/**
+		 * A convenience instance indicating no confirmation is needed.
+		 */
+		Confirmer NONE = dialogOwner -> true;
 
 		/**
 		 * Returns true if the action is confirmed, presents an OK/Cancel confirm dialog to the user if required.
@@ -970,14 +976,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 
 			return parentOfType(EntityPanel.class, focusedComponent);
-		}
-	}
-
-	private static final class InsertConfirmer implements Confirmer {
-
-		@Override
-		public boolean confirm(JComponent dialogOwner) {
-			return true;
 		}
 	}
 

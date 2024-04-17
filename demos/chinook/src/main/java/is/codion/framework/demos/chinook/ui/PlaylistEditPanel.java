@@ -32,7 +32,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 final class PlaylistEditPanel extends EntityEditPanel {
 
 	PlaylistEditPanel(SwingEntityEditModel editModel) {
-		super(editModel, config -> config.updateConfirmer(entity -> true));
+		super(editModel, config -> config.updateConfirmer(Confirmer.NONE));
 	}
 
 	@Override

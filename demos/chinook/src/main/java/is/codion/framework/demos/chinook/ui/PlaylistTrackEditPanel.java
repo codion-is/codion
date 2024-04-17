@@ -34,7 +34,7 @@ final class PlaylistTrackEditPanel extends EntityEditPanel {
 	PlaylistTrackEditPanel(PlaylistTrackEditModel editModel) {
 		super(editModel, config -> config
 						// No confirmation needed when deleting
-						.deleteConfirmer(dialogOwner -> true));
+						.deleteConfirmer(Confirmer.NONE));
 		editModel.persist(PlaylistTrack.TRACK_FK).set(false);
 	}
 
