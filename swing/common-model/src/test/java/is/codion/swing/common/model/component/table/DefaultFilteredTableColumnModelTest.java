@@ -36,10 +36,10 @@ public class DefaultFilteredTableColumnModelTest {
 		FilteredTableColumnModel<Integer> testModel = createTestModel();
 		Collection<Object> hidden = new ArrayList<>();
 		Collection<Object> shown = new ArrayList<>();
-		Consumer<Integer> hideListener = hidden::add;
-		Consumer<Integer> showListener = shown::add;
-		testModel.columnHiddenEvent().addDataListener(hideListener);
-		testModel.columnShownEvent().addDataListener(showListener);
+		Consumer<Integer> hideConsumer = hidden::add;
+		Consumer<Integer> showConsumer = shown::add;
+		testModel.columnHiddenEvent().addConsumer(hideConsumer);
+		testModel.columnShownEvent().addConsumer(showConsumer);
 
 		assertEquals(1, testModel.getColumnCount());
 		assertNotNull(testModel.column(0));
@@ -50,8 +50,8 @@ public class DefaultFilteredTableColumnModelTest {
 		testModel.visible(0).set(true);
 		assertEquals(1, shown.size());
 
-		testModel.columnHiddenEvent().removeDataListener(hideListener);
-		testModel.columnShownEvent().removeDataListener(showListener);
+		testModel.columnHiddenEvent().removeConsumer(hideConsumer);
+		testModel.columnShownEvent().removeConsumer(showConsumer);
 
 		assertTrue(testModel.containsColumn(0));
 		assertFalse(testModel.containsColumn(1));

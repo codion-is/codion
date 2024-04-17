@@ -168,7 +168,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 			throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
 		}
 		detailModels.put(detailModelLink.detailModel(), detailModelLink);
-		detailModelLink.active().addDataListener(new ActiveDetailModelListener(detailModelLink));
+		detailModelLink.active().addConsumer(new ActiveDetailModelConsumer(detailModelLink));
 
 		return detailModelLink;
 	}
@@ -258,14 +258,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	private void bindEventsInternal() {
-		editModel.afterInsertEvent().addDataListener(this::onInsert);
-		editModel.afterUpdateEvent().addDataListener(this::onUpdate);
-		editModel.afterDeleteEvent().addDataListener(this::onDelete);
+		editModel.afterInsertEvent().addConsumer(this::onInsert);
+		editModel.afterUpdateEvent().addConsumer(this::onUpdate);
+		editModel.afterDeleteEvent().addConsumer(this::onDelete);
 		if (containsTableModel()) {
 			tableModel.selectionEvent().addListener(this::onMasterSelectionChanged);
 		}
 		else {
-			editModel.entityEvent().addDataListener(entity -> onMasterSelectionChanged());
+			editModel.entityEvent().addListener(this::onMasterSelectionChanged);
 		}
 	}
 
@@ -281,11 +281,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 		detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onDelete(deletedEntities));
 	}
 
-	private final class ActiveDetailModelListener implements Consumer<Boolean> {
+	private final class ActiveDetailModelConsumer implements Consumer<Boolean> {
 
 		private final DetailModelLink<?, ?, ?> detailModelLink;
 
-		private ActiveDetailModelListener(DetailModelLink<?, ?, ?> detailModelLink) {
+		private ActiveDetailModelConsumer(DetailModelLink<?, ?, ?> detailModelLink) {
 			this.detailModelLink = detailModelLink;
 		}
 

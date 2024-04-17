@@ -238,7 +238,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.activateEvent().addDataListener(detailController::activated);
+		detailPanel.activateEvent().addConsumer(detailController::activated);
 		detailPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(new ResizeHorizontally(detailPanel, true)));

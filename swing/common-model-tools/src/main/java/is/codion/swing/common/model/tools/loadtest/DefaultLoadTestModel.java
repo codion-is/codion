@@ -284,13 +284,13 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	private void bindEvents() {
-		loadTest.resultEvent().addDataListener(counter::addScenarioResults);
+		loadTest.resultEvent().addConsumer(counter::addScenarioResults);
 		loadTest.addShutdownListener(() -> {
 			applicationsRefreshScheduler.stop();
 			chartUpdateScheduler.stop();
 		});
-		chartUpdateSchedulerEnabled.addDataListener(new TaskSchedulerController(chartUpdateScheduler));
-		applicationsRefreshSchedulerEnabled.addDataListener(new TaskSchedulerController(applicationsRefreshScheduler));
+		chartUpdateSchedulerEnabled.addConsumer(new TaskSchedulerController(chartUpdateScheduler));
+		applicationsRefreshSchedulerEnabled.addConsumer(new TaskSchedulerController(applicationsRefreshScheduler));
 	}
 
 	private static double systemCpuLoad() {

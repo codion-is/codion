@@ -482,7 +482,7 @@ public final class CalendarPanel extends JPanel {
 
 	private State createDayState(int dayOfMonth) {
 		State dayState = State.state(dayValue.get().intValue() == dayOfMonth);
-		dayState.addDataListener(selected -> {
+		dayState.addConsumer(selected -> {
 			if (selected) {
 				dayValue.set(dayOfMonth);
 			}

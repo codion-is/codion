@@ -76,7 +76,7 @@ public class ValueTest {
 		Runnable listener = eventCounter::incrementAndGet;
 		assertTrue(valueObserver.addListener(listener));
 		assertFalse(valueObserver.addListener(listener));
-		valueObserver.addDataListener(data -> {
+		valueObserver.addConsumer(data -> {
 			if (eventCounter.get() != 2) {
 				assertNotNull(data);
 			}
@@ -276,11 +276,11 @@ public class ValueTest {
 	}
 
 	@Test
-	void valueAsDataListener() {
+	void valueAsConsumer() {
 		Value<Integer> value = Value.value();
 		Value<Integer> listeningValue = Value.value();
 
-		value.addDataListener(listeningValue);
+		value.addConsumer(listeningValue);
 		value.set(1);
 
 		assertEquals(1, listeningValue.get());
@@ -340,14 +340,14 @@ public class ValueTest {
 		Value<Integer> value = Value.value();
 		ValueObserver<Integer> observer = value.observer();
 		Runnable listener = () -> {};
-		Consumer<Integer> dataListener = integer -> {};
+		Consumer<Integer> consumer = integer -> {};
 		observer.addWeakListener(listener);
 		observer.addWeakListener(listener);
-		observer.addWeakDataListener(dataListener);
-		observer.addWeakDataListener(dataListener);
+		observer.addWeakConsumer(consumer);
+		observer.addWeakConsumer(consumer);
 		value.set(1);
 		observer.removeWeakListener(listener);
-		observer.removeWeakDataListener(dataListener);
+		observer.removeWeakConsumer(consumer);
 	}
 
 	@Test

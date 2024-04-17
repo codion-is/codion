@@ -142,7 +142,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 			Completion.enable(comboBox, completionMode);
 		}
 		if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
-			((FilteredComboBoxModel<T>) comboBoxModel).selectionEvent().addDataListener(new MoveCaretListener<>(comboBox));
+			((FilteredComboBoxModel<T>) comboBoxModel).selectionEvent().addConsumer(new MoveCaretToStart<>(comboBox));
 		}
 		if (renderer != null) {
 			comboBox.setRenderer(renderer);

@@ -49,63 +49,63 @@ public final class EntityEditEvents {
 	private EntityEditEvents() {}
 
 	/**
-	 * Adds an insert listener, notified each time entities of the given type are inserted.
-	 * Note that you have to keep a live reference to the listener instance,
+	 * Adds an insert consumer, notified each time entities of the given type are inserted.
+	 * Note that you have to keep a live reference to the consumer instance,
 	 * otherwise it will be garbage collected, due to a weak reference.
 	 * @param entityType the type of entity to listen for
-	 * @param listener the listener
+	 * @param consumer the consumer
 	 */
-	public static void addInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-		EDIT_LISTENER.addInsertListener(entityType, listener);
+	public static void addInsertConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+		EDIT_LISTENER.addInsertConsumer(entityType, consumer);
 	}
 
 	/**
-	 * Adds an update listener, notified each time entities of the given type are updated.
-	 * Note that you have to keep a live reference to the listener instance,
+	 * Adds an update consumer, notified each time entities of the given type are updated.
+	 * Note that you have to keep a live reference to the consumer instance,
 	 * otherwise it will be garbage collected, due to a weak reference.
 	 * @param entityType the type of entity to listen for
-	 * @param listener the listener
+	 * @param consumer the consumer
 	 */
-	public static void addUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
-		EDIT_LISTENER.addUpdateListener(entityType, listener);
+	public static void addUpdateConsumer(EntityType entityType, Consumer<Map<Entity.Key, Entity>> consumer) {
+		EDIT_LISTENER.addUpdateConsumer(entityType, consumer);
 	}
 
 	/**
-	 * Adds a delete listener, notified each time entities of the given type are deleted.
-	 * Note that you have to keep a live reference to the listener instance,
+	 * Adds a delete consumer, notified each time entities of the given type are deleted.
+	 * Note that you have to keep a live reference to the consumer instance,
 	 * otherwise it will be garbage collected, due to a weak reference.
 	 * @param entityType the type of entity to listen for
-	 * @param listener the listener
+	 * @param consumer the consumer
 	 */
-	public static void addDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-		EDIT_LISTENER.addDeleteListener(entityType, listener);
+	public static void addDeleteConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+		EDIT_LISTENER.addDeleteConsumer(entityType, consumer);
 	}
 
 	/**
-	 * Removes the given listener
+	 * Removes the given consumer
 	 * @param entityType the entityType
-	 * @param listener the listener to remove
+	 * @param consumer the consumer to remove
 	 */
-	public static void removeInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-		EDIT_LISTENER.removeInsertListener(entityType, listener);
+	public static void removeInsertConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+		EDIT_LISTENER.removeInsertConsumer(entityType, consumer);
 	}
 
 	/**
-	 * Removes the given listener
+	 * Removes the given consumer
 	 * @param entityType the entityType
-	 * @param listener the listener to remove
+	 * @param consumer the consumer to remove
 	 */
-	public static void removeUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
-		EDIT_LISTENER.removeUpdateListener(entityType, listener);
+	public static void removeUpdateConsumer(EntityType entityType, Consumer<Map<Entity.Key, Entity>> consumer) {
+		EDIT_LISTENER.removeUpdateConsumer(entityType, consumer);
 	}
 
 	/**
-	 * Removes the given listener
+	 * Removes the given consumer
 	 * @param entityType the entityType
-	 * @param listener the listener to remove
+	 * @param consumer the consumer to remove
 	 */
-	public static void removeDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-		EDIT_LISTENER.removeDeleteListener(entityType, listener);
+	public static void removeDeleteConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+		EDIT_LISTENER.removeDeleteConsumer(entityType, consumer);
 	}
 
 	/**
@@ -134,32 +134,32 @@ public final class EntityEditEvents {
 
 	private static final class EntityEditListener {
 
-		private final Map<EntityType, Listeners<Collection<Entity>>> insertListeners = new ConcurrentHashMap<>();
-		private final Map<EntityType, Listeners<Map<Entity.Key, Entity>>> updateListeners = new ConcurrentHashMap<>();
-		private final Map<EntityType, Listeners<Collection<Entity>>> deleteListeners = new ConcurrentHashMap<>();
+		private final Map<EntityType, Consumers<Collection<Entity>>> insertConsumers = new ConcurrentHashMap<>();
+		private final Map<EntityType, Consumers<Map<Entity.Key, Entity>>> updateConsumers = new ConcurrentHashMap<>();
+		private final Map<EntityType, Consumers<Collection<Entity>>> deleteConsumers = new ConcurrentHashMap<>();
 
-		private void addInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-			insertListeners(entityType).addDataListener(listener);
+		private void addInsertConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+			insertConsumers(entityType).addConsumer(consumer);
 		}
 
-		private void removeInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-			insertListeners(entityType).removeDataListener(listener);
+		private void removeInsertConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+			insertConsumers(entityType).removeConsumer(consumer);
 		}
 
-		private void addUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
-			updateListeners(entityType).addDataListener(listener);
+		private void addUpdateConsumer(EntityType entityType, Consumer<Map<Entity.Key, Entity>> consumer) {
+			updateConsumers(entityType).addConsumer(consumer);
 		}
 
-		private void removeUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
-			updateListeners(entityType).removeDataListener(listener);
+		private void removeUpdateConsumer(EntityType entityType, Consumer<Map<Entity.Key, Entity>> consumer) {
+			updateConsumers(entityType).removeConsumer(consumer);
 		}
 
-		private void addDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-			deleteListeners(entityType).addDataListener(listener);
+		private void addDeleteConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+			deleteConsumers(entityType).addConsumer(consumer);
 		}
 
-		private void removeDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
-			deleteListeners(entityType).removeDataListener(listener);
+		private void removeDeleteConsumer(EntityType entityType, Consumer<Collection<Entity>> consumer) {
+			deleteConsumers(entityType).removeConsumer(consumer);
 		}
 
 		private void notifyInserted(Collection<Entity> inserted) {
@@ -167,9 +167,9 @@ public final class EntityEditEvents {
 		}
 
 		private void notifyInserted(EntityType entityType, Collection<Entity> inserted) {
-			Listeners<Collection<Entity>> listeners = insertListeners.get(entityType);
-			if (listeners != null) {
-				listeners.onEvent(inserted);
+			Consumers<Collection<Entity>> consumers = insertConsumers.get(entityType);
+			if (consumers != null) {
+				consumers.onEvent(inserted);
 			}
 		}
 
@@ -181,9 +181,9 @@ public final class EntityEditEvents {
 		}
 
 		private void notifyUpdated(EntityType entityType, List<Map.Entry<Entity.Key, Entity>> updated) {
-			Listeners<Map<Entity.Key, Entity>> listeners = updateListeners.get(entityType);
-			if (listeners != null) {
-				listeners.onEvent(updated.stream()
+			Consumers<Map<Entity.Key, Entity>> consumers = updateConsumers.get(entityType);
+			if (consumers != null) {
+				consumers.onEvent(updated.stream()
 								.collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
 			}
 		}
@@ -193,55 +193,55 @@ public final class EntityEditEvents {
 		}
 
 		private void notifyDeleted(EntityType entityType, Collection<Entity> deleted) {
-			Listeners<Collection<Entity>> listeners = deleteListeners.get(entityType);
-			if (listeners != null) {
-				listeners.onEvent(deleted);
+			Consumers<Collection<Entity>> consumers = deleteConsumers.get(entityType);
+			if (consumers != null) {
+				consumers.onEvent(deleted);
 			}
 		}
 
-		private Listeners<Collection<Entity>> insertListeners(EntityType entityType) {
-			return insertListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
+		private Consumers<Collection<Entity>> insertConsumers(EntityType entityType) {
+			return insertConsumers.computeIfAbsent(requireNonNull(entityType), type -> new Consumers<>());
 		}
 
-		private Listeners<Map<Entity.Key, Entity>> updateListeners(EntityType entityType) {
-			return updateListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
+		private Consumers<Map<Entity.Key, Entity>> updateConsumers(EntityType entityType) {
+			return updateConsumers.computeIfAbsent(requireNonNull(entityType), type -> new Consumers<>());
 		}
 
-		private Listeners<Collection<Entity>> deleteListeners(EntityType entityType) {
-			return deleteListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
+		private Consumers<Collection<Entity>> deleteConsumers(EntityType entityType) {
+			return deleteConsumers.computeIfAbsent(requireNonNull(entityType), type -> new Consumers<>());
 		}
 
-		private static final class Listeners<T> {
+		private static final class Consumers<T> {
 
-			private final List<WeakReference<Consumer<T>>> listenerReferences = new ArrayList<>();
+			private final List<WeakReference<Consumer<T>>> consumerReferences = new ArrayList<>();
 
 			private synchronized void onEvent(T data) {
 				requireNonNull(data);
-				Iterator<WeakReference<Consumer<T>>> iterator = listenerReferences.iterator();
+				Iterator<WeakReference<Consumer<T>>> iterator = consumerReferences.iterator();
 				while (iterator.hasNext()) {
-					Consumer<T> listener = iterator.next().get();
-					if (listener == null) {
+					Consumer<T> consumer = iterator.next().get();
+					if (consumer == null) {
 						iterator.remove();
 					}
 					else {
-						listener.accept(data);
+						consumer.accept(data);
 					}
 				}
 			}
 
-			private synchronized void addDataListener(Consumer<T> listener) {
-				requireNonNull(listener);
-				for (WeakReference<Consumer<T>> reference : listenerReferences) {
-					if (reference.get() == listener) {
+			private synchronized void addConsumer(Consumer<T> consumer) {
+				requireNonNull(consumer);
+				for (WeakReference<Consumer<T>> reference : consumerReferences) {
+					if (reference.get() == consumer) {
 						return;
 					}
 				}
-				listenerReferences.add(new WeakReference<>(listener));
+				consumerReferences.add(new WeakReference<>(consumer));
 			}
 
-			private synchronized void removeDataListener(Consumer<T> listener) {
-				requireNonNull(listener);
-				listenerReferences.removeIf(reference -> reference.get() == null || reference.get() == listener);
+			private synchronized void removeConsumer(Consumer<T> consumer) {
+				requireNonNull(consumer);
+				consumerReferences.removeIf(reference -> reference.get() == null || reference.get() == consumer);
 			}
 		}
 	}

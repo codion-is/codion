@@ -50,7 +50,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private Event<T> changeEvent;
 	private Set<Validator<T>> validators;
 	private Map<Value<T>, ValueLink<T>> linkedValues;
-	private Consumer<T> originalValueListener;
+	private Consumer<T> originalValueConsumer;
 	private ValueObserver<T> observer;
 
 	protected AbstractValue() {
@@ -127,14 +127,14 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean addDataListener(Consumer<? super T> listener) {
-		return changeEvent().addDataListener(listener);
+	public final boolean addConsumer(Consumer<? super T> consumer) {
+		return changeEvent().addConsumer(consumer);
 	}
 
 	@Override
-	public final boolean removeDataListener(Consumer<? super T> listener) {
+	public final boolean removeConsumer(Consumer<? super T> consumer) {
 		if (changeEvent != null) {
-			return changeEvent.removeDataListener(listener);
+			return changeEvent.removeConsumer(consumer);
 		}
 
 		return false;
@@ -155,14 +155,14 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean addWeakDataListener(Consumer<? super T> listener) {
-		return changeEvent().addWeakDataListener(listener);
+	public final boolean addWeakConsumer(Consumer<? super T> consumer) {
+		return changeEvent().addWeakConsumer(consumer);
 	}
 
 	@Override
-	public final boolean removeWeakDataListener(Consumer<? super T> listener) {
+	public final boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		if (changeEvent != null) {
-			return changeEvent.removeWeakDataListener(listener);
+			return changeEvent.removeWeakConsumer(consumer);
 		}
 
 		return false;
@@ -194,18 +194,18 @@ public abstract class AbstractValue<T> implements Value<T> {
 	@Override
 	public final void link(ValueObserver<T> originalValue) {
 		requireNonNull(originalValue);
-		if (originalValueListener == null) {
-			originalValueListener = new OriginalValueListener();
+		if (originalValueConsumer == null) {
+			originalValueConsumer = new OriginalValueConsumer();
 		}
 		set(originalValue.get());
-		originalValue.addDataListener(originalValueListener);
+		originalValue.addConsumer(originalValueConsumer);
 	}
 
 	@Override
 	public final void unlink(ValueObserver<T> originalValue) {
 		requireNonNull(originalValue);
-		if (originalValueListener != null) {
-			originalValue.removeDataListener(originalValueListener);
+		if (originalValueConsumer != null) {
+			originalValue.removeConsumer(originalValueConsumer);
 		}
 	}
 
@@ -280,7 +280,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 		return changeEvent;
 	}
 
-	private final class OriginalValueListener implements Consumer<T> {
+	private final class OriginalValueConsumer implements Consumer<T> {
 
 		@Override
 		public void accept(T value) {

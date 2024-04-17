@@ -849,14 +849,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	private void bindEvents() {
-		columnModel().columnHiddenEvent().addDataListener(this::onColumnHidden);
-		editEvents.addDataListener(new HandleEditEventsListener());
+		columnModel().columnHiddenEvent().addConsumer(this::onColumnHidden);
+		editEvents.addConsumer(new HandleEditEventsChanged());
 		conditionModel.conditionChangedEvent().addListener(() -> onConditionChanged(createSelect(conditionModel)));
-		editModel.afterInsertEvent().addDataListener(this::onInsert);
-		editModel.afterUpdateEvent().addDataListener(this::onUpdate);
-		editModel.afterDeleteEvent().addDataListener(this::onDelete);
-		editModel.entityEvent().addDataListener(this::onEntitySet);
-		selectionModel().selectedItemEvent().addDataListener(editModel::set);
+		editModel.afterInsertEvent().addConsumer(this::onInsert);
+		editModel.afterUpdateEvent().addConsumer(this::onUpdate);
+		editModel.afterDeleteEvent().addConsumer(this::onDelete);
+		editModel.entityEvent().addConsumer(this::onEntitySet);
+		selectionModel().selectedItemEvent().addConsumer(editModel::set);
 		addTableModelListener(this::onTableModelEvent);
 	}
 
@@ -1108,11 +1108,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		}
 	}
 
-	private final class HandleEditEventsListener implements Consumer<Boolean> {
+	private final class HandleEditEventsChanged implements Consumer<Boolean> {
 
 		@Override
-		public void accept(Boolean listen) {
-			if (listen) {
+		public void accept(Boolean handleEditEvents) {
+			if (handleEditEvents) {
 				addEditListeners();
 			}
 			else {
@@ -1122,12 +1122,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
 		private void addEditListeners() {
 			entityDefinition().foreignKeys().get().forEach(foreignKey ->
-							EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
+							EntityEditEvents.addUpdateConsumer(foreignKey.referencedType(), updateListener));
 		}
 
 		private void removeEditListeners() {
 			entityDefinition().foreignKeys().get().forEach(foreignKey ->
-							EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
+							EntityEditEvents.removeUpdateConsumer(foreignKey.referencedType(), updateListener));
 		}
 	}
 

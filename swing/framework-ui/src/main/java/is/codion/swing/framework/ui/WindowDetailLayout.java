@@ -97,7 +97,7 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.activateEvent().addDataListener(detailController::activated);
+		detailPanel.activateEvent().addConsumer(detailController::activated);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -172,7 +172,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		private DetailWindow(EntityPanel detailPanel) {
 			this.detailPanel = detailPanel;
 			panelState.addValidator(PANEL_STATE_VALIDATOR);
-			panelState.addDataListener(this::updateDetailState);
+			panelState.addConsumer(this::updateDetailState);
 		}
 
 		private void updateDetailState(PanelState panelState) {

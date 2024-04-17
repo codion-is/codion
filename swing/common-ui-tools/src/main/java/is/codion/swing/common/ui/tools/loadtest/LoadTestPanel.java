@@ -112,7 +112,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private LoadTestPanel(LoadTestModel<T> loadTestModel) {
 		this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
 		this.loadTest = loadTestModel.loadTest();
-		this.loadTestModel.applicationTableModel().refresher().refreshFailedEvent().addDataListener(this::displayException);
+		this.loadTestModel.applicationTableModel().refresher().refreshFailedEvent().addConsumer(this::displayException);
 		initializeUI();
 	}
 
@@ -189,7 +189,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
 		ItemRandomizerPanel<Scenario<T>> panel = itemRandomizerPanel(loadTest.scenarioChooser());
 		panel.setBorder(createTitledBorder("Usage scenarios"));
-		panel.selectedItemsEvent().addDataListener(this::onScenarioSelectionChanged);
+		panel.selectedItemsEvent().addConsumer(this::onScenarioSelectionChanged);
 
 		return panel;
 	}
@@ -277,7 +277,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.columns(USER_COLUMNS)
 						.editable(false)
 						.build();
-		loadTest.user().addDataListener(u -> usernameField.setText(u.username()));
+		loadTest.user().addConsumer(u -> usernameField.setText(u.username()));
 
 		return flexibleGridLayoutPanel(1, 3)
 						.add(new JLabel("User"))

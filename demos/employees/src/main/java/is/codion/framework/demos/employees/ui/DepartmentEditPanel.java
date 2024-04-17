@@ -47,7 +47,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 		createTextField(Department.LOCATION)
 						.columns(12);
 
-		editModel().exists().addDataListener(exists ->
+		editModel().exists().addConsumer(exists ->
 						initialFocusAttribute().set(exists ? Department.NAME : Department.DEPARTMENT_NO));
 
 		setLayout(borderLayout());

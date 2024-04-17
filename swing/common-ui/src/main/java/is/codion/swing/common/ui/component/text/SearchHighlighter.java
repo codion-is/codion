@@ -217,7 +217,7 @@ public final class SearchHighlighter {
 		searchStringValue.addListener(this::searchAndHighlightResults);
 		caseSensitiveState.addListener(this::searchAndHighlightResults);
 		textComponent.getDocument().addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
-		selectedSearchTextPosition.addDataListener(selectedSearchPosition -> {
+		selectedSearchTextPosition.addConsumer(selectedSearchPosition -> {
 			if (selectedSearchPosition != null) {
 				try {
 					textComponent.scrollRectToVisible(textComponent.modelToView(selectedSearchPosition));

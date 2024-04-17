@@ -91,13 +91,13 @@ final class DefaultStateObserver implements StateObserver {
 	}
 
 	@Override
-	public boolean addDataListener(Consumer<? super Boolean> listener) {
-		return eventObserver().addDataListener(listener);
+	public boolean addConsumer(Consumer<? super Boolean> consumer) {
+		return eventObserver().addConsumer(consumer);
 	}
 
 	@Override
-	public boolean removeDataListener(Consumer<? super Boolean> listener) {
-		return eventObserver().removeDataListener(listener);
+	public boolean removeConsumer(Consumer<? super Boolean> consumer) {
+		return eventObserver().removeConsumer(consumer);
 	}
 
 	@Override
@@ -111,13 +111,13 @@ final class DefaultStateObserver implements StateObserver {
 	}
 
 	@Override
-	public boolean addWeakDataListener(Consumer<? super Boolean> listener) {
-		return eventObserver().addWeakDataListener(listener);
+	public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
+		return eventObserver().addWeakConsumer(consumer);
 	}
 
 	@Override
-	public boolean removeWeakDataListener(Consumer<? super Boolean> listener) {
-		return eventObserver().removeWeakDataListener(listener);
+	public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
+		return eventObserver().removeWeakConsumer(consumer);
 	}
 
 	void notifyObservers(boolean newValue, boolean previousValue) {

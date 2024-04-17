@@ -30,7 +30,7 @@ import java.util.Collection;
  *
  * StateObserver observer = state.getObserver();
  *
- * observer.addDataListener(this::onStateChange);
+ * observer.addConsumer(this::onStateChange);
  *
  * state.set(true);
  * state.set(false);

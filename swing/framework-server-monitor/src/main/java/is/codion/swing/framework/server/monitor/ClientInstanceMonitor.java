@@ -138,7 +138,7 @@ public final class ClientInstanceMonitor {
 	}
 
 	private void bindEvents() {
-		loggingEnabled.addDataListener(this::setLoggingEnabled);
+		loggingEnabled.addConsumer(this::setLoggingEnabled);
 	}
 
 	private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {

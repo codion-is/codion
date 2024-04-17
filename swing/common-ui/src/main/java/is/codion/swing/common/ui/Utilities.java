@@ -126,7 +126,7 @@ public final class Utilities {
 		for (Action action : actions) {
 			if (action != null) {
 				action.setEnabled(enabledState.get());
-				enabledState.addDataListener(new EnableActionListener(action));
+				enabledState.addConsumer(new EnableAction(action));
 			}
 		}
 	}
@@ -142,7 +142,7 @@ public final class Utilities {
 		for (JComponent component : components) {
 			if (component != null) {
 				component.setEnabled(enabledState.get());
-				enabledState.addDataListener(new EnableComponentListener(component));
+				enabledState.addConsumer(new EnableComponent(component));
 			}
 		}
 	}
@@ -387,11 +387,11 @@ public final class Utilities {
 		}
 	}
 
-	private static final class EnableActionListener implements Consumer<Boolean> {
+	private static final class EnableAction implements Consumer<Boolean> {
 
 		private final Action action;
 
-		private EnableActionListener(Action action) {
+		private EnableAction(Action action) {
 			this.action = action;
 		}
 
@@ -406,11 +406,11 @@ public final class Utilities {
 		}
 	}
 
-	private static final class EnableComponentListener implements Consumer<Boolean> {
+	private static final class EnableComponent implements Consumer<Boolean> {
 
 		private final JComponent component;
 
-		private EnableComponentListener(JComponent component) {
+		private EnableComponent(JComponent component) {
 			this.component = component;
 		}
 

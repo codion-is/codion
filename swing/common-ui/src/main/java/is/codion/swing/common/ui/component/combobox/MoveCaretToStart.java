@@ -23,11 +23,11 @@ import javax.swing.text.JTextComponent;
 import java.awt.Component;
 import java.util.function.Consumer;
 
-final class MoveCaretListener<T> implements Consumer<T> {
+final class MoveCaretToStart<T> implements Consumer<T> {
 
 	private final JComboBox<?> comboBox;
 
-	MoveCaretListener(JComboBox<T> comboBox) {
+	MoveCaretToStart(JComboBox<T> comboBox) {
 		this.comboBox = comboBox;
 	}
 

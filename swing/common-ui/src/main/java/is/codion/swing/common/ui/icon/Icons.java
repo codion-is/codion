@@ -74,17 +74,17 @@ public interface Icons {
 	void iconColor(Color color);
 
 	/**
-	 * Adds a listener to the {@link #ICON_COLOR} property value,
+	 * Adds a consumer to the {@link #ICON_COLOR} property value,
 	 * dynamically changing the color of the icons in this instance.
 	 * @return this icons instance
 	 */
-	Icons enableIconColorListener();
+	Icons enableIconColorConsumer();
 
 	/**
-	 * Disables the dynamic color change listener
+	 * Disables the dynamic color change consumer
 	 * @return this icons instance
 	 */
-	Icons disableIconColorListener();
+	Icons disableIconColorConsumer();
 
 	/**
 	 * @return a new {@link Icons} instance

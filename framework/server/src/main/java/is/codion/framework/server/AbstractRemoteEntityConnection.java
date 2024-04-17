@@ -158,8 +158,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 		return connectionHandler.active();
 	}
 
-	final void addDisconnectListener(Consumer<AbstractRemoteEntityConnection> listener) {
-		disconnectedEvent.addDataListener(listener);
+	final void addDisconnectConsumer(Consumer<AbstractRemoteEntityConnection> consumer) {
+		disconnectedEvent.addConsumer(consumer);
 	}
 
 	static int requestsPerSecond() {

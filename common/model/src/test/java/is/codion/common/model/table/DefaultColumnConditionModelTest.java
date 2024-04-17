@@ -42,11 +42,11 @@ public class DefaultColumnConditionModelTest {
 	final AtomicInteger operatorCounter = new AtomicInteger();
 	final AtomicInteger enabledCounter = new AtomicInteger();
 
-	final Consumer<String> equalToListener = value -> equalToCounter.incrementAndGet();
-	final Consumer<String> upperBoundListener = value -> upperBoundCounter.incrementAndGet();
-	final Consumer<String> lowerBoundListener = value -> lowerBoundCounter.incrementAndGet();
+	final Consumer<String> equalToConsumer = value -> equalToCounter.incrementAndGet();
+	final Consumer<String> upperBoundConsumer = value -> upperBoundCounter.incrementAndGet();
+	final Consumer<String> lowerBoundConsumer = value -> lowerBoundCounter.incrementAndGet();
 	final Runnable conditionChangedListener = conditionChangedCounter::incrementAndGet;
-	final Consumer<Operator> operatorListener = data -> operatorCounter.incrementAndGet();
+	final Consumer<Operator> operatorConsumer = data -> operatorCounter.incrementAndGet();
 	final Runnable enabledListener = enabledCounter::incrementAndGet;
 
 	@Test
@@ -56,9 +56,9 @@ public class DefaultColumnConditionModelTest {
 		model.automaticWildcard().set(AutomaticWildcard.NONE);
 
 		model.autoEnable().set(false);
-		model.equalValues().value().addDataListener(equalToListener);
-		model.upperBoundValue().addDataListener(upperBoundListener);
-		model.lowerBoundValue().addDataListener(lowerBoundListener);
+		model.equalValues().value().addConsumer(equalToConsumer);
+		model.upperBoundValue().addConsumer(upperBoundConsumer);
+		model.lowerBoundValue().addConsumer(lowerBoundConsumer);
 		model.conditionChangedEvent().addListener(conditionChangedListener);
 
 		model.setUpperBound("hello");
@@ -93,9 +93,9 @@ public class DefaultColumnConditionModelTest {
 
 		model.clear();
 
-		model.equalValues().value().removeDataListener(equalToListener);
-		model.upperBoundValue().removeDataListener(upperBoundListener);
-		model.lowerBoundValue().removeDataListener(lowerBoundListener);
+		model.equalValues().value().removeConsumer(equalToConsumer);
+		model.upperBoundValue().removeConsumer(upperBoundConsumer);
+		model.lowerBoundValue().removeConsumer(lowerBoundConsumer);
 		model.conditionChangedEvent().removeListener(conditionChangedListener);
 	}
 
@@ -115,7 +115,7 @@ public class DefaultColumnConditionModelTest {
 		ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
 						.build();
-		model.operator().addDataListener(operatorListener);
+		model.operator().addConsumer(operatorConsumer);
 		assertEquals(Operator.EQUAL, model.operator().get());
 		model.operator().set(Operator.LESS_THAN_OR_EQUAL);
 		assertEquals(1, operatorCounter.get());
@@ -124,7 +124,7 @@ public class DefaultColumnConditionModelTest {
 		assertEquals(Operator.EQUAL, model.operator().get());
 		model.operator().set(Operator.NOT_BETWEEN);
 		assertEquals(3, operatorCounter.get());
-		model.operator().removeDataListener(operatorListener);
+		model.operator().removeConsumer(operatorConsumer);
 
 		assertThrows(IllegalArgumentException.class, () -> model.operator().set(Operator.BETWEEN));
 

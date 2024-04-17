@@ -235,7 +235,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						searchStringModified.set(!searchStringRepresentEntities()));
 		separator.addListener(this::reset);
 		entities.addListener(this::reset);
-		entities.addDataListener(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()));
+		entities.addConsumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()));
 	}
 
 	private boolean searchStringRepresentEntities() {

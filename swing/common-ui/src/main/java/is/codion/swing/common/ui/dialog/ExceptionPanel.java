@@ -154,7 +154,7 @@ final class ExceptionPanel extends JPanel {
 						.condition(WHEN_IN_FOCUSED_WINDOW)
 						.action(Control.control(this::closeDialog))
 						.enable(this);
-		showDetailState.addDataListener(this::showDetails);
+		showDetailState.addConsumer(this::showDetails);
 	}
 
 	private void showDetails(boolean showDetails) {

@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultStateCombination implements State.Combination {
 
 	private final DefaultStateObserver observer;
-	private final List<StateCombinationListener> stateListeners = new ArrayList<>();
+	private final List<StateCombinationConsumer> stateListeners = new ArrayList<>();
 	private final Conjunction conjunction;
 
 	DefaultStateCombination(Conjunction conjunction, StateObserver... states) {
@@ -53,7 +53,7 @@ final class DefaultStateCombination implements State.Combination {
 		synchronized (observer) {
 			StringBuilder stringBuilder = new StringBuilder("Combination");
 			stringBuilder.append(toString(conjunction)).append(observer);
-			for (StateCombinationListener listener : stateListeners) {
+			for (StateCombinationConsumer listener : stateListeners) {
 				stringBuilder.append(", ").append(listener.state);
 			}
 
@@ -70,9 +70,9 @@ final class DefaultStateCombination implements State.Combination {
 	public void add(StateObserver state) {
 		requireNonNull(state, "state");
 		synchronized (observer) {
-			if (!findListener(state).isPresent()) {
+			if (!findConsumer(state).isPresent()) {
 				boolean previousValue = get();
-				stateListeners.add(new StateCombinationListener(state));
+				stateListeners.add(new StateCombinationConsumer(state));
 				observer.notifyObservers(get(), previousValue);
 			}
 		}
@@ -83,9 +83,9 @@ final class DefaultStateCombination implements State.Combination {
 		requireNonNull(state, "state");
 		synchronized (observer) {
 			boolean previousValue = get();
-			findListener(state).ifPresent(listener -> {
-				state.removeDataListener(listener);
-				stateListeners.remove(listener);
+			findConsumer(state).ifPresent(consumer -> {
+				state.removeConsumer(consumer);
+				stateListeners.remove(consumer);
 				observer.notifyObservers(get(), previousValue);
 			});
 		}
@@ -129,13 +129,13 @@ final class DefaultStateCombination implements State.Combination {
 	}
 
 	@Override
-	public boolean addDataListener(Consumer<? super Boolean> listener) {
-		return observer.addDataListener(listener);
+	public boolean addConsumer(Consumer<? super Boolean> consumer) {
+		return observer.addConsumer(consumer);
 	}
 
 	@Override
-	public boolean removeDataListener(Consumer<? super Boolean> listener) {
-		return observer.removeDataListener(listener);
+	public boolean removeConsumer(Consumer<? super Boolean> consumer) {
+		return observer.removeConsumer(consumer);
 	}
 
 	@Override
@@ -149,17 +149,17 @@ final class DefaultStateCombination implements State.Combination {
 	}
 
 	@Override
-	public boolean addWeakDataListener(Consumer<? super Boolean> listener) {
-		return observer.addWeakDataListener(listener);
+	public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
+		return observer.addWeakConsumer(consumer);
 	}
 
 	@Override
-	public boolean removeWeakDataListener(Consumer<? super Boolean> listener) {
-		return observer.removeWeakDataListener(listener);
+	public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
+		return observer.removeWeakConsumer(consumer);
 	}
 
 	private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {
-		for (StateCombinationListener listener : stateListeners) {
+		for (StateCombinationConsumer listener : stateListeners) {
 			StateObserver state = listener.state;
 			boolean value = state.equals(exclude) ? excludeReplacement : state.get();
 			if (conjunction == Conjunction.AND) {
@@ -175,18 +175,18 @@ final class DefaultStateCombination implements State.Combination {
 		return conjunction == Conjunction.AND;
 	}
 
-	private Optional<StateCombinationListener> findListener(StateObserver state) {
+	private Optional<StateCombinationConsumer> findConsumer(StateObserver state) {
 		return stateListeners.stream()
 						.filter(listener -> listener.state.equals(state))
 						.findFirst();
 	}
 
-	private final class StateCombinationListener implements Consumer<Boolean> {
+	private final class StateCombinationConsumer implements Consumer<Boolean> {
 		private final StateObserver state;
 
-		private StateCombinationListener(StateObserver state) {
+		private StateCombinationConsumer(StateObserver state) {
 			this.state = state;
-			this.state.addDataListener(this);
+			this.state.addConsumer(this);
 		}
 
 		@Override

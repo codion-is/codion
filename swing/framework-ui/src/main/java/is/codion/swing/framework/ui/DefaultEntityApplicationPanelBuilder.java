@@ -430,7 +430,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 		if (frameTitleProvider != null) {
 			frame.setTitle(frameTitleProvider.get());
-			frameTitleProvider.addDataListener(new FrameTitleListener(frame));
+			frameTitleProvider.addConsumer(new FrameTitleConsumer(frame));
 		}
 		else {
 			frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));
@@ -698,11 +698,11 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 	}
 
-	private static final class FrameTitleListener implements Consumer<String> {
+	private static final class FrameTitleConsumer implements Consumer<String> {
 
 		private final JFrame frame;
 
-		public FrameTitleListener(JFrame frame) {
+		public FrameTitleConsumer(JFrame frame) {
 			this.frame = frame;
 		}
 

@@ -527,7 +527,7 @@ public final class EntityDialogs {
 																	boolean singleSelection) {
 			this.dialog = new JDialog(owner, titleObserver == null ? null : titleObserver.get());
 			if (titleObserver != null) {
-				titleObserver.addDataListener(dialog::setTitle);
+				titleObserver.addConsumer(dialog::setTitle);
 			}
 			if (icon != null) {
 				dialog.setIconImage(icon.getImage());
@@ -633,8 +633,8 @@ public final class EntityDialogs {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			Consumer<Collection<Entity>> insertListener = new InsertListener(disposeDialog);
-			editModel.afterInsertEvent().addDataListener(insertListener);
+			Consumer<Collection<Entity>> insertConsumer = new InsertConsumer(disposeDialog);
+			editModel.afterInsertEvent().addConsumer(insertConsumer);
 			Dialogs.actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
@@ -647,14 +647,14 @@ public final class EntityDialogs {
 											.definition(editModel.entityType()).caption())
 							.onShown(new ClearAndRequestFocus(editPanel))
 							.show();
-			editModel.afterInsertEvent().removeDataListener(insertListener);
+			editModel.afterInsertEvent().removeConsumer(insertConsumer);
 		}
 
-		private final class InsertListener implements Consumer<Collection<Entity>> {
+		private final class InsertConsumer implements Consumer<Collection<Entity>> {
 
 			private final Runnable disposeDialog;
 
-			private InsertListener(Runnable disposeDialog) {
+			private InsertConsumer(Runnable disposeDialog) {
 				this.disposeDialog = disposeDialog;
 			}
 
@@ -708,8 +708,8 @@ public final class EntityDialogs {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener(disposeDialog);
-			editModel.afterUpdateEvent().addDataListener(updateListener);
+			Consumer<Map<Entity.Key, Entity>> updateConsumer = new UpdateConsumer(disposeDialog);
+			editModel.afterUpdateEvent().addConsumer(updateConsumer);
 			Dialogs.actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
@@ -722,7 +722,7 @@ public final class EntityDialogs {
 											.definition(editModel.entityType()).caption())
 							.onShown(new RequestFocus(editPanel))
 							.show();
-			editModel.afterUpdateEvent().removeDataListener(updateListener);
+			editModel.afterUpdateEvent().removeConsumer(updateConsumer);
 		}
 
 		private void initializeEditModel(SwingEntityEditModel editModel) {
@@ -734,11 +734,11 @@ public final class EntityDialogs {
 			}
 		}
 
-		private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
+		private final class UpdateConsumer implements Consumer<Map<Entity.Key, Entity>> {
 
 			private final Runnable disposeDialog;
 
-			private UpdateListener(Runnable disposeDialog) {
+			private UpdateConsumer(Runnable disposeDialog) {
 				this.disposeDialog = disposeDialog;
 			}
 

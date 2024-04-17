@@ -85,7 +85,7 @@ public final class ClientUserMonitor {
 		this.server = requireNonNull(server);
 		this.clientMonitor = new ClientMonitor(server);
 		this.idleConnectionTimeoutValue = Value.value(getIdleConnectionTimeout(), 0);
-		this.idleConnectionTimeoutValue.addDataListener(this::setIdleConnectionTimeout);
+		this.idleConnectionTimeoutValue.addConsumer(this::setIdleConnectionTimeout);
 		this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
 						.interval(updateRate, TimeUnit.SECONDS)
 						.start();

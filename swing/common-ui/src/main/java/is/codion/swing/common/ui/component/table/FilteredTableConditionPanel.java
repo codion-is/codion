@@ -65,9 +65,9 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 						createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
-		advanced.addDataListener(this::onAdvancedChanged);
+		advanced.addConsumer(this::onAdvancedChanged);
 		componentPanel.components().values().forEach(panel ->
-						panel.focusGainedEvent().addDataListener(focusGainedEvent));
+						panel.focusGainedEvent().addConsumer(focusGainedEvent));
 	}
 
 	/**

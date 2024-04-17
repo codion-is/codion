@@ -37,10 +37,10 @@ final class DefaultIcons implements Icons {
 
 	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
 
-	private final OnIconColorChangedListener onIconColorChangedListener = new OnIconColorChangedListener();
+	private final OnIconColorChanged onIconColorChanged = new OnIconColorChanged();
 
 	static {
-		UIManager.addPropertyChangeListener(new OnLookAndFeelChangedListener());
+		UIManager.addPropertyChangeListener(new OnLookAndFeelChanged());
 	}
 
 	@Override
@@ -71,18 +71,18 @@ final class DefaultIcons implements Icons {
 	}
 
 	@Override
-	public Icons enableIconColorListener() {
-		ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
+	public Icons enableIconColorConsumer() {
+		ICON_COLOR.addWeakConsumer(onIconColorChanged);
 		return this;
 	}
 
 	@Override
-	public Icons disableIconColorListener() {
-		ICON_COLOR.removeWeakDataListener(onIconColorChangedListener);
+	public Icons disableIconColorConsumer() {
+		ICON_COLOR.removeWeakConsumer(onIconColorChanged);
 		return this;
 	}
 
-	private final class OnIconColorChangedListener implements Consumer<Color> {
+	private final class OnIconColorChanged implements Consumer<Color> {
 
 		@Override
 		public void accept(Color color) {
@@ -92,7 +92,7 @@ final class DefaultIcons implements Icons {
 		}
 	}
 
-	private static final class OnLookAndFeelChangedListener implements PropertyChangeListener {
+	private static final class OnLookAndFeelChanged implements PropertyChangeListener {
 
 		private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 

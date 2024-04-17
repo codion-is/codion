@@ -56,7 +56,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	CityEditPanel(CityTableModel tableModel) {
 		super(tableModel.editModel());
 		this.mapKit = Maps.createMapKit();
-		tableModel.addDisplayLocationListener(this::displayLocation);
+		tableModel.addDisplayLocationConsumer(this::displayLocation);
 	}
 
 	@Override

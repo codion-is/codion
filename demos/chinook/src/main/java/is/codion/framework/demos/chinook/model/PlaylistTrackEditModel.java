@@ -33,7 +33,7 @@ public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 	public PlaylistTrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(PlaylistTrack.TYPE, connectionProvider);
 		// Filter out tracks already in the current playlist
-		valueEvent(PlaylistTrack.PLAYLIST_FK).addDataListener(this::filterPlaylistTracks);
+		valueEvent(PlaylistTrack.PLAYLIST_FK).addConsumer(this::filterPlaylistTracks);
 	}
 
 	private void filterPlaylistTracks(Entity playlist) {

@@ -157,7 +157,7 @@ final class LoginPanel extends JPanel {
 										.preferredSize(passwordField.getPreferredSize())
 										.build(), PROGRESS_CARD)
 						.build();
-		validating.addDataListener(isValidating ->
+		validating.addConsumer(isValidating ->
 						passwordProgressLayout.show(passwordProgressPanel, isValidating ? PROGRESS_CARD : PASSWORD_CARD));
 
 		return passwordProgressPanel;
@@ -203,7 +203,7 @@ final class LoginPanel extends JPanel {
 
 	private static State usernameSpecifiedState(Value<String> usernameValue) {
 		State usernameSpecified = State.state(usernameValue.isNotNull());
-		usernameValue.addDataListener(username -> usernameSpecified.set(username != null));
+		usernameValue.addConsumer(username -> usernameSpecified.set(username != null));
 
 		return usernameSpecified;
 	}

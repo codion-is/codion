@@ -62,11 +62,11 @@ public final class EntitySearchConditionModel extends AbstractForeignKeyConditio
 	}
 
 	private void bindSearchModelEvents() {
-		entitySearchModel.entities().addDataListener(new EntitiesListener());
-		equalValues().addDataListener(new EqualValuesListener());
+		entitySearchModel.entities().addConsumer(new SetEqualValues());
+		equalValues().addConsumer(new SetSearchModelEntities());
 	}
 
-	private final class EntitiesListener implements Consumer<Set<Entity>> {
+	private final class SetEqualValues implements Consumer<Set<Entity>> {
 
 		@Override
 		public void accept(Set<Entity> selectedEntities) {
@@ -76,7 +76,7 @@ public final class EntitySearchConditionModel extends AbstractForeignKeyConditio
 		}
 	}
 
-	private final class EqualValuesListener implements Consumer<Set<Entity>> {
+	private final class SetSearchModelEntities implements Consumer<Set<Entity>> {
 
 		@Override
 		public void accept(Set<Entity> equalValues) {

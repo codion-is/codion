@@ -97,7 +97,7 @@ public final class ApplicationModel {
 
 	public ApplicationModel() {
 		setDefaultUncaughtExceptionHandler(this::exceptionHandler);
-		values.forEach(value -> value.addDataListener(this::setMessage));
+		values.forEach(value -> value.addConsumer(this::setMessage));
 	}
 
 	public void clear() {

@@ -1044,9 +1044,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			afterInsert.addListener(insertUpdateOrDelete);
 			afterUpdate.addListener(insertUpdateOrDelete);
 			afterDelete.addListener(insertUpdateOrDelete);
-			afterInsert.addDataListener(new NotifyInserted());
-			afterUpdate.addDataListener(new NotifyUpdated());
-			afterDelete.addDataListener(new NotifyDeleted());
+			afterInsert.addConsumer(new NotifyInserted());
+			afterUpdate.addConsumer(new NotifyUpdated());
+			afterDelete.addConsumer(new NotifyDeleted());
 			validator.addListener(states::updateValidState);
 			modifiedPredicate.addListener(states::updateModifiedState);
 			existsPredicate.addListener(states::updateExistsState);

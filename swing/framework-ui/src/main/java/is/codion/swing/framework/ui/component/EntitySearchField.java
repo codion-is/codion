@@ -209,7 +209,7 @@ public final class EntitySearchField extends HintTextField {
 	private SingleSelectionValue singleSelectionValue;
 	private MultiSelectionValue multiSelectionValue;
 	private ProgressWorker<List<Entity>, ?> searchWorker;
-	private Consumer<Boolean> searchIndicatorListener;
+	private Consumer<Boolean> searchIndicatorConsumer;
 	private Control searchControl;
 
 	private Color backgroundColor;
@@ -258,8 +258,8 @@ public final class EntitySearchField extends HintTextField {
 		if (model != null) {
 			configureColors();
 		}
-		if (searchIndicatorListener instanceof ProgressBarWhileSearching) {
-			((ProgressBarWhileSearching) searchIndicatorListener).progressBar.updateUI();
+		if (searchIndicatorConsumer instanceof ProgressBarWhileSearching) {
+			((ProgressBarWhileSearching) searchIndicatorConsumer).progressBar.updateUI();
 		}
 	}
 
@@ -464,7 +464,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void bindEvents() {
 		new SearchStringValue(this).link(model.searchString());
-		model.searchString().addDataListener(searchString -> updateColors());
+		model.searchString().addListener(this::updateColors);
 		model.entities().addListener(() -> setCaretPosition(0));
 		searchIndicator.addListener(this::updateSearchIndicator);
 		addFocusListener(new SearchFocusListener());
@@ -473,14 +473,14 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void updateSearchIndicator() {
-		if (searchIndicatorListener != null) {
-			searching.removeDataListener(searchIndicatorListener);
+		if (searchIndicatorConsumer != null) {
+			searching.removeConsumer(searchIndicatorConsumer);
 		}
-		searchIndicatorListener = createSearchIndicatorListener();
-		searching.addDataListener(searchIndicatorListener);
+		searchIndicatorConsumer = createSearchIndicatorConsumer();
+		searching.addConsumer(searchIndicatorConsumer);
 	}
 
-	private Consumer<Boolean> createSearchIndicatorListener() {
+	private Consumer<Boolean> createSearchIndicatorConsumer() {
 		switch (searchIndicator.get()) {
 			case WAIT_CURSOR:
 				return new WaitCursorWhileSearching();
@@ -631,7 +631,7 @@ public final class EntitySearchField extends HintTextField {
 			}
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
 			if (columnComboBoxModel.getSize() > 0) {
-				columnComboBoxModel.selectionEvent().addDataListener(selected -> cardLayout.show(columnBasePanel, selected.get().name()));
+				columnComboBoxModel.selectionEvent().addConsumer(selected -> cardLayout.show(columnBasePanel, selected.get().name()));
 				columnComboBoxModel.setSelectedItem(columnComboBoxModel.getElementAt(0));
 			}
 

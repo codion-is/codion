@@ -708,7 +708,7 @@ public final class FilteredTable<R, C> extends JTable {
 	}
 
 	private void bindEvents() {
-		tableModel.selectionModel().selectedIndexesEvent().addDataListener(new ScrollToSelectedListener());
+		tableModel.selectionModel().selectedIndexesEvent().addConsumer(new ScrollToSelected());
 		tableModel.filterModel().conditionChangedEvent().addListener(getTableHeader()::repaint);
 		tableModel.searchModel().currentResult().addListener(this::repaint);
 		tableModel.sortModel().sortingChangedEvent().addListener(getTableHeader()::repaint);
@@ -758,7 +758,7 @@ public final class FilteredTable<R, C> extends JTable {
 		}
 	}
 
-	private final class ScrollToSelectedListener implements Consumer<List<Integer>> {
+	private final class ScrollToSelected implements Consumer<List<Integer>> {
 
 		@Override
 		public void accept(List<Integer> selectedRowIndexes) {

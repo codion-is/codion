@@ -118,12 +118,12 @@ public class ValueSetTest {
 		Value<Integer> value = valueSet.value();
 
 		AtomicInteger valueEventCounter = new AtomicInteger();
-		Consumer<Integer> listener = integer -> valueEventCounter.incrementAndGet();
-		value.addDataListener(listener);
+		Consumer<Integer> consumer = integer -> valueEventCounter.incrementAndGet();
+		value.addConsumer(consumer);
 
 		AtomicInteger valueSetEventCounter = new AtomicInteger();
-		Consumer<Set<Integer>> setListener = integers -> valueSetEventCounter.incrementAndGet();
-		valueSet.addDataListener(setListener);
+		Consumer<Set<Integer>> setConsumer = integers -> valueSetEventCounter.incrementAndGet();
+		valueSet.addConsumer(setConsumer);
 
 		valueSet.add(1);
 

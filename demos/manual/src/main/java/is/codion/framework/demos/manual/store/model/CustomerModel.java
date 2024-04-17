@@ -32,7 +32,7 @@ public class CustomerModel extends SwingEntityModel {
 
 	// tag::bindEvents[]
 	private void bindEvents() {
-		tableModel().refresher().observer().addDataListener(refreshing -> {
+		tableModel().refresher().observer().addConsumer(refreshing -> {
 			if (refreshing) {
 				System.out.println("Refresh is about to start");
 			}
@@ -41,7 +41,7 @@ public class CustomerModel extends SwingEntityModel {
 			}
 		});
 
-		editModel().valueEvent(Customer.FIRST_NAME).addDataListener(value ->
+		editModel().valueEvent(Customer.FIRST_NAME).addConsumer(value ->
 						System.out.println("First name changed to " + value));
 	}
 	// end::bindEvents[]

@@ -37,11 +37,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
-		editEvent(InvoiceLine.TRACK_FK).addDataListener(this::setUnitPrice);
+		editEvent(InvoiceLine.TRACK_FK).addConsumer(this::setUnitPrice);
 	}
 
-	void addTotalsUpdatedListener(Consumer<Collection<Entity>> listener) {
-		totalsUpdatedEvent.addDataListener(listener);
+	void addTotalsUpdatedListener(Consumer<Collection<Entity>> consumer) {
+		totalsUpdatedEvent.addConsumer(consumer);
 	}
 
 	@Override

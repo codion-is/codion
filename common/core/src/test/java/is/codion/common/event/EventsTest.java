@@ -32,9 +32,9 @@ public class EventsTest {
 		Event<Integer> event = Event.event();
 		AtomicInteger counter = new AtomicInteger();
 		Runnable listener = counter::incrementAndGet;
-		Consumer<Integer> dataListener = value -> {};
+		Consumer<Integer> consumer = value -> {};
 		event.addListener(listener);
-		event.addDataListener(dataListener);
+		event.addConsumer(consumer);
 		event.run();
 		assertEquals(1, counter.get(), "Listener should have been notified on onEvent()");
 		event.run();
@@ -42,20 +42,20 @@ public class EventsTest {
 		event.removeListener(listener);
 		event.run();
 		assertEquals(2, counter.get(), "Removed listener should not have been notified");
-		event.removeDataListener(dataListener);
+		event.removeConsumer(consumer);
 	}
 
 	@Test
 	void weakListeners() {
 		Event<Integer> event = Event.event();
 		Runnable listener = () -> {};
-		Consumer<Integer> dataListener = integer -> {};
+		Consumer<Integer> consumer = integer -> {};
 		event.addWeakListener(listener);
 		event.addWeakListener(listener);
-		event.addWeakDataListener(dataListener);
-		event.addWeakDataListener(dataListener);
+		event.addWeakConsumer(consumer);
+		event.addWeakConsumer(consumer);
 		event.accept(1);
 		event.removeWeakListener(listener);
-		event.removeWeakDataListener(dataListener);
+		event.removeWeakConsumer(consumer);
 	}
 }

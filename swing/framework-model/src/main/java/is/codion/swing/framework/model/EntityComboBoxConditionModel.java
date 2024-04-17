@@ -74,12 +74,12 @@ public final class EntityComboBoxConditionModel extends AbstractForeignKeyCondit
 	}
 
 	private void bindComboBoxEvents() {
-		entityComboBoxModel.selectionEvent().addDataListener(new SelectedEntityListener());
-		equalValues().addDataListener(new EqualValuesListener());
+		entityComboBoxModel.selectionEvent().addConsumer(new SetEqualValue());
+		equalValues().addConsumer(new SelectEqualValueEntity());
 		entityComboBoxModel.refresher().refreshEvent().addListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
 	}
 
-	private final class SelectedEntityListener implements Consumer<Entity> {
+	private final class SetEqualValue implements Consumer<Entity> {
 
 		@Override
 		public void accept(Entity selectedEntity) {
@@ -89,7 +89,7 @@ public final class EntityComboBoxConditionModel extends AbstractForeignKeyCondit
 		}
 	}
 
-	private final class EqualValuesListener implements Consumer<Set<Entity>> {
+	private final class SelectEqualValueEntity implements Consumer<Set<Entity>> {
 
 		@Override
 		public void accept(Set<Entity> equalValues) {

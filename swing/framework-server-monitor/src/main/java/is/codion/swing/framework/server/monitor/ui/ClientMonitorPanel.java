@@ -68,7 +68,7 @@ public final class ClientMonitorPanel extends JPanel {
 						.border(BorderFactory.createTitledBorder("Clients"))
 						.build();
 		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filterPanel());
-		advancedFilterState.addDataListener(this::toggleAdvancedFilters);
+		advancedFilterState.addConsumer(this::toggleAdvancedFilters);
 		initializeUI();
 	}
 
@@ -108,7 +108,7 @@ public final class ClientMonitorPanel extends JPanel {
 						.rightComponent(clientInstancePanel)
 						.build();
 
-		model.clientInstanceTableModel().selectionModel().selectedItemEvent().addDataListener(remoteClient -> {
+		model.clientInstanceTableModel().selectionModel().selectedItemEvent().addConsumer(remoteClient -> {
 			clientInstancePanel.removeAll();
 			try {
 				if (model != null && remoteClient != null) {

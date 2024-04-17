@@ -32,7 +32,7 @@ final class DefaultState implements State {
 
 	DefaultState(boolean value) {
 		this.value = Value.value(value, false);
-		this.value.addDataListener(new Notifier());
+		this.value.addConsumer(new Notifier());
 	}
 
 	@Override
@@ -142,14 +142,14 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public boolean addDataListener(Consumer<? super Boolean> listener) {
-		return observer().addDataListener(listener);
+	public boolean addConsumer(Consumer<? super Boolean> consumer) {
+		return observer().addConsumer(consumer);
 	}
 
 	@Override
-	public boolean removeDataListener(Consumer<? super Boolean> listener) {
+	public boolean removeConsumer(Consumer<? super Boolean> consumer) {
 		if (observer != null) {
-			return observer.removeDataListener(listener);
+			return observer.removeConsumer(consumer);
 		}
 
 		return false;
@@ -170,14 +170,14 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public boolean addWeakDataListener(Consumer<? super Boolean> listener) {
-		return observer().addWeakDataListener(listener);
+	public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
+		return observer().addWeakConsumer(consumer);
 	}
 
 	@Override
-	public boolean removeWeakDataListener(Consumer<? super Boolean> listener) {
+	public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
 		if (observer != null) {
-			return observer.removeWeakDataListener(listener);
+			return observer.removeWeakConsumer(consumer);
 		}
 
 		return false;

@@ -44,8 +44,8 @@ public final class EventStateValue {
 
 		event.run();//output: 'Event occurred'
 
-		// data can be propagated by adding a Consumer as listener
-		observer.addDataListener(data -> System.out.println("Event: " + data));
+		// data can be propagated by adding a consumer
+		observer.addConsumer(data -> System.out.println("Event: " + data));
 
 		event.accept("info");//output: 'Event: info'
 
@@ -70,7 +70,7 @@ public final class EventStateValue {
 
 		state.set(true);//output: 'State changed'
 
-		observer.addDataListener(value -> System.out.println("State: " + value));
+		observer.addConsumer(value -> System.out.println("State: " + value));
 
 		state.set(false);//output: 'State: false'
 
@@ -134,7 +134,7 @@ public final class EventStateValue {
 
 		System.out.println(value.get());// output: 3
 
-		value.addDataListener(System.out::println);
+		value.addConsumer(System.out::println);
 		// end::value[]
 	}
 

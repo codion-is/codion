@@ -95,7 +95,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 				}
 			}
 		});
-		handleEditEvents.addDataListener(new EditEventListener());
+		handleEditEvents.addConsumer(new HandleEditEventsChanged());
 		handleEditEvents.set(true);
 	}
 
@@ -366,7 +366,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		else {
 			linkCondition(foreignKey, foreignKeyModel);
 		}
-		selectionEvent().addDataListener(selected -> {
+		selectionEvent().addConsumer(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				foreignKeyModel.select(selected.referencedKey(foreignKey));
 			}
@@ -379,7 +379,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		if (strictForeignKeyFiltering.get()) {
 			includeCondition().set(filterAllCondition);
 		}
-		foreignKeyModel.selectionEvent().addDataListener(selected -> {
+		foreignKeyModel.selectionEvent().addConsumer(selected -> {
 			if (selected == null && strictForeignKeyFiltering.get()) {
 				includeCondition().set(filterAllCondition);
 			}
@@ -390,13 +390,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 	}
 
 	private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-		Consumer<Entity> listener = selected -> {
+		Consumer<Entity> consumer = selected -> {
 			conditionSupplier.set(() -> foreignKey.equalTo(selected));
 			refresh();
 		};
-		foreignKeyModel.selectionEvent().addDataListener(listener);
+		foreignKeyModel.selectionEvent().addConsumer(consumer);
 		//initialize
-		listener.accept(selectedValue());
+		consumer.accept(selectedValue());
 	}
 
 	private final class ItemValidator implements Predicate<Entity> {
@@ -452,11 +452,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		}
 	}
 
-	private final class EditEventListener implements Consumer<Boolean> {
+	private final class HandleEditEventsChanged implements Consumer<Boolean> {
 
 		@Override
-		public void accept(Boolean listen) {
-			if (listen) {
+		public void accept(Boolean handleEditEvents) {
+			if (handleEditEvents) {
 				addEditListeners();
 			}
 			else {
@@ -465,15 +465,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		}
 
 		private void addEditListeners() {
-			EntityEditEvents.addInsertListener(entityType, insertListener);
-			EntityEditEvents.addUpdateListener(entityType, updateListener);
-			EntityEditEvents.addDeleteListener(entityType, deleteListener);
+			EntityEditEvents.addInsertConsumer(entityType, insertListener);
+			EntityEditEvents.addUpdateConsumer(entityType, updateListener);
+			EntityEditEvents.addDeleteConsumer(entityType, deleteListener);
 		}
 
 		private void removeEditListeners() {
-			EntityEditEvents.removeInsertListener(entityType, insertListener);
-			EntityEditEvents.removeUpdateListener(entityType, updateListener);
-			EntityEditEvents.removeDeleteListener(entityType, deleteListener);
+			EntityEditEvents.removeInsertConsumer(entityType, insertListener);
+			EntityEditEvents.removeUpdateConsumer(entityType, updateListener);
+			EntityEditEvents.removeDeleteConsumer(entityType, deleteListener);
 		}
 	}
 

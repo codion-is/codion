@@ -223,16 +223,16 @@ public class StateTest {
 	}
 
 	@Test
-	void stateCombinationDataListener() {
+	void stateCombinationConsumer() {
 		State one = State.state();
 		State two = State.state();
 		State three = State.state();
 
 		StateObserver combinationAnd = State.combination(Conjunction.AND, one, two, three);
 		Runnable listener = () -> {};
-		Consumer<Boolean> dataListener = newValue -> assertEquals(combinationAnd.get(), newValue);
+		Consumer<Boolean> consumer = newValue -> assertEquals(combinationAnd.get(), newValue);
 		combinationAnd.addListener(listener);
-		combinationAnd.addDataListener(dataListener);
+		combinationAnd.addConsumer(consumer);
 		one.set(true);
 		two.set(true);
 		three.set(true);
@@ -240,18 +240,18 @@ public class StateTest {
 		two.set(false);
 		three.set(false);
 		combinationAnd.removeListener(listener);
-		combinationAnd.removeDataListener(dataListener);
+		combinationAnd.removeConsumer(consumer);
 
 		StateObserver combinationOr = State.combination(Conjunction.OR, one, two, three);
-		dataListener = newValue -> assertEquals(combinationOr.get(), newValue);
-		combinationOr.addDataListener(dataListener);
+		consumer = newValue -> assertEquals(combinationOr.get(), newValue);
+		combinationOr.addConsumer(consumer);
 		one.set(true);
 		one.set(false);
 		two.set(true);
 		two.set(false);
 		three.set(true);
 		three.set(false);
-		combinationOr.removeDataListener(dataListener);
+		combinationOr.removeConsumer(consumer);
 	}
 
 	@Test
@@ -317,23 +317,23 @@ public class StateTest {
 	void weakListeners() {
 		State state = State.state();
 		Runnable listener = () -> {};
-		Consumer<Boolean> dataListener = bool -> {};
+		Consumer<Boolean> consumer = bool -> {};
 		state.addWeakListener(listener);
 		state.addWeakListener(listener);
-		state.addWeakDataListener(dataListener);
-		state.addWeakDataListener(dataListener);
+		state.addWeakConsumer(consumer);
+		state.addWeakConsumer(consumer);
 		state.set(true);
 		state.removeWeakListener(listener);
-		state.removeWeakDataListener(dataListener);
+		state.removeWeakConsumer(consumer);
 
 		State state2 = State.state();
 		StateObserver combination = State.combination(Conjunction.AND, state, state2);
 		combination.addWeakListener(listener);
 		combination.addWeakListener(listener);
-		combination.addWeakDataListener(dataListener);
-		combination.addWeakDataListener(dataListener);
+		combination.addWeakConsumer(consumer);
+		combination.addWeakConsumer(consumer);
 		state2.set(true);
 		combination.removeWeakListener(listener);
-		combination.removeWeakDataListener(dataListener);
+		combination.removeWeakConsumer(consumer);
 	}
 }

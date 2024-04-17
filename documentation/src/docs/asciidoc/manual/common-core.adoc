@@ -21,7 +21,7 @@ interface Event<T> {
 
 interface EventObserver<T> {
     +void addListener(Runnable listener)
-    +void addDataListener(Consumer<T> listener)
+    +void addConsumer(Consumer<? super T> consumer)
 }
 
 interface Runnable {

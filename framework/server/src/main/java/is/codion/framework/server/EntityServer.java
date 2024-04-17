@@ -138,7 +138,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 							configuration.port(), configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
 			connection.setLoggingEnabled(clientLogging);
 
-			connection.addDisconnectListener(this::disconnectQuietly);
+			connection.addDisconnectConsumer(this::disconnectQuietly);
 			LOG.debug("{} connected", remoteClient);
 
 			return connection;

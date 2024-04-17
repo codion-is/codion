@@ -264,7 +264,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 	private State createVisibleState(C identifier) {
 		State visibleState = State.state(true);
 		visibleState.addValidator(value -> checkIfLocked());
-		visibleState.addDataListener(visible -> setColumnVisibleInternal(identifier, visible));
+		visibleState.addConsumer(visible -> setColumnVisibleInternal(identifier, visible));
 
 		return visibleState;
 	}

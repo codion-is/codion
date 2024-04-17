@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.40-SNAPSHOT
+### is.codion.common.core
+- EventObserver.addDataListener() renamed addConsumer(), related renaming.
 ### is.codion.framework.domain
 - QueryKeyGenerator, SequenceKeyGenerator, now overwrite a current value instead of silently skipping it.
 - AbstractQueriedKeyGenerator.selectAndPopulate() primary key column definition parameter removed.

@@ -253,7 +253,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		alwaysOnTopState.addDataListener(alwaysOnTop -> {
+		alwaysOnTopState.addConsumer(alwaysOnTop -> {
 			if (monitorFrame != null) {
 				monitorFrame.setAlwaysOnTop(alwaysOnTop);
 			}

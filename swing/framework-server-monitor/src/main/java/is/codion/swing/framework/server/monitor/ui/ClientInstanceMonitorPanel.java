@@ -148,7 +148,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		Font font = textArea.getFont();
 		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 		State lineWrapState = State.state();
-		lineWrapState.addDataListener(textArea::setLineWrap);
+		lineWrapState.addConsumer(textArea::setLineWrap);
 		textArea.setComponentPopupMenu(menu(Controls.builder()
 						.control(Control.builder(() -> saveLogToFile(textArea))
 										.name("Save to file..."))

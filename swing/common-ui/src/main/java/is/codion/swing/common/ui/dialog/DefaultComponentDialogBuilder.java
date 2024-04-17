@@ -171,7 +171,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		JDialog dialog = new JDialog(owner);
 		if (titleProvider != null) {
 			dialog.setTitle(titleProvider.get());
-			titleProvider.addDataListener(new DialogTitleListener(dialog));
+			titleProvider.addConsumer(new SetDialogTitle(dialog));
 		}
 		if (icon != null) {
 			dialog.setIconImage(icon.getImage());
@@ -277,11 +277,11 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		}
 	}
 
-	private static final class DialogTitleListener implements Consumer<String> {
+	private static final class SetDialogTitle implements Consumer<String> {
 
 		private final JDialog dialog;
 
-		private DialogTitleListener(JDialog dialog) {
+		private SetDialogTitle(JDialog dialog) {
 			this.dialog = dialog;
 		}
 

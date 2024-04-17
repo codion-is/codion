@@ -370,7 +370,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 	}
 
 	private void bindEvents() {
-		singleSelectionMode.addDataListener(singleSelection ->
+		singleSelectionMode.addConsumer(singleSelection ->
 						setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
 	}
 

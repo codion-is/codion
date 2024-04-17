@@ -93,7 +93,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 		items.sort(Comparator.comparing(item -> item.item().toString()));
 		items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
 		itemList.addListSelectionListener(e -> selectedItemChangedEvent.accept(itemList.getSelectedValuesList()));
-		selectedItemsEvent().addDataListener(selectedItems -> {
+		selectedItemsEvent().addConsumer(selectedItems -> {
 			configPanel.removeAll();
 			for (ItemRandomizer.RandomItem<T> item : selectedItems) {
 				configPanel.add(createWeightPanel(item));

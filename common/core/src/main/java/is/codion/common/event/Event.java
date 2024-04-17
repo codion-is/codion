@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  * EventObserver&lt;Boolean&gt; observer = event.observer();
  *
  * observer.addListener(this::doSomething);
- * observer.addDataListener(this::onBoolean);
+ * observer.addConsumer(this::onBoolean);
  *
  * event.accept(true);
  * </pre>

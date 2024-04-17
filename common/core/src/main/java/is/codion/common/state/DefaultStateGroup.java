@@ -51,7 +51,7 @@ final class DefaultStateGroup implements State.Group {
 			members.add(new WeakReference<>(state));
 			stateChanged(state);
 		}
-		state.addDataListener(value -> {
+		state.addConsumer(value -> {
 			synchronized (members) {
 				if (value) {
 					stateChanged(state);

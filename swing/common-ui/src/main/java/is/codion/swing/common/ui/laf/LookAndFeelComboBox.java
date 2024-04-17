@@ -67,7 +67,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 		setEditor(new LookAndFeelEditor());
 		enableMouseWheelSelection(this);
 		if (enableOnSelection) {
-			comboBoxModel.selectionEvent().addDataListener(lookAndFeelProvider ->
+			comboBoxModel.selectionEvent().addConsumer(lookAndFeelProvider ->
 							SwingUtilities.invokeLater(() -> enableLookAndFeel(lookAndFeelProvider.get())));
 		}
 	}

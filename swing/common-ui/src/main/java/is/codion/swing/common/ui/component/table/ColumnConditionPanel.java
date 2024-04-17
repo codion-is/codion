@@ -420,8 +420,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	 * Binds events to relevant GUI actions
 	 */
 	private void bindEvents() {
-		advanced.addDataListener(this::onAdvancedChanged);
-		conditionModel.operator().addDataListener(this::onOperatorChanged);
+		advanced.addConsumer(this::onAdvancedChanged);
+		conditionModel.operator().addConsumer(this::onOperatorChanged);
 		FocusGainedListener focusGainedListener = new FocusGainedListener();
 		operatorCombo.addFocusListener(focusGainedListener);
 		KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_ENABLED).get())
@@ -531,7 +531,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
 						.toolTipText(operatorComboBoxModel.selectedValue().get().description())
-						.onBuild(comboBox -> operatorComboBoxModel.selectionEvent().addDataListener(selectedOperator ->
+						.onBuild(comboBox -> operatorComboBoxModel.selectionEvent().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.get().description())))
 						.build();
 	}
@@ -648,22 +648,22 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
 		State.group(automaticWildcardNoneState, automaticWildcardPostfixState, automaticWildcardPrefixState, automaticWildcardPrefixAndPostfixState);
 
-		automaticWildcardNoneState.addDataListener(enabled -> {
+		automaticWildcardNoneState.addConsumer(enabled -> {
 			if (enabled) {
 				automaticWildcardValue.set(AutomaticWildcard.NONE);
 			}
 		});
-		automaticWildcardPostfixState.addDataListener(enabled -> {
+		automaticWildcardPostfixState.addConsumer(enabled -> {
 			if (enabled) {
 				automaticWildcardValue.set(AutomaticWildcard.POSTFIX);
 			}
 		});
-		automaticWildcardPrefixState.addDataListener(enabled -> {
+		automaticWildcardPrefixState.addConsumer(enabled -> {
 			if (enabled) {
 				automaticWildcardValue.set(AutomaticWildcard.PREFIX);
 			}
 		});
-		automaticWildcardPrefixAndPostfixState.addDataListener(enabled -> {
+		automaticWildcardPrefixAndPostfixState.addConsumer(enabled -> {
 			if (enabled) {
 				automaticWildcardValue.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
 			}

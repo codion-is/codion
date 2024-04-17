@@ -114,7 +114,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 				throw new IllegalArgumentException("The current selected item does not satisfy the valid selection predicate");
 			}
 		});
-		includeNull.addDataListener(value -> {
+		includeNull.addConsumer(value -> {
 			if (value && !visibleItems.contains(null)) {
 				visibleItems.add(0, null);
 			}

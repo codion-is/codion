@@ -350,7 +350,7 @@ public final class Windows {
 			frame.add(component, BorderLayout.CENTER);
 			if (titleProvider != null) {
 				frame.setTitle(titleProvider.get());
-				titleProvider.addDataListener(frame::setTitle);
+				titleProvider.addConsumer(frame::setTitle);
 			}
 			if (icon != null) {
 				frame.setIconImage(icon.getImage());

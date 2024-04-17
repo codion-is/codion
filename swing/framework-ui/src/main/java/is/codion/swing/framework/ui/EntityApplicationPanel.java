@@ -788,7 +788,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	private void bindEventsInternal() {
-		alwaysOnTopState.addDataListener(alwaysOnTop ->
+		alwaysOnTopState.addConsumer(alwaysOnTop ->
 						parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
 	}
 
@@ -801,9 +801,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	private void addEntityPanel(EntityPanel entityPanel) {
 		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-		entityPanel.activateEvent().addDataListener(applicationLayout::activated);
+		entityPanel.activateEvent().addConsumer(applicationLayout::activated);
 		if (entityPanel.containsEditPanel()) {
-			entityPanel.editPanel().active().addDataListener(new SelectActivatedPanelListener(entityPanel));
+			entityPanel.editPanel().active().addConsumer(new SelectActivatedPanel(entityPanel));
 		}
 	}
 
@@ -860,7 +860,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		for (Object logLevel : loggerProxy.levels()) {
 			State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
 			logLevelStateGroup.add(logLevelState);
-			logLevelState.addDataListener(enabled -> {
+			logLevelState.addConsumer(enabled -> {
 				if (enabled) {
 					loggerProxy.setLogLevel(logLevel);
 				}
@@ -931,11 +931,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
 	}
 
-	private final class SelectActivatedPanelListener implements Consumer<Boolean> {
+	private final class SelectActivatedPanel implements Consumer<Boolean> {
 
 		private final EntityPanel entityPanel;
 
-		private SelectActivatedPanelListener(EntityPanel entityPanel) {
+		private SelectActivatedPanel(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
 		}
 

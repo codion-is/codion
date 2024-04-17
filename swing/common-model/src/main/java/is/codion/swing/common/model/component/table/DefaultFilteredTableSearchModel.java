@@ -176,7 +176,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	private void bindEvents() {
-		searchString.addDataListener(searchText -> searchPredicate.set(createSearchPredicate(searchText)));
+		searchString.addConsumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)));
 		searchPredicate.addListener(this::performSearch);
 		regularExpression.addListener(() -> searchString.set(null));
 		caseSensitive.addListener(this::performSearch);

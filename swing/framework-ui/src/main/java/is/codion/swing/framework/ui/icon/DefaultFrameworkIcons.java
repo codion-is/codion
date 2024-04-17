@@ -215,20 +215,20 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 	}
 
 	@Override
-	public FrameworkIcons enableIconColorListener() {
-		icons.enableIconColorListener();
+	public FrameworkIcons enableIconColorConsumer() {
+		icons.enableIconColorConsumer();
 		return this;
 	}
 
 	@Override
-	public FrameworkIcons disableIconColorListener() {
-		icons.disableIconColorListener();
+	public FrameworkIcons disableIconColorConsumer() {
+		icons.disableIconColorConsumer();
 		return this;
 	}
 
 	static FrameworkIcons instance() {
 		if (instance == null) {
-			instance = (FrameworkIcons) createInstance().enableIconColorListener();
+			instance = (FrameworkIcons) createInstance().enableIconColorConsumer();
 		}
 
 		return instance;

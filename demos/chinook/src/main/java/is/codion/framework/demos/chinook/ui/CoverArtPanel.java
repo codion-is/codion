@@ -106,9 +106,9 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		imageBytes.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
-		imageBytes.addDataListener(imageBytes -> imageSelected.set(imageBytes != null));
-		embedded.addDataListener(this::setEmbedded);
+		imageBytes.addConsumer(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
+		imageBytes.addConsumer(imageBytes -> imageSelected.set(imageBytes != null));
+		embedded.addConsumer(this::setEmbedded);
 		imagePanel.addMouseListener(new EmbeddingMouseListener());
 	}
 

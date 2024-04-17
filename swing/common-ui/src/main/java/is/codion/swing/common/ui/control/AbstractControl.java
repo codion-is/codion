@@ -62,7 +62,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	AbstractControl(String name, StateObserver enabled) {
 		super(name);
 		this.enabledObserver = enabled == null ? State.state(true) : enabled;
-		this.enabledObserver.addWeakDataListener(enabler);
+		this.enabledObserver.addWeakConsumer(enabler);
 		super.setEnabled(this.enabledObserver.get());
 	}
 

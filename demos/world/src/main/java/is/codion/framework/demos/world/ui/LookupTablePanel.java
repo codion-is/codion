@@ -76,7 +76,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	LookupTablePanel(LookupTableModel lookupModel) {
 		super(lookupModel, config -> config.showRefreshProgressBar(true));
-		columnSelectionPanelVisible.addDataListener(this::setColumnSelectionPanelVisible);
+		columnSelectionPanelVisible.addConsumer(this::setColumnSelectionPanelVisible);
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		conditionPanelVisible().set(true);
 		bindEvents();
@@ -137,7 +137,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void bindEvents() {
-		mapDialogVisible.addDataListener(this::setMapDialogVisible);
+		mapDialogVisible.addConsumer(this::setMapDialogVisible);
 		tableModel().dataChangedEvent().addListener(this::displayCityLocations);
 		tableModel().selectionModel().selectionEvent().addListener(this::displayCityLocations);
 	}

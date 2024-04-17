@@ -1217,25 +1217,25 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		conditionPanelVisibleState.addDataListener(this::setConditionPanelVisible);
-		filterPanelVisibleState.addDataListener(this::setFilterPanelVisible);
-		summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisible);
+		conditionPanelVisibleState.addConsumer(this::setConditionPanelVisible);
+		filterPanelVisibleState.addConsumer(this::setFilterPanelVisible);
+		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.conditionModel().conditionChangedEvent().addListener(this::onConditionChanged);
-		tableModel.refresher().observer().addDataListener(this::onRefreshingChanged);
-		tableModel.refresher().refreshFailedEvent().addDataListener(this::onException);
+		tableModel.refresher().observer().addConsumer(this::onRefreshingChanged);
+		tableModel.refresher().refreshFailedEvent().addConsumer(this::onException);
 		tableModel.editModel().insertUpdateOrDeleteEvent().addListener(table::repaint);
 		if (conditionPanel != null) {
 			enableConditionPanelRefreshOnEnter();
-			conditionPanel.focusGainedEvent().addDataListener(table::scrollToColumn);
-			conditionPanel.advanced().addDataListener(advanced -> {
+			conditionPanel.focusGainedEvent().addConsumer(table::scrollToColumn);
+			conditionPanel.advanced().addConsumer(advanced -> {
 				if (conditionPanelVisibleState.get()) {
 					revalidate();
 				}
 			});
 		}
 		if (configuration.includeFilterPanel) {
-			table.filterPanel().focusGainedEvent().addDataListener(table::scrollToColumn);
-			table.filterPanel().advanced().addDataListener(advanced -> {
+			table.filterPanel().focusGainedEvent().addConsumer(table::scrollToColumn);
+			table.filterPanel().advanced().addConsumer(advanced -> {
 				if (filterPanelVisibleState.get()) {
 					revalidate();
 				}
@@ -2238,7 +2238,7 @@ public class EntityTablePanel extends JPanel {
 							.build(), STATUS);
 			add(createRefreshingProgressPanel(), REFRESHING);
 			CardLayout layout = (CardLayout) getLayout();
-			tableModel.refresher().observer().addDataListener(isRefreshing -> {
+			tableModel.refresher().observer().addConsumer(isRefreshing -> {
 				if (configuration.showRefreshProgressBar) {
 					layout.show(this, isRefreshing ? REFRESHING : STATUS);
 				}

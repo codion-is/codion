@@ -150,9 +150,9 @@ public final class ServerMonitor {
 		this.serverAdminUser = requireNonNull(serverAdminUser);
 		this.server = connectServer(serverInformation.serverName());
 		this.connectionLimitValue = Value.value(getConnectionLimit(), -1);
-		this.connectionLimitValue.addDataListener(this::setConnectionLimit);
+		this.connectionLimitValue.addConsumer(this::setConnectionLimit);
 		this.logLevelValue = Value.value(this.server.getLogLevel());
-		this.logLevelValue.addDataListener(this::setLogLevel);
+		this.logLevelValue.addConsumer(this::setLogLevel);
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
 		this.memoryUsageCollection.addSeries(maxMemorySeries);
 		this.memoryUsageCollection.addSeries(allocatedMemorySeries);

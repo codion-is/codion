@@ -90,13 +90,13 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
 
-		Consumer<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
-		Consumer<Map<Entity.Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
-		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
+		Consumer<Collection<Entity>> insertConsumer = inserted -> insertEvents.incrementAndGet();
+		Consumer<Map<Entity.Key, Entity>> updateConsumer = udpated -> updateEvents.incrementAndGet();
+		Consumer<Collection<Entity>> deleteConsumer = deleted -> deleteEvents.incrementAndGet();
 
-		EntityEditEvents.addInsertListener(Employee.TYPE, insertListener);
-		EntityEditEvents.addUpdateListener(Employee.TYPE, updateListener);
-		EntityEditEvents.addDeleteListener(Employee.TYPE, deleteListener);
+		EntityEditEvents.addInsertConsumer(Employee.TYPE, insertConsumer);
+		EntityEditEvents.addUpdateConsumer(Employee.TYPE, updateConsumer);
+		EntityEditEvents.addDeleteConsumer(Employee.TYPE, deleteConsumer);
 
 		employeeEditModel.editEvents().set(true);
 
@@ -118,9 +118,9 @@ public final class AbstractEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		EntityEditEvents.removeInsertListener(Employee.TYPE, insertListener);
-		EntityEditEvents.removeUpdateListener(Employee.TYPE, updateListener);
-		EntityEditEvents.removeDeleteListener(Employee.TYPE, deleteListener);
+		EntityEditEvents.removeInsertConsumer(Employee.TYPE, insertConsumer);
+		EntityEditEvents.removeUpdateConsumer(Employee.TYPE, updateConsumer);
+		EntityEditEvents.removeDeleteConsumer(Employee.TYPE, deleteConsumer);
 	}
 
 	@Test
@@ -220,13 +220,13 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(primaryKeyNullState.get());
 		assertFalse(entityExistsState.get());
 
-		Consumer dataListener = data -> {};
-		employeeEditModel.afterDeleteEvent().addDataListener(dataListener);
-		employeeEditModel.afterInsertEvent().addDataListener(dataListener);
-		employeeEditModel.afterUpdateEvent().addDataListener(dataListener);
-		employeeEditModel.beforeDeleteEvent().addDataListener(dataListener);
-		employeeEditModel.beforeInsertEvent().addDataListener(dataListener);
-		employeeEditModel.beforeUpdateEvent().addDataListener(dataListener);
+		Consumer consumer = data -> {};
+		employeeEditModel.afterDeleteEvent().addConsumer(consumer);
+		employeeEditModel.afterInsertEvent().addConsumer(consumer);
+		employeeEditModel.afterUpdateEvent().addConsumer(consumer);
+		employeeEditModel.beforeDeleteEvent().addConsumer(consumer);
+		employeeEditModel.beforeInsertEvent().addConsumer(consumer);
+		employeeEditModel.beforeUpdateEvent().addConsumer(consumer);
 		Runnable listener = () -> {};
 		employeeEditModel.insertUpdateOrDeleteEvent().addListener(listener);
 
@@ -305,12 +305,12 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.defaults();
 		assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity is not null after model is cleared");
 
-		employeeEditModel.afterDeleteEvent().removeDataListener(dataListener);
-		employeeEditModel.afterInsertEvent().removeDataListener(dataListener);
-		employeeEditModel.afterUpdateEvent().removeDataListener(dataListener);
-		employeeEditModel.beforeDeleteEvent().removeDataListener(dataListener);
-		employeeEditModel.beforeInsertEvent().removeDataListener(dataListener);
-		employeeEditModel.beforeUpdateEvent().removeDataListener(dataListener);
+		employeeEditModel.afterDeleteEvent().removeConsumer(consumer);
+		employeeEditModel.afterInsertEvent().removeConsumer(consumer);
+		employeeEditModel.afterUpdateEvent().removeConsumer(consumer);
+		employeeEditModel.beforeDeleteEvent().removeConsumer(consumer);
+		employeeEditModel.beforeInsertEvent().removeConsumer(consumer);
+		employeeEditModel.beforeUpdateEvent().removeConsumer(consumer);
 		employeeEditModel.insertUpdateOrDeleteEvent().removeListener(listener);
 	}
 
@@ -354,7 +354,7 @@ public final class AbstractEntityEditModelTest {
 
 			employeeEditModel.put(Employee.DEPARTMENT_FK, department);
 
-			employeeEditModel.afterInsertEvent().addDataListener(insertedEntities ->
+			employeeEditModel.afterInsertEvent().addConsumer(insertedEntities ->
 							assertEquals(department, insertedEntities.iterator().next().get(Employee.DEPARTMENT_FK)));
 			employeeEditModel.insertEnabled().set(false);
 			assertFalse(employeeEditModel.insertEnabled().get());
@@ -390,9 +390,9 @@ public final class AbstractEntityEditModelTest {
 			employeeEditModel.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			employeeEditModel.put(Employee.NAME, "BJORN");
 			List<Entity> toUpdate = singletonList(employeeEditModel.entity());
-			Consumer<Map<Entity.Key, Entity>> listener = updatedEntities ->
+			Consumer<Map<Entity.Key, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
-			employeeEditModel.afterUpdateEvent().addDataListener(listener);
+			employeeEditModel.afterUpdateEvent().addConsumer(consumer);
 			employeeEditModel.updateEnabled().set(false);
 			assertFalse(employeeEditModel.updateEnabled().get());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
@@ -401,7 +401,7 @@ public final class AbstractEntityEditModelTest {
 
 			employeeEditModel.update();
 			assertFalse(employeeEditModel.modified().get());
-			employeeEditModel.afterUpdateEvent().removeDataListener(listener);
+			employeeEditModel.afterUpdateEvent().removeConsumer(consumer);
 
 			employeeEditModel.updateMultipleEnabled().set(false);
 
@@ -425,7 +425,7 @@ public final class AbstractEntityEditModelTest {
 		try {
 			employeeEditModel.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			List<Entity> toDelete = singletonList(employeeEditModel.entity());
-			employeeEditModel.afterDeleteEvent().addDataListener(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
+			employeeEditModel.afterDeleteEvent().addConsumer(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
 			employeeEditModel.deleteEnabled().set(false);
 			assertFalse(employeeEditModel.deleteEnabled().get());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
@@ -476,10 +476,10 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.overwriteWarning().set(true);
 		employeeEditModel.persist(Employee.DEPARTMENT_FK).set(false);
 
-		Consumer<State> alwaysConfirmListener = data -> data.set(true);
-		Consumer<State> alwaysDenyListener = data -> data.set(false);
+		Consumer<State> alwaysConfirmConsumer = data -> data.set(true);
+		Consumer<State> alwaysDenyConsumer = data -> data.set(false);
 
-		employeeEditModel.confirmOverwriteEvent().addDataListener(alwaysConfirmListener);
+		employeeEditModel.confirmOverwriteEvent().addConsumer(alwaysConfirmConsumer);
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
 		Entity adams = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("ADAMS"));
 		employeeEditModel.set(king);
@@ -487,18 +487,18 @@ public final class AbstractEntityEditModelTest {
 		employeeEditModel.set(adams);
 		assertEquals(adams, employeeEditModel.entity());
 
-		employeeEditModel.confirmOverwriteEvent().removeDataListener(alwaysConfirmListener);
+		employeeEditModel.confirmOverwriteEvent().removeConsumer(alwaysConfirmConsumer);
 		employeeEditModel.defaults();
-		employeeEditModel.confirmOverwriteEvent().addDataListener(alwaysDenyListener);
+		employeeEditModel.confirmOverwriteEvent().addConsumer(alwaysDenyConsumer);
 
 		employeeEditModel.set(adams);
 		employeeEditModel.put(Employee.NAME, "A name");
 		employeeEditModel.set(king);
 		assertEquals("A name", employeeEditModel.get(Employee.NAME));
 
-		employeeEditModel.confirmOverwriteEvent().removeDataListener(alwaysDenyListener);
+		employeeEditModel.confirmOverwriteEvent().removeConsumer(alwaysDenyConsumer);
 		employeeEditModel.defaults();
-		employeeEditModel.confirmOverwriteEvent().addDataListener(alwaysDenyListener);
+		employeeEditModel.confirmOverwriteEvent().addConsumer(alwaysDenyConsumer);
 
 		employeeEditModel.set(adams);
 		employeeEditModel.put(Employee.DEPARTMENT_FK, king.get(Employee.DEPARTMENT_FK));
@@ -555,8 +555,8 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger derivedCounter = new AtomicInteger();
 		AtomicInteger derivedEditCounter = new AtomicInteger();
 
-		editModel.valueEvent(Detail.INT_DERIVED).addDataListener(value -> derivedCounter.incrementAndGet());
-		editModel.editEvent(Detail.INT_DERIVED).addDataListener(value -> derivedEditCounter.incrementAndGet());
+		editModel.valueEvent(Detail.INT_DERIVED).addConsumer(value -> derivedCounter.incrementAndGet());
+		editModel.editEvent(Detail.INT_DERIVED).addConsumer(value -> derivedEditCounter.incrementAndGet());
 
 		editModel.put(Detail.INT, 1);
 		assertEquals(1, derivedCounter.get());
@@ -583,11 +583,11 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void foreignKeys() throws DatabaseException {
 		AtomicInteger deptNoChange = new AtomicInteger();
-		employeeEditModel.valueEvent(Employee.DEPARTMENT).addDataListener(value -> deptNoChange.incrementAndGet());
+		employeeEditModel.valueEvent(Employee.DEPARTMENT).addConsumer(value -> deptNoChange.incrementAndGet());
 		AtomicInteger deptChange = new AtomicInteger();
-		employeeEditModel.valueEvent(Employee.DEPARTMENT_FK).addDataListener(value -> deptChange.incrementAndGet());
+		employeeEditModel.valueEvent(Employee.DEPARTMENT_FK).addConsumer(value -> deptChange.incrementAndGet());
 		AtomicInteger deptEdit = new AtomicInteger();
-		employeeEditModel.editEvent(Employee.DEPARTMENT_FK).addDataListener(value -> deptEdit.incrementAndGet());
+		employeeEditModel.editEvent(Employee.DEPARTMENT_FK).addConsumer(value -> deptEdit.incrementAndGet());
 
 		Entity dept = employeeEditModel.connection().selectSingle(Department.ID.equalTo(10));
 		employeeEditModel.put(Employee.DEPARTMENT_FK, dept);
@@ -628,9 +628,9 @@ public final class AbstractEntityEditModelTest {
 		State modifiedState = State.state();
 		State nullState = State.state();
 		StateObserver nameModifiedObserver = employeeEditModel.modified(Employee.NAME);
-		nameModifiedObserver.addDataListener(modifiedState::set);
+		nameModifiedObserver.addConsumer(modifiedState::set);
 		StateObserver nameIsNull = employeeEditModel.isNull(Employee.NAME);
-		nameIsNull.addDataListener(nullState::set);
+		nameIsNull.addConsumer(nullState::set);
 
 		employeeEditModel.put(Employee.NAME, "JOHN");
 		assertTrue(nameModifiedObserver.get());
@@ -679,14 +679,14 @@ public final class AbstractEntityEditModelTest {
 		assertEquals(3, editModel.get(Derived.INT3));
 
 		Map<Attribute<?>, Object> editedValues = new LinkedHashMap<>();
-		editModel.editEvent(Derived.INT2).addDataListener(value -> editedValues.put(Derived.INT2, value));
-		editModel.editEvent(Derived.INT3).addDataListener(value -> editedValues.put(Derived.INT3, value));
-		editModel.editEvent(Derived.INT4).addDataListener(value -> editedValues.put(Derived.INT4, value));
+		editModel.editEvent(Derived.INT2).addConsumer(value -> editedValues.put(Derived.INT2, value));
+		editModel.editEvent(Derived.INT3).addConsumer(value -> editedValues.put(Derived.INT3, value));
+		editModel.editEvent(Derived.INT4).addConsumer(value -> editedValues.put(Derived.INT4, value));
 
 		Map<Attribute<?>, Object> changedValues = new LinkedHashMap<>();
-		editModel.valueEvent(Derived.INT2).addDataListener(value -> changedValues.put(Derived.INT2, value));
-		editModel.valueEvent(Derived.INT3).addDataListener(value -> changedValues.put(Derived.INT3, value));
-		editModel.valueEvent(Derived.INT4).addDataListener(value -> changedValues.put(Derived.INT4, value));
+		editModel.valueEvent(Derived.INT2).addConsumer(value -> changedValues.put(Derived.INT2, value));
+		editModel.valueEvent(Derived.INT3).addConsumer(value -> changedValues.put(Derived.INT3, value));
+		editModel.valueEvent(Derived.INT4).addConsumer(value -> changedValues.put(Derived.INT4, value));
 
 		editModel.put(Derived.INT, 2);
 		assertTrue(editedValues.containsKey(Derived.INT2));
