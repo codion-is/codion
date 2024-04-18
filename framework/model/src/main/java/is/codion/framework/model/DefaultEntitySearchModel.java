@@ -62,6 +62,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Collection<Column<String>> columns;
 	private final ValueSet<Entity> entities = ValueSet.builder(Collections.<Entity>emptySet())
 					.notify(Notify.WHEN_SET)
+					.validator(new EntityValidator())
 					.build();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
@@ -87,7 +88,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.stringFunction.set(builder.stringFunction);
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
-		this.entities.addValidator(new EntityValidator());
 		this.limit = Value.nullable(builder.limit).build();
 		bindEvents();
 	}

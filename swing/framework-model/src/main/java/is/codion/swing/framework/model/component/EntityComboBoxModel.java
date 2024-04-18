@@ -59,7 +59,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
-	private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
+	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
+					.validator(new AttributeValidator())
+					.build();
+
 	private final Entities entities;
 	private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
 	private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
@@ -87,13 +90,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		refresher().itemSupplier().set(this::performQuery);
 		itemValidator().set(new ItemValidator());
 		includeCondition().set(foreignKeyIncludeCondition);
-		attributes.addValidator(attributes -> {
-			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(entityType)) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
-				}
-			}
-		});
 		handleEditEvents.addConsumer(new HandleEditEventsChanged());
 		handleEditEvents.set(true);
 	}
@@ -396,6 +392,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		foreignKeyModel.selectionEvent().addConsumer(consumer);
 		//initialize
 		consumer.accept(selectedValue());
+	}
+
+	private final class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
+
+		@Override
+		public void validate(Set<Attribute<?>> attributes) {
+			for (Attribute<?> attribute : requireNonNull(attributes)) {
+				if (!attribute.entityType().equals(entityType)) {
+					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
+				}
+			}
+		}
 	}
 
 	private final class ItemValidator implements Predicate<Entity> {

@@ -633,12 +633,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		};
 
 		return unmodifiableMap(Stream.of(EditControl.values())
-						.collect(toMap(Function.identity(), controlCode -> {
-							Value<Control> value = Value.value();
-							value.addValidator(controlValueValidator);
-
-							return value;
-						})));
+						.collect(toMap(Function.identity(), controlCode -> Value.nullable((Control) null)
+										.validator(controlValueValidator)
+										.build())));
 	}
 
 	private static Config configure(EntityEditPanel editPanel, Consumer<Config> configuration) {

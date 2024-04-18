@@ -165,6 +165,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		private final Value<PanelState> panelState = Value.nonNull(HIDDEN)
 						.notify(Notify.WHEN_SET)
+						.validator(PANEL_STATE_VALIDATOR)
 						.build();
 		private final EntityPanel detailPanel;
 
@@ -173,7 +174,6 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		private DetailWindow(EntityPanel detailPanel) {
 			this.detailPanel = detailPanel;
-			panelState.addValidator(PANEL_STATE_VALIDATOR);
 			panelState.addConsumer(this::updateDetailState);
 		}
 

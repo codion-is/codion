@@ -37,12 +37,13 @@ public class SelectedValuesTest {
 
 	@Test
 	void selectedItemValueLinkValidate() {
-		Value<String> originalValue = Value.nullable("b").build();
-		originalValue.addValidator(value -> {
-			if (value != null && value.equals("s")) {
-				throw new IllegalArgumentException();
-			}
-		});
+		Value<String> originalValue = Value.nullable("b")
+						.validator(value -> {
+							if (value != null && value.equals("s")) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.build();
 		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}), originalValue)
 						.buildValue();
 		JComboBox<String> box = componentValue.component();

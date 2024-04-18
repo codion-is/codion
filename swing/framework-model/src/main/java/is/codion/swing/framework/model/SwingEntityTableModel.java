@@ -102,7 +102,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	private final FilteredTableModel<Entity, Attribute<?>> tableModel;
 	private final SwingEntityEditModel editModel;
 	private final EntityTableConditionModel<Attribute<?>> conditionModel;
-	private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
+	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
+					.validator(new AttributeValidator())
+					.build();
 	private final State conditionRequired = State.state();
 	private final State editEvents = State.state();
 	private final State editable = State.state();
@@ -204,7 +206,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
 		this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
 		this.refreshCondition = createSelect(conditionModel);
-		this.attributes.addValidator(new AttributeValidator());
 		bindEvents();
 		applyPreferences();
 		editEvents.set(true);

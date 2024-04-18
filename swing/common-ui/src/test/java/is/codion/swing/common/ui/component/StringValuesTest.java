@@ -31,12 +31,13 @@ public class StringValuesTest {
 
 	@Test
 	void valueLink() {
-		Value<String> textValue = Value.nullable("start").build();
-		textValue.addValidator(text -> {
-			if (text != null && text.equals("nono")) {
-				throw new IllegalArgumentException();
-			}
-		});
+		Value<String> textValue = Value.nullable("start")
+						.validator(text -> {
+							if (text != null && text.equals("nono")) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.build();
 		ComponentValue<String, JTextField> textFieldValue = Components.stringField(textValue)
 						.buildValue();
 

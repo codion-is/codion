@@ -114,6 +114,15 @@ public interface ValueSet<T> extends Value<Set<T>>, ValueSetObserver<T> {
 
 	/**
 	 * Creates a new {@link ValueSet.Builder} instance.
+	 * @return a new builder
+	 * @param <T> the value set type
+	 */
+	static <T> Builder<T> builder() {
+		return builder(Collections.<T>emptySet());
+	}
+
+	/**
+	 * Creates a new {@link ValueSet.Builder} instance.
 	 * @param initialValue the initial value
 	 * @return a new builder
 	 * @param <T> the value set type

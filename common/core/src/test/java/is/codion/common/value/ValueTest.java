@@ -309,12 +309,13 @@ public class ValueTest {
 
 	@Test
 	void unlink() {
-		Value<Integer> value = Value.nonNull(0).build();
-		value.addValidator(integer -> {
-			if (integer > 2) {
-				throw new IllegalArgumentException();
-			}
-		});
+		Value<Integer> value = Value.nonNull(0)
+						.validator(integer -> {
+							if (integer > 2) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.build();
 		Value<Integer> originalValue = Value.nullable(1).build();
 
 		value.link(originalValue);

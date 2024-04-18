@@ -102,7 +102,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
@@ -1478,12 +1477,9 @@ public class EntityTablePanel extends JPanel {
 		};
 
 		return Stream.of(TableControl.values())
-						.collect(toMap(Function.identity(), controlCode -> {
-							Value<Control> value = value();
-							value.addValidator(controlValueValidator);
-
-							return value;
-						}));
+						.collect(toMap(Function.identity(), controlCode -> Value.nullable((Control) null)
+										.validator(controlValueValidator)
+										.build()));
 	}
 
 	private EntityEditPanel validateEditModel(EntityEditPanel editPanel) {
