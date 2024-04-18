@@ -1,7 +1,7 @@
 Codion Change Log
 ==================
 
-## 0.17.40-SNAPSHOT
+## 0.17.40
 ### is.codion.common.core
 - EventObserver.addDataListener() renamed addConsumer(), related renaming.
 - Value.Builder added, replaces a couple of static factory methods.
