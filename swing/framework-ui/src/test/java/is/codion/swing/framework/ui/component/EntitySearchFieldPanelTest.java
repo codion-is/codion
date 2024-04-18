@@ -30,8 +30,7 @@ import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntitySearchFieldPanelTest {
 
@@ -57,5 +56,10 @@ public final class EntitySearchFieldPanelTest {
 		assertNull(entity);
 		value.set(sales);
 		assertEquals(sales, model.entity().get());
+
+		assertThrows(IllegalStateException.class, () -> EntitySearchFieldPanel.builder(model)
+						.includeAddButton(true));
+		assertThrows(IllegalStateException.class, () -> EntitySearchFieldPanel.builder(model)
+						.includeEditButton(true));
 	}
 }

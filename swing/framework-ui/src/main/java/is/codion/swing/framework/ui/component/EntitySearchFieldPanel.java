@@ -120,6 +120,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 		 * @param includeAddButton true if a 'Add' button should be included
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no edit panel supplier is available
+		 * @see EntitySearchFieldPanel#builder(EntitySearchModel, Supplier)
+		 * @see EntitySearchFieldPanel#builder(EntitySearchModel, Supplier, Value)
 		 */
 		Builder includeAddButton(boolean includeAddButton);
 
@@ -127,6 +129,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 		 * @param includeEditButton true if a 'Edit' button should be included
 		 * @return this builder instance
 		 * @throws IllegalStateException in case no edit panel supplier is available
+		 * @see EntitySearchFieldPanel#builder(EntitySearchModel, Supplier)
+		 * @see EntitySearchFieldPanel#builder(EntitySearchModel, Supplier, Value)
 		 */
 		Builder includeEditButton(boolean includeEditButton);
 
@@ -224,6 +228,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntitySearchFieldPanel, Builder> implements Builder {
 
 		private final EntitySearchField.Builder searchFieldBuilder;
+		private final boolean editPanelSupplierAvailable;
 
 		private boolean includeSearchButton;
 		private boolean includeAddButton;
@@ -234,12 +239,14 @@ public final class EntitySearchFieldPanel extends JPanel {
 		private DefaultBuilder(EntitySearchModel searchModel, Value<Entity> linkedValue) {
 			super(linkedValue);
 			this.searchFieldBuilder = EntitySearchField.builder(searchModel);
+			this.editPanelSupplierAvailable = false;
 		}
 
 		private DefaultBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
 			this.searchFieldBuilder = EntitySearchField.builder(searchModel)
 							.editPanel(editPanelSupplier);
+			this.editPanelSupplierAvailable = editPanelSupplier != null;
 		}
 
 		@Override
@@ -250,12 +257,18 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 		@Override
 		public Builder includeAddButton(boolean includeAddButton) {
+			if (includeAddButton && !editPanelSupplierAvailable) {
+				throw new IllegalStateException("An edit panel is required for the add button");
+			}
 			this.includeAddButton = includeAddButton;
 			return this;
 		}
 
 		@Override
 		public Builder includeEditButton(boolean includeEditButton) {
+			if (includeEditButton && !editPanelSupplierAvailable) {
+				throw new IllegalStateException("You must provide an editPanel");
+			}
 			this.includeEditButton = includeEditButton;
 			return this;
 		}

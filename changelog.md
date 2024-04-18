@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.41-SNAPSHOT
+### is.codion.swing.fraework.ui
+- EntitySearchFieldPanel.Builder.includeAddButton() and includeEditButton() bug fixed, exception now thrown as per javadoc.
 
 ## 0.17.40
 ### is.codion.common.core
