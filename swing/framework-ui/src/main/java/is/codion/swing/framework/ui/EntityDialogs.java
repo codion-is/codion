@@ -327,7 +327,7 @@ public final class EntityDialogs {
 			Collection<T> values = Entity.distinct(attribute, selectedEntities);
 			T initialValue = values.size() == 1 ? values.iterator().next() : null;
 			ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
-			InputValidator<T> inputValidator = new InputValidator<>(entityDefinition, attribute, componentValue);
+			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);
 			if (updater == null) {
 				updater = new DefaultUpdater(owner, locationRelativeTo, onException);
 			}
@@ -338,7 +338,7 @@ public final class EntityDialogs {
 								.locationRelativeTo(locationRelativeTo)
 								.title(FrameworkMessages.edit())
 								.caption(attributeDefinition.caption())
-								.inputValidator(inputValidator)
+								.validator(validator)
 								.show();
 				selectedEntities.forEach(entity -> entity.put(attribute, newValue));
 				updatePerformed = update(selectedEntities.stream()

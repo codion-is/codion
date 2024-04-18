@@ -2279,7 +2279,7 @@ public class EntityTablePanel extends JPanel {
 							.buildValue();
 			tableModel.limit().set(Dialogs.inputDialog(limitValue)
 							.title(MESSAGES.getString("row_limit"))
-							.inputValidator(new LimitInputValidator())
+							.validator(new LimitValidator())
 							.show());
 		}
 
@@ -2287,7 +2287,7 @@ public class EntityTablePanel extends JPanel {
 			statusMessage.set(configuration.statusMessage.apply(tableModel));
 		}
 
-		private final class LimitInputValidator implements Predicate<Integer> {
+		private final class LimitValidator implements Predicate<Integer> {
 
 			@Override
 			public boolean test(Integer limit) {

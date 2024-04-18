@@ -62,7 +62,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 		RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(playlistParametersValue)
 						.owner(this)
 						.title(BUNDLE.getString("random_playlist"))
-						.inputValid(playlistParametersValue.component().parametersValid())
+						.valid(playlistParametersValue.component().parametersValid())
 						.show();
 
 		PlaylistTableModel playlistTableModel = tableModel();

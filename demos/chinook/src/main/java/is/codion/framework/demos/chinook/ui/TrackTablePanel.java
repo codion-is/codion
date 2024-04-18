@@ -75,7 +75,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		return Dialogs.inputDialog(amountValue)
 						.owner(this)
 						.title(BUNDLE.getString("amount"))
-						.inputValidator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)
+						.validator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)
 						.show();
 	}
 

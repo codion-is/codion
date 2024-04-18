@@ -104,14 +104,14 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> inputValid(StateObserver inputValid) {
-		okCancelDialogBuilder.okEnabled(inputValid);
+	public InputDialogBuilder<T> valid(StateObserver valid) {
+		okCancelDialogBuilder.okEnabled(valid);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> inputValidator(Predicate<T> validInputPredicate) {
-		return inputValid(createInputValidObserver(requireNonNull(validInputPredicate)));
+	public InputDialogBuilder<T> validator(Predicate<T> validator) {
+		return valid(createInputValidObserver(requireNonNull(validator)));
 	}
 
 	@Override
