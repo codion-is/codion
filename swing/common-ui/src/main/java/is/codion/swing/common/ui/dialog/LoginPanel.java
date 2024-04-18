@@ -189,7 +189,7 @@ final class LoginPanel extends JPanel {
 	}
 
 	private void onValidationFailure(Exception exception) {
-		user.set(null);
+		user.clear();
 		validating.set(false);
 		new DefaultExceptionDialogBuilder()
 						.owner(Utilities.parentWindow(this))

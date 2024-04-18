@@ -235,7 +235,7 @@ public final class EntityComboBoxModelTest {
 		assertNull(empIdValue.get());
 		empIdValue.set(10);
 		assertEquals("ADAMS", comboBoxModel.selectedValue().get(Employee.NAME));
-		empIdValue.set(null);
+		empIdValue.clear();
 		assertNull(comboBoxModel.selectedValue());
 	}
 
@@ -297,7 +297,7 @@ public final class EntityComboBoxModelTest {
 		comboBoxModel.refresh();
 		assertEquals(1, comboBoxModel.getSize());
 		assertEquals(2, refreshed.get());
-		comboBoxModel.condition().set(null);
+		comboBoxModel.condition().clear();
 		comboBoxModel.refresh();
 		assertEquals(16, comboBoxModel.getSize());
 		assertEquals(3, refreshed.get());
@@ -320,7 +320,7 @@ public final class EntityComboBoxModelTest {
 
 	@Test
 	void orderBy() {
-		comboBoxModel.comparator().set(null);
+		comboBoxModel.comparator().clear();
 		comboBoxModel.orderBy().set(OrderBy.ascending(Employee.NAME));
 		comboBoxModel.refresh();
 		assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));
@@ -364,6 +364,6 @@ public final class EntityComboBoxModelTest {
 
 		assertThrows(NullPointerException.class, () -> comboBoxModel.add(null));
 		assertThrows(NullPointerException.class, () -> comboBoxModel.replace(comboBoxModel.getElementAt(2), null));
-		assertThrows(NullPointerException.class, () -> comboBoxModel.nullItem().set(null));
+		assertThrows(NullPointerException.class, () -> comboBoxModel.nullItem().clear());
 	}
 }

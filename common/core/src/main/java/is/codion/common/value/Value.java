@@ -69,6 +69,11 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	boolean set(T value);
 
 	/**
+	 * Clears this value, by setting it to null or the null value in case this is a non-null value.
+	 */
+	void clear();
+
+	/**
 	 * Sets a new value mapped from the current value.
 	 * <pre>
 	 * {@code

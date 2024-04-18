@@ -83,7 +83,7 @@ public class FilteredComboBoxModelTest {
 		assertEquals(TOMAS, testModel.getElementAt(5));
 
 		Comparator<String> comparator = testModel.comparator().get();
-		testModel.comparator().set(null);
+		testModel.comparator().clear();
 		assertNull(testModel.comparator().get());
 		List<String> names = new ArrayList<>();
 		names.add(ANNA);
@@ -165,7 +165,7 @@ public class FilteredComboBoxModelTest {
 		assertEquals(NULL, testModel.getSelectedItem());
 		assertNull(testModel.selectedValue());
 
-		testModel.includeCondition().set(null);
+		testModel.includeCondition().clear();
 		testModel.filterSelectedItem().set(false);
 		assertFalse(testModel.filterSelectedItem().get());
 		testModel.setSelectedItem(BJORN);
@@ -210,7 +210,7 @@ public class FilteredComboBoxModelTest {
 		//remove filtered item
 		testModel.includeCondition().set(item -> !item.equals(BJORN));
 		testModel.remove(BJORN);
-		testModel.includeCondition().set(null);
+		testModel.includeCondition().clear();
 		assertFalse(testModel.visible(BJORN));
 
 		//remove visible item
@@ -230,7 +230,7 @@ public class FilteredComboBoxModelTest {
 		testModel.add(KALLI);
 		assertTrue(testModel.visible(KALLI));
 
-		testModel.includeCondition().set(null);
+		testModel.includeCondition().clear();
 		assertTrue(testModel.visible(BJORN));
 	}
 
@@ -283,7 +283,7 @@ public class FilteredComboBoxModelTest {
 		assertEquals('a', selectorValue.get());
 		selectorValue.set('k');
 		assertEquals(KALLI, testModel.getSelectedItem());
-		selectorValue.set(null);
+		selectorValue.clear();
 		assertTrue(testModel.nullSelected());
 		testModel.setSelectedItem(BJORN);
 		assertEquals('b', selectorValue.get());

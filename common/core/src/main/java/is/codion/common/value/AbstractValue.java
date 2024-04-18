@@ -89,6 +89,11 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
+	public final void clear() {
+		clearValue();
+	}
+
+	@Override
 	public final boolean map(Function<T, T> mapper) {
 		return set(requireNonNull(mapper).apply(get()));
 	}
@@ -239,6 +244,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 	 * @param value the value
 	 */
 	protected abstract void setValue(T value);
+
+	/**
+	 * Clears this value by setting it to null.
+	 */
+	protected void clearValue() {
+		set(null);
+	}
 
 	/**
 	 * Notifies listeners that the underlying value has changed or at least that it may have changed

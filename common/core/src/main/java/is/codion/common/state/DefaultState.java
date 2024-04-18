@@ -57,6 +57,11 @@ final class DefaultState implements State {
 	}
 
 	@Override
+	public void clear() {
+		set(null);
+	}
+
+	@Override
 	public boolean map(Function<Boolean, Boolean> mapper) {
 		synchronized (this.value) {
 			return this.value.map(mapper);

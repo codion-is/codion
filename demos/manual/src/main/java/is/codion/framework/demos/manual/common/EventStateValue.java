@@ -160,7 +160,7 @@ public final class EventStateValue {
 
 		System.out.println(value.get());// output: 42
 
-		value.set(null);
+		value.clear();
 
 		System.out.println(value.get());//output: 0
 		// end::nullValue[]

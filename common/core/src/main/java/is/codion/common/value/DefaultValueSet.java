@@ -164,13 +164,6 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 	}
 
 	@Override
-	public void clear() {
-		synchronized (this.values) {
-			set(emptySet());
-		}
-	}
-
-	@Override
 	public Value<T> value() {
 		synchronized (this.values) {
 			if (value == null) {
@@ -201,6 +194,13 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 		synchronized (this.values) {
 			this.values.clear();
 			this.values.addAll(values);
+		}
+	}
+
+	@Override
+	protected void clearValue() {
+		synchronized (this.values) {
+			set(emptySet());
 		}
 	}
 

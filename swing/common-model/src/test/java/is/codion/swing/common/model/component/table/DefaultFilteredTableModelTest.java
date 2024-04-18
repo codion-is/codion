@@ -107,7 +107,7 @@ public final class DefaultFilteredTableModelTest {
 		tableModel.sortModel().setSortOrder(0, SortOrder.DESCENDING);
 		assertFalse(tableModel.visible(F));
 		assertTrue(tableModel.containsItem(F));
-		tableModel.includeCondition().set(null);
+		tableModel.includeCondition().clear();
 		assertTrue(tableModel.visible(B));
 		assertTrue(tableModel.visible(F));
 	}
@@ -785,7 +785,7 @@ public final class DefaultFilteredTableModelTest {
 		tableModel.includeCondition().set(strings -> !strings.equals(A));
 		assertTrue(tableModel.includeCondition().isNotNull());
 		assertFalse(tableModel.visible(A));
-		tableModel.includeCondition().set(null);
+		tableModel.includeCondition().clear();
 		assertTrue(tableModel.visible(A));
 
 		assertFalse(tableModel.visible(B));

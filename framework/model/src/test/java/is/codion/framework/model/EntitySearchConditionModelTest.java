@@ -75,7 +75,7 @@ public class EntitySearchConditionModelTest {
 		assertEquals(searchModel.entity().get(), sales);
 		assertTrue(conditionModel.getEqualValues().contains(sales));
 
-		searchModel.entities().set(null);
+		searchModel.entities().clear();
 
 		searchEntities = conditionModel.getEqualValues();
 		assertTrue(searchEntities.isEmpty());

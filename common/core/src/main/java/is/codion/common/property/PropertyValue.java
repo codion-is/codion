@@ -49,5 +49,5 @@ public interface PropertyValue<T> extends Value<T> {
 	/**
 	 * Sets this value to null as well as removing it from the underlying store and clearing the system property.
 	 */
-	void clear();
+	void remove();
 }

@@ -52,7 +52,7 @@ public final class EntityComboBoxPanelTest {
 						TestDomain.Department.NAME.equalTo("SALES"));
 		model.setSelectedItem(sales);
 		assertEquals(sales, value.get());
-		value.set(null);
+		value.clear();
 		Entity entity = model.selectedValue();
 		assertNull(entity);
 		value.set(sales);

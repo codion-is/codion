@@ -504,7 +504,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void performSearch(boolean promptUser) {
 		if (nullOrEmpty(model.searchString().get())) {
-			model.entities().set(null);
+			model.entities().clear();
 		}
 		else if (model.searchStringModified().get()) {
 			cancelCurrentSearch();
@@ -994,7 +994,7 @@ public final class EntitySearchField extends HintTextField {
 		public void focusLost(FocusEvent e) {
 			if (!e.isTemporary()) {
 				if (getText().isEmpty()) {
-					model().entities().set(null);
+					model().entities().clear();
 				}
 				else if (shouldPerformSearch()) {
 					performSearch(false);

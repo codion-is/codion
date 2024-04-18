@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.41-SNAPSHOT
+### is.codion.common.core
+- Value.clear() added, PropertyValue.clear() renamed remove() in order to not clash with method from supertype.
 ### is.codion.swing.fraework.ui
 - EntitySearchFieldPanel.Builder.includeAddButton() and includeEditButton() bug fixed, exception now thrown as per javadoc.
 

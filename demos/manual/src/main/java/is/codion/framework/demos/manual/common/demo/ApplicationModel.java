@@ -101,7 +101,7 @@ public final class ApplicationModel {
 	}
 
 	public void clear() {
-		values.forEach(value -> value.set(null));
+		values.forEach(Value::clear);
 	}
 
 	public Value<String> shortStringValue() {

@@ -66,7 +66,7 @@ public final class DefaultPropertyStoreTest {
 		stringValue.set(null);
 		assertEquals("value", stringValue.get());
 		assertEquals(2, counter.get());
-		stringValue.clear();
+		stringValue.remove();
 		assertEquals(3, counter.get());
 		assertFalse(store.containsProperty(stringValue.propertyName()));
 		assertNull(System.getProperty(stringValue.propertyName()));
@@ -80,7 +80,7 @@ public final class DefaultPropertyStoreTest {
 
 		stringListValue.set(emptyList());
 		assertEquals("", store.getProperty(stringListValue.propertyName()));
-		stringListValue.clear();
+		stringListValue.remove();
 		assertFalse(store.containsProperty(stringListValue.propertyName()));
 
 		PropertyValue<List<Integer>> integerListValue = store.listValue("intlist.property", Integer::parseInt, Objects::toString);
@@ -102,7 +102,7 @@ public final class DefaultPropertyStoreTest {
 		assertEquals("3.14", System.getProperty(doubleValue.propertyName()));
 		doubleValue.set(null);
 		assertEquals(0d, doubleValue.get());
-		doubleValue.clear();
+		doubleValue.remove();
 		assertFalse(store.containsProperty(doubleValue.propertyName()));
 
 		PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property", false);

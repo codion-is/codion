@@ -172,13 +172,13 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	private void clearSearchResults() {
 		searchResults.clear();
 		searchResultIndex = -1;
-		searchResult.set(null);
+		searchResult.clear();
 	}
 
 	private void bindEvents() {
 		searchString.addConsumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)));
 		searchPredicate.addListener(this::performSearch);
-		regularExpression.addListener(() -> searchString.set(null));
+		regularExpression.addListener(searchString::clear);
 		caseSensitive.addListener(this::performSearch);
 		tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
 		tableModel.dataChangedEvent().addListener(() -> {

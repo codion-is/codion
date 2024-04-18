@@ -82,7 +82,7 @@ public class ValueSetTest {
 		valueSet.clear();
 		valueSet.addAll(1, 2);
 
-		valueSet.set(null);
+		valueSet.clear();
 		assertTrue(valueSet.add(1));
 		assertTrue(valueSet.add(2));
 
@@ -92,7 +92,7 @@ public class ValueSetTest {
 
 		value.set(1);
 		assertTrue(observer.contains(1));
-		value.set(null);
+		value.clear();
 		assertTrue(observer.empty());
 
 		valueSet.set(Collections.singleton(2));

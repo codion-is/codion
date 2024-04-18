@@ -98,7 +98,7 @@ public class BooleanValuesTest {
 
 		value.set(true);
 		assertTrue(model.isSelected());
-		value.set(null);
+		value.clear();
 		assertNull(model.getState());
 
 		model.setSelected(false);

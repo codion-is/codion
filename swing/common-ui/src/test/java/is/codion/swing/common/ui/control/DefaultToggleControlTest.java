@@ -62,7 +62,7 @@ public class DefaultToggleControlTest {
 		assertTrue(nullableControl.value().get());
 		nullableValue.set(false);
 		assertFalse(nullableControl.value().get());
-		nullableValue.set(null);
+		nullableValue.clear();
 		assertNull(toggleButtonModel.getState());
 		assertFalse(toggleButtonModel.isSelected());
 
@@ -78,7 +78,7 @@ public class DefaultToggleControlTest {
 		assertTrue(nonNullableControl.value().get());
 		nonNullableValue.set(false);
 		assertFalse(nonNullableControl.value().get());
-		nonNullableValue.set(null);
+		nonNullableValue.clear();
 		assertFalse(nonNullableControl.value().get());
 
 		State state = State.state(true);
@@ -144,7 +144,7 @@ public class DefaultToggleControlTest {
 		value.set(true);
 		assertTrue(buttonModel.isSelected());
 		assertTrue(buttonModel.getState());
-		value.set(null);
+		value.clear();
 		assertFalse(buttonModel.isSelected());
 		assertNull(buttonModel.getState());
 	}

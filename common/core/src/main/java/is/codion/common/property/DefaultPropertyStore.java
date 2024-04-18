@@ -306,7 +306,7 @@ final class DefaultPropertyStore implements PropertyStore {
 		}
 
 		@Override
-		public void clear() {
+		public void remove() {
 			boolean wasNotNull = value != null;
 			setValue(null);
 			if (wasNotNull) {

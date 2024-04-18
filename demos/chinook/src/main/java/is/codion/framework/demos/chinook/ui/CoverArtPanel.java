@@ -122,7 +122,7 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void removeCover() {
-		imageBytes.set(null);
+		imageBytes.clear();
 	}
 
 	private void setEmbedded(boolean embedded) {

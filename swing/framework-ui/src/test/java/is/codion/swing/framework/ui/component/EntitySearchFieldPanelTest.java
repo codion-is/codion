@@ -51,7 +51,7 @@ public final class EntitySearchFieldPanelTest {
 						Department.NAME.equalTo("SALES"));
 		model.entity().set(sales);
 		assertEquals(sales, value.get());
-		value.set(null);
+		value.clear();
 		Entity entity = model.entity().get();
 		assertNull(entity);
 		value.set(sales);

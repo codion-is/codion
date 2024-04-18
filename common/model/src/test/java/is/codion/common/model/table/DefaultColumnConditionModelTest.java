@@ -120,7 +120,7 @@ public class DefaultColumnConditionModelTest {
 		model.operator().set(Operator.LESS_THAN_OR_EQUAL);
 		assertEquals(1, operatorCounter.get());
 		assertEquals(Operator.LESS_THAN_OR_EQUAL, model.operator().get());
-		model.operator().set(null);
+		model.operator().clear();
 		assertEquals(Operator.EQUAL, model.operator().get());
 		model.operator().set(Operator.NOT_BETWEEN);
 		assertEquals(3, operatorCounter.get());

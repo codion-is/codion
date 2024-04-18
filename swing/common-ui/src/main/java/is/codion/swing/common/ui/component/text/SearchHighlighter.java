@@ -166,8 +166,8 @@ public final class SearchHighlighter {
 	}
 
 	private void searchAndHighlightResults() {
-		currentSearchTextPositionIndex.set(null);
-		selectedSearchTextPosition.set(null);
+		currentSearchTextPositionIndex.clear();
+		selectedSearchTextPosition.clear();
 		highlighter.removeAllHighlights();
 		searchTextPositions.clear();
 		if (!searchStringValue.get().isEmpty()) {

@@ -65,7 +65,7 @@ public class ValueTest {
 		value.set(1);
 		assertTrue(value.addValidator(validator));
 		assertFalse(value.addValidator(validator));
-		value.set(null);
+		value.clear();
 		assertEquals(0, value.get());
 		assertThrows(IllegalArgumentException.class, () -> value.set(11));
 		value.set(2);
@@ -99,7 +99,7 @@ public class ValueTest {
 		intValue.set(20);
 		assertEquals(1, eventCounter.get());
 		assertTrue(intValue.isEqualTo(20));
-		intValue.set(null);
+		intValue.clear();
 		assertTrue(intValue.isEqualTo(-1));
 		assertFalse(intValue.isNull());
 		assertTrue(intValue.isNotNull());
@@ -107,13 +107,13 @@ public class ValueTest {
 		assertEquals(-1, intValue.get());
 		assertEquals(-1, valueObserver.get());
 		assertEquals(2, eventCounter.get());
-		intValue.set(null);
+		intValue.clear();
 		assertEquals(-1, intValue.get());
 		assertEquals(-1, valueObserver.get());
 		assertEquals(2, eventCounter.get());
 		intValue.set(42);
 		assertEquals(3, eventCounter.get());
-		intValue.set(null);
+		intValue.clear();
 		assertEquals(-1, intValue.get());
 		assertEquals(-1, valueObserver.get());
 
@@ -122,7 +122,7 @@ public class ValueTest {
 		assertEquals("null", stringValue.get());
 		stringValue.set("test");
 		assertEquals("test", stringValue.get());
-		stringValue.set(null);
+		stringValue.clear();
 		assertEquals("null", stringValue.get());
 
 		Value<String> value = Value.value();
@@ -164,7 +164,7 @@ public class ValueTest {
 		assertEquals(2, modelValueEventCounter.get());
 		assertEquals(2, uiValueEventCounter.get());
 
-		uiValue.set(null);
+		uiValue.clear();
 		assertNull(modelValue.get());
 		assertTrue(modelValue.isNull());
 		assertFalse(modelValue.isNotNull());
@@ -208,7 +208,7 @@ public class ValueTest {
 		assertEquals(1, modelValueEventCounter.get());
 		assertEquals(2, uiValueEventCounter.get());
 
-		uiValue.set(null);
+		uiValue.clear();
 		assertNotNull(modelValue.get());
 		assertNull(uiValue.get());
 		assertEquals(1, modelValueEventCounter.get());
@@ -409,7 +409,7 @@ public class ValueTest {
 		Value<Integer> value = Value.nullable(1).build();
 		assertFalse(value.mapNull(() -> 2));
 		assertEquals(1, value.get());
-		value.set(null);
+		value.clear();
 		assertTrue(value.mapNull(() -> 2));
 		assertEquals(2, value.get());
 	}

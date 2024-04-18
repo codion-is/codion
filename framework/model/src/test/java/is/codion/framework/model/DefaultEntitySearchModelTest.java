@@ -115,8 +115,8 @@ public final class DefaultEntitySearchModelTest {
 						.build();
 		searchModel.entity().set(employee);
 		assertEquals(searchModel.searchString().get(), "CLERK");
-		searchModel.stringFunction().set(null);
-		searchModel.entity().set(null);
+		searchModel.stringFunction().clear();
+		searchModel.entity().clear();
 		searchModel.entity().set(employee);
 		assertEquals(searchModel.searchString().get(), "Darri");
 	}
@@ -213,7 +213,7 @@ public final class DefaultEntitySearchModelTest {
 		assertTrue(contains(result, "John"));
 		assertFalse(contains(result, "johnson"));
 
-		searchModel.condition().set(null);
+		searchModel.condition().clear();
 		searchModel.settings().get(Employee.NAME).caseSensitive().set(false);
 		searchModel.searchString().set("jo on");// space as wildcard
 		result = searchModel.search();
@@ -240,7 +240,7 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals(4, searchModel.search().size());
 		searchModel.limit().set(3);
 		assertEquals(3, searchModel.search().size());
-		searchModel.limit().set(null);
+		searchModel.limit().clear();
 		assertEquals(4, searchModel.search().size());
 	}
 

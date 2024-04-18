@@ -78,11 +78,6 @@ public interface ValueSet<T> extends Value<Set<T>>, ValueSetObserver<T> {
 	boolean removeAll(Collection<T> values);
 
 	/**
-	 * Clears all values from this ValueSet.
-	 */
-	void clear();
-
-	/**
 	 * Returns a {@link Value} instance based on this {@link ValueSet}.
 	 * Setting this value to null clears the value set.
 	 * This value consistently returns the first value from the

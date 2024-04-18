@@ -112,7 +112,7 @@ public class StringValuesTest {
 		assertNull(value.get());
 		value.component().setText("2");
 		assertEquals('2', value.get());
-		value.set(null);
+		value.clear();
 		assertTrue(value.component().getText().isEmpty());
 	}
 }
