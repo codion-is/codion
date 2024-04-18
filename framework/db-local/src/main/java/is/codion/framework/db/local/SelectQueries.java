@@ -332,7 +332,9 @@ final class SelectQueries {
 		}
 
 		private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
-			return entityDefinition.columns().definition(orderByColumn.column()).expression() +
+			String columnExpression = entityDefinition.columns().definition(orderByColumn.column()).expression();
+
+			return orderByColumn.ignoreCase() ? "UPPER(" + columnExpression + ")" : columnExpression +
 							(orderByColumn.ascending() ? "" : " DESC") +
 							nullOrderString(orderByColumn.nullOrder());
 		}

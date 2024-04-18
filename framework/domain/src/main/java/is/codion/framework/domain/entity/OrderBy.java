@@ -54,6 +54,11 @@ public interface OrderBy {
 		 * @return the {@link NullOrder} when ordering by this column
 		 */
 		NullOrder nullOrder();
+
+		/**
+		 * @return true if this ordering should ignore case
+		 */
+		boolean ignoreCase();
 	}
 
 	/**
@@ -91,6 +96,14 @@ public interface OrderBy {
 		Builder ascending(Column<?>... columns);
 
 		/**
+		 * Adds an 'ascending' order by ignoring case for the given columns
+		 * @param columns the columns
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 */
+		Builder ascendingIgnoreCase(Column<String>... columns);
+
+		/**
 		 * Adds an 'ascending' order by for the given columns
 		 * @param nullOrder the null order
 		 * @param columns the columns
@@ -98,6 +111,15 @@ public interface OrderBy {
 		 * @throws IllegalArgumentException in case {@code columns} is empty
 		 */
 		Builder ascending(NullOrder nullOrder, Column<?>... columns);
+
+		/**
+		 * Adds an 'ascending' order by ignoring case for the given columns
+		 * @param nullOrder the null order
+		 * @param columns the columns
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 */
+		Builder ascendingIgnoreCase(NullOrder nullOrder, Column<String>... columns);
 
 		/**
 		 * Adds a 'descending' order by for the given columns
@@ -108,6 +130,14 @@ public interface OrderBy {
 		Builder descending(Column<?>... columns);
 
 		/**
+		 * Adds a 'descending' order by ignoring case for the given columns
+		 * @param columns the columns
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 */
+		Builder descendingIgnoreCase(Column<?>... columns);
+
+		/**
 		 * Adds a 'descending' order by for the given columns
 		 * @param nullOrder the null order
 		 * @param columns the columns
@@ -115,6 +145,15 @@ public interface OrderBy {
 		 * @throws IllegalArgumentException in case {@code columns} is empty
 		 */
 		Builder descending(NullOrder nullOrder, Column<?>... columns);
+
+		/**
+		 * Adds a 'descending' order by ignoring case for the given columns
+		 * @param nullOrder the null order
+		 * @param columns the columns
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case {@code columns} is empty
+		 */
+		Builder descendingIgnoreCase(NullOrder nullOrder, Column<String>... columns);
 
 		/**
 		 * @return a new {@link OrderBy} instance based on this builder

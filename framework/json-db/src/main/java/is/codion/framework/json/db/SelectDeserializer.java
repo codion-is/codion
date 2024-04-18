@@ -112,14 +112,25 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 		OrderBy.Builder builder = OrderBy.builder();
 		for (JsonNode node : jsonNode) {
 			String[] split = node.asText().split(":");
-			Column<Object> column = (Column<Object>) definition.attributes().get(split[0]);
+			Column<?> column = (Column<?>) definition.attributes().get(split[0]);
 			String order = split[1];
 			NullOrder nullOrder = NullOrder.valueOf(split[2]);
+			boolean ignoreCase = Boolean.parseBoolean(split[3]);
 			if ("asc".equals(order)) {
-				builder.ascending(nullOrder, column);
+				if (ignoreCase) {
+					builder.ascendingIgnoreCase(nullOrder, (Column<String>) column);
+				}
+				else {
+					builder.ascending(nullOrder, column);
+				}
 			}
 			else {
-				builder.descending(nullOrder, column);
+				if (ignoreCase) {
+					builder.descendingIgnoreCase(nullOrder, (Column<String>) column);
+				}
+				else {
+					builder.descending(nullOrder, column);
+				}
 			}
 		}
 

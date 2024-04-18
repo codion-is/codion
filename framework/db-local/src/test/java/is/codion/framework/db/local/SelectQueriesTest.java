@@ -67,12 +67,15 @@ public final class SelectQueriesTest {
 		Select select = Select.where(QueryColumnsWhereClause.ENAME.equalTo("SCOTT"))
 						.attributes(QueryColumnsWhereClause.ENAME)
 						.having(QueryColumnsWhereClause.EMPNO.equalTo(4))
-						.orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
+						.orderBy(OrderBy.builder()
+										.descending(QueryColumnsWhereClause.EMPNO)
+										.ascendingIgnoreCase(QueryColumnsWhereClause.ENAME)
+										.build())
 						.build();
 		builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
 						.select(select);
 
 		//select should not affect columns when the columns are hardcoded in the entity query
-		assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10\nAND ename = ?\nHAVING empno = ?\nORDER BY empno DESC", builder.build());
+		assertEquals("SELECT e.empno, e.ename\nFROM employees.employee e\nWHERE e.deptno > 10\nAND ename = ?\nHAVING empno = ?\nORDER BY empno DESC, UPPER(ename)", builder.build());
 	}
 }

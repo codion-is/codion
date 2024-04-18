@@ -74,11 +74,14 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 		private final Column<?> column;
 		private final NullOrder nullOrder;
 		private final boolean ascending;
+		private final boolean ignoreCase;
 
-		private DefaultOrderByColumn(Column<?> column, NullOrder nullOrder, boolean ascending) {
+		private DefaultOrderByColumn(Column<?> column, NullOrder nullOrder,
+																 boolean ascending, boolean ignoreCase) {
 			this.column = requireNonNull(column, "column");
 			this.nullOrder = requireNonNull(nullOrder, "nullOrder");
 			this.ascending = ascending;
+			this.ignoreCase = ignoreCase;
 		}
 
 		@Override
@@ -97,6 +100,11 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 		}
 
 		@Override
+		public boolean ignoreCase() {
+			return ignoreCase;
+		}
+
+		@Override
 		public boolean equals(Object object) {
 			if (this == object) {
 				return true;
@@ -107,12 +115,13 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 			DefaultOrderByColumn that = (DefaultOrderByColumn) object;
 			return column.equals(that.column) &&
 							nullOrder.equals(that.nullOrder) &&
-							ascending == that.ascending;
+							ascending == that.ascending &&
+							ignoreCase == that.ignoreCase;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(column, nullOrder, ascending);
+			return Objects.hash(column, nullOrder, ascending, ignoreCase);
 		}
 
 		@Override
@@ -121,6 +130,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 							"column=" + column +
 							", nullOrder=" + nullOrder +
 							", ascending=" + ascending +
+							", ignoreCase=" + ignoreCase +
 							'}';
 		}
 	}
@@ -131,25 +141,49 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
 		@Override
 		public Builder ascending(Column<?>... columns) {
-			add(true, NullOrder.DEFAULT, requireNonNull(columns));
+			add(true, NullOrder.DEFAULT, false, requireNonNull(columns));
+			return this;
+		}
+
+		@Override
+		public Builder ascendingIgnoreCase(Column<String>... columns) {
+			add(true, NullOrder.DEFAULT, true, requireNonNull(columns));
 			return this;
 		}
 
 		@Override
 		public Builder ascending(NullOrder nullOrder, Column<?>... columns) {
-			add(true, requireNonNull(nullOrder), requireNonNull(columns));
+			add(true, requireNonNull(nullOrder), false, requireNonNull(columns));
+			return this;
+		}
+
+		@Override
+		public Builder ascendingIgnoreCase(NullOrder nullOrder, Column<String>... columns) {
+			add(true, requireNonNull(nullOrder), true, requireNonNull(columns));
 			return this;
 		}
 
 		@Override
 		public Builder descending(Column<?>... columns) {
-			add(false, NullOrder.DEFAULT, requireNonNull(columns));
+			add(false, NullOrder.DEFAULT, false, requireNonNull(columns));
+			return this;
+		}
+
+		@Override
+		public Builder descendingIgnoreCase(Column<?>... columns) {
+			add(false, NullOrder.DEFAULT, true, requireNonNull(columns));
 			return this;
 		}
 
 		@Override
 		public Builder descending(NullOrder nullOrder, Column<?>... columns) {
-			add(false, requireNonNull(nullOrder), requireNonNull(columns));
+			add(false, requireNonNull(nullOrder), false, requireNonNull(columns));
+			return this;
+		}
+
+		@Override
+		public Builder descendingIgnoreCase(NullOrder nullOrder, Column<String>... columns) {
+			add(false, requireNonNull(nullOrder), true, requireNonNull(columns));
 			return this;
 		}
 
@@ -158,7 +192,8 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 			return new DefaultOrderBy(this);
 		}
 
-		private void add(boolean ascending, NullOrder nullOrder, Column<?>... columns) {
+		private void add(boolean ascending, NullOrder nullOrder,
+										 boolean ignoreCase, Column<?>... columns) {
 			if (columns.length == 0) {
 				throw new IllegalArgumentException("One or more columns required for order by");
 			}
@@ -168,7 +203,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 						throw new IllegalArgumentException("Order by already contains column: " + column);
 					}
 				}
-				orderByColumns.add(new DefaultOrderByColumn(column, nullOrder, ascending));
+				orderByColumns.add(new DefaultOrderByColumn(column, nullOrder, ascending, ignoreCase));
 			}
 		}
 	}
