@@ -28,7 +28,7 @@ import java.util.Collection;
  * <pre>
  * State state = State.state();
  *
- * StateObserver observer = state.getObserver();
+ * StateObserver observer = state.observer();
  *
  * observer.addConsumer(this::onStateChange);
  *
