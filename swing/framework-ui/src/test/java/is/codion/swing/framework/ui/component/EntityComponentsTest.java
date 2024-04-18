@@ -72,7 +72,7 @@ public final class EntityComponentsTest {
 		ComponentValue<Boolean, JCheckBox> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
-										.linkedValue(editModel.value(Detail.BOOLEAN))
+										.link(editModel.value(Detail.BOOLEAN))
 										.buildValue();
 		JCheckBox box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
@@ -93,7 +93,7 @@ public final class EntityComponentsTest {
 		ComponentValue<Boolean, JToggleButton> componentValue =
 						entityComponents.toggleButton(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
-										.linkedValue(editModel.value(Detail.BOOLEAN))
+										.link(editModel.value(Detail.BOOLEAN))
 										.buildValue();
 		JToggleButton box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
@@ -115,7 +115,7 @@ public final class EntityComponentsTest {
 						entityComponents.checkBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
 										.nullable(true)
-										.linkedValue(editModel.value(Detail.BOOLEAN_NULLABLE))
+										.link(editModel.value(Detail.BOOLEAN_NULLABLE))
 										.buildValue();
 		NullableCheckBox box = (NullableCheckBox) componentValue.component();
 		assertTrue(box.isSelected());//default value is true
@@ -137,7 +137,7 @@ public final class EntityComponentsTest {
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
 						entityComponents.booleanComboBox(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
-										.linkedValue(editModel.value(Detail.BOOLEAN))
+										.link(editModel.value(Detail.BOOLEAN))
 										.buildValue();
 		ItemComboBoxModel<Boolean> boxModel = (ItemComboBoxModel<Boolean>) componentValue.component().getModel();
 		assertTrue(boxModel.selectedValue().get());
@@ -153,7 +153,7 @@ public final class EntityComponentsTest {
 		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
 						entityComponents.itemComboBox(Detail.INT_VALUE_LIST)
 										.transferFocusOnEnter(true)
-										.linkedValue(editModel.value(Detail.INT_VALUE_LIST))
+										.link(editModel.value(Detail.INT_VALUE_LIST))
 										.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 
@@ -191,7 +191,7 @@ public final class EntityComponentsTest {
 						entityComponents.comboBox(Detail.INT, boxModel)
 										.completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
 										.transferFocusOnEnter(true)
-										.linkedValue(editModel.value(Detail.INT))
+										.link(editModel.value(Detail.INT))
 										.buildValue();
 		JComboBox<Integer> box = componentValue.component();
 
@@ -224,23 +224,23 @@ public final class EntityComponentsTest {
 										.columns(10)
 										.upperCase(true)
 										.selectAllOnFocusGained(true)
-										.linkedValue(editModel.value(Detail.STRING))
+										.link(editModel.value(Detail.STRING))
 										.buildValue();
 		JTextField field = componentValue.component();
 		field.setText("hello");
 		assertEquals("HELLO", editModel.get(Detail.STRING));
 
 		entityComponents.textField(Detail.DATE)
-						.linkedValue(editModel.value(Detail.DATE))
+						.link(editModel.value(Detail.DATE))
 						.buildValue();
 		entityComponents.textField(Detail.TIME)
-						.linkedValue(editModel.value(Detail.TIME))
+						.link(editModel.value(Detail.TIME))
 						.buildValue();
 		entityComponents.textField(Detail.TIMESTAMP)
-						.linkedValue(editModel.value(Detail.TIMESTAMP))
+						.link(editModel.value(Detail.TIMESTAMP))
 						.buildValue();
 		entityComponents.textField(Detail.OFFSET)
-						.linkedValue(editModel.value(Detail.OFFSET))
+						.link(editModel.value(Detail.OFFSET))
 						.buildValue();
 	}
 
@@ -253,7 +253,7 @@ public final class EntityComponentsTest {
 										.updateOn(UpdateOn.VALUE_CHANGE)
 										.lineWrap(true)
 										.wrapStyleWord(true)
-										.linkedValue(editModel.value(Detail.STRING))
+										.link(editModel.value(Detail.STRING))
 										.buildValue();
 		JTextArea textArea = componentValue.component();
 		textArea.setText("hello");
@@ -268,7 +268,7 @@ public final class EntityComponentsTest {
 										.columns(10)
 										.buttonFocusable(true)
 										.updateOn(UpdateOn.VALUE_CHANGE)
-										.linkedValue(editModel.value(Detail.STRING))
+										.link(editModel.value(Detail.STRING))
 										.buildValue();
 		TextFieldPanel inputPanel = componentValue.component();
 		inputPanel.setText("hello");
@@ -284,7 +284,7 @@ public final class EntityComponentsTest {
 										.columns(6)
 										.commitsOnValidEdit(true)
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
-										.linkedValue(editModel.value(Detail.STRING))
+										.link(editModel.value(Detail.STRING))
 										.buildValue();
 		JFormattedTextField field = componentValue.component();
 		field.setText("1234");
@@ -295,7 +295,7 @@ public final class EntityComponentsTest {
 	void foreignKeyLabel() {
 		ComponentValue<Entity, JLabel> componentValue =
 						entityComponents.foreignKeyLabel(Detail.MASTER_FK)
-										.linkedValue(editModel.value(Detail.MASTER_FK))
+										.link(editModel.value(Detail.MASTER_FK))
 										.buildValue();
 		JLabel field = componentValue.component();
 		Entity entity = editModel.entities().builder(Master.TYPE).with(Master.NAME, "name").build();
@@ -316,7 +316,7 @@ public final class EntityComponentsTest {
 	@Test
 	void foreignKeyComboBox() {
 		entityComponents.foreignKeyComboBox(Detail.MASTER_FK, editModel.foreignKeyComboBoxModel(Detail.MASTER_FK))
-						.linkedValue(editModel.value(Detail.MASTER_FK))
+						.link(editModel.value(Detail.MASTER_FK))
 						.buildValue();
 	}
 
@@ -325,7 +325,7 @@ public final class EntityComponentsTest {
 		Value<Integer> value = Value.value();
 		ComponentValue<Integer, JSpinner> componentValue =
 						entityComponents.integerSpinner(Detail.INT)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		JSpinner spinner = componentValue.component();
 		value.set(100);
@@ -339,7 +339,7 @@ public final class EntityComponentsTest {
 		Value<Double> value = Value.value();
 		ComponentValue<Double, JSpinner> componentValue =
 						entityComponents.doubleSpinner(Detail.DOUBLE)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		JSpinner spinner = componentValue.component();
 		value.set(100d);
@@ -353,7 +353,7 @@ public final class EntityComponentsTest {
 		Value<Integer> value = Value.value();
 		ComponentValue<Integer, JSlider> componentValue =
 						entityComponents.slider(Detail.INT)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		JSlider slider = componentValue.component();
 		value.set(100);

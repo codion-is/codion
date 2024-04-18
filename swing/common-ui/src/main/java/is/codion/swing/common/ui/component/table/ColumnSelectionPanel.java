@@ -105,12 +105,12 @@ final class ColumnSelectionPanel<C> extends JPanel {
 
 	private JPanel createNorthPanel(Insets insets) {
 		JCheckBox selectAllBox = checkBox()
-						.linkedValue(State.and(visibleStates.values()))
+						.link(State.and(visibleStates.values()))
 						.text(MESSAGES.getString("select_all"))
 						.mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
 						.build();
 		JCheckBox selectNoneBox = checkBox()
-						.linkedValue(State.and(visibleStates.values().stream()
+						.link(State.and(visibleStates.values().stream()
 										.map(StateObserver::not)
 										.collect(Collectors.toList())))
 						.text(MESSAGES.getString("select_none"))

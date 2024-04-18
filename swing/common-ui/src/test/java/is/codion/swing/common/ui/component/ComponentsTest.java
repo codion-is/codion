@@ -116,7 +116,7 @@ public final class ComponentsTest {
 						.font(defaultFont.deriveFont(Font.BOLD))
 						.foreground(Color.WHITE)
 						.background(Color.BLACK)
-						.linkedValue(value);
+						.link(value);
 
 		NumberField<Integer> component = builder.build();
 		ComponentValue<Integer, NumberField<Integer>> componentValue = builder.buildValue();
@@ -164,7 +164,7 @@ public final class ComponentsTest {
 						.minimumWidth(10)
 						.foreground(Color.WHITE)
 						.background(Color.BLACK)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(componentValue.component().getText(), "42");
 	}
@@ -179,7 +179,7 @@ public final class ComponentsTest {
 						.minimumWidth(10)
 						.foreground(Color.WHITE)
 						.background(Color.BLACK)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(componentValue.component().getText(), "42");
 	}
@@ -192,7 +192,7 @@ public final class ComponentsTest {
 						.groupingSeparator('.')
 						.maximumHeight(10)
 						.maximumWidth(10)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(componentValue.component().getText(), "42");
 	}
@@ -207,7 +207,7 @@ public final class ComponentsTest {
 						.decimalSeparator(',')
 						.minimumSize(new Dimension(10, 10))
 						.maximumSize(new Dimension(10, 10))
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(componentValue.component().getNumber(), value.get());
 	}
@@ -220,7 +220,7 @@ public final class ComponentsTest {
 						.groupingSeparator('.')
 						.decimalSeparator(',')
 						.maximumSize(new Dimension(10, 10))
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(componentValue.component().getNumber(), value.get());
 	}
@@ -231,7 +231,7 @@ public final class ComponentsTest {
 		ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
 						Components.localTimeField("HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
 	}
@@ -242,7 +242,7 @@ public final class ComponentsTest {
 		ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
 						Components.localDateField("dd-MM-yyyy")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		assertEquals(componentValue.get(), value.get());
 	}
@@ -253,7 +253,7 @@ public final class ComponentsTest {
 		ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
 						Components.localDateTimeField("dd-MM-yyyy HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
 	}
@@ -264,7 +264,7 @@ public final class ComponentsTest {
 		ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
 						Components.offsetDateTimeField("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 //    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
 	}
@@ -515,7 +515,7 @@ public final class ComponentsTest {
 						Components.booleanComboBox(booleanItemComboBoxModel())
 										.maximumRowCount(5)
 										.transferFocusOnEnter(true)
-										.linkedValue(value)
+										.link(value)
 										.buildValue();
 		ItemComboBoxModel<Boolean> boxModel =
 						(ItemComboBoxModel<Boolean>) componentValue.component().getModel();
@@ -536,7 +536,7 @@ public final class ComponentsTest {
 						.mouseWheelScrollingWithWrapAround(true)
 						.transferFocusOnEnter(true)
 						.sorted(true)
-						.linkedValue(value)
+						.link(value)
 						.nullable(true)
 						.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
@@ -564,7 +564,7 @@ public final class ComponentsTest {
 						.editable(true)
 						.componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
 						.maximumRowCount(5)
-						.linkedValue(value)
+						.link(value)
 						.mouseWheelScrollingWithWrapAround(true)
 						.transferFocusOnEnter(true)
 						.buildValue();
@@ -592,7 +592,7 @@ public final class ComponentsTest {
 						.selector(component -> Optional.empty())
 						.format(null)
 						.horizontalAlignment(SwingConstants.CENTER)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		JTextField field = componentValue.component();
 		field.setText("hello");
@@ -609,7 +609,7 @@ public final class ComponentsTest {
 						.updateOn(UpdateOn.VALUE_CHANGE)
 						.lineWrap(true)
 						.wrapStyleWord(true)
-						.linkedValue(value);
+						.link(value);
 		ComponentValue<String, JTextArea> componentValue = builder
 						.buildValue();
 		JTextArea textArea = componentValue.component();
@@ -633,7 +633,7 @@ public final class ComponentsTest {
 						.caption("caption")
 						.dialogTitle("title")
 						.updateOn(UpdateOn.VALUE_CHANGE)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		TextFieldPanel textFieldPanel = componentValue.component();
 		textFieldPanel.setText("hello");
@@ -667,7 +667,7 @@ public final class ComponentsTest {
 						.invalidCharacters("6789")
 						.focusLostBehaviour(JFormattedTextField.COMMIT)
 						.emptyStringToNullValue(true)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		JFormattedTextField field = componentValue.component();
 		field.setText("1234");
@@ -685,7 +685,7 @@ public final class ComponentsTest {
 						.stepSize(10)
 						.mouseWheelScrolling(true)
 						.transferFocusOnEnter(true)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(10, componentValue.get());
 		value.set(50);
@@ -702,7 +702,7 @@ public final class ComponentsTest {
 						.columns(5)
 						.mouseWheelScrollingReversed(true)
 						.transferFocusOnEnter(true)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(10d, componentValue.get());
 		value.set(50d);
@@ -718,7 +718,7 @@ public final class ComponentsTest {
 						.mouseWheelScrolling(true)
 						.editable(false)
 						.transferFocusOnEnter(true)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals("One", componentValue.get());
 		value.set("Two");
@@ -734,7 +734,7 @@ public final class ComponentsTest {
 						.mouseWheelScrolling(true)
 						.editable(false)
 						.transferFocusOnEnter(true)
-						.linkedValue(value)
+						.link(value)
 						.buildValue();
 		assertEquals(1, componentValue.get());
 		value.set(2);
@@ -753,7 +753,7 @@ public final class ComponentsTest {
 						.minorTickSpacing(1)
 						.majorTickSpacing(10)
 						.mouseWheelScrollingReversed(true)
-						.linkedValue(value)
+						.link(value)
 						.orientation(SwingConstants.VERTICAL)
 						.buildValue();
 		assertEquals(10, componentValue.get());
@@ -789,7 +789,7 @@ public final class ComponentsTest {
 						.layoutOrientation(JList.VERTICAL)
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
-						.linkedValue(textValue);
+						.link(textValue);
 		ComponentValue<Set<String>, JList<String>> componentValue = listBuilder
 						.buildValue();
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
@@ -815,7 +815,7 @@ public final class ComponentsTest {
 						.layoutOrientation(JList.VERTICAL)
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
-						.linkedValue(textValue);
+						.link(textValue);
 		ComponentValue<String, JList<String>> componentValue = listBuilder
 						.buildValue();
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
@@ -840,7 +840,7 @@ public final class ComponentsTest {
 						.layoutOrientation(JList.VERTICAL)
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
-						.linkedValue(textValue);
+						.link(textValue);
 		ComponentValue<Set<String>, JList<String>> componentValue = listBuilder
 						.buildValue();
 		assertEquals(new HashSet<>(asList("one", "two", "three")), componentValue.get());
@@ -857,9 +857,9 @@ public final class ComponentsTest {
 	@Test
 	void valueLocked() {
 		assertThrows(IllegalStateException.class, () -> Components.stringField(Value.value())
-						.linkedValue(Value.value()));
+						.link(Value.value()));
 		assertThrows(IllegalStateException.class, () -> Components.stringField(Value.value())
-						.linkedValue(Value.value()));
+						.link(Value.value()));
 	}
 
 	@Test
@@ -879,7 +879,7 @@ public final class ComponentsTest {
 						.validator(validator)
 						.build());
 		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
-						.linkedValue(stringValue.observer())
+						.link(stringValue.observer())
 						.validator(validator)
 						.build());
 	}

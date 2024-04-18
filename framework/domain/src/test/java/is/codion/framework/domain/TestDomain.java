@@ -249,8 +249,8 @@ public final class TestDomain extends DefaultDomain {
 														.items(ITEMS)
 														.caption(Detail2.INT_VALUE_LIST.name()),
 										Detail2.INT_DERIVED.define()
-														.derived(linkedValues -> {
-															Integer intValue = linkedValues.get(Detail2.INT);
+														.derived(sourceValues -> {
+															Integer intValue = sourceValues.get(Detail2.INT);
 															if (intValue == null) {
 																return null;
 															}
@@ -353,8 +353,8 @@ public final class TestDomain extends DefaultDomain {
 														.items(ITEMS)
 														.caption(Detail.INT_VALUE_LIST.name()),
 										Detail.INT_DERIVED.define()
-														.derived(linkedValues -> {
-															Integer intValue = linkedValues.get(Detail.INT);
+														.derived(sourceValues -> {
+															Integer intValue = sourceValues.get(Detail.INT);
 															if (intValue == null) {
 
 																return null;
@@ -621,7 +621,7 @@ public final class TestDomain extends DefaultDomain {
 										InvalidDerived.INT.define()
 														.column(),
 										InvalidDerived.INVALID_DERIVED.define()
-														.derived(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
+														.derived(sourceValues -> sourceValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
 						.stringFactory(entity -> null));
 	}

@@ -943,7 +943,7 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 		componentBuilders.put(attribute, componentBuilder
 						.transferFocusOnEnter(transferFocusOnEnter.get())
-						.linkedValue(editModel().value(attribute))
+						.link(editModel().value(attribute))
 						.onBuild(new SetComponent<>(attribute)));
 
 		return componentBuilder;

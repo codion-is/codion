@@ -146,8 +146,8 @@ public final class TestDomain extends DefaultDomain {
 														.items(ITEMS)
 														.caption(Detail.INT_VALUE_LIST.name()),
 										Detail.INT_DERIVED.define()
-														.derived(linkedValues -> {
-															Integer intValue = linkedValues.get(Detail.INT);
+														.derived(sourceValues -> {
+															Integer intValue = sourceValues.get(Detail.INT);
 															if (intValue == null) {
 																return null;
 															}

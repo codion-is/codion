@@ -11,6 +11,7 @@ Codion Change Log
 - AbstractQueriedKeyGenerator.selectAndPopulate() primary key column definition parameter removed.
 ### is.codion.swing.common.ui
 - ListBuilder overhaul, ListBuilder.Factory added, provides list builders depending on whether the value should be represented by the list items or selected item(s).
+- ComponentBuilder.linkedValue() renamed link().
 ### is.codion.swing.fraework.ui
 - EntitySearchField.searchControl() added.
 - EntitySearchFieldPanel, search button added.

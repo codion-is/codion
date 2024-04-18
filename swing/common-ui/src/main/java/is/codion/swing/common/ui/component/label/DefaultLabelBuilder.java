@@ -52,7 +52,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 
 	DefaultLabelBuilder(ValueObserver<T> linkedValue) {
 		this.text = null;
-		linkedValue(requireNonNull(linkedValue));
+		link(requireNonNull(linkedValue));
 	}
 
 	@Override

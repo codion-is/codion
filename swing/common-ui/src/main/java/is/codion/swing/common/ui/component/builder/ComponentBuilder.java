@@ -344,17 +344,17 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @param linkedValue a value to link to the component value
 	 * @return this builder instance
 	 */
-	B linkedValue(Value<T> linkedValue);
+	B link(Value<T> linkedValue);
 
 	/**
 	 * Creates a read-only link to the given {@link ValueObserver}.
 	 * @param linkedValue a value to link to the component value
 	 * @return this builder instance
 	 */
-	B linkedValue(ValueObserver<T> linkedValue);
+	B link(ValueObserver<T> linkedValue);
 
 	/**
-	 * Sets the initial value for the component, overridden by {@link #linkedValue(Value)}.
+	 * Sets the initial value for the component, overridden by {@link #link(Value)}.
 	 * Note that null is not explicitely set, the component is assumed to represent the null
 	 * value right after it's been created.
 	 * @param initialValue the initial value

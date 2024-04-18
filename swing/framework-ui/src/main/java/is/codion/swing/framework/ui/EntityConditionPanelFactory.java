@@ -172,7 +172,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 		@Override
 		public JComponent createEqualField() {
 			return inputComponents.component(attribute)
-							.linkedValue(conditionModel.equalValues().value())
+							.link(conditionModel.equalValues().value())
 							.onBuild(AttributeBoundFieldFactory::configureComponent)
 							.build();
 		}
@@ -184,7 +184,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 			}
 
 			return Optional.of(inputComponents.component(attribute)
-							.linkedValue(conditionModel.upperBoundValue())
+							.link(conditionModel.upperBoundValue())
 							.onBuild(AttributeBoundFieldFactory::configureComponent)
 							.build());
 		}
@@ -196,7 +196,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 			}
 
 			return Optional.of(inputComponents.component(attribute)
-							.linkedValue(conditionModel.lowerBoundValue())
+							.link(conditionModel.lowerBoundValue())
 							.onBuild(AttributeBoundFieldFactory::configureComponent)
 							.build());
 		}

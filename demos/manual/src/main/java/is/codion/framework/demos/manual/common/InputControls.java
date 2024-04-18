@@ -155,7 +155,7 @@ public final class InputControls {
 		ComponentValue<Integer, NumberField<Integer>> numberFieldValue =
 						Components.integerField()
 										//linked to the same value
-										.linkedValue(integerValue)
+										.link(integerValue)
 										.buildValue();
 
 		//fetch the input field from the component value

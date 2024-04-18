@@ -80,7 +80,7 @@ final class CountryEditPanel extends EntityEditPanel {
 		//add a field displaying the avarage city population for the selected country
 		CountryEditModel editModel = editModel();
 		NumberField<Double> averageCityPopulationField = doubleField()
-						.linkedValue(editModel.averageCityPopulation())
+						.link(editModel.averageCityPopulation())
 						.maximumFractionDigits(2)
 						.groupingUsed(true)
 						.horizontalAlignment(SwingConstants.CENTER)

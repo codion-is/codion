@@ -123,7 +123,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	 */
 	protected AbstractComponentBuilder(Value<T> linkedValue) {
 		if (linkedValue != null) {
-			linkedValue(linkedValue);
+			link(linkedValue);
 		}
 		this.linkedValueLocked = linkedValue != null;
 	}
@@ -368,7 +368,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B linkedValue(Value<T> linkedValue) {
+	public final B link(Value<T> linkedValue) {
 		if (requireNonNull(linkedValue).nullable() && !supportsNull()) {
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
@@ -383,7 +383,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B linkedValue(ValueObserver<T> linkedValueObserver) {
+	public final B link(ValueObserver<T> linkedValueObserver) {
 		if (requireNonNull(linkedValueObserver).nullable() && !supportsNull()) {
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
