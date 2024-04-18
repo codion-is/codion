@@ -31,6 +31,8 @@ final class DefaultValue<T> extends AbstractValue<T> {
 		super(builder.nullValue, builder.notify);
 		set(builder.initialValue);
 		builder.validators.forEach(this::addValidator);
+		builder.linkedValues.forEach(this::link);
+		builder.linkedObservers.forEach(this::link);
 	}
 
 	@Override
@@ -47,6 +49,8 @@ final class DefaultValue<T> extends AbstractValue<T> {
 
 		private final T nullValue;
 		private final List<Validator<T>> validators = new ArrayList<>();
+		private final List<Value<T>> linkedValues = new ArrayList<>();
+		private final List<ValueObserver<T>> linkedObservers = new ArrayList<>();
 
 		private T initialValue;
 		private Notify notify = Notify.WHEN_CHANGED;
@@ -75,6 +79,18 @@ final class DefaultValue<T> extends AbstractValue<T> {
 		@Override
 		public Builder<T> validator(Validator<T> validator) {
 			this.validators.add(requireNonNull(validator));
+			return this;
+		}
+
+		@Override
+		public Builder<T> link(Value<T> originalValue) {
+			this.linkedValues.add(requireNonNull(originalValue));
+			return this;
+		}
+
+		@Override
+		public Builder<T> link(ValueObserver<T> originalValue) {
+			this.linkedObservers.add(requireNonNull(originalValue));
 			return this;
 		}
 

@@ -285,9 +285,10 @@ public class StateTest {
 	@Test
 	void linking() {
 		State state = State.state();
-		Value<Boolean> value = Value.nullable(true).build();
+		Value<Boolean> value = Value.nullable(true)
+						.link(state)
+						.build();
 
-		value.link(state);
 		assertFalse(value.get());
 		state.set(true);
 		assertTrue(value.get());

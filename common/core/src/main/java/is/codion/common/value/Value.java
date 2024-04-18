@@ -218,6 +218,22 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		Builder<T> validator(Validator<T> validator);
 
 		/**
+		 * Links the given value to the resulting value
+		 * @param originalValue the original value to link
+		 * @return this builder instance
+		 * @see Value#link(Value)
+		 */
+		Builder<T> link(Value<T> originalValue);
+
+		/**
+		 * Links the given value observer to the resulting value
+		 * @param originalValue the value to link
+		 * @return this builder instance
+		 * @see Value#link(ValueObserver)
+		 */
+		Builder<T> link(ValueObserver<T> originalValue);
+
+		/**
 		 * @return a new {@link Value} instance based on this builder
 		 */
 		Value<T> build();

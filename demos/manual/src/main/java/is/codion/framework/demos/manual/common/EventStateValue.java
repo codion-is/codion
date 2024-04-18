@@ -130,9 +130,9 @@ public final class EventStateValue {
 		// a non-null value using 0 as null
 		Value<Integer> otherValue =
 						Value.nonNull(0)
+										// linked to the value above
+										.link(value)
 										.build();
-
-		otherValue.link(value);
 
 		System.out.println(otherValue.get());// output: 4
 
