@@ -67,7 +67,9 @@ final class ExceptionPanel extends JPanel {
 	private static final int SCROLL_PANE_HEIGHT = 200;
 	private static final int TAB_SIZE = 4;
 
-	private final State showDetailState = State.state();
+	private final State showDetailState = State.builder()
+					.consumer(this::showDetails)
+					.build();
 	private final JCheckBox detailsCheckBox = CheckBoxBuilder.builder(showDetailState)
 					.text(MESSAGES.getString("details"))
 					.toolTipText(MESSAGES.getString("show_details"))
@@ -154,7 +156,6 @@ final class ExceptionPanel extends JPanel {
 						.condition(WHEN_IN_FOCUSED_WINDOW)
 						.action(Control.control(this::closeDialog))
 						.enable(this);
-		showDetailState.addConsumer(this::showDetails);
 	}
 
 	private void showDetails(boolean showDetails) {

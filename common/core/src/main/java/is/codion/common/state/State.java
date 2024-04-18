@@ -20,8 +20,10 @@ package is.codion.common.state;
 
 import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * A class encapsulating a boolean state, non-nullable with null values translated to false.
@@ -36,7 +38,9 @@ import java.util.Collection;
  * state.set(false);
  * state.clear(); //translates to false
  * </pre>
- * A factory for {@link State} objects.
+ * A factory for {@link State} instances.
+ * @see #state()
+ * @see #builder()
  */
 public interface State extends StateObserver, Value<Boolean> {
 
@@ -109,7 +113,22 @@ public interface State extends StateObserver, Value<Boolean> {
 	 * @return a new {@link State} instance
 	 */
 	static State state(boolean value) {
-		return new DefaultState(value);
+		return builder(value).build();
+	}
+
+	/**
+	 * @return a new {@link Builder} instance
+	 */
+	static Builder builder() {
+		return builder(false);
+	}
+
+	/**
+	 * @param value the initial value
+	 * @return a new {@link Builder} instance
+	 */
+	static Builder builder(boolean value) {
+		return new DefaultState.DefaultBuilder(value);
 	}
 
 	/**
@@ -188,5 +207,69 @@ public interface State extends StateObserver, Value<Boolean> {
 	 */
 	static Group group(Collection<State> states) {
 		return new DefaultStateGroup(states);
+	}
+
+	/**
+	 * Builds a {@link State} instance.
+	 */
+	interface Builder {
+
+		/**
+		 * @param notify the notify policy for this value, default {@link Notify#WHEN_CHANGED}
+		 * @return this builder instance
+		 */
+		Builder notify(Notify notify);
+
+		/**
+		 * Adds a validator to the resulting state
+		 * @param validator the validator to add
+		 * @return this builder instance
+		 */
+		Builder validator(Validator<Boolean> validator);
+
+		/**
+		 * Links the given value to the resulting state
+		 * @param originalState the original state to link
+		 * @return this builder instance
+		 * @see Value#link(Value)
+		 */
+		Builder link(Value<Boolean> originalState);
+
+		/**
+		 * Links the given value observer to the resulting state
+		 * @param originalState the state to link
+		 * @return this builder instance
+		 * @see Value#link(ValueObserver)
+		 */
+		Builder link(ValueObserver<Boolean> originalState);
+
+		/**
+		 * @param listener a listener to add
+		 * @return this builder instance
+		 */
+		Builder listener(Runnable listener);
+
+		/**
+		 * @param consumer a consumer to add
+		 * @return this builder instance
+		 */
+		Builder consumer(Consumer<Boolean> consumer);
+
+		/**
+		 * @param weakListener a weak listener to add
+		 * @return this builder instance
+		 */
+		Builder weakListener(Runnable weakListener);
+
+		/**
+		 * @param weakConsumer a weak consumer to add
+		 * @return this builder instance
+		 */
+		Builder weakConsumer(Consumer<Boolean> weakConsumer);
+
+		/**
+		 * @return a new {@link State} instance based on this builder
+		 */
+		State build();
 	}
 }

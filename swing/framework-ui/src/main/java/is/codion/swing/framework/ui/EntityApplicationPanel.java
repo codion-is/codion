@@ -174,7 +174,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private final List<EntityPanel> entityPanels = new ArrayList<>();
 	private final ApplicationLayout applicationLayout;
 
-	private final State alwaysOnTopState = State.state();
+	private final State alwaysOnTopState = State.builder()
+					.consumer(alwaysOnTop -> parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
+					.build();
 	private final Event<?> onExitEvent = Event.event();
 	private final Event<EntityApplicationPanel<?>> onInitialized = Event.event();
 
@@ -372,7 +374,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 				supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
-				bindEventsInternal();
 				bindEvents();
 				onInitialized.accept(this);
 			}
@@ -785,11 +786,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	protected void savePreferences() {
 		entityPanels().forEach(EntityPanel::savePreferences);
 		applicationModel().savePreferences();
-	}
-
-	private void bindEventsInternal() {
-		alwaysOnTopState.addConsumer(alwaysOnTop ->
-						parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
 	}
 
 	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {

@@ -67,7 +67,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 	private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
 	private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
 	private final Value<Supplier<Condition>> conditionSupplier;
-	private final State handleEditEvents = State.state();
+	private final State handleEditEvents = State.builder()
+					.consumer(new HandleEditEventsChanged())
+					.build();
 	private final State strictForeignKeyFiltering = State.state(true);
 	private final Value<OrderBy> orderBy;
 
@@ -90,7 +92,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		refresher().itemSupplier().set(this::performQuery);
 		itemValidator().set(new ItemValidator());
 		includeCondition().set(foreignKeyIncludeCondition);
-		handleEditEvents.addConsumer(new HandleEditEventsChanged());
 		handleEditEvents.set(true);
 	}
 

@@ -55,7 +55,9 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 
 	private final TableConditionModel<C> conditionModel;
 	private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
-	private final State advanced = State.state();
+	private final State advanced = State.builder()
+					.consumer(this::onAdvancedChanged)
+					.build();
 	private final Event<C> focusGainedEvent = Event.event();
 
 	private FilteredTableConditionPanel(TableConditionModel<C> conditionModel, FilteredTableColumnModel<C> columnModel,
@@ -65,7 +67,6 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
 						createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
 		setLayout(new BorderLayout());
 		add(componentPanel, BorderLayout.CENTER);
-		advanced.addConsumer(this::onAdvancedChanged);
 		componentPanel.components().values().forEach(panel ->
 						panel.focusGainedEvent().addConsumer(focusGainedEvent));
 	}

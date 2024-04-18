@@ -30,11 +30,8 @@ final class DefaultState implements State {
 
 	private DefaultStateObserver observer;
 
-	DefaultState(boolean value) {
-		this.value = Value.nonNull(false)
-						.initialValue(value)
-						.consumer(new Notifier())
-						.build();
+	private DefaultState(Value.Builder<Boolean> valueBuilder) {
+		this.value = valueBuilder.consumer(new Notifier()).build();
 	}
 
 	@Override
@@ -199,6 +196,68 @@ final class DefaultState implements State {
 					observer.notifyObservers(value, !value);
 				}
 			}
+		}
+	}
+
+	static final class DefaultBuilder implements Builder {
+
+		private final Value.Builder<Boolean> valueBuilder = Value.nonNull(false);
+
+		DefaultBuilder(boolean initialValue) {
+			valueBuilder.initialValue(initialValue);
+		}
+
+		@Override
+		public Builder notify(Notify notify) {
+			valueBuilder.notify(notify);
+			return this;
+		}
+
+		@Override
+		public Builder validator(Validator<Boolean> validator) {
+			valueBuilder.validator(validator);
+			return this;
+		}
+
+		@Override
+		public Builder link(Value<Boolean> originalState) {
+			valueBuilder.link(originalState);
+			return this;
+		}
+
+		@Override
+		public Builder link(ValueObserver<Boolean> originalState) {
+			valueBuilder.link(originalState);
+			return this;
+		}
+
+		@Override
+		public Builder listener(Runnable listener) {
+			valueBuilder.listener(listener);
+			return this;
+		}
+
+		@Override
+		public Builder consumer(Consumer<Boolean> consumer) {
+			valueBuilder.consumer(consumer);
+			return this;
+		}
+
+		@Override
+		public Builder weakListener(Runnable weakListener) {
+			valueBuilder.weakListener(weakListener);
+			return this;
+		}
+
+		@Override
+		public Builder weakConsumer(Consumer<Boolean> weakConsumer) {
+			valueBuilder.weakConsumer(weakConsumer);
+			return this;
+		}
+
+		@Override
+		public State build() {
+			return new DefaultState(valueBuilder);
 		}
 	}
 }

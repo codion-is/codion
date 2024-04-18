@@ -47,23 +47,29 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
 	private final Event<?> conditionChangedEvent = Event.event();
+	private final State locked = State.state();
 	private final ValueSet<T> equalValues = ValueSet.<T>builder()
 					.notify(Notify.WHEN_SET)
+					.validator(value -> checkLock())
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> equalValue = equalValues.value();
 	private final Value<T> upperBoundValue = Value.nullable((T) null)
 					.notify(Notify.WHEN_SET)
+					.validator(value -> checkLock())
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> lowerBoundValue = Value.nullable((T) null)
 					.notify(Notify.WHEN_SET)
+					.validator(value -> checkLock())
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<Operator> operator = Value.nonNull(Operator.EQUAL)
+					.validator(value -> checkLock())
+					.validator(this::validateOperator)
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
@@ -75,8 +81,10 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final String wildcard;
 
 	private final State autoEnable;
-	private final State enabled = State.state();
-	private final State locked = State.state();
+	private final State enabled = State.builder()
+					.validator(value -> checkLock())
+					.listener(conditionChangedEvent)
+					.build();
 
 	private final C columnIdentifier;
 	private final Class<T> columnClass;
@@ -92,15 +100,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.automaticWildcard.set(builder.automaticWildcard);
-		this.caseSensitive = State.state(builder.caseSensitive);
-		this.autoEnable = State.state(builder.autoEnable);
-		this.enabled.addValidator(value -> checkLock());
-		this.equalValues.addValidator(value -> checkLock());
-		this.upperBoundValue.addValidator(value -> checkLock());
-		this.lowerBoundValue.addValidator(value -> checkLock());
-		this.operator.addValidator(this::validateOperator);
-		this.operator.addValidator(value -> checkLock());
-		bindEvents();
+		this.caseSensitive = State.builder(builder.caseSensitive)
+						.listener(conditionChangedEvent)
+						.build();
+		this.autoEnable = State.builder(builder.autoEnable)
+						.listener(autoEnableListener)
+						.build();
 	}
 
 	@Override
@@ -498,12 +503,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		return value;
 	}
 
-	private void bindEvents() {
-		autoEnable.addListener(autoEnableListener);
-		enabled.addListener(conditionChangedEvent);
-		caseSensitive.addListener(conditionChangedEvent);
-	}
-
 	private void checkLock() {
 		if (locked.get()) {
 			throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
@@ -511,7 +510,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private void validateOperator(Operator operator) {
-		if (!operators.contains(requireNonNull(operator, "operator"))) {
+		if (operators != null && !operators.contains(requireNonNull(operator, "operator"))) {
 			throw new IllegalArgumentException("Operator " + operator + " not available in this condition model");
 		}
 	}

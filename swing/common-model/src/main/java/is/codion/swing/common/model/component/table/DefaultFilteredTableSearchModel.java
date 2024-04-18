@@ -41,14 +41,18 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	private static final RowColumn NULL_COORDINATE = new DefaultRowColumn(-1, -1);
 
 	private final FilteredTableModel<?, C> tableModel;
-	private final State regularExpression = State.state();
-	private final State caseSensitive = State.state();
+	private final State caseSensitive = State.builder()
+					.listener(this::performSearch)
+					.build();
 	private final List<RowColumn> searchResults = new ArrayList<>();
 	private final Value<Predicate<String>> searchPredicate = Value.<Predicate<String>>nullable(null)
 					.listener(this::performSearch)
 					.build();
 	private final Value<String> searchString = Value.nonNull("")
 					.consumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)))
+					.build();
+	private final State regularExpression = State.builder()
+					.listener(searchString::clear)
 					.build();
 	private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE).build();
 
@@ -180,8 +184,6 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	private void bindEvents() {
-		regularExpression.addListener(searchString::clear);
-		caseSensitive.addListener(this::performSearch);
 		tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
 		tableModel.dataChangedEvent().addListener(() -> {
 			clearSearchResults();

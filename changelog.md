@@ -6,6 +6,7 @@ Codion Change Log
 - Value.clear() added, PropertyValue.clear() renamed remove() in order to not clash with method from supertype.
 - Value.Builder, methods for adding listeners and consumers added.
 - ValueSet.Builder, methods for adding listeners and consumers added.
+- State.Builder added.
 ### is.codion.swing.common.ui
 - InputDialogBuilder.inputValid() and inputValidator() renamed valid() and validator() respectively.
 ### is.codion.swing.fraework.ui

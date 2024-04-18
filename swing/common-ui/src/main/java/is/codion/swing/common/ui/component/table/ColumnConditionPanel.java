@@ -133,7 +133,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
 
 	private final Event<C> focusGainedEvent = Event.event();
-	private final State advanced = State.state();
+	private final State advanced = State.builder()
+					.consumer(this::onAdvancedChanged)
+					.build();
 
 	private ColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
 		requireNonNull(conditionModel, "conditionModel");
@@ -420,7 +422,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	 * Binds events to relevant GUI actions
 	 */
 	private void bindEvents() {
-		advanced.addConsumer(this::onAdvancedChanged);
 		conditionModel.operator().addConsumer(this::onOperatorChanged);
 		FocusGainedListener focusGainedListener = new FocusGainedListener();
 		operatorCombo.addFocusListener(focusGainedListener);

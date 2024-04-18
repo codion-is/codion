@@ -52,7 +52,9 @@ public final class ClientMonitorPanel extends JPanel {
 	private final FilteredTable<RemoteClient, Integer> clientInstanceTable;
 	private final JScrollPane filterScrollPane;
 	private final JScrollPane clientInstanceScroller;
-	private final State advancedFilterState = State.state();
+	private final State advancedFilterState = State.builder()
+					.consumer(this::toggleAdvancedFilters)
+					.build();
 
 	/**
 	 * Instantiates a new ClientMonitorPanel
@@ -68,7 +70,6 @@ public final class ClientMonitorPanel extends JPanel {
 						.border(BorderFactory.createTitledBorder("Clients"))
 						.build();
 		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filterPanel());
-		advancedFilterState.addConsumer(this::toggleAdvancedFilters);
 		initializeUI();
 	}
 

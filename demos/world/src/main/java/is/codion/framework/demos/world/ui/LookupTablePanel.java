@@ -61,7 +61,9 @@ final class LookupTablePanel extends EntityTablePanel {
 	private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
 
 	private final State columnSelectionPanelVisible = State.state(true);
-	private final State mapDialogVisible = State.state();
+	private final State mapDialogVisible = State.builder()
+					.consumer(this::setMapDialogVisible)
+					.build();
 
 	private final Control toggleMapControl = ToggleControl.builder(mapDialogVisible)
 					.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
@@ -137,7 +139,6 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void bindEvents() {
-		mapDialogVisible.addConsumer(this::setMapDialogVisible);
 		tableModel().dataChangedEvent().addListener(this::displayCityLocations);
 		tableModel().selectionModel().selectionEvent().addListener(this::displayCityLocations);
 	}
