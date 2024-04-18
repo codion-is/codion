@@ -248,6 +248,30 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		Builder<T> link(ValueObserver<T> originalValue);
 
 		/**
+		 * @param listener a listener to add
+		 * @return this builder instance
+		 */
+		Builder<T> listener(Runnable listener);
+
+		/**
+		 * @param consumer a consumer to add
+		 * @return this builder instance
+		 */
+		Builder<T> consumer(Consumer<T> consumer);
+
+		/**
+		 * @param weakListener a weak listener to add
+		 * @return this builder instance
+		 */
+		Builder<T> weakListener(Runnable weakListener);
+
+		/**
+		 * @param weakConsumer a weak consumer to add
+		 * @return this builder instance
+		 */
+		Builder<T> weakConsumer(Consumer<T> weakConsumer);
+
+		/**
 		 * @return a new {@link Value} instance based on this builder
 		 */
 		Value<T> build();

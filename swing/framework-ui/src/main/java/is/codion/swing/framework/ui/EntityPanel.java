@@ -324,8 +324,8 @@ public class EntityPanel extends JPanel {
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		this.editPanelState = Value.nonNull(EMBEDDED)
 						.initialValue(this.configuration.editPanelState)
+						.listener(this::updateEditPanelState)
 						.build();
-		this.editPanelState.addListener(this::updateEditPanelState);
 	}
 
 	@Override

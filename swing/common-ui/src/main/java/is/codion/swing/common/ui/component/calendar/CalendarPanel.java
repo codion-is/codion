@@ -211,12 +211,24 @@ public final class CalendarPanel extends JPanel {
 		this.includeTime = builder.includeTime;
 		this.includeTodayButton = builder.includeTodayButton;
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
-		yearValue = Value.nonNull(dateTime.getYear()).build();
-		monthValue = Value.nonNull(dateTime.getMonth()).build();
-		dayValue = Value.nonNull(dateTime.getDayOfMonth()).build();
+		yearValue = Value.nonNull(dateTime.getYear())
+						.listener(this::updateDateTime)
+						.listener(new LayoutDayPanelListener())
+						.build();
+		monthValue = Value.nonNull(dateTime.getMonth())
+						.listener(this::updateDateTime)
+						.listener(new LayoutDayPanelListener())
+						.build();
+		dayValue = Value.nonNull(dateTime.getDayOfMonth())
+						.listener(this::updateDateTime)
+						.build();
 		if (includeTime) {
-			hourValue = Value.nonNull(dateTime.getHour()).build();
-			minuteValue = Value.nonNull(dateTime.getMinute()).build();
+			hourValue = Value.nonNull(dateTime.getHour())
+							.listener(this::updateDateTime)
+							.build();
+			minuteValue = Value.nonNull(dateTime.getMinute())
+							.listener(this::updateDateTime)
+							.build();
 		}
 		else {
 			hourValue = Value.nonNull(0).build();
@@ -234,7 +246,6 @@ public final class CalendarPanel extends JPanel {
 		initializeUI();
 		addKeyEvents(builder.keyboardShortcuts);
 		updateFormattedDate();
-		bindEvents();
 	}
 
 	/**
@@ -677,17 +688,6 @@ public final class CalendarPanel extends JPanel {
 							.action(control(this::nextMinute))
 							.enable(this);
 		}
-	}
-
-	private void bindEvents() {
-		yearValue.addListener(this::updateDateTime);
-		monthValue.addListener(this::updateDateTime);
-		dayValue.addListener(this::updateDateTime);
-		hourValue.addListener(this::updateDateTime);
-		minuteValue.addListener(this::updateDateTime);
-		Runnable layoutDayPanelListener = new LayoutDayPanelListener();
-		yearValue.addListener(layoutDayPanelListener);
-		monthValue.addListener(layoutDayPanelListener);
 	}
 
 	private JSpinner createYearSpinner() {

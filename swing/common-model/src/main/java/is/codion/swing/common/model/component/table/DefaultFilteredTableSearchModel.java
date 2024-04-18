@@ -44,8 +44,12 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	private final State regularExpression = State.state();
 	private final State caseSensitive = State.state();
 	private final List<RowColumn> searchResults = new ArrayList<>();
-	private final Value<String> searchString = Value.nonNull("").build();
-	private final Value<Predicate<String>> searchPredicate = Value.value();
+	private final Value<Predicate<String>> searchPredicate = Value.<Predicate<String>>nullable(null)
+					.listener(this::performSearch)
+					.build();
+	private final Value<String> searchString = Value.nonNull("")
+					.consumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)))
+					.build();
 	private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE).build();
 
 	private int searchResultIndex = -1;
@@ -176,8 +180,6 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	}
 
 	private void bindEvents() {
-		searchString.addConsumer(searchText -> searchPredicate.set(createSearchPredicate(searchText)));
-		searchPredicate.addListener(this::performSearch);
 		regularExpression.addListener(searchString::clear);
 		caseSensitive.addListener(this::performSearch);
 		tableModel.columnModel().addColumnModelListener(new ClearSearchListener());

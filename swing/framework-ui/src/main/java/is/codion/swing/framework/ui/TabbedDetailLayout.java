@@ -377,11 +377,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 		/**
 		 * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
 		 */
-		private final Value<PanelState> panelState = Value.nonNull(EMBEDDED).build();
-
-		private TabbedDetailController() {
-			panelState.addListener(this::updateDetailState);
-		}
+		private final Value<PanelState> panelState = Value.nonNull(EMBEDDED)
+						.listener(this::updateDetailState)
+						.build();
 
 		@Override
 		public void activated(EntityPanel detailPanel) {

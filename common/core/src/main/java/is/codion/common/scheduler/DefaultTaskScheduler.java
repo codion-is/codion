@@ -40,16 +40,17 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 	private DefaultTaskScheduler(DefaultBuilder builder) {
 		this.task = builder.task;
-		this.interval = Value.nonNull(builder.interval).build();
-		this.interval.addValidator(value -> {
-			if (value <= 0) {
-				throw new IllegalArgumentException("Interval must be a positive integer");
-			}
-		});
+		this.interval = Value.nonNull(builder.interval)
+						.validator(value -> {
+							if (value <= 0) {
+								throw new IllegalArgumentException("Interval must be a positive integer");
+							}
+						})
+						.listener(this::onIntervalChanged)
+						.build();
 		this.initialDelay = builder.initialDelay;
 		this.timeUnit = builder.timeUnit;
 		this.threadFactory = builder.threadFactory;
-		this.interval.addListener(this::onIntervalChanged);
 	}
 
 	@Override

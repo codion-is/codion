@@ -68,8 +68,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Map<Column<String>, Settings> settings;
 	private final Value<String> searchString = Value.nonNull("")
 					.notify(Notify.WHEN_SET)
+					.listener(() -> searchStringModified.set(!searchStringRepresentEntities()))
 					.build();
-	private final Value<String> separator = Value.nonNull(DEFAULT_SEPARATOR).build();
+	private final Value<String> separator = Value.nonNull(DEFAULT_SEPARATOR)
+					.listener(this::reset)
+					.build();
 	private final boolean singleSelection;
 	private final Value<Character> wildcard = Value.nonNull(Text.WILDCARD_CHARACTER.get()).build();
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION).build();
@@ -236,9 +239,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	private void bindEvents() {
-		searchString.addListener(() ->
-						searchStringModified.set(!searchStringRepresentEntities()));
-		separator.addListener(this::reset);
 		entities.addListener(this::reset);
 		entities.addConsumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()));
 	}

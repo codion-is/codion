@@ -31,7 +31,6 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -46,19 +45,29 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private static final String REGEX_WILDCARD = ".*";
 
-	private final ValueSet<T> equalValues = ValueSet.builder(Collections.<T>emptySet())
+	private final Runnable autoEnableListener = new AutoEnableListener();
+	private final Event<?> conditionChangedEvent = Event.event();
+	private final ValueSet<T> equalValues = ValueSet.<T>builder()
 					.notify(Notify.WHEN_SET)
 					.build();
 	private final Value<T> equalValue = equalValues.value();
 	private final Value<T> upperBoundValue = Value.nullable((T) null)
 					.notify(Notify.WHEN_SET)
+					.listener(autoEnableListener)
+					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> lowerBoundValue = Value.nullable((T) null)
 					.notify(Notify.WHEN_SET)
+					.listener(autoEnableListener)
+					.listener(conditionChangedEvent)
 					.build();
-	private final Value<Operator> operator = Value.nonNull(Operator.EQUAL).build();
-	private final Value<AutomaticWildcard> automaticWildcard = Value.nonNull(AutomaticWildcard.NONE).build();
-	private final Event<?> conditionChangedEvent = Event.event();
+	private final Value<Operator> operator = Value.nonNull(Operator.EQUAL)
+					.listener(autoEnableListener)
+					.listener(conditionChangedEvent)
+					.build();
+	private final Value<AutomaticWildcard> automaticWildcard = Value.nonNull(AutomaticWildcard.NONE)
+					.listener(conditionChangedEvent)
+					.build();
 
 	private final State caseSensitive;
 	private final String wildcard;
@@ -488,19 +497,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private void bindEvents() {
-		Runnable autoEnableListener = new AutoEnableListener();
 		equalValues.addListener(autoEnableListener);
-		upperBoundValue.addListener(autoEnableListener);
-		lowerBoundValue.addListener(autoEnableListener);
-		operator.addListener(autoEnableListener);
 		autoEnable.addListener(autoEnableListener);
 		equalValues.addListener(conditionChangedEvent);
-		upperBoundValue.addListener(conditionChangedEvent);
-		lowerBoundValue.addListener(conditionChangedEvent);
-		operator.addListener(conditionChangedEvent);
 		enabled.addListener(conditionChangedEvent);
 		caseSensitive.addListener(conditionChangedEvent);
-		automaticWildcard.addListener(conditionChangedEvent);
 	}
 
 	private void checkLock() {

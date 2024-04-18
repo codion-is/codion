@@ -20,6 +20,7 @@ package is.codion.common.value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,6 +34,10 @@ final class DefaultValue<T> extends AbstractValue<T> {
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservers.forEach(this::link);
+		builder.listeners.forEach(this::addListener);
+		builder.weakListeners.forEach(this::addWeakListener);
+		builder.consumers.forEach(this::addConsumer);
+		builder.weakConsumers.forEach(this::addWeakConsumer);
 	}
 
 	@Override
@@ -51,6 +56,10 @@ final class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Validator<T>> validators = new ArrayList<>();
 		private final List<Value<T>> linkedValues = new ArrayList<>();
 		private final List<ValueObserver<T>> linkedObservers = new ArrayList<>();
+		private final List<Runnable> listeners = new ArrayList<>();
+		private final List<Runnable> weakListeners = new ArrayList<>();
+		private final List<Consumer<T>> consumers = new ArrayList<>();
+		private final List<Consumer<T>> weakConsumers = new ArrayList<>();
 
 		private T initialValue;
 		private Notify notify = Notify.WHEN_CHANGED;
@@ -91,6 +100,30 @@ final class DefaultValue<T> extends AbstractValue<T> {
 		@Override
 		public Builder<T> link(ValueObserver<T> originalValue) {
 			this.linkedObservers.add(requireNonNull(originalValue));
+			return this;
+		}
+
+		@Override
+		public Builder<T> listener(Runnable listener) {
+			this.listeners.add(requireNonNull(listener));
+			return this;
+		}
+
+		@Override
+		public Builder<T> consumer(Consumer<T> consumer) {
+			this.consumers.add(requireNonNull(consumer));
+			return this;
+		}
+
+		@Override
+		public Builder<T> weakListener(Runnable weakListener) {
+			this.weakListeners.add(requireNonNull(weakListener));
+			return this;
+		}
+
+		@Override
+		public Builder<T> weakConsumer(Consumer<T> weakConsumer) {
+			this.weakConsumers.add(requireNonNull(weakConsumer));
 			return this;
 		}
 

@@ -151,10 +151,11 @@ public final class ServerMonitor {
 		this.server = connectServer(serverInformation.serverName());
 		this.connectionLimitValue = Value.nonNull(-1)
 						.initialValue(getConnectionLimit())
+						.consumer(this::setConnectionLimit)
 						.build();
-		this.connectionLimitValue.addConsumer(this::setConnectionLimit);
-		this.logLevelValue = Value.nullable(this.server.getLogLevel()).build();
-		this.logLevelValue.addConsumer(this::setLogLevel);
+		this.logLevelValue = Value.nullable(this.server.getLogLevel())
+						.consumer(this::setLogLevel)
+						.build();
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
 		this.memoryUsageCollection.addSeries(maxMemorySeries);
 		this.memoryUsageCollection.addSeries(allocatedMemorySeries);

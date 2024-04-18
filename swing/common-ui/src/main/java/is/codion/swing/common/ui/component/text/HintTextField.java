@@ -68,6 +68,7 @@ public class HintTextField extends JTextField {
 		super(document, null, 0);
 		this.hint = Value.nonNull("")
 						.initialValue(hint)
+						.listener(this::repaint)
 						.build();
 		setupListeners();
 		updateHintColor();
@@ -136,7 +137,6 @@ public class HintTextField extends JTextField {
 	}
 
 	private void setupListeners() {
-		hint.addListener(this::repaint);
 		addPropertyChangeListener(new UpdateHintColor());
 		addFocusListener(new RepaintFocusListener());
 	}

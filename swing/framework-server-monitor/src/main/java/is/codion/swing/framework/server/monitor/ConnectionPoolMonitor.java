@@ -87,24 +87,24 @@ public final class ConnectionPoolMonitor {
 		this.connectionPool = connectionPool;
 		this.pooledConnectionTimeoutValue = Value.nonNull(0)
 						.initialValue(connectionPool.getIdleConnectionTimeout())
+						.consumer(connectionPool::setIdleConnectionTimeout)
 						.build();
-		this.pooledConnectionTimeoutValue.addConsumer(connectionPool::setIdleConnectionTimeout);
 		this.pooledCleanupIntervalValue = Value.nonNull(0)
 						.initialValue(connectionPool.getCleanupInterval())
+						.consumer(connectionPool::setCleanupInterval)
 						.build();
-		this.pooledCleanupIntervalValue.addConsumer(connectionPool::setCleanupInterval);
 		this.minimumPoolSizeValue = Value.nonNull(0)
 						.initialValue(connectionPool.getMinimumPoolSize())
+						.consumer(connectionPool::setMinimumPoolSize)
 						.build();
-		this.minimumPoolSizeValue.addConsumer(connectionPool::setMinimumPoolSize);
 		this.maximumPoolSizeValue = Value.nonNull(0)
 						.initialValue(connectionPool.getMaximumPoolSize())
+						.consumer(connectionPool::setMaximumPoolSize)
 						.build();
-		this.maximumPoolSizeValue.addConsumer(connectionPool::setMaximumPoolSize);
 		this.maximumCheckoutTimeValue = Value.nonNull(0)
 						.initialValue(connectionPool.getMaximumCheckOutTime())
+						.consumer(connectionPool::setMaximumCheckOutTime)
 						.build();
-		this.maximumCheckoutTimeValue.addConsumer(connectionPool::setMaximumCheckOutTime);
 		this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
 		this.collectSnapshotStatisticsState.addConsumer(connectionPool::setCollectSnapshotStatistics);
 		this.collectCheckOutTimesState = State.state(connectionPool.isCollectCheckOutTimes());
@@ -121,7 +121,6 @@ public final class ConnectionPoolMonitor {
 		this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
 						.interval(updateRate, TimeUnit.SECONDS)
 						.start();
-		bindEvents();
 	}
 
 	/**
@@ -322,14 +321,5 @@ public final class ConnectionPoolMonitor {
 		maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
 		maximumCheckoutTimeValue.set(connectionPool.getMaximumCheckOutTime());
 		statisticsUpdatedEvent.run();
-	}
-
-	private void bindEvents() {
-		pooledCleanupIntervalValue.addConsumer(this::setPoolCleanupInterval);
-		minimumPoolSizeValue.addConsumer(this::setMinimumPoolSize);
-		maximumPoolSizeValue.addConsumer(this::setMaximumPoolSize);
-		maximumCheckoutTimeValue.addConsumer(this::setMaximumCheckOutTime);
-		collectSnapshotStatisticsState.addConsumer(connectionPool::setCollectSnapshotStatistics);
-		collectCheckOutTimesState.addConsumer(connectionPool::setCollectCheckOutTimes);
 	}
 }

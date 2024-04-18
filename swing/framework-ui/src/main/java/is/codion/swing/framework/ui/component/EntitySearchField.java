@@ -232,7 +232,9 @@ public final class EntitySearchField extends HintTextField {
 			TextComponents.lowerCase(getDocument());
 		}
 		searchOnFocusLost.set(builder.searchOnFocusLost);
-		searchIndicator = Value.nonNull(builder.searchIndicator).build();
+		searchIndicator = Value.nonNull(builder.searchIndicator)
+						.listener(this::updateSearchIndicator)
+						.build();
 		updateSearchIndicator();
 		selectorFactory = Value.nonNull(builder.selectorFactory).build();
 		if (builder.selectAllOnFocusGained) {
@@ -466,7 +468,6 @@ public final class EntitySearchField extends HintTextField {
 		new SearchStringValue(this).link(model.searchString());
 		model.searchString().addListener(this::updateColors);
 		model.entities().addListener(() -> setCaretPosition(0));
-		searchIndicator.addListener(this::updateSearchIndicator);
 		addFocusListener(new SearchFocusListener());
 		addKeyListener(new EnterEscapeListener());
 		linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);

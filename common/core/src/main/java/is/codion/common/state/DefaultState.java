@@ -33,8 +33,8 @@ final class DefaultState implements State {
 	DefaultState(boolean value) {
 		this.value = Value.nonNull(false)
 						.initialValue(value)
+						.consumer(new Notifier())
 						.build();
-		this.value.addConsumer(new Notifier());
 	}
 
 	@Override
