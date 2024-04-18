@@ -18,8 +18,6 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSecondsPanel;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -66,7 +64,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		createIntegerField(Track.MILLISECONDS)
 						.columns(5);
 
-		ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
+		MinutesSecondsPanelValue minutesSecondsValue = new MinutesSecondsPanelValue();
 		addValidator(Track.MILLISECONDS, minutesSecondsValue.component().minutesField);
 		addValidator(Track.MILLISECONDS, minutesSecondsValue.component().secondsField);
 		minutesSecondsValue.link(editModel().value(Track.MILLISECONDS));

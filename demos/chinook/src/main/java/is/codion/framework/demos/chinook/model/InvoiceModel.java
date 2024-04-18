@@ -22,6 +22,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import javax.swing.SwingUtilities;
+
 public final class InvoiceModel extends SwingEntityModel {
 
 	public InvoiceModel(EntityConnectionProvider connectionProvider) {
@@ -34,6 +36,7 @@ public final class InvoiceModel extends SwingEntityModel {
 		detailModelLink.clearForeignKeyOnEmptySelection().set(true);
 		detailModelLink.active().set(true);
 
-		invoiceLineEditModel.addTotalsUpdatedListener(tableModel()::replace);
+		invoiceLineEditModel.addTotalsUpdatedConsumer(updatedInvoices ->
+						SwingUtilities.invokeLater(() -> tableModel().replace(updatedInvoices)));
 	}
 }

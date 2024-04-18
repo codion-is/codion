@@ -35,7 +35,6 @@ import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
@@ -69,12 +68,14 @@ public final class TrackTablePanel extends EntityTablePanel {
 	private BigDecimal getAmountFromUser() {
 		ComponentValue<BigDecimal, NumberField<BigDecimal>> amountValue =
 						bigDecimalField()
+										.nullable(false)
+										.minimumValue(0)
 										.buildValue();
 
 		return Dialogs.inputDialog(amountValue)
 						.owner(this)
 						.title(BUNDLE.getString("amount"))
-						.inputValidator(Objects::nonNull)
+						.inputValidator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)
 						.show();
 	}
 

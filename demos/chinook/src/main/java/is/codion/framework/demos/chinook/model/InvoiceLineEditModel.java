@@ -40,16 +40,16 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		editEvent(InvoiceLine.TRACK_FK).addConsumer(this::setUnitPrice);
 	}
 
-	void addTotalsUpdatedListener(Consumer<Collection<Entity>> consumer) {
+	void addTotalsUpdatedConsumer(Consumer<Collection<Entity>> consumer) {
 		totalsUpdatedEvent.addConsumer(consumer);
 	}
 
 	@Override
-	protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
 		connection.startTransaction();
 		try {
-			Collection<Entity> inserted = connection.insertSelect(entities);
-			updateTotals(entities, connection);
+			Collection<Entity> inserted = connection.insertSelect(invoiceLines);
+			updateTotals(inserted, connection);
 			connection.commitTransaction();
 
 			return inserted;
@@ -65,11 +65,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	}
 
 	@Override
-	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
 		connection.startTransaction();
 		try {
-			Collection<Entity> updated = connection.updateSelect(entities);
-			updateTotals(entities, connection);
+			Collection<Entity> updated = connection.updateSelect(invoiceLines);
+			updateTotals(updated, connection);
 			connection.commitTransaction();
 
 			return updated;
@@ -85,11 +85,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	}
 
 	@Override
-	protected void delete(Collection<Entity> entities, EntityConnection connection) throws DatabaseException {
+	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
 		connection.startTransaction();
 		try {
-			connection.delete(Entity.primaryKeys(entities));
-			updateTotals(entities, connection);
+			connection.delete(Entity.primaryKeys(invoiceLines));
+			updateTotals(invoiceLines, connection);
 			connection.commitTransaction();
 		}
 		catch (DatabaseException e) {
@@ -106,7 +106,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		put(InvoiceLine.UNITPRICE, track == null ? null : track.get(Track.UNITPRICE));
 	}
 
-	private void updateTotals(Collection<Entity> invoices, EntityConnection connection) throws DatabaseException {
-		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoices)));
+	private void updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) throws DatabaseException {
+		totalsUpdatedEvent.accept(connection.execute(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, invoiceLines)));
 	}
 }

@@ -48,7 +48,7 @@ public final class InvoiceLineEditModelTest {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			EntityConnection connection = connectionProvider.connection();
 
-			Entity invoice = createInvoice(connectionProvider);
+			Entity invoice = createInvoice(connection);
 			assertNull(invoice.get(Invoice.TOTAL));
 
 			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
@@ -88,9 +88,8 @@ public final class InvoiceLineEditModelTest {
 		}
 	}
 
-	private static Entity createInvoice(EntityConnectionProvider connectionProvider) throws DatabaseException {
-		Entities entities = connectionProvider.entities();
-		EntityConnection connection = connectionProvider.connection();
+	private static Entity createInvoice(EntityConnection connection) throws DatabaseException {
+		Entities entities = connection.entities();
 
 		return connection.insertSelect(entities.builder(Invoice.TYPE)
 						.with(Invoice.CUSTOMER_FK, connection.insertSelect(entities.builder(Customer.TYPE)

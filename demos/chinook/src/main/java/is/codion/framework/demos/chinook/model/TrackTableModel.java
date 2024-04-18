@@ -59,8 +59,8 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	private static final class LimitValidator implements Validator<Integer> {
 
 		@Override
-		public void validate(Integer value) {
-			if (value != null && value > MAXIMUM_LIMIT) {
+		public void validate(Integer limit) {
+			if (limit != null && limit > MAXIMUM_LIMIT) {
 				// The error message is never displayed, so not required
 				throw new IllegalArgumentException();
 			}
