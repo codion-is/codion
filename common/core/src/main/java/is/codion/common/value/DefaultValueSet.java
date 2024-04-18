@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -41,6 +42,10 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValueSets.forEach(this::link);
 		builder.linkedValueSetObservers.forEach(this::link);
+		builder.listeners.forEach(this::addListener);
+		builder.weakListeners.forEach(this::addWeakListener);
+		builder.consumers.forEach(this::addConsumer);
+		builder.weakConsumers.forEach(this::addWeakConsumer);
 	}
 
 	DefaultValueSet(Set<T> initialValues, Notify notify) {
@@ -231,6 +236,10 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 		private final List<Validator<Set<T>>> validators = new ArrayList<>();
 		private final List<ValueSet<T>> linkedValueSets = new ArrayList<>();
 		private final List<ValueSetObserver<T>> linkedValueSetObservers = new ArrayList<>();
+		private final List<Runnable> listeners = new ArrayList<>();
+		private final List<Runnable> weakListeners = new ArrayList<>();
+		private final List<Consumer<Set<T>>> consumers = new ArrayList<>();
+		private final List<Consumer<Set<T>>> weakConsumers = new ArrayList<>();
 
 		private Set<T> initialValue = emptySet();
 		private Notify notify = Notify.WHEN_CHANGED;
@@ -262,6 +271,30 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 		@Override
 		public ValueSet.Builder<T> link(ValueSetObserver<T> originalValueSet) {
 			this.linkedValueSetObservers.add(requireNonNull(originalValueSet));
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> listener(Runnable listener) {
+			this.listeners.add(requireNonNull(listener));
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> consumer(Consumer<Set<T>> consumer) {
+			this.consumers.add(requireNonNull(consumer));
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> weakListener(Runnable weakListener) {
+			this.weakListeners.add(requireNonNull(weakListener));
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> weakConsumer(Consumer<Set<T>> weakConsumer) {
+			this.weakConsumers.add(requireNonNull(weakConsumer));
 			return this;
 		}
 

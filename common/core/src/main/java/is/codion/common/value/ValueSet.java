@@ -21,6 +21,7 @@ package is.codion.common.value;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * An observable wrapper for one or more values, including a possible null value.
@@ -173,6 +174,30 @@ public interface ValueSet<T> extends Value<Set<T>>, ValueSetObserver<T> {
 		 * @see ValueSet#link(ValueObserver)
 		 */
 		Builder<T> link(ValueSetObserver<T> originalValueSet);
+
+		/**
+		 * @param listener a listener to add
+		 * @return this builder instance
+		 */
+		Builder<T> listener(Runnable listener);
+
+		/**
+		 * @param consumer a consumer to add
+		 * @return this builder instance
+		 */
+		Builder<T> consumer(Consumer<Set<T>> consumer);
+
+		/**
+		 * @param weakListener a weak listener to add
+		 * @return this builder instance
+		 */
+		Builder<T> weakListener(Runnable weakListener);
+
+		/**
+		 * @param weakConsumer a weak consumer to add
+		 * @return this builder instance
+		 */
+		Builder<T> weakConsumer(Consumer<Set<T>> weakConsumer);
 
 		/**
 		 * @return a new {@link ValueSet} instance based on this builder

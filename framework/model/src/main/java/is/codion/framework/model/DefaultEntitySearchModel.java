@@ -57,12 +57,15 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private static final String DEFAULT_SEPARATOR = ",";
 
 	private final State searchStringModified = State.state();
+	private final State selectionEmpty = State.state(true);
 
 	private final EntityType entityType;
 	private final Collection<Column<String>> columns;
 	private final ValueSet<Entity> entities = ValueSet.builder(Collections.<Entity>emptySet())
 					.notify(Notify.WHEN_SET)
 					.validator(new EntityValidator())
+					.listener(this::reset)
+					.consumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()))
 					.build();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
@@ -78,7 +81,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION).build();
 	private final Value<Function<Entity, String>> stringFunction = Value.nonNull(DEFAULT_TO_STRING).build();
 	private final Value<Integer> limit;
-	private final State selectionEmpty = State.state(true);
 	private final String description;
 
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
@@ -92,7 +94,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit).build();
-		bindEvents();
 	}
 
 	@Override
@@ -236,11 +237,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		return rawSearchString.equals(String.valueOf(wildcard.get())) ? String.valueOf(wildcard.get()) :
 						((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
-	}
-
-	private void bindEvents() {
-		entities.addListener(this::reset);
-		entities.addConsumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()));
 	}
 
 	private boolean searchStringRepresentEntities() {

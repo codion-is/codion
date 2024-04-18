@@ -49,6 +49,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	private final Event<?> conditionChangedEvent = Event.event();
 	private final ValueSet<T> equalValues = ValueSet.<T>builder()
 					.notify(Notify.WHEN_SET)
+					.listener(autoEnableListener)
+					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> equalValue = equalValues.value();
 	private final Value<T> upperBoundValue = Value.nullable((T) null)
@@ -497,9 +499,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 	}
 
 	private void bindEvents() {
-		equalValues.addListener(autoEnableListener);
 		autoEnable.addListener(autoEnableListener);
-		equalValues.addListener(conditionChangedEvent);
 		enabled.addListener(conditionChangedEvent);
 		caseSensitive.addListener(conditionChangedEvent);
 	}
