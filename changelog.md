@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.41-SNAPSHOT
+
 ## 0.17.40
 ### is.codion.common.core
 - EventObserver.addDataListener() renamed addConsumer(), related renaming.
