@@ -104,37 +104,75 @@ public interface ValueSet<T> extends Value<Set<T>>, ValueSetObserver<T> {
 	 * @return a new {@link ValueSet}
 	 */
 	static <T> ValueSet<T> valueSet() {
-		return valueSet(Collections.emptySet(), Notify.WHEN_CHANGED);
-	}
-
-	/**
-	 * Creates a new empty {@link ValueSet}
-	 * @param <T> the value type
-	 * @param notify specifies when this value set notifies its listeners
-	 * @return a new {@link ValueSet}
-	 */
-	static <T> ValueSet<T> valueSet(Notify notify) {
-		return valueSet(Collections.emptySet(), notify);
+		return builder(Collections.<T>emptySet()).build();
 	}
 
 	/**
 	 * Creates a new {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
-	 * @param initialValues the initial values, may not be null
+	 * @param initialValue the initial value, may not be null
 	 * @param <T> the value type
 	 * @return a new {@link ValueSet}
 	 */
-	static <T> ValueSet<T> valueSet(Set<T> initialValues) {
-		return valueSet(initialValues, Notify.WHEN_CHANGED);
+	static <T> ValueSet<T> valueSet(Set<T> initialValue) {
+		return builder(initialValue).build();
 	}
 
 	/**
-	 * Creates a new {@link ValueSet}
-	 * @param initialValues the initial values, may not be null
-	 * @param notify specifies when this value set notifies its listeners
-	 * @param <T> the value type
-	 * @return a new {@link ValueSet}
+	 * Creates a new {@link ValueSet.Builder} instance.
+	 * @param initialValue the initial value
+	 * @return a new builder
+	 * @param <T> the value set type
+	 * @throws NullPointerException in case {@code initialValue} is null
 	 */
-	static <T> ValueSet<T> valueSet(Set<T> initialValues, Notify notify) {
-		return new DefaultValueSet<>(initialValues, notify);
+	static <T> Builder<T> builder(Set<T> initialValue) {
+		return new DefaultValueSet.DefaultBuilder<T>()
+						.initialValue(initialValue);
+	}
+
+	/**
+	 * Builds a {@link ValueSet} instance.
+	 * @param <T> the value type
+	 */
+	interface Builder<T> {
+
+		/**
+		 * @param initialValue the initial value
+		 * @return this builder instance
+		 */
+		Builder<T> initialValue(Set<T> initialValue);
+
+		/**
+		 * @param notify the notify policy for this value set, default {@link Notify#WHEN_CHANGED}
+		 * @return this builder instance
+		 */
+		Builder<T> notify(Notify notify);
+
+		/**
+		 * Adds a validator to the resulting value
+		 * @param validator the validator to add
+		 * @return this builder instance
+		 */
+		Builder<T> validator(Validator<Set<T>> validator);
+
+		/**
+		 * Links the given value to the resulting value
+		 * @param originalValueSet the original value set to link
+		 * @return this builder instance
+		 * @see Value#link(Value)
+		 */
+		Builder<T> link(ValueSet<T> originalValueSet);
+
+		/**
+		 * Links the given value observer to the resulting value
+		 * @param originalValueSet the value set observer to link
+		 * @return this builder instance
+		 * @see ValueSet#link(ValueObserver)
+		 */
+		Builder<T> link(ValueSetObserver<T> originalValueSet);
+
+		/**
+		 * @return a new {@link ValueSet} instance based on this builder
+		 */
+		ValueSet<T> build();
 	}
 }

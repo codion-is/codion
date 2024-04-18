@@ -18,9 +18,11 @@
  */
 package is.codion.common.value;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -32,6 +34,14 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 	private final Set<T> values = new LinkedHashSet<>();
 
 	private Value<T> value;
+
+	private DefaultValueSet(DefaultBuilder<T> builder) {
+		super(emptySet(), builder.notify);
+		set(builder.initialValue);
+		builder.validators.forEach(this::addValidator);
+		builder.linkedValueSets.forEach(this::link);
+		builder.linkedValueSetObservers.forEach(this::link);
+	}
 
 	DefaultValueSet(Set<T> initialValues, Notify notify) {
 		super(emptySet(), notify);
@@ -213,6 +223,51 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 			synchronized (DefaultValueSet.this.values) {
 				DefaultValueSet.this.set(value == null ? emptySet() : singleton(value));
 			}
+		}
+	}
+
+	static final class DefaultBuilder<T> implements ValueSet.Builder<T> {
+
+		private final List<Validator<Set<T>>> validators = new ArrayList<>();
+		private final List<ValueSet<T>> linkedValueSets = new ArrayList<>();
+		private final List<ValueSetObserver<T>> linkedValueSetObservers = new ArrayList<>();
+
+		private Set<T> initialValue = emptySet();
+		private Notify notify = Notify.WHEN_CHANGED;
+
+		@Override
+		public ValueSet.Builder<T> initialValue(Set<T> initialValue) {
+			this.initialValue = requireNonNull(initialValue);
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> notify(Notify notify) {
+			this.notify = requireNonNull(notify);
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> validator(Validator<Set<T>> validator) {
+			this.validators.add(requireNonNull(validator));
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> link(ValueSet<T> originalValueSet) {
+			this.linkedValueSets.add(requireNonNull(originalValueSet));
+			return this;
+		}
+
+		@Override
+		public ValueSet.Builder<T> link(ValueSetObserver<T> originalValueSet) {
+			this.linkedValueSetObservers.add(requireNonNull(originalValueSet));
+			return this;
+		}
+
+		@Override
+		public ValueSet<T> build() {
+			return new DefaultValueSet<>(this);
 		}
 	}
 }

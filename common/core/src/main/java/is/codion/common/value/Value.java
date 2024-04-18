@@ -174,6 +174,15 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	void validate(T value);
 
 	/**
+	 * Creates a new {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
+	 * @param <T> the value type
+	 * @return a Value for the given type
+	 */
+	static <T> Value<T> value() {
+		return nullable((T) null).build();
+	}
+
+	/**
 	 * @param nullValue the actual value to use when the value is set to null
 	 * @return a builder for a non-null Value
 	 * @param <T> the value type
@@ -251,14 +260,5 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @throws IllegalArgumentException in case of an invalid value
 		 */
 		void validate(T value);
-	}
-
-	/**
-	 * Creates a new {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
-	 * @param <T> the value type
-	 * @return a Value for the given type
-	 */
-	static <T> Value<T> value() {
-		return nullable((T) null).build();
 	}
 }

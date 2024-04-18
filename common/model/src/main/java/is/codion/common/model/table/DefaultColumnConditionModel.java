@@ -31,6 +31,7 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -45,7 +46,9 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private static final String REGEX_WILDCARD = ".*";
 
-	private final ValueSet<T> equalValues = ValueSet.valueSet(Notify.WHEN_SET);
+	private final ValueSet<T> equalValues = ValueSet.builder(Collections.<T>emptySet())
+					.notify(Notify.WHEN_SET)
+					.build();
 	private final Value<T> equalValue = equalValues.value();
 	private final Value<T> upperBoundValue = Value.nullable((T) null)
 					.notify(Notify.WHEN_SET)
