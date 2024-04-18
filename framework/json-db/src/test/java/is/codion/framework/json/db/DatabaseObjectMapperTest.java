@@ -31,6 +31,8 @@ import is.codion.framework.json.TestDomain.Employee;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
+import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_FIRST;
+import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_LAST;
 import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,8 +48,8 @@ public final class DatabaseObjectMapperTest {
 						.having(Employee.COMMISSION.greaterThan(200d))
 						.orderBy(OrderBy.builder()
 										.ascending(Employee.EMPNO)
-										.descendingNullsLast(Employee.NAME)
-										.ascendingNullsFirst(Employee.JOB)
+										.descending(NULLS_LAST, Employee.NAME)
+										.ascending(NULLS_FIRST, Employee.JOB)
 										.build())
 						.limit(2)
 						.offset(1)

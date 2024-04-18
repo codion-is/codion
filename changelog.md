@@ -7,6 +7,8 @@ Codion Change Log
 - Value.Builder, methods for adding listeners and consumers added.
 - ValueSet.Builder, methods for adding listeners and consumers added.
 - State.Builder added.
+### is.codion.framework.domain
+- OrderBy.Builder, NullOrder now parameter.
 ### is.codion.swing.common.ui
 - InputDialogBuilder.inputValid() and inputValidator() renamed valid() and validator() respectively.
 ### is.codion.swing.fraework.ui

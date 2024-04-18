@@ -136,14 +136,8 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 		}
 
 		@Override
-		public Builder ascendingNullsFirst(Column<?>... columns) {
-			add(true, NullOrder.NULLS_FIRST, requireNonNull(columns));
-			return this;
-		}
-
-		@Override
-		public Builder ascendingNullsLast(Column<?>... columns) {
-			add(true, NullOrder.NULLS_LAST, requireNonNull(columns));
+		public Builder ascending(NullOrder nullOrder, Column<?>... columns) {
+			add(true, requireNonNull(nullOrder), requireNonNull(columns));
 			return this;
 		}
 
@@ -154,14 +148,8 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 		}
 
 		@Override
-		public Builder descendingNullsFirst(Column<?>... columns) {
-			add(false, NullOrder.NULLS_FIRST, requireNonNull(columns));
-			return this;
-		}
-
-		@Override
-		public Builder descendingNullsLast(Column<?>... columns) {
-			add(false, NullOrder.NULLS_LAST, requireNonNull(columns));
+		public Builder descending(NullOrder nullOrder, Column<?>... columns) {
+			add(false, requireNonNull(nullOrder), requireNonNull(columns));
 			return this;
 		}
 

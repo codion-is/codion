@@ -116,30 +116,10 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 			String order = split[1];
 			NullOrder nullOrder = NullOrder.valueOf(split[2]);
 			if ("asc".equals(order)) {
-				switch (nullOrder) {
-					case NULLS_FIRST:
-						builder.ascendingNullsFirst(column);
-						break;
-					case NULLS_LAST:
-						builder.ascendingNullsLast(column);
-						break;
-					default:
-						builder.ascending(column);
-						break;
-				}
+				builder.ascending(nullOrder, column);
 			}
 			else {
-				switch (nullOrder) {
-					case NULLS_FIRST:
-						builder.descendingNullsFirst(column);
-						break;
-					case NULLS_LAST:
-						builder.descendingNullsLast(column);
-						break;
-					default:
-						builder.descending(column);
-						break;
-				}
+				builder.descending(nullOrder, column);
 			}
 		}
 

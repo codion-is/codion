@@ -22,6 +22,8 @@ import is.codion.framework.domain.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_FIRST;
+import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_LAST;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultOrderByTest {
@@ -65,24 +67,24 @@ public final class DefaultOrderByTest {
 
 		assertEquals(OrderBy.builder()
 										.ascending(Department.LOCATION)
-										.descendingNullsFirst(Department.NAME)
+										.descending(NULLS_FIRST, Department.NAME)
 										.build(),
 						OrderBy.builder()
 										.ascending(Department.LOCATION)
-										.descendingNullsFirst(Department.NAME)
+										.descending(NULLS_FIRST, Department.NAME)
 										.build());
 		assertEquals(OrderBy.builder()
-										.ascendingNullsLast(Department.LOCATION)
+										.ascending(NULLS_LAST, Department.LOCATION)
 										.descending(Department.NAME)
 										.build(),
 						OrderBy.builder()
-										.ascendingNullsLast(Department.LOCATION)
+										.ascending(NULLS_LAST, Department.LOCATION)
 										.descending(Department.NAME)
 										.build());
 
 		assertNotEquals(OrderBy.builder()
 										.ascending(Department.LOCATION)
-										.descendingNullsLast(Department.NAME)
+										.descending(NULLS_LAST, Department.NAME)
 										.build(),
 						OrderBy.builder()
 										.ascending(Department.LOCATION)
@@ -93,7 +95,7 @@ public final class DefaultOrderByTest {
 										.descending(Department.NAME)
 										.build(),
 						OrderBy.builder()
-										.ascendingNullsFirst(Department.LOCATION)
+										.ascending(NULLS_FIRST, Department.LOCATION)
 										.descending(Department.NAME)
 										.build());
 	}

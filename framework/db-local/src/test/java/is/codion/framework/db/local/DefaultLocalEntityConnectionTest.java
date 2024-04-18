@@ -71,6 +71,8 @@ import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
+import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_FIRST;
+import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_LAST;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Arrays.asList;
@@ -1176,28 +1178,28 @@ public class DefaultLocalEntityConnectionTest {
 	void orderByNullOrder() throws DatabaseException {
 		List<Entity> result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
-										.ascendingNullsFirst(Employee.MGR)
+										.ascending(NULLS_FIRST, Employee.MGR)
 										.build())
 						.build());
 		assertEquals(result.get(0).get(Employee.NAME), "KING");
 
 		result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
-										.ascendingNullsLast(Employee.MGR)
+										.ascending(NULLS_LAST, Employee.MGR)
 										.build())
 						.build());
 		assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
 
 		result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
-										.descendingNullsFirst(Employee.MGR)
+										.descending(NULLS_FIRST, Employee.MGR)
 										.build())
 						.build());
 		assertEquals(result.get(0).get(Employee.NAME), "KING");
 
 		result = connection.select(Select.all(Employee.TYPE)
 						.orderBy(OrderBy.builder()
-										.descendingNullsLast(Employee.MGR)
+										.descending(NULLS_LAST, Employee.MGR)
 										.build())
 						.build());
 		assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");

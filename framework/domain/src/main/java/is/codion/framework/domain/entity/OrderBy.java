@@ -91,20 +91,13 @@ public interface OrderBy {
 		Builder ascending(Column<?>... columns);
 
 		/**
-		 * Adds an 'ascending' order by for the given columns with nulls appearing first
+		 * Adds an 'ascending' order by for the given columns
+		 * @param nullOrder the null order
 		 * @param columns the columns
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case {@code columns} is empty
 		 */
-		Builder ascendingNullsFirst(Column<?>... columns);
-
-		/**
-		 * Adds an 'ascending' order by for the given columns with nulls appearing last
-		 * @param columns the columns
-		 * @return this builder instance
-		 * @throws IllegalArgumentException in case {@code columns} is empty
-		 */
-		Builder ascendingNullsLast(Column<?>... columns);
+		Builder ascending(NullOrder nullOrder, Column<?>... columns);
 
 		/**
 		 * Adds a 'descending' order by for the given columns
@@ -115,20 +108,13 @@ public interface OrderBy {
 		Builder descending(Column<?>... columns);
 
 		/**
-		 * Adds a 'descending' order by for the given columns with nulls appearing first
+		 * Adds a 'descending' order by for the given columns
+		 * @param nullOrder the null order
 		 * @param columns the columns
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case {@code columns} is empty
 		 */
-		Builder descendingNullsFirst(Column<?>... columns);
-
-		/**
-		 * Adds a 'descending' order by for the given columns with nulls appearing last
-		 * @param columns the columns
-		 * @return this builder instance
-		 * @throws IllegalArgumentException in case {@code columns} is empty
-		 */
-		Builder descendingNullsLast(Column<?>... columns);
+		Builder descending(NullOrder nullOrder, Column<?>... columns);
 
 		/**
 		 * @return a new {@link OrderBy} instance based on this builder
