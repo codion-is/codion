@@ -2229,7 +2229,7 @@ public class EntityTablePanel extends JPanel {
 		private static final String STATUS = "status";
 		private static final String REFRESHING = "refreshing";
 
-		private final Value<String> statusMessage = value("", "");
+		private final Value<String> statusMessage = Value.nonNull("").build();
 
 		private StatusPanel() {
 			super(new CardLayout());

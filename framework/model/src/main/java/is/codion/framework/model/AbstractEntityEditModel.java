@@ -91,9 +91,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
 		this.connectionProvider = connectionProvider;
-		this.validator = Value.value(entityDefinition().validator(), entityDefinition().validator());
-		this.modifiedPredicate = Value.value(Entity::modified, Entity::modified);
-		this.existsPredicate = Value.value(entityDefinition().exists(), entityDefinition().exists());
+		this.validator = Value.nonNull(entityDefinition().validator()).build();
+		this.modifiedPredicate = Value.nonNull((Predicate<Entity>) Entity::modified).build();
+		this.existsPredicate = Value.nonNull(entityDefinition().exists()).build();
 		this.states.readOnly.set(entityDefinition().readOnly());
 		this.events.bindEvents();
 		configurePersistentForeignKeys();
@@ -118,9 +118,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final <S extends Supplier<T>, T> Value<S> defaultValue(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition().attributes().definition(attribute);
+		if (defaultValues.containsKey(attribute)) {
+			return (Value<S>) defaultValues.get(attribute);
+		}
 
-		return (Value<S>) defaultValues.computeIfAbsent(attribute, k ->
-						Value.value(attributeDefinition::defaultValue, attributeDefinition::defaultValue));
+		defaultValues.put(attribute, (Value<Supplier<?>>) Value.nonNull((S) (Supplier<T>) attributeDefinition::defaultValue).build());
+
+		return (Value<S>) defaultValues.get(attribute);
 	}
 
 	@Override

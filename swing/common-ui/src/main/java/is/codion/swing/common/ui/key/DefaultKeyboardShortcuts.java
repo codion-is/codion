@@ -52,7 +52,7 @@ final class DefaultKeyboardShortcuts<T extends Enum<T> & KeyboardShortcuts.Short
 	public KeyboardShortcuts<T> copy() {
 		return new DefaultKeyboardShortcuts<>(shortcutClass, keyStrokes.entrySet().stream()
 						.collect(toMap(Map.Entry::getKey, entry ->
-										Value.value(entry.getValue().get(), entry.getValue().get()))));
+										Value.nonNull(entry.getValue().get()).build())));
 	}
 
 	private static <T extends Enum<T> & Shortcut> Value<KeyStroke> keyStrokeValue(T shortcutKey) {
@@ -61,6 +61,6 @@ final class DefaultKeyboardShortcuts<T extends Enum<T> & KeyboardShortcuts.Short
 			throw new IllegalArgumentException("No default keystroke provided for shortcut key: " + shortcutKey);
 		}
 
-		return Value.value(keyStroke, keyStroke);
+		return Value.nonNull(keyStroke).build();
 	}
 }

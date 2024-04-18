@@ -174,6 +174,56 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	void validate(T value);
 
 	/**
+	 * @param nullValue the actual value to use when the value is set to null
+	 * @return a builder for a non-null Value
+	 * @param <T> the value type
+	 */
+	static <T> Builder<T> nonNull(T nullValue) {
+		return new DefaultValue.DefaultBuilder<>(nullValue);
+	}
+
+	/**
+	 * @param initialValue the initial value
+	 * @return a builder for a nullable Value
+	 * @param <T> the value type
+	 */
+	static <T> Builder<T> nullable(T initialValue) {
+		return (Builder<T>) new DefaultValue.DefaultBuilder<>()
+						.initialValue(initialValue);
+	}
+
+	/**
+	 * Builds a {@link Value} instance.
+	 * @param <T> the value type
+	 */
+	interface Builder<T> {
+
+		/**
+		 * @param initialValue the initial value
+		 * @return this builder instance
+		 */
+		Builder<T> initialValue(T initialValue);
+
+		/**
+		 * @param notify the notify policy for this value, default {@link Notify#WHEN_CHANGED}
+		 * @return this builder instance
+		 */
+		Builder<T> notify(Notify notify);
+
+		/**
+		 * Adds a validator to the resulting value
+		 * @param validator the validator to add
+		 * @return this builder instance
+		 */
+		Builder<T> validator(Validator<T> validator);
+
+		/**
+		 * @return a new {@link Value} instance based on this builder
+		 */
+		Value<T> build();
+	}
+
+	/**
 	 * A {@link Validator} for {@link Value}s.
 	 * @param <T> the value type
 	 */
@@ -193,62 +243,6 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return a Value for the given type
 	 */
 	static <T> Value<T> value() {
-		return value(Notify.WHEN_CHANGED);
-	}
-
-	/**
-	 * Creates a new {@link Value} instance, wrapping a null initial value
-	 * @param <T> the value type
-	 * @param notify specifies when this value notifies its listeners
-	 * @return a Value for the given type
-	 */
-	static <T> Value<T> value(Notify notify) {
-		return value(null, notify);
-	}
-
-	/**
-	 * Creates a new {@link Value} instance, using {@link Notify#WHEN_CHANGED}.
-	 * @param initialValue the initial value
-	 * @param <T> the value type
-	 * @return a {@link Value} with given initial value
-	 */
-	static <T> Value<T> value(T initialValue) {
-		return new DefaultValue<>(initialValue, null, Notify.WHEN_CHANGED);
-	}
-
-	/**
-	 * Creates a new {@link Value} instance
-	 * @param initialValue the initial value
-	 * @param notify specifies when this value notifies its listeners
-	 * @param <T> the value type
-	 * @return a {@link Value} with given initial value
-	 */
-	static <T> Value<T> value(T initialValue, Notify notify) {
-		return new DefaultValue<>(initialValue, null, notify);
-	}
-
-	/**
-	 * Creates a new {@link Value} instance, using {@link Notify#WHEN_CHANGED}.
-	 * @param initialValue the initial value
-	 * @param nullValue the actual value to use when the value is set to null
-	 * @param <T> the value type
-	 * @return a {@link Value} with given initial value
-	 * @throws NullPointerException in case {@code nullValue} is null
-	 */
-	static <T> Value<T> value(T initialValue, T nullValue) {
-		return value(initialValue, requireNonNull(nullValue), Notify.WHEN_CHANGED);
-	}
-
-	/**
-	 * Creates a new {@link Value} instance
-	 * @param initialValue the initial value
-	 * @param nullValue the actual value to use when the value is set to null
-	 * @param notify specifies when this value notifies its listeners
-	 * @param <T> the value type
-	 * @return a {@link Value} with given initial value
-	 * @throws NullPointerException in case {@code nullValue} is null
-	 */
-	static <T> Value<T> value(T initialValue, T nullValue, Notify notify) {
-		return new DefaultValue<>(initialValue, requireNonNull(nullValue), notify);
+		return nullable((T) null).build();
 	}
 }

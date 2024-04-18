@@ -53,7 +53,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testLongPrimitive() {
-		Value<Long> longPrimitivePropertyValue = Value.value(null, 0L);
+		Value<Long> longPrimitivePropertyValue = Value.nonNull(0L).build();
 		assertFalse(longPrimitivePropertyValue.nullable());
 		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
 						.buildValue();
@@ -84,7 +84,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testInt() {
-		Value<Integer> integerPropertyValue = Value.value(null, 0);
+		Value<Integer> integerPropertyValue = Value.nonNull(0).build();
 		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField(integerPropertyValue)
 						.buildValue();
 		NumberField<Integer> integerField = componentValue.component();
@@ -133,7 +133,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void testDoublePrimitive() {
-		Value<Double> doublePrimitivePropertyValue = Value.value(null, 0d);
+		Value<Double> doublePrimitivePropertyValue = Value.nonNull(0d).build();
 		ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
 						.decimalSeparator('.')
 						.groupingSeparator(',')

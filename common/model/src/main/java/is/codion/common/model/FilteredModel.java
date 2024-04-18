@@ -32,8 +32,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Specifies a data model that can be filtered to hide some or all of the items it contains.
  * @param <T> the type of data in the model.
@@ -209,7 +207,7 @@ public interface FilteredModel<T> {
 		 * @param itemSupplier the item supplier
 		 */
 		protected AbstractRefresher(Supplier<Collection<T>> itemSupplier) {
-			this.itemSupplier = Value.value(requireNonNull(itemSupplier), itemSupplier);
+			this.itemSupplier = Value.nonNull(itemSupplier).build();
 		}
 
 		@Override

@@ -110,7 +110,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
 	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.get());
 	private final State removeDeleted = State.state(true);
-	private final Value<OnInsert> onInsert = Value.value(EntityTableModel.ON_INSERT.get(), EntityTableModel.ON_INSERT.get());
+	private final Value<OnInsert> onInsert = Value.nonNull(EntityTableModel.ON_INSERT.get()).build();
 
 	/**
 	 * Caches java.awt.Color instances parsed from hex strings via {@link #toColor(Object)}

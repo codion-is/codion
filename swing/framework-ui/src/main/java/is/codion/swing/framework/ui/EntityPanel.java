@@ -322,7 +322,9 @@ public class EntityPanel extends JPanel {
 		this.configuration = configure(this, configuration);
 		this.detailLayout = this.configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
-		this.editPanelState = Value.value(this.configuration.editPanelState, EMBEDDED);
+		this.editPanelState = Value.nonNull(EMBEDDED)
+						.initialValue(this.configuration.editPanelState)
+						.build();
 		this.editPanelState.addListener(this::updateEditPanelState);
 	}
 

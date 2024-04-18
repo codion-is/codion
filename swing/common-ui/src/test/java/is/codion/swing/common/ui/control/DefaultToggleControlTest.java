@@ -39,7 +39,7 @@ public class DefaultToggleControlTest {
 
 	@Test
 	void toggleControlTest() {
-		Value<Boolean> booleanValue = Value.value(false, false);
+		Value<Boolean> booleanValue = Value.nonNull(false).build();
 		ToggleControl control = ToggleControl.builder(booleanValue).build();
 		control.value().set(true);
 		assertTrue(booleanValue.get());
@@ -48,7 +48,7 @@ public class DefaultToggleControlTest {
 		booleanValue.set(true);
 		assertTrue(control.value().get());
 
-		Value<Boolean> nullableValue = Value.value(true);
+		Value<Boolean> nullableValue = Value.nullable(true).build();
 		ToggleControl nullableControl = ToggleControl.builder(nullableValue).build();
 		NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) toggleButton()
 						.toggleControl(nullableControl)
@@ -66,7 +66,9 @@ public class DefaultToggleControlTest {
 		assertNull(toggleButtonModel.getState());
 		assertFalse(toggleButtonModel.isSelected());
 
-		Value<Boolean> nonNullableValue = Value.value(true, false);
+		Value<Boolean> nonNullableValue = Value.nonNull(false)
+						.initialValue(true)
+						.build();
 		ToggleControl nonNullableControl = ToggleControl.builder(nonNullableValue).build();
 		ButtonModel buttonModel = toggleButton()
 						.toggleControl(nonNullableControl)
@@ -149,7 +151,7 @@ public class DefaultToggleControlTest {
 
 	@Test
 	void checkBox() {
-		Value<Boolean> value = Value.value(false, false);
+		Value<Boolean> value = Value.nonNull(false).build();
 		JCheckBox box = CheckBoxBuilder.builder()
 						.toggleControl(ToggleControl.builder(value)
 										.name("Test"))
@@ -159,7 +161,7 @@ public class DefaultToggleControlTest {
 
 	@Test
 	void checkBoxMenuItem() {
-		Value<Boolean> value = Value.value(false, false);
+		Value<Boolean> value = Value.nonNull(false).build();
 		JMenuItem item = CheckBoxMenuItemBuilder.builder()
 						.toggleControl(ToggleControl.builder(value)
 										.name("Test"))

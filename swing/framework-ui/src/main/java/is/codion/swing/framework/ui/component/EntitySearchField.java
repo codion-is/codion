@@ -232,9 +232,9 @@ public final class EntitySearchField extends HintTextField {
 			TextComponents.lowerCase(getDocument());
 		}
 		searchOnFocusLost.set(builder.searchOnFocusLost);
-		searchIndicator = Value.value(builder.searchIndicator, builder.searchIndicator);
+		searchIndicator = Value.nonNull(builder.searchIndicator).build();
 		updateSearchIndicator();
-		selectorFactory = Value.value(builder.selectorFactory, builder.selectorFactory);
+		selectorFactory = Value.nonNull(builder.selectorFactory).build();
 		if (builder.selectAllOnFocusGained) {
 			selectAllOnFocusGained(this);
 		}

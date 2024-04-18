@@ -31,7 +31,9 @@ final class DefaultState implements State {
 	private DefaultStateObserver observer;
 
 	DefaultState(boolean value) {
-		this.value = Value.value(value, false);
+		this.value = Value.nonNull(false)
+						.initialValue(value)
+						.build();
 		this.value.addConsumer(new Notifier());
 	}
 

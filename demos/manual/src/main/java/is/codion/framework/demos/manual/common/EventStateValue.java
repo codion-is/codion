@@ -120,21 +120,30 @@ public final class EventStateValue {
 
 	private static void value() {
 		// tag::value[]
-		Value<Integer> value = Value.value();
+		// a nullable value with 2 as the initial value
+		Value<Integer> value =
+						Value.nullable(2)
+										.build();
 
-		value.set(2);
+		value.set(4);
 
-		Value<Integer> otherValue = Value.value();
+		// a non-null value using 0 as null
+		Value<Integer> otherValue =
+						Value.nonNull(0)
+										.build();
 
 		otherValue.link(value);
 
-		System.out.println(otherValue.get());// output: 2
+		System.out.println(otherValue.get());// output: 4
 
 		otherValue.set(3);
 
 		System.out.println(value.get());// output: 3
 
 		value.addConsumer(System.out::println);
+
+		otherValue.addListener(() ->
+						System.out.println("Value changed: " + otherValue.get()));
 		// end::value[]
 	}
 
@@ -143,7 +152,9 @@ public final class EventStateValue {
 		Integer initialValue = 42;
 		Integer nullValue = 0;
 
-		Value<Integer> value = Value.value(initialValue, nullValue);
+		Value<Integer> value = Value.nonNull(nullValue)
+						.initialValue(initialValue)
+						.build();
 
 		System.out.println(value.nullable());//output: false
 

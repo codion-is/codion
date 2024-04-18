@@ -38,8 +38,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.event.Event.event;
-import static is.codion.common.state.State.state;
-import static is.codion.common.value.Value.value;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -53,9 +51,9 @@ public final class DesignAndStyle {
 		//tag::factories[]
 		Event<String> event = event(); // Event.event()
 
-		Value<Integer> value = value(42); // Value.value()
+		Value<Integer> value = Value.value();
 
-		State state = state(true); // State.state()
+		State state = State.state(true);
 
 		EntityTableConditionModel<Attribute<?>> conditionModel =
 						entityTableConditionModel(Customer.TYPE, connectionProvider);

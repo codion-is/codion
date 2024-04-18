@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
-	private final Value<Summary> summary = Value.value(ColumnSummary.NONE, ColumnSummary.NONE);
+	private final Value<? extends Summary> summary = Value.nonNull(ColumnSummary.NONE).build();
 	private final Value<String> summaryText = Value.value();
 	private final State locked = State.state();
 	private final SummaryValueProvider<T> valueProvider;
@@ -58,7 +58,7 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 
 	@Override
 	public Value<Summary> summary() {
-		return summary;
+		return (Value<Summary>) summary;
 	}
 
 	@Override

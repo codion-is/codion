@@ -52,7 +52,7 @@ public final class SearchHighlighter {
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SearchHighlighter.class.getName());
 
 	private final JTextComponent textComponent;
-	private final Value<String> searchStringValue = Value.value("", "");
+	private final Value<String> searchStringValue = Value.nonNull("").build();
 	private final State caseSensitiveState = State.state();
 	private final Highlighter highlighter = new DefaultHighlighter();
 	private final List<MatchPosition> searchTextPositions = new ArrayList<>();

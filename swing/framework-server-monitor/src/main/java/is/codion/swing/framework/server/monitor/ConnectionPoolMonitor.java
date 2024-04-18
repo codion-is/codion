@@ -85,15 +85,25 @@ public final class ConnectionPoolMonitor {
 	public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
 		this.username = requireNonNull(connectionPool).user().username();
 		this.connectionPool = connectionPool;
-		this.pooledConnectionTimeoutValue = Value.value(connectionPool.getIdleConnectionTimeout(), 0);
+		this.pooledConnectionTimeoutValue = Value.nonNull(0)
+						.initialValue(connectionPool.getIdleConnectionTimeout())
+						.build();
 		this.pooledConnectionTimeoutValue.addConsumer(connectionPool::setIdleConnectionTimeout);
-		this.pooledCleanupIntervalValue = Value.value(connectionPool.getCleanupInterval(), 0);
+		this.pooledCleanupIntervalValue = Value.nonNull(0)
+						.initialValue(connectionPool.getCleanupInterval())
+						.build();
 		this.pooledCleanupIntervalValue.addConsumer(connectionPool::setCleanupInterval);
-		this.minimumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize(), 0);
+		this.minimumPoolSizeValue = Value.nonNull(0)
+						.initialValue(connectionPool.getMinimumPoolSize())
+						.build();
 		this.minimumPoolSizeValue.addConsumer(connectionPool::setMinimumPoolSize);
-		this.maximumPoolSizeValue = Value.value(connectionPool.getMaximumPoolSize(), 0);
+		this.maximumPoolSizeValue = Value.nonNull(0)
+						.initialValue(connectionPool.getMaximumPoolSize())
+						.build();
 		this.maximumPoolSizeValue.addConsumer(connectionPool::setMaximumPoolSize);
-		this.maximumCheckoutTimeValue = Value.value(connectionPool.getMaximumCheckOutTime(), 0);
+		this.maximumCheckoutTimeValue = Value.nonNull(0)
+						.initialValue(connectionPool.getMaximumCheckOutTime())
+						.build();
 		this.maximumCheckoutTimeValue.addConsumer(connectionPool::setMaximumCheckOutTime);
 		this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
 		this.collectSnapshotStatisticsState.addConsumer(connectionPool::setCollectSnapshotStatistics);

@@ -40,7 +40,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 	private DefaultTaskScheduler(DefaultBuilder builder) {
 		this.task = builder.task;
-		this.interval = Value.value(builder.interval, builder.interval);
+		this.interval = Value.nonNull(builder.interval).build();
 		this.interval.addValidator(value -> {
 			if (value <= 0) {
 				throw new IllegalArgumentException("Interval must be a positive integer");

@@ -109,7 +109,7 @@ public final class ComponentsTest {
 	void clear() {
 		Font defaultFont = new JTextField().getFont();
 
-		Value<Integer> value = Value.value(42);
+		Value<Integer> value = Value.nullable(42).build();
 
 		NumberField.Builder<Integer> builder = Components.integerField()
 						.valueRange(0, 100)
@@ -156,7 +156,7 @@ public final class ComponentsTest {
 
 	@Test
 	void shortField() {
-		Value<Short> value = Value.value((short) 42);
+		Value<Short> value = Value.nullable((short) 42).build();
 		ComponentValue<Short, NumberField<Short>> componentValue = Components.shortField()
 						.valueRange(0, 100)
 						.font(Font.getFont("arial"))
@@ -171,7 +171,7 @@ public final class ComponentsTest {
 
 	@Test
 	void integerField() {
-		Value<Integer> value = Value.value(42);
+		Value<Integer> value = Value.nullable(42).build();
 		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
 						.valueRange(0, 100)
 						.font(Font.getFont("arial"))
@@ -186,7 +186,7 @@ public final class ComponentsTest {
 
 	@Test
 	void longField() {
-		Value<Long> value = Value.value(42L);
+		Value<Long> value = Value.nullable(42L).build();
 		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
 						.valueRange(0, 100)
 						.groupingSeparator('.')
@@ -199,7 +199,7 @@ public final class ComponentsTest {
 
 	@Test
 	void doubleField() {
-		Value<Double> value = Value.value(42.2);
+		Value<Double> value = Value.nullable(42.2).build();
 		ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
 						.valueRange(0, 100)
 						.maximumFractionDigits(2)
@@ -214,7 +214,7 @@ public final class ComponentsTest {
 
 	@Test
 	void bigDecimalField() {
-		Value<BigDecimal> value = Value.value(BigDecimal.valueOf(42.2));
+		Value<BigDecimal> value = Value.nullable(BigDecimal.valueOf(42.2)).build();
 		ComponentValue<BigDecimal, NumberField<BigDecimal>> componentValue = Components.bigDecimalField()
 						.maximumFractionDigits(2)
 						.groupingSeparator('.')
@@ -227,7 +227,7 @@ public final class ComponentsTest {
 
 	@Test
 	void localTimeField() {
-		Value<LocalTime> value = Value.value(LocalTime.now());
+		Value<LocalTime> value = Value.nullable(LocalTime.now()).build();
 		ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
 						Components.localTimeField("HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -238,7 +238,7 @@ public final class ComponentsTest {
 
 	@Test
 	void localDateField() {
-		Value<LocalDate> value = Value.value(LocalDate.now());
+		Value<LocalDate> value = Value.nullable(LocalDate.now()).build();
 		ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
 						Components.localDateField("dd-MM-yyyy")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -249,7 +249,7 @@ public final class ComponentsTest {
 
 	@Test
 	void localDateTimeField() {
-		Value<LocalDateTime> value = Value.value(LocalDateTime.now());
+		Value<LocalDateTime> value = Value.nullable(LocalDateTime.now()).build();
 		ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
 						Components.localDateTimeField("dd-MM-yyyy HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -260,7 +260,7 @@ public final class ComponentsTest {
 
 	@Test
 	void offsetDateTimeField() {
-		Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
+		Value<OffsetDateTime> value = Value.nullable(OffsetDateTime.now()).build();
 		ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
 						Components.offsetDateTimeField("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -306,7 +306,9 @@ public final class ComponentsTest {
 
 	@Test
 	void checkBox() {
-		Value<Boolean> value = Value.value(true, false);
+		Value<Boolean> value = Value.nonNull(false)
+						.initialValue(true)
+						.build();
 		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
 						.text("caption")
 						.horizontalAlignment(SwingConstants.CENTER)
@@ -346,7 +348,9 @@ public final class ComponentsTest {
 
 	@Test
 	void toggleButton() {
-		Value<Boolean> value = Value.value(true, false);
+		Value<Boolean> value = Value.nonNull(false)
+						.initialValue(true)
+						.build();
 		ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton(value)
 						.text("caption")
 						.includeText(true)
@@ -388,7 +392,9 @@ public final class ComponentsTest {
 	void radioButton() {
 		assertThrows(IllegalArgumentException.class, () -> Components.radioButton(Value.value()));
 
-		Value<Boolean> value = Value.value(true, false);
+		Value<Boolean> value = Value.nonNull(false)
+						.initialValue(true)
+						.build();
 		ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton(value)
 						.text("caption")
 						.includeText(true)
@@ -484,7 +490,7 @@ public final class ComponentsTest {
 
 	@Test
 	void nullableCheckBox() {
-		Value<Boolean> value = Value.value(true);
+		Value<Boolean> value = Value.nullable(true).build();
 		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
 						.transferFocusOnEnter(true)
 						.nullable(true)
@@ -504,7 +510,7 @@ public final class ComponentsTest {
 
 	@Test
 	void booleanComboBox() {
-		Value<Boolean> value = Value.value(true);
+		Value<Boolean> value = Value.nullable(true).build();
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
 						Components.booleanComboBox(booleanItemComboBoxModel())
 										.maximumRowCount(5)
@@ -672,7 +678,7 @@ public final class ComponentsTest {
 
 	@Test
 	void integerSpinner() {
-		Value<Integer> value = Value.value(10);
+		Value<Integer> value = Value.nullable(10).build();
 		ComponentValue<Integer, JSpinner> componentValue = Components.integerSpinner()
 						.minimum(0)
 						.maximum(100)
@@ -688,7 +694,7 @@ public final class ComponentsTest {
 
 	@Test
 	void doubleSpinner() {
-		Value<Double> value = Value.value(10d);
+		Value<Double> value = Value.nullable(10d).build();
 		ComponentValue<Double, JSpinner> componentValue = Components.doubleSpinner()
 						.minimum(0d)
 						.maximum(100d)
@@ -737,7 +743,7 @@ public final class ComponentsTest {
 
 	@Test
 	void slider() {
-		Value<Integer> value = Value.value(10);
+		Value<Integer> value = Value.nullable(10).build();
 		ComponentValue<Integer, JSlider> componentValue = Components.slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
 						.snapToTicks(true)
 						.paintTrack(true)
@@ -757,7 +763,7 @@ public final class ComponentsTest {
 
 	@Test
 	void label() {
-		Value<String> textValue = Value.value("label");
+		Value<String> textValue = Value.nullable("label").build();
 		ComponentValue<String, JLabel> componentValue = Components.label(textValue)
 						.icon(Logos.logoTransparent())
 						.iconTextGap(5)
@@ -802,7 +808,7 @@ public final class ComponentsTest {
 		listModel.addElement("two");
 		listModel.addElement("three");
 
-		Value<String> textValue = Value.value("two");
+		Value<String> textValue = Value.nullable("two").build();
 		ListBuilder.SelectedItem<String> listBuilder = Components.list(listModel)
 						.selectedItem()
 						.visibleRowCount(4)
@@ -868,7 +874,7 @@ public final class ComponentsTest {
 						.validator(validator)
 						.build());
 
-		Value<String> stringValue = Value.value("test");
+		Value<String> stringValue = Value.nullable("test").build();
 		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class, stringValue)
 						.validator(validator)
 						.build());

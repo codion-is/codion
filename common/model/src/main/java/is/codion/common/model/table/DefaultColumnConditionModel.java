@@ -47,13 +47,17 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
 	private final ValueSet<T> equalValues = ValueSet.valueSet(Notify.WHEN_SET);
 	private final Value<T> equalValue = equalValues.value();
-	private final Value<T> upperBoundValue = Value.value(Notify.WHEN_SET);
-	private final Value<T> lowerBoundValue = Value.value(Notify.WHEN_SET);
-	private final Value<Operator> operator = Value.value(Operator.EQUAL, Operator.EQUAL);
+	private final Value<T> upperBoundValue = Value.nullable((T) null)
+					.notify(Notify.WHEN_SET)
+					.build();
+	private final Value<T> lowerBoundValue = Value.nullable((T) null)
+					.notify(Notify.WHEN_SET)
+					.build();
+	private final Value<Operator> operator = Value.nonNull(Operator.EQUAL).build();
+	private final Value<AutomaticWildcard> automaticWildcard = Value.nonNull(AutomaticWildcard.NONE).build();
 	private final Event<?> conditionChangedEvent = Event.event();
 
 	private final State caseSensitive;
-	private final Value<AutomaticWildcard> automaticWildcard;
 	private final String wildcard;
 
 	private final State autoEnable;
@@ -73,7 +77,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 		this.wildcard = String.valueOf(builder.wildcard);
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
-		this.automaticWildcard = Value.value(builder.automaticWildcard, AutomaticWildcard.NONE);
+		this.automaticWildcard.set(builder.automaticWildcard);
 		this.caseSensitive = State.state(builder.caseSensitive);
 		this.autoEnable = State.state(builder.autoEnable);
 		this.enabled.addValidator(value -> checkLock());

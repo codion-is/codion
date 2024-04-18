@@ -68,7 +68,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private final Value<Integer> applicationBatchSize;
 	private final Value<Integer> maximumThinkTime;
 	private final Value<Integer> minimumThinkTime;
-	private final Value<Integer> applicationCount = Value.value(0);
+	private final Value<Integer> applicationCount = Value.nullable(0).build();
 	private final Event<?> shutdownEvent = Event.event();
 	private final Event<Result> resultEvent = Event.event();
 
@@ -85,13 +85,15 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		this.applicationFactory = builder.applicationFactory;
 		this.closeApplication = builder.closeApplication;
 		this.name = builder.name;
-		this.user = Value.value(builder.user, builder.user);
-		this.loginDelayFactor = Value.value(builder.loginDelayFactor, builder.loginDelayFactor);
-		this.applicationBatchSize = Value.value(builder.applicationBatchSize, builder.applicationBatchSize);
-		this.minimumThinkTime = Value.value(builder.minimumThinkTime, builder.minimumThinkTime);
-		this.maximumThinkTime = Value.value(builder.maximumThinkTime, builder.maximumThinkTime);
-		this.loginDelayFactor.addValidator(new MinimumValidator(1));
-		this.applicationBatchSize.addValidator(new MinimumValidator(1));
+		this.user = Value.nonNull(builder.user).build();
+		this.loginDelayFactor = Value.nonNull(builder.loginDelayFactor)
+						.validator(new MinimumValidator(1))
+						.build();
+		this.applicationBatchSize = Value.nonNull(builder.applicationBatchSize)
+						.validator(new MinimumValidator(1))
+						.build();
+		this.minimumThinkTime = Value.nonNull(builder.minimumThinkTime).build();
+		this.maximumThinkTime = Value.nonNull(builder.maximumThinkTime).build();
 		this.minimumThinkTime.addValidator(new MinimumThinkTimeValidator());
 		this.maximumThinkTime.addValidator(new MaximumThinkTimeValidator());
 		this.scenarios = unmodifiableMap(builder.scenarios.stream()

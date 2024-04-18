@@ -163,7 +163,9 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private final class DetailWindow {
 
-		private final Value<PanelState> panelState = Value.value(HIDDEN, HIDDEN, Notify.WHEN_SET);
+		private final Value<PanelState> panelState = Value.nonNull(HIDDEN)
+						.notify(Notify.WHEN_SET)
+						.build();
 		private final EntityPanel detailPanel;
 
 		private Window window;

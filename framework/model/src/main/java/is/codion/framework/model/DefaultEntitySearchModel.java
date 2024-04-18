@@ -62,12 +62,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final ValueSet<Entity> entities = ValueSet.valueSet(Notify.WHEN_SET);
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
-	private final Value<String> searchString = Value.value("", "", Notify.WHEN_SET);
-	private final Value<String> separator;
+	private final Value<String> searchString = Value.nonNull("")
+					.notify(Notify.WHEN_SET)
+					.build();
+	private final Value<String> separator = Value.nonNull(DEFAULT_SEPARATOR).build();
 	private final boolean singleSelection;
-	private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
-	private final Value<Supplier<Condition>> condition = Value.value(NULL_CONDITION, NULL_CONDITION);
-	private final Value<Function<Entity, String>> stringFunction = Value.value(DEFAULT_TO_STRING, DEFAULT_TO_STRING);
+	private final Value<Character> wildcard = Value.nonNull(Text.WILDCARD_CHARACTER.get()).build();
+	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION).build();
+	private final Value<Function<Entity, String>> stringFunction = Value.nonNull(DEFAULT_TO_STRING).build();
 	private final Value<Integer> limit;
 	private final State selectionEmpty = State.state(true);
 	private final String description;
@@ -75,7 +77,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityType = builder.entityType;
 		this.connectionProvider = builder.connectionProvider;
-		this.separator = Value.value(builder.separator, DEFAULT_SEPARATOR);
+		this.separator.set(builder.separator);
 		this.columns = unmodifiableCollection(builder.columns);
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
@@ -83,7 +85,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
 		this.entities.addValidator(new EntityValidator());
-		this.limit = Value.value(builder.limit);
+		this.limit = Value.nullable(builder.limit).build();
 		bindEvents();
 	}
 

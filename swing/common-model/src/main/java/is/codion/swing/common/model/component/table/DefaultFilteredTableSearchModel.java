@@ -44,9 +44,9 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 	private final State regularExpression = State.state();
 	private final State caseSensitive = State.state();
 	private final List<RowColumn> searchResults = new ArrayList<>();
-	private final Value<String> searchString = Value.value("", "");
+	private final Value<String> searchString = Value.nonNull("").build();
 	private final Value<Predicate<String>> searchPredicate = Value.value();
-	private final Value<RowColumn> searchResult = Value.value(NULL_COORDINATE, NULL_COORDINATE);
+	private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE).build();
 
 	private int searchResultIndex = -1;
 

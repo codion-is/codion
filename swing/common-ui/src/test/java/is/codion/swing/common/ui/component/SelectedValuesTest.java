@@ -37,7 +37,7 @@ public class SelectedValuesTest {
 
 	@Test
 	void selectedItemValueLinkValidate() {
-		Value<String> originalValue = Value.value("b");
+		Value<String> originalValue = Value.nullable("b").build();
 		originalValue.addValidator(value -> {
 			if (value != null && value.equals("s")) {
 				throw new IllegalArgumentException();

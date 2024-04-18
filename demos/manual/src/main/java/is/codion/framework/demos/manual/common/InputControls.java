@@ -142,8 +142,8 @@ public final class InputControls {
 
 	static void basics() {
 		// tag::basics[]
-		//an integer based value, initialized to 42
-		Value<Integer> integerValue = Value.value(42);
+		//a nullable integer value, initialized to 42
+		Value<Integer> integerValue = Value.nullable(42).build();
 
 		//create a spinner linked to the value
 		JSpinner spinner =
@@ -169,7 +169,9 @@ public final class InputControls {
 		//non-nullable so use this value instead of null
 		boolean nullValue = false;
 
-		Value<Boolean> booleanValue = Value.value(true, nullValue);
+		Value<Boolean> booleanValue = Value.nonNull(nullValue)
+						.initialValue(true)
+						.build();
 
 		JCheckBox checkBox =
 						Components.checkBox(booleanValue)

@@ -1051,11 +1051,11 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected static final class Defaults {
 
-		private final Value<Integer> textFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
-		private final Value<Integer> foreignKeySearchFieldColumns = Value.value(DEFAULT_TEXT_FIELD_COLUMNS.get(), DEFAULT_TEXT_FIELD_COLUMNS.get());
-		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.value(0, 0);
-		private final Value<Integer> itemComboBoxPreferredWidth = Value.value(0, 0);
-		private final Value<Integer> comboBoxPreferredWidth = Value.value(0, 0);
+		private final Value<Integer> textFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get()).build();
+		private final Value<Integer> foreignKeySearchFieldColumns = Value.nonNull(DEFAULT_TEXT_FIELD_COLUMNS.get()).build();
+		private final Value<Integer> foreignKeyComboBoxPreferredWidth = Value.nonNull(0).build();
+		private final Value<Integer> itemComboBoxPreferredWidth = Value.nonNull(0).build();
+		private final Value<Integer> comboBoxPreferredWidth = Value.nonNull(0).build();
 
 		/**
 		 * Controls the default number of text field columns, -1 for not settings the columns

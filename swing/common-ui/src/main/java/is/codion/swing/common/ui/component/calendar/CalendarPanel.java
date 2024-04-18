@@ -211,19 +211,19 @@ public final class CalendarPanel extends JPanel {
 		this.includeTime = builder.includeTime;
 		this.includeTodayButton = builder.includeTodayButton;
 		LocalDateTime dateTime = builder.initialValue == null ? LocalDateTime.now() : builder.initialValue;
-		yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
-		monthValue = Value.value(dateTime.getMonth(), dateTime.getMonth());
-		dayValue = Value.value(dateTime.getDayOfMonth(), dateTime.getDayOfMonth());
+		yearValue = Value.nonNull(dateTime.getYear()).build();
+		monthValue = Value.nonNull(dateTime.getMonth()).build();
+		dayValue = Value.nonNull(dateTime.getDayOfMonth()).build();
 		if (includeTime) {
-			hourValue = Value.value(dateTime.getHour(), dateTime.getHour());
-			minuteValue = Value.value(dateTime.getMinute(), dateTime.getMinute());
+			hourValue = Value.nonNull(dateTime.getHour()).build();
+			minuteValue = Value.nonNull(dateTime.getMinute()).build();
 		}
 		else {
-			hourValue = Value.value(0, 0);
-			minuteValue = Value.value(0, 0);
+			hourValue = Value.nonNull(0).build();
+			minuteValue = Value.nonNull(0).build();
 		}
-		localDateValue = Value.value(createLocalDateTime().toLocalDate());
-		localDateTimeValue = Value.value(createLocalDateTime());
+		localDateValue = Value.nullable(createLocalDateTime().toLocalDate()).build();
+		localDateTimeValue = Value.nullable(createLocalDateTime()).build();
 		todaySelected = State.state(todaySelected());
 		dayStates = createDayStates();
 		dayButtons = createDayButtons();

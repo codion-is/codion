@@ -18,13 +18,19 @@
  */
 package is.codion.common.value;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
+
 final class DefaultValue<T> extends AbstractValue<T> {
 
 	private T value;
 
-	DefaultValue(T initialValue, T nullValue, Notify notify) {
-		super(nullValue, notify);
-		set(initialValue);
+	private DefaultValue(DefaultBuilder<T> builder) {
+		super(builder.nullValue, builder.notify);
+		set(builder.initialValue);
+		builder.validators.forEach(this::addValidator);
 	}
 
 	@Override
@@ -35,5 +41,46 @@ final class DefaultValue<T> extends AbstractValue<T> {
 	@Override
 	protected void setValue(T value) {
 		this.value = value;
+	}
+
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		private final T nullValue;
+		private final List<Validator<T>> validators = new ArrayList<>();
+
+		private T initialValue;
+		private Notify notify = Notify.WHEN_CHANGED;
+
+		DefaultBuilder() {
+			this.nullValue = null;
+		}
+
+		DefaultBuilder(T nullValue) {
+			this.nullValue = requireNonNull(nullValue);
+			this.initialValue = nullValue;
+		}
+
+		@Override
+		public Builder<T> initialValue(T initialValue) {
+			this.initialValue = initialValue == null ? nullValue : initialValue;
+			return this;
+		}
+
+		@Override
+		public Builder<T> notify(Notify notify) {
+			this.notify = requireNonNull(notify);
+			return this;
+		}
+
+		@Override
+		public Builder<T> validator(Validator<T> validator) {
+			this.validators.add(requireNonNull(validator));
+			return this;
+		}
+
+		@Override
+		public Value<T> build() {
+			return new DefaultValue<>(this);
+		}
 	}
 }

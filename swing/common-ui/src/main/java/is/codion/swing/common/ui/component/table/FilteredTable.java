@@ -246,8 +246,10 @@ public final class FilteredTable<R, C> extends JTable {
 		super(builder.tableModel, builder.tableModel.columnModel(), builder.tableModel.selectionModel());
 		this.tableModel = builder.tableModel;
 		this.filterPanelFactory = builder.filterPanelFactory;
-		this.centerOnScroll = Value.value(builder.centerOnScroll, CenterOnScroll.NEITHER);
-		this.doubleClickAction = Value.value(builder.doubleClickAction);
+		this.centerOnScroll = Value.nonNull(CenterOnScroll.NEITHER)
+						.initialValue(builder.centerOnScroll)
+						.build();
+		this.doubleClickAction = Value.nullable(builder.doubleClickAction).build();
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.sortingEnabled = State.state(builder.sortingEnabled);
 		autoStartsEdit(builder.autoStartsEdit);
