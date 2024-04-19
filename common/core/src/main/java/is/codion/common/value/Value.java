@@ -184,7 +184,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return a Value for the given type
 	 */
 	static <T> Value<T> value() {
-		return nullable((T) null).build();
+		return Value.<T>nullable(null).build();
 	}
 
 	/**
@@ -194,6 +194,14 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 */
 	static <T> Builder<T> nonNull(T nullValue) {
 		return new DefaultValue.DefaultBuilder<>(nullValue);
+	}
+
+	/**
+	 * @return a builder for a nullable Value
+	 * @param <T> the value type
+	 */
+	static <T> Builder<T> nullable() {
+		return Value.<T>nullable(null);
 	}
 
 	/**

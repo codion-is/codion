@@ -45,7 +45,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 					.listener(this::performSearch)
 					.build();
 	private final List<RowColumn> searchResults = new ArrayList<>();
-	private final Value<Predicate<String>> searchPredicate = Value.<Predicate<String>>nullable(null)
+	private final Value<Predicate<String>> searchPredicate = Value.<Predicate<String>>nullable()
 					.listener(this::performSearch)
 					.build();
 	private final Value<String> searchString = Value.nonNull("")

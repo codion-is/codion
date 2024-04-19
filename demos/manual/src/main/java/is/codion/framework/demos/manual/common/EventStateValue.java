@@ -176,7 +176,7 @@ public final class EventStateValue {
 	private static final class Counter {
 
 		private final State valueNull = State.state(true);
-		private final Value<Integer> value = Value.<Integer>nullable(null)
+		private final Value<Integer> value = Value.<Integer>nullable()
 						.consumer(integer -> valueNull.set(integer == null))
 						.build();
 

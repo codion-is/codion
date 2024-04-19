@@ -55,13 +55,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 					.listener(conditionChangedEvent)
 					.build();
 	private final Value<T> equalValue = equalValues.value();
-	private final Value<T> upperBoundValue = Value.nullable((T) null)
+	private final Value<T> upperBoundValue = Value.<T>nullable()
 					.notify(Notify.WHEN_SET)
 					.validator(value -> checkLock())
 					.listener(autoEnableListener)
 					.listener(conditionChangedEvent)
 					.build();
-	private final Value<T> lowerBoundValue = Value.nullable((T) null)
+	private final Value<T> lowerBoundValue = Value.<T>nullable()
 					.notify(Notify.WHEN_SET)
 					.validator(value -> checkLock())
 					.listener(autoEnableListener)

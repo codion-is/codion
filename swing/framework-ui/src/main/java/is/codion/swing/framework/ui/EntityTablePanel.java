@@ -1477,7 +1477,7 @@ public class EntityTablePanel extends JPanel {
 		};
 
 		return Stream.of(TableControl.values())
-						.collect(toMap(Function.identity(), controlCode -> Value.nullable((Control) null)
+						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
 										.validator(controlValueValidator)
 										.build()));
 	}
