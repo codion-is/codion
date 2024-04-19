@@ -67,7 +67,7 @@ final class CityTablePanel extends ChartTablePanel {
 						.controls(Controls.builder()
 										.control(Control.builder(task::cancel)
 														.name("Cancel")
-														.enabled(task.working()))
+														.enabled(task.notCancelled()))
 										.build())
 						.onException(this::displayPopulateException)
 						.execute();
