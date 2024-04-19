@@ -38,7 +38,7 @@ public class ValueSetTest {
 		assertTrue(observer.empty());
 		assertFalse(observer.notEmpty());
 
-		assertFalse(observer.nullable());
+		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
 		assertTrue(observer.optional().isPresent());
 

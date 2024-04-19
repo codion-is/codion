@@ -162,7 +162,7 @@ public final class EventStateValue {
 						.initialValue(initialValue)
 						.build();
 
-		System.out.println(value.nullable());//output: false
+		System.out.println(value.isNullable());//output: false
 
 		System.out.println(value.get());// output: 42
 
