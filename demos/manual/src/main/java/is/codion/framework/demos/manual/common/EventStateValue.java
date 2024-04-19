@@ -34,24 +34,30 @@ public final class EventStateValue {
 
 	private static void event() {
 		// tag::event[]
+		// specify an event propagating
+		// a String as the event data
 		Event<String> event = Event.event();
 
-		// an observer handles the listeners for an Event but can not trigger it
+		// an observer manages the listeners
+		// for an Event but can not trigger it
 		EventObserver<String> observer = event.observer();
 
-		// add a listener notified each time the event occurs
+		// add a listener if you're not
+		// interested in the event data
 		observer.addListener(() -> System.out.println("Event occurred"));
 
 		event.run();//output: 'Event occurred'
 
-		// data can be propagated by adding a consumer
+		// or a consumer if you're
+		// interested in the event data
 		observer.addConsumer(data -> System.out.println("Event: " + data));
 
 		event.accept("info");//output: 'Event: info'
 
-		// Event implements EventObserver so listeneres can be added
-		// directly without referring to the EventObserver
-		event.addListener(() -> System.out.println("Event"));
+		// Event implements EventObserver so
+		// listeneres can be added directly without
+		// referring to the EventObserver
+		event.addConsumer(System.out::println);
 		// end::event[]
 	}
 
@@ -60,7 +66,7 @@ public final class EventStateValue {
 		// a boolean state, false by default
 		State state = State.state();
 
-		// an observer handles the listeners for a State but can not modify it
+		// an observer manages the listeners for a State but can not modify it
 		StateObserver observer = state.observer();
 		// a not observer is always available
 		StateObserver not = state.not();
@@ -165,6 +171,30 @@ public final class EventStateValue {
 		System.out.println(value.get());//output: 0
 		// end::nullValue[]
 	}
+
+	// tag::observers[]
+	private static final class Counter {
+
+		private final State valueNull = State.state(true);
+		private final Value<Integer> value = Value.<Integer>nullable(null)
+						.consumer(integer -> valueNull.set(integer == null))
+						.build();
+
+		/**
+		 * @return an event observer notified each time the value changes
+		 */
+		public EventObserver<Integer> valueChangeEvent() {
+			return value.observer();
+		}
+
+		/**
+		 * @return a state observer indicating whether the value is null
+		 */
+		public StateObserver valueNullState() {
+			return valueNull.observer();
+		}
+	}
+	// end::observers[]
 
 	public static void main(String[] args) {
 		event();
