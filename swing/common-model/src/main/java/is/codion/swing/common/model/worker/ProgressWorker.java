@@ -47,14 +47,14 @@ import static java.util.Objects.requireNonNull;
  * </pre>
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this worker
- * @see #builder(Task)
- * @see #builder(ProgressTask)
+ * @see #builder(ResultTask)
+ * @see #builder(ProgressResultTask)
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private static final String STATE_PROPERTY = "state";
 
-	private final ProgressTask<T, V> task;
+	private final ProgressResultTask<T, V> task;
 	private final int maximumProgress;
 	private final Runnable onStarted;
 	private final Runnable onDone;
@@ -86,7 +86,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <T> the worker result type
 	 * @return a new {@link Builder} instance
 	 */
-	public static <T> Builder<T, ?> builder(Task<T> task) {
+	public static <T> Builder<T, ?> builder(ResultTask<T> task) {
 		requireNonNull(task);
 
 		return builder(progressReporter -> task.execute());
@@ -98,7 +98,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <V> the intermediate result type
 	 * @return a new {@link Builder} instance
 	 */
-	public static <T, V> Builder<T, V> builder(ProgressTask<T, V> task) {
+	public static <T, V> Builder<T, V> builder(ProgressResultTask<T, V> task) {
 		return new DefaultBuilder<>(task);
 	}
 
@@ -153,10 +153,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	}
 
 	/**
-	 * A background task.
+	 * A background task producing a result.
 	 * @param <T> the task result type
 	 */
-	public interface Task<T> {
+	public interface ResultTask<T> {
 
 		/**
 		 * Executes the task.
@@ -167,11 +167,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	}
 
 	/**
-	 * A progress aware background task.
+	 * A progress aware background task producing a result.
 	 * @param <T> the task result type
 	 * @param <V> the intermediate result type
 	 */
-	public interface ProgressTask<T, V> {
+	public interface ProgressResultTask<T, V> {
 
 		/**
 		 * Executes the task.
@@ -300,7 +300,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
-		private final ProgressTask<T, V> task;
+		private final ProgressResultTask<T, V> task;
 
 		private int maximumProgress = 100;
 		private Runnable onStarted = EMPTY_RUNNABLE;
@@ -312,7 +312,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private Runnable onCancelled = EMPTY_RUNNABLE;
 		private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
 
-		private DefaultBuilder(ProgressTask<T, V> task) {
+		private DefaultBuilder(ProgressResultTask<T, V> task) {
 			this.task = requireNonNull(task);
 		}
 

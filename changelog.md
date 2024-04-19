@@ -14,6 +14,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - OrderBy.Builder, NullOrder now parameter.
 - OrderBy.OrderByColumn.ignoreCase() added.
+### is.codion.swing.common.model
+- ProgressWorker.Task and ProgressTask renamed ResultTask and ProgressResultTask respectively.
 ### is.codion.swing.common.ui
 - InputDialogBuilder.inputValid() and inputValidator() renamed valid() and validator() respectively.
 ### is.codion.swing.fraework.ui

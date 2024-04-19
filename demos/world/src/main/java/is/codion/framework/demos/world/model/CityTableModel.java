@@ -26,7 +26,7 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
@@ -80,7 +80,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 						.anyMatch(city -> city.isNull(City.LOCATION)));
 	}
 
-	public final class PopulateLocationTask implements ProgressTask<Void, String> {
+	public final class PopulateLocationTask implements ProgressResultTask<Void, String> {
 
 		private final State cancelled = State.state();
 		private final Collection<Entity> cities;

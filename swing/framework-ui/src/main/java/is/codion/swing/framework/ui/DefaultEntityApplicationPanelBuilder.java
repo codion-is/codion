@@ -619,7 +619,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 	}
 
-	private final class InitializeApplicationModel implements ProgressWorker.Task<M> {
+	private final class InitializeApplicationModel implements ProgressWorker.ResultTask<M> {
 
 		private final EntityConnectionProvider connectionProvider;
 

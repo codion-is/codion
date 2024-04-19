@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JOptionPane;
@@ -37,14 +37,14 @@ import static java.util.Objects.requireNonNull;
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
 				implements ProgressWorkerDialogBuilder<T, V> {
 
-	private final ProgressTask<T, V> progressTask;
+	private final ProgressResultTask<T, V> progressTask;
 	private final ProgressDialog.Builder progressDialogBuilder;
 
 	private int maximumProgress = 100;
 	private Consumer<T> onResult;
 	private Consumer<Exception> onException;
 
-	DefaultProgressWorkerDialogBuilder(ProgressTask<T, V> progressTask) {
+	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
 		this.progressTask = requireNonNull(progressTask);
 		this.progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 	}
