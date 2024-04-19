@@ -16,8 +16,10 @@ Codion Change Log
 - OrderBy.OrderByColumn.ignoreCase() added.
 ### is.codion.swing.common.model
 - ProgressWorker.Task and ProgressTask renamed ResultTask and ProgressResultTask respectively.
+- ProgressWorker refactored, no longer wraps ResultTask in a ProgressResultTask.
 ### is.codion.swing.common.ui
 - InputDialogBuilder.inputValid() and inputValidator() renamed valid() and validator() respectively.
+- DefaultProgressWorkerDialogBuilder refactored.
 ### is.codion.swing.fraework.ui
 - EntitySearchFieldPanel.Builder.includeAddButton() and includeEditButton() bug fixed, exception now thrown as per javadoc.
 - EntityEditPanel.Config.editPanel() added.

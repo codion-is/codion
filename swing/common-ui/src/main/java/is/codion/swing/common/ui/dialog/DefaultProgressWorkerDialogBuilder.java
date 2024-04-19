@@ -22,6 +22,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JOptionPane;
@@ -37,15 +38,19 @@ import static java.util.Objects.requireNonNull;
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
 				implements ProgressWorkerDialogBuilder<T, V> {
 
-	private final ProgressResultTask<T, V> progressTask;
+	private final ProgressWorker.Builder<T, V> progressWorkerBuilder;
 	private final ProgressDialog.Builder progressDialogBuilder;
 
-	private int maximumProgress = 100;
 	private Consumer<T> onResult;
 	private Consumer<Exception> onException;
 
+	DefaultProgressWorkerDialogBuilder(ResultTask<V> task) {
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+		this.progressDialogBuilder = new ProgressDialog.DefaultBuilder();
+	}
+
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
-		this.progressTask = requireNonNull(progressTask);
+		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);
 		this.progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 	}
 
@@ -58,7 +63,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> maximumProgress(int maximumProgress) {
 		progressDialogBuilder.maximumProgress(maximumProgress);
-		this.maximumProgress = maximumProgress;
+		progressWorkerBuilder.maximumProgress(maximumProgress);
 		return this;
 	}
 
@@ -157,8 +162,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 						.icon(icon)
 						.build();
 
-		return ProgressWorker.builder(progressTask)
-						.maximumProgress(maximumProgress)
+		return progressWorkerBuilder
 						.onStarted(() -> progressDialog.setVisible(true))
 						.onProgress(progressDialog::setProgress)
 						.onPublish(chunks -> progressDialog.setMessage(message(chunks)))

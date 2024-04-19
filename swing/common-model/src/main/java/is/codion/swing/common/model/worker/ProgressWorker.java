@@ -54,7 +54,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private static final String STATE_PROPERTY = "state";
 
-	private final ProgressResultTask<T, V> task;
+	private final ResultTask<T> task;
+	private final ProgressResultTask<T, V> progressTask;
 	private final int maximumProgress;
 	private final Runnable onStarted;
 	private final Runnable onDone;
@@ -69,6 +70,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private ProgressWorker(DefaultBuilder<T, V> builder) {
 		this.task = builder.task;
+		this.progressTask = builder.progressTask;
 		this.maximumProgress = builder.maximumProgress;
 		this.onStarted = builder.onStarted;
 		this.onDone = builder.onDone;
@@ -87,9 +89,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @return a new {@link Builder} instance
 	 */
 	public static <T> Builder<T, ?> builder(ResultTask<T> task) {
-		requireNonNull(task);
-
-		return builder(progressReporter -> task.execute());
+		return new DefaultBuilder<>(task);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	@Override
 	protected T doInBackground() throws Exception {
-		return task.execute(new TaskProgressReporter());
+		return task != null ? task.execute() : progressTask.execute(new TaskProgressReporter());
 	}
 
 	@Override
@@ -300,7 +300,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
-		private final ProgressResultTask<T, V> task;
+		private final ResultTask<T> task;
+		private final ProgressResultTask<T, V> progressTask;
 
 		private int maximumProgress = 100;
 		private Runnable onStarted = EMPTY_RUNNABLE;
@@ -312,8 +313,14 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private Runnable onCancelled = EMPTY_RUNNABLE;
 		private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
 
-		private DefaultBuilder(ProgressResultTask<T, V> task) {
+		private DefaultBuilder(ResultTask<T> task) {
 			this.task = requireNonNull(task);
+			this.progressTask = null;
+		}
+
+		private DefaultBuilder(ProgressResultTask<T, V> progressTask) {
+			this.progressTask = requireNonNull(progressTask);
+			this.task = null;
 		}
 
 		@Override
