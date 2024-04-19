@@ -442,12 +442,12 @@ public final class EntityDialogs {
 				try {
 					entityDefinition.validator().validate(entity, attribute);
 					componentValue.validate(value);
+
+					return true;
 				}
 				catch (ValidationException | IllegalArgumentException e) {
 					return false;
 				}
-
-				return true;
 			}
 		}
 	}
