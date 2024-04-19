@@ -8,7 +8,9 @@ Codion Change Log
 - ValueSet.Builder, methods for adding listeners and consumers added.
 - State.Builder added.
 - ValueObserver.nullable() renamed isNullable(), now consistent with other method names.
-- Value.nullable() factory method overloaded with no parameter. 
+- Value.nullable() factory method overloaded with no parameter.
+### is.codion.common.rmi
+- ObjectInputFilterFactory added, configured for ServiceLoader for pluggable object input filters, related refactoring.
 ### is.codion.framework.domain
 - OrderBy.Builder, NullOrder now parameter.
 - OrderBy.OrderByColumn.ignoreCase() added.

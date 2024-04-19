@@ -96,13 +96,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public String serializationFilterWhitelist() {
-		return serverConfiguration.serializationFilterWhitelist();
-	}
-
-	@Override
-	public boolean serializationFilterDryRun() {
-		return serverConfiguration.serializationFilterDryRun();
+	public String objectInputFilterFactoryClassName() {
+		return serverConfiguration.objectInputFilterFactoryClassName();
 	}
 
 	@Override
@@ -228,14 +223,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder serializationFilterWhitelist(String serializationFilterWhitelist) {
-			serverConfigurationBuilder.serializationFilterWhitelist(serializationFilterWhitelist);
-			return this;
-		}
-
-		@Override
-		public Builder serializationFilterDryRun(boolean serializationFilterDryRun) {
-			serverConfigurationBuilder.serializationFilterDryRun(serializationFilterDryRun);
+		public Builder objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName) {
+			serverConfigurationBuilder.objectInputFilterFactoryClassName(objectInputFilterFactoryClassName);
 			return this;
 		}
 

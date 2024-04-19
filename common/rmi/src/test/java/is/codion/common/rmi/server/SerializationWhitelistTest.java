@@ -38,15 +38,15 @@ public final class SerializationWhitelistTest {
 
 	@Test
 	void dryRun() throws IOException, ClassNotFoundException {
-		assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.whitelistDryRun().writeToFile("classpath:dryrun"));
+		assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.whitelistDryRun("classpath:dryrun").writeToFile());
 		File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
 
-		SerializationWhitelist.DryRun serialFilter = SerializationWhitelist.whitelistDryRun();
+		SerializationWhitelist.DryRun serialFilter = SerializationWhitelist.whitelistDryRun(tempFile.getAbsolutePath());
 		ObjectInputFilter.Config.setSerialFilter(serialFilter);
 
 		Serializer.deserialize(Serializer.serialize(Integer.valueOf(42)));
 		Serializer.deserialize(Serializer.serialize(Long.valueOf(42)));
-		serialFilter.writeToFile(tempFile.getAbsolutePath());
+		serialFilter.writeToFile();
 
 		List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
 
@@ -57,7 +57,7 @@ public final class SerializationWhitelistTest {
 
 		Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
 		Serializer.deserialize(Serializer.serialize(new Double[] {42d}));
-		serialFilter.writeToFile(tempFile.getAbsolutePath());
+		serialFilter.writeToFile();
 
 		classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
 

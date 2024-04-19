@@ -153,15 +153,12 @@ public interface ServerConfiguration {
 	PropertyValue<String> AUXILIARY_SERVER_FACTORY_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerFactoryClassNames");
 
 	/**
-	 * The serialization whitelist file to use if any
+	 * Specifies the {@link ObjectInputFilterFactory} class to use.<br>
+	 * Value type: String<br>
+	 * Default value: none
+	 * @see ObjectInputFilterFactory
 	 */
-	PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("codion.server.serializationFilterWhitelist");
-
-	/**
-	 * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
-	 * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
-	 */
-	PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
+	PropertyValue<String> OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME = Configuration.stringValue("codion.server.objectInputFilterFactoryClassName");
 
 	/**
 	 * Specifies the interval between server connection maintenance runs, in milliseconds.<br>
@@ -212,14 +209,9 @@ public interface ServerConfiguration {
 	RMIServerSocketFactory rmiServerSocketFactory();
 
 	/**
-	 * @return the serialization whitelist to use, if any
+	 * @return the object input filter factory class name, if any
 	 */
-	String serializationFilterWhitelist();
-
-	/**
-	 * @return true if a serialization filter dry run should be active
-	 */
-	boolean serializationFilterDryRun();
+	String objectInputFilterFactoryClassName();
 
 	/**
 	 * @return the interval between server connection maintenance runs, in milliseconds.
@@ -279,16 +271,10 @@ public interface ServerConfiguration {
 		B rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
 
 		/**
-		 * @param serializationFilterWhitelist the serialization whitelist
+		 * @param objectInputFilterFactoryClassName the object input filter factory class name
 		 * @return this builder instance
 		 */
-		B serializationFilterWhitelist(String serializationFilterWhitelist);
-
-		/**
-		 * @param serializationFilterDryRun true if serialization filter dry run is active
-		 * @return this builder instance
-		 */
-		B serializationFilterDryRun(boolean serializationFilterDryRun);
+		B objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName);
 
 		/**
 		 * @param connectionMaintenanceIntervalMs the interval between server connection maintenance runs, in milliseconds.
@@ -328,11 +314,10 @@ public interface ServerConfiguration {
 	 */
 	static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
 		return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
 						.adminPort(ADMIN_PORT.get())
-						.sslEnabled(ServerConfiguration.SSL_ENABLED.get())
-						.connectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get())
-						.serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
-						.serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+						.sslEnabled(SSL_ENABLED.get())
+						.connectionMaintenanceIntervalMs(CONNECTION_MAINTENANCE_INTERVAL_MS.get())
+						.objectInputFilterFactoryClassName(OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get());
 	}
 }

@@ -53,8 +53,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final Supplier<String> serverNameSupplier;
 	private final RMIClientSocketFactory rmiClientSocketFactory;
 	private final RMIServerSocketFactory rmiServerSocketFactory;
-	private final String serializationFilterWhitelist;
-	private final boolean serializationFilterDryRun;
+	private final String objectInputFilterFactoryClassName;
 	private final int connectionMaintenanceIntervalMs;
 
 	private String serverName;
@@ -69,8 +68,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.serverNameSupplier = builder.serverNameSupplier == null ? () -> serverName : builder.serverNameSupplier;
 		this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
 		this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
-		this.serializationFilterWhitelist = builder.serializationFilterWhitelist;
-		this.serializationFilterDryRun = builder.serializationFilterDryRun;
+		this.objectInputFilterFactoryClassName = builder.objectInputFilterFactoryClassName;
 		this.connectionMaintenanceIntervalMs = builder.connectionMaintenanceIntervalMs;
 	}
 
@@ -119,13 +117,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
-	public String serializationFilterWhitelist() {
-		return serializationFilterWhitelist;
-	}
-
-	@Override
-	public boolean serializationFilterDryRun() {
-		return serializationFilterDryRun;
+	public String objectInputFilterFactoryClassName() {
+		return objectInputFilterFactoryClassName;
 	}
 
 	@Override
@@ -148,8 +141,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private Supplier<String> serverNameSupplier;
 		private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
 		private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
-		private String serializationFilterWhitelist;
-		private Boolean serializationFilterDryRun = false;
+		private String objectInputFilterFactoryClassName;
 		private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 
 		DefaultBuilder(int serverPort, int registryPort) {
@@ -208,14 +200,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder serializationFilterWhitelist(String serializationFilterWhitelist) {
-			this.serializationFilterWhitelist = serializationFilterWhitelist;
-			return this;
-		}
-
-		@Override
-		public DefaultBuilder serializationFilterDryRun(boolean serializationFilterDryRun) {
-			this.serializationFilterDryRun = serializationFilterDryRun;
+		public DefaultBuilder objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName) {
+			this.objectInputFilterFactoryClassName = objectInputFilterFactoryClassName;
 			return this;
 		}
 

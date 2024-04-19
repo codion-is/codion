@@ -44,7 +44,7 @@ public interface ConnectionPoolFactory {
 	/**
 	 * Returns the {@link ConnectionPoolFactory} implementation found by the {@link ServiceLoader}
 	 * of the given type.
-	 * @param classname the classname of the required connection pool provider
+	 * @param classname the classname of the required connection pool factory
 	 * @return a {@link ConnectionPoolFactory} implementation of the given type from the {@link ServiceLoader}.
 	 * @throws IllegalStateException in case no such {@link ConnectionPoolFactory} implementation is available.
 	 */

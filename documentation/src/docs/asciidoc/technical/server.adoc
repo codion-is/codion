@@ -54,9 +54,27 @@ codion.client.trustStorePassword=password
 
 No dynamic class loading is required.
 
-=== Serialization whitelist
+=== Serialization filtering
 
-A serialization whitelist can be used by setting the following system property.
+The framework provides a way to configure a ObjectInputFilter for deserialization, by specifying a {url-javadoc}{common-rmi}/is/codion/common/rmi/server/ObjectInputFilterFactory.html[ObjectInputFilterFactory] implementation class with the following system property.
+
+[source]
+----
+codion.server.objectInputFilterFactoryClassName=\
+    my.serialization.filter.MyObjectInputFilterFactory
+----
+
+==== Serialization whitelist
+
+To use the serialization whitelist filter provided by the framework, set the following system property.
+
+[source]
+----
+codion.server.objectInputFilterFactoryClassName=\
+    is.codion.common.rmi.server.WhitelistObjectInputFilterFactory
+----
+
+The whitelist is configured via the following system property.
 
 [source]
 ----

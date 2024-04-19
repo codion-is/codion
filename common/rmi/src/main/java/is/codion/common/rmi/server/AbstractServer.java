@@ -51,7 +51,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -101,7 +100,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 							.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
 							.initialDelay(configuration.connectionMaintenanceInterval())
 							.start();
-			configureSerializationWhitelist(configuration);
+			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
 			loadAuthenticators();
 		}
@@ -246,7 +245,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
 		ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
 		if (serialFilter instanceof SerializationWhitelist.DryRun) {
-			((SerializationWhitelist.DryRun) serialFilter).writeToFile(configuration.serializationFilterWhitelist());
+			((SerializationWhitelist.DryRun) serialFilter).writeToFile();
 		}
 		shutdownEvent.run();
 	}
@@ -463,20 +462,16 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		return remoteClient;
 	}
 
-	private static void configureSerializationWhitelist(ServerConfiguration configuration) {
-		String whitelistFile = configuration.serializationFilterWhitelist();
-		if (nullOrEmpty(whitelistFile)) {
-			LOG.info("No serialization whitelist file specified");
+	private static void configureObjectInputFilter(ServerConfiguration configuration) {
+		String objectInputFilterFactoryClassName = configuration.objectInputFilterFactoryClassName();
+		if (objectInputFilterFactoryClassName == null) {
+			LOG.info("No ObjectInputFilterFactoryClassName specified");
 		}
 		else {
-			if (configuration.serializationFilterDryRun()) {
-				ObjectInputFilter.Config.setSerialFilter(SerializationWhitelist.whitelistDryRun());
-				LOG.info("Serialization filter dry-run enabled");
-			}
-			else {
-				ObjectInputFilter.Config.setSerialFilter(SerializationWhitelist.whitelistFilter(whitelistFile));
-				LOG.info("Serialization filter whitelist set: {}", whitelistFile);
-			}
+			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactoryClassName);
+			ObjectInputFilter objectInputFilter = inputFilterFactory.createObjectInputFilter();
+			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
+			LOG.info("ObjectInputFilter {} enabled", objectInputFilter.getClass().getName());
 		}
 	}
 

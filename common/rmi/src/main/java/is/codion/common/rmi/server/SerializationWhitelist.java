@@ -73,13 +73,21 @@ final class SerializationWhitelist {
 	 * @param whitelistFile the file to write the dry-run results to
 	 * @throws IllegalArgumentException in case of a classpath dry run file
 	 */
-	static DryRun whitelistDryRun() {
-		return new DryRun();
+	static DryRun whitelistDryRun(String whitelistFile) {
+		return new DryRun(whitelistFile);
 	}
 
 	static final class DryRun implements ObjectInputFilter {
 
+		private final String whitelistFile;
 		private final Set<Class<?>> deserializedClasses = new HashSet<>();
+
+		private DryRun(String whitelistFile) {
+			if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+				throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
+			}
+			this.whitelistFile = whitelistFile;
+		}
 
 		@Override
 		public Status checkInput(FilterInfo filterInfo) {
@@ -95,13 +103,9 @@ final class SerializationWhitelist {
 		}
 
 		/**
-		 * Writes all classnames found during the dry-run to the specified file.
-		 * @param whitelistFile the file to write to
+		 * Writes all classnames found during the dry-run to the whitelist file.
 		 */
-		synchronized void writeToFile(String whitelistFile) {
-			if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
-				throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
-			}
+		synchronized void writeToFile() {
 			try {
 				Files.write(Paths.get(whitelistFile), deserializedClasses.stream()
 								.map(Class::getName)
