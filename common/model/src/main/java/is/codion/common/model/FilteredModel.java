@@ -246,7 +246,7 @@ public interface FilteredModel<T> {
 		}
 
 		@Override
-		public EventObserver<Exception> refreshFailedEvent() {
+		public final EventObserver<Exception> refreshFailedEvent() {
 			return refreshFailedEvent.observer();
 		}
 
