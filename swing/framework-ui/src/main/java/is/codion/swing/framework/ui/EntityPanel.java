@@ -319,7 +319,7 @@ public class EntityPanel extends JPanel {
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
 		this.mainPanel = borderLayoutPanel().build();
-		this.configuration = configure(this, configuration);
+		this.configuration = configure(configuration);
 		this.detailLayout = this.configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		this.editPanelState = Value.nonNull(EMBEDDED)
@@ -1104,8 +1104,8 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
-	private static Config configure(EntityPanel entityPanel, Consumer<Config> configuration) {
-		Config config = new Config(entityPanel);
+	private Config configure(Consumer<Config> configuration) {
+		Config config = new Config(this);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);

@@ -337,7 +337,7 @@ public class EntityTablePanel extends JPanel {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = null;
 		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(this, configuration);
+		this.configuration = configure(configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 	}
 
@@ -360,7 +360,7 @@ public class EntityTablePanel extends JPanel {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
 		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(this, configuration);
+		this.configuration = configure(configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 	}
 
@@ -1496,6 +1496,13 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
+	private Config configure(Consumer<Config> configuration) {
+		Config config = new Config(this);
+		requireNonNull(configuration).accept(config);
+
+		return new Config(config);
+	}
+
 	private final class DeleteCommand implements Control.Command {
 
 		@Override
@@ -1597,13 +1604,6 @@ public class EntityTablePanel extends JPanel {
 						table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true).y;
 
 		return new Point(x, y + table.getRowHeight() / 2);
-	}
-
-	private static Config configure(EntityTablePanel tablePanel, Consumer<Config> configuration) {
-		Config config = new Config(tablePanel);
-		requireNonNull(configuration).accept(config);
-
-		return new Config(config);
 	}
 
 	private final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {

@@ -177,7 +177,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
 		super(editModel, entityComponents);
-		this.configuration = configure(this, configuration);
+		this.configuration = configure(configuration);
 		this.active = State.state(!this.configuration.focusActivation);
 		this.controls = createControlsMap();
 		setupFocusActivation();
@@ -638,8 +638,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 										.build())));
 	}
 
-	private static Config configure(EntityEditPanel editPanel, Consumer<Config> configuration) {
-		Config config = new Config(editPanel);
+	private Config configure(Consumer<Config> configuration) {
+		Config config = new Config(this);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -715,6 +715,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeEntityMenu = config.includeEntityMenu;
+		}
+
+		/**
+		 * @return the edit panel
+		 */
+		public EntityEditPanel editPanel () {
+			return editPanel;
 		}
 
 		/**
