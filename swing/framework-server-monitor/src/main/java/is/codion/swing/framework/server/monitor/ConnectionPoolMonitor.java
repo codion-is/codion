@@ -44,8 +44,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ConnectionPoolMonitor {
 
-	private static final int THOUSAND = 1000;
-
 	private final Event<?> statisticsUpdatedEvent = Event.event();
 
 	private final String username;
@@ -270,22 +268,6 @@ public final class ConnectionPoolMonitor {
 		updateScheduler.stop();
 	}
 
-	private void setPoolCleanupInterval(int poolCleanupInterval) {
-		connectionPool.setCleanupInterval(poolCleanupInterval * THOUSAND);
-	}
-
-	private void setMinimumPoolSize(int minimumPoolSize) {
-		connectionPool.setMinimumPoolSize(minimumPoolSize);
-	}
-
-	private void setMaximumPoolSize(int maximumPoolSize) {
-		connectionPool.setMaximumPoolSize(maximumPoolSize);
-	}
-
-	private void setMaximumCheckOutTime(int maximumCheckOutTime) {
-		connectionPool.setMaximumCheckOutTime(maximumCheckOutTime);
-	}
-
 	private void updateStatistics() {
 		poolStatistics = connectionPool.statistics(lastStatisticsUpdateTime);
 		long timestamp = poolStatistics.timestamp();
@@ -316,7 +298,7 @@ public final class ConnectionPoolMonitor {
 			this.snapshotStatisticsCollection.addSeries(snapshotWaitingSeries);
 		}
 		pooledConnectionTimeoutValue.set(connectionPool.getIdleConnectionTimeout());
-		pooledCleanupIntervalValue.set(connectionPool.getCleanupInterval() / THOUSAND);
+		pooledCleanupIntervalValue.set(connectionPool.getCleanupInterval());
 		minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
 		maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
 		maximumCheckoutTimeValue.set(connectionPool.getMaximumCheckOutTime());

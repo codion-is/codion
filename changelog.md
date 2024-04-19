@@ -14,6 +14,8 @@ Codion Change Log
 - InputDialogBuilder.inputValid() and inputValidator() renamed valid() and validator() respectively.
 ### is.codion.swing.fraework.ui
 - EntitySearchFieldPanel.Builder.includeAddButton() and includeEditButton() bug fixed, exception now thrown as per javadoc.
+### is.codion.swing.framework.server.monitor
+- ConnectionPoolMonitor, pool cleanup interval now milliseconds based.
 
 ## 0.17.40
 ### is.codion.common.core
