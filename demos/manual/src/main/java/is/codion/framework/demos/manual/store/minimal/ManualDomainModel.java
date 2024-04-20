@@ -64,8 +64,7 @@ class ManualDomainModel {
 
 		public StoreImpl() {
 			super(Store.DOMAIN); //<1>
-			add(city());
-			add(customer());
+			add(city(), customer());
 		}
 
 		EntityDefinition.Builder city() {

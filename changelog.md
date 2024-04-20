@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - DefaultEntity refactored.
 - TypeReference now throws exception if used to specify a non-parameterized type.
+- DefaultDomain.add() now varargs based, related refactoring.
 
 ## 0.17.41
 ### is.codion.common.core

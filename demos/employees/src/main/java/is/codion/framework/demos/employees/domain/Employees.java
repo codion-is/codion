@@ -95,8 +95,7 @@ public final class Employees extends DefaultDomain {
 	// Initializes this domain model
 	public Employees() {
 		super(DOMAIN);
-		add(department());
-		add(employee());
+		add(department(), employee());
 		add(Employee.EMPLOYEE_REPORT, classPathReport(Employees.class, "employees.jasper"));
 	}
 	// end::constructor[]

@@ -62,9 +62,7 @@ public final class Example {
 
 		public Store() {
 			super(DOMAIN);
-			add(customer());
-			add(address());
-			add(customerAddress());
+			add(customer(), address(), customerAddress());
 		}
 		// end::storeDomain[]
 

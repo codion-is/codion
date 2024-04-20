@@ -58,12 +58,8 @@ public final class WorldImpl extends DefaultDomain {
 		//disable strict foreign keys.
 		setStrictForeignKeys(false);
 
-		add(city());
-		add(country());
+		add(city(), country(), countryLanguage(), lookup(), continent());
 		add(Country.AVERAGE_CITY_POPULATION, new AverageCityPopulationFunction());
-		add(countryLanguage());
-		add(lookup());
-		add(continent());
 	}
 
 	// tag::defineCity[]

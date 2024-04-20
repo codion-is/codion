@@ -42,13 +42,7 @@ public final class PetclinicImpl extends DefaultDomain {
 
 	public PetclinicImpl() {
 		super(Petclinic.DOMAIN);
-		add(vet());
-		add(specialty());
-		add(vetSpecialty());
-		add(petType());
-		add(owner());
-		add(pet());
-		add(visit());
+		add(vet(), specialty(), vetSpecialty(), petType(), owner(), pet(), visit());
 	}
 
 	private EntityDefinition.Builder vet() {

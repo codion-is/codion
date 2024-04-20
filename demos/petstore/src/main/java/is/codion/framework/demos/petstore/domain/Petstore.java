@@ -38,13 +38,7 @@ public final class Petstore extends DefaultDomain {
 
 	public Petstore() {
 		super(DOMAIN);
-		add(address());
-		add(category());
-		add(product());
-		add(sellerContactInfo());
-		add(item());
-		add(tag());
-		add(tagItem());
+		add(address(), category(), product(), sellerContactInfo(), item(), tag(), tagItem());
 	}
 
 	public interface Address {

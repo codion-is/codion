@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serial;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link Domain} implementation. Extend to define a domain model.
- * @see #add(EntityDefinition)
- * @see #add(EntityDefinition.Builder)
+ * @see #add(EntityDefinition...)
+ * @see #add(EntityDefinition.Builder...)
  * @see #add(ReportType, Report)
  * @see #add(ProcedureType, DatabaseProcedure)
  * @see #add(FunctionType, DatabaseFunction)
@@ -109,27 +110,28 @@ public abstract class DefaultDomain implements Domain {
 
 	/**
 	 * Adds a new {@link EntityDefinition} to this domain model, by calling {@link EntityDefinition.Builder#build()}.
-	 * Note that any subsequent changes in the builder are not reflected in the entity definition.
-	 * @param definitionBuilder the builder which definition to add
-	 * @throws IllegalArgumentException in case the entityType has already been used to define an entity
-	 * @throws IllegalArgumentException in case no attribute definitions are specified
+	 * Note that any subsequent changes in the builder wont be reflected in the entity definition.
+	 * @param builders the builders which definitions to add
+	 * @throws IllegalArgumentException in case a entityType has already been used to define an entity
+	 * @throws IllegalArgumentException in case no attribute definitions are specified for an entity
 	 */
-	protected final void add(EntityDefinition.Builder definitionBuilder) {
-		add(requireNonNull(definitionBuilder, "definitionBuilder").build());
+	protected final void add(EntityDefinition.Builder... builders) {
+		Arrays.stream(requireNonNull(builders, "builders"))
+						.map(EntityDefinition.Builder::build)
+						.peek(this::validate)
+						.forEach(entities::addEntityDefinition);
 	}
 
 	/**
 	 * Adds a new {@link EntityDefinition} to this domain model.
-	 * @param definition the definition to add
-	 * @throws IllegalArgumentException in case the entityType has already been used to define an entity
-	 * @throws IllegalArgumentException in case no attribute definitions are specified
+	 * @param definitions the definitions to add
+	 * @throws IllegalArgumentException in case a entityType has already been used to define an entity
+	 * @throws IllegalArgumentException in case no attribute definitions are specified for an entity
 	 */
-	protected final void add(EntityDefinition definition) {
-		requireNonNull(definition, "definition");
-		if (!domainType.contains(definition.entityType())) {
-			throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' is not part of domain: " + domainType);
-		}
-		entities.addEntityDefinition(definition);
+	protected final void add(EntityDefinition... definitions) {
+		Arrays.stream(requireNonNull(definitions, "definitions"))
+						.peek(this::validate)
+						.forEach(entities::addEntityDefinition);
 	}
 
 	/**
@@ -220,6 +222,13 @@ public abstract class DefaultDomain implements Domain {
 				procedures.procedures.put(procedureType, procedure);
 			}
 		});
+	}
+
+	private void validate(EntityDefinition definition) {
+		if (!domainType.contains(requireNonNull(definition).entityType())) {
+			throw new IllegalArgumentException("Entity type '" +
+							definition.entityType() + "' is not part of domain: " + domainType);
+		}
 	}
 
 	/**

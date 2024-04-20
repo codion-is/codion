@@ -54,11 +54,7 @@ public final class SchemaBrowser extends DefaultDomain {
 
 	public SchemaBrowser() {
 		super(DOMAIN);
-		add(schema());
-		add(table());
-		add(tableColumn());
-		add(constraint());
-		add(constraintColumn());
+		add(schema(), table(), tableColumn(), constraint(), constraintColumn());
 	}
 
 	public interface Schema {

@@ -61,21 +61,12 @@ public final class ChinookImpl extends DefaultDomain {
 
 	public ChinookImpl() {
 		super(Chinook.DOMAIN);
-		add(artist());
-		add(album());
-		add(employee());
-		add(customer());
+		add(artist(), album(), employee(), customer(), genre(), mediaType(),
+						track(), invoice(), invoiceLine(), playlist(), playlistTrack());
 		add(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
-		add(genre());
-		add(mediaType());
-		add(track());
 		add(Track.RAISE_PRICE, new RaisePriceFunction());
-		add(invoice());
 		add(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
-		add(invoiceLine());
-		add(playlist());
 		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(entities()));
-		add(playlistTrack());
 	}
 
 	EntityDefinition.Builder artist() {
