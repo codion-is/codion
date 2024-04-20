@@ -32,6 +32,9 @@ public abstract class TypeReference<T> {
 	protected TypeReference() {
 		Type superClass = getClass().getGenericSuperclass();
 		type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
+		if (!(type instanceof ParameterizedType)) {
+			throw new IllegalArgumentException("Not a parameterized type");
+		}
 	}
 
 	/**
