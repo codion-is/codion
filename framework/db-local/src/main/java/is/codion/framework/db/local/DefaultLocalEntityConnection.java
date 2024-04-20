@@ -1229,21 +1229,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private void logExit(String method) {
-		logExit(method, null);
-	}
-
-	private void logExit(String method, Exception exception) {
-		logExit(method, exception, null);
-	}
-
-	private void logExit(String method, Exception exception, String exitMessage) {
-		MethodLogger methodLogger = connection.getMethodLogger();
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.exit(method, exception, exitMessage);
-		}
-	}
-
 	private void logEntry(String method) {
 		MethodLogger methodLogger = connection.getMethodLogger();
 		if (methodLogger != null && methodLogger.isEnabled()) {
@@ -1262,6 +1247,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		MethodLogger methodLogger = connection.getMethodLogger();
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.enter(method, arguments);
+		}
+	}
+
+	private void logExit(String method) {
+		logExit(method, null);
+	}
+
+	private void logExit(String method, Exception exception) {
+		logExit(method, exception, null);
+	}
+
+	private void logExit(String method, Exception exception, String exitMessage) {
+		MethodLogger methodLogger = connection.getMethodLogger();
+		if (methodLogger != null && methodLogger.isEnabled()) {
+			methodLogger.exit(method, exception, exitMessage);
 		}
 	}
 
