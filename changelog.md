@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.42
+### is.codion.framework.domain
+- DefaultEntity refactored.
 
 ## 0.17.41
 ### is.codion.common.core
@@ -22,7 +24,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - InputDialogBuilder.inputValid() and inputValidator() renamed valid() and validator() respectively.
 - DefaultProgressWorkerDialogBuilder refactored.
-### is.codion.swing.fraework.ui
+### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder.includeAddButton() and includeEditButton() bug fixed, exception now thrown as per javadoc.
 - EntityEditPanel.Config.editPanel() added.
 ### is.codion.swing.framework.server.monitor

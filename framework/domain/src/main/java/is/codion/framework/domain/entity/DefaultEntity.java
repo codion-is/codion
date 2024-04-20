@@ -186,7 +186,7 @@ class DefaultEntity implements Entity, Serializable {
 	@Override
 	public final boolean modified(Attribute<?> attribute) {
 		definition.attributes().definition(attribute);
-		return isModifiedInternal(attribute);
+		return isModified(attribute);
 	}
 
 	@Override
@@ -246,7 +246,7 @@ class DefaultEntity implements Entity, Serializable {
 	@Override
 	public void revert(Attribute<?> attribute) {
 		AttributeDefinition<?> attributeDefinition = definition.attributes().definition(attribute);
-		if (isModifiedInternal(attribute)) {
+		if (isModified(attribute)) {
 			put((AttributeDefinition<Object>) attributeDefinition, original(attributeDefinition));
 		}
 	}
@@ -286,22 +286,8 @@ class DefaultEntity implements Entity, Serializable {
 		if (entity != null && !definition.entityType().equals(entity.entityType())) {
 			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
 		}
-		Map<Attribute<?>, Object> previousValues = new HashMap<>();
-		definition.attributes().definitions().forEach(attributeDefinition ->
-						previousValues.put(attributeDefinition.attribute(), get(attributeDefinition)));
-		clear();
-		if (entity != null) {
-			entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
-			Set<Map.Entry<Attribute<?>, Object>> originalEntrySet = entity.originalEntrySet();
-			if (!originalEntrySet.isEmpty()) {
-				originalValues = new HashMap<>();
-				originalEntrySet.forEach(attributeValue -> originalValues.put(attributeValue.getKey(), attributeValue.getValue()));
-			}
-		}
-		previousValues.entrySet().removeIf(attributePreviousValue ->
-						Objects.equals(attributePreviousValue.getValue(), get(attributePreviousValue.getKey())));
 
-		return unmodifiableMap(previousValues);
+		return populateValues(entity);
 	}
 
 	@Override
@@ -344,8 +330,7 @@ class DefaultEntity implements Entity, Serializable {
 	@Override
 	public final boolean valuesEqual(Entity entity, Collection<? extends Attribute<?>> attributes) {
 		if (!definition.entityType().equals(requireNonNull(entity).entityType())) {
-			throw new IllegalArgumentException("Entity of type " + definition.entityType() +
-							" expected, got: " + entity.entityType());
+			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
 		}
 
 		return requireNonNull(attributes).stream()
@@ -443,6 +428,28 @@ class DefaultEntity implements Entity, Serializable {
 		toString = null;
 	}
 
+	private Map<Attribute<?>, Object> populateValues(Entity entity) {
+		Map<Attribute<?>, Object> previousValues = currentValues();
+		clear();
+		if (entity != null) {
+			entity.entrySet().forEach(entry -> values.put(entry.getKey(), entry.getValue()));
+			Set<Map.Entry<Attribute<?>, Object>> originalEntrySet = entity.originalEntrySet();
+			if (!originalEntrySet.isEmpty()) {
+				originalValues = new HashMap<>();
+				originalEntrySet.forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
+			}
+		}
+		previousValues.entrySet().removeIf(new Unmodified());
+
+		return unmodifiableMap(previousValues);
+	}
+
+	private Map<Attribute<?>, Object> currentValues() {
+		return definition.attributes().definitions().stream()
+						.collect(HashMap::new, (map, definition) ->
+										map.put(definition.attribute(), get(definition)), HashMap::putAll);
+	}
+
 	private <T> T get(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition.derived()) {
 			return derivedValue((DerivedAttributeDefinition<T>) attributeDefinition, false);
@@ -455,7 +462,7 @@ class DefaultEntity implements Entity, Serializable {
 		if (attributeDefinition.derived()) {
 			return derivedValue((DerivedAttributeDefinition<T>) attributeDefinition, true);
 		}
-		if (isModifiedInternal(attributeDefinition.attribute())) {
+		if (isModified(attributeDefinition.attribute())) {
 			return (T) originalValues.get(attributeDefinition.attribute());
 		}
 
@@ -474,18 +481,12 @@ class DefaultEntity implements Entity, Serializable {
 			updateOriginalValue(attribute, newValue, previousValue);
 		}
 		if (attributeDefinition instanceof ColumnDefinition) {
-			if (((ColumnDefinition<?>) attributeDefinition).primaryKey()) {
-				primaryKey = null;
-			}
-			Column<T> column = (Column<T>) attribute;
-			if (definition.foreignKeys().foreignKeyColumn(column)) {
-				removeInvalidForeignKeyValues(column, newValue);
-			}
+			updateRelatedKeys((ColumnDefinition<T>) attributeDefinition, newValue);
+		}
+		if (attributeDefinition instanceof ForeignKeyDefinition) {
+			updateReferencedColumns((ForeignKeyDefinition) attributeDefinition, (Entity) newValue);
 		}
 		toString = null;
-		if (attributeDefinition instanceof ForeignKeyDefinition) {
-			setForeignKeyValues((ForeignKeyDefinition) attributeDefinition, (Entity) newValue);
-		}
 
 		return previousValue;
 	}
@@ -556,6 +557,15 @@ class DefaultEntity implements Entity, Serializable {
 		}
 	}
 
+	private <T> void updateRelatedKeys(ColumnDefinition<T> columnDefinition, T newValue) {
+		if (columnDefinition.primaryKey()) {
+			primaryKey = null;
+		}
+		if (definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute())) {
+			removeInvalidForeignKeyValues(columnDefinition.attribute(), newValue);
+		}
+	}
+
 	private <T> void removeInvalidForeignKeyValues(Column<T> column, T value) {
 		for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeys().definitions(column)) {
 			Entity foreignKeyEntity = get(foreignKeyDefinition);
@@ -579,7 +589,7 @@ class DefaultEntity implements Entity, Serializable {
 	 * @param foreignKeyDefinition the foreign key definition
 	 * @param referencedEntity the referenced entity
 	 */
-	private void setForeignKeyValues(ForeignKeyDefinition foreignKeyDefinition, Entity referencedEntity) {
+	private void updateReferencedColumns(ForeignKeyDefinition foreignKeyDefinition, Entity referencedEntity) {
 		removeCachedReferencedKey(foreignKeyDefinition.attribute());
 		List<ForeignKey.Reference<?>> references = foreignKeyDefinition.references();
 		for (int i = 0; i < references.size(); i++) {
@@ -743,7 +753,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private <T> void updateOriginalValue(Attribute<T> attribute, T value, T previousValue) {
-		boolean modified = isModifiedInternal(attribute);
+		boolean modified = isModified(attribute);
 		if (modified && Objects.equals(originalValues.get(attribute), value)) {
 			removeOriginalValue(attribute);//we're back to the original value
 		}
@@ -765,7 +775,7 @@ class DefaultEntity implements Entity, Serializable {
 		return Objects.equals(value, other);
 	}
 
-	private boolean isModifiedInternal(Attribute<?> attribute) {
+	private boolean isModified(Attribute<?> attribute) {
 		return originalValues != null && originalValues.containsKey(attribute);
 	}
 
@@ -819,6 +829,14 @@ class DefaultEntity implements Entity, Serializable {
 		}
 
 		return values;
+	}
+
+	private final class Unmodified implements Predicate<Map.Entry<Attribute<?>, Object>> {
+
+		@Override
+		public boolean test(Map.Entry<Attribute<?>, Object> entry) {
+			return Objects.equals(entry.getValue(), get(entry.getKey()));
+		}
 	}
 
 	private static final class DefaultSourceValues implements DerivedAttribute.SourceValues {
