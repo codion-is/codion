@@ -21,6 +21,7 @@ package is.codion.framework.model.test;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -42,12 +43,7 @@ public final class TestDomain extends DefaultDomain {
 
 	public TestDomain() {
 		super(DOMAIN);
-		master();
-		detail();
-		department();
-		employee();
-		enumEntity();
-		derived();
+		add(master(), detail(), department(), employee(), enumEntity(), derived());
 	}
 
 	public interface Master {
@@ -58,21 +54,21 @@ public final class TestDomain extends DefaultDomain {
 		Column<Integer> CODE = TYPE.integerColumn("code");
 	}
 
-	void master() {
-		add(Master.TYPE.define(
+	EntityDefinition.Builder master() {
+		return Master.TYPE.define(
 										Master.ID.define()
 														.primaryKey(),
 										Master.NAME.define()
 														.column(),
 										Master.CODE.define()
 														.column())
-						.comparator((o1, o2) -> {//keep like this for equality test in SwingEntityTableModelTest.testSortComparator()
+						.comparator((o1, o2) -> {
 							Integer code1 = o1.get(Master.CODE);
 							Integer code2 = o2.get(Master.CODE);
 
 							return code1.compareTo(code2);
 						})
-						.stringFactory(Master.NAME));
+						.stringFactory(Master.NAME);
 	}
 
 	public interface Detail {
@@ -100,8 +96,8 @@ public final class TestDomain extends DefaultDomain {
 	private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
 					item(2, "2"), item(3, "3"));
 
-	void detail() {
-		add(Detail.TYPE.define(
+	EntityDefinition.Builder detail() {
+		return Detail.TYPE.define(
 										Detail.ID.define()
 														.primaryKey(),
 										Detail.INT.define()
@@ -158,7 +154,7 @@ public final class TestDomain extends DefaultDomain {
 						.selectTableName(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
 						.smallDataset(true)
-						.stringFactory(Detail.STRING));
+						.stringFactory(Detail.STRING);
 	}
 
 	public interface Department {
@@ -169,8 +165,8 @@ public final class TestDomain extends DefaultDomain {
 		Column<String> NAME = TYPE.stringColumn("dname");
 	}
 
-	void department() {
-		add(Department.TYPE.define(
+	EntityDefinition.Builder department() {
+		return Department.TYPE.define(
 										Department.ID.define()
 														.primaryKey()
 														.caption(Department.ID.name())
@@ -188,7 +184,7 @@ public final class TestDomain extends DefaultDomain {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department");
 	}
 
 	public interface Employee {
@@ -212,8 +208,8 @@ public final class TestDomain extends DefaultDomain {
 		ConditionType CONDITION_3_TYPE = TYPE.conditionType("condition3Id");
 	}
 
-	void employee() {
-		add(Employee.TYPE.define(
+	EntityDefinition.Builder employee() {
+		return Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey()
 														.caption(Employee.ID.name()),
@@ -271,7 +267,7 @@ public final class TestDomain extends DefaultDomain {
 							}
 
 							return null;
-						}));
+						});
 	}
 
 	public interface EnumEntity {
@@ -285,12 +281,12 @@ public final class TestDomain extends DefaultDomain {
 		}
 	}
 
-	void enumEntity() {
-		add(EnumEntity.TYPE.define(
+	EntityDefinition.Builder enumEntity() {
+		return EnumEntity.TYPE.define(
 						EnumEntity.ID.define()
 										.primaryKey(),
 						EnumEntity.ENUM_TYPE.define()
-										.column()));
+										.column());
 	}
 
 	public interface Derived {
@@ -302,8 +298,8 @@ public final class TestDomain extends DefaultDomain {
 		Column<Integer> INT4 = TYPE.integerColumn("int4");
 	}
 
-	void derived() {
-		add(Derived.TYPE.define(
+	EntityDefinition.Builder derived() {
+		return Derived.TYPE.define(
 						Derived.INT.define()
 										.column(),
 						Derived.INT2.define()
@@ -317,6 +313,6 @@ public final class TestDomain extends DefaultDomain {
 						Derived.INT4.define()
 										.derived(sourceValues -> sourceValues.optional(Derived.INT3)
 														.map(value -> value + 1)
-														.orElse(null), Derived.INT3)));
+														.orElse(null), Derived.INT3));
 	}
 }
