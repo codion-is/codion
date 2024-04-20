@@ -60,8 +60,8 @@ final class DomainToString {
 			foreignKeyDefinitions.forEach(foreignKeyDefinition -> appendAttribute(builder, foreignKeyDefinition));
 		}
 		builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-		builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
-		builder.append(INDENT).append("add(").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
+		builder.append("EntityDefinition.Builder ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
+		builder.append(INDENT).append("return ").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
 		builder.append(String.join("," + LINE_SEPARATOR,
 						attributeStrings(definition.attributes().definitions(), interfaceName, definition))).append(")");
 		if (definition.primaryKey().generated()) {
@@ -76,7 +76,7 @@ final class DomainToString {
 		if (definition.readOnly()) {
 			builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".readOnly(true)");
 		}
-		builder.append(");");
+		builder.append(";");
 		builder.append(LINE_SEPARATOR);
 		builder.append("}");
 

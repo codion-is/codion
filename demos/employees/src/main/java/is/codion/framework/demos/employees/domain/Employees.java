@@ -22,6 +22,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -94,15 +95,16 @@ public final class Employees extends DefaultDomain {
 	// Initializes this domain model
 	public Employees() {
 		super(DOMAIN);
-		department();
-		employee();
+		add(department());
+		add(employee());
+		add(Employee.EMPLOYEE_REPORT, classPathReport(Employees.class, "employees.jasper"));
 	}
 	// end::constructor[]
 
 	// tag::defineDepartment[]
-	void department() {
+	EntityDefinition.Builder department() {
 		// Defining the entity Department.TYPE
-		add(Department.TYPE.define(
+		return Department.TYPE.define(
 										Department.DEPARTMENT_NO.define()
 														.primaryKey()
 														.caption("No.")
@@ -119,14 +121,14 @@ public final class Employees extends DefaultDomain {
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
-						.caption("Department"));
+						.caption("Department");
 	}
 	// end::defineDepartment[]
 
 	// tag::defineEmployee[]
-	void employee() {
+	EntityDefinition.Builder employee() {
 		// Defining the entity Employee.TYPE
-		add(Employee.TYPE.define(
+		return Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey(),
 										Employee.NAME.define()
@@ -189,9 +191,7 @@ public final class Employees extends DefaultDomain {
 							}
 
 							return null;
-						}));
-
-		add(Employee.EMPLOYEE_REPORT, classPathReport(Employees.class, "employees.jasper"));
+						});
 	}
 }
 // end::defineEmployee[]

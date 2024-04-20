@@ -23,6 +23,7 @@ import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
@@ -81,14 +82,14 @@ public final class Store extends DefaultDomain {
 
 	public Store() {
 		super(DOMAIN);
-		customer();
-		address();
-		customerAddress();
+		add(customer());
+		add(address());
+		add(customerAddress());
 	}
 
-	private void customer() {
+	private EntityDefinition.Builder customer() {
 		// tag::customer[]
-		add(Customer.TYPE.define(
+		return Customer.TYPE.define(
 										Customer.ID.define()
 														.primaryKey(),
 										Customer.FIRST_NAME.define()
@@ -113,13 +114,13 @@ public final class Store extends DefaultDomain {
 						// tag::customerStringFactory[]
 						.stringFactory(new CustomerToString())
 						// end::customerStringFactory[]
-						.caption("Customer"));
+						.caption("Customer");
 		// end::customer[]
 	}
 
-	private void address() {
+	private EntityDefinition.Builder address() {
 		// tag::address[]
-		add(Address.TYPE.define(
+		return Address.TYPE.define(
 										Address.ID.define()
 														.primaryKey(),
 										Address.STREET.define()
@@ -144,13 +145,13 @@ public final class Store extends DefaultDomain {
 										.build())
 						.keyGenerator(identity())
 						.smallDataset(true)
-						.caption("Address"));
+						.caption("Address");
 		// end::address[]
 	}
 
-	private void customerAddress() {
+	private EntityDefinition.Builder customerAddress() {
 		// tag::customerAddress[]
-		add(CustomerAddress.TYPE.define(
+		return CustomerAddress.TYPE.define(
 										CustomerAddress.ID.define()
 														.primaryKey(),
 										CustomerAddress.CUSTOMER_ID.define()
@@ -166,7 +167,7 @@ public final class Store extends DefaultDomain {
 														.foreignKey()
 														.caption("Address"))
 						.keyGenerator(identity())
-						.caption("Customer address"));
+						.caption("Customer address");
 		// end::customerAddress[]
 	}
 

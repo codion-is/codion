@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
@@ -34,7 +35,7 @@ final class ConfigureDb extends DefaultDomain {
 
 	ConfigureDb() {
 		super(DOMAIN);
-		configured();
+		add(configured());
 	}
 
 	interface Configured {
@@ -42,8 +43,8 @@ final class ConfigureDb extends DefaultDomain {
 		Column<Integer> ID = TYPE.integerColumn("id");
 	}
 
-	void configured() {
-		add(Configured.TYPE.define(Configured.ID.define().primaryKey()));
+	EntityDefinition.Builder configured() {
+		return Configured.TYPE.define(Configured.ID.define().primaryKey());
 	}
 
 	@Override

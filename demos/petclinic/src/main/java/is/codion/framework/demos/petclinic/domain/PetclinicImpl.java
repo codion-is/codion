@@ -28,6 +28,7 @@ import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
@@ -41,17 +42,17 @@ public final class PetclinicImpl extends DefaultDomain {
 
 	public PetclinicImpl() {
 		super(Petclinic.DOMAIN);
-		vet();
-		specialty();
-		vetSpecialty();
-		petType();
-		owner();
-		pet();
-		visit();
+		add(vet());
+		add(specialty());
+		add(vetSpecialty());
+		add(petType());
+		add(owner());
+		add(pet());
+		add(visit());
 	}
 
-	private void vet() {
-		add(Vet.TYPE.define(
+	private EntityDefinition.Builder vet() {
+		return Vet.TYPE.define(
 										Vet.ID.define()
 														.primaryKey(),
 										Vet.FIRST_NAME.define()
@@ -74,11 +75,11 @@ public final class PetclinicImpl extends DefaultDomain {
 										.value(Vet.FIRST_NAME)
 										.build())
 						.orderBy(ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
-						.smallDataset(true));
+						.smallDataset(true);
 	}
 
-	private void specialty() {
-		add(Specialty.TYPE.define(
+	private EntityDefinition.Builder specialty() {
+		return Specialty.TYPE.define(
 										Specialty.ID.define()
 														.primaryKey(),
 										Specialty.NAME.define()
@@ -90,11 +91,11 @@ public final class PetclinicImpl extends DefaultDomain {
 						.keyGenerator(identity())
 						.caption("Specialties")
 						.stringFactory(Specialty.NAME)
-						.smallDataset(true));
+						.smallDataset(true);
 	}
 
-	private void vetSpecialty() {
-		add(VetSpecialty.TYPE.define(
+	private EntityDefinition.Builder vetSpecialty() {
+		return VetSpecialty.TYPE.define(
 										VetSpecialty.VET.define()
 														.primaryKey(0)
 														.updatable(true),
@@ -112,11 +113,11 @@ public final class PetclinicImpl extends DefaultDomain {
 										.value(VetSpecialty.VET_FK)
 										.text(" - ")
 										.value(VetSpecialty.SPECIALTY_FK)
-										.build()));
+										.build());
 	}
 
-	private void petType() {
-		add(PetType.TYPE.define(
+	private EntityDefinition.Builder petType() {
+		return PetType.TYPE.define(
 										PetType.ID.define()
 														.primaryKey(),
 										PetType.NAME.define()
@@ -129,11 +130,11 @@ public final class PetclinicImpl extends DefaultDomain {
 						.caption("Pet types")
 						.stringFactory(PetType.NAME)
 						.orderBy(ascending(PetType.NAME))
-						.smallDataset(true));
+						.smallDataset(true);
 	}
 
-	private void owner() {
-		add(Owner.TYPE.define(
+	private EntityDefinition.Builder owner() {
+		return Owner.TYPE.define(
 										Owner.ID.define()
 														.primaryKey(),
 										Owner.FIRST_NAME.define()
@@ -173,7 +174,7 @@ public final class PetclinicImpl extends DefaultDomain {
 										.text(", ")
 										.value(Owner.FIRST_NAME)
 										.build())
-						.orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME)));
+						.orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
 	}
 
 	private static final class PhoneTypeConverter implements Converter<PhoneType, String> {
@@ -189,8 +190,8 @@ public final class PetclinicImpl extends DefaultDomain {
 		}
 	}
 
-	private void pet() {
-		add(Pet.TYPE.define(
+	private EntityDefinition.Builder pet() {
+		return Pet.TYPE.define(
 										Pet.ID.define()
 														.primaryKey(),
 										Pet.NAME.define()
@@ -218,11 +219,11 @@ public final class PetclinicImpl extends DefaultDomain {
 						.keyGenerator(identity())
 						.caption("Pets")
 						.stringFactory(Pet.NAME)
-						.orderBy(ascending(Pet.NAME)));
+						.orderBy(ascending(Pet.NAME));
 	}
 
-	private void visit() {
-		add(Visit.TYPE.define(
+	private EntityDefinition.Builder visit() {
+		return Visit.TYPE.define(
 										Visit.ID.define()
 														.primaryKey(),
 										Visit.PET_ID.define()
@@ -244,6 +245,6 @@ public final class PetclinicImpl extends DefaultDomain {
 										.ascending(Visit.PET_ID)
 										.descending(Visit.VISIT_DATE)
 										.build())
-						.caption("Visits"));
+						.caption("Visits");
 	}
 }

@@ -29,10 +29,10 @@ class ForeignKeyDomain extends DefaultDomain {
 
 	ForeignKeyDomain() {
 		super(DOMAIN);
-		species();
-		maturity();
-		otolithCategory();
-		otolith();
+		add(species());
+		add(maturity());
+		add(otolithCategory());
+		add(otolith());
 	}
 
 	public interface Species {
@@ -41,15 +41,15 @@ class ForeignKeyDomain extends DefaultDomain {
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
-	void species() {
-		add(Species.TYPE.define(
+	EntityDefinition.Builder species() {
+		return Species.TYPE.define(
 						Species.NO.define()
 										.primaryKey()
 										.caption("Number"),
 						Species.NAME.define()
 										.column()
 										.caption("Name")
-										.maximumLength(50)));
+										.maximumLength(50));
 	}
 
 	public interface Maturity {
@@ -59,14 +59,14 @@ class ForeignKeyDomain extends DefaultDomain {
 		ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
 	}
 
-	void maturity() {
-		add(Maturity.TYPE.define(
+	EntityDefinition.Builder maturity() {
+		return Maturity.TYPE.define(
 						Maturity.NO.define()
 										.primaryKey(0),
 						Maturity.SPECIES_NO.define()
 										.primaryKey(1),
 						Maturity.SPECIES_FK.define()
-										.foreignKey()));
+										.foreignKey());
 	}
 
 	public interface OtolithCategory {
@@ -76,14 +76,14 @@ class ForeignKeyDomain extends DefaultDomain {
 		ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
 	}
 
-	void otolithCategory() {
-		add(OtolithCategory.TYPE.define(
+	EntityDefinition.Builder otolithCategory() {
+		return OtolithCategory.TYPE.define(
 						OtolithCategory.NO.define()
 										.primaryKey(0),
 						OtolithCategory.SPECIES_NO.define()
 										.primaryKey(1),
 						OtolithCategory.SPECIES_FK.define()
-										.foreignKey()));
+										.foreignKey());
 	}
 
 	public interface Otolith {
@@ -101,8 +101,8 @@ class ForeignKeyDomain extends DefaultDomain {
 						Otolith.SPECIES_NO, OtolithCategory.SPECIES_NO);
 	}
 
-	void otolith() {
-		add(Otolith.TYPE.define(
+	EntityDefinition.Builder otolith() {
+		return Otolith.TYPE.define(
 						Otolith.STATION_ID.define()
 										.primaryKey(0),
 						Otolith.SPECIES_NO.define()
@@ -120,6 +120,6 @@ class ForeignKeyDomain extends DefaultDomain {
 										.column(),
 						Otolith.OTOLITH_CATEGORY_FK.define()
 										.foreignKey()
-										.readOnly(Otolith.SPECIES_NO)));
+										.readOnly(Otolith.SPECIES_NO));
 	}
 }

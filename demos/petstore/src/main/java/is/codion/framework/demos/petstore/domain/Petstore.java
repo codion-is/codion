@@ -20,6 +20,7 @@ package is.codion.framework.demos.petstore.domain;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -37,13 +38,13 @@ public final class Petstore extends DefaultDomain {
 
 	public Petstore() {
 		super(DOMAIN);
-		address();
-		category();
-		product();
-		sellerContactInfo();
-		item();
-		tag();
-		tagItem();
+		add(address());
+		add(category());
+		add(product());
+		add(sellerContactInfo());
+		add(item());
+		add(tag());
+		add(tagItem());
 	}
 
 	public interface Address {
@@ -59,8 +60,8 @@ public final class Petstore extends DefaultDomain {
 		Column<Double> LONGITUDE = TYPE.doubleColumn("Longitude");
 	}
 
-	void address() {
-		add(Address.TYPE.define(
+	EntityDefinition.Builder address() {
+		return Address.TYPE.define(
 										Address.ID.define()
 														.primaryKey()
 														.name("addressid"),
@@ -114,7 +115,7 @@ public final class Petstore extends DefaultDomain {
 										.value(Address.ZIP).text(", ")
 										.value(Address.STATE)
 										.build())
-						.caption("Addresses"));
+						.caption("Addresses");
 	}
 
 	public interface Category {
@@ -126,8 +127,8 @@ public final class Petstore extends DefaultDomain {
 		Column<String> IMAGE_URL = TYPE.stringColumn("Image URL");
 	}
 
-	void category() {
-		add(Category.TYPE.define(
+	EntityDefinition.Builder category() {
+		return Category.TYPE.define(
 										Category.ID.define()
 														.primaryKey()
 														.name("categoryid"),
@@ -152,7 +153,7 @@ public final class Petstore extends DefaultDomain {
 						.keyGenerator(sequence("petstore.category_seq"))
 						.orderBy(ascending(Category.NAME))
 						.stringFactory(Category.NAME)
-						.caption("Categories"));
+						.caption("Categories");
 	}
 
 	public interface Product {
@@ -167,8 +168,8 @@ public final class Petstore extends DefaultDomain {
 		ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", CATEGORY_ID, Category.ID);
 	}
 
-	void product() {
-		add(Product.TYPE.define(
+	EntityDefinition.Builder product() {
+		return Product.TYPE.define(
 										Product.ID.define()
 														.primaryKey()
 														.name("productid"),
@@ -205,7 +206,7 @@ public final class Petstore extends DefaultDomain {
 										.text(" - ")
 										.value(Product.NAME)
 										.build())
-						.caption("Products"));
+						.caption("Products");
 	}
 
 	public interface SellerContactInfo {
@@ -217,8 +218,8 @@ public final class Petstore extends DefaultDomain {
 		Column<String> EMAIL = TYPE.stringColumn("Email");
 	}
 
-	void sellerContactInfo() {
-		add(SellerContactInfo.TYPE.define(
+	EntityDefinition.Builder sellerContactInfo() {
+		return SellerContactInfo.TYPE.define(
 										SellerContactInfo.ID.define()
 														.primaryKey()
 														.name("contactinfoid"),
@@ -250,7 +251,7 @@ public final class Petstore extends DefaultDomain {
 										.text(", ")
 										.value(SellerContactInfo.FIRST_NAME)
 										.build())
-						.caption("Seller info"));
+						.caption("Seller info");
 	}
 
 	public interface Item {
@@ -272,8 +273,8 @@ public final class Petstore extends DefaultDomain {
 		ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", ADDRESS_ID, Address.ID);
 	}
 
-	void item() {
-		add(Item.TYPE.define(
+	EntityDefinition.Builder item() {
+		return Item.TYPE.define(
 										Item.ID.define()
 														.primaryKey()
 														.name("itemid"),
@@ -342,7 +343,7 @@ public final class Petstore extends DefaultDomain {
 										.text(" - ")
 										.value(Item.NAME)
 										.build())
-						.caption("Items"));
+						.caption("Items");
 	}
 
 	public interface Tag {
@@ -353,8 +354,8 @@ public final class Petstore extends DefaultDomain {
 		Column<Integer> REFCOUNT = TYPE.integerColumn("Reference count");
 	}
 
-	void tag() {
-		add(Tag.TYPE.define(
+	EntityDefinition.Builder tag() {
+		return Tag.TYPE.define(
 										Tag.ID.define()
 														.primaryKey()
 														.name("tagid"),
@@ -373,7 +374,7 @@ public final class Petstore extends DefaultDomain {
 						.orderBy(ascending(Tag.TAG))
 						.selectTableName("petstore.tag tag")
 						.stringFactory(Tag.TAG)
-						.caption("Tags"));
+						.caption("Tags");
 	}
 
 	public interface TagItem {
@@ -386,8 +387,8 @@ public final class Petstore extends DefaultDomain {
 		ForeignKey TAG_FK = TYPE.foreignKey("Tag", TAG_ID, Tag.ID);
 	}
 
-	void tagItem() {
-		add(TagItem.TYPE.define(
+	EntityDefinition.Builder tagItem() {
+		return TagItem.TYPE.define(
 										TagItem.ITEM_ID.define()
 														.primaryKey(0)
 														.name("itemid"),
@@ -406,6 +407,6 @@ public final class Petstore extends DefaultDomain {
 										.text(" - ")
 										.value(TagItem.TAG_FK)
 										.build())
-						.caption("Item tags"));
+						.caption("Item tags");
 	}
 }

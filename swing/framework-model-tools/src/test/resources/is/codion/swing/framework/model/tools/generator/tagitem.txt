@@ -8,8 +8,8 @@ public interface TagItem {
 	ForeignKey ITEMID_FK = TYPE.foreignKey("itemid_fk", ITEMID, Item.ITEMID);
 }
 
-void tagItem() {
-	add(TagItem.TYPE.define(
+EntityDefinition.Builder tagItem() {
+	return TagItem.TYPE.define(
 			TagItem.TAGID.define()
 				.primaryKey(0),
 			TagItem.TAGID_FK.define()
@@ -20,5 +20,5 @@ void tagItem() {
 			TagItem.ITEMID_FK.define()
 				.foreignKey()
 				.caption("Item"))
-		.caption("Tag item"));
+		.caption("Tag item");
 }

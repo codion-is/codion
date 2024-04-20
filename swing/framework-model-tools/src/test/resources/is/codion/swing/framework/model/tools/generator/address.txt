@@ -13,8 +13,8 @@ public interface Address {
 	Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
 }
 
-void address() {
-	add(Address.TYPE.define(
+EntityDefinition.Builder address() {
+	return Address.TYPE.define(
 			Address.ADDRESSID.define()
 				.primaryKey(),
 			Address.STREET1.define()
@@ -57,5 +57,5 @@ void address() {
 				.blobColumn()
 				.caption("Image"))
 		.keyGenerator(identity())
-		.caption("Address"));
+		.caption("Address");
 }

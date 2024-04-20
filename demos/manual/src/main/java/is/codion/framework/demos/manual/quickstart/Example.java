@@ -30,6 +30,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
@@ -61,9 +62,9 @@ public final class Example {
 
 		public Store() {
 			super(DOMAIN);
-			customer();
-			address();
-			customerAddress();
+			add(customer());
+			add(address());
+			add(customerAddress());
 		}
 		// end::storeDomain[]
 
@@ -76,8 +77,8 @@ public final class Example {
 			Column<String> LAST_NAME = TYPE.stringColumn("last_name");
 		}
 
-		void customer() {
-			add(Customer.TYPE.define(
+		EntityDefinition.Builder customer() {
+			return Customer.TYPE.define(
 											Customer.ID.define()
 															.primaryKey(),
 											Customer.FIRST_NAME.define()
@@ -95,7 +96,7 @@ public final class Example {
 											.value(Customer.LAST_NAME)
 											.text(", ")
 											.value(Customer.FIRST_NAME)
-											.build()));
+											.build());
 		}
 
 		private static final class CustomerKeyGenerator implements KeyGenerator {
@@ -115,8 +116,8 @@ public final class Example {
 			Column<String> CITY = TYPE.stringColumn("city");
 		}
 
-		void address() {
-			add(Address.TYPE.define(
+		EntityDefinition.Builder address() {
+			return Address.TYPE.define(
 											Address.ID.define()
 															.primaryKey(),
 											Address.STREET.define()
@@ -134,7 +135,7 @@ public final class Example {
 											.value(Address.STREET)
 											.text(", ")
 											.value(Address.CITY)
-											.build()));
+											.build());
 		}
 
 		// end::address[]
@@ -150,8 +151,8 @@ public final class Example {
 			ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);
 		}
 
-		void customerAddress() {
-			add(CustomerAddress.TYPE.define(
+		EntityDefinition.Builder customerAddress() {
+			return CustomerAddress.TYPE.define(
 											CustomerAddress.ID.define()
 															.primaryKey(),
 											CustomerAddress.CUSTOMER_ID.define()
@@ -167,7 +168,7 @@ public final class Example {
 															.foreignKey()
 															.caption("Address"))
 							.keyGenerator(automatic("store.customer_address"))
-							.caption("Customer address"));
+							.caption("Customer address");
 		}
 		// end::customerAddress[]
 	}
