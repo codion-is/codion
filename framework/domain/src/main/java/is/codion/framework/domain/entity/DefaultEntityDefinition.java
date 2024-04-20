@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,6 +61,7 @@ import static java.util.stream.Collectors.*;
  */
 final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final String ATTRIBUTE = "attribute";
@@ -398,6 +400,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	private final class DefaultAttributes implements Attributes, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -462,6 +465,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	private final class DefaultColumns implements Columns, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -498,6 +502,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	private final class DefaultForeignKeys implements ForeignKeys, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -562,6 +567,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	private final class DefaultPrimaryKey implements PrimaryKey, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -587,6 +593,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	private static final class EntityAttributes implements Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final EntityType entityType;

@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.List;
@@ -48,6 +49,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultEntityValidator implements EntityValidator, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultEntityValidator.class.getName());

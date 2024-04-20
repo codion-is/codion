@@ -18,6 +18,7 @@
  */
 package is.codion.common.format;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +36,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final String FOUR_DIGIT_YEAR = "yyyy";

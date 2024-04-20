@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKey implements ForeignKey, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Attribute<Entity> attribute;
@@ -177,6 +179,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
 	static final class DefaultReference<T> implements Reference<T>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final Column<T> column;

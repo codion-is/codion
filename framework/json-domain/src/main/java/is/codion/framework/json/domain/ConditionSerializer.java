@@ -29,9 +29,11 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.io.Serial;
 
 final class ConditionSerializer extends StdSerializer<Condition> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final ColumnConditionSerializer columnConditionSerializer;

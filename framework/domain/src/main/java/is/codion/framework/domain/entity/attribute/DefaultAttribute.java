@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String name;
@@ -99,6 +101,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
 	private static final class DefaultType<T> implements Type<T>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final EntityType entityType;

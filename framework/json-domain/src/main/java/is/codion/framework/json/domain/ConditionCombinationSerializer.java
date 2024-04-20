@@ -25,12 +25,14 @@ import is.codion.framework.domain.entity.condition.Condition.Combination;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
 final class ConditionCombinationSerializer implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final ColumnConditionSerializer columnConditionSerializer;

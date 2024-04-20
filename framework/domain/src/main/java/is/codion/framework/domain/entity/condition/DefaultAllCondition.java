@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -29,6 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultAllCondition extends AbstractCondition implements Condition.All, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	DefaultAllCondition(EntityType entityType) {

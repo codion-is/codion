@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Fetcher;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,6 +42,7 @@ import static java.util.Objects.requireNonNull;
 
 class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final Converter<Object, Object> DEFAULT_CONVERTER = new DefaultConverter();

@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 import is.codion.framework.domain.entity.condition.ColumnCondition;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Statement;
 import java.util.Collection;
@@ -34,6 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultColumn<T> implements Column<T>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Attribute<T> attribute;

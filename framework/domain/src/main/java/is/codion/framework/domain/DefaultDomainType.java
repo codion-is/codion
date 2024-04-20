@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +32,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultDomainType implements DomainType, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final Map<String, DefaultDomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
@@ -93,6 +95,7 @@ final class DefaultDomainType implements DomainType, Serializable {
 		return DOMAIN_ENTITY_TYPES.computeIfAbsent(this, k -> new ConcurrentHashMap<>());
 	}
 
+	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		stream.defaultReadObject();
 		DOMAIN_TYPES.put(domainName, this);

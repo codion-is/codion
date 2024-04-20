@@ -27,6 +27,7 @@ import is.codion.common.rmi.server.DefaultServerAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerAdmin.class);
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	/**

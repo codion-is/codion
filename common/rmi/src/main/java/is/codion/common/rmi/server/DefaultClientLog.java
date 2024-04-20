@@ -20,6 +20,7 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.logging.MethodLogger;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultClientLog implements ClientLog, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final UUID clientId;

@@ -26,6 +26,8 @@ import is.codion.framework.json.domain.EntityObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import java.io.Serial;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -34,6 +36,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DatabaseObjectMapper extends ObjectMapper {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private DatabaseObjectMapper(EntityObjectMapper entityObjectMapper) {

@@ -20,8 +20,11 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 
+import java.io.Serial;
+
 final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Attribute<Entity> entityAttribute;

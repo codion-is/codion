@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +45,7 @@ import static java.util.stream.Collectors.joining;
  */
 class DefaultKey implements Entity.Key, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
@@ -306,11 +308,13 @@ class DefaultKey implements Entity.Key, Serializable {
 		}
 	}
 
+	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(definition.entityType().domainType().name());
 		EntitySerializer.serialize(this, stream);
 	}
 
+	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 	}

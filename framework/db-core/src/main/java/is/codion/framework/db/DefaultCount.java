@@ -21,12 +21,14 @@ package is.codion.framework.db;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultCount implements Count, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Condition where;

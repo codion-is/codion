@@ -22,6 +22,7 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,6 +34,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultRemoteClient implements RemoteClient, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final ConnectionRequest connectionRequest;

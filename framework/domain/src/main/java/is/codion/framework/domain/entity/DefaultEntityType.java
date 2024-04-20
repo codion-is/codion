@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,6 +46,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityType implements EntityType, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final DomainType domainType;

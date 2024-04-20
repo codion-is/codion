@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultCustomCondition extends AbstractCondition implements CustomCondition {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final ConditionType conditionType;

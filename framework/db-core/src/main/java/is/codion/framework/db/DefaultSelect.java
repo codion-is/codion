@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultSelect implements Select, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Condition where;

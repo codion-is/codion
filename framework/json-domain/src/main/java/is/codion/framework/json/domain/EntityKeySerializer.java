@@ -26,11 +26,13 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import static java.util.Objects.requireNonNull;
 
 final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityObjectMapper entityObjectMapper;

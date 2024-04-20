@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition.Combination;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultConditionCombination extends AbstractCondition implements Combination, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final List<Condition> conditions;

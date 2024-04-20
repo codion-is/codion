@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
@@ -145,6 +146,7 @@ public interface World {
 	// tag::customTypeClass[]
 	final class Location implements Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final double latitude;
@@ -192,6 +194,7 @@ public interface World {
 	// tag::colorProvider[]
 	final class CityColorProvider implements ColorProvider {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private static final String YELLOW = "#ffff00";
@@ -216,6 +219,7 @@ public interface World {
 	// tag::validator[]
 	final class CityValidator extends DefaultEntityValidator implements Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -237,6 +241,7 @@ public interface World {
 	// tag::derivedAttributeProvider[]
 	final class NoOfSpeakersProvider implements DerivedAttribute.Provider<Integer> {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

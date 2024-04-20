@@ -21,6 +21,7 @@ package is.codion.common.rmi.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -141,6 +142,7 @@ final class DefaultServerLocator implements Server.Locator {
 	}
 
 	private static final class ServerComparator<T extends Remote, A extends ServerAdmin> implements Comparator<Server<T, A>>, Serializable {
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

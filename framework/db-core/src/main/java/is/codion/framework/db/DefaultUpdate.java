@@ -22,6 +22,7 @@ import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultUpdate implements Update, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Condition where;

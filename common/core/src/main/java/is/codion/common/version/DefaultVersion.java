@@ -18,12 +18,14 @@
  */
 package is.codion.common.version;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
 final class DefaultVersion implements Version, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	static final Version VERSION = Version.parse(DefaultVersion.class, "version.properties");

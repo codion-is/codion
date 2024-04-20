@@ -39,6 +39,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,6 +51,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityObjectMapper extends ObjectMapper {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	public static final TypeReference<List<Entity.Key>> KEY_LIST_REFERENCE = new TypeReference<List<Entity.Key>>() {};

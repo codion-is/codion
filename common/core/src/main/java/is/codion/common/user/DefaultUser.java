@@ -21,6 +21,7 @@ package is.codion.common.user;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -28,6 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultUser implements User, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private String username;
@@ -81,11 +83,13 @@ final class DefaultUser implements User, Serializable {
 		return username.hashCode();
 	}
 
+	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(username);
 		stream.writeObject(password);
 	}
 
+	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		this.username = (String) stream.readObject();
 		setPassword((char[]) stream.readObject());

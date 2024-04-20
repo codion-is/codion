@@ -18,11 +18,13 @@
  */
 package is.codion.framework.domain.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Predicate;
 
 final class DefaultEntityExists implements Predicate<Entity>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	@Override

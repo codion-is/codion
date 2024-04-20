@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.Collator;
@@ -290,6 +291,7 @@ public final class Text {
 
 	private static final class SpaceAwareComparator<T> implements Comparator<T>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final Locale locale;

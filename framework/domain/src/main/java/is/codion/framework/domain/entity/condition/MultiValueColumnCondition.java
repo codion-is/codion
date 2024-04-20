@@ -21,12 +21,14 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
 final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit

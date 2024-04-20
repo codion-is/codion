@@ -27,6 +27,7 @@ import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -382,6 +383,7 @@ public abstract class AbstractDatabase implements Database {
 	 */
 	private static final class DefaultDatabaseStatistics implements Database.Statistics, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final long timestamp;

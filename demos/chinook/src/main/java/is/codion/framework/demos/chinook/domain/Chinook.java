@@ -36,6 +36,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.plugin.jasperreports.JRReportType;
 import is.codion.plugin.jasperreports.JasperReports;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.FieldPosition;
@@ -163,6 +164,7 @@ public interface Chinook {
 
 		final class RaisePriceParameters implements Serializable {
 
+			@Serial
 			private static final long serialVersionUID = 1;
 
 			private final Collection<Long> trackIds;
@@ -228,6 +230,7 @@ public interface Chinook {
 
 		final class RandomPlaylistParameters implements Serializable {
 
+			@Serial
 			private static final long serialVersionUID = 1;
 
 			private final String playlistName;
@@ -293,6 +296,7 @@ public interface Chinook {
 	final class InvoiceLineTotalProvider
 					implements DerivedAttribute.Provider<BigDecimal> {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -310,6 +314,7 @@ public interface Chinook {
 	final class TrackMinSecProvider
 					implements DerivedAttribute.Provider<String> {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -328,6 +333,7 @@ public interface Chinook {
 	final class CustomerStringProvider
 					implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

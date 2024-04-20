@@ -23,6 +23,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,6 +51,7 @@ import static java.util.stream.Collectors.toMap;
 
 abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
@@ -413,6 +415,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final T defaultValue;
@@ -429,6 +432,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private NullDefaultValueSupplier() {
@@ -438,6 +442,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	private static final class DefaultComparator implements Comparator<Comparable<Object>>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
@@ -448,6 +453,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	private static final class ToStringComparator implements Comparator<Object>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

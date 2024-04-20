@@ -33,6 +33,7 @@ import is.codion.plugin.jasperreports.JasperReports;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
@@ -172,6 +173,7 @@ public final class Store extends DefaultDomain {
 	// tag::toString[]
 	private static final class CustomerToString implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

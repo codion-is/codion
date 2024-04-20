@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.Format;
 import java.util.ArrayList;
@@ -111,6 +112,7 @@ public final class StringFactory {
 
 	private static final class DefaultStringFactory implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		/**
@@ -145,6 +147,7 @@ public final class StringFactory {
 
 	private static final class FormattedValueProvider implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final Attribute<?> attribute;
@@ -167,6 +170,7 @@ public final class StringFactory {
 
 	private static final class ForeignKeyValueProvider implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final ForeignKey foreignKey;
@@ -192,6 +196,7 @@ public final class StringFactory {
 
 	private static final class StringValueProvider implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final Attribute<?> attribute;
@@ -208,6 +213,7 @@ public final class StringFactory {
 
 	private static final class StaticTextProvider implements Function<Entity, String>, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final String text;

@@ -18,12 +18,14 @@
  */
 package is.codion.common.db.operation;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String name;

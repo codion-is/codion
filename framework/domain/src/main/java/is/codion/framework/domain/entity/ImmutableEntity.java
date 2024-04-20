@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
 
 final class ImmutableEntity extends DefaultEntity implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final String ERROR_MESSAGE = "This entity instance is immutable";
@@ -86,11 +88,13 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 		throw new UnsupportedOperationException(ERROR_MESSAGE);
 	}
 
+	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(definition.entityType().domainType().name());
 		EntitySerializer.serialize(this, stream);
 	}
 
+	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 	}

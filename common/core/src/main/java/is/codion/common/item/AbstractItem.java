@@ -20,11 +20,13 @@ package is.codion.common.item;
 
 import is.codion.common.Text;
 
+import java.io.Serial;
 import java.util.Comparator;
 import java.util.Objects;
 
 abstract class AbstractItem<T> implements Item<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final T value;

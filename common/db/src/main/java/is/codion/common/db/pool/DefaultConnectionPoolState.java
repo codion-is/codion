@@ -18,6 +18,7 @@
  */
 package is.codion.common.db.pool;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,6 +26,7 @@ import java.io.Serializable;
  */
 final class DefaultConnectionPoolState implements ConnectionPoolState, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private long timestamp;

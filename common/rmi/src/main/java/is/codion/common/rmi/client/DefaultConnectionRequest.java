@@ -21,6 +21,7 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultConnectionRequest implements ConnectionRequest, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final User user;

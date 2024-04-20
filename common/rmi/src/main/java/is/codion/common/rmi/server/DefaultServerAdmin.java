@@ -33,6 +33,7 @@ import javax.management.Notification;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
@@ -56,6 +57,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultServerAdmin.class);
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final int GC_INFO_MAX_LENGTH = 100;
@@ -224,6 +226,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	private static final class DefaultServerStatistics implements ServerStatistics, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final long timestamp;
@@ -313,6 +316,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	private static final class DefaultThreadStatistics implements ThreadStatistics, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final int threadCount;
@@ -344,6 +348,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
 	private static class DefaultGcEvent implements GcEvent, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final long timestamp;

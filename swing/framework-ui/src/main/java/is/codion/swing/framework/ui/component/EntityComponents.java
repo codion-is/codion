@@ -58,6 +58,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.text.FieldPosition;
 import java.text.Format;
@@ -698,6 +699,7 @@ public class EntityComponents {
 
 	private static final class EntityReadOnlyFormat extends Format {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override

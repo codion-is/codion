@@ -30,9 +30,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.io.Serial;
 
 final class CountDeserializer extends StdDeserializer<Count> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityObjectMapper entityObjectMapper;

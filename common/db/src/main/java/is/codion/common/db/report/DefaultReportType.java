@@ -18,12 +18,14 @@
  */
 package is.codion.common.db.report;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String name;

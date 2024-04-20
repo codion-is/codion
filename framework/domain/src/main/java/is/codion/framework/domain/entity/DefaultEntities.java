@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import static java.util.stream.Collectors.toList;
  */
 public abstract class DefaultEntities implements Entities, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final DomainType domainType;
@@ -168,6 +170,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 		}
 	}
 
+	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		stream.defaultReadObject();
 		DefaultKey.setSerializer(domainType.name(), createSerializer(this));

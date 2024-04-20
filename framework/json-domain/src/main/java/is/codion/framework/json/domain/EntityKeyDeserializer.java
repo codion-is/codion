@@ -30,12 +30,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityObjectMapper entityObjectMapper;

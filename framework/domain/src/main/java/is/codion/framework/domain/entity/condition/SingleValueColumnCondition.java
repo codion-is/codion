@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
@@ -28,6 +29,7 @@ import static java.util.Collections.singletonList;
 
 final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final String IS_NULL = " IS NULL";

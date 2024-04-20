@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -31,6 +32,7 @@ import static java.util.stream.Collectors.joining;
  */
 final class DefaultStringFactory implements Function<Entity, String>, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	@Override

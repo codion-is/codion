@@ -30,6 +30,7 @@ import is.codion.framework.domain.Domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
@@ -44,6 +45,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);

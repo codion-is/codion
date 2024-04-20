@@ -18,10 +18,13 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import java.io.Serial;
+
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAuditColumnDefinition<T> extends DefaultColumnDefinition<T> implements AuditColumnDefinition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final AuditColumn.AuditAction auditAction;

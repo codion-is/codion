@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,7 @@ import static java.util.Objects.requireNonNull;
 
 class DefaultEntity implements Entity, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	static final DefaultKeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
@@ -802,11 +804,13 @@ class DefaultEntity implements Entity, Serializable {
 		return copy;
 	}
 
+	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(definition.entityType().domainType().name());
 		EntitySerializer.serialize(this, stream);
 	}
 
+	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 	}

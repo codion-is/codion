@@ -27,10 +27,12 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Map;
 
 final class UpdateSerializer extends StdSerializer<Update> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityObjectMapper entityObjectMapper;

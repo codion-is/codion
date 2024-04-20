@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.condition.CustomCondition;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import static java.util.stream.Collectors.toList;
 
 final class CustomConditionDeserializer implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityObjectMapper entityObjectMapper;

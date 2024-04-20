@@ -18,11 +18,14 @@
  */
 package is.codion.common.item;
 
+import java.io.Serial;
+
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 final class ItemI18n<T> extends AbstractItem<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String resourceBundleName;

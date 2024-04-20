@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import static java.util.Objects.requireNonNull;
 
 final class EntitySerializer extends StdSerializer<Entity> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private boolean includeForeignKeyValues = true;

@@ -21,10 +21,13 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
+
 import static java.util.Arrays.asList;
 
 final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	DualValueColumnCondition(Column<T> column, T lowerBound, T upperBound, Operator operator) {

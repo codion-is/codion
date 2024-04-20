@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.condition.CustomCondition;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
@@ -31,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 
 final class CustomConditionSerializer implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityObjectMapper entityObjectMapper;

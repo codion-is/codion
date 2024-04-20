@@ -20,6 +20,7 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.version.Version;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -28,6 +29,7 @@ import java.util.UUID;
 
 final class DefaultServerInformation implements ServerInformation, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final UUID serverId;

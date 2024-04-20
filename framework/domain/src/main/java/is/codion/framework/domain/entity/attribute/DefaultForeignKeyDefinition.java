@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Entity> implements ForeignKeyDefinition {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Set<Column<?>> readOnlyColumns;

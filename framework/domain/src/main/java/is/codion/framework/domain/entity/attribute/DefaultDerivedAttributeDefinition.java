@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import java.io.Serial;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -25,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefinition<T> implements DerivedAttributeDefinition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final DerivedAttribute.Provider<T> valueProvider;

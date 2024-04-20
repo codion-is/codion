@@ -18,6 +18,7 @@
  */
 package is.codion.common.db.pool;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import static java.util.Collections.emptyList;
  */
 final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final String username;

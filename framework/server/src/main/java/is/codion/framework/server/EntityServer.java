@@ -44,6 +44,7 @@ import is.codion.framework.server.EntityServerAdmin.DomainReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
@@ -70,6 +71,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection, EntityServerAdmin> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityServer.class);
@@ -533,6 +535,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	private static final class DefaultDomainEntityDefinition implements DomainEntityDefinition, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final String domain;
@@ -563,6 +566,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	private static final class DefaultDomainReport implements DomainReport, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final String domain;
@@ -607,6 +611,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	private static final class DefaultDomainOperation implements DomainOperation, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final String domain;

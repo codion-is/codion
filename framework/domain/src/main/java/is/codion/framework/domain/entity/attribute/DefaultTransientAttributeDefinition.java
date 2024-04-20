@@ -18,8 +18,11 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import java.io.Serial;
+
 class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition<T> implements TransientAttributeDefinition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final boolean modifiesEntity;

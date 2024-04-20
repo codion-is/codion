@@ -22,6 +22,7 @@ import is.codion.common.Operator;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractColumnCondition<T> extends AbstractCondition implements ColumnCondition<T> {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final Column<T> column;

@@ -21,6 +21,7 @@ package is.codion.common.logging;
 import is.codion.common.Text;
 
 import java.io.PrintWriter;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.NumberFormat;
@@ -129,6 +130,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
 	private static final class DefaultEntry implements Entry, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");

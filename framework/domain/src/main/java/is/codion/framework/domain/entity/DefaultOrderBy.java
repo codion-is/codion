@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultOrderBy implements OrderBy, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final List<OrderByColumn> orderByColumns;
@@ -69,6 +71,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
 	private static final class DefaultOrderByColumn implements OrderByColumn, Serializable {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final Column<?> column;

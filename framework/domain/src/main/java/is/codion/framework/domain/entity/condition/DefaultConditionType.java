@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity.condition;
 
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultConditionType implements ConditionType, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final EntityType entityType;

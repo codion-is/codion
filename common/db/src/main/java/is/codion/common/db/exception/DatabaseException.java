@@ -18,6 +18,7 @@
  */
 package is.codion.common.db.exception;
 
+import java.io.Serial;
 import java.sql.SQLException;
 
 /**
@@ -25,6 +26,7 @@ import java.sql.SQLException;
  */
 public class DatabaseException extends Exception {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

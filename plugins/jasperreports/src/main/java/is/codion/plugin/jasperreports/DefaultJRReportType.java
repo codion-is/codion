@@ -23,11 +23,13 @@ import is.codion.common.db.report.ReportType;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
 final class DefaultJRReportType implements JRReportType, Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1;
 
 	private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;

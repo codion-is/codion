@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -247,6 +248,7 @@ public abstract class DefaultDomain implements Domain {
 
 	private static final class DomainEntities extends DefaultEntities {
 
+		@Serial
 		private static final long serialVersionUID = 1;
 
 		private DomainEntities(DomainType domainType) {
