@@ -35,6 +35,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.EntityTablePanel.KeyboardShortcut;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -184,7 +185,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityPanel.Config.WINDOW_TYPE.set(WindowType.FRAME);
 		// Add a CTRL modifier to the DELETE key shortcut for table panels
-		EntityTablePanel.Config.KEYBOARD_SHORTCUTS.keyStroke(EntityTablePanel.KeyboardShortcut.DELETE_SELECTED)
+		EntityTablePanel.Config.KEYBOARD_SHORTCUTS.keyStroke(KeyboardShortcut.DELETE)
 						.map(keyStroke -> keyStroke(keyStroke.getKeyCode(), CTRL_DOWN_MASK));
 		FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityTablePanel.Config.COLUMN_SELECTION.set(EntityTablePanel.ColumnSelection.MENU);

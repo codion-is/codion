@@ -211,10 +211,10 @@ public class EntityTablePanel extends JPanel {
 		 */
 		PRINT(keyStroke(VK_P, CTRL_DOWN_MASK)),
 		/**
-		 * Triggers the {@link TableControl#DELETE_SELECTED} control.<br>
+		 * Triggers the {@link TableControl#DELETE} control.<br>
 		 * Default: DELETE
 		 */
-		DELETE_SELECTED(keyStroke(VK_DELETE)),
+		DELETE(keyStroke(VK_DELETE)),
 		/**
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default: CTRL-G
@@ -243,7 +243,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public enum TableControl {
 		PRINT,
-		DELETE_SELECTED,
+		DELETE,
 		VIEW_DEPENDENCIES,
 		ADD,
 		EDIT,
@@ -678,8 +678,8 @@ public class EntityTablePanel extends JPanel {
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(control)
 										.enable(table));
-		control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
-						KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE_SELECTED).get())
+		control(TableControl.DELETE).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE).get())
 										.action(control)
 										.enable(table));
 		if (configuration.includeEntityMenu) {
@@ -746,7 +746,7 @@ public class EntityTablePanel extends JPanel {
 			popupControls.add(control);
 			separatorRequired.set(true);
 		});
-		control(TableControl.DELETE_SELECTED).optional().ifPresent(control -> {
+		control(TableControl.DELETE).optional().ifPresent(control -> {
 			popupControls.add(control);
 			separatorRequired.set(true);
 		});
@@ -1087,7 +1087,7 @@ public class EntityTablePanel extends JPanel {
 	 * @return a control for deleting the selected entities
 	 * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
 	 */
-	private Control createDeleteSelectedControl() {
+	private Control createDeleteControl() {
 		return Control.builder(new DeleteCommand())
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(
@@ -1245,7 +1245,7 @@ public class EntityTablePanel extends JPanel {
 						tableModel.editModel().updateEnabled().get();
 	}
 
-	private boolean includeDeleteSelectedControl() {
+	private boolean includeDeleteControl() {
 		return !tableModel.editModel().readOnly().get() && tableModel.editModel().deleteEnabled().get();
 	}
 
@@ -1367,8 +1367,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void setupStandardControls() {
-		if (includeDeleteSelectedControl()) {
-			controls.get(TableControl.DELETE_SELECTED).mapNull(this::createDeleteSelectedControl);
+		if (includeDeleteControl()) {
+			controls.get(TableControl.DELETE).mapNull(this::createDeleteControl);
 		}
 		if (includeAddControl()) {
 			controls.get(TableControl.ADD).mapNull(this::createAddControl);

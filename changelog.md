@@ -17,6 +17,7 @@ Codion Change Log
 - EntityDialogs.DefaultEditAttributeDialogBuilder bug fixed, didn't take null into account when counting distinct values.
 - EntityTablePanel, TableControl.EDIT_SELECTED renamed EDIT_VALUE and now associated with an action for editing the selected items.
 - EntityTablePanel.Config.editAttributeSelection() and includeEditValueControl() added.
+- EntityTablePanel.TableControl.DELETE_SELECTED renamed DELETE, related renaming.
 
 ## 0.17.41
 ### is.codion.common.core
