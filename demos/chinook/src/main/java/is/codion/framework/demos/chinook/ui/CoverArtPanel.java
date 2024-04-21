@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
@@ -50,7 +49,6 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
@@ -96,10 +94,8 @@ final class CoverArtPanel extends JPanel {
 														.control(Control.builder(this::removeCover)
 																		.smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
 																		.enabled(imageSelected)))
-														.buttonBuilder(buttonBuilder ->
-																		buttonBuilder.transferFocusOnEnter(true))
+														.buttonBuilder(buttonBuilder -> buttonBuilder.transferFocusOnEnter(true))
 														.buttonGap(0)
-														.border(createEmptyBorder(0, 0, Layouts.GAP.get(), 0))
 														.build())
 										.build())
 						.build();

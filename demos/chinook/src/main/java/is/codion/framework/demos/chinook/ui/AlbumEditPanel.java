@@ -60,9 +60,11 @@ public final class AlbumEditPanel extends EntityEditPanel {
 														.add(createInputPanel(Album.ARTIST_FK))
 														.add(createInputPanel(Album.TITLE))
 														.build())
-										.centerComponent(createInputPanel(Album.TAGS, new AlbumTagPanel(tagList)))
 										.build())
-						.centerComponent(createInputPanel(Album.COVER))
+						.centerComponent(gridLayoutPanel(1, 2)
+										.add(createInputPanel(Album.TAGS, new AlbumTagPanel(tagList)))
+										.add(createInputPanel(Album.COVER))
+										.build())
 						.build();
 
 		setLayout(borderLayout());
