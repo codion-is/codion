@@ -299,7 +299,7 @@ public final class EntitySearchField extends HintTextField {
 	 */
 	public Control searchControl() {
 		if (searchControl == null) {
-			searchControl = Control.builder(() -> performSearch(true))
+			searchControl = Control.builder(this::performSearch)
 							.smallIcon(ICONS.search())
 							.enabled(model.searchStringModified())
 							.build();
