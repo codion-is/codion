@@ -324,7 +324,9 @@ public final class EntityDialogs {
 			Collection<Entity> selectedEntities = entities.stream()
 							.map(Entity::copy)
 							.collect(toList());
-			Collection<T> values = Entity.distinct(attribute, selectedEntities);
+			Collection<T> values = entities.stream()
+							.map(entity -> entity.get(attribute))
+							.collect(toSet());
 			T initialValue = values.size() == 1 ? values.iterator().next() : null;
 			ComponentValue<T, ?> componentValue = editSelectedComponentValue(attribute, initialValue);
 			InputValidator<T> validator = new InputValidator<>(entityDefinition, attribute, componentValue);

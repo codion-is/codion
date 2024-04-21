@@ -13,6 +13,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ListBuilder migrated from using ValueSet to ValueList.
 - AbstractComponentBuilder now supports multiple linked values.
+### is.codion.swing.framework.ui
+- EntityDialogs.DefaultEditAttributeDialogBuilder bug fixed, didn't take null into account when counting distinct values.
 
 ## 0.17.41
 ### is.codion.common.core
