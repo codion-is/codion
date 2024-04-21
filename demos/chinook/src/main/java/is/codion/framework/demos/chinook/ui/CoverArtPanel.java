@@ -65,7 +65,7 @@ final class CoverArtPanel extends JPanel {
 					new FileNameExtensionFilter(BUNDLE.getString("images"),
 									new String[] {"jpg", "jpeg", "png", "bmp", "gif"});
 
-	private final JPanel basePanel;
+	private final JPanel centerPanel;
 	private final NavigableImagePanel imagePanel;
 	private final Value<byte[]> imageBytes;
 	private final State imageSelected;
@@ -79,12 +79,12 @@ final class CoverArtPanel extends JPanel {
 		this.imageBytes = imageBytes;
 		this.imageSelected = State.state(imageBytes.isNotNull());
 		this.imagePanel = createImagePanel();
-		this.basePanel = createPanel();
-		add(basePanel, BorderLayout.CENTER);
+		this.centerPanel = createCenterPanel();
+		add(centerPanel, BorderLayout.CENTER);
 		bindEvents();
 	}
 
-	private JPanel createPanel() {
+	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
 						.preferredSize(EMBEDDED_SIZE)
 						.centerComponent(imagePanel)
@@ -133,19 +133,19 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void embed() {
-		Utilities.disposeParentWindow(basePanel);
-		basePanel.setSize(EMBEDDED_SIZE);
+		Utilities.disposeParentWindow(centerPanel);
+		centerPanel.setSize(EMBEDDED_SIZE);
 		imagePanel.resetView();
-		add(basePanel, BorderLayout.CENTER);
+		add(centerPanel, BorderLayout.CENTER);
 		revalidate();
 		repaint();
 	}
 
 	private void displayInDialog() {
-		remove(basePanel);
+		remove(centerPanel);
 		revalidate();
 		repaint();
-		Dialogs.componentDialog(basePanel)
+		Dialogs.componentDialog(centerPanel)
 						.owner(this)
 						.modal(false)
 						.title(BUNDLE.getString("cover"))

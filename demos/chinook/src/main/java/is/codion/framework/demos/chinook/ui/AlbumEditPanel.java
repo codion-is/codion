@@ -49,9 +49,10 @@ public final class AlbumEditPanel extends EntityEditPanel {
 						.editPanel(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
-		ComponentValue<List<String>, JList<String>> tagList = createList(new DefaultListModel<String>())
-						.items(Album.TAGS)
-						.buildValue();
+		ComponentValue<List<String>, JList<String>> tagsValue =
+						createList(new DefaultListModel<String>())
+										.items(Album.TAGS)
+										.buildValue();
 		component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
 
 		JPanel centerPanel = borderLayoutPanel()
@@ -62,7 +63,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 														.build())
 										.build())
 						.centerComponent(gridLayoutPanel(1, 2)
-										.add(createInputPanel(Album.TAGS, new AlbumTagPanel(tagList)))
+										.add(createInputPanel(Album.TAGS, new AlbumTagPanel(tagsValue)))
 										.add(createInputPanel(Album.COVER))
 										.build())
 						.build();
