@@ -799,6 +799,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |display_input_dialog|Display multi-line input dialog|Birta innsláttarreit með fleiri línum
 |edit_panel|Edit panel|Innsláttarflötur
 |edit_selected_item|Edit selected item|Breyta valinni færslu
+|edit_value|Edit value|Breyta gildi
 |enable_disable_condition|Enable/disable column condition|Virkja/afvirkja leitarreit dálks
 |entity_field|Entity field (combo box or search field) with a new item or edit item control|Færslureitur (flettilisti eða leitarreitur) með aðgerð til að búa til nýja eða breyta færslu
 |find_and_select_next|Find and select next|Finna og velja næstu

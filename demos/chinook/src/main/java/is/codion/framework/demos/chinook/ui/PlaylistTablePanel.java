@@ -53,8 +53,8 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void setupControls() {
-		// No need for the edit selected control in the popup menu
-		control(TableControl.EDIT_SELECTED).clear();
+		// No need for the edit value control in the popup menu
+		control(TableControl.EDIT_VALUE).clear();
 	}
 
 	private void randomPlaylist() throws DatabaseException {

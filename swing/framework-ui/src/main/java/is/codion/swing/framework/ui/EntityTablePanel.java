@@ -176,6 +176,11 @@ public class EntityTablePanel extends JPanel {
 		 */
 		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK)),
 		/**
+		 * Edit a single attribute value for the selected entity instances.<br>
+		 * Default: SHIFT-INSERT
+		 */
+		EDIT_VALUE(keyStroke(VK_INSERT, SHIFT_DOWN_MASK)),
+		/**
 		 * Requests focus for the table.<br>
 		 * Default: CTRL-T
 		 */
@@ -242,7 +247,7 @@ public class EntityTablePanel extends JPanel {
 		VIEW_DEPENDENCIES,
 		ADD,
 		EDIT,
-		EDIT_SELECTED,
+		EDIT_VALUE,
 		SELECT_COLUMNS,
 		RESET_COLUMNS,
 		COLUMN_AUTO_RESIZE_MODE,
@@ -288,6 +293,20 @@ public class EntityTablePanel extends JPanel {
 		DIALOG,
 		/**
 		 * Display toggle controls directly in the menu.
+		 */
+		MENU
+	}
+
+	/**
+	 * Specifies how attribute selection is presented for editing the selected records.
+	 */
+	public enum EditAttributeSelection {
+		/**
+		 * Display a dialog.
+		 */
+		DIALOG,
+		/**
+		 * Display an item for each attribute in a submenu.
 		 */
 		MENU
 	}
@@ -492,13 +511,30 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
+	 * Displays a selection dialog for selecting an attribute to edit and
+	 * retrieves a new value via input dialog and performs an update on the selected entities
+	 * assigning the value to the attribute
+	 * @see Config#editComponentFactory(Attribute, EntityComponentFactory)
+	 */
+	public final void editSelected() {
+		List<AttributeDefinition<?>> sortedDefinitions = configuration.editable.get().stream()
+						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
+						.sorted(AttributeDefinition.definitionComparator())
+						.collect(toList());
+		Dialogs.selectionDialog(sortedDefinitions)
+						.owner(this)
+						.selectSingle()
+						.map(AttributeDefinition::attribute)
+						.ifPresent(this::editSelected);
+	}
+
+	/**
 	 * Retrieves a new value via input dialog and performs an update on the selected entities
 	 * assigning the value to the attribute
 	 * @param attributeToEdit the attribute which value to edit
-	 * @param <T> the attribute value type
 	 * @see Config#editComponentFactory(Attribute, EntityComponentFactory)
 	 */
-	public final <T> void editSelected(Attribute<T> attributeToEdit) {
+	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
 		if (!tableModel.selectionModel().isSelectionEmpty()) {
 			editDialogBuilder(attributeToEdit)
@@ -637,6 +673,11 @@ public class EntityTablePanel extends JPanel {
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(control)
 										.enable(table));
+		control(TableControl.EDIT_VALUE).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(KeyboardShortcut.EDIT_VALUE).get())
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(control)
+										.enable(table));
 		control(TableControl.DELETE_SELECTED).optional().ifPresent(control ->
 						KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE_SELECTED).get())
 										.action(control)
@@ -713,10 +754,18 @@ public class EntityTablePanel extends JPanel {
 			popupControls.addSeparator();
 			separatorRequired.set(false);
 		}
-		control(TableControl.EDIT_SELECTED).optional().ifPresent(control -> {
-			popupControls.add(control);
-			separatorRequired.set(true);
-		});
+		if (includeEditValueControls() && configuration.includeEditValueControl) {
+			if (configuration.editAttributeSelection == EditAttributeSelection.DIALOG) {
+				control(TableControl.EDIT_VALUE).optional().ifPresent(control -> {
+					popupControls.add(control);
+					separatorRequired.set(true);
+				});
+			}
+			else {
+				popupControls.add(createEditSelectedControls());
+				separatorRequired.set(true);
+			}
+		}
 		if (separatorRequired.get()) {
 			popupControls.addSeparator();
 			separatorRequired.set(false);
@@ -969,6 +1018,23 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
+	 * Creates a {@link Control} for editing the value of a single attribute
+	 * for the selected entities, enabled as long as the selection is not empty
+	 * and {@link EntityEditModel#updateEnabled()} is enabled.
+	 * @return the edit control
+	 * @see Config#editable(Consumer)
+	 * @see EntityEditModel#updateEnabled()
+	 */
+	private Control createEditValueControl() {
+		return Control.builder(this::editSelected)
+						.name(FrameworkMessages.edit())
+						.enabled(createEditSelectedEnabledObserver())
+						.smallIcon(FrameworkIcons.instance().edit())
+						.description(FrameworkMessages.editSelectedTip())
+						.build();
+	}
+
+	/**
 	 * Creates a {@link Controls} containing controls for editing the value of a single attribute
 	 * for the selected entities. These controls are enabled as long as the selection is not empty
 	 * and {@link EntityEditModel#updateEnabled()} is enabled.
@@ -977,15 +1043,10 @@ public class EntityTablePanel extends JPanel {
 	 * @see EntityEditModel#updateEnabled()
 	 */
 	private Controls createEditSelectedControls() {
-		StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
-		StateObserver updateEnabled = tableModel.editModel().updateEnabled();
-		StateObserver updateMultipleEnabledOrSingleSelection =
-						State.or(tableModel.editModel().updateMultipleEnabled(),
-										tableModel.selectionModel().singleSelection());
-		StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
+		StateObserver editSelectedEnabledObserver = createEditSelectedEnabledObserver();
 		Controls editControls = Controls.builder()
 						.name(FrameworkMessages.edit())
-						.enabled(enabledState)
+						.enabled(editSelectedEnabledObserver)
 						.smallIcon(FrameworkIcons.instance().edit())
 						.description(FrameworkMessages.editSelectedTip())
 						.build();
@@ -994,10 +1055,20 @@ public class EntityTablePanel extends JPanel {
 						.sorted(AttributeDefinition.definitionComparator())
 						.forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelected(attributeDefinition.attribute()))
 										.name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
-										.enabled(enabledState)
+										.enabled(editSelectedEnabledObserver)
 										.build()));
 
 		return editControls;
+	}
+
+	private StateObserver createEditSelectedEnabledObserver() {
+		StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
+		StateObserver updateEnabled = tableModel.editModel().updateEnabled();
+		StateObserver updateMultipleEnabledOrSingleSelection =
+						State.or(tableModel.editModel().updateMultipleEnabled(),
+										tableModel.selectionModel().singleSelection());
+
+		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
 	}
 
 	/**
@@ -1168,7 +1239,7 @@ public class EntityTablePanel extends JPanel {
 						tableModel.editModel().updateEnabled().get();
 	}
 
-	private boolean includeEditSelectedControls() {
+	private boolean includeEditValueControls() {
 		return !configuration.editable.empty() &&
 						!tableModel.editModel().readOnly().get() &&
 						tableModel.editModel().updateEnabled().get();
@@ -1305,8 +1376,8 @@ public class EntityTablePanel extends JPanel {
 		if (includeEditControl()) {
 			controls.get(TableControl.EDIT).mapNull(this::createEditControl);
 		}
-		if (includeEditSelectedControls()) {
-			controls.get(TableControl.EDIT_SELECTED).mapNull(this::createEditSelectedControls);
+		if (includeEditValueControls() && configuration.includeEditValueControl) {
+			controls.get(TableControl.EDIT_VALUE).mapNull(this::createEditValueControl);
 		}
 		if (configuration.includeClearControl) {
 			controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
@@ -1766,6 +1837,14 @@ public class EntityTablePanel extends JPanel {
 						Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
 		/**
+		 * Specifies how the edit an attribute action is presented to the user.<br>
+		 * Value type: {@link EditAttributeSelection}<br>
+		 * Default value: {@link EditAttributeSelection#MENU}
+		 */
+		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
+						Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
+
+		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
 		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
@@ -1792,8 +1871,10 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeSelectionModeControl = false;
 		private boolean includeAddControl = true;
 		private boolean includeEditControl = true;
+		private boolean includeEditValueControl = true;
 		private boolean includeToolBar = true;
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
+		private EditAttributeSelection editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.get();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling;
 		private RefreshButtonVisible refreshButtonVisible;
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
@@ -1833,7 +1914,9 @@ public class EntityTablePanel extends JPanel {
 			this.includeSelectionModeControl = config.includeSelectionModeControl;
 			this.includeAddControl = config.includeAddControl;
 			this.includeEditControl = config.includeEditControl;
+			this.includeEditValueControl = config.includeEditValueControl;
 			this.columnSelection = config.columnSelection;
+			this.editAttributeSelection = config.editAttributeSelection;
 			this.editComponentFactories = new HashMap<>(config.editComponentFactories);
 			this.cellEditorComponentFactories = new HashMap<>(config.cellEditorComponentFactories);
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
@@ -1970,11 +2053,29 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param includeEditValueControl true if a 'Edit' value control should be included<br>
+		 * @return this Config instance
+		 */
+		public Config includeEditValueControl(boolean includeEditValueControl) {
+			this.includeEditValueControl = includeEditValueControl;
+			return this;
+		}
+
+		/**
 		 * @param columnSelection specifies how columns are selected
 		 * @return this Config instance
 		 */
 		public Config columnSelection(ColumnSelection columnSelection) {
 			this.columnSelection = requireNonNull(columnSelection);
+			return this;
+		}
+
+		/**
+		 * @param editAttributeSelection specifies attributes are selected when editing the selected records
+		 * @return this Config instance
+		 */
+		public Config editAttributeSelection(EditAttributeSelection editAttributeSelection) {
+			this.editAttributeSelection = requireNonNull(editAttributeSelection);
 			return this;
 		}
 
