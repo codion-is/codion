@@ -59,6 +59,7 @@ import static java.util.stream.Collectors.toSet;
 final class LookupTablePanel extends EntityTablePanel {
 
 	private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	private final State columnSelectionPanelVisible = State.state(true);
 	private final State mapDialogVisible = State.builder()
@@ -66,7 +67,7 @@ final class LookupTablePanel extends EntityTablePanel {
 					.build();
 
 	private final Control toggleMapControl = ToggleControl.builder(mapDialogVisible)
-					.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
+					.smallIcon(ICONS.icon(Foundation.MAP))
 					.name("Show map")
 					.build();
 	private final JScrollPane columnSelectionScrollPane = scrollPane(createColumnSelectionToolBar())
@@ -95,7 +96,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		control(TableControl.CLEAR).set(Control.builder(this::clearTableAndConditions)
 						.name("Clear")
 						.mnemonic('C')
-						.smallIcon(FrameworkIcons.instance().clear())
+						.smallIcon(ICONS.clear())
 						.build());
 		control(TableControl.SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
 						.name("Select")
@@ -104,13 +105,11 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	@Override
 	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-		FrameworkIcons icons = FrameworkIcons.instance();
-
 		return super.createPopupMenuControls(additionalPopupMenuControls)
 						.addSeparatorAt(2)
 						.addAt(3, Controls.builder()
 										.name("Export")
-										.smallIcon(icons.icon(Foundation.PAGE_EXPORT))
+										.smallIcon(ICONS.icon(Foundation.PAGE_EXPORT))
 										.control(Control.builder(this::exportCSV)
 														.name("CSV..."))
 										.control(Control.builder(this::exportJSON)
@@ -118,7 +117,7 @@ final class LookupTablePanel extends EntityTablePanel {
 										.build())
 						.addAt(4, Controls.builder()
 										.name("Import")
-										.smallIcon(icons.icon(Foundation.PAGE_ADD))
+										.smallIcon(ICONS.icon(Foundation.PAGE_ADD))
 										.control(Control.builder(this::importJSON)
 														.name("JSON..."))
 										.build())
@@ -228,7 +227,7 @@ final class LookupTablePanel extends EntityTablePanel {
 										.map(ToggleControl.class::cast)
 										.forEach(toggleControl -> toggleControl.value().set(true)))
 						.name("Select all")
-						.smallIcon(FrameworkIcons.instance().icon(Foundation.CHECK))
+						.smallIcon(ICONS.icon(Foundation.CHECK))
 						.build();
 	}
 }

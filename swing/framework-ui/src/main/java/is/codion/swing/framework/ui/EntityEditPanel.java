@@ -85,6 +85,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**
 	 * The standard controls available in a edit panel
@@ -550,7 +551,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 										editModel().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
-						.smallIcon(FrameworkIcons.instance().delete())
+						.smallIcon(ICONS.delete())
 						.onException(this::onException)
 						.build();
 	}
@@ -561,7 +562,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.enabled(active)
 						.description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
 						.mnemonic(Messages.clearMnemonic())
-						.smallIcon(FrameworkIcons.instance().clear())
+						.smallIcon(ICONS.clear())
 						.build();
 	}
 
@@ -574,7 +575,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 										editModel().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
-						.smallIcon(FrameworkIcons.instance().update())
+						.smallIcon(ICONS.update())
 						.onException(this::onException)
 						.build();
 	}
@@ -588,7 +589,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.enabled(State.and(active, editModel().insertEnabled()))
 						.description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
-						.smallIcon(FrameworkIcons.instance().add())
+						.smallIcon(ICONS.add())
 						.onException(this::onException)
 						.build();
 	}

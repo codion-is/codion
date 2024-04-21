@@ -57,6 +57,7 @@ import static javax.swing.BorderFactory.createEtchedBorder;
 final class CoverArtPanel extends JPanel {
 
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CoverArtPanel.class.getName());
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);
 	private static final Dimension DIALOG_SIZE = new Dimension(400, 400);
@@ -90,9 +91,9 @@ final class CoverArtPanel extends JPanel {
 						.southComponent(borderLayoutPanel()
 										.eastComponent(buttonPanel(Controls.builder()
 														.control(Control.builder(this::selectCover)
-																		.smallIcon(FrameworkIcons.instance().icon(Foundation.PLUS)))
+																		.smallIcon(ICONS.icon(Foundation.PLUS)))
 														.control(Control.builder(this::removeCover)
-																		.smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
+																		.smallIcon(ICONS.icon(Foundation.MINUS))
 																		.enabled(imageSelected)))
 														.buttonBuilder(buttonBuilder -> buttonBuilder.transferFocusOnEnter(true))
 														.buttonGap(0)

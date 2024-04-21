@@ -99,6 +99,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 					Configuration.booleanValue("is.codion.swing.framework.ui.TabbedPanelLayout.includeControls", true);
 
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedDetailLayout.class.getName());
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**
 	 * The default keyboard shortcut keyStrokes.
@@ -252,12 +253,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 			EntityTablePanel tablePanel = entityPanel.tablePanel();
 			tablePanel.addToolBarControls(Controls.builder()
 							.control(Control.builder(detailController::toggleDetailState)
-											.smallIcon(FrameworkIcons.instance().detail())
+											.smallIcon(ICONS.detail())
 											.description(MESSAGES.getString("toggle_detail")))
 							.build());
 			tablePanel.addPopupMenuControls(Controls.builder()
 								.name(MESSAGES.getString(DETAIL_TABLES))
-								.smallIcon(FrameworkIcons.instance().detail())
+								.smallIcon(ICONS.detail())
 								.controls(entityPanel.detailPanels().stream()
 												.map(detailPanel -> Control.builder(new ActivateDetailPanel(detailPanel))
 																.name(detailPanel.caption())

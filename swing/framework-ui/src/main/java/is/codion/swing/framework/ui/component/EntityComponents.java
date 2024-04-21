@@ -78,6 +78,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityComponents {
 
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+
 	private final EntityDefinition entityDefinition;
 
 	/**
@@ -371,7 +373,7 @@ public class EntityComponents {
 	public final <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute, String dateTimePattern) {
 		return Components.temporalFieldPanel(attribute.type().valueClass(), dateTimePattern)
 						.toolTipText(entityDefinition.attributes().definition(attribute).description())
-						.calendarIcon(FrameworkIcons.instance().calendar());
+						.calendarIcon(ICONS.calendar());
 	}
 
 	/**
@@ -386,7 +388,7 @@ public class EntityComponents {
 						.toolTipText(attributeDefinition.description())
 						.maximumLength(attributeDefinition.maximumLength())
 						.dialogTitle(attributeDefinition.caption())
-						.buttonIcon(FrameworkIcons.instance().editText());
+						.buttonIcon(ICONS.editText());
 	}
 
 	/**
@@ -448,7 +450,7 @@ public class EntityComponents {
 
 		return Components.temporalField(attributeDefinition.attribute().type().valueClass(), dateTimePattern)
 						.toolTipText(attributeDefinition.description())
-						.calendarIcon(FrameworkIcons.instance().calendar());
+						.calendarIcon(ICONS.calendar());
 	}
 
 	/**

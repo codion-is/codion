@@ -46,23 +46,25 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 final class AlbumTagPanel extends JPanel {
 
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+
 	private final ComponentValue<List<String>, JList<String>> tagsValue;
 	private final DefaultListModel<String> tagListModel;
 	private final State selectionEmpty = State.state(true);
 	private final State movingTags = State.state(false);
 	private final Control addTagControl = Control.builder(this::addTag)
-					.smallIcon(FrameworkIcons.instance().icon(Foundation.PLUS))
+					.smallIcon(ICONS.icon(Foundation.PLUS))
 					.build();
 	private final Control removeTagControl = Control.builder(this::removeTag)
-					.smallIcon(FrameworkIcons.instance().icon(Foundation.MINUS))
+					.smallIcon(ICONS.icon(Foundation.MINUS))
 					.enabled(selectionEmpty.not())
 					.build();
 	private final Control moveSelectionUpControl = Control.builder(this::moveSelectedTagsUp)
-					.smallIcon(FrameworkIcons.instance().up())
+					.smallIcon(ICONS.up())
 					.enabled(selectionEmpty.not())
 					.build();
 	private final Control moveSelectionDownControl = Control.builder(this::moveSelectedTagsDown)
-					.smallIcon(FrameworkIcons.instance().down())
+					.smallIcon(ICONS.down())
 					.enabled(selectionEmpty.not())
 					.build();
 

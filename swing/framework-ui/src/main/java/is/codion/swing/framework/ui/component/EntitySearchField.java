@@ -139,6 +139,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public final class EntitySearchField extends HintTextField {
 
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**
 	 * Specifies the way a {@link EntitySearchField} indicates that a search is in progress.
@@ -299,7 +300,7 @@ public final class EntitySearchField extends HintTextField {
 	public Control searchControl() {
 		if (searchControl == null) {
 			searchControl = Control.builder(() -> performSearch(true))
-							.smallIcon(FrameworkIcons.instance().search())
+							.smallIcon(ICONS.search())
 							.enabled(model.searchStringModified())
 							.build();
 		}
@@ -503,6 +504,10 @@ public final class EntitySearchField extends HintTextField {
 		setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
 	}
 
+	private void performSearch() {
+		performSearch(true);
+	}
+
 	private void performSearch(boolean promptUser) {
 		if (nullOrEmpty(model.searchString().get())) {
 			model.entities().clear();
@@ -572,10 +577,10 @@ public final class EntitySearchField extends HintTextField {
 		return menu(Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel())
 										.owner(EntitySearchField.this)
 										.title(FrameworkMessages.settings())
-										.icon(FrameworkIcons.instance().settings())
+										.icon(ICONS.settings())
 										.show())
 						.name(FrameworkMessages.settings())
-						.smallIcon(FrameworkIcons.instance().settings())
+						.smallIcon(ICONS.settings())
 						.build()))
 						.createPopupMenu();
 	}

@@ -100,6 +100,7 @@ import static javax.swing.SwingConstants.VERTICAL;
 public class EntityPanel extends JPanel {
 
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**
 	 * The possible states of a detail or edit panel.
@@ -876,7 +877,7 @@ public class EntityPanel extends JPanel {
 	 */
 	protected final Control createToggleEditPanelControl() {
 		return Control.builder(this::toggleEditPanelState)
-						.smallIcon(FrameworkIcons.instance().editPanel())
+						.smallIcon(ICONS.editPanel())
 						.description(MESSAGES.getString("toggle_edit"))
 						.build();
 	}
@@ -890,7 +891,7 @@ public class EntityPanel extends JPanel {
 						.enabled(editPanel == null ? null : editPanel.active())
 						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
 						.mnemonic(Messages.refreshMnemonic())
-						.smallIcon(FrameworkIcons.instance().refresh())
+						.smallIcon(ICONS.refresh())
 						.build();
 	}
 

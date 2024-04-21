@@ -51,6 +51,7 @@ import static java.util.Objects.requireNonNull;
 final class EntityControls {
 
 	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityControls.class.getName());
+	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	private EntityControls() {}
 
@@ -153,7 +154,7 @@ final class EntityControls {
 
 	private static Control createAddControl(Command addEntityCommand, JComponent component, KeyStroke keyStroke) {
 		Control control = Control.builder(addEntityCommand)
-						.smallIcon(FrameworkIcons.instance().add())
+						.smallIcon(ICONS.add())
 						.description(MESSAGES.getString("add_new"))
 						.enabled(createComponentEnabledState(component))
 						.build();
@@ -168,7 +169,7 @@ final class EntityControls {
 	private static Control createEditControl(Command editEntityCommand, JComponent component,
 																					 StateObserver selectionNonEmptyState, KeyStroke keyStroke) {
 		Control control = Control.builder(editEntityCommand)
-						.smallIcon(FrameworkIcons.instance().edit())
+						.smallIcon(ICONS.edit())
 						.description(MESSAGES.getString("edit_selected"))
 						.enabled(State.and(createComponentEnabledState(component), selectionNonEmptyState))
 						.build();
