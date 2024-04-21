@@ -45,8 +45,8 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -75,7 +75,7 @@ public interface Chinook {
 		Column<Long> ARTIST_ID = TYPE.longColumn("artistid");
 		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
 		Column<Integer> NUMBER_OF_TRACKS = TYPE.integerColumn("number_of_tracks");
-		Column<Set<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
+		Column<List<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
 
 		ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
 	}

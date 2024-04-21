@@ -1114,12 +1114,12 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		@Override
-		public ListBuilder.Items<T> items(Attribute<Set<T>> attribute) {
+		public ListBuilder.Items<T> items(Attribute<List<T>> attribute) {
 			return setComponentBuilder(attribute, builderFactory.items(attribute));
 		}
 
 		@Override
-		public ListBuilder.SelectedItems<T> selectedItems(Attribute<Set<T>> attribute) {
+		public ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
 			return setComponentBuilder(attribute, builderFactory.selectedItems(attribute));
 		}
 

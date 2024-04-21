@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
+import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -74,10 +74,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
@@ -782,7 +780,7 @@ public final class ComponentsTest {
 		listModel.addElement("two");
 		listModel.addElement("three");
 
-		ValueSet<String> textValue = ValueSet.valueSet(singletonList("two"));
+		ValueList<String> textValue = ValueList.valueList(singletonList("two"));
 		ListBuilder.SelectedItems<String> listBuilder = Components.list(listModel)
 						.selectedItems()
 						.visibleRowCount(4)
@@ -790,14 +788,14 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<Set<String>, JList<String>> componentValue = listBuilder
+		ComponentValue<List<String>, JList<String>> componentValue = listBuilder
 						.buildValue();
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
-		assertEquals(new HashSet<>(singletonList("two")), componentValue.get());
+		assertEquals(singletonList("two"), componentValue.get());
 		textValue.add("three");
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
 		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
-		assertEquals(new HashSet<>(asList("two", "three")), componentValue.get());
+		assertEquals(asList("two", "three"), componentValue.get());
 		listBuilder.scrollPane().build();
 	}
 
@@ -833,7 +831,7 @@ public final class ComponentsTest {
 
 	@Test
 	void listItems() {
-		ValueSet<String> textValue = ValueSet.valueSet(asList("one", "two", "three"));
+		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
 		ListBuilder.Items<String> listBuilder = Components.list(new DefaultListModel<String>())
 						.items()
 						.visibleRowCount(4)
@@ -841,16 +839,16 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<Set<String>, JList<String>> componentValue = listBuilder
+		ComponentValue<List<String>, JList<String>> componentValue = listBuilder
 						.buildValue();
-		assertEquals(new HashSet<>(asList("one", "two", "three")), componentValue.get());
+		assertEquals(asList("one", "two", "three"), componentValue.get());
 		textValue.add("four");
-		assertEquals(new HashSet<>(asList("one", "two", "three", "four")), componentValue.get());
+		assertEquals(asList("one", "two", "three", "four"), componentValue.get());
 		DefaultListModel<String> listModel = (DefaultListModel<String>) componentValue.component().getModel();
 		listModel.removeElement("two");
-		assertEquals(new HashSet<>(asList("one", "three", "four")), componentValue.get());
+		assertEquals(asList("one", "three", "four"), componentValue.get());
 		listModel.removeElement("one");
-		assertEquals(new HashSet<>(asList("three", "four")), componentValue.get());
+		assertEquals(asList("three", "four"), componentValue.get());
 		listBuilder.scrollPane().build();
 	}
 

@@ -44,9 +44,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
@@ -456,22 +454,22 @@ public final class ChinookImpl extends DefaultDomain {
 										.build());
 	}
 
-	private static final class TagsConverter implements Converter<Set<String>, Array> {
+	private static final class TagsConverter implements Converter<List<String>, Array> {
 
 		private static final int ARRAY_VALUE_INDEX = 2;
 
 		private final ResultPacker<String> packer = resultSet -> resultSet.getString(ARRAY_VALUE_INDEX);
 
 		@Override
-		public Array toColumnValue(Set<String> value, Statement statement) throws SQLException {
+		public Array toColumnValue(List<String> value, Statement statement) throws SQLException {
 			return value.isEmpty() ? null :
 							statement.getConnection().createArrayOf("VARCHAR", value.toArray(new Object[0]));
 		}
 
 		@Override
-		public Set<String> fromColumnValue(Array columnValue) throws SQLException {
+		public List<String> fromColumnValue(Array columnValue) throws SQLException {
 			try (ResultSet resultSet = columnValue.getResultSet()) {
-				return new LinkedHashSet<>(packer.pack(resultSet));
+				return packer.pack(resultSet);
 			}
 		}
 	}

@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.list;
 import is.codion.common.value.Value;
 
 import javax.swing.ListModel;
-import java.util.Set;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,7 +39,7 @@ final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
 	}
 
 	@Override
-	public ListBuilder.Items<T> items(Value<Set<T>> linkedValue) {
+	public ListBuilder.Items<T> items(Value<List<T>> linkedValue) {
 		return new DefaultListItemsBuilder<>(listModel, linkedValue);
 	}
 
@@ -49,7 +49,7 @@ final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
 	}
 
 	@Override
-	public ListBuilder.SelectedItems<T> selectedItems(Value<Set<T>> linkedValue) {
+	public ListBuilder.SelectedItems<T> selectedItems(Value<List<T>> linkedValue) {
 		return new DefaultListSelectedItemsBuilder<>(listModel, linkedValue);
 	}
 

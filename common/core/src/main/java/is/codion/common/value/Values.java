@@ -27,6 +27,7 @@ import java.util.function.Supplier;
  * A factory for {@link Values} instances.
  * @param <T> the value type
  * @param <C> the collection type
+ * @see #builder(Supplier, Function)
  */
 public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObserver<T, C> {
 
@@ -97,9 +98,9 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	/**
 	 * @param empty creates an empty instance of the required collection type
 	 * @param unmodifiable returns an unmodifiable view of the given collection
-	 * @return a {@link Values.Builder} instance
 	 * @param <T> the value type
 	 * @param <C> the collection type
+	 * @return a {@link Values.Builder} instance
 	 */
 	static <T, C extends Collection<T>> Builder<T, C, ?> builder(Supplier<C> empty, Function<C, C> unmodifiable) {
 		return new DefaultValues.DefaultBuilder<>(empty, unmodifiable);

@@ -27,7 +27,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.util.Set;
+import java.util.List;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Album;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
@@ -49,7 +49,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 						.editPanel(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
-		ComponentValue<Set<String>, JList<String>> tagList = createList(new DefaultListModel<String>())
+		ComponentValue<List<String>, JList<String>> tagList = createList(new DefaultListModel<String>())
 						.items(Album.TAGS)
 						.buildValue();
 		component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));

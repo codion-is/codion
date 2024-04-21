@@ -28,18 +28,18 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, Set<T>, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
+final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
 
 	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-	DefaultListItemsBuilder(ListModel<T> listModel, Value<Set<T>> linkedValue) {
+	DefaultListItemsBuilder(ListModel<T> listModel, Value<List<T>> linkedValue) {
 		super(listModel, linkedValue);
 	}
 
@@ -58,29 +58,29 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, Set<T>, Li
 	}
 
 	@Override
-	protected ComponentValue<Set<T>, JList<T>> createComponentValue(JList<T> component) {
+	protected ComponentValue<List<T>, JList<T>> createComponentValue(JList<T> component) {
 		return new ListItemsValue<>(component);
 	}
 
 	@Override
-	protected void setInitialValue(JList<T> component, Set<T> initialValue) {
+	protected void setInitialValue(JList<T> component, List<T> initialValue) {
 		ListItemsValue.setItems(component, initialValue);
 	}
 
-	private static final class ListItemsValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
+	private static final class ListItemsValue<T> extends AbstractComponentValue<List<T>, JList<T>> {
 
 		private ListItemsValue(JList<T> list) {
-			super(list, Collections.emptySet());
+			super(list, Collections.emptyList());
 			list.getModel().addListDataListener(new DefaultListDataNotifier());
 		}
 
 		@Override
-		protected Set<T> getComponentValue() {
-			return new HashSet<>(getItems());
+		protected List<T> getComponentValue() {
+			return new ArrayList<>(getItems());
 		}
 
 		@Override
-		protected void setComponentValue(Set<T> value) {
+		protected void setComponentValue(List<T> value) {
 			setItems(component(), value);
 		}
 
@@ -92,7 +92,7 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, Set<T>, Li
 							.collect(Collectors.toList());
 		}
 
-		private static <T> void setItems(JList<T> list, Set<T> items) {
+		private static <T> void setItems(JList<T> list, List<T> items) {
 			DefaultListModel<T> listModel = (DefaultListModel<T>) list.getModel();
 			listModel.removeAllElements();
 			if (items != null) {

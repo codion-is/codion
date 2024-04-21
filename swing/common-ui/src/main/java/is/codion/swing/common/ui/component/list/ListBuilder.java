@@ -26,7 +26,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Builds a JList instance.
@@ -90,7 +90,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * Builds a JList, where the value is represented by the list items.
 	 * @param <T> the value type
 	 */
-	interface Items<T> extends ListBuilder<T, Set<T>, Items<T>> {
+	interface Items<T> extends ListBuilder<T, List<T>, Items<T>> {
 
 		/**
 		 * @param selectionMode the list selection model
@@ -104,7 +104,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * Builds a multi-selection JList, where the value is represented by the selected items.
 	 * @param <T> the value type
 	 */
-	interface SelectedItems<T> extends ListBuilder<T, Set<T>, SelectedItems<T>> {}
+	interface SelectedItems<T> extends ListBuilder<T, List<T>, SelectedItems<T>> {}
 
 	/**
 	 * Builds a single-selection JList, where the value is represented by the selected item.
@@ -128,7 +128,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 		 * @param linkedValue the value to link to the list items
 		 * @return a JList builder
 		 */
-		Items<T> items(Value<Set<T>> linkedValue);
+		Items<T> items(Value<List<T>> linkedValue);
 
 		/**
 		 * A multi selection JList builder, where the value is represented by the selected items.
@@ -141,7 +141,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 		 * @param linkedValue the value to link to the selected items
 		 * @return a JList builder
 		 */
-		SelectedItems<T> selectedItems(Value<Set<T>> linkedValue);
+		SelectedItems<T> selectedItems(Value<List<T>> linkedValue);
 
 		/**
 		 * A single-selection JList builder, where the value is represented by the selected item.

@@ -25,14 +25,14 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import javax.swing.JList;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.Set;
 
-final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, Set<T>, ListBuilder.SelectedItems<T>> implements ListBuilder.SelectedItems<T> {
+final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.SelectedItems<T>>
+				implements ListBuilder.SelectedItems<T> {
 
-	DefaultListSelectedItemsBuilder(ListModel<T> listModel, Value<Set<T>> linkedValue) {
+	DefaultListSelectedItemsBuilder(ListModel<T> listModel, Value<List<T>> linkedValue) {
 		super(listModel, linkedValue);
 	}
 
@@ -45,16 +45,16 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, Se
 	}
 
 	@Override
-	protected ComponentValue<Set<T>, JList<T>> createComponentValue(JList<T> component) {
+	protected ComponentValue<List<T>, JList<T>> createComponentValue(JList<T> component) {
 		return new ListSelectedItemsValue<>(component);
 	}
 
 	@Override
-	protected void setInitialValue(JList<T> component, Set<T> initialValue) {
+	protected void setInitialValue(JList<T> component, List<T> initialValue) {
 		ListSelectedItemsValue.selectValues(component, initialValue);
 	}
 
-	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
+	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<List<T>, JList<T>> {
 
 		private ListSelectedItemsValue(JList<T> list) {
 			super(list);
@@ -62,16 +62,16 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, Se
 		}
 
 		@Override
-		protected Set<T> getComponentValue() {
-			return new HashSet<>(component().getSelectedValuesList());
+		protected List<T> getComponentValue() {
+			return component().getSelectedValuesList();
 		}
 
 		@Override
-		protected void setComponentValue(Set<T> value) {
+		protected void setComponentValue(List<T> value) {
 			selectValues(component(), value);
 		}
 
-		private static <T> void selectValues(JList<T> list, Set<T> valueSet) {
+		private static <T> void selectValues(JList<T> list, List<T> valueSet) {
 			list.setSelectedIndices(valueSet.stream()
 							.map(value -> indexOf(list, value))
 							.filter(OptionalInt::isPresent)

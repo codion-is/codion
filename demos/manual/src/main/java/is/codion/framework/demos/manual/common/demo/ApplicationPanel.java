@@ -305,7 +305,7 @@ public final class ApplicationPanel extends JPanel {
 						.build(inputPanel::add);
 
 		Components.list(model.createStringListModel())
-						.selectedItems(model.stringListValueSet())
+						.selectedItems(model.stringListValues())
 						.visibleRowCount(4)
 						.layoutOrientation(JList.HORIZONTAL_WRAP)
 						.transferFocusOnEnter(true)

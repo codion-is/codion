@@ -37,7 +37,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.util.Set;
+import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.inputDialog;
@@ -46,7 +46,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class AlbumTagPanel extends JPanel {
 
-	private final ComponentValue<Set<String>, JList<String>> tagsValue;
+	private final ComponentValue<List<String>, JList<String>> tagsValue;
 	private final DefaultListModel<String> tagListModel;
 	private final State selectionEmpty = State.state(true);
 	private final Control addTagControl = Control.builder(this::addTag)
@@ -57,7 +57,7 @@ final class AlbumTagPanel extends JPanel {
 					.enabled(selectionEmpty.not())
 					.build();
 
-	AlbumTagPanel(ComponentValue<Set<String>, JList<String>> tagsValue) {
+	AlbumTagPanel(ComponentValue<List<String>, JList<String>> tagsValue) {
 		super(borderLayout());
 		this.tagsValue = tagsValue;
 		this.tagsValue.component().addListSelectionListener(new UpdateSelectionEmptyState());
@@ -85,7 +85,7 @@ final class AlbumTagPanel extends JPanel {
 						.build(), BorderLayout.CENTER);
 	}
 
-	ComponentValue<Set<String>, JList<String>> tagsValue() {
+	ComponentValue<List<String>, JList<String>> tagsValue() {
 		return tagsValue;
 	}
 

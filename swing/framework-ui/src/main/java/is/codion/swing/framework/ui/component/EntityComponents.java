@@ -65,7 +65,7 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.time.temporal.Temporal;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
@@ -637,14 +637,14 @@ public class EntityComponents {
 		 * @param attribute the attribute
 		 * @return a JList builder
 		 */
-		ListBuilder.Items<T> items(Attribute<Set<T>> attribute);
+		ListBuilder.Items<T> items(Attribute<List<T>> attribute);
 
 		/**
 		 * A multi selection JList builder, where the value is represented by the selected items.
 		 * @param attribute the attribute
 		 * @return a JList builder
 		 */
-		ListBuilder.SelectedItems<T> selectedItems(Attribute<Set<T>> attribute);
+		ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute);
 
 		/**
 		 * A single selection JList builder, where the value is represented by the selected item.
@@ -673,16 +673,16 @@ public class EntityComponents {
 		}
 
 		@Override
-		public ListBuilder.Items<T> items(Attribute<Set<T>> attribute) {
-			AttributeDefinition<Set<T>> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		public ListBuilder.Items<T> items(Attribute<List<T>> attribute) {
+			AttributeDefinition<List<T>> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 			return builderFactory.items()
 							.toolTipText(attributeDefinition.description());
 		}
 
 		@Override
-		public ListBuilder.SelectedItems<T> selectedItems(Attribute<Set<T>> attribute) {
-			AttributeDefinition<Set<T>> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		public ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
+			AttributeDefinition<List<T>> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 			return builderFactory.selectedItems()
 							.toolTipText(attributeDefinition.description());

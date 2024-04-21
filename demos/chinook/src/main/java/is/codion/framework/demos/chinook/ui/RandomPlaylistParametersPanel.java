@@ -22,7 +22,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
+import is.codion.common.value.ValueList;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
@@ -128,7 +128,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 		private final Value<String> playlistName = Value.value();
 		private final Value<Integer> noOfTracks = Value.value();
-		private final ValueSet<Entity> genres = ValueSet.valueSet();
+		private final ValueList<Entity> genres = ValueList.valueList();
 		private final State parametersValid = State.state();
 
 		private RandomPlaylistParametersModel() {

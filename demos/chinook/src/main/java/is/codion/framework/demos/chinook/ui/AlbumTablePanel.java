@@ -38,7 +38,7 @@ import javax.swing.DefaultListModel;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 public final class AlbumTablePanel extends EntityTablePanel {
 
@@ -89,19 +89,19 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	}
 
 	private static final class TagEditComponentFactory
-					implements EntityComponentFactory<Set<String>, Attribute<Set<String>>, AlbumTagPanel> {
+					implements EntityComponentFactory<List<String>, Attribute<List<String>>, AlbumTagPanel> {
 
 		@Override
-		public ComponentValue<Set<String>, AlbumTagPanel> componentValue(Attribute<Set<String>> attribute,
+		public ComponentValue<List<String>, AlbumTagPanel> componentValue(Attribute<List<String>> attribute,
 																																		 SwingEntityEditModel editModel,
-																																		 Set<String> initialValue) {
+																																		 List<String> initialValue) {
 			return new TagComponentValue(initialValue);
 		}
 	}
 
-	private static final class TagComponentValue extends AbstractComponentValue<Set<String>, AlbumTagPanel> {
+	private static final class TagComponentValue extends AbstractComponentValue<List<String>, AlbumTagPanel> {
 
-		private TagComponentValue(Set<String> initialValue) {
+		private TagComponentValue(List<String> initialValue) {
 			super(new AlbumTagPanel(Components.list(new DefaultListModel<String>())
 							.items()
 							.initialValue(initialValue)
@@ -109,12 +109,12 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		protected Set<String> getComponentValue() {
+		protected List<String> getComponentValue() {
 			return component().tagsValue().get();
 		}
 
 		@Override
-		protected void setComponentValue(Set<String> value) {
+		protected void setComponentValue(List<String> value) {
 			component().tagsValue().set(value);
 		}
 	}
