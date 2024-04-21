@@ -62,10 +62,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		DefaultDerivedAttributeDefinitionBuilder(Attribute<T> attribute, DerivedAttribute.Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
 			super(attribute);
 			this.valueProvider = requireNonNull(valueProvider);
-			if (sourceAttributes.length == 0) {
-				throw new IllegalArgumentException("No source attributes, a derived attribute must be derived from one or more existing attributes");
-			}
-			for (Attribute<?> sourceAttribute : sourceAttributes) {
+			for (Attribute<?> sourceAttribute : requireNonNull(sourceAttributes)) {
 				if (!attribute.entityType().equals(sourceAttribute.entityType())) {
 					throw new IllegalArgumentException("Source attribute must be from same entity as the derived column");
 				}

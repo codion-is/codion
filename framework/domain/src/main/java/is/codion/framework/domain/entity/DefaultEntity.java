@@ -717,7 +717,10 @@ class DefaultEntity implements Entity, Serializable {
 
 	private DerivedAttribute.SourceValues createSourceValues(DerivedAttributeDefinition<?> derivedDefinition, boolean originalValue) {
 		List<Attribute<?>> sourceAttributes = derivedDefinition.sourceAttributes();
-		if (sourceAttributes.size() == 1) {
+		if (sourceAttributes.isEmpty()) {
+			return new DefaultSourceValues(derivedDefinition.attribute(), emptyMap());
+		}
+		else if (sourceAttributes.size() == 1) {
 			return new DefaultSourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sourceAttributes.get(0), originalValue));
 		}
 

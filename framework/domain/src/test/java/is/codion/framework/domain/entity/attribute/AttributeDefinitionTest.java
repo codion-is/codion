@@ -45,8 +45,6 @@ public final class AttributeDefinitionTest {
 	@Test
 	void derivedAttribute() {
 		Attribute<Integer> derived = ENTITY_TYPE.integerAttribute("derived");
-		assertThrows(IllegalArgumentException.class, () -> derived.define()
-						.derived(sourceValues -> null));
 		Attribute<Integer> source = ENTITY_TYPE.integerColumn("source");
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived(sourceValues -> null, source)

@@ -10,6 +10,7 @@ Codion Change Log
 - DefaultEntity refactored.
 - TypeReference now throws exception if used to specify a non-parameterized type.
 - DefaultDomain.add() now varargs based, related refactoring.
+- Derived attributes no longer require source attributes.
 ### is.codion.swing.common.ui
 - ListBuilder migrated from using ValueSet to ValueList.
 - AbstractComponentBuilder now supports multiple linked values.
