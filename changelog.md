@@ -12,6 +12,7 @@ Codion Change Log
 - DefaultDomain.add() now varargs based, related refactoring.
 ### is.codion.swing.common.ui
 - ListBuilder migrated from using ValueSet to ValueList.
+- AbstractComponentBuilder now supports multiple linked values.
 
 ## 0.17.41
 ### is.codion.common.core

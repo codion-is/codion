@@ -853,11 +853,26 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void valueLocked() {
-		assertThrows(IllegalStateException.class, () -> Components.stringField(Value.value())
-						.link(Value.value()));
-		assertThrows(IllegalStateException.class, () -> Components.stringField(Value.value())
-						.link(Value.value()));
+	void multipleLinkedValues() {
+		Value<String> firstValue = Value.value();
+		Value<String> secondValue = Value.value();
+		Value<String> thirdValue = Value.value();
+		firstValue.link(thirdValue);
+		JTextField textField = Components.stringField()
+						.link(thirdValue)
+						.link(secondValue.observer())
+						.build();
+		textField.setText("1");
+		assertEquals("1", firstValue.get());
+		assertEquals("1", thirdValue.get());
+		assertTrue(secondValue.isNull());// read only
+		firstValue.set("2");
+		assertEquals("2", textField.getText());
+		assertTrue(secondValue.isNull());
+		secondValue.set("3");
+		assertEquals("3", firstValue.get());
+		assertEquals("3", thirdValue.get());
+		assertEquals("3", textField.getText());
 	}
 
 	@Test

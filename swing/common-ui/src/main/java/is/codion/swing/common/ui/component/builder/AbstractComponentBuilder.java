@@ -65,6 +65,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 				implements ComponentBuilder<T, C, B> {
 
 	private final Event<C> buildEvent = Event.event();
+	private final List<Value<T>> linkedValues = new ArrayList<>(1);
+	private final List<ValueObserver<T>> linkedValueObservers = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 	private final Map<Object, Object> clientProperties = new HashMap<>();
 	private final List<FocusListener> focusListeners = new ArrayList<>();
@@ -100,17 +102,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private StateObserver enabledObserver;
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
-	private Value<T> linkedValue;
-	private ValueObserver<T> linkedValueObserver;
 	private T initialValue;
 	private Consumer<C> onSetVisible;
 	private TransferHandler transferHandler;
 	private boolean focusCycleRoot = false;
-
-	/**
-	 * When a linked value is set via the constructor, it is locked and cannot be changed.
-	 */
-	private final boolean linkedValueLocked;
 
 	protected AbstractComponentBuilder() {
 		this(null);
@@ -125,7 +120,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (linkedValue != null) {
 			link(linkedValue);
 		}
-		this.linkedValueLocked = linkedValue != null;
 	}
 
 	@Override
@@ -372,13 +366,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (requireNonNull(linkedValue).isNullable() && !supportsNull()) {
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
-		if (linkedValueLocked) {
-			throw new IllegalStateException("The value for this component builder has already been set");
-		}
-		if (linkedValueObserver != null) {
-			throw new IllegalStateException("linkeValueObserver has already been set");
-		}
-		this.linkedValue = linkedValue;
+		this.linkedValues.add(linkedValue);
 		return (B) this;
 	}
 
@@ -387,13 +375,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (requireNonNull(linkedValueObserver).isNullable() && !supportsNull()) {
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
-		if (linkedValueLocked) {
-			throw new IllegalStateException("The value for this component builder has already been set");
-		}
-		if (linkedValue != null) {
-			throw new IllegalStateException("linkedValue has already been set");
-		}
-		this.linkedValueObserver = linkedValueObserver;
+		this.linkedValueObservers.add(linkedValueObserver);
 		return (B) this;
 	}
 
@@ -475,12 +457,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (initialValue != null) {
 			setInitialValue(component, initialValue);
 		}
-		if (linkedValue != null) {
-			componentValue(component).link(linkedValue);
-		}
-		if (linkedValueObserver != null) {
-			componentValue(component).link(linkedValueObserver);
-		}
+		linkedValues.forEach(linkedValue -> componentValue(component).link(linkedValue));
+		linkedValueObservers.forEach(linkedValueObserver -> componentValue(component).link(linkedValueObserver));
 		if (label != null) {
 			label.setLabelFor(component);
 		}
