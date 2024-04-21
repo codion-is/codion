@@ -30,7 +30,7 @@ final class DefaultState implements State {
 
 	private DefaultStateObserver observer;
 
-	private DefaultState(Value.Builder<Boolean> valueBuilder) {
+	private DefaultState(Value.Builder<Boolean, ?> valueBuilder) {
 		this.value = valueBuilder.consumer(new Notifier()).build();
 	}
 
@@ -201,7 +201,7 @@ final class DefaultState implements State {
 
 	static final class DefaultBuilder implements Builder {
 
-		private final Value.Builder<Boolean> valueBuilder = Value.nonNull(false);
+		private final Value.Builder<Boolean, ?> valueBuilder = Value.nonNull(false);
 
 		DefaultBuilder(boolean initialValue) {
 			valueBuilder.initialValue(initialValue);

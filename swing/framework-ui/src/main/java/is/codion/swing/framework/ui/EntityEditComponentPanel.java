@@ -182,7 +182,7 @@ public class EntityEditComponentPanel extends JPanel {
 			throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() +
 							", entityComponents: " + entityComponents.entityDefinition().entityType());
 		}
-		selectableComponents = ValueSet.builder(new HashSet<>(editModel.entityDefinition().attributes().get()))
+		selectableComponents = ValueSet.builder(editModel.entityDefinition().attributes().get())
 						.validator(new SelectableComponentValidator(editModel.entityDefinition()))
 						.build();
 	}

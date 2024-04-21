@@ -18,55 +18,12 @@
  */
 package is.codion.common.value;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
-final class DefaultValueSetObserver<T> extends DefaultValueObserver<Set<T>> implements ValueSetObserver<T> {
+final class DefaultValueSetObserver<T> extends DefaultValuesObserver<T, Set<T>>
+				implements ValueSetObserver<T> {
 
 	DefaultValueSetObserver(ValueSet<T> valueSet) {
 		super(valueSet);
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		ValueSet<T> valueSet = value();
-
-		return valueSet.iterator();
-	}
-
-	@Override
-	public boolean contains(T value) {
-		ValueSet<T> valueSet = value();
-
-		return valueSet.contains(value);
-	}
-
-	@Override
-	public boolean containsAll(Collection<T> values) {
-		ValueSet<T> valueSet = value();
-
-		return valueSet.containsAll(values);
-	}
-
-	@Override
-	public boolean empty() {
-		ValueSet<T> valueSet = value();
-
-		return valueSet.empty();
-	}
-
-	@Override
-	public boolean notEmpty() {
-		ValueSet<T> valueSet = value();
-
-		return valueSet.notEmpty();
-	}
-
-	@Override
-	public int size() {
-		ValueSet<T> valueSet = value();
-
-		return valueSet.size();
 	}
 }

@@ -782,7 +782,7 @@ public final class ComponentsTest {
 		listModel.addElement("two");
 		listModel.addElement("three");
 
-		ValueSet<String> textValue = ValueSet.valueSet(new HashSet<>(singletonList("two")));
+		ValueSet<String> textValue = ValueSet.valueSet(singletonList("two"));
 		ListBuilder.SelectedItems<String> listBuilder = Components.list(listModel)
 						.selectedItems()
 						.visibleRowCount(4)
@@ -833,7 +833,7 @@ public final class ComponentsTest {
 
 	@Test
 	void listItems() {
-		ValueSet<String> textValue = ValueSet.valueSet(new HashSet<>(asList("one", "two", "three")));
+		ValueSet<String> textValue = ValueSet.valueSet(asList("one", "two", "three"));
 		ListBuilder.Items<String> listBuilder = Components.list(new DefaultListModel<String>())
 						.items()
 						.visibleRowCount(4)

@@ -24,13 +24,15 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultValue<T> extends AbstractValue<T> {
+class DefaultValue<T> extends AbstractValue<T> {
+
+	protected final Object lock = new Object();
 
 	private T value;
 
-	private DefaultValue(DefaultBuilder<T> builder) {
+	protected DefaultValue(DefaultBuilder<T, ?> builder) {
 		super(builder.nullValue, builder.notify);
-		set(builder.initialValue);
+		value = builder.initialValue == null ? builder.nullValue : builder.initialValue;
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservers.forEach(this::link);
@@ -46,11 +48,11 @@ final class DefaultValue<T> extends AbstractValue<T> {
 	}
 
 	@Override
-	protected void setValue(T value) {
+	protected final void setValue(T value) {
 		this.value = value;
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	static class DefaultBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
 
 		private final T nullValue;
 		private final List<Validator<T>> validators = new ArrayList<>();
@@ -74,57 +76,57 @@ final class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public Builder<T> initialValue(T initialValue) {
-			this.initialValue = initialValue == null ? nullValue : initialValue;
-			return this;
+		public B initialValue(T initialValue) {
+			this.initialValue = initialValue;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> notify(Notify notify) {
+		public final B notify(Notify notify) {
 			this.notify = requireNonNull(notify);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> validator(Validator<T> validator) {
+		public final B validator(Validator<T> validator) {
 			this.validators.add(requireNonNull(validator));
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> link(Value<T> originalValue) {
+		public final B link(Value<T> originalValue) {
 			this.linkedValues.add(requireNonNull(originalValue));
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> link(ValueObserver<T> originalValue) {
+		public final B link(ValueObserver<T> originalValue) {
 			this.linkedObservers.add(requireNonNull(originalValue));
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> listener(Runnable listener) {
+		public final B listener(Runnable listener) {
 			this.listeners.add(requireNonNull(listener));
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> consumer(Consumer<T> consumer) {
+		public final B consumer(Consumer<T> consumer) {
 			this.consumers.add(requireNonNull(consumer));
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> weakListener(Runnable weakListener) {
+		public final B weakListener(Runnable weakListener) {
 			this.weakListeners.add(requireNonNull(weakListener));
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T> weakConsumer(Consumer<T> weakConsumer) {
+		public final B weakConsumer(Consumer<T> weakConsumer) {
 			this.weakConsumers.add(requireNonNull(weakConsumer));
-			return this;
+			return (B) this;
 		}
 
 		@Override

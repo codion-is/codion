@@ -37,6 +37,7 @@ public class ValueSetTest {
 		ValueSetObserver<Integer> observer = valueSet.observer();
 		assertTrue(observer.empty());
 		assertFalse(observer.notEmpty());
+		assertUnmodifiable(observer);
 
 		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
@@ -56,6 +57,7 @@ public class ValueSetTest {
 		assertFalse(observer.empty());
 		assertTrue(observer.notEmpty());
 		assertEquals(initialValues, observer.get());
+		assertUnmodifiable(observer);
 		assertTrue(observer.isEqualTo(initialValues));
 
 		assertFalse(valueSet.add(1));
@@ -81,6 +83,7 @@ public class ValueSetTest {
 
 		valueSet.clear();
 		valueSet.addAll(1, 2);
+		assertUnmodifiable(observer);
 
 		valueSet.clear();
 		assertTrue(valueSet.add(1));
@@ -110,6 +113,7 @@ public class ValueSetTest {
 		assertTrue(valueSet.removeAll(1, 2));
 		assertFalse(valueSet.removeAll(1, 2));
 		assertTrue(valueSet.removeAll(2, 3));
+		assertUnmodifiable(observer);
 	}
 
 	@Test
@@ -139,5 +143,9 @@ public class ValueSetTest {
 
 		assertEquals(3, valueEventCounter.get());
 		assertEquals(3, valueSetEventCounter.get());
+	}
+
+	private static void assertUnmodifiable(ValuesObserver<Integer, Set<Integer>> observer) {
+		assertThrows(UnsupportedOperationException.class, () -> observer.get().remove(1));
 	}
 }

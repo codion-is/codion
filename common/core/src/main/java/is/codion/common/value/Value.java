@@ -192,7 +192,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return a builder for a non-null Value
 	 * @param <T> the value type
 	 */
-	static <T> Builder<T> nonNull(T nullValue) {
+	static <T> Builder<T, ?> nonNull(T nullValue) {
 		return new DefaultValue.DefaultBuilder<>(nullValue);
 	}
 
@@ -200,7 +200,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return a builder for a nullable Value
 	 * @param <T> the value type
 	 */
-	static <T> Builder<T> nullable() {
+	static <T> Builder<T, ?> nullable() {
 		return Value.<T>nullable(null);
 	}
 
@@ -209,35 +209,36 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 	 * @return a builder for a nullable Value
 	 * @param <T> the value type
 	 */
-	static <T> Builder<T> nullable(T initialValue) {
-		return (Builder<T>) new DefaultValue.DefaultBuilder<>()
+	static <T> Builder<T, ?> nullable(T initialValue) {
+		return (Builder<T, ?>) new DefaultValue.DefaultBuilder<>()
 						.initialValue(initialValue);
 	}
 
 	/**
 	 * Builds a {@link Value} instance.
 	 * @param <T> the value type
+	 * @param <B> the builder type
 	 */
-	interface Builder<T> {
+	interface Builder<T, B extends Builder<T, B>> {
 
 		/**
 		 * @param initialValue the initial value
 		 * @return this builder instance
 		 */
-		Builder<T> initialValue(T initialValue);
+		B initialValue(T initialValue);
 
 		/**
 		 * @param notify the notify policy for this value, default {@link Notify#WHEN_CHANGED}
 		 * @return this builder instance
 		 */
-		Builder<T> notify(Notify notify);
+		B notify(Notify notify);
 
 		/**
 		 * Adds a validator to the resulting value
 		 * @param validator the validator to add
 		 * @return this builder instance
 		 */
-		Builder<T> validator(Validator<T> validator);
+		B validator(Validator<T> validator);
 
 		/**
 		 * Links the given value to the resulting value
@@ -245,7 +246,7 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @return this builder instance
 		 * @see Value#link(Value)
 		 */
-		Builder<T> link(Value<T> originalValue);
+		B link(Value<T> originalValue);
 
 		/**
 		 * Links the given value observer to the resulting value
@@ -253,31 +254,31 @@ public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 		 * @return this builder instance
 		 * @see Value#link(ValueObserver)
 		 */
-		Builder<T> link(ValueObserver<T> originalValue);
+		B link(ValueObserver<T> originalValue);
 
 		/**
 		 * @param listener a listener to add
 		 * @return this builder instance
 		 */
-		Builder<T> listener(Runnable listener);
+		B listener(Runnable listener);
 
 		/**
 		 * @param consumer a consumer to add
 		 * @return this builder instance
 		 */
-		Builder<T> consumer(Consumer<T> consumer);
+		B consumer(Consumer<T> consumer);
 
 		/**
 		 * @param weakListener a weak listener to add
 		 * @return this builder instance
 		 */
-		Builder<T> weakListener(Runnable weakListener);
+		B weakListener(Runnable weakListener);
 
 		/**
 		 * @param weakConsumer a weak consumer to add
 		 * @return this builder instance
 		 */
-		Builder<T> weakConsumer(Consumer<T> weakConsumer);
+		B weakConsumer(Consumer<T> weakConsumer);
 
 		/**
 		 * @return a new {@link Value} instance based on this builder

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.42
+### is.codion.common.core
+- Values added, extended by ValueSet, related refactoring.
 ### is.codion.framework.domain
 - DefaultEntity refactored.
 - TypeReference now throws exception if used to specify a non-parameterized type.

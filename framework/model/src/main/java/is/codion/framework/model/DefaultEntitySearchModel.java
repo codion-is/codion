@@ -35,7 +35,6 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +60,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private final EntityType entityType;
 	private final Collection<Column<String>> columns;
-	private final ValueSet<Entity> entities = ValueSet.builder(Collections.<Entity>emptySet())
+	private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
 					.notify(Notify.WHEN_SET)
 					.validator(new EntityValidator())
 					.listener(this::reset)
