@@ -32,7 +32,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 	protected DefaultValue(DefaultBuilder<T, ?> builder) {
 		super(builder.nullValue, builder.notify);
-		value = builder.initialValue == null ? builder.nullValue : builder.initialValue;
+		value = builder.prepareInitialValue();
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservers.forEach(this::link);
@@ -76,7 +76,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public B initialValue(T initialValue) {
+		public final B initialValue(T initialValue) {
 			this.initialValue = initialValue;
 			return (B) this;
 		}
@@ -132,6 +132,13 @@ class DefaultValue<T> extends AbstractValue<T> {
 		@Override
 		public Value<T> build() {
 			return new DefaultValue<>(this);
+		}
+
+		/**
+		 * @return the initial value
+		 */
+		protected T prepareInitialValue() {
+			return initialValue == null ? nullValue : initialValue;
 		}
 	}
 }

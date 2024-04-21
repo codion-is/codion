@@ -38,44 +38,50 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	void set(Collection<T> values);
 
 	/**
-	 * Adds a value to this Values instance, returns true if this instance did not contain the value before adding.
+	 * Adds a value to this Values instance.
 	 * @param value the value to add
 	 * @return true if the value was added
+	 * @see Collection#add(Object)
 	 */
 	boolean add(T value);
 
 	/**
-	 * Adds the given values to this Values instance, returns true unless this instance already contained all the values.
+	 * Adds the given values to this Values instance.
 	 * @param values the values to add
 	 * @return true if a value was added
+	 * @see Collection#addAll(Collection)
 	 */
 	boolean addAll(T... values);
 
 	/**
-	 * Adds the given values to this Values instance, returns true unless this instance already contained all the values.
+	 * Adds the given values to this Values instance.
 	 * @param values the values to add
 	 * @return true if a value was added
+	 * @see Collection#addAll(Collection)
 	 */
 	boolean addAll(Collection<T> values);
 
 	/**
-	 * Removes a value from this Values instance, returns true if this instance contained the value before removing.
+	 * Removes a single instance of the given value from this Values instance.
 	 * @param value the value to remove
 	 * @return true if the value was removed
+	 * @see Collection#remove(Object)
 	 */
 	boolean remove(T value);
 
 	/**
-	 * Removes the given values from this Values instance, returns true if this instance contained one or more of the values.
+	 * Removes the given values from this Values instance.
 	 * @param values the values to remove
 	 * @return true if a value was removed
+	 * @see Collection#removeAll(Collection)
 	 */
 	boolean removeAll(T... values);
 
 	/**
-	 * Removes the given values from this Values instance, returns true if this instance contained one or more of the values.
+	 * Removes the given values from this Values instance.
 	 * @param values the values to remove
 	 * @return true if a value was removed
+	 * @see Collection#removeAll(Collection)
 	 */
 	boolean removeAll(Collection<T> values);
 
@@ -96,14 +102,14 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	ValuesObserver<T, C> observer();
 
 	/**
-	 * @param empty creates an empty instance of the required collection type
+	 * @param create creates an empty instance of the required collection type
 	 * @param unmodifiable returns an unmodifiable view of the given collection
 	 * @param <T> the value type
 	 * @param <C> the collection type
 	 * @return a {@link Values.Builder} instance
 	 */
-	static <T, C extends Collection<T>> Builder<T, C, ?> builder(Supplier<C> empty, Function<C, C> unmodifiable) {
-		return new DefaultValues.DefaultBuilder<>(empty, unmodifiable);
+	static <T, C extends Collection<T>> Builder<T, C, ?> builder(Supplier<C> create, Function<C, C> unmodifiable) {
+		return new DefaultValues.DefaultBuilder<>(create, unmodifiable);
 	}
 
 	/**

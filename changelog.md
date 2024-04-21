@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - Values added, extended by ValueSet, related refactoring.
 - ValueList added.
+- Values now behaves like Collection in regards to remove() and removeAll(), related refactoring and javadoc fixes.
 ### is.codion.framework.domain
 - DefaultEntity refactored.
 - TypeReference now throws exception if used to specify a non-parameterized type.

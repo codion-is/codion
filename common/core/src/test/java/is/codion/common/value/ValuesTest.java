@@ -241,7 +241,7 @@ public class ValuesTest {
 		assertTrue(observer.containsAll(asList(1, 2, 3)));
 		assertTrue(values.addAll(1, 2, 3));
 		assertTrue(values.removeAll(1, 2));
-		assertTrue(values.removeAll(1, 2));
+		assertFalse(values.removeAll(1, 2));
 		assertTrue(values.removeAll(2, 3));
 		assertUnmodifiable(observer);
 	}

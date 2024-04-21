@@ -24,21 +24,21 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
 class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 				implements Values<T, C> {
 
-	private final Supplier<? extends C> empty;
+	private final Supplier<? extends C> create;
 	private final Function<C, C> unmodifiable;
 
 	private Value<T> singleValue;
 
 	DefaultValues(DefaultBuilder<C, T, ?> builder) {
 		super(builder);
-		this.empty = builder.empty;
+		this.create = builder.create;
 		this.unmodifiable = builder.unmodifiable;
 	}
 
@@ -50,7 +50,7 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	@Override
 	public final void set(Collection<T> values) {
 		synchronized (lock) {
-			C newValues = empty.get();
+			C newValues = create.get();
 			if (values != null) {
 				newValues.addAll(values);
 			}
@@ -68,7 +68,7 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	@Override
 	public final boolean add(T value) {
 		synchronized (lock) {
-			C newValues = empty.get();
+			C newValues = create.get();
 			newValues.addAll(get());
 			boolean added = newValues.add(value);
 			set(unmodifiable.apply(newValues));
@@ -86,12 +86,9 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	public final boolean addAll(Collection<T> values) {
 		requireNonNull(values);
 		synchronized (lock) {
-			C newValues = empty.get();
+			C newValues = create.get();
 			newValues.addAll(get());
-			boolean added = false;
-			for (T val : values) {
-				added = newValues.add(val) || added;
-			}
+			boolean added = newValues.addAll(values);
 			set(unmodifiable.apply(newValues));
 
 			return added;
@@ -101,7 +98,7 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	@Override
 	public final boolean remove(T value) {
 		synchronized (lock) {
-			C newValues = empty.get();
+			C newValues = create.get();
 			newValues.addAll(get());
 			boolean removed = newValues.remove(value);
 			set(unmodifiable.apply(newValues));
@@ -119,12 +116,9 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	public final boolean removeAll(Collection<T> values) {
 		requireNonNull(values);
 		synchronized (lock) {
-			C newValues = empty.get();
+			C newValues = create.get();
 			newValues.addAll(get());
-			boolean removed = false;
-			for (T val : values) {
-				removed = newValues.remove(val) || removed;
-			}
+			boolean removed = newValues.removeAll(values);
 			set(unmodifiable.apply(newValues));
 
 			return removed;
@@ -208,7 +202,7 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 		@Override
 		protected void setValue(T value) {
 			synchronized (DefaultValues.this) {
-				DefaultValues.this.set(value == null ? emptySet() : singleton(value));
+				DefaultValues.this.set(value == null ? emptyList() : singleton(value));
 			}
 		}
 	}
@@ -216,23 +210,23 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	static class DefaultBuilder<C extends Collection<T>, T, B extends Values.Builder<T, C, B>>
 					extends DefaultValue.DefaultBuilder<C, B> implements Values.Builder<T, C, B> {
 
-		private final Supplier<? extends C> empty;
+		private final Supplier<C> create;
 		private final Function<C, C> unmodifiable;
 
-		DefaultBuilder(Supplier<C> empty, Function<C, C> unmodifiable) {
-			super(requireNonNull(unmodifiable).apply(requireNonNull(empty).get()));
-			this.empty = empty;
+		DefaultBuilder(Supplier<C> create, Function<C, C> unmodifiable) {
+			super(requireNonNull(unmodifiable).apply(requireNonNull(create).get()));
+			this.create = create;
 			this.unmodifiable = unmodifiable;
-		}
-
-		@Override
-		public B initialValue(C initialValue) {
-			return super.initialValue(initialValue == null ? null : unmodifiable.apply(initialValue));
 		}
 
 		@Override
 		public Values<T, C> build() {
 			return new DefaultValues<>(this);
+		}
+
+		@Override
+		protected C prepareInitialValue() {
+			return unmodifiable.apply(super.prepareInitialValue());
 		}
 	}
 }

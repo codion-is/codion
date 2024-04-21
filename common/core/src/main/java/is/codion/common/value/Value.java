@@ -29,6 +29,9 @@ import static java.util.Objects.requireNonNull;
  * A factory for {@link Value} instances.
  * @param <T> the type of the wrapped value
  * @see #value()
+ * @see #nullable()
+ * @see #nullable(Object)
+ * @see #nonNull(Object)
  */
 public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
