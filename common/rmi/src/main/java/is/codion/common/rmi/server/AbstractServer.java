@@ -196,7 +196,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			}
 
 			if (maximumNumberOfConnectionsReached()) {
-				LOG.debug("Maximum number of connections reached {}", connectionLimit);
+				LOG.warn("Maximum number of connections reached {}", connectionLimit);
 				throw new ConnectionNotAvailableException();
 			}
 			LOG.trace("No active connection found for client {}, establishing a new connection", connectionRequest);
@@ -206,10 +206,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	@Override
-	public final void disconnect(UUID clientId) throws RemoteException {
+	public final void disconnect(UUID clientId) {
 		ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, CLIENT_ID));
 		if (clientConnection != null) {
-			disconnect(clientConnection.connection());
+			try {
+				disconnect(clientConnection.connection());
+			}
+			catch (Exception e) {
+				LOG.debug("Error while disconnecting a client: {}", clientId, e);
+			}
 			RemoteClient remoteClient = clientConnection.remoteClient();
 			for (Authenticator authenticator : sharedAuthenticators) {
 				authenticator.logout(remoteClient);
@@ -232,21 +237,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		shuttingDown = true;
 		connectionMaintenanceScheduler.stop();
 		unexportSilently(registry, this, admin);
-		for (UUID clientId : new ArrayList<>(connections.keySet())) {
-			try {
-				disconnect(clientId);
-			}
-			catch (RemoteException e) {
-				LOG.debug("Error while disconnecting a client on shutdown: {}", clientId, e);
-			}
-		}
+		new ArrayList<>(connections.keySet()).forEach(this::disconnect);
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-		ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
-		if (serialFilter instanceof SerializationWhitelist.DryRun) {
-			((SerializationWhitelist.DryRun) serialFilter).writeToFile();
-		}
+		SerializationWhitelist.handleDryRun();
 		shutdownEvent.run();
 	}
 
@@ -465,7 +460,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
 		String objectInputFilterFactoryClassName = configuration.objectInputFilterFactoryClassName();
 		if (objectInputFilterFactoryClassName == null) {
-			LOG.info("No ObjectInputFilterFactoryClassName specified");
+			LOG.warn("No ObjectInputFilterFactoryClassName specified");
 		}
 		else {
 			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactoryClassName);
@@ -575,7 +570,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		public void run() {
 			try {
 				if (connectionCount() > 0) {
-					maintainConnections(unmodifiableCollection(connections.values()));
+					maintainConnections(new ArrayList<>(connections.values()));
 				}
 			}
 			catch (Exception e) {

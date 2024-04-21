@@ -77,6 +77,13 @@ final class SerializationWhitelist {
 		return new DryRun(whitelistFile);
 	}
 
+	static void handleDryRun() {
+		ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
+		if (serialFilter instanceof DryRun) {
+			((DryRun) serialFilter).writeToFile();
+		}
+	}
+
 	static final class DryRun implements ObjectInputFilter {
 
 		private final String whitelistFile;

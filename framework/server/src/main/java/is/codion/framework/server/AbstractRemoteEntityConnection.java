@@ -21,6 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.user.User;
@@ -37,7 +38,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.function.Consumer;
 
 /**
  * A base class for remote connections served by a {@link EntityServer}.
@@ -61,9 +61,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	private final transient LocalConnectionHandler connectionHandler;
 
 	/**
-	 * An event triggered when this connection is disconnected
+	 * An event triggered when this connection is closed
 	 */
-	private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Event.event();
+	private final transient Event<AbstractRemoteEntityConnection> closedEvent = Event.event();
 
 	/**
 	 * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
@@ -120,7 +120,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 			}
 			connectionHandler.close();
 		}
-		disconnectedEvent.accept(this);
+		closedEvent.accept(this);
 	}
 
 	/**
@@ -160,8 +160,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 		return connectionHandler.active();
 	}
 
-	final void addDisconnectConsumer(Consumer<AbstractRemoteEntityConnection> consumer) {
-		disconnectedEvent.addConsumer(consumer);
+	final EventObserver<AbstractRemoteEntityConnection> closedEvent() {
+		return closedEvent.observer();
 	}
 
 	static int requestsPerSecond() {

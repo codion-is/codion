@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -140,7 +139,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 							configuration.port(), configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
 			connection.setLoggingEnabled(clientLogging);
 
-			connection.addDisconnectConsumer(this::disconnectQuietly);
+			connection.closedEvent().addConsumer(this::removeConnection);
 			LOG.debug("{} connected", remoteClient);
 
 			return connection;
@@ -336,13 +335,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		}
 	}
 
-	private void disconnectQuietly(AbstractRemoteEntityConnection connection) {
-		try {
-			disconnect(connection.remoteClient().clientId());
-		}
-		catch (RemoteException ex) {
-			LOG.error(ex.getMessage(), ex);
-		}
+	private void removeConnection(AbstractRemoteEntityConnection connection) {
+		disconnect(connection.remoteClient().clientId());
 	}
 
 	/**
@@ -385,12 +379,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClassNames) throws Throwable {
 		Map<DomainType, Domain> domains = new HashMap<>();
-		List<Domain> serviceDomains = Domain.domains();
 		try {
-			serviceDomains.forEach(domain -> {
+			for (Domain domain : Domain.domains()) {
 				LOG.info("Server loading domain model '{}' as a service", domain.type());
 				domains.put(domain.type(), domain);
-			});
+			}
 			for (String className : domainModelClassNames) {
 				LOG.info("Server loading domain model '{}' from classpath", className);
 				Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
@@ -398,10 +391,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			}
 
 			return unmodifiableMap(domains);
-		}
-		catch (InvocationTargetException ite) {
-			LOG.error("Exception while loading and registering domain model", ite);
-			throw ite.getCause();
 		}
 		catch (Exception e) {
 			LOG.error("Exception while loading and registering domain model", e);
