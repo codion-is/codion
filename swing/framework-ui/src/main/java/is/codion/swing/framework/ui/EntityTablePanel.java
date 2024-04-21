@@ -704,9 +704,19 @@ public class EntityTablePanel extends JPanel {
 			}
 			toolbarControls.addSeparator();
 		}
-		control(TableControl.ADD).optional().ifPresent(toolbarControls::add);
-		control(TableControl.EDIT).optional().ifPresent(toolbarControls::add);
-		control(TableControl.DELETE_SELECTED).optional().ifPresent(toolbarControls::add);
+		Controls editControls = Controls.controls();
+		if (editPanel != null) {
+			control(TableControl.ADD).optional().ifPresent(editControls::add);
+			control(TableControl.EDIT).optional().ifPresent(editControls::add);
+		}
+		else {
+			control(TableControl.EDIT_VALUE).optional().ifPresent(editControls::add);
+		}
+		control(TableControl.DELETE).optional().ifPresent(editControls::add);
+		if (editControls.notEmpty()) {
+			toolbarControls.addAll(editControls);
+			toolbarControls.addSeparator();
+		}
 		control(TableControl.PRINT).optional().ifPresent(toolbarControls::add);
 		control(TableControl.CLEAR_SELECTION).optional().ifPresent(control -> {
 			toolbarControls.add(control);
