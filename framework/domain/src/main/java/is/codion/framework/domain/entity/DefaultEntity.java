@@ -448,8 +448,8 @@ class DefaultEntity implements Entity, Serializable {
 
 	private Map<Attribute<?>, Object> currentValues() {
 		return definition.attributes().definitions().stream()
-						.collect(HashMap::new, (map, definition) ->
-										map.put(definition.attribute(), get(definition)), HashMap::putAll);
+						.collect(HashMap::new, (map, attributeDefinition) ->
+										map.put(attributeDefinition.attribute(), get(attributeDefinition)), HashMap::putAll);
 	}
 
 	private <T> T get(AttributeDefinition<T> attributeDefinition) {
