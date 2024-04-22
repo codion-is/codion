@@ -1411,7 +1411,7 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
+		 * @param shortcuts provides this panels {@link KeyboardShortcuts} instance.
 		 * @return this Config instance
 		 */
 		public Config keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {

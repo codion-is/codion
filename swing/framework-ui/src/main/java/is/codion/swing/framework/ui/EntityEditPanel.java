@@ -736,6 +736,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
+		 * @param shortcuts provides this panels {@link KeyboardShortcuts} instance.
+		 * @return this Config instance
+		 */
+		public Config keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
+			requireNonNull(shortcuts).accept(this.shortcuts);
+			return this;
+		}
+
+		/**
 		 * @param clearAfterInsert controls whether the UI should be cleared after insert has been performed
 		 * @return this Config instance
 		 */

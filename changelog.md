@@ -28,6 +28,7 @@ Codion Change Log
 - EntityTablePanel.TableControl.DELETE_SELECTED renamed DELETE, related renaming.
 - EntityTablePanel, edit value control added to toolbar.
 - EntityTablePanel, TableControl.EDIT_VALUE renamed EDIT_ATTRIBUTE, EDIT_SELECTED_ATTRIBUTE added, related renaming.
+- EntityEditPanel.Config.keyStrokes() added.
 
 ## 0.17.41
 ### is.codion.common.core
