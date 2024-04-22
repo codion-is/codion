@@ -13,6 +13,8 @@ Codion Change Log
 - Derived attributes no longer require source attributes.
 ### is.codion.framework.db.core
 - EntityConnection.Insert renamed BatchInsert, Copy.Builder.conditions() added.
+- EntityConnection.insertEntities() and copyEntities() renamed batchInsert() and batchCopy() respectively.
+- EntityConnection.Copy renamed BatchCopy.
 ### is.codion.swing.common.ui
 - ListBuilder migrated from using ValueSet to ValueList.
 - AbstractComponentBuilder now supports multiple linked values.

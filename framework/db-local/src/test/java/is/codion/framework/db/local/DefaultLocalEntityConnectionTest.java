@@ -109,10 +109,10 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void copy() throws DatabaseException {
+	void batchCopy() throws DatabaseException {
 		try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
 				 EntityConnection destinationConnection = createDestinationConnection()) {
-			EntityConnection.copyEntities(sourceConnection, destinationConnection)
+			EntityConnection.batchCopy(sourceConnection, destinationConnection)
 							.entityTypes(Department.TYPE)
 							.batchSize(2)
 							.execute();
@@ -120,11 +120,11 @@ public class DefaultLocalEntityConnectionTest {
 			assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
 							destinationConnection.count(Count.all(Department.TYPE)));
 
-			assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, destinationConnection)
+			assertThrows(IllegalArgumentException.class, () -> EntityConnection.batchCopy(sourceConnection, destinationConnection)
 							.entityTypes(Employee.TYPE)
 							.batchSize(-10));
 
-			EntityConnection.copyEntities(sourceConnection, destinationConnection)
+			EntityConnection.batchCopy(sourceConnection, destinationConnection)
 							.conditions(Employee.SALARY.greaterThan(1000d))
 							.batchSize(2)
 							.includePrimaryKeys(false)
@@ -137,15 +137,15 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void insert() throws DatabaseException {
+	void batchInsert() throws DatabaseException {
 		try (EntityConnection sourceConnection = new DefaultLocalEntityConnection(Database.instance(), DOMAIN, UNIT_TEST_USER);
 				 EntityConnection destinationConnection = createDestinationConnection()) {
 			List<Entity> departments = sourceConnection.select(all(Department.TYPE));
-			assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(destinationConnection, departments.iterator())
+			assertThrows(IllegalArgumentException.class, () -> EntityConnection.batchInsert(destinationConnection, departments.iterator())
 							.batchSize(-10));
 
 			Consumer<Integer> progressReporter = currentProgress -> {};
-			EntityConnection.insertEntities(destinationConnection, departments.iterator())
+			EntityConnection.batchInsert(destinationConnection, departments.iterator())
 							.batchSize(2)
 							.progressReporter(progressReporter)
 							.onInsert(keys -> {})
@@ -153,7 +153,7 @@ public class DefaultLocalEntityConnectionTest {
 			assertEquals(sourceConnection.count(Count.all(Department.TYPE)),
 							destinationConnection.count(Count.all(Department.TYPE)));
 
-			EntityConnection.insertEntities(destinationConnection, Collections.emptyIterator())
+			EntityConnection.batchInsert(destinationConnection, Collections.emptyIterator())
 							.batchSize(10)
 							.execute();
 			destinationConnection.delete(all(Department.TYPE));

@@ -19,7 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.framework.db.EntityConnection.Copy;
+import is.codion.framework.db.EntityConnection.BatchCopy;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultCopy implements Copy {
+final class DefaultBatchCopy implements BatchCopy {
 
 	private final EntityConnection source;
 	private final EntityConnection destination;
@@ -40,7 +40,7 @@ final class DefaultCopy implements Copy {
 	private final int batchSize;
 	private final boolean includePrimaryKeys;
 
-	DefaultCopy(DefaultBuilder builder) {
+	DefaultBatchCopy(DefaultBuilder builder) {
 		this.source = builder.source;
 		this.destination = builder.destination;
 		this.entityTypeCondition.putAll(builder.entityTypeCondition);
@@ -118,8 +118,8 @@ final class DefaultCopy implements Copy {
 		}
 
 		@Override
-		public Copy build() {
-			return new DefaultCopy(this);
+		public BatchCopy build() {
+			return new DefaultBatchCopy(this);
 		}
 	}
 }

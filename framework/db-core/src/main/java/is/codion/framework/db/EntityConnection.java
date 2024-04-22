@@ -428,15 +428,15 @@ public interface EntityConnection extends AutoCloseable {
 	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
 	/**
-	 * Creates a new {@link Copy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
+	 * Creates a new {@link BatchCopy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
 	 * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
-	 * Call {@link Copy.Builder#execute()} to perform the copy operation.
+	 * Call {@link BatchCopy.Builder#execute()} to perform the copy operation.
 	 * @param source the source connection
 	 * @param destination the destination connection
-	 * @return a new {@link Copy.Builder} instance
+	 * @return a new {@link BatchCopy.Builder} instance
 	 */
-	static Copy.Builder copyEntities(EntityConnection source, EntityConnection destination) {
-		return new DefaultCopy.DefaultBuilder(source, destination);
+	static BatchCopy.Builder batchCopy(EntityConnection source, EntityConnection destination) {
+		return new DefaultBatchCopy.DefaultBuilder(source, destination);
 	}
 
 	/**
@@ -447,7 +447,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param entities the entities to insert
 	 * @return a new {@link BatchInsert.Builder} instance
 	 */
-	static BatchInsert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
+	static BatchInsert.Builder batchInsert(EntityConnection connection, Iterator<Entity> entities) {
 		return new DefaultBatchInsert.DefaultBuilder(connection, entities);
 	}
 
@@ -456,7 +456,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * unless the destination connection has an open transaction.
 	 * @see #execute()
 	 */
-	interface Copy {
+	interface BatchCopy {
 
 		/**
 		 * Executes this copy operation
@@ -465,7 +465,7 @@ public interface EntityConnection extends AutoCloseable {
 		void execute() throws DatabaseException;
 
 		/**
-		 * A builder for a {@link Copy} operation.
+		 * A builder for a {@link BatchCopy} operation.
 		 */
 		interface Builder {
 
@@ -501,9 +501,9 @@ public interface EntityConnection extends AutoCloseable {
 			void execute() throws DatabaseException;
 
 			/**
-			 * @return a new {@link Copy} instance
+			 * @return a new {@link BatchCopy} instance
 			 */
-			Copy build();
+			BatchCopy build();
 		}
 	}
 
@@ -803,7 +803,7 @@ public interface EntityConnection extends AutoCloseable {
 		Condition having();
 
 		/**
-		 * Builds a {@link Copy} instance.
+		 * Builds a {@link Count} instance.
 		 */
 		interface Builder {
 
@@ -814,7 +814,7 @@ public interface EntityConnection extends AutoCloseable {
 			Builder having(Condition having);
 
 			/**
-			 * @return a new {@link Copy} instance based on this builder
+			 * @return a new {@link Count} instance based on this builder
 			 */
 			Count build();
 		}
