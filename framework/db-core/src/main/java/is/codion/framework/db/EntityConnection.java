@@ -440,15 +440,15 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * Creates a new {@link Insert} instance based on the given iterator, with a default batch size of 100.
+	 * Creates a new {@link BatchInsert} instance based on the given iterator, with a default batch size of 100.
 	 * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
-	 * Call {@link Insert#execute()} to perform the insert operation.
+	 * Call {@link BatchInsert#execute()} to perform the insert operation.
 	 * @param connection the entity connection to use when inserting
 	 * @param entities the entities to insert
-	 * @return a new {@link Insert.Builder} instance
+	 * @return a new {@link BatchInsert.Builder} instance
 	 */
-	static Insert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
-		return new DefaultInsert.DefaultBuilder(connection, entities);
+	static BatchInsert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
+		return new DefaultBatchInsert.DefaultBuilder(connection, entities);
 	}
 
 	/**
@@ -476,6 +476,12 @@ public interface EntityConnection extends AutoCloseable {
 			Builder entityTypes(EntityType... entityTypes);
 
 			/**
+			 * @param conditions the conditions to use when determining which entities of the given type to copy
+			 * @return this builder instance
+			 */
+			Builder conditions(Condition... conditions);
+
+			/**
 			 * @param batchSize the commit batch size
 			 * @return this buildr instance
 			 * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
@@ -487,14 +493,6 @@ public interface EntityConnection extends AutoCloseable {
 			 * @return this builder instance
 			 */
 			Builder includePrimaryKeys(boolean includePrimaryKeys);
-
-			/**
-			 * Specifies a condition to use when determining which entities of the given type to copy,
-			 * if none is specified all entities are copied.
-			 * @param condition the condition to use
-			 * @return this builder instance
-			 */
-			Builder condition(Condition condition);
 
 			/**
 			 * Builds and executes this copy operation
@@ -514,7 +512,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * unless the destination connection has an open transaction.
 	 * @see #execute()
 	 */
-	interface Insert {
+	interface BatchInsert {
 
 		/**
 		 * Executes this batch insert
@@ -523,7 +521,7 @@ public interface EntityConnection extends AutoCloseable {
 		void execute() throws DatabaseException;
 
 		/**
-		 * A builder for {@link Insert} operation.
+		 * A builder for {@link BatchInsert} operation.
 		 */
 		interface Builder {
 
@@ -552,9 +550,9 @@ public interface EntityConnection extends AutoCloseable {
 			void execute() throws DatabaseException;
 
 			/**
-			 * @return a new {@link Insert} instance
+			 * @return a new {@link BatchInsert} instance
 			 */
-			Insert build();
+			BatchInsert build();
 		}
 	}
 

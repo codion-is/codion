@@ -19,7 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.framework.db.EntityConnection.Insert;
+import is.codion.framework.db.EntityConnection.BatchInsert;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultInsert implements Insert {
+final class DefaultBatchInsert implements BatchInsert {
 
 	private final EntityConnection connection;
 	private final Iterator<Entity> entityIterator;
@@ -38,7 +38,7 @@ final class DefaultInsert implements Insert {
 	private final Consumer<Integer> progressReporter;
 	private final Consumer<Collection<Entity.Key>> onInsert;
 
-	DefaultInsert(DefaultBuilder builder) {
+	DefaultBatchInsert(DefaultBuilder builder) {
 		this.connection = builder.connection;
 		this.entityIterator = builder.entityIterator;
 		this.batchSize = builder.batchSize;
@@ -107,8 +107,8 @@ final class DefaultInsert implements Insert {
 		}
 
 		@Override
-		public Insert build() {
-			return new DefaultInsert(this);
+		public BatchInsert build() {
+			return new DefaultBatchInsert(this);
 		}
 	}
 }

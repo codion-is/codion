@@ -125,10 +125,9 @@ public class DefaultLocalEntityConnectionTest {
 							.batchSize(-10));
 
 			EntityConnection.copyEntities(sourceConnection, destinationConnection)
-							.entityTypes(Employee.TYPE)
+							.conditions(Employee.SALARY.greaterThan(1000d))
 							.batchSize(2)
 							.includePrimaryKeys(false)
-							.condition(Employee.SALARY.greaterThan(1000d))
 							.execute();
 			assertEquals(13, destinationConnection.count(Count.all(Employee.TYPE)));
 

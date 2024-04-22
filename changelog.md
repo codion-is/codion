@@ -11,6 +11,8 @@ Codion Change Log
 - TypeReference now throws exception if used to specify a non-parameterized type.
 - DefaultDomain.add() now varargs based, related refactoring.
 - Derived attributes no longer require source attributes.
+### is.codion.framework.db.core
+- EntityConnection.Insert renamed BatchInsert, Copy.Builder.conditions() added.
 ### is.codion.swing.common.ui
 - ListBuilder migrated from using ValueSet to ValueList.
 - AbstractComponentBuilder now supports multiple linked values.

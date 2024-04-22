@@ -25,10 +25,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.condition.Condition;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,24 +36,22 @@ final class DefaultCopy implements Copy {
 
 	private final EntityConnection source;
 	private final EntityConnection destination;
-	private final Collection<EntityType> entityTypes = new ArrayList<>();
-	private final Map<EntityType, Condition> conditions = new HashMap<>();
+	private final Map<EntityType, Condition> entityTypeCondition = new LinkedHashMap<>();
 	private final int batchSize;
 	private final boolean includePrimaryKeys;
 
 	DefaultCopy(DefaultBuilder builder) {
 		this.source = builder.source;
 		this.destination = builder.destination;
-		this.entityTypes.addAll(builder.entityTypes);
-		this.conditions.putAll(builder.conditions);
+		this.entityTypeCondition.putAll(builder.entityTypeCondition);
 		this.batchSize = builder.batchSize;
 		this.includePrimaryKeys = builder.includePrimaryKeys;
 	}
 
 	@Override
 	public void execute() throws DatabaseException {
-		for (EntityType entityType : entityTypes) {
-			Condition entityCondition = conditions.get(entityType);
+		for (EntityType entityType : entityTypeCondition.keySet()) {
+			Condition entityCondition = entityTypeCondition.get(entityType);
 			Select.Builder conditionBuilder = entityCondition == null ?
 							Select.all(entityType) :
 							Select.where(entityCondition);
@@ -65,7 +61,7 @@ final class DefaultCopy implements Copy {
 			if (!includePrimaryKeys) {
 				entities.forEach(Entity::clearPrimaryKey);
 			}
-			new DefaultInsert.DefaultBuilder(destination, entities.iterator())
+			new DefaultBatchInsert.DefaultBuilder(destination, entities.iterator())
 							.batchSize(batchSize)
 							.execute();
 		}
@@ -75,8 +71,7 @@ final class DefaultCopy implements Copy {
 
 		private final EntityConnection source;
 		private final EntityConnection destination;
-		private final Collection<EntityType> entityTypes = new ArrayList<>();
-		private final Map<EntityType, Condition> conditions = new HashMap<>();
+		private final Map<EntityType, Condition> entityTypeCondition = new LinkedHashMap<>();
 
 		private boolean includePrimaryKeys = true;
 		private int batchSize = 100;
@@ -88,7 +83,17 @@ final class DefaultCopy implements Copy {
 
 		@Override
 		public Builder entityTypes(EntityType... entityTypes) {
-			this.entityTypes.addAll(Arrays.asList(requireNonNull(entityTypes)));
+			requireNonNull(entityTypes);
+			Arrays.stream(entityTypes).forEach(entityType ->
+							entityTypeCondition.put(requireNonNull(entityType), null));
+			return this;
+		}
+
+		@Override
+		public Builder conditions(Condition... conditions) {
+			requireNonNull(conditions);
+			Arrays.stream(conditions).forEach(condition ->
+							entityTypeCondition.put(requireNonNull(condition.entityType()), condition));
 			return this;
 		}
 
@@ -104,15 +109,6 @@ final class DefaultCopy implements Copy {
 		@Override
 		public Builder includePrimaryKeys(boolean includePrimaryKeys) {
 			this.includePrimaryKeys = includePrimaryKeys;
-			return this;
-		}
-
-		@Override
-		public Builder condition(Condition condition) {
-			if (!entityTypes.contains(requireNonNull(condition).entityType())) {
-				throw new IllegalArgumentException("Copy.Builder does not contain entityType: " + condition.entityType());
-			}
-			this.conditions.put(condition.entityType(), condition);
 			return this;
 		}
 
