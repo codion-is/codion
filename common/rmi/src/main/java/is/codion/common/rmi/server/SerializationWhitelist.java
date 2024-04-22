@@ -118,7 +118,7 @@ final class SerializationWhitelist {
 								.map(Class::getName)
 								.sorted()
 								.collect(toList()), StandardOpenOption.CREATE);
-				LOG.debug("Serialization whitelist written: {}", whitelistFile);
+				LOG.info("Serialization whitelist written: {}", whitelistFile);
 			}
 			catch (Exception e) {
 				LOG.error("Error while writing serialization filter dry run results: {}", whitelistFile, e);

@@ -90,7 +90,7 @@ public final class Clients {
 	public static void resolveTrustStore() {
 		String trustStorePath = TRUSTSTORE.get();
 		if (nullOrEmpty(trustStorePath)) {
-			LOG.debug("No client truststore specified via {}", TRUSTSTORE.propertyName());
+			LOG.warn("No client truststore specified via {}", TRUSTSTORE.propertyName());
 			return;
 		}
 		String password = TRUSTSTORE_PASSWORD.optional().orElse(DEFAULT_TRUSTSTORE_PASSWORD);

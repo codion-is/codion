@@ -129,14 +129,14 @@ final class DefaultServerLocator implements Server.Locator {
 																																											 int requestedServerPort) throws RemoteException {
 		ServerInformation serverInformation = server.serverInformation();
 		if (requestedServerPort != -1 && serverInformation.serverPort() != requestedServerPort) {
-			LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
+			LOG.warn("Server \"{}\" is serving on port {}, requested port was {}",
 							serverInformation.serverName(), serverInformation.serverPort(), requestedServerPort);
 			return null;
 		}
 		if (server.connectionsAvailable()) {
 			return server;
 		}
-		LOG.error("No connections available in server \"{}\"", serverInformation.serverName());
+		LOG.warn("No connections available in server \"{}\"", serverInformation.serverName());
 
 		return null;
 	}
