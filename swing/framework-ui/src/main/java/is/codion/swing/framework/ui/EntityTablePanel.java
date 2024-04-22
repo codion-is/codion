@@ -177,10 +177,10 @@ public class EntityTablePanel extends JPanel {
 		 */
 		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK)),
 		/**
-		 * Edit a single attribute value for the selected entity instances.<br>
+		 * Select and edit a single attribute value for the selected entity instances.<br>
 		 * Default: SHIFT-INSERT
 		 */
-		EDIT_VALUE(keyStroke(VK_INSERT, SHIFT_DOWN_MASK)),
+		EDIT_SELECTED_ATTRIBUTE(keyStroke(VK_INSERT, SHIFT_DOWN_MASK)),
 		/**
 		 * Requests focus for the table.<br>
 		 * Default: CTRL-T
@@ -248,7 +248,8 @@ public class EntityTablePanel extends JPanel {
 		VIEW_DEPENDENCIES,
 		ADD,
 		EDIT,
-		EDIT_VALUE,
+		EDIT_ATTRIBUTE,
+		EDIT_SELECTED_ATTRIBUTE,
 		SELECT_COLUMNS,
 		RESET_COLUMNS,
 		COLUMN_AUTO_RESIZE_MODE,
@@ -674,8 +675,8 @@ public class EntityTablePanel extends JPanel {
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(control)
 										.enable(table));
-		control(TableControl.EDIT_VALUE).optional().ifPresent(control ->
-						KeyEvents.builder(configuration.shortcuts.keyStroke(KeyboardShortcut.EDIT_VALUE).get())
+		control(TableControl.EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(KeyboardShortcut.EDIT_SELECTED_ATTRIBUTE).get())
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(control)
 										.enable(table));
@@ -711,7 +712,7 @@ public class EntityTablePanel extends JPanel {
 			control(TableControl.EDIT).optional().ifPresent(editControls::add);
 		}
 		else {
-			control(TableControl.EDIT_VALUE).optional().ifPresent(editControls::add);
+			control(TableControl.EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(editControls::add);
 		}
 		control(TableControl.DELETE).optional().ifPresent(editControls::add);
 		if (editControls.notEmpty()) {
@@ -765,16 +766,18 @@ public class EntityTablePanel extends JPanel {
 			popupControls.addSeparator();
 			separatorRequired.set(false);
 		}
-		if (includeEditValueControls() && configuration.includeEditValueControl) {
+		if (includeEditAttributeControls()) {
 			if (configuration.editAttributeSelection == EditAttributeSelection.DIALOG) {
-				control(TableControl.EDIT_VALUE).optional().ifPresent(control -> {
+				control(TableControl.EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control -> {
 					popupControls.add(control);
 					separatorRequired.set(true);
 				});
 			}
 			else {
-				popupControls.add(createEditSelectedControls());
-				separatorRequired.set(true);
+				control(TableControl.EDIT_ATTRIBUTE).optional().ifPresent(control -> {
+					popupControls.add(control);
+					separatorRequired.set(true);
+				});
 			}
 		}
 		if (separatorRequired.get()) {
@@ -1036,7 +1039,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see Config#editable(Consumer)
 	 * @see EntityEditModel#updateEnabled()
 	 */
-	private Control createEditValueControl() {
+	private Control createEditSelectedAttributeControl() {
 		return Control.builder(this::editSelected)
 						.name(FrameworkMessages.edit())
 						.enabled(createEditSelectedEnabledObserver())
@@ -1053,7 +1056,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see Config#editable(Consumer)
 	 * @see EntityEditModel#updateEnabled()
 	 */
-	private Controls createEditSelectedControls() {
+	private Controls createEditAttributeControls() {
 		StateObserver editSelectedEnabledObserver = createEditSelectedEnabledObserver();
 		Controls editControls = Controls.builder()
 						.name(FrameworkMessages.edit())
@@ -1245,14 +1248,17 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean includeEditControl() {
-		return editPanel != null && configuration.includeEditControl &&
-						!tableModel.editModel().readOnly().get() &&
-						tableModel.editModel().updateEnabled().get();
+		return editPanel != null && updatable() &&
+						configuration.includeEditControl;
 	}
 
-	private boolean includeEditValueControls() {
-		return !configuration.editable.empty() &&
-						!tableModel.editModel().readOnly().get() &&
+	private boolean includeEditAttributeControls() {
+		return !configuration.editable.empty() && updatable() &&
+						configuration.includeEditAttributeControl;
+	}
+
+	private boolean updatable() {
+		return !tableModel.editModel().readOnly().get() &&
 						tableModel.editModel().updateEnabled().get();
 	}
 
@@ -1387,8 +1393,9 @@ public class EntityTablePanel extends JPanel {
 		if (includeEditControl()) {
 			controls.get(TableControl.EDIT).mapNull(this::createEditControl);
 		}
-		if (includeEditValueControls() && configuration.includeEditValueControl) {
-			controls.get(TableControl.EDIT_VALUE).mapNull(this::createEditValueControl);
+		if (includeEditAttributeControls()) {
+			controls.get(TableControl.EDIT_ATTRIBUTE).mapNull(this::createEditAttributeControls);
+			controls.get(TableControl.EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
 		}
 		if (configuration.includeClearControl) {
 			controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
@@ -1882,7 +1889,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeSelectionModeControl = false;
 		private boolean includeAddControl = true;
 		private boolean includeEditControl = true;
-		private boolean includeEditValueControl = true;
+		private boolean includeEditAttributeControl = true;
 		private boolean includeToolBar = true;
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 		private EditAttributeSelection editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.get();
@@ -1925,7 +1932,7 @@ public class EntityTablePanel extends JPanel {
 			this.includeSelectionModeControl = config.includeSelectionModeControl;
 			this.includeAddControl = config.includeAddControl;
 			this.includeEditControl = config.includeEditControl;
-			this.includeEditValueControl = config.includeEditValueControl;
+			this.includeEditAttributeControl = config.includeEditAttributeControl;
 			this.columnSelection = config.columnSelection;
 			this.editAttributeSelection = config.editAttributeSelection;
 			this.editComponentFactories = new HashMap<>(config.editComponentFactories);
@@ -2064,11 +2071,12 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEditValueControl true if a 'Edit' value control should be included<br>
+		 * @param includeEditAttributeControl true if a 'Edit' attribute control should be included<br>
 		 * @return this Config instance
+		 * @see #editAttributeSelection(EditAttributeSelection)
 		 */
-		public Config includeEditValueControl(boolean includeEditValueControl) {
-			this.includeEditValueControl = includeEditValueControl;
+		public Config includeEditAttributeControl(boolean includeEditAttributeControl) {
+			this.includeEditAttributeControl = includeEditAttributeControl;
 			return this;
 		}
 

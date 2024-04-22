@@ -20,6 +20,7 @@ Codion Change Log
 - EntityTablePanel.Config.editAttributeSelection() and includeEditValueControl() added.
 - EntityTablePanel.TableControl.DELETE_SELECTED renamed DELETE, related renaming.
 - EntityTablePanel, edit value control added to toolbar.
+- EntityTablePanel, TableControl.EDIT_VALUE renamed EDIT_ATTRIBUTE, EDIT_SELECTED_ATTRIBUTE added, related renaming.
 
 ## 0.17.41
 ### is.codion.common.core
