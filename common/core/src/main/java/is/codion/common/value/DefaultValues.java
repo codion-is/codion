@@ -28,7 +28,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
-class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
+class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C>
 				implements Values<T, C> {
 
 	private final Supplier<? extends C> create;
@@ -48,13 +48,14 @@ class DefaultValues<C extends Collection<T>, T> extends DefaultValue<C>
 	}
 
 	@Override
-	public final void set(Collection<T> values) {
+	public final boolean set(Collection<T> values) {
 		synchronized (lock) {
 			C newValues = create.get();
 			if (values != null) {
 				newValues.addAll(values);
 			}
-			set(unmodifiable.apply(newValues));
+
+			return set(unmodifiable.apply(newValues));
 		}
 	}
 

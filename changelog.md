@@ -6,6 +6,7 @@ Codion Change Log
 - Values added, extended by ValueSet, related refactoring.
 - ValueList added.
 - Values now behaves like Collection in regards to remove() and removeAll(), related refactoring and javadoc fixes.
+- Values.set(Collection<T>) now returns true if the value changed.
 ### is.codion.framework.domain
 - DefaultEntity refactored.
 - TypeReference now throws exception if used to specify a non-parameterized type.

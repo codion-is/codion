@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-final class DefaultValueList<T> extends DefaultValues<List<T>, T>
+final class DefaultValueList<T> extends DefaultValues<T, List<T>>
 				implements ValueList<T> {
 
 	private DefaultValueList(DefaultBuilder<T> builder) {

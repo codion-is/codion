@@ -128,6 +128,10 @@ public class ValuesTest {
 		assertFalse(values.removeAll(1, 2));
 		assertTrue(values.removeAll(2, 3));
 		assertUnmodifiable(observer);
+
+		values.clear();
+		values.addAll(1, 2);
+		assertFalse(values.set(asList(1, 2)));
 	}
 
 	@Test
@@ -244,6 +248,11 @@ public class ValuesTest {
 		assertFalse(values.removeAll(1, 2));
 		assertTrue(values.removeAll(2, 3));
 		assertUnmodifiable(observer);
+
+		values.clear();
+		values.addAll(1, 2);
+		assertFalse(values.set(new LinkedHashSet<>(asList(1, 2))));
+		assertTrue(values.set(new LinkedHashSet<>(asList(2, 1))));
 	}
 
 	@Test

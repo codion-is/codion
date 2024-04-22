@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-final class DefaultValueSet<T> extends DefaultValues<Set<T>, T>
+final class DefaultValueSet<T> extends DefaultValues<T, Set<T>>
 				implements ValueSet<T> {
 
 	private DefaultValueSet(DefaultBuilder<T> builder) {

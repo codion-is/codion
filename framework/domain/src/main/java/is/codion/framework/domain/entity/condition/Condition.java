@@ -39,7 +39,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a query condition.
+ * <p>Specifies a query condition.</p>
+ * {@link Condition.All} indicates no condition, as in, all entities should be returned.
  * @see #all(EntityType)
  * @see #key(Entity.Key)
  * @see #keys(Collection)

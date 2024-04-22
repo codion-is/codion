@@ -34,8 +34,9 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, ValuesObse
 	/**
 	 * Sets the values.
 	 * @param values the values to set
+	 * @return true if this {@link Values} instance changed
 	 */
-	void set(Collection<T> values);
+	boolean set(Collection<T> values);
 
 	/**
 	 * Adds a value to this Values instance.

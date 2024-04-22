@@ -69,7 +69,7 @@ final class DefaultCount implements Count, Serializable {
 
 		@Override
 		public Builder having(Condition having) {
-			this.having = having;
+			this.having = requireNonNull(having);
 			return this;
 		}
 
