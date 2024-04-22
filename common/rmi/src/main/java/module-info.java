@@ -16,6 +16,7 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
+
 /**
  * RMI client/server classes, such as:<br>
  * <br>
@@ -42,5 +43,5 @@ module is.codion.common.rmi {
 	uses is.codion.common.rmi.server.ObjectInputFilterFactory;
 
 	provides is.codion.common.rmi.server.ObjectInputFilterFactory
-					with is.codion.common.rmi.server.WhitelistObjectInputFilterFactory;
+					with is.codion.common.rmi.server.WhitelistInputFilterFactory;
 }

@@ -71,7 +71,7 @@ To use the serialization whitelist filter provided by the framework, set the fol
 [source]
 ----
 codion.server.objectInputFilterFactoryClassName=\
-    is.codion.common.rmi.server.WhitelistObjectInputFilterFactory
+    is.codion.common.rmi.server.WhitelistInputFilterFactory
 ----
 
 The whitelist is configured via the following system property.

@@ -26,7 +26,7 @@ import java.io.ObjectInputFilter;
 /**
  * A {@link ObjectInputFilterFactory} implementation based on a whitelist file.
  */
-public final class WhitelistObjectInputFilterFactory implements ObjectInputFilterFactory {
+public final class WhitelistInputFilterFactory implements ObjectInputFilterFactory {
 
 	/**
 	 * The serialization whitelist file to use if any

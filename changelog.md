@@ -7,6 +7,8 @@ Codion Change Log
 - ValueList added.
 - Values now behaves like Collection in regards to remove() and removeAll(), related refactoring and javadoc fixes.
 - Values.set(Collection<T>) now returns true if the value changed.
+### is.codion.common.rmi
+- WhitelistObjectInputFilterFactory renamed WhitelistInputFilterFactory.
 ### is.codion.framework.domain
 - DefaultEntity refactored.
 - TypeReference now throws exception if used to specify a non-parameterized type.

@@ -59,7 +59,7 @@ tasks.register("runServer", JavaExec) {
             "codion.server.http.secure"                      : "false",
             "codion.server.pooling.poolFactoryClass"         : "is.codion.plugin.hikari.pool.HikariConnectionPoolProvider",
             "codion.server.auxiliaryServerFactoryClassNames" : "is.codion.framework.servlet.EntityServiceFactory",
-            "codion.server.objectInputFilterFactoryClassName": "is.codion.common.rmi.server.WhitelistObjectInputFilterFactory",
+            "codion.server.objectInputFilterFactoryClassName": "is.codion.common.rmi.server.WhitelistInputFilterFactory",
             "codion.server.serializationFilterWhitelist"     : "src/main/config/serialization-whitelist.txt",
             "codion.server.serializationFilterDryRun"        : "false",
             "codion.server.clientLogging"                    : "false",

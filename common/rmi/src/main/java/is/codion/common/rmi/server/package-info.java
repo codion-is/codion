@@ -30,7 +30,7 @@
  * {@link is.codion.common.rmi.server.ServerConfiguration#IDLE_CONNECTION_TIMEOUT}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORY_CLASS_NAMES}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME}<br>
- * {@link is.codion.common.rmi.server.WhitelistObjectInputFilterFactory#SERIALIZATION_FILTER_WHITELIST}<br>
- * {@link is.codion.common.rmi.server.WhitelistObjectInputFilterFactory#SERIALIZATION_FILTER_DRYRUN}<br>
+ * {@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_WHITELIST}<br>
+ * {@link is.codion.common.rmi.server.WhitelistInputFilterFactory#SERIALIZATION_FILTER_DRYRUN}<br>
  */
 package is.codion.common.rmi.server;
