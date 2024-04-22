@@ -36,25 +36,24 @@ final class DefaultBatchCopy implements BatchCopy {
 
 	private final EntityConnection source;
 	private final EntityConnection destination;
-	private final Map<EntityType, Condition> entityTypeCondition = new LinkedHashMap<>();
+	private final Map<EntityType, Condition> entityTypeConditions = new LinkedHashMap<>();
 	private final int batchSize;
 	private final boolean includePrimaryKeys;
 
 	DefaultBatchCopy(DefaultBuilder builder) {
 		this.source = builder.source;
 		this.destination = builder.destination;
-		this.entityTypeCondition.putAll(builder.entityTypeCondition);
+		this.entityTypeConditions.putAll(builder.entityTypeConditions);
 		this.batchSize = builder.batchSize;
 		this.includePrimaryKeys = builder.includePrimaryKeys;
 	}
 
 	@Override
 	public void execute() throws DatabaseException {
-		for (EntityType entityType : entityTypeCondition.keySet()) {
-			Condition entityCondition = entityTypeCondition.get(entityType);
-			Select.Builder conditionBuilder = entityCondition == null ?
-							Select.all(entityType) :
-							Select.where(entityCondition);
+		for (Map.Entry<EntityType, Condition> entityTypeCondition : entityTypeConditions.entrySet()) {
+			Select.Builder conditionBuilder = entityTypeCondition.getValue() == null ?
+							Select.all(entityTypeCondition.getKey()) :
+							Select.where(entityTypeCondition.getValue());
 			List<Entity> entities = source.select(conditionBuilder
 							.fetchDepth(0)
 							.build());
@@ -71,7 +70,7 @@ final class DefaultBatchCopy implements BatchCopy {
 
 		private final EntityConnection source;
 		private final EntityConnection destination;
-		private final Map<EntityType, Condition> entityTypeCondition = new LinkedHashMap<>();
+		private final Map<EntityType, Condition> entityTypeConditions = new LinkedHashMap<>();
 
 		private boolean includePrimaryKeys = true;
 		private int batchSize = 100;
@@ -85,7 +84,7 @@ final class DefaultBatchCopy implements BatchCopy {
 		public Builder entityTypes(EntityType... entityTypes) {
 			requireNonNull(entityTypes);
 			Arrays.stream(entityTypes).forEach(entityType ->
-							entityTypeCondition.put(requireNonNull(entityType), null));
+							entityTypeConditions.put(requireNonNull(entityType), null));
 			return this;
 		}
 
@@ -93,7 +92,7 @@ final class DefaultBatchCopy implements BatchCopy {
 		public Builder conditions(Condition... conditions) {
 			requireNonNull(conditions);
 			Arrays.stream(conditions).forEach(condition ->
-							entityTypeCondition.put(requireNonNull(condition.entityType()), condition));
+							entityTypeConditions.put(requireNonNull(condition.entityType()), condition));
 			return this;
 		}
 

@@ -316,10 +316,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	/**
 	 * @param timedOutOnly if true only connections that have timed out are culled
-	 * @throws RemoteException in case of an exception
 	 * @see #hasConnectionTimedOut(AbstractRemoteEntityConnection)
 	 */
-	final void disconnectClients(boolean timedOutOnly) throws RemoteException {
+	final void disconnectClients(boolean timedOutOnly) {
 		List<RemoteClient> clients = new ArrayList<>(connections().keySet());
 		for (RemoteClient client : clients) {
 			AbstractRemoteEntityConnection connection = connection(client.clientId());
