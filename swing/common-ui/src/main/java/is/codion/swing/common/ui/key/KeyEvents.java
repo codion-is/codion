@@ -224,16 +224,15 @@ public final class KeyEvents {
 			if (action == null) {
 				throw new IllegalStateException("Unable to enable/disable a key event without an associated action");
 			}
-			Object actionMapKey = action.getValue(Action.NAME);
-			if (actionMapKey == null) {
-				actionMapKey = createDefaultActionMapKey(component);
-			}
 
-			return actionMapKey;
+			return createActionMapKey(component);
 		}
 
-		private String createDefaultActionMapKey(JComponent component) {
+		private String createActionMapKey(JComponent component) {
+			Object actionName = action.getValue(Action.NAME);
+
 			return new StringBuilder(component.getClass().getSimpleName())
+							.append(actionName == null ? "" : (" " + actionName))
 							.append(" ").append(keyStroke.toString())
 							.append(" ").append(condition)
 							.toString();

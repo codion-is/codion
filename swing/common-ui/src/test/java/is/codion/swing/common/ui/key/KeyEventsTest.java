@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,14 +34,13 @@ public class KeyEventsTest {
 	@Test
 	void addRemoveKeyEvent() {
 		JTextField textField = new JTextField();
-		final String actionName = "testing";
-		Control control = Control.builder(() -> {}).name(actionName).build();
-		assertNull(textField.getActionMap().get(actionName));
+		Control control = Control.builder(() -> {}).build();
 		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
 		builder.enable(textField);
-		assertNotNull(textField.getActionMap().get(actionName));
+		String actionMapKey = (String) textField.getInputMap().get(KeyStroke.getKeyStroke(VK_ENTER, 0));
+		assertSame(control, textField.getActionMap().get(actionMapKey));
 		builder.disable(textField);
-		assertNull(textField.getActionMap().get(actionName));
+		assertNull(textField.getActionMap().get(actionMapKey));
 	}
 
 	@Test

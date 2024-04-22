@@ -21,6 +21,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ListBuilder migrated from using ValueSet to ValueList.
 - AbstractComponentBuilder now supports multiple linked values.
+- KeyEvents bug fixed, no longer uses the action name as action map key, always generates a unique one.
 ### is.codion.swing.framework.ui
 - EntityDialogs.DefaultEditAttributeDialogBuilder bug fixed, didn't take null into account when counting distinct values.
 - EntityTablePanel, TableControl.EDIT_SELECTED renamed EDIT_VALUE and now associated with an action for editing the selected items.
