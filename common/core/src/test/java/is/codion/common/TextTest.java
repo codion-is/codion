@@ -20,9 +20,6 @@ package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,7 +29,6 @@ import java.util.Locale;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class TextTest {
 
@@ -87,19 +83,6 @@ public final class TextTest {
 		String resultNoHeader = "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
 		assertEquals(resultNoHeader, Text.delimitedString(emptyList(),
 						asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
-	}
-
-	@Test
-	void textFileContentsResource() throws IOException {
-		String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
-		assertEquals(contents, Text.textFileContents(TextTest.class, "TextTest.txt"));
-		assertThrows(FileNotFoundException.class, () -> Text.textFileContents(TextTest.class, "None.txt"));
-	}
-
-	@Test
-	void textFileContents() throws IOException {
-		String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
-		assertEquals(contents, Text.textFileContents("src/test/resources/is/codion/common/TextTest.txt", Charset.defaultCharset()));
 	}
 
 	@Test

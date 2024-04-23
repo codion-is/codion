@@ -20,16 +20,8 @@ package is.codion.common;
 
 import is.codion.common.property.PropertyValue;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serial;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,9 +56,6 @@ public final class Text {
 	 * Default value: %
 	 */
 	public static final PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
-
-	private static final char SPACE = ' ';
-	private static final char UNDERSCORE = '_';
 
 	private Text() {}
 
@@ -149,91 +138,6 @@ public final class Text {
 	}
 
 	/**
-	 * Fetch the entire contents of a resource text file, and return it in a String, using the default Charset.
-	 * @param resourceClass the resource class
-	 * @param resourceName the name of the resource to retrieve
-	 * @param <T> the resource class type
-	 * @return the contents of the resource file
-	 * @throws IOException in case an IOException occurs
-	 */
-	public static <T> String textFileContents(Class<T> resourceClass, String resourceName) throws IOException {
-		return textFileContents(resourceClass, resourceName, Charset.defaultCharset());
-	}
-
-	/**
-	 * Fetch the entire contents of a resource textfile, and return it in a String.
-	 * @param resourceClass the resource class
-	 * @param resourceName the name of the resource to retrieve
-	 * @param charset the Charset to use when reading the file contents
-	 * @param <T> the resource class type
-	 * @return the contents of the resource file
-	 * @throws IOException in case an IOException occurs
-	 */
-	public static <T> String textFileContents(Class<T> resourceClass, String resourceName, Charset charset) throws IOException {
-		requireNonNull(resourceClass, "resourceClass");
-		requireNonNull(resourceName, "resourceName");
-		InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
-		if (inputStream == null) {
-			throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
-		}
-
-		return textFileContents(inputStream, charset);
-	}
-
-	/**
-	 * Fetch the entire contents of a textfile, and return it in a String
-	 * @param filename the name of the file
-	 * @param charset the charset to use
-	 * @return the file contents as a String
-	 * @throws IOException in case of an exception
-	 */
-	public static String textFileContents(String filename, Charset charset) throws IOException {
-		requireNonNull(filename, "filename");
-
-		return textFileContents(new File(filename), charset);
-	}
-
-	/**
-	 * Fetch the entire contents of a textfile, and return it in a String
-	 * @param file the file
-	 * @param charset the charset to use
-	 * @return the file contents as a String
-	 * @throws IOException in case of an exception
-	 */
-	public static String textFileContents(File file, Charset charset) throws IOException {
-		requireNonNull(file, "file");
-		try (FileInputStream inputStream = new FileInputStream(file)) {
-			return textFileContents(inputStream, charset);
-		}
-	}
-
-	/**
-	 * Fetch the entire contents of an InputStream, and return it in a String.
-	 * Does not close the stream.
-	 * @param inputStream the input stream to read
-	 * @param charset the charset to use
-	 * @return the stream contents as a String
-	 * @throws IOException in case of an exception
-	 */
-	public static String textFileContents(InputStream inputStream, Charset charset) throws IOException {
-		requireNonNull(inputStream, "inputStream");
-		requireNonNull(charset, "charset");
-		StringBuilder contents = new StringBuilder();
-		try (BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
-			String line = input.readLine();
-			while (line != null) {
-				contents.append(line);
-				line = input.readLine();
-				if (line != null) {
-					contents.append(Separators.LINE_SEPARATOR);
-				}
-			}
-		}
-
-		return contents.toString();
-	}
-
-	/**
 	 * Parses, splits and trims the given comma separated string.
 	 * Returns an empty list in case of null or empty string argument.
 	 * @param commaSeparatedValues a String with comma separated values
@@ -272,6 +176,9 @@ public final class Text {
 
 		@Serial
 		private static final long serialVersionUID = 1;
+
+		private static final char SPACE = ' ';
+		private static final char UNDERSCORE = '_';
 
 		private final Locale locale;
 

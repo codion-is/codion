@@ -39,12 +39,11 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.common.Text.textFileContents;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
-import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.singletonList;
 
 // tag::createEntityPanels[]
@@ -85,7 +84,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 						.selectFile();
 
 		List<Entity> entities = entityObjectMapper(applicationModel().entities())
-						.deserializeEntities(textFileContents(file.getAbsolutePath(), defaultCharset()));
+						.deserializeEntities(String.join("\n", Files.readAllLines(file.toPath())));
 
 		SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, applicationModel().connectionProvider());
 		tableModel.editModel().readOnly().set(true);

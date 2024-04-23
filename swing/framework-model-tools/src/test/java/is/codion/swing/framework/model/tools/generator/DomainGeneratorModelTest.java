@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model.tools.generator;
 
-import is.codion.common.Text;
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 
@@ -27,8 +26,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SortOrder;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
+import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class DomainGeneratorModelTest {
@@ -42,9 +44,9 @@ public final class DomainGeneratorModelTest {
 
 	static {
 		try {
-			ADDRESS_DEF = Text.textFileContents(DomainGeneratorModelTest.class, "address.txt").trim();
-			TAG_ITEM_DEF = Text.textFileContents(DomainGeneratorModelTest.class, "tagitem.txt").trim();
-			PRODUCT_DEF = Text.textFileContents(DomainGeneratorModelTest.class, "product.txt").trim();
+			ADDRESS_DEF = textFileContents(DomainGeneratorModelTest.class, "address.txt").trim();
+			TAG_ITEM_DEF = textFileContents(DomainGeneratorModelTest.class, "tagitem.txt").trim();
+			PRODUCT_DEF = textFileContents(DomainGeneratorModelTest.class, "product.txt").trim();
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
@@ -88,5 +90,11 @@ public final class DomainGeneratorModelTest {
 		model.definitionModel().selectionModel().setSelectedIndex(6);
 		String tagItemDef = model.domainSource().get().trim();
 		assertEquals(TAG_ITEM_DEF, tagItemDef);
+	}
+
+	private static String textFileContents(Class<?> resourceClass, String resourceName) throws IOException {
+		try (BufferedReader input = new BufferedReader(new InputStreamReader(resourceClass.getResourceAsStream(resourceName)))) {
+			return input.lines().collect(joining("\n"));
+		}
 	}
 }
