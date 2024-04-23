@@ -100,13 +100,13 @@ final class SelectQueries {
 			return select(select, true);
 		}
 
-		Builder select(Select select, boolean setWhereClause) {
+		Builder select(Select select, boolean useWhereClause) {
 			entitySelectQuery();
 			if (!columnsClauseFromSelectQuery) {
 				setColumns(select);
 			}
 			//default from clause is handled by from()
-			if (setWhereClause) {
+			if (useWhereClause) {
 				where(select.where());
 			}
 			if (groupBy == null) {

@@ -19,6 +19,7 @@
 package is.codion.common.scheduler;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Validator;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultTaskScheduler implements TaskScheduler {
+
+	private static final Validator<Integer> INTERVAL_VALIDATOR = new IntervalValidator();
 
 	private final Object lock = new Object();
 	private final Runnable task;
@@ -41,11 +44,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 	private DefaultTaskScheduler(DefaultBuilder builder) {
 		this.task = builder.task;
 		this.interval = Value.nonNull(builder.interval)
-						.validator(value -> {
-							if (value <= 0) {
-								throw new IllegalArgumentException("Interval must be a positive integer");
-							}
-						})
+						.validator(INTERVAL_VALIDATOR)
 						.listener(this::onIntervalChanged)
 						.build();
 		this.initialDelay = builder.initialDelay;
@@ -166,6 +165,16 @@ final class DefaultTaskScheduler implements TaskScheduler {
 			thread.setDaemon(true);
 
 			return thread;
+		}
+	}
+
+	private static final class IntervalValidator implements Validator<Integer> {
+
+		@Override
+		public void validate(Integer interval) {
+			if (interval <= 0) {
+				throw new IllegalArgumentException("Interval must be a positive integer");
+			}
 		}
 	}
 }

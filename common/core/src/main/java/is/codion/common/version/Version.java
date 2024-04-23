@@ -57,7 +57,7 @@ public interface Version extends Comparable<Version> {
 	Optional<String> metadata();
 
 	/**
-	 * @return the build informatio part of this version or an empty Optional in case of no build information
+	 * @return the build information part of this version or an empty Optional in case of no build information
 	 */
 	Optional<String> build();
 

@@ -69,7 +69,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 
-	private final Event<T> selectionChangedEvent = Event.event();
+	private final Event<T> selectionEvent = Event.event();
 	private final State selectionEmpty = State.state(true);
 	private final State includeNull = State.state();
 	private final Value<T> nullItem = Value.value();
@@ -412,7 +412,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 			selectedItem = toSelect;
 			fireContentsChanged();
 			selectionEmpty.set(selectedValue() == null);
-			selectionChangedEvent.accept(selectedItem);
+			selectionEvent.accept(selectedItem);
 		}
 	}
 
@@ -473,7 +473,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 * @return an observer notified each time the selection changes
 	 */
 	public final EventObserver<T> selectionEvent() {
-		return selectionChangedEvent.observer();
+		return selectionEvent.observer();
 	}
 
 	private void fireContentsChanged() {
@@ -544,7 +544,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			selectionChangedEvent.addListener(this::notifyListeners);
+			selectionEvent.addListener(this::notifyListeners);
 		}
 
 		@Override

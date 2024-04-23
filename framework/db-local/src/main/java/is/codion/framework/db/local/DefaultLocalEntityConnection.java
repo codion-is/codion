@@ -46,6 +46,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -915,23 +916,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			int conditionOrForeignKeyFetchDepthLimit = select.fetchDepth(foreignKey)
 							.orElse(foreignKeyDefinition.fetchDepth());
 			if (withinFetchDepthLimit(currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit)
-							&& containsReferenceAttributes(entities.get(0), foreignKey.references())) {
+							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
 				try {
 					logEntry("populateForeignKeys", foreignKeyDefinition);
 					Collection<Key> referencedKeys = referencedKeys(foreignKey, entities);
 					if (referencedKeys.isEmpty()) {
-						for (int j = 0; j < entities.size(); j++) {
-							entities.get(j).put(foreignKey, null);
-						}
+						entities.forEach(entity -> entity.put(foreignKey, null));
 					}
 					else {
 						Map<Key, Entity> referencedEntitiesMappedByKey = queryReferencedEntities(foreignKeyDefinition,
 										new ArrayList<>(referencedKeys), currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit);
-						for (int j = 0; j < entities.size(); j++) {
-							Entity entity = entities.get(j);
-							Key referencedKey = entity.referencedKey(foreignKey);
-							entity.put(foreignKey, referencedEntity(referencedKey, referencedEntitiesMappedByKey));
-						}
+						entities.forEach(entity -> entity.put(foreignKey,
+										referencedEntity(entity.referencedKey(foreignKey), referencedEntitiesMappedByKey)));
 					}
 				}
 				finally {
@@ -1483,14 +1479,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		return builder.toString();
 	}
 
-	private static boolean containsReferenceAttributes(Entity entity, List<ForeignKey.Reference<?>> references) {
-		for (int i = 0; i < references.size(); i++) {
-			if (!entity.contains(references.get(i).column())) {
-				return false;
-			}
-		}
-
-		return true;
+	private static boolean containsReferencedColumns(Entity entity, List<Reference<?>> references) {
+		return references.stream()
+						.map(Reference::column)
+						.allMatch(entity::contains);
 	}
 
 	private static Collection<Attribute<?>> attributesToSelect(ForeignKeyDefinition foreignKeyDefinition,

@@ -110,7 +110,9 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
 	private static int indexOf(String pattern, Element element) {
 		return Stream.of(pattern.indexOf('y'), pattern.indexOf('m'), pattern.indexOf('d'))
-						.sorted().collect(Collectors.toList()).indexOf(pattern.indexOf(element.character()));
+						.sorted()
+						.collect(Collectors.toList())
+						.indexOf(pattern.indexOf(element.character()));
 	}
 
 	private enum Element {

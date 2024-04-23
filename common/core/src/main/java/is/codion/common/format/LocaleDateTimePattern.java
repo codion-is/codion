@@ -51,7 +51,7 @@ import java.util.Optional;
 public interface LocaleDateTimePattern {
 
 	/**
-	 * @return the time part of this format, null if none is available
+	 * @return the time part of this format, an empty Optional if none is available
 	 */
 	Optional<String> timePattern();
 
