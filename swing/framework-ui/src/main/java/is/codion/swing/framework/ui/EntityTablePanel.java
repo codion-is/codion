@@ -341,8 +341,18 @@ public class EntityTablePanel extends JPanel {
 		MOVE_SELECTION_DOWN,
 		/**
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
+		 * @see #COPY_CELL
+		 * @see #COPY_ROWS
 		 */
-		COPY_TABLE_DATA,
+		COPY,
+		/**
+		 * A {@link Control} for copying the selected cell data.
+		 */
+		COPY_CELL,
+		/**
+		 * A {@link Control} for copying the table rows with header.
+		 */
+		COPY_ROWS,
 		/**
 		 * A {@link Control} for requesting table focus.
 		 */
@@ -920,7 +930,7 @@ public class EntityTablePanel extends JPanel {
 			addFilterControls(popupControls);
 			separatorRequired.set(true);
 		}
-		control(TableControl.COPY_TABLE_DATA).optional().ifPresent(control -> {
+		control(TableControl.COPY).optional().ifPresent(control -> {
 			if (separatorRequired.get()) {
 				popupControls.addSeparator();
 			}
@@ -1314,11 +1324,15 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Controls createCopyControls() {
-		return Controls.builder()
+		Controls.Builder builder = Controls.builder()
 						.name(Messages.copy())
-						.smallIcon(ICONS.copy())
-						.controls(createCopyCellControl(), createCopyTableRowsWithHeaderControl())
-						.build();
+						.smallIcon(ICONS.copy());
+		control(TableControl.COPY_CELL).optional().ifPresent(builder::control);
+		control(TableControl.COPY_ROWS).optional().ifPresent(builder::control);
+
+		Controls copyControls = builder.build();
+
+		return copyControls.empty() ? null : copyControls;
 	}
 
 	private Control createCopyCellControl() {
@@ -1328,7 +1342,7 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private Control createCopyTableRowsWithHeaderControl() {
+	private Control createCopyTableDataWithHeaderControl() {
 		return Control.builder(table::copyRowsAsTabDelimitedString)
 						.name(FrameworkMessages.copyTableWithHeader())
 						.build();
@@ -1516,7 +1530,9 @@ public class EntityTablePanel extends JPanel {
 		controls.get(TableControl.CLEAR_SELECTION).mapNull(this::createClearSelectionControl);
 		controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
 		controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
-		controls.get(TableControl.COPY_TABLE_DATA).mapNull(this::createCopyControls);
+		controls.get(TableControl.COPY_CELL).mapNull(this::createCopyCellControl);
+		controls.get(TableControl.COPY_ROWS).mapNull(this::createCopyTableDataWithHeaderControl);
+		controls.get(TableControl.COPY).mapNull(this::createCopyControls);
 		if (configuration.includeSelectionModeControl) {
 			controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
 		}
