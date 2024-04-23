@@ -659,8 +659,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final State mergeOnRefresh() {
-		return tableModel.mergeOnRefresh();
+	public final Value<RefreshStrategy> refreshStrategy() {
+		return tableModel.refreshStrategy();
 	}
 
 	@Override

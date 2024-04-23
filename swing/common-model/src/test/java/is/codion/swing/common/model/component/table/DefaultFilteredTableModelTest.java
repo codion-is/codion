@@ -21,6 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.Separators;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel.RefreshStrategy;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -167,7 +168,7 @@ public final class DefaultFilteredTableModelTest {
 
 		done.set(0);
 		cleared.set(0);
-		tableModel.mergeOnRefresh().set(true);
+		tableModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		tableModel.refresh();
 		assertEquals(1, done.get());
 		assertEquals(0, cleared.get());
@@ -186,7 +187,7 @@ public final class DefaultFilteredTableModelTest {
 										.itemSupplier(() -> items)
 										.build();
 		testModel.selectionModel().selectionEvent().addListener(selectionEvents::incrementAndGet);
-		testModel.mergeOnRefresh().set(true);
+		testModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		testModel.refresh();
 		testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
 		testModel.selectionModel().setSelectedIndex(1);//b
@@ -295,7 +296,7 @@ public final class DefaultFilteredTableModelTest {
 		assertTrue(tableModel.containsItem(D));
 		assertTrue(tableModel.containsItem(E));
 
-		tableModel.mergeOnRefresh().set(true);
+		tableModel.refreshStrategy().set(RefreshStrategy.MERGE);
 		events.set(0);
 		tableModel.refresh();
 		assertEquals(5, events.get());

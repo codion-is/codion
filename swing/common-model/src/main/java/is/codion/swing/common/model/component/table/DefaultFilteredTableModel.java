@@ -27,7 +27,6 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
-import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
@@ -88,7 +87,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
 		this.refresher = new DefaultRefresher(builder.itemSupplier == null ? this::items : builder.itemSupplier);
 		this.refresher.async().set(builder.asyncRefresh);
-		this.refresher.mergeOnRefresh.set(builder.mergeOnRefresh);
+		this.refresher.refreshStrategy.set(builder.refreshStrategy);
 		this.itemValidator = builder.itemValidator;
 		this.removeSelectionListener = new RemoveSelectionListener();
 		bindEventsInternal();
@@ -216,8 +215,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public State mergeOnRefresh() {
-		return refresher.mergeOnRefresh;
+	public Value<RefreshStrategy> refreshStrategy() {
+		return refresher.refreshStrategy;
 	}
 
 	@Override
@@ -519,7 +518,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	private final class DefaultRefresher extends AbstractFilteredModelRefresher<R> {
 
-		private final State mergeOnRefresh = State.state();
+		private final Value<RefreshStrategy> refreshStrategy = Value.nonNull(RefreshStrategy.CLEAR).build();
 
 		private DefaultRefresher(Supplier<Collection<R>> itemSupplier) {
 			super(itemSupplier);
@@ -527,7 +526,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 		@Override
 		protected void processResult(Collection<R> items) {
-			if (mergeOnRefresh.get() && !items.isEmpty()) {
+			if (refreshStrategy.isEqualTo(RefreshStrategy.MERGE) && !items.isEmpty()) {
 				merge(items);
 			}
 			else {
@@ -682,7 +681,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		private Predicate<R> itemValidator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
 		private SummaryValueProvider.Factory<C> summaryValueProviderFactory;
-		private boolean mergeOnRefresh = false;
+		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
 		DefaultBuilder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
@@ -715,8 +714,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public Builder<R, C> mergeOnRefresh(boolean mergeOnRefresh) {
-			this.mergeOnRefresh = mergeOnRefresh;
+		public Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy) {
+			this.refreshStrategy = requireNonNull(refreshStrategy);
 			return this;
 		}
 

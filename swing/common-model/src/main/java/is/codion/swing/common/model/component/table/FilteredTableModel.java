@@ -24,7 +24,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
-import is.codion.common.state.State;
+import is.codion.common.value.Value;
 
 import javax.swing.table.TableModel;
 import java.text.Format;
@@ -41,6 +41,28 @@ import java.util.function.Supplier;
  * @see #builder(ColumnFactory, ColumnValueProvider)
  */
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
+
+	/**
+	 * Specifies how the data in a table model is refreshed.
+	 */
+	enum RefreshStrategy {
+		/**
+		 * Clear the table model before populating it with the refreshed data.
+		 * This causes an empty selection event to be triggered, since the
+		 * selection is cleared when the table model is cleared.
+		 * @see FilteredTableSelectionModel#selectionEvent()
+		 */
+		CLEAR,
+		/**
+		 * Merges the refreshed data with the data already in the table model,
+		 * by removing rows that are missing, replacing existing rows and adding new ones.
+		 * This strategy does not cause an empty selection event to be triggered
+		 * but at a considerable performance cost.
+		 * Note that sorting is not performed using this strategy, since that would
+		 * cause an empty selection event as well.
+		 */
+		MERGE
+	}
 
 	/**
 	 * @return an observer notified each time the table data changes
@@ -186,11 +208,10 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	String rowsAsDelimitedString(char delimiter);
 
 	/**
-	 * Note that when merging during refresh, the items are not sorted, since that
-	 * would cause an empty-selection event, defeating the purpose of merging.
-	 * @return the State controlling whether merge on refresh should be enabled
+	 * Default {@link RefreshStrategy#CLEAR}
+	 * @return the Value controlling the refresh strategy
 	 */
-	State mergeOnRefresh();
+	Value<RefreshStrategy> refreshStrategy();
 
 	/**
 	 * Sorts the visible items according to the {@link FilteredTableSortModel}, keeping the selected items.
@@ -236,8 +257,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
 	 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
 	 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-	 * ({@link #mergeOnRefresh()}) will prevent that at a considerable performance cost.
-	 * @see #mergeOnRefresh()
+	 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
+	 * @see #refreshStrategy()
+	 * @see RefreshStrategy
 	 */
 	@Override
 	void refresh();
@@ -248,9 +270,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
 	 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
 	 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-	 * ({@link #mergeOnRefresh()}) will prevent that at a considerable performance cost.
-	 * @param afterRefresh called after a successful refresh, may be null
-	 * @see #mergeOnRefresh()
+	 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
+	 * @see #refreshStrategy()
+	 * @see RefreshStrategy
 	 */
 	@Override
 	void refreshThen(Consumer<Collection<R>> afterRefresh);
@@ -333,10 +355,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		Builder<R, C> itemValidator(Predicate<R> itemValidator);
 
 		/**
-		 * @param mergeOnRefresh if true the merge on refresh is used
+		 * @param refreshStrategy the refresh strategy to use
 		 * @return this builder instance
+		 * @see FilteredTableModel#refresh()
 		 */
-		Builder<R, C> mergeOnRefresh(boolean mergeOnRefresh);
+		Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy);
 
 		/**
 		 * @param asyncRefresh true if async refresh should be enabled

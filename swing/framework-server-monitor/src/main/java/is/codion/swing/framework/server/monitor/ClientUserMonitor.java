@@ -45,6 +45,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.model.component.table.FilteredTableModel.RefreshStrategy.MERGE;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -71,7 +72,7 @@ public final class ClientUserMonitor {
 	private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
 					FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValueProvider())
 									.itemSupplier(new UserHistoryItemSupplier())
-									.mergeOnRefresh(true)
+									.refreshStrategy(MERGE)
 									.build();
 
 	private final TaskScheduler updateScheduler;

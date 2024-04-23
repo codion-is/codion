@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.43
+### is.codion.swing.common.model
+- FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh(). 
 ### is.codion.swing.framework.ui
 - EntityTablePanel.TableControls.COPY_TABLE_DATA renamed COPY, COPY_CELL and COPY_ROWS added.
 
