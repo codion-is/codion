@@ -31,7 +31,8 @@ import java.util.Locale;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class TextTest {
 
@@ -67,22 +68,6 @@ public final class TextTest {
 		assertEquals(seven, strings.get(1));
 		assertEquals(four, strings.get(2));
 		assertEquals(five, strings.get(3));
-	}
-
-	@Test
-	void randomStringMinLengthExceedsMaxLength() {
-		assertThrows(IllegalArgumentException.class, () -> Text.randomString(3, 2));
-	}
-
-	@Test
-	void randomString() {
-		String randomString = Text.randomString(1, 1);
-		assertEquals(1, randomString.length());
-		randomString = Text.randomString(5, 5);
-		assertEquals(5, randomString.length());
-		randomString = Text.randomString(4, 10);
-		assertTrue(randomString.length() >= 4);
-		assertTrue(randomString.length() <= 10);
 	}
 
 	@Test

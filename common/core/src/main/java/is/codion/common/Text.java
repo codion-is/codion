@@ -36,9 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -67,29 +65,10 @@ public final class Text {
 	 */
 	public static final PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
 
-	private static final Random RANDOM = new Random();
 	private static final char SPACE = ' ';
 	private static final char UNDERSCORE = '_';
-	private static final String ALPHA_NUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	private Text() {}
-
-	/**
-	 * Creates a random string from alphanumeric uppercase characters
-	 * @param minimumLength the minimum length
-	 * @param maximumLength the maximum length
-	 * @return a random string
-	 */
-	public static String randomString(int minimumLength, int maximumLength) {
-		if (minimumLength > maximumLength) {
-			throw new IllegalArgumentException("Minimum length can not exceed maximum length");
-		}
-		int length = minimumLength == maximumLength ? minimumLength : RANDOM.nextInt(maximumLength - minimumLength) + minimumLength;
-
-		return IntStream.range(0, length)
-						.mapToObj(i -> String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
-						.collect(joining());
-	}
 
 	/**
 	 * Sorts the string representations of the list contents, using the space aware collator

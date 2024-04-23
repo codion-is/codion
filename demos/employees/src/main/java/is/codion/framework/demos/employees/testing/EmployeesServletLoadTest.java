@@ -18,7 +18,6 @@
  */
 package is.codion.framework.demos.employees.testing;
 
-import is.codion.common.Text;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.loadtest.LoadTest;
 import is.codion.common.model.loadtest.LoadTest.Scenario;
@@ -45,6 +44,8 @@ public final class EmployeesServletLoadTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+
+	private static final Random RANDOM = new Random();
 
 	private final LoadTest<EntityConnectionProvider> loadTest;
 
@@ -86,7 +87,7 @@ public final class EmployeesServletLoadTest {
 		public void perform(EntityConnectionProvider client) throws Exception {
 			List<Entity> departments = client.connection().select(all(Department.TYPE));
 			Entity entity = departments.get(new Random().nextInt(departments.size()));
-			entity.put(Department.LOCATION, Text.randomString(10, 13));
+			entity.put(Department.LOCATION, randomString(12));
 			client.connection().update(entity);
 		}
 	}
@@ -117,8 +118,8 @@ public final class EmployeesServletLoadTest {
 			int departmentNo = new Random().nextInt(5000);
 			client.connection().insert(client.entities().builder(Department.TYPE)
 							.with(Department.DEPARTMENT_NO, departmentNo)
-							.with(Department.NAME, Text.randomString(4, 8))
-							.with(Department.LOCATION, Text.randomString(5, 10))
+							.with(Department.NAME, randomString(6))
+							.with(Department.LOCATION, randomString(8))
 							.build());
 		}
 	}
@@ -133,12 +134,19 @@ public final class EmployeesServletLoadTest {
 			Entity department = departments.get(random.nextInt(departments.size()));
 			client.connection().insert(client.entities().builder(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, department)
-							.with(Employee.NAME, Text.randomString(5, 10))
+							.with(Employee.NAME, randomString(8))
 							.with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).get())
 							.with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
 							.with(Employee.HIREDATE, LocalDate.now())
 							.with(Employee.COMMISSION, random.nextDouble() * 500)
 							.build());
 		}
+	}
+
+	private static String randomString(int length) {
+		return RANDOM.ints(97, 122 + 1)
+						.limit(length)
+						.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+						.toString();
 	}
 }

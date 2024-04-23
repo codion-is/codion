@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity.test;
 
-import is.codion.common.Text;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -44,8 +43,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -58,6 +59,7 @@ public final class EntityTestUtil {
 	private static final int MININUM_RANDOM_NUMBER = -10_000;
 	private static final int MAXIMUM_RANDOM_NUMBER = 10_000;
 	private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
+	private static final String ALPHA_NUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final Random RANDOM = new Random();
 
 	private EntityTestUtil() {}
@@ -203,7 +205,9 @@ public final class EntityTestUtil {
 	private static String randomString(AttributeDefinition<?> attributeDefinition) {
 		int length = attributeDefinition.maximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : attributeDefinition.maximumLength();
 
-		return Text.randomString(length, length);
+		return IntStream.range(0, length)
+						.mapToObj(i -> String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
+						.collect(joining());
 	}
 
 	private static byte[] randomBlob(AttributeDefinition<?> attributeDefinition) {
