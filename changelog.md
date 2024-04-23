@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.43
+
 ## 0.17.42
 ### is.codion.common.core
 - Values added, extended by ValueSet, related refactoring.
