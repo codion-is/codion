@@ -420,12 +420,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
 	}
 
-	private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
-		return columns.stream()
-						.map(column -> getStringAt(row, column.getIdentifier()))
-						.collect(toList());
-	}
-
 	private boolean addItemInternal(R item) {
 		return addItemAtInternal(getRowCount(), item);
 	}
@@ -781,6 +775,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			return Text.delimitedString(columnHeader, rows.stream()
 							.map(row -> stringValues(row, columns))
 							.collect(toList()), String.valueOf(delimiter));
+		}
+
+		private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
+			return columns.stream()
+							.map(column -> getStringAt(row, column.getIdentifier()))
+							.collect(toList());
 		}
 	}
 }
