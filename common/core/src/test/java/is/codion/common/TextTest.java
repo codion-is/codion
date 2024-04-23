@@ -76,16 +76,6 @@ public final class TextTest {
 	}
 
 	@Test
-	void delimitedString() {
-		String result = "test\ttest2" + Separators.LINE_SEPARATOR + "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
-		assertEquals(result, Text.delimitedString(asList("test", "test2"),
-						asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
-		String resultNoHeader = "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
-		assertEquals(resultNoHeader, Text.delimitedString(emptyList(),
-						asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
-	}
-
-	@Test
 	void collate() {
 		String one = "Bláskuggi";
 		String two = "Blá skuggi";

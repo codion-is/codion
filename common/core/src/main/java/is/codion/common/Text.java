@@ -32,10 +32,9 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 
 /**
- * A utility class for working with text, such as sorting and reading from files
+ * A utility class for working with text, such as collating and padding.
  */
 public final class Text {
 
@@ -115,26 +114,6 @@ public final class Text {
 	 */
 	public static String leftPad(String string, int length, char padChar) {
 		return padString(string, length, padChar, true);
-	}
-
-	/**
-	 * Creates a delimited string from the given input lists.
-	 * @param header the header
-	 * @param lines the lines
-	 * @param columnDelimiter the column delimiter
-	 * @return a String comprised of the given header and lines using the given column delimiter
-	 */
-	public static String delimitedString(List<String> header, List<List<String>> lines, String columnDelimiter) {
-		requireNonNull(header, "header");
-		requireNonNull(lines, "lines");
-		requireNonNull(columnDelimiter, "delimiter");
-		StringBuilder contents = new StringBuilder();
-		contents.append(String.join(columnDelimiter, header))
-						.append(header.isEmpty() ? "" : Separators.LINE_SEPARATOR)
-						.append(lines.stream().map(line -> String.join(columnDelimiter, line))
-										.collect(joining(Separators.LINE_SEPARATOR)));
-
-		return contents.toString();
 	}
 
 	/**

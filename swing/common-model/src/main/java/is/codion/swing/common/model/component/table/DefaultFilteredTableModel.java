@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.Text;
+import is.codion.common.Separators;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
@@ -52,9 +52,10 @@ import java.util.stream.Stream;
 
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
 import static is.codion.common.model.table.TableSummaryModel.tableSummaryModel;
-import static java.util.Collections.emptyList;
+import static java.lang.String.join;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
@@ -766,15 +767,20 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 				columns.addAll(columnModel().hidden());
 			}
 
-			List<String> columnHeader = header ?
-							columns.stream()
-											.map(column -> String.valueOf(column.getHeaderValue()))
-											.collect(toList()) :
-							emptyList();
-
-			return Text.delimitedString(columnHeader, rows.stream()
+			List<List<String>> lines = new ArrayList<>();
+			if (header) {
+				lines.add(columns.stream()
+								.map(column -> String.valueOf(column.getHeaderValue()))
+								.collect(toList()));
+			}
+			lines.addAll(rows.stream()
 							.map(row -> stringValues(row, columns))
-							.collect(toList()), String.valueOf(delimiter));
+							.collect(toList()));
+
+			return new StringBuilder()
+							.append(lines.stream().map(line -> join(String.valueOf(delimiter), line))
+											.collect(joining(Separators.LINE_SEPARATOR)))
+							.toString();
 		}
 
 		private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {

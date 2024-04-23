@@ -6,6 +6,7 @@ Codion Change Log
 - Text.delimitedString() bug fixed, no header resulted caused a line break.
 - Text.randomString() removed.
 - Text.textFileContents() removed.
+- Text.delimitedString() removed.
 ### is.codion.swing.common.model
 - FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh().
 - FilteredTableModel.rowsAsDelimitedString() replaced with export().
