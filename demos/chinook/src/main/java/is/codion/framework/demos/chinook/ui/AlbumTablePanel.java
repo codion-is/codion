@@ -101,10 +101,10 @@ public final class AlbumTablePanel extends EntityTablePanel {
 
 	private static final class TagComponentValue extends AbstractComponentValue<List<String>, AlbumTagPanel> {
 
-		private TagComponentValue(List<String> initialValue) {
+		private TagComponentValue(List<String> tags) {
 			super(new AlbumTagPanel(Components.list(new DefaultListModel<String>())
 							.items()
-							.initialValue(initialValue)
+							.initialValue(tags)
 							.buildValue()));
 		}
 
