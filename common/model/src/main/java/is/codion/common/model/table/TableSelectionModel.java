@@ -60,9 +60,9 @@ public interface TableSelectionModel<R> {
 
 	/**
 	 * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.
-	 * @return an observer notified before the selection changes
+	 * @return an observer notified when the selection is about to change
 	 */
-	EventObserver<?> beforeSelectionChangeEvent();
+	EventObserver<?> selectionChangingEvent();
 
 	/**
 	 * @return an observer notified each time the selection changes

@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh().
 - FilteredTableModel.rowsAsDelimitedString() replaced with export().
+- TableSelectionModel.beforeSelectionChangeEvent() renamed selectionChangingEvent().
 ### is.codion.swing.common.ui
 - FilteredTable.copyRowsAsTabDelimitedString() replaced with copyToClipboard() and copySelectedToClipboard().
 ### is.codion.swing.framework.ui

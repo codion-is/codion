@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionModel implements FilteredTableSelectionModel<R> {
 
-	private final Event<?> beforeSelectionChangeEvent = Event.event();
+	private final Event<?> selectionChangingEvent = Event.event();
 	private final Event<?> selectionEvent = Event.event();
 	private final Event<Integer> selectedIndexEvent = Event.event();
 	private final Event<List<Integer>> selectedIndexesEvent = Event.event();
@@ -239,31 +239,31 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
 	@Override
 	public void addSelectionInterval(int fromIndex, int toIndex) {
-		beforeSelectionChangeEvent.run();
+		selectionChangingEvent.run();
 		super.addSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void setSelectionInterval(int fromIndex, int toIndex) {
-		beforeSelectionChangeEvent.run();
+		selectionChangingEvent.run();
 		super.setSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void removeSelectionInterval(int fromIndex, int toIndex) {
-		beforeSelectionChangeEvent.run();
+		selectionChangingEvent.run();
 		super.removeSelectionInterval(fromIndex, toIndex);
 	}
 
 	@Override
 	public void insertIndexInterval(int fromIndex, int length, boolean before) {
-		beforeSelectionChangeEvent.run();
+		selectionChangingEvent.run();
 		super.insertIndexInterval(fromIndex, length, before);
 	}
 
 	@Override
 	public void removeIndexInterval(int fromIndex, int toIndex) {
-		beforeSelectionChangeEvent.run();
+		selectionChangingEvent.run();
 		super.removeIndexInterval(fromIndex, toIndex);
 	}
 
@@ -320,8 +320,8 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 	}
 
 	@Override
-	public EventObserver<?> beforeSelectionChangeEvent() {
-		return beforeSelectionChangeEvent.observer();
+	public EventObserver<?> selectionChangingEvent() {
+		return selectionChangingEvent.observer();
 	}
 
 	@Override
