@@ -654,8 +654,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final String rowsAsDelimitedString(char delimiter) {
-		return tableModel.rowsAsDelimitedString(delimiter);
+	public final Export export() {
+		return tableModel.export();
 	}
 
 	@Override

@@ -1342,8 +1342,8 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private Control createCopyTableDataWithHeaderControl() {
-		return Control.builder(table::copyRowsAsTabDelimitedString)
+	private Control createCopyRowsControl() {
+		return Control.builder(table::copyToClipboard)
 						.name(FrameworkMessages.copyTableWithHeader())
 						.build();
 	}
@@ -1531,7 +1531,7 @@ public class EntityTablePanel extends JPanel {
 		controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
 		controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
 		controls.get(TableControl.COPY_CELL).mapNull(this::createCopyCellControl);
-		controls.get(TableControl.COPY_ROWS).mapNull(this::createCopyTableDataWithHeaderControl);
+		controls.get(TableControl.COPY_ROWS).mapNull(this::createCopyRowsControl);
 		controls.get(TableControl.COPY).mapNull(this::createCopyControls);
 		if (configuration.includeSelectionModeControl) {
 			controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);

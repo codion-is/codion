@@ -202,10 +202,9 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 	<T> Collection<T> selectedValues(C columnIdentifier);
 
 	/**
-	 * @param delimiter the delimiter
-	 * @return the table rows as a tab delimited string, with column names as a header
+	 * @return a {@link Export} instance for exporting the table model data
 	 */
-	String rowsAsDelimitedString(char delimiter);
+	Export export();
 
 	/**
 	 * Default {@link RefreshStrategy#CLEAR}
@@ -371,6 +370,40 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 		 * @return a new {@link FilteredTableModel} instance.
 		 */
 		FilteredTableModel<R, C> build();
+	}
+
+	/**
+	 * Exports the table data to a String.
+	 */
+	interface Export {
+		/**
+		 * @param delimiter the column delimiter (TAB by default)
+		 * @return this Export instance
+		 */
+		Export delimiter(char delimiter);
+
+		/**
+		 * @param header include a column header
+		 * @return this Export instance
+		 */
+		Export header(boolean header);
+
+		/**
+		 * @param hidden include hidden columns
+		 * @return this Export instance
+		 */
+		Export hidden(boolean hidden);
+
+		/**
+		 * @param selected include only selected rows (default false)
+		 * @return this Export instance
+		 */
+		Export selected(boolean selected);
+
+		/**
+		 * @return the table data exported to a String
+		 */
+		String get();
 	}
 
 	/**

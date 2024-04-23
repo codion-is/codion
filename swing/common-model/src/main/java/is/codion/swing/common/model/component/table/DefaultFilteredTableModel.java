@@ -52,6 +52,7 @@ import java.util.stream.Stream;
 
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
 import static is.codion.common.model.table.TableSummaryModel.tableSummaryModel;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -370,20 +371,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	}
 
 	@Override
-	public String rowsAsDelimitedString(char delimiter) {
-		List<Integer> rows = selectionModel.isSelectionEmpty() ?
-						IntStream.range(0, getRowCount())
-										.boxed()
-										.collect(toList()) :
-						selectionModel.getSelectedIndexes();
-
-		List<FilteredTableColumn<C>> visibleColumns = columnModel().visible();
-
-		return Text.delimitedString(visibleColumns.stream()
-						.map(column -> String.valueOf(column.getHeaderValue()))
-						.collect(toList()), rows.stream()
-						.map(row -> stringValues(row, visibleColumns))
-						.collect(toList()), String.valueOf(delimiter));
+	public Export export() {
+		return new DefaultExport();
 	}
 
 	@Override
@@ -736,6 +725,62 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 			public boolean test(R r) {
 				return true;
 			}
+		}
+	}
+
+	private final class DefaultExport implements Export {
+
+		private char delimiter = '\t';
+		private boolean header = true;
+		private boolean hidden = false;
+		private boolean selected = false;
+
+		@Override
+		public Export delimiter(char delimiter) {
+			this.delimiter = delimiter;
+			return this;
+		}
+
+		@Override
+		public Export header(boolean header) {
+			this.header = header;
+			return this;
+		}
+
+		@Override
+		public Export hidden(boolean hidden) {
+			this.hidden = hidden;
+			return this;
+		}
+
+		@Override
+		public Export selected(boolean selected) {
+			this.selected = selected;
+			return this;
+		}
+
+		@Override
+		public String get() {
+			List<Integer> rows = selected ?
+							selectionModel.getSelectedIndexes() :
+							IntStream.range(0, getRowCount())
+											.boxed()
+											.collect(toList());
+
+			List<FilteredTableColumn<C>> columns = new ArrayList<>(columnModel().visible());
+			if (hidden) {
+				columns.addAll(columnModel().hidden());
+			}
+
+			List<String> columnHeader = header ?
+							columns.stream()
+											.map(column -> String.valueOf(column.getHeaderValue()))
+											.collect(toList()) :
+							emptyList();
+
+			return Text.delimitedString(columnHeader, rows.stream()
+							.map(row -> stringValues(row, columns))
+							.collect(toList()), String.valueOf(delimiter));
 		}
 	}
 }

@@ -5,7 +5,10 @@ Codion Change Log
 ### is.codion.common.core
 - Text.delimitedString() bug fixed, no header resulted caused a line break.
 ### is.codion.swing.common.model
-- FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh(). 
+- FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh().
+- FilteredTableModel.rowsAsDelimitedString() replaced with export().
+### is.codion.swing.common.ui
+- FilteredTable.copyRowsAsTabDelimitedString() replaced with copyToClipboard() and copySelectedToClipboard().
 ### is.codion.swing.framework.ui
 - EntityTablePanel.TableControls.COPY_TABLE_DATA renamed COPY, COPY_CELL and COPY_ROWS added.
 

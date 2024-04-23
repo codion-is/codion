@@ -85,7 +85,10 @@ public final class LookupTableModel extends SwingEntityTableModel {
 	}
 
 	private void exportCSV(File file) throws IOException {
-		Files.write(file.toPath(), singletonList(rowsAsDelimitedString(',')));
+		Files.write(file.toPath(), singletonList(export()
+						.delimiter(',')
+						.selected(true)
+						.get()));
 	}
 
 	private void exportJSON(File file) throws IOException {

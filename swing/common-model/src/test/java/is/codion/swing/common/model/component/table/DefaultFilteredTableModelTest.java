@@ -862,7 +862,7 @@ public final class DefaultFilteredTableModelTest {
 	}
 
 	@Test
-	void tableDataAsDelimitedString() {
+	void export() {
 		tableModel.refresh();
 
 		String expected = "0" + Separators.LINE_SEPARATOR +
@@ -871,7 +871,20 @@ public final class DefaultFilteredTableModelTest {
 						"c" + Separators.LINE_SEPARATOR +
 						"d" + Separators.LINE_SEPARATOR +
 						"e";
-		assertEquals(expected, tableModel.rowsAsDelimitedString('\t'));
+		assertEquals(expected, tableModel.export()
+						.delimiter('\t')
+						.get());
+
+		tableModel.selectionModel().setSelectedIndexes(Arrays.asList(0, 1, 3));
+
+		String selected = "a" + Separators.LINE_SEPARATOR +
+						"b" + Separators.LINE_SEPARATOR +
+						"d";
+		assertEquals(selected, tableModel.export()
+						.delimiter('\t')
+						.header(false)
+						.selected(true)
+						.get());
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
