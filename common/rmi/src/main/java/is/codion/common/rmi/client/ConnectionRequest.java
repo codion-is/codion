@@ -24,6 +24,7 @@ import is.codion.common.version.Version;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -59,7 +60,7 @@ public interface ConnectionRequest {
 	/**
 	 * @return the client version
 	 */
-	Version clientVersion();
+	Optional<Version> clientVersion();
 
 	/**
 	 * @return the version of Codion the client is using

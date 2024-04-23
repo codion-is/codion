@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -94,7 +95,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	}
 
 	@Override
-	public Version clientVersion() {
+	public Optional<Version> clientVersion() {
 		return connectionRequest.clientVersion();
 	}
 
@@ -140,7 +141,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 			builder.append(" (databaseUser: ").append(databaseUser).append(")");
 		}
 		builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.clientTypeId())
-						.append(connectionRequest.clientVersion() != null ? "-" + connectionRequest.clientVersion() : "")
+						.append(connectionRequest.clientVersion().map(version -> "-" + version).orElse(""))
 						.append("] - ").append(connectionRequest.clientId().toString());
 
 		return builder.toString();

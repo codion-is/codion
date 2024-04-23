@@ -8,6 +8,8 @@ Codion Change Log
 - Text.textFileContents() removed.
 - Text.delimitedString() removed.
 - NullOrEmpty removed, nullOrEmpty(String) moved to Text.
+### is.codion.common.rmi
+- ConnectionRequest.clientVersion() now returns Optional.
 ### is.codion.swing.common.model
 - FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh().
 - FilteredTableModel.rowsAsDelimitedString() replaced with export().

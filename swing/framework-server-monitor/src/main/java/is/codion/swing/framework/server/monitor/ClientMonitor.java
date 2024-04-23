@@ -151,7 +151,9 @@ public final class ClientMonitor {
 				case CLIENT_TYPE:
 					return row.clientTypeId();
 				case CLIENT_VERSION:
-					return row.clientVersion() == null ? null : row.clientVersion().toString();
+					return row.clientVersion()
+									.map(Object::toString)
+									.orElse(null);
 				case CODION_VERSION:
 					return row.frameworkVersion().toString();
 				case CLIENT_ID:

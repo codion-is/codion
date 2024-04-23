@@ -40,7 +40,7 @@ public final class ClientsTest {
 						.build();
 		assertEquals(user, request.user());
 		assertEquals(uuid, request.clientId());
-		assertNull(request.clientVersion());
+		assertFalse(request.clientVersion().isPresent());
 		assertEquals(Version.version(), request.frameworkVersion());
 		assertEquals(uuid.hashCode(), request.hashCode());
 		assertEquals("test", request.clientTypeId());

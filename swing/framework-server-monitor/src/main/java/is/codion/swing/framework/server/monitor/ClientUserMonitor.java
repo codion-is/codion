@@ -235,7 +235,7 @@ public final class ClientUserMonitor {
 				for (RemoteClient remoteClient : server.clients()) {
 					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
 									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
-									remoteClient.clientVersion(), remoteClient.frameworkVersion());
+									remoteClient.clientVersion().orElse(null), remoteClient.frameworkVersion());
 					int index = items.indexOf(newUserInfo);
 					if (index == -1) {
 						items.add(newUserInfo);
