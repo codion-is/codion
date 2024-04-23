@@ -28,7 +28,7 @@ import java.util.Locale;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class TextTest {
 
@@ -110,5 +110,15 @@ public final class TextTest {
 		assertEquals(emptyList(), Text.parseCommaSeparatedValues(""));
 		assertEquals(emptyList(), Text.parseCommaSeparatedValues(", ,  , "));
 		assertEquals(emptyList(), Text.parseCommaSeparatedValues(null));
+	}
+
+	@Test
+	void nullOrEmpty() {
+		assertTrue(Text.nullOrEmpty((String[]) null));
+		assertTrue(Text.nullOrEmpty("sadf", null));
+		assertTrue(Text.nullOrEmpty("asdf", ""));
+
+		assertFalse(Text.nullOrEmpty("asdf"));
+		assertFalse(Text.nullOrEmpty("asdf", "wefs"));
 	}
 }

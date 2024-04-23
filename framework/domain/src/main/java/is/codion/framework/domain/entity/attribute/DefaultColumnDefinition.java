@@ -37,7 +37,7 @@ import java.time.OffsetTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -149,6 +148,33 @@ public final class Text {
 		}
 
 		return stringBuilder.toString();
+	}
+
+	/**
+	 * Returns true if the given string is null or empty.
+	 * @param string the string to check
+	 * @return true if the given string is null or empty, false otherwise
+	 */
+	public static boolean nullOrEmpty(String string) {
+		return string == null || string.isEmpty();
+	}
+
+	/**
+	 * Returns true if any of the given strings is null or empty.
+	 * @param strings the strings to check
+	 * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
+	 */
+	public static boolean nullOrEmpty(String... strings) {
+		if (strings == null || strings.length == 0) {
+			return true;
+		}
+		for (int i = 0; i < strings.length; i++) {
+			if (nullOrEmpty(strings[i])) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static final class SpaceAwareComparator<T> implements Comparator<T>, Serializable {

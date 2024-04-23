@@ -99,7 +99,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;

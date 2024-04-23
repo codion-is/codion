@@ -37,7 +37,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import static is.codion.common.NullOrEmpty.notNull;
 import static is.codion.common.db.operation.FunctionType.functionType;
 
 /**
@@ -248,7 +247,7 @@ public interface World {
 		public Integer get(SourceValues sourceValues) {
 			Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
 			Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
-			if (notNull(percentage, country) && country.isNotNull(Country.POPULATION)) {
+			if (percentage != null && country != null && country.isNotNull(Country.POPULATION)) {
 				return Double.valueOf(country.get(Country.POPULATION) * (percentage / 100)).intValue();
 			}
 

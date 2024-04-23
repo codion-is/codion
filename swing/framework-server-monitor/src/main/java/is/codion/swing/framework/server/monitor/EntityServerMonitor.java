@@ -27,7 +27,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

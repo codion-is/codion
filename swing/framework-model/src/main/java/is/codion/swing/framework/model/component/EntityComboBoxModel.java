@@ -47,7 +47,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -213,11 +212,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 	/**
 	 * Filters this combo box model so that only items referencing the given keys via the given foreign key are shown.
 	 * @param foreignKey the foreign key
-	 * @param keys the keys, null or empty for none
+	 * @param keys the keys, an empty Collection for none
 	 */
 	public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Entity.Key> keys) {
 		requireNonNull(foreignKey);
-		if (nullOrEmpty(keys)) {
+		requireNonNull(keys);
+		if (keys.isEmpty()) {
 			foreignKeyFilterKeys.remove(foreignKey);
 		}
 		else {
@@ -353,7 +353,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		}
 		//if foreign key filter keys have been set previously, initialize with one of those
 		Collection<Entity.Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
-		if (!nullOrEmpty(filterKeys)) {
+		if (!filterKeys.isEmpty()) {
 			foreignKeyModel.select(filterKeys.iterator().next());
 		}
 		if (filter) {

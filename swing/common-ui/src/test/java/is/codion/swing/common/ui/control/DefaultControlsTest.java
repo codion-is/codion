@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {

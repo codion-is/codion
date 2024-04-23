@@ -52,7 +52,6 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadFactory;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.Serializer.deserialize;
 import static is.codion.common.Serializer.serialize;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -203,7 +202,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public final Entity selectSingle(Select select) throws DatabaseException {
 		List<Entity> selected = select(select);
-		if (nullOrEmpty(selected)) {
+		if (selected.isEmpty()) {
 			throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
 		}
 		if (selected.size() > 1) {

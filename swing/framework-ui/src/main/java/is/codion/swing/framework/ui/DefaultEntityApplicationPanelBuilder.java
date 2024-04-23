@@ -58,7 +58,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_TYPE;
 import static is.codion.swing.common.ui.Utilities.*;

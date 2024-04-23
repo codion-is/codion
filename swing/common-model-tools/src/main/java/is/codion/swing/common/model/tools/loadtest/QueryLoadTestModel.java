@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.emptyList;
 
 /**
@@ -161,7 +160,7 @@ public final class QueryLoadTestModel {
 		/**
 		 * For overriding, returns the parameter values to use for the next query execution,
 		 * these must of course match the parameter slots in the underlying query.
-		 * @return a list of parameters for the next query run
+		 * @return a list of parameters for the next query run or an empty list in case of no parameters
 		 */
 		protected List<Object> parameters() {
 			return emptyList();
@@ -169,11 +168,9 @@ public final class QueryLoadTestModel {
 
 		private void setStatementParameters(PreparedStatement statement) throws SQLException {
 			List<Object> parameters = parameters();
-			if (!nullOrEmpty(parameters)) {
-				int index = 1;
-				for (Object parameter : parameters) {
-					statement.setObject(index++, parameter);
-				}
+			int index = 1;
+			for (Object parameter : parameters) {
+				statement.setObject(index++, parameter);
 			}
 		}
 

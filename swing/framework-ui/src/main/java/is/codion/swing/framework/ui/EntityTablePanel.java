@@ -101,7 +101,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;

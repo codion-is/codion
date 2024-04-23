@@ -50,7 +50,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;

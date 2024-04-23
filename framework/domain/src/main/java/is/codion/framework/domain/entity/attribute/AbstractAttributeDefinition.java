@@ -42,7 +42,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
-import static is.codion.common.NullOrEmpty.notNull;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -754,7 +753,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (numberFormat instanceof DecimalFormat) {
 				Character defaultGroupingSeparator = GROUPING_SEPARATOR.get();
 				Character defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
-				if (notNull(defaultGroupingSeparator, defaultDecimalSeparator)) {
+				if (defaultGroupingSeparator != null && defaultDecimalSeparator != null) {
 					DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
 					symbols.setDecimalSeparator(defaultDecimalSeparator);
 					symbols.setGroupingSeparator(defaultGroupingSeparator);

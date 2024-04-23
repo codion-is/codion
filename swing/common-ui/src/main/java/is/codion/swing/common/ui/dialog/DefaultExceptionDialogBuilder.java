@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialogBuilder>

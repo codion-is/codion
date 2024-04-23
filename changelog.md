@@ -7,6 +7,7 @@ Codion Change Log
 - Text.randomString() removed.
 - Text.textFileContents() removed.
 - Text.delimitedString() removed.
+- NullOrEmpty removed, nullOrEmpty(String) moved to Text.
 ### is.codion.swing.common.model
 - FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh().
 - FilteredTableModel.rowsAsDelimitedString() replaced with export().

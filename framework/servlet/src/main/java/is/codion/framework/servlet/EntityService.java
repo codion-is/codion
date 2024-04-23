@@ -77,7 +77,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.util.Objects.requireNonNull;

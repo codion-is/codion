@@ -186,7 +186,7 @@ public final class EntityComboBoxModelTest {
 
 		//non strict filtering
 		comboBoxModel.strictForeignKeyFiltering().set(false);
-		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
+		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, emptyList());
 		assertEquals(6, comboBoxModel.getSize());
 		boolean kingFound = false;
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -292,7 +292,7 @@ public final class EntityComboBoxModelTest {
 		assertEquals(0, comboBoxModel.getSize());
 
 		comboBoxModel.condition().set(() -> Condition.custom(Employee.CONDITION_3_TYPE));
-		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
+		comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, emptyList());
 
 		comboBoxModel.refresh();
 		assertEquals(1, comboBoxModel.getSize());

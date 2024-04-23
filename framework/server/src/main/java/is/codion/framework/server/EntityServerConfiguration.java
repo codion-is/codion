@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 

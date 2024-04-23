@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 

@@ -32,7 +32,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.security.KeyStore;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 
 /**
  * Utility methods for remote clients

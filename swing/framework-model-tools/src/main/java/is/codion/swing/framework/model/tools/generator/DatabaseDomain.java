@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.stream.Collectors.joining;

@@ -42,7 +42,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -227,7 +226,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	public List<Exception> exceptions(String scenarioName) {
 		synchronized (counter) {
 			Collection<Exception> exceptions = counter.scenarioExceptions.get(scenarioName);
-			return exceptions == null ? Collections.emptyList() : new ArrayList<>(exceptions);
+			return exceptions == null ? emptyList() : new ArrayList<>(exceptions);
 		}
 	}
 
@@ -471,8 +470,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		private void calculateScenarioDuration(Scenario<T> scenario) {
-			Collection<Integer> durations = scenarioDurations.get(scenario.name());
-			if (!nullOrEmpty(durations)) {
+			Collection<Integer> durations = scenarioDurations.getOrDefault(scenario.name(), emptyList());
+			if (!durations.isEmpty()) {
 				int totalDuration = 0;
 				int minDuration = -1;
 				int maxDuration = -1;

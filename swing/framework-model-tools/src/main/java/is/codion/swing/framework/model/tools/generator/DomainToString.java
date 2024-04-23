@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.Separators.LINE_SEPARATOR;
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 

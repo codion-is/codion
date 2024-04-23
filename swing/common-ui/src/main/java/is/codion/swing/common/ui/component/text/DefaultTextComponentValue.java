@@ -22,7 +22,7 @@ import javax.swing.text.JTextComponent;
 import java.text.Format;
 import java.text.ParseException;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.Text.nullOrEmpty;
 
 final class DefaultTextComponentValue<T, C extends JTextComponent> extends AbstractTextComponentValue<T, C> {
 
