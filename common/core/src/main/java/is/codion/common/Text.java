@@ -162,7 +162,7 @@ public final class Text {
 		requireNonNull(columnDelimiter, "delimiter");
 		StringBuilder contents = new StringBuilder();
 		contents.append(String.join(columnDelimiter, header))
-						.append(Separators.LINE_SEPARATOR)
+						.append(header.isEmpty() ? "" : Separators.LINE_SEPARATOR)
 						.append(lines.stream().map(line -> String.join(columnDelimiter, line))
 										.collect(joining(Separators.LINE_SEPARATOR)));
 

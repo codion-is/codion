@@ -99,6 +99,9 @@ public final class TextTest {
 		String result = "test\ttest2" + Separators.LINE_SEPARATOR + "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
 		assertEquals(result, Text.delimitedString(asList("test", "test2"),
 						asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
+		String resultNoHeader = "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
+		assertEquals(resultNoHeader, Text.delimitedString(emptyList(),
+						asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
 	}
 
 	@Test

@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.43
+### is.codion.common.core
+- Text.delimitedString() bug fixed, no header resulted caused a line break.
 ### is.codion.swing.common.model
 - FilteredTableModel.refreshStrategy() added, replacing mergeOnRefresh(). 
 ### is.codion.swing.framework.ui
