@@ -214,6 +214,7 @@ configure(subprojects) {
 }
 
 tasks.register("tagRelease") {
+    dependsOn spotlessCheck
     doLast {
         if (project.version.contains("SNAPSHOT")) {
             throw new GradleException("Thou shalt not tag a snapshot release")
