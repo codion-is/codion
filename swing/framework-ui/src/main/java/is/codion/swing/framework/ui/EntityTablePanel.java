@@ -243,31 +243,124 @@ public class EntityTablePanel extends JPanel {
 	 * The standard controls available in a table panel
 	 */
 	public enum TableControl {
+		/**
+		 * A {@link Control} for the main print action.
+		 */
 		PRINT,
+		/**
+		 * A {@link Control} for deleting the selected rows.
+		 */
 		DELETE,
+		/**
+		 * A {@link Control} for viewing the dependencies of the selected rows.
+		 */
 		VIEW_DEPENDENCIES,
+		/**
+		 * A {@link Control} for adding a new entity. Requires an edit panel to be available.
+		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
+		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
+		 */
 		ADD,
+		/**
+		 * A {@link Control} for editing the selected entity. Requires an edit panel to be available.
+		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
+		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
+		 */
 		EDIT,
+		/**
+		 * A {@link Controls} instance containing edit controls for all editable attributes.
+		 */
 		EDIT_ATTRIBUTE,
+		/**
+		 * A {@link Control} for editing the value of a single attribute for the selected entities.
+		 */
 		EDIT_SELECTED_ATTRIBUTE,
+		/**
+		 * Either a {@link Control} for displaying a dialog for selecting the visible table columns
+		 * or a {@link Controls} instance containing a {@link ToggleControl} for each columns visibility.
+		 * @see EntityTablePanel.Config#columnSelection(ColumnSelection)
+		 */
 		SELECT_COLUMNS,
+		/**
+		 * A {@link Control} for resetting the columns to their original visibility and location.
+		 */
 		RESET_COLUMNS,
+		/**
+		 * A {@link Control} for displaying a dialog for configuring the column auto-resize-mode.
+		 * @see JTable#setAutoResizeMode(int)
+		 */
 		COLUMN_AUTO_RESIZE_MODE,
+		/**
+		 * A {@link Control} for toggling between single and multi selection mode.
+		 */
 		SELECTION_MODE,
+		/**
+		 * A {@link Control} for clearing the data from the table.
+		 * @see SwingEntityTableModel#clear()
+		 */
 		CLEAR,
+		/**
+		 * A {@link Control} for refreshing the table data.
+		 * @see SwingEntityTableModel#refresh()
+		 */
 		REFRESH,
+		/**
+		 * A {@link ToggleControl} for showing/hiding the summary panel.
+		 */
 		TOGGLE_SUMMARY_PANEL,
+		/**
+		 * A {@link Control} for toggling between condition panel states.
+		 * @see #toggleConditionPanel()
+		 */
 		TOGGLE_CONDITION_PANEL,
+		/**
+		 * A {@link Control} for showing/hiding the condition panel.
+		 */
 		CONDITION_PANEL_VISIBLE,
+		/**
+		 * A {@link Control} for toggling between filter panel states.
+		 * @see #toggleFilterPanel()
+		 */
 		TOGGLE_FILTER_PANEL,
+		/**
+		 * A {@link Control} for showing/hiding the filter panel.
+		 */
 		FILTER_PANEL_VISIBLE,
+		/**
+		 * A {@link Control} for clearing the table selection.
+		 */
 		CLEAR_SELECTION,
+		/**
+		 * A {@link Control} for moving the selection up, with wrap-around.
+		 * @see
+		 */
 		MOVE_SELECTION_UP,
+		/**
+		 * A {@link Control} for moving the selection down, with wrap-around.
+		 */
 		MOVE_SELECTION_DOWN,
+		/**
+		 * A {@link Controls} instance containing controls for copying either cell or table data.
+		 */
 		COPY_TABLE_DATA,
+		/**
+		 * A {@link Control} for requesting table focus.
+		 */
 		REQUEST_TABLE_FOCUS,
+		/**
+		 * A {@link Control} for displaying a dialog for selecting a condition panel.
+		 */
 		SELECT_CONDITION_PANEL,
+		/**
+		 * A {@link Control} for displaying a dialog for selecting a filter panel.
+		 */
 		SELECT_FILTER_PANEL,
+		/**
+		 * A {@link Controls} instance containing controls for configuring columns.
+		 * @see #SELECT_COLUMNS
+		 * @see #RESET_COLUMNS
+		 * @see #COLUMN_AUTO_RESIZE_MODE
+		 */
 		CONFIGURE_COLUMNS
 	}
 
