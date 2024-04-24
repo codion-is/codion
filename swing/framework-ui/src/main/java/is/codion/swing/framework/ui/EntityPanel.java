@@ -1490,7 +1490,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Controls the detail panels for a EntityPanel instance.
 	 * Provides a way to change the {@link PanelState} and to
-	 * select one detail panel.
+	 * respond to detail panel activation.
 	 */
 	public interface DetailController {
 

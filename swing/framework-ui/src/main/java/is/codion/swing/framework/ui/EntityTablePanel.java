@@ -901,14 +901,16 @@ public class EntityTablePanel extends JPanel {
 			popupControls.add(printControls);
 			separatorRequired.set(true);
 		}
-		Controls columnControls = createColumnControls();
-		if (columnControls.notEmpty()) {
-			if (separatorRequired.get()) {
-				popupControls.addSeparator();
-			}
-			popupControls.add(columnControls);
-			separatorRequired.set(true);
-		}
+		control(TableControl.CONFIGURE_COLUMNS).optional()
+						.map(Controls.class::cast)
+						.filter(Controls::notEmpty)
+						.ifPresent(columnControls -> {
+							if (separatorRequired.get()) {
+								popupControls.addSeparator();
+							}
+							popupControls.add(columnControls);
+							separatorRequired.set(true);
+						});
 		control(TableControl.SELECTION_MODE).optional().ifPresent(control -> {
 			if (separatorRequired.get()) {
 				popupControls.addSeparator();

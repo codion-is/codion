@@ -235,7 +235,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * Sets the component that should receive the focus when the UI is cleared or activated.
-	 * Overrides the value set via {@link #initialFocusAttribute()}
+	 * Takes precedence over the one set via {@link #initialFocusAttribute()}
 	 * @return the Value controlling the initial focus component
 	 */
 	public final Value<JComponent> initialFocusComponent() {
@@ -255,7 +255,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	/**
 	 * Sets the component that should receive the focus after an insert has been performed.
-	 * Overrides the value set via {@link #afterInsertFocusAttribute()}
+	 * Takes precedence over the one set via {@link #afterInsertFocusAttribute()}
 	 * @return the Value controlling the after insert focus component
 	 */
 	public final Value<JComponent> afterInsertFocusComponent() {
