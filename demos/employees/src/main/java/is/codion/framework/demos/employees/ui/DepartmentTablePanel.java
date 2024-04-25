@@ -18,12 +18,12 @@
  */
 package is.codion.framework.demos.employees.ui;
 
-import is.codion.common.state.StateObserver;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.report.ReportException;
 import is.codion.framework.demos.employees.domain.Employees.Department;
 import is.codion.framework.demos.employees.domain.Employees.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -44,8 +44,18 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	}
 	// end::constructor[]
 
+	// tag::createPrintMenuControls[] todo
+	@Override
+	protected void setupControls() {
+		control(TableControl.PRINT).set(Control.builder(this::viewEmployeeReport)
+						.name("Employee Report")
+						.enabled(tableModel().selectionModel().selectionNotEmpty())
+						.build());
+	}
+	// end::createPrintMenuControls[]
+
 	// tag::viewEmployeeReport[]
-	public void viewEmployeeReport() throws Exception {
+	private void viewEmployeeReport() throws ReportException, DatabaseException {
 		Collection<Integer> departmentNumbers =
 						Entity.distinct(Department.DEPARTMENT_NO,
 										tableModel().selectionModel().getSelectedItems());
@@ -62,18 +72,4 @@ public class DepartmentTablePanel extends EntityTablePanel {
 						.show();
 	}
 	// end::viewEmployeeReport[]
-
-	// tag::createPrintMenuControls[]
-	@Override
-	protected Controls createPrintMenuControls() {
-		StateObserver selectionNotEmpty =
-						tableModel().selectionModel().selectionNotEmpty();
-
-		return super.createPrintMenuControls()
-						.add(Control.builder(this::viewEmployeeReport)
-										.name("Employee Report")
-										.enabled(selectionNotEmpty)
-										.build());
-	}
 }
-// end::createPrintMenuControls[]

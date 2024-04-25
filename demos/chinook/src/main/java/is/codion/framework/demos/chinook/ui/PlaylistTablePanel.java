@@ -53,8 +53,8 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void setupControls() {
-		// No need for the edit attribute control in the popup menu
-		control(TableControl.EDIT_ATTRIBUTE).clear();
+		// No need for the edit attribute controla in the popup menu
+		control(TableControl.EDIT_ATTRIBUTE_CONTROLS).clear();
 	}
 
 	private void randomPlaylist() throws DatabaseException {

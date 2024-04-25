@@ -248,6 +248,10 @@ public class EntityTablePanel extends JPanel {
 		 */
 		PRINT,
 		/**
+		 * A {@link Controls} instance containing controls for printing.
+		 */
+		PRINT_CONTROLS,
+		/**
 		 * A {@link Control} for deleting the selected rows.
 		 */
 		DELETE,
@@ -270,7 +274,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * A {@link Controls} instance containing edit controls for all editable attributes.
 		 */
-		EDIT_ATTRIBUTE,
+		EDIT_ATTRIBUTE_CONTROLS,
 		/**
 		 * A {@link Control} for editing the value of a single attribute for the selected entities.
 		 */
@@ -309,6 +313,10 @@ public class EntityTablePanel extends JPanel {
 		 */
 		TOGGLE_SUMMARY_PANEL,
 		/**
+		 * A {@link Controls} instance containing the condition panel controls.
+		 */
+		CONDITION_CONTROLS,
+		/**
 		 * A {@link Control} for toggling between condition panel states.
 		 * @see #toggleConditionPanel()
 		 */
@@ -317,6 +325,10 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Control} for showing/hiding the condition panel.
 		 */
 		CONDITION_PANEL_VISIBLE,
+		/**
+		 * A {@link Controls} instance containing the filter panel controls.
+		 */
+		FILTER_CONTROLS,
 		/**
 		 * A {@link Control} for toggling between filter panel states.
 		 * @see #toggleFilterPanel()
@@ -344,7 +356,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see #COPY_CELL
 		 * @see #COPY_ROWS
 		 */
-		COPY,
+		COPY_CONTROLS,
 		/**
 		 * A {@link Control} for copying the selected cell data.
 		 */
@@ -371,7 +383,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see #RESET_COLUMNS
 		 * @see #COLUMN_AUTO_RESIZE_MODE
 		 */
-		CONFIGURE_COLUMNS
+		COLUMN_CONTROLS
 	}
 
 	/**
@@ -701,8 +713,7 @@ public class EntityTablePanel extends JPanel {
 		if (!initialized) {
 			try {
 				setupComponents();
-				setupStandardControls();
-				setupControls();
+				configureControls();
 				addTablePopupMenu();
 				layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
 				setConditionPanelVisible(conditionPanelVisibleState.get());
@@ -877,7 +888,7 @@ public class EntityTablePanel extends JPanel {
 				});
 			}
 			else {
-				control(TableControl.EDIT_ATTRIBUTE).optional().ifPresent(control -> {
+				control(TableControl.EDIT_ATTRIBUTE_CONTROLS).optional().ifPresent(control -> {
 					popupControls.add(control);
 					separatorRequired.set(true);
 				});
@@ -896,12 +907,11 @@ public class EntityTablePanel extends JPanel {
 			separatorRequired.set(false);
 		}
 		addAdditionalControls(popupControls, additionalPopupMenuControls);
-		Controls printControls = createPrintMenuControls();
-		if (printControls != null && printControls.notEmpty()) {
-			popupControls.add(printControls);
+		control(TableControl.PRINT_CONTROLS).optional().ifPresent(controls -> {
+			popupControls.add(controls);
 			separatorRequired.set(true);
-		}
-		control(TableControl.CONFIGURE_COLUMNS).optional()
+		});
+		control(TableControl.COLUMN_CONTROLS).optional()
 						.map(Controls.class::cast)
 						.filter(Controls::notEmpty)
 						.ifPresent(columnControls -> {
@@ -918,21 +928,21 @@ public class EntityTablePanel extends JPanel {
 			popupControls.add(control);
 			separatorRequired.set(true);
 		});
-		if (configuration.includeConditionPanel && conditionPanel != null) {
+		control(TableControl.CONDITION_CONTROLS).optional().ifPresent(controls -> {
 			if (separatorRequired.get()) {
 				popupControls.addSeparator();
 			}
-			addConditionControls(popupControls);
+			popupControls.add(controls);
 			separatorRequired.set(true);
-		}
-		if (configuration.includeFilterPanel) {
+		});
+		control(TableControl.FILTER_CONTROLS).optional().ifPresent(controls -> {
 			if (separatorRequired.get()) {
 				popupControls.addSeparator();
 			}
-			addFilterControls(popupControls);
+			popupControls.add(controls);
 			separatorRequired.set(true);
-		}
-		control(TableControl.COPY).optional().ifPresent(control -> {
+		});
+		control(TableControl.COPY_CONTROLS).optional().ifPresent(control -> {
 			if (separatorRequired.get()) {
 				popupControls.addSeparator();
 			}
@@ -940,24 +950,6 @@ public class EntityTablePanel extends JPanel {
 		});
 
 		return popupControls;
-	}
-
-	/**
-	 * By default this method returns a {@link Controls} instance containing
-	 * the {@link Control} associated with {@link TableControl#PRINT}.
-	 * If no {@link Control} has been assigned to that control key,
-	 * an empty {@link Controls} instance is returned.
-	 * Override to add print actions, which will then appear in the table popup menu.
-	 * @return the print controls to display in the table popup menu
-	 */
-	protected Controls createPrintMenuControls() {
-		Controls.Builder builder = Controls.builder()
-						.name(Messages.print())
-						.mnemonic(Messages.printMnemonic())
-						.smallIcon(ICONS.print());
-		control(TableControl.PRINT).optional().ifPresent(builder::control);
-
-		return builder.build();
 	}
 
 	/**
@@ -1177,7 +1169,7 @@ public class EntityTablePanel extends JPanel {
 										.enabled(editSelectedEnabledObserver)
 										.build()));
 
-		return editControls;
+		return editControls.empty() ? null : editControls;
 	}
 
 	private StateObserver createEditSelectedEnabledObserver() {
@@ -1247,6 +1239,18 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
+	private Controls createPrintControls() {
+		Controls.Builder builder = Controls.builder()
+						.name(Messages.print())
+						.mnemonic(Messages.printMnemonic())
+						.smallIcon(ICONS.print());
+		control(TableControl.PRINT).optional().ifPresent(builder::control);
+
+		Controls printControls = builder.build();
+
+		return printControls.empty() ? null : printControls;
+	}
+
 	private Control createToggleConditionPanelControl() {
 		return Control.builder(this::toggleConditionPanel)
 						.smallIcon(ICONS.search())
@@ -1258,6 +1262,28 @@ public class EntityTablePanel extends JPanel {
 		return Control.control(this::selectConditionPanel);
 	}
 
+	private Controls createConditionControls() {
+		if (!configuration.includeConditionPanel || conditionPanel == null) {
+			return null;
+		}
+		Controls conditionControls = Controls.builder()
+						.name(FrameworkMessages.search())
+						.smallIcon(ICONS.search())
+						.build();
+		control(TableControl.CONDITION_PANEL_VISIBLE).optional().ifPresent(conditionControls::add);
+		Controls conditionPanelControls = conditionPanel.controls();
+		if (conditionPanelControls.notEmpty()) {
+			conditionControls.addAll(conditionPanelControls);
+			conditionControls.addSeparator();
+		}
+		conditionControls.add(ToggleControl.builder(tableModel.conditionRequired())
+						.name(MESSAGES.getString("require_query_condition"))
+						.description(MESSAGES.getString("require_query_condition_description"))
+						.build());
+
+		return conditionControls.empty() ? null : conditionControls;
+	}
+
 	private Control createToggleFilterPanelControl() {
 		return Control.builder(this::toggleFilterPanel)
 						.smallIcon(ICONS.filter())
@@ -1267,6 +1293,23 @@ public class EntityTablePanel extends JPanel {
 
 	private Control createSelectFilterPanelControl() {
 		return Control.control(this::selectFilterPanel);
+	}
+
+	private Controls createFilterControls() {
+		if (!configuration.includeFilterPanel) {
+			return null;
+		}
+		Controls filterControls = Controls.builder()
+						.name(FrameworkMessages.filter())
+						.smallIcon(ICONS.filter())
+						.build();
+		control(TableControl.FILTER_PANEL_VISIBLE).optional().ifPresent(filterControls::add);
+		Controls filterPanelControls = table.filterPanel().controls();
+		if (filterPanelControls.notEmpty()) {
+			filterControls.addAll(filterPanelControls);
+		}
+
+		return filterControls.empty() ? null : filterControls;
 	}
 
 	private Control createToggleSummaryPanelControl() {
@@ -1310,7 +1353,9 @@ public class EntityTablePanel extends JPanel {
 		control(TableControl.RESET_COLUMNS).optional().ifPresent(builder::control);
 		control(TableControl.COLUMN_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
 
-		return builder.build();
+		Controls columnControls = builder.build();
+
+		return columnControls.empty() ? null : columnControls;
 	}
 
 	private Control createConditionPanelControl() {
@@ -1492,7 +1537,7 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
 	}
 
-	private void setupStandardControls() {
+	private void configureControls() {
 		if (includeDeleteControl()) {
 			controls.get(TableControl.DELETE).mapNull(this::createDeleteControl);
 		}
@@ -1503,7 +1548,7 @@ public class EntityTablePanel extends JPanel {
 			controls.get(TableControl.EDIT).mapNull(this::createEditControl);
 		}
 		if (includeEditAttributeControls()) {
-			controls.get(TableControl.EDIT_ATTRIBUTE).mapNull(this::createEditAttributeControls);
+			controls.get(TableControl.EDIT_ATTRIBUTE_CONTROLS).mapNull(this::createEditAttributeControls);
 			controls.get(TableControl.EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
 		}
 		if (configuration.includeClearControl) {
@@ -1534,12 +1579,16 @@ public class EntityTablePanel extends JPanel {
 		controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
 		controls.get(TableControl.COPY_CELL).mapNull(this::createCopyCellControl);
 		controls.get(TableControl.COPY_ROWS).mapNull(this::createCopyRowsControl);
-		controls.get(TableControl.COPY).mapNull(this::createCopyControls);
+		controls.get(TableControl.COPY_CONTROLS).mapNull(this::createCopyControls);
 		if (configuration.includeSelectionModeControl) {
 			controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
 		}
 		controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
-		controls.get(TableControl.CONFIGURE_COLUMNS).mapNull(this::createColumnControls);
+		setupControls();
+		controls.get(TableControl.PRINT_CONTROLS).mapNull(this::createPrintControls);
+		controls.get(TableControl.CONDITION_CONTROLS).mapNull(this::createConditionControls);
+		controls.get(TableControl.FILTER_CONTROLS).mapNull(this::createFilterControls);
+		controls.get(TableControl.COLUMN_CONTROLS).mapNull(this::createColumnControls);
 	}
 
 	private boolean includeViewDependenciesControl() {
@@ -1575,41 +1624,6 @@ public class EntityTablePanel extends JPanel {
 							popupMenu.show(table, location.x, location.y);
 						}))
 						.enable(table);
-	}
-
-	private void addConditionControls(Controls popupControls) {
-		Controls conditionControls = Controls.builder()
-						.name(FrameworkMessages.search())
-						.smallIcon(ICONS.search())
-						.build();
-		control(TableControl.CONDITION_PANEL_VISIBLE).optional().ifPresent(conditionControls::add);
-		Controls conditionPanelControls = conditionPanel.controls();
-		if (conditionPanelControls.notEmpty()) {
-			conditionControls.addAll(conditionPanelControls);
-			conditionControls.addSeparator();
-		}
-		conditionControls.add(ToggleControl.builder(tableModel.conditionRequired())
-						.name(MESSAGES.getString("require_query_condition"))
-						.description(MESSAGES.getString("require_query_condition_description"))
-						.build());
-		if (conditionControls.notEmpty()) {
-			popupControls.add(conditionControls);
-		}
-	}
-
-	private void addFilterControls(Controls popupControls) {
-		Controls filterControls = Controls.builder()
-						.name(FrameworkMessages.filter())
-						.smallIcon(ICONS.filter())
-						.build();
-		control(TableControl.FILTER_PANEL_VISIBLE).optional().ifPresent(filterControls::add);
-		Controls filterPanelControls = table.filterPanel().controls();
-		if (filterPanelControls.notEmpty()) {
-			filterControls.addAll(filterPanelControls);
-		}
-		if (filterControls.notEmpty()) {
-			popupControls.add(filterControls);
-		}
 	}
 
 	private void showEntityMenu() {
