@@ -841,7 +841,7 @@ public class EntityTablePanel extends JPanel {
 						TableControl.EDIT,
 						TableControl.DELETE,
 						null,
-						TableControl.EDIT_SELECTED_ATTRIBUTE,
+						editPanel == null ? TableControl.EDIT_SELECTED_ATTRIBUTE : null,
 						null,
 						TableControl.PRINT,
 						TableControl.CLEAR_SELECTION,
