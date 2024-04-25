@@ -95,8 +95,8 @@ public final class CityTableModel extends SwingEntityTableModel {
 			return cities.size();
 		}
 
-		public StateObserver notCancelled() {
-			return cancelled.not();
+		public StateObserver cancelled() {
+			return cancelled.observer();
 		}
 
 		public void cancel() {

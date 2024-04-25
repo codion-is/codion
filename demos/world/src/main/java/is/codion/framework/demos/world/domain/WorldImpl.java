@@ -63,7 +63,7 @@ public final class WorldImpl extends DefaultDomain {
 	}
 
 	// tag::defineCity[]
-	EntityDefinition.Builder city() {
+	EntityDefinition city() {
 		return City.TYPE.define(
 										City.ID.define()
 														.primaryKey(),
@@ -108,11 +108,12 @@ public final class WorldImpl extends DefaultDomain {
 						.foregroundColorProvider(new CityColorProvider())
 						// end::foreground[]
 						.description("Cities of the World")
-						.caption("City");
+						.caption("City")
+						.build();
 	}
 	// end::defineCity[]
 
-	EntityDefinition.Builder country() {
+	EntityDefinition country() {
 		return Country.TYPE.define(
 										// tag::primaryKey[]
 										Country.CODE.define()
@@ -228,10 +229,11 @@ public final class WorldImpl extends DefaultDomain {
 						.orderBy(ascending(Country.NAME))
 						.stringFactory(Country.NAME)
 						.description("Countries of the World")
-						.caption("Country");
+						.caption("Country")
+						.build();
 	}
 
-	EntityDefinition.Builder countryLanguage() {
+	EntityDefinition countryLanguage() {
 		return CountryLanguage.TYPE.define(
 										// tag::compositePrimaryKey[]
 										CountryLanguage.COUNTRY_CODE.define()
@@ -270,10 +272,11 @@ public final class WorldImpl extends DefaultDomain {
 										.descending(CountryLanguage.PERCENTAGE)
 										.build())
 						.description("Languages")
-						.caption("Language");
+						.caption("Language")
+						.build();
 	}
 
-	EntityDefinition.Builder lookup() {
+	EntityDefinition lookup() {
 		return Lookup.TYPE.define(
 										Lookup.COUNTRY_CODE.define()
 														.primaryKey(0)
@@ -352,10 +355,11 @@ public final class WorldImpl extends DefaultDomain {
 										.build())
 						.readOnly(true)
 						.description("Lookup country or city")
-						.caption("Lookup");
+						.caption("Lookup")
+						.build();
 	}
 
-	EntityDefinition.Builder continent() {
+	EntityDefinition continent() {
 		return Continent.TYPE.define(
 										Continent.NAME.define()
 														.column()
@@ -402,7 +406,8 @@ public final class WorldImpl extends DefaultDomain {
 						.tableName("world.country")
 						.readOnly(true)
 						.description("Continents of the World")
-						.caption("Continent");
+						.caption("Continent")
+						.build();
 	}
 
 	// tag::converter[]
