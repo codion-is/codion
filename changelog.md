@@ -24,6 +24,7 @@ Codion Change Log
 - EntityTablePanel.TableControls.COPY, EDIT_ATTRIBUTE, CONFIGURE_COLUMNS renamed COPY_CONTROLS, EDIT_ATTRIBUTE_CONTROLS and COLUMN_CONTROLS respectively, PRINT_CONTROLS, CONDITION_CONTROLS and FILTER_CONTROLS added.
 - EntityTablePanel controls configuration refactored.
 - EntityTablePanel.configurePopupMenu() and configureToolBar() added.
+- EntityTablePanel bug fixed, Config.popupMenuEditAttributeControl() added.
 
 ## 0.17.42
 ### is.codion.common.core

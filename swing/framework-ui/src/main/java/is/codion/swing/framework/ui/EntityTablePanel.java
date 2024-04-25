@@ -877,8 +877,7 @@ public class EntityTablePanel extends JPanel {
 						TableControl.EDIT,
 						TableControl.DELETE,
 						null,
-						TableControl.EDIT_SELECTED_ATTRIBUTE,
-						TableControl.EDIT_ATTRIBUTE_CONTROLS,
+						configuration.popupMenuEditAttributeControl(),
 						null,
 						TableControl.VIEW_DEPENDENCIES,
 						null,
@@ -1503,12 +1502,8 @@ public class EntityTablePanel extends JPanel {
 			controls.get(TableControl.EDIT).mapNull(this::createEditControl);
 		}
 		if (includeEditAttributeControls()) {
-			if (configuration.editAttributeSelection == EditAttributeSelection.MENU) {
-				controls.get(TableControl.EDIT_ATTRIBUTE_CONTROLS).mapNull(this::createEditAttributeControls);
-			}
-			else {
-				controls.get(TableControl.EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
-			}
+			controls.get(TableControl.EDIT_ATTRIBUTE_CONTROLS).mapNull(this::createEditAttributeControls);
+			controls.get(TableControl.EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
 		}
 		if (configuration.includeClearControl) {
 			controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
@@ -2270,6 +2265,12 @@ public class EntityTablePanel extends JPanel {
 		public Config showRefreshProgressBar(boolean showRefreshProgressBar) {
 			this.showRefreshProgressBar = showRefreshProgressBar;
 			return this;
+		}
+
+		private TableControl popupMenuEditAttributeControl() {
+			return editAttributeSelection == EditAttributeSelection.MENU ?
+							TableControl.EDIT_ATTRIBUTE_CONTROLS :
+							TableControl.EDIT_SELECTED_ATTRIBUTE;
 		}
 
 		private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
