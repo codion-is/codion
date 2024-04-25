@@ -120,6 +120,7 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -251,6 +252,16 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Controls} instance containing controls for printing.
 		 */
 		PRINT_CONTROLS,
+		/**
+		 * A {@link Controls} instance containing any additional popup menu controls.
+		 * @see #addPopupMenuControls(Controls)
+		 */
+		ADDITIONAL_POPUP_MENU_CONTROLS,
+		/**
+		 * A {@link Controls} instance containing any additional toolbar controls.
+		 * @see #addToolBarControls(Controls)
+		 */
+		ADDITIONAL_TOOLBAR_CONTROLS,
 		/**
 		 * A {@link Control} for deleting the selected rows.
 		 */
@@ -805,151 +816,86 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
-		requireNonNull(additionalToolBarControls);
-		Controls toolbarControls = Controls.controls();
-		control(TableControl.TOGGLE_SUMMARY_PANEL).optional().ifPresent(toolbarControls::add);
-		Control toggleConditionPanelControl = control(TableControl.TOGGLE_CONDITION_PANEL).optional().orElse(null);
-		Control toggleFilterPanelControl = control(TableControl.TOGGLE_FILTER_PANEL).optional().orElse(null);
-		if (toggleConditionPanelControl != null || toggleFilterPanelControl != null) {
-			if (toggleConditionPanelControl != null) {
-				toolbarControls.add(toggleConditionPanelControl);
-			}
-			if (toggleFilterPanelControl != null) {
-				toolbarControls.add(toggleFilterPanelControl);
-			}
-			toolbarControls.addSeparator();
-		}
-		Controls editControls = Controls.controls();
-		if (editPanel != null) {
-			control(TableControl.ADD).optional().ifPresent(editControls::add);
-			control(TableControl.EDIT).optional().ifPresent(editControls::add);
-		}
-		else {
-			control(TableControl.EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(editControls::add);
-		}
-		control(TableControl.DELETE).optional().ifPresent(editControls::add);
-		if (editControls.notEmpty()) {
-			toolbarControls.addAll(editControls);
-			toolbarControls.addSeparator();
-		}
-		control(TableControl.PRINT).optional().ifPresent(toolbarControls::add);
-		control(TableControl.CLEAR_SELECTION).optional().ifPresent(control -> {
-			toolbarControls.add(control);
-			toolbarControls.addSeparator();
-		});
-		control(TableControl.MOVE_SELECTION_UP).optional().ifPresent(toolbarControls::add);
-		control(TableControl.MOVE_SELECTION_DOWN).optional().ifPresent(toolbarControls::add);
-		additionalToolBarControls.forEach(additionalControls -> {
-			toolbarControls.addSeparator();
-			additionalControls.actions().forEach(toolbarControls::add);
-		});
-
-		return toolbarControls;
+	/**
+	 * Configures the toolbar menu controls. Override to customize.<br>
+	 * Note that this method returns the default configuration, which
+	 * must be cleared in order to start fresh.<br>
+	 * This method must return the original {@link MenuConfig} instance.
+	 * <pre>
+	 *   MenuConfig&lt;TableControl&gt; config = super.configureToolBar();
+	 *   config.clear();
+	 *   config.control(TableControl.REFRESH);
+	 *
+	 *   return config;
+	 * </pre>
+	 * @return the toolbar configuration
+	 * @see MenuConfig#clear()
+	 */
+	protected MenuConfig<TableControl> configureToolBar() {
+		return new DefaultMenuConfig<>(tableControl -> control(tableControl).optional(), TableControl.ADDITIONAL_TOOLBAR_CONTROLS, asList(
+						TableControl.TOGGLE_SUMMARY_PANEL,
+						TableControl.TOGGLE_CONDITION_PANEL,
+						TableControl.TOGGLE_FILTER_PANEL,
+						null,
+						TableControl.ADD,
+						TableControl.EDIT,
+						TableControl.DELETE,
+						null,
+						TableControl.EDIT_SELECTED_ATTRIBUTE,
+						null,
+						TableControl.PRINT,
+						TableControl.CLEAR_SELECTION,
+						null,
+						TableControl.MOVE_SELECTION_UP,
+						TableControl.MOVE_SELECTION_DOWN,
+						null,
+						TableControl.ADDITIONAL_TOOLBAR_CONTROLS
+		));
 	}
 
 	/**
-	 * Creates a Controls instance containing the controls to include in the table popup menu.
-	 * Returning null or an empty Controls instance indicates that no popup menu should be included.
-	 * @param additionalPopupMenuControls any additional controls to include in the popup menu
-	 * @return Controls on which to base the table popup menu, null or an empty Controls instance
-	 * if no popup menu should be included
+	 * Configures the toolbar menu controls. Override to customize.<br>
+	 * Note that this method returns the default configuration, which
+	 * must be cleared in order to start fresh.<br>
+	 * This method must return the original {@link MenuConfig} instance.
+	 * <pre>
+	 *   MenuConfig&lt;TableControl&gt; config = super.configurePopupMenu();
+	 *   config.clear();
+	 *   config.control(TableControl.REFRESH);
+	 *
+	 *   return config;
+	 * </pre>
+	 * @return the popup menu configuration
+	 * @see MenuConfig#clear()
 	 */
-	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-		requireNonNull(additionalPopupMenuControls);
-		Controls popupControls = Controls.controls();
-		control(TableControl.REFRESH).optional().ifPresent(popupControls::add);
-		control(TableControl.CLEAR).optional().ifPresent(popupControls::add);
-		if (popupControls.notEmpty()) {
-			popupControls.addSeparator();
-		}
-		State separatorRequired = State.state();
-		control(TableControl.ADD).optional().ifPresent(control -> {
-			popupControls.add(control);
-			separatorRequired.set(true);
-		});
-		control(TableControl.EDIT).optional().ifPresent(control -> {
-			popupControls.add(control);
-			separatorRequired.set(true);
-		});
-		control(TableControl.DELETE).optional().ifPresent(control -> {
-			popupControls.add(control);
-			separatorRequired.set(true);
-		});
-		if (separatorRequired.get()) {
-			popupControls.addSeparator();
-			separatorRequired.set(false);
-		}
-		if (includeEditAttributeControls()) {
-			if (configuration.editAttributeSelection == EditAttributeSelection.DIALOG) {
-				control(TableControl.EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control -> {
-					popupControls.add(control);
-					separatorRequired.set(true);
-				});
-			}
-			else {
-				control(TableControl.EDIT_ATTRIBUTE_CONTROLS).optional().ifPresent(control -> {
-					popupControls.add(control);
-					separatorRequired.set(true);
-				});
-			}
-		}
-		if (separatorRequired.get()) {
-			popupControls.addSeparator();
-			separatorRequired.set(false);
-		}
-		control(TableControl.VIEW_DEPENDENCIES).optional().ifPresent(control -> {
-			popupControls.add(control);
-			separatorRequired.set(true);
-		});
-		if (separatorRequired.get()) {
-			popupControls.addSeparator();
-			separatorRequired.set(false);
-		}
-		addAdditionalControls(popupControls, additionalPopupMenuControls);
-		control(TableControl.PRINT_CONTROLS).optional().ifPresent(controls -> {
-			popupControls.add(controls);
-			separatorRequired.set(true);
-		});
-		control(TableControl.COLUMN_CONTROLS).optional()
-						.map(Controls.class::cast)
-						.filter(Controls::notEmpty)
-						.ifPresent(columnControls -> {
-							if (separatorRequired.get()) {
-								popupControls.addSeparator();
-							}
-							popupControls.add(columnControls);
-							separatorRequired.set(true);
-						});
-		control(TableControl.SELECTION_MODE).optional().ifPresent(control -> {
-			if (separatorRequired.get()) {
-				popupControls.addSeparator();
-			}
-			popupControls.add(control);
-			separatorRequired.set(true);
-		});
-		control(TableControl.CONDITION_CONTROLS).optional().ifPresent(controls -> {
-			if (separatorRequired.get()) {
-				popupControls.addSeparator();
-			}
-			popupControls.add(controls);
-			separatorRequired.set(true);
-		});
-		control(TableControl.FILTER_CONTROLS).optional().ifPresent(controls -> {
-			if (separatorRequired.get()) {
-				popupControls.addSeparator();
-			}
-			popupControls.add(controls);
-			separatorRequired.set(true);
-		});
-		control(TableControl.COPY_CONTROLS).optional().ifPresent(control -> {
-			if (separatorRequired.get()) {
-				popupControls.addSeparator();
-			}
-			popupControls.add(control);
-		});
-
-		return popupControls;
+	protected MenuConfig<TableControl> configurePopupMenu() {
+		return new DefaultMenuConfig<>(tableControl -> control(tableControl).optional(), TableControl.ADDITIONAL_POPUP_MENU_CONTROLS, asList(
+						TableControl.REFRESH,
+						TableControl.CLEAR,
+						null,
+						TableControl.ADD,
+						TableControl.EDIT,
+						TableControl.DELETE,
+						null,
+						TableControl.EDIT_SELECTED_ATTRIBUTE,
+						TableControl.EDIT_ATTRIBUTE_CONTROLS,
+						null,
+						TableControl.VIEW_DEPENDENCIES,
+						null,
+						TableControl.ADDITIONAL_POPUP_MENU_CONTROLS,
+						null,
+						TableControl.PRINT_CONTROLS,
+						null,
+						TableControl.COLUMN_CONTROLS,
+						null,
+						TableControl.SELECTION_MODE,
+						null,
+						TableControl.CONDITION_CONTROLS,
+						null,
+						TableControl.FILTER_CONTROLS,
+						null,
+						TableControl.COPY_CONTROLS
+		));
 	}
 
 	/**
@@ -994,25 +940,6 @@ public class EntityTablePanel extends JPanel {
 		if (southPanel != null) {
 			add(southPanel, BorderLayout.SOUTH);
 		}
-	}
-
-	/**
-	 * Creates the table toolbar, by default based on {@link #createToolBarControls(List)}
-	 * @return the toolbar, null if none should be included
-	 */
-	protected JToolBar createToolBar() {
-		Controls toolbarControls = createToolBarControls(additionalToolBarControls);
-		if (toolbarControls == null || toolbarControls.empty()) {
-			return null;
-		}
-
-		return toolBar()
-						.controls(toolbarControls)
-						.floatable(false)
-						.rollover(true)
-						.build(toolBar -> Arrays.stream(toolBar.getComponents())
-										.map(JComponent.class::cast)
-										.forEach(component -> component.setToolTipText(null)));
 	}
 
 	/**
@@ -1249,6 +1176,34 @@ public class EntityTablePanel extends JPanel {
 		Controls printControls = builder.build();
 
 		return printControls.empty() ? null : printControls;
+	}
+
+	private Controls createAdditionalPopupControls() {
+		Controls additionalControls = Controls.controls();
+		additionalPopupControls.forEach(controlList -> {
+			if (nullOrEmpty(controlList.getName())) {
+				additionalControls.addAll(controlList);
+			}
+			else {
+				additionalControls.add(controlList);
+			}
+		});
+
+		return additionalControls.empty() ? null : additionalControls;
+	}
+
+	private Controls createAdditionalToolbarControls() {
+		Controls additionalControls = Controls.controls();
+		additionalToolBarControls.forEach(controlsList -> {
+			if (nullOrEmpty(controlsList.getName())) {
+				additionalControls.addAll(controlsList);
+			}
+			else {
+				additionalControls.add(controlsList);
+			}
+		});
+
+		return additionalControls.empty() ? null : additionalControls;
 	}
 
 	private Control createToggleConditionPanelControl() {
@@ -1548,8 +1503,12 @@ public class EntityTablePanel extends JPanel {
 			controls.get(TableControl.EDIT).mapNull(this::createEditControl);
 		}
 		if (includeEditAttributeControls()) {
-			controls.get(TableControl.EDIT_ATTRIBUTE_CONTROLS).mapNull(this::createEditAttributeControls);
-			controls.get(TableControl.EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
+			if (configuration.editAttributeSelection == EditAttributeSelection.MENU) {
+				controls.get(TableControl.EDIT_ATTRIBUTE_CONTROLS).mapNull(this::createEditAttributeControls);
+			}
+			else {
+				controls.get(TableControl.EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
+			}
 		}
 		if (configuration.includeClearControl) {
 			controls.get(TableControl.CLEAR).mapNull(this::createClearControl);
@@ -1585,6 +1544,8 @@ public class EntityTablePanel extends JPanel {
 		}
 		controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
 		setupControls();
+		controls.get(TableControl.ADDITIONAL_POPUP_MENU_CONTROLS).mapNull(this::createAdditionalPopupControls);
+		controls.get(TableControl.ADDITIONAL_TOOLBAR_CONTROLS).mapNull(this::createAdditionalToolbarControls);
 		controls.get(TableControl.PRINT_CONTROLS).mapNull(this::createPrintControls);
 		controls.get(TableControl.CONDITION_CONTROLS).mapNull(this::createConditionControls);
 		controls.get(TableControl.FILTER_CONTROLS).mapNull(this::createFilterControls);
@@ -1610,8 +1571,8 @@ public class EntityTablePanel extends JPanel {
 		if (!configuration.includePopupMenu) {
 			return;
 		}
-		Controls popupControls = createPopupMenuControls(additionalPopupControls);
-		if (popupControls == null || popupControls.empty()) {
+		Controls popupControls = createPopupMenuControls();
+		if (popupControls.empty()) {
 			return;
 		}
 
@@ -1624,6 +1585,10 @@ public class EntityTablePanel extends JPanel {
 							popupMenu.show(table, location.x, location.y);
 						}))
 						.enable(table);
+	}
+
+	private final Controls createPopupMenuControls() {
+		return requireNonNull((DefaultMenuConfig<TableControl>) configurePopupMenu(), "Popup MenuConfig is null").create();
 	}
 
 	private void showEntityMenu() {
@@ -1785,18 +1750,6 @@ public class EntityTablePanel extends JPanel {
 		constraints.weightx = 1.0;
 
 		return constraints;
-	}
-
-	private static void addAdditionalControls(Controls popupControls, List<Controls> additionalPopupControls) {
-		additionalPopupControls.forEach(controls -> {
-			if (nullOrEmpty(controls.getName())) {
-				popupControls.addAll(controls);
-			}
-			else {
-				popupControls.add(controls);
-			}
-			popupControls.addSeparator();
-		});
 	}
 
 	private static JScrollPane createHiddenLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
@@ -2462,6 +2415,25 @@ public class EntityTablePanel extends JPanel {
 			}
 
 			return statusPanel;
+		}
+
+		private JToolBar createToolBar() {
+			Controls toolbarControls = createToolBarControls();
+			if (toolbarControls.empty()) {
+				return null;
+			}
+
+			return toolBar()
+							.controls(toolbarControls)
+							.floatable(false)
+							.rollover(true)
+							.build(toolBar -> Arrays.stream(toolBar.getComponents())
+											.map(JComponent.class::cast)
+											.forEach(component -> component.setToolTipText(null)));
+		}
+
+		private Controls createToolBarControls() {
+			return requireNonNull((DefaultMenuConfig<TableControl>) configureToolBar(), "ToolBar MenuConfig is null").create();
 		}
 	}
 

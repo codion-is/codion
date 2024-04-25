@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
@@ -48,7 +49,6 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.CSV;
 import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.JSON;
@@ -104,10 +104,11 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-		return super.createPopupMenuControls(additionalPopupMenuControls)
-						.addSeparatorAt(2)
-						.addAt(3, Controls.builder()
+	protected MenuConfig<TableControl> configurePopupMenu() {
+		return super.configurePopupMenu().clear()
+						.defaults(TableControl.COLUMN_CONTROLS)
+						.separator()
+						.control(Controls.builder()
 										.name("Export")
 										.smallIcon(ICONS.icon(Foundation.PAGE_EXPORT))
 										.control(Control.builder(this::exportCSV)
@@ -115,20 +116,24 @@ final class LookupTablePanel extends EntityTablePanel {
 										.control(Control.builder(this::exportJSON)
 														.name("JSON..."))
 										.build())
-						.addAt(4, Controls.builder()
+						.control(Controls.builder()
 										.name("Import")
 										.smallIcon(ICONS.icon(Foundation.PAGE_ADD))
 										.control(Control.builder(this::importJSON)
 														.name("JSON..."))
 										.build())
-						.addSeparatorAt(5)
-						.addAt(6, toggleMapControl);
+						.separator()
+						.control(toggleMapControl)
+						.separator()
+						.defaults();
 	}
 
 	@Override
-	protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
-		return super.createToolBarControls(additionalToolBarControls)
-						.addAt(0, toggleMapControl);
+	protected MenuConfig<TableControl> configureToolBar() {
+		return super.configureToolBar().clear()
+						.control(toggleMapControl)
+						.separator()
+						.defaults();
 	}
 
 	@Override

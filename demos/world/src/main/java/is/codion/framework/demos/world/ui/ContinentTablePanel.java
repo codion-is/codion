@@ -18,12 +18,11 @@
  */
 package is.codion.framework.demos.world.ui;
 
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.MenuConfig;
 
 import javax.swing.JTable;
-import java.util.List;
 
 final class ContinentTablePanel extends EntityTablePanel {
 
@@ -33,7 +32,8 @@ final class ContinentTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-		return Controls.controls(control(TableControl.REFRESH).get());
+	protected MenuConfig<TableControl> configurePopupMenu() {
+		return super.configurePopupMenu().clear()
+						.standard(TableControl.REFRESH);
 	}
 }

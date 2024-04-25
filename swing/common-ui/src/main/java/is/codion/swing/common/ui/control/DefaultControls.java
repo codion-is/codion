@@ -83,7 +83,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 	@Override
 	public boolean empty() {
-		return actions.isEmpty();
+		return actions.stream().noneMatch(action -> action != SEPARATOR);
 	}
 
 	@Override

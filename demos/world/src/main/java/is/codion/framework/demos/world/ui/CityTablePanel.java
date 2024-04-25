@@ -24,11 +24,10 @@ import is.codion.framework.demos.world.model.CityTableModel.PopulateLocationTask
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
-
-import java.util.List;
 
 final class CityTablePanel extends ChartTablePanel {
 
@@ -39,10 +38,11 @@ final class CityTablePanel extends ChartTablePanel {
 	}
 
 	@Override
-	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-		return super.createPopupMenuControls(additionalPopupMenuControls)
-						.addAt(0, createPopulateLocationControl())
-						.addSeparatorAt(1);
+	protected MenuConfig<TableControl> configurePopupMenu() {
+		return super.configurePopupMenu().clear()
+						.control(createPopulateLocationControl())
+						.separator()
+						.defaults();
 	}
 
 	private Control createPopulateLocationControl() {
@@ -67,7 +67,7 @@ final class CityTablePanel extends ChartTablePanel {
 						.controls(Controls.builder()
 										.control(Control.builder(task::cancel)
 														.name("Cancel")
-														.enabled(task.notCancelled()))
+														.enabled(task.cancelled().not()))
 										.build())
 						.onException(this::displayPopulateException)
 						.execute();

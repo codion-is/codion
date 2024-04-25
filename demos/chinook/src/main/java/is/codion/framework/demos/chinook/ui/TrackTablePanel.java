@@ -26,15 +26,14 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
@@ -51,13 +50,14 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-		return super.createPopupMenuControls(additionalPopupMenuControls)
-						.addAt(0, Control.builder(this::raisePriceOfSelected)
+	protected MenuConfig<TableControl> configurePopupMenu() {
+		return super.configurePopupMenu().clear()
+						.control(Control.builder(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")
 										.enabled(tableModel().selectionModel().selectionNotEmpty())
 										.build())
-						.addSeparatorAt(1);
+						.separator()
+						.defaults();
 	}
 
 	private void raisePriceOfSelected() throws DatabaseException {

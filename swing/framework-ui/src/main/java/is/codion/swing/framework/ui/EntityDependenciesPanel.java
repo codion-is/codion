@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
@@ -41,7 +40,6 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -147,18 +145,12 @@ public final class EntityDependenciesPanel extends JPanel {
 		SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, connectionProvider);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditionPanel(false)) {
 			@Override
-			protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-				Controls popupMenuControls = Controls.controls();
-				control(TableControl.EDIT_ATTRIBUTE_CONTROLS).optional().ifPresent(popupMenuControls::add);
-				control(TableControl.DELETE).optional().ifPresent(popupMenuControls::add);
-				control(TableControl.VIEW_DEPENDENCIES).optional().ifPresent(viewDependencies -> {
-					if (popupMenuControls.notEmpty()) {
-						popupMenuControls.addSeparator();
-					}
-					popupMenuControls.add(viewDependencies);
-				});
-
-				return popupMenuControls;
+			protected MenuConfig<TableControl> configurePopupMenu() {
+				return super.configurePopupMenu().clear()
+								.standard(TableControl.EDIT_ATTRIBUTE_CONTROLS)
+								.standard(TableControl.DELETE)
+								.separator()
+								.standard(TableControl.VIEW_DEPENDENCIES);
 			}
 		};
 
