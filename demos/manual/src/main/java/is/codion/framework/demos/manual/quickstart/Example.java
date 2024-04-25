@@ -283,7 +283,7 @@ public final class Example {
 
 		Entity customerAddress = customerAddresses.get(0);
 
-		Entity address = customerAddress.referencedEntity(CustomerAddress.ADDRESS_FK);
+		Entity address = customerAddress.entity(CustomerAddress.ADDRESS_FK);
 
 		String lastName = johnDoe.get(Customer.LAST_NAME);
 		String street = address.get(Address.STREET);

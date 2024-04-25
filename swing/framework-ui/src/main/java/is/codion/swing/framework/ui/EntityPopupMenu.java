@@ -166,16 +166,16 @@ final class EntityPopupMenu extends JPopupMenu {
 
 	private static Entity populateEntityGraph(Entity entity, EntityConnection connection, Set<ForeignKeyEntity> visited) {
 		for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
-			Entity.Key referencedKey = entity.referencedKey(foreignKey);
+			Entity.Key key = entity.key(foreignKey);
 			if (entity.isNotNull(foreignKey)) {
-				ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, selectEntity(referencedKey, connection));
+				ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, select(key, connection));
 				if (visited.contains(foreignKeyEntity)) {
-					entity.put(foreignKey, duplicateEntity(foreignKeyEntity.referencedEntity));
+					entity.put(foreignKey, duplicate(foreignKeyEntity.entity));
 				}
 				else {
 					visited.add(foreignKeyEntity);
-					entity.put(foreignKey, foreignKeyEntity.referencedEntity);
-					populateEntityGraph(foreignKeyEntity.referencedEntity, connection, visited);
+					entity.put(foreignKey, foreignKeyEntity.entity);
+					populateEntityGraph(foreignKeyEntity.entity, connection, visited);
 				}
 			}
 		}
@@ -183,7 +183,7 @@ final class EntityPopupMenu extends JPopupMenu {
 		return entity;
 	}
 
-	private static Entity selectEntity(Entity.Key primaryKey, EntityConnection connection) {
+	private static Entity select(Entity.Key primaryKey, EntityConnection connection) {
 		try {
 			return connection.selectSingle(where(key(primaryKey))
 							.fetchDepth(0)
@@ -200,10 +200,10 @@ final class EntityPopupMenu extends JPopupMenu {
 		}
 	}
 
-	private static Entity duplicateEntity(Entity referencedEntity) {
+	private static Entity duplicate(Entity entity) {
 		return ProxyBuilder.builder(Entity.class)
-						.delegate(referencedEntity)
-						.method("toString", parameters -> referencedEntity + " <DUPLICATE>")
+						.delegate(entity)
+						.method("toString", parameters -> entity + " <DUPLICATE>")
 						.build();
 	}
 
@@ -230,11 +230,11 @@ final class EntityPopupMenu extends JPopupMenu {
 	private static final class ForeignKeyEntity {
 
 		private final ForeignKey foreignKey;
-		private final Entity referencedEntity;
+		private final Entity entity;
 
-		private ForeignKeyEntity(ForeignKey foreignKey, Entity referencedEntity) {
+		private ForeignKeyEntity(ForeignKey foreignKey, Entity entity) {
 			this.foreignKey = foreignKey;
-			this.referencedEntity = referencedEntity;
+			this.entity = entity;
 		}
 
 		@Override
@@ -247,12 +247,12 @@ final class EntityPopupMenu extends JPopupMenu {
 			}
 			ForeignKeyEntity that = (ForeignKeyEntity) object;
 
-			return Objects.equals(foreignKey, that.foreignKey) && Objects.equals(referencedEntity, that.referencedEntity);
+			return Objects.equals(foreignKey, that.foreignKey) && Objects.equals(entity, that.entity);
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(foreignKey, referencedEntity);
+			return Objects.hash(foreignKey, entity);
 		}
 	}
 }

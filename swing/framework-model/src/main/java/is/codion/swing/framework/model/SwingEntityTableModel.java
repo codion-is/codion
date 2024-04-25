@@ -398,7 +398,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		boolean changed = false;
 		for (Entity entity : items()) {
 			for (Entity foreignKeyValue : foreignKeyValues) {
-				Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
+				Entity currentForeignKeyValue = entity.entity(foreignKey);
 				if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
 					entity.put(foreignKey, foreignKeyValue.immutable());
 					changed = true;

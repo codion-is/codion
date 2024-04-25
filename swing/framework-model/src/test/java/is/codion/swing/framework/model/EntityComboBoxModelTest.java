@@ -157,7 +157,7 @@ public final class EntityComboBoxModelTest {
 		assertEquals(5, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
-			assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
+			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 
 		Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
@@ -165,8 +165,8 @@ public final class EntityComboBoxModelTest {
 		assertEquals(2, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
-			assertEquals(item.referencedEntity(Employee.DEPARTMENT_FK), sales);
-			assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
+			assertEquals(item.entity(Employee.DEPARTMENT_FK), sales);
+			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 
 		Entity accounting = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
@@ -175,11 +175,11 @@ public final class EntityComboBoxModelTest {
 		assertEquals(3, comboBoxModel.getSize());
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			Entity item = comboBoxModel.getElementAt(i);
-			assertEquals(item.referencedEntity(Employee.DEPARTMENT_FK), accounting);
-			assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
+			assertEquals(item.entity(Employee.DEPARTMENT_FK), accounting);
+			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 		comboBoxModel.items().stream()
-						.filter(employee -> employee.referencedEntity(Employee.DEPARTMENT_FK).equals(accounting))
+						.filter(employee -> employee.entity(Employee.DEPARTMENT_FK).equals(accounting))
 						.findFirst()
 						.ifPresent(comboBoxModel::setSelectedItem);
 		assertEquals(accounting, deptComboBoxModel.selectedValue());
@@ -195,7 +195,7 @@ public final class EntityComboBoxModelTest {
 				kingFound = true;
 			}
 			else {
-				assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
+				assertEquals(item.entity(Employee.MGR_FK), blake);
 			}
 		}
 		assertTrue(kingFound);

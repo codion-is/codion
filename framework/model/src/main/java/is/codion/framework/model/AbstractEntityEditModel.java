@@ -531,7 +531,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param values the foreign key entities
 	 */
 	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
-		Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
+		Entity currentForeignKeyValue = entity.entity(foreignKey);
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
@@ -701,7 +701,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
 		if (persist(attributeDefinition.attribute()).get()) {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
-				return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
+				return (T) entity.entity((ForeignKey) attributeDefinition.attribute());
 			}
 
 			return entity.get(attributeDefinition.attribute());

@@ -17,6 +17,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilteredTable.copyRowsAsTabDelimitedString() replaced with copyToClipboard() and copySelectedToClipboard().
 - Controls.empty() now ignores separators.
+### is.codion.framework.domain
+- Entity.referencedEntity() and referencedKey() renamed entity() and key().
 ### is.codion.swing.framework.ui
 - EntityTablePanel.TableControls.COPY_TABLE_DATA renamed COPY, COPY_CELL and COPY_ROWS added.
 - EntityTablePanel.TableControls.COPY, EDIT_ATTRIBUTE, CONFIGURE_COLUMNS renamed COPY_CONTROLS, EDIT_ATTRIBUTE_CONTROLS and COLUMN_CONTROLS respectively, PRINT_CONTROLS, CONDITION_CONTROLS and FILTER_CONTROLS added.

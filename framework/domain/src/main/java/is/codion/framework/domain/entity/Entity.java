@@ -179,7 +179,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param foreignKey the foreign key for which to retrieve the value
 	 * @return the entity associated with {@code foreignKey}
 	 */
-	Entity referencedEntity(ForeignKey foreignKey);
+	Entity entity(ForeignKey foreignKey);
 
 	/**
 	 * Returns the key referenced by the given {@link ForeignKey},
@@ -187,7 +187,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param foreignKey the foreign key for which to retrieve the underlying {@link Key}
 	 * @return the key for the underlying entity, null if no entity is referenced
 	 */
-	Key referencedKey(ForeignKey foreignKey);
+	Key key(ForeignKey foreignKey);
 
 	/**
 	 * Returns true if the value associated with the given attribute has been modified since first set,
@@ -381,9 +381,9 @@ public interface Entity extends Comparable<Entity> {
 	 * @param entities the entities
 	 * @return the non-null keys referenced by the given foreign key
 	 */
-	static Collection<Key> referencedKeys(ForeignKey foreignKey, Collection<Entity> entities) {
+	static Collection<Key> keys(ForeignKey foreignKey, Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
-						.map(entity -> entity.referencedKey(foreignKey))
+						.map(entity -> entity.key(foreignKey))
 						.filter(Objects::nonNull)
 						.collect(toSet());
 	}

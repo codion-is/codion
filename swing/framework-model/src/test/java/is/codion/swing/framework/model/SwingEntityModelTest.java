@@ -109,7 +109,7 @@ public final class SwingEntityModelTest
 			departmentModel.editModel().update();
 
 			for (Entity employee : employeeModel.tableModel().items()) {
-				Entity dept = employee.referencedEntity(Employee.DEPARTMENT_FK);
+				Entity dept = employee.entity(Employee.DEPARTMENT_FK);
 				assertEquals("NewName", dept.get(Department.NAME));
 			}
 		}

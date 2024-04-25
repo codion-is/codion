@@ -78,6 +78,7 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entity.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -919,7 +920,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
 				try {
 					logEntry("populateForeignKeys", foreignKeyDefinition);
-					Collection<Key> referencedKeys = referencedKeys(foreignKey, entities);
+					Collection<Key> referencedKeys = Entity.keys(foreignKey, entities);
 					if (referencedKeys.isEmpty()) {
 						entities.forEach(entity -> entity.put(foreignKey, null));
 					}
@@ -927,7 +928,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						Map<Key, Entity> referencedEntitiesMappedByKey = queryReferencedEntities(foreignKeyDefinition,
 										new ArrayList<>(referencedKeys), currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit);
 						entities.forEach(entity -> entity.put(foreignKey,
-										referencedEntity(entity.referencedKey(foreignKey), referencedEntitiesMappedByKey)));
+										entity(entity.key(foreignKey), referencedEntitiesMappedByKey)));
 					}
 				}
 				finally {
@@ -1330,18 +1331,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		return result;
 	}
 
-	private static Entity referencedEntity(Key referencedKey, Map<Key, Entity> entityKeyMap) {
-		if (referencedKey == null) {
+	private static Entity entity(Key key, Map<Key, Entity> entityKeyMap) {
+		if (key == null) {
 			return null;
 		}
-		Entity referencedEntity = entityKeyMap.get(referencedKey);
-		if (referencedEntity == null) {
+		Entity entity = entityKeyMap.get(key);
+		if (entity == null) {
 			//if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
 			//we create an empty entity wrapping the key since that's the best we can do under the circumstances
-			referencedEntity = entity(referencedKey).immutable();
+			entity = Entity.entity(key).immutable();
 		}
 
-		return referencedEntity;
+		return entity;
 	}
 
 	private static List<ColumnDefinition<?>> writableColumnDefinitions(

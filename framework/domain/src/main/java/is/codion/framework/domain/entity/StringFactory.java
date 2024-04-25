@@ -190,7 +190,7 @@ public final class StringFactory {
 				return "";
 			}
 
-			return entity.referencedEntity(foreignKey).string(attribute);
+			return entity.entity(foreignKey).string(attribute);
 		}
 	}
 

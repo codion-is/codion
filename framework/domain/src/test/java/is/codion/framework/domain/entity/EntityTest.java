@@ -334,7 +334,7 @@ public final class EntityTest {
 		Entity emp4 = entities.builder(Employee.TYPE)
 						.build();
 
-		Collection<Entity.Key> referencedKeys = Entity.referencedKeys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
+		Collection<Entity.Key> referencedKeys = Entity.keys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
 		assertEquals(2, referencedKeys.size());
 		referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.entityType()));
 		Collection<Integer> values = Entity.values(new ArrayList<>(referencedKeys));

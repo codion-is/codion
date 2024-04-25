@@ -383,7 +383,7 @@ public class DefaultLocalEntityConnectionTest {
 		Entity emp = result.iterator().next();
 		assertNotNull(emp.get(Employee.DEPARTMENT_FK));
 		assertNotNull(emp.get(Employee.MGR_FK));
-		emp = emp.referencedEntity(Employee.MGR_FK);
+		emp = emp.entity(Employee.MGR_FK);
 		assertNull(emp.get(Employee.MGR_FK));
 
 		select = Select.where(select.where())
@@ -414,7 +414,7 @@ public class DefaultLocalEntityConnectionTest {
 		emp = result.iterator().next();
 		assertNull(emp.get(Employee.DEPARTMENT_FK));
 		assertNotNull(emp.get(Employee.MGR_FK));
-		emp = emp.referencedEntity(Employee.MGR_FK);
+		emp = emp.entity(Employee.MGR_FK);
 		assertNotNull(emp.get(Employee.MGR_FK));
 
 		select = Select.where(select.where())
@@ -426,7 +426,7 @@ public class DefaultLocalEntityConnectionTest {
 		emp = result.iterator().next();
 		assertNull(emp.get(Employee.DEPARTMENT_FK));
 		assertNotNull(emp.get(Employee.MGR_FK));
-		emp = emp.referencedEntity(Employee.MGR_FK);
+		emp = emp.entity(Employee.MGR_FK);
 		assertNotNull(emp.get(Employee.MGR_FK));
 
 		assertEquals(4, connection.count(where(Employee.ID.in(asList(1, 2, 3, 4)))));
@@ -469,7 +469,7 @@ public class DefaultLocalEntityConnectionTest {
 						.fetchDepth(EmployeeFk.MGR_FK, 2)
 						.build());
 		for (Entity emp : emps) {
-			Entity mgr = emp.referencedEntity(EmployeeFk.MGR_FK);
+			Entity mgr = emp.entity(EmployeeFk.MGR_FK);
 			assertFalse(mgr.mutable());
 			assertTrue(mgr.contains(EmployeeFk.ID));//pk automatically included
 			assertTrue(mgr.contains(EmployeeFk.NAME));

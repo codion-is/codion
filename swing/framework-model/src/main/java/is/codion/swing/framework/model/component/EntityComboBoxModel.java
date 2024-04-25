@@ -364,7 +364,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		}
 		selectionEvent().addConsumer(selected -> {
 			if (selected != null && !selected.isNull(foreignKey)) {
-				foreignKeyModel.select(selected.referencedKey(foreignKey));
+				foreignKeyModel.select(selected.key(foreignKey));
 			}
 		});
 		refresher().refreshEvent().addListener(foreignKeyModel::refresh);
@@ -490,11 +490,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		@Override
 		public boolean test(Entity item) {
 			for (Map.Entry<ForeignKey, Set<Entity.Key>> entry : foreignKeyFilterKeys.entrySet()) {
-				Entity.Key referencedKey = item.referencedKey(entry.getKey());
-				if (referencedKey == null) {
+				Entity.Key key = item.key(entry.getKey());
+				if (key == null) {
 					return !strictForeignKeyFiltering.get();
 				}
-				if (!entry.getValue().contains(referencedKey)) {
+				if (!entry.getValue().contains(key)) {
 					return false;
 				}
 			}
