@@ -19,6 +19,9 @@ Codion Change Log
 - Controls.empty() now ignores separators.
 ### is.codion.framework.domain
 - Entity.referencedEntity() and referencedKey() renamed entity() and key().
+### is.codion.swing.framework.model
+- SwingEntityTableModel.replace() now triggers multiple targeted table row updated events, instead of one for all rows.
+- SwingEntityTableModel.editEvents() removed, UpdateListener duplicated detail model link functionality by replacing foreign key values.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.TableControls.COPY_TABLE_DATA renamed COPY, COPY_CELL and COPY_ROWS added.
 - EntityTablePanel.TableControls.COPY, EDIT_ATTRIBUTE, CONFIGURE_COLUMNS renamed COPY_CONTROLS, EDIT_ATTRIBUTE_CONTROLS and COLUMN_CONTROLS respectively, PRINT_CONTROLS, CONDITION_CONTROLS and FILTER_CONTROLS added.

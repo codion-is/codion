@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -284,38 +283,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
 		assertTrue(orderBy.orderByColumns().get(1).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
-	}
-
-	@Test
-	void editEvents() throws DatabaseException, ValidationException {
-		EntityConnectionProvider connectionProvider = connectionProvider();
-		Entity researchDept = connectionProvider.connection().select(connectionProvider.entities().primaryKey(Department.TYPE, 20));
-
-		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
-		assertTrue(tableModel.editEvents().get());
-		tableModel.conditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
-		tableModel.refresh();
-
-		tableModel.items().forEach(emp ->
-						assertEquals("RESEARCH", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
-
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, connectionProvider);
-		editModel.set(researchDept);
-		editModel.put(Department.NAME, "R&D");
-		editModel.update();
-
-		assertTrue(tableModel.getRowCount() > 0);
-
-		tableModel.items().forEach(emp ->
-						assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
-
-		tableModel.editEvents().set(false);
-
-		editModel.put(Department.NAME, "RESEARCH");
-		editModel.update();
-
-		tableModel.items().forEach(emp ->
-						assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
 	}
 
 	@Test
