@@ -145,7 +145,7 @@ public final class EntityDependenciesPanel extends JPanel {
 		SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, connectionProvider);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditionPanel(false)) {
 			@Override
-			protected MenuConfig<TableControl> configurePopupMenu() {
+			protected PopupMenuConfig configurePopupMenu() {
 				return super.configurePopupMenu().clear()
 								.standard(TableControl.EDIT_ATTRIBUTE_CONTROLS)
 								.standard(TableControl.DELETE)

@@ -30,7 +30,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
@@ -104,7 +103,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected MenuConfig<TableControl> configurePopupMenu() {
+	protected PopupMenuConfig configurePopupMenu() {
 		return super.configurePopupMenu().clear()
 						.defaults(TableControl.COLUMN_CONTROLS)
 						.separator()
@@ -129,7 +128,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected MenuConfig<TableControl> configureToolBar() {
+	protected ToolBarConfig configureToolBar() {
 		return super.configureToolBar().clear()
 						.control(toggleMapControl)
 						.separator()

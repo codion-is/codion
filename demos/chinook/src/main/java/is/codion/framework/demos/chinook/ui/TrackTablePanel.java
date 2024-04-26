@@ -30,7 +30,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 
 import java.math.BigDecimal;
@@ -50,7 +49,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected MenuConfig<TableControl> configurePopupMenu() {
+	protected PopupMenuConfig configurePopupMenu() {
 		return super.configurePopupMenu().clear()
 						.control(Control.builder(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")

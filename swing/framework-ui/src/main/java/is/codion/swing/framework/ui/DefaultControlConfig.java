@@ -30,60 +30,58 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultMenuConfig<T extends Enum<T>> implements MenuConfig<T> {
+abstract class DefaultControlConfig<T extends Enum<T>, C extends ControlConfig<T, C>>
+				implements ControlConfig<T, C> {
 
 	private static final MenuItem SEPARATOR = new Separator();
 
-	private final Function<T, Optional<Control>> controls;
 	private final List<T> defaults;
 	private final T additionalControls;
 	private final List<MenuItem> items = new ArrayList<>();
 	private final Additional additional = new Additional();
 
-	DefaultMenuConfig(Function<T, Optional<Control>> controls,
-										T additionalControls, List<T> defaults) {
-		this.controls = controls;
+	protected DefaultControlConfig(T additionalControls, List<T> defaults) {
 		this.defaults = defaults;
 		this.additionalControls = additionalControls;
 		defaults();
 	}
 
 	@Override
-	public MenuConfig<T> separator() {
+	public final C separator() {
 		if (items.isEmpty() || items.get(items.size() - 1) != SEPARATOR) {
 			items.add(SEPARATOR);
 		}
-		return this;
+		return (C) this;
 	}
 
 	@Override
-	public MenuConfig<T> standard(T control) {
-		add(control);
-		return this;
+	public final C standard(T control) {
+		add(requireNonNull(control));
+		return (C) this;
 	}
 
 	@Override
-	public MenuConfig<T> control(Control control) {
+	public final C control(Control control) {
 		items.add(new CustomControl(requireNonNull(control)));
-		return this;
+		return (C) this;
 	}
 
 	@Override
-	public MenuConfig<T> clear() {
+	public final C clear() {
 		items.clear();
-		return this;
+		return (C) this;
 	}
 
 	@Override
-	public MenuConfig<T> defaults() {
+	public final C defaults() {
 		return defaults(null);
 	}
 
 	@Override
-	public MenuConfig<T> defaults(T stop) {
+	public final C defaults(T stopBefore) {
 		for (T control : defaults) {
-			if (stop != null && control == stop) {
-				return this;
+			if (stopBefore != null && control == stopBefore) {
+				return (C) this;
 			}
 			if (control == null) {
 				separator();
@@ -96,18 +94,21 @@ final class DefaultMenuConfig<T extends Enum<T>> implements MenuConfig<T> {
 			}
 		}
 
-		return this;
+		return (C) this;
 	}
 
-	Controls create() {
+	@Override
+	public final Controls createControls() {
 		Controls created = Controls.controls();
 		items.forEach(item -> item.addTo(created));
 
 		return created;
 	}
 
+	protected abstract Optional<Control> control(T control);
+
 	private void add(T tableControl) {
-		StandardControl<T> standardControl = new StandardControl<>(requireNonNull(tableControl), controls);
+		StandardControl<T> standardControl = new StandardControl<>(tableControl, this::control);
 		if (!items.contains(standardControl)) {
 			items.add(standardControl);
 		}
@@ -121,7 +122,7 @@ final class DefaultMenuConfig<T extends Enum<T>> implements MenuConfig<T> {
 
 		@Override
 		public void addTo(Controls popupControls) {
-			controls.apply(additionalControls)
+			control(additionalControls)
 							.map(Controls.class::cast)
 							.ifPresent(controlsToAdd -> add(controlsToAdd, popupControls));
 		}

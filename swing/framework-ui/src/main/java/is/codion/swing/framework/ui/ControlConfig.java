@@ -19,47 +19,53 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 
 /**
- * Configures a menu.
- * @param <T> the type used to identify standard controls
+ * Configures controls.
+ * @param <T> the type used to identify the standard controls available
  */
-public interface MenuConfig<T extends Enum<T>> {
+public interface ControlConfig<T extends Enum<T>, C extends ControlConfig<T, C>> {
 
 	/**
 	 * Adds a separator
 	 * @return this config instance
 	 */
-	MenuConfig<T> separator();
+	C separator();
 
 	/**
 	 * Adds a standard control
 	 * @return this config instance
 	 */
-	MenuConfig<T> standard(T control);
+	C standard(T control);
 
 	/**
 	 * @param control the control to add
 	 * @return this config instance
 	 */
-	MenuConfig<T> control(Control control);
+	C control(Control control);
 
 	/**
 	 * Adds all remaining default controls
 	 * @return this config instance
 	 */
-	MenuConfig<T> defaults();
+	C defaults();
 
 	/**
-	 * Adds all remaining default controls, stopping at {@code stop}
-	 * @param stop the table control to stop at
+	 * Adds all remaining default controls, stopping before {@code stopBefore}
+	 * @param stopBefore the table control to stop before
 	 * @return this config instance
 	 */
-	MenuConfig<T> defaults(T stop);
+	C defaults(T stopBefore);
 
 	/**
 	 * Clears all controls from this config
 	 * @return this config instance
 	 */
-	MenuConfig<T> clear();
+	C clear();
+
+	/**
+	 * @return a {@link Controls} instance based on this config
+	 */
+	Controls createControls();
 }

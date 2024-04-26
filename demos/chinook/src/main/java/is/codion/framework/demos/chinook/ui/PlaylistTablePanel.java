@@ -27,7 +27,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import java.util.ResourceBundle;
@@ -41,7 +40,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected MenuConfig<TableControl> configurePopupMenu() {
+	protected PopupMenuConfig configurePopupMenu() {
 		return super.configurePopupMenu().clear()
 						.defaults(TableControl.VIEW_DEPENDENCIES)
 						.control(Control.builder(this::randomPlaylist)

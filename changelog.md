@@ -30,6 +30,8 @@ Codion Change Log
 - EntityTablePanel bug fixed, Config.popupMenuEditAttributeControl() added.
 - EntityTablePanel bug fixed, now excludes the edit attribute control from the toolbar if an editPanel is available.
 - EntityEditPanel, EntityTablePanel.setupControls() renamed configureControls().
+- MenuConfig renamed ControlConfig, create() renamed createControls(), now public.
+- EntityTablePanel.PopupMenuConfig and ToolBarConfig added, related refactoring.
 
 ## 0.17.42
 ### is.codion.common.core

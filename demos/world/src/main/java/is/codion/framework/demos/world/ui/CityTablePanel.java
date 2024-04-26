@@ -24,7 +24,6 @@ import is.codion.framework.demos.world.model.CityTableModel.PopulateLocationTask
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.ui.MenuConfig;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
@@ -38,7 +37,7 @@ final class CityTablePanel extends ChartTablePanel {
 	}
 
 	@Override
-	protected MenuConfig<TableControl> configurePopupMenu() {
+	protected PopupMenuConfig configurePopupMenu() {
 		return super.configurePopupMenu().clear()
 						.control(createPopulateLocationControl())
 						.separator()
