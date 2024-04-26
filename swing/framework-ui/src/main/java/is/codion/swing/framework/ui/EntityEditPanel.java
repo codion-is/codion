@@ -246,7 +246,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		if (!initialized) {
 			try {
 				setupStandardControls();
-				setupControls();
+				configureControls();
 				bindEvents();
 				initializeUI();
 			}
@@ -498,11 +498,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Override to setup any custom controls. This default implementation is empty.
+	 * Override to configure any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(EditControl)
 	 */
-	protected void setupControls() {}
+	protected void configureControls() {}
 
 	/**
 	 * Initializes this EntityEditPanel UI, that is, creates and lays out the components

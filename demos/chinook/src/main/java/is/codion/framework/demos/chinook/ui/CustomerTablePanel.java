@@ -47,7 +47,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected void setupControls() {
+	protected void configureControls() {
 		control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
 						.name(BUNDLE.getString("customer_report"))
 						.smallIcon(FrameworkIcons.instance().print())

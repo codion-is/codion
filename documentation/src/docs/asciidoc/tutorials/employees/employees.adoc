@@ -147,11 +147,11 @@ We create a method for viewing a report, which is called via an action we'll ini
 include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=viewEmployeeReport]
 ----
 
-Next we override *setupControls()* to populate the print control with our custom report one.
+Next we override *configureControls()* to populate the print control with our custom report one.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=setupControls]
+include::{dir-source}/is/codion/framework/demos/employees/ui/DepartmentTablePanel.java[tags=configureControls]
 ----
 
 For editing employee entities we create the *EmployeeEditPanel* class.

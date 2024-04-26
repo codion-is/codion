@@ -44,15 +44,15 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	}
 	// end::constructor[]
 
-	// tag::setupControls[]
+	// tag::configureControls[]
 	@Override
-	protected void setupControls() {
+	protected void configureControls() {
 		control(TableControl.PRINT).set(Control.builder(this::viewEmployeeReport)
 						.name("Employee Report")
 						.enabled(tableModel().selectionModel().selectionNotEmpty())
 						.build());
 	}
-	// end::setupControls[]
+	// end::configureControls[]
 
 	// tag::viewEmployeeReport[]
 	private void viewEmployeeReport() throws ReportException, DatabaseException {

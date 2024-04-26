@@ -724,7 +724,7 @@ public class EntityTablePanel extends JPanel {
 		if (!initialized) {
 			try {
 				setupComponents();
-				configureControls();
+				setupControls();
 				addTablePopupMenu();
 				layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
 				setConditionPanelVisible(conditionPanelVisibleState.get());
@@ -743,11 +743,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Override to setup any custom controls. This default implementation is empty.
+	 * Override to configure any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(TableControl)
 	 */
-	protected void setupControls() {}
+	protected void configureControls() {}
 
 	/**
 	 * Initializes the south panel, override and return null for no south panel.
@@ -1491,7 +1491,7 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
 	}
 
-	private void configureControls() {
+	private void setupControls() {
 		if (includeDeleteControl()) {
 			controls.get(TableControl.DELETE).mapNull(this::createDeleteControl);
 		}
@@ -1538,7 +1538,7 @@ public class EntityTablePanel extends JPanel {
 			controls.get(TableControl.SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
 		}
 		controls.get(TableControl.REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
-		setupControls();
+		configureControls();
 		controls.get(TableControl.ADDITIONAL_POPUP_MENU_CONTROLS).mapNull(this::createAdditionalPopupControls);
 		controls.get(TableControl.ADDITIONAL_TOOLBAR_CONTROLS).mapNull(this::createAdditionalToolbarControls);
 		controls.get(TableControl.PRINT_CONTROLS).mapNull(this::createPrintControls);

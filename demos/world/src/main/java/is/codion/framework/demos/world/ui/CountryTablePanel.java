@@ -42,7 +42,7 @@ final class CountryTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected void setupControls() {
+	protected void configureControls() {
 		control(TableControl.PRINT).set(Control.builder(this::viewCountryReport)
 						.name("Country report")
 						.enabled(tableModel().selectionModel().selectionNotEmpty())
