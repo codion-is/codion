@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.17.44
+
 ## 0.17.43
 ### is.codion.common.core
 - Text.delimitedString() bug fixed, no header resulted caused a line break.
