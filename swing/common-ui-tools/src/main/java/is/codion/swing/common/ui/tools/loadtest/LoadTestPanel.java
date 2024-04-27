@@ -396,8 +396,7 @@ public final class LoadTestPanel<T> extends JPanel {
 														.name("Columns")
 														.control(table.createToggleColumnsControls())
 														.control(table.createResetColumnsControl())
-														.control(table.createAutoResizeModeControl())
-														.build())
+														.control(table.createAutoResizeModeControl()))
 										.build())
 						.build();
 	}

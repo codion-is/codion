@@ -137,9 +137,7 @@ public final class ClientMonitorPanel extends JPanel {
 										.name("Columns")
 										.control(table.createToggleColumnsControls())
 										.control(table.createResetColumnsControl())
-										.control(table.createAutoResizeModeControl())
-										.build())
-						.build())
+										.control(table.createAutoResizeModeControl())))
 						.createPopupMenu();
 	}
 

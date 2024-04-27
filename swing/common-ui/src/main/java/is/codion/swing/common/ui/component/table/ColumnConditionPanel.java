@@ -618,8 +618,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 		if (isStringOrCharacter()) {
 			Controls.Builder controlsBuilder = Controls.builder();
 			controlsBuilder.control(ToggleControl.builder(conditionModel.caseSensitive())
-							.name(MESSAGES.getString("case_sensitive"))
-							.build());
+							.name(MESSAGES.getString("case_sensitive")));
 			if (conditionModel.columnClass().equals(String.class)) {
 				controlsBuilder.controls(createAutomaticWildcardControls());
 			}

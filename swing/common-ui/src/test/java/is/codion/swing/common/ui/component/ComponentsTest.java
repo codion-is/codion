@@ -953,8 +953,7 @@ public final class ComponentsTest {
 																		.name("three"))
 										.controls(Controls.builder()
 														.control(Control.builder(() -> {})
-																		.name("four"))
-														.build())
+																		.name("four")))
 										.build())
 						.orientation(SwingConstants.VERTICAL)
 						.build());

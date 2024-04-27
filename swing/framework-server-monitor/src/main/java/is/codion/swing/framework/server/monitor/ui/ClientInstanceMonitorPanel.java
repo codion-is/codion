@@ -155,8 +155,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 										.name("Save to file..."))
 						.separator()
 						.control(ToggleControl.builder(lineWrapState)
-										.name("Line wrap"))
-						.build())
+										.name("Line wrap")))
 						.createPopupMenu());
 
 		return textArea;
