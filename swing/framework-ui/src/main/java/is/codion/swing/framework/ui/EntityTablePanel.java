@@ -447,8 +447,8 @@ public class EntityTablePanel extends JPanel {
 	private final EntityEditPanel editPanel;
 	private final Map<TableControl, Value<Control>> controls = createControlsMap();
 	private final Config configuration;
-	private final PopupMenuConfig popupMenuConfiguration;
-	private final ToolBarConfig toolBarConfiguration;
+	private final ControlConfig<TableControl, ?> popupMenuConfiguration;
+	private final ControlConfig<TableControl, ?> toolBarConfiguration;
 	private final SwingEntityTableModel tableModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
@@ -827,7 +827,7 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Configures the toolbar controls.<br>
-	 * Note that the {@link ToolBarConfig} instance has pre-configured defaults,
+	 * Note that the {@link ControlConfig} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configureToolBar(config -> config.clear()
@@ -840,14 +840,14 @@ public class EntityTablePanel extends JPanel {
 	 * @param toolBarConfig provides access to the toolbar configuration
 	 * @see ControlConfig#clear()
 	 */
-	protected final void configureToolBar(Consumer<ToolBarConfig> toolBarConfig) {
+	protected final void configureToolBar(Consumer<ControlConfig<TableControl, ?>> toolBarConfig) {
 		throwIfInitialized();
 		requireNonNull(toolBarConfig).accept(this.toolBarConfiguration);
 	}
 
 	/**
 	 * Configures the popup menu controls.<br>
-	 * Note that the {@link PopupMenuConfig} instance has pre-configured defaults,
+	 * Note that the {@link ControlConfig} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configurePopupMenu(config -> config.clear()
@@ -860,7 +860,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param popupMenuConfig provides access to the popup menu configuration
 	 * @see ControlConfig#clear()
 	 */
-	protected final void configurePopupMenu(Consumer<PopupMenuConfig> popupMenuConfig) {
+	protected final void configurePopupMenu(Consumer<ControlConfig<TableControl, ?>> popupMenuConfig) {
 		throwIfInitialized();
 		requireNonNull(popupMenuConfig).accept(this.popupMenuConfiguration);
 	}
@@ -1730,18 +1730,6 @@ public class EntityTablePanel extends JPanel {
 		return new Point(x, y + table.getRowHeight() / 2);
 	}
 
-	/**
-	 * Configures the popup menu.
-	 * @see #configurePopupMenu(Consumer)
-	 */
-	protected interface PopupMenuConfig extends ControlConfig<TableControl, PopupMenuConfig> {}
-
-	/**
-	 * Configures the toolbar.
-	 * @see #configureToolBar(Consumer)
-	 */
-	protected interface ToolBarConfig extends ControlConfig<TableControl, ToolBarConfig> {}
-
 	private final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
 
 		@Override
@@ -2486,8 +2474,8 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private final class DefaultPopupMenuConfig extends
-					DefaultControlConfig<TableControl, PopupMenuConfig> implements PopupMenuConfig {
+	private final class DefaultPopupMenuConfig<C extends ControlConfig<TableControl, C>>
+					extends DefaultControlConfig<TableControl, C> {
 
 		private DefaultPopupMenuConfig() {
 			super(TableControl.ADDITIONAL_POPUP_MENU_CONTROLS, asList(
@@ -2524,8 +2512,8 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private final class DefaultToolBarConfig extends
-					DefaultControlConfig<TableControl, ToolBarConfig> implements ToolBarConfig {
+	private final class DefaultToolBarConfig<C extends ControlConfig<TableControl, C>>
+					extends DefaultControlConfig<TableControl, C> {
 
 		private DefaultToolBarConfig() {
 			super(TableControl.ADDITIONAL_TOOLBAR_CONTROLS, asList(

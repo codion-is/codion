@@ -225,7 +225,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Returns a {@link Controls} instance containing all the controls this edit panel provides via {@link #createControls()}.
+	 * Returns a {@link Controls} instance containing all the controls configured via {@link #configureControls(Consumer)}.
 	 * @return the {@link Controls} provided by this edit panel
 	 * @throws IllegalStateException in case the panel has not been initialized
 	 * @see #initialized()
@@ -515,7 +515,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Configures the popup menu controls.<br>
-	 * Note that the {@link ControlsConfig} instance has pre-configured defaults,
+	 * Note that the {@link ControlConfig} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configureControls(config -> config
