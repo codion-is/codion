@@ -72,6 +72,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_I;
 import static java.awt.event.KeyEvent.VK_V;
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
@@ -139,6 +140,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final Config configuration;
+	private final ControlConfig<EditControl, ?> controlsConfiguration;
 	private final Map<EditControl, Value<Control>> controls;
 	private final State active;
 
@@ -179,6 +181,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
 		super(editModel, entityComponents);
 		this.configuration = configure(configuration);
+		this.controlsConfiguration = new DefaultControlsConfig<>();
 		this.active = State.state(!this.configuration.focusActivation);
 		this.controls = createControlsMap();
 		setupFocusActivation();
@@ -226,14 +229,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @return the {@link Controls} provided by this edit panel
 	 * @throws IllegalStateException in case the panel has not been initialized
 	 * @see #initialized()
-	 * @see #createControls()
+	 * @see #configureControls(Consumer)
 	 */
 	public final Controls controls() {
 		if (!initialized()) {
 			throw new IllegalStateException("Method must be called after the panel is initialized");
 		}
 
-		return createControls();
+		return controlsConfiguration.createControls();
 	}
 
 	/**
@@ -485,19 +488,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Creates a Controls instance containing all the controls available in this edit panel
-	 * @return the Controls available in this edit panel
-	 */
-	protected Controls createControls() {
-		return Controls.controls(Stream.of(EditControl.values())
-						.map(controls::get)
-						.map(Value::optional)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.toArray(Control[]::new));
-	}
-
-	/**
 	 * Override to configure any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(EditControl)
@@ -522,6 +512,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * </pre>
 	 */
 	protected abstract void initializeUI();
+
+	/**
+	 * Configures the popup menu controls.<br>
+	 * Note that the {@link ControlsConfig} instance has pre-configured defaults,
+	 * which must be cleared in order to start with an empty configuration.
+	 * <pre>
+	 *   configureControls(config -> config
+	 *           .separator()
+	 *           .control(createCustomControl()))
+	 * </pre>
+	 * @param controlsConfig provides access to the controls configuration
+	 * @see ControlConfig#clear()
+	 */
+	protected final void configureControls(Consumer<ControlConfig<EditControl, ?>> controlsConfig) {
+		requireNonNull(controlsConfig).accept(controlsConfiguration);
+	}
 
 	private void setupStandardControls() {
 		if (!editModel().readOnly().get()) {
@@ -859,6 +865,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		default boolean confirm(JComponent dialogOwner, String message, String title) {
 			return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+		}
+	}
+
+	private final class DefaultControlsConfig<C extends ControlConfig<EditControl, C>>
+					extends DefaultControlConfig<EditControl, C> {
+
+		private DefaultControlsConfig() {
+			super(null, asList(
+							EditControl.INSERT,
+							EditControl.UPDATE,
+							EditControl.DELETE,
+							EditControl.CLEAR
+			));
+		}
+
+		@Override
+		protected Optional<Control> control(EditControl control) {
+			return Optional.of(EntityEditPanel.this.control(control).get());
 		}
 	}
 

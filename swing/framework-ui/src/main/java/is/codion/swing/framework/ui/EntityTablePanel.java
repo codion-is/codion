@@ -354,7 +354,6 @@ public class EntityTablePanel extends JPanel {
 		CLEAR_SELECTION,
 		/**
 		 * A {@link Control} for moving the selection up, with wrap-around.
-		 * @see
 		 */
 		MOVE_SELECTION_UP,
 		/**

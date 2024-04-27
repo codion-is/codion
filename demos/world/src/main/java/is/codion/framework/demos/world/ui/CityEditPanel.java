@@ -26,7 +26,6 @@ import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -57,6 +56,13 @@ public final class CityEditPanel extends EntityEditPanel {
 		super(tableModel.editModel());
 		this.mapKit = Maps.createMapKit();
 		tableModel.addDisplayLocationConsumer(this::displayLocation);
+		configureControls(config -> config
+						.control(Control.builder(this::populateLocation)
+										.enabled(State.and(active(),
+														editModel().isNull(City.LOCATION),
+														editModel().exists()))
+										.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
+										.build()));
 	}
 
 	@Override
@@ -84,17 +90,6 @@ public final class CityEditPanel extends EntityEditPanel {
 		}
 		setLayout(borderLayout());
 		add(centerPanel, BorderLayout.CENTER);
-	}
-
-	@Override
-	protected Controls createControls() {
-		return super.createControls()
-						.addAt(4, Control.builder(this::populateLocation)
-										.enabled(State.and(active(),
-														editModel().isNull(City.LOCATION),
-														editModel().exists()))
-										.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
-										.build());
 	}
 
 	private void populateLocation() throws ValidationException, IOException, DatabaseException {
