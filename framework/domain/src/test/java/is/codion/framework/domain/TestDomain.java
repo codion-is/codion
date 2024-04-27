@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
+import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -441,6 +442,8 @@ public final class TestDomain extends DefaultDomain {
 		Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
 		Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
 		Column<byte[]> DATA = TYPE.byteArrayColumn("data");
+
+		ConditionType CONDITION = TYPE.conditionType("condition");
 	}
 
 	void employee() {
@@ -499,9 +502,13 @@ public final class TestDomain extends DefaultDomain {
 														.column()
 														.caption("Data"))
 						.tableName("employees.employee")
+						.selectTableName("employees.employee")
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
 						.stringFactory(Employee.NAME)
+						.selectQuery(SelectQuery.builder()
+										.build())
+						.condition(Employee.CONDITION, (columns, values) -> "")
 						.caption("Employee"));
 	}
 

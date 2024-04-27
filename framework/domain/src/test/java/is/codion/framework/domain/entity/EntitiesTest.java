@@ -18,12 +18,14 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.Serializer;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.KeyTest;
 import is.codion.framework.domain.TestDomainExtended;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
@@ -33,6 +35,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -526,5 +529,29 @@ public final class EntitiesTest {
 
 		//entity type name clash
 		assertThrows(IllegalArgumentException.class, TestDomainExtended.TestDomainThirdExtension::new);
+	}
+
+	@Test
+	void transients() throws IOException, ClassNotFoundException {
+		EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
+		assertNotNull(definition.tableName());
+		assertNotNull(definition.selectTableName());
+		assertNotNull(definition.primaryKey().generator());
+		assertTrue(definition.optimisticLocking());
+		assertTrue(definition.selectQuery().isPresent());
+		assertNotNull(definition.conditionProvider(TestDomain.Employee.CONDITION));
+		ColumnDefinition<String> nameDefinition = definition.columns().definition(TestDomain.Employee.NAME);
+		assertNotNull(nameDefinition.name());
+		assertNotNull(nameDefinition.expression());
+		EntityDefinition deserialized = Serializer.deserialize(Serializer.serialize(definition));
+		assertNull(deserialized.tableName());
+		assertNull(deserialized.selectTableName());
+		assertNull(deserialized.primaryKey().generator());
+		assertFalse(deserialized.optimisticLocking());
+		assertFalse(deserialized.selectQuery().isPresent());
+		assertThrows(IllegalArgumentException.class, () -> deserialized.conditionProvider(TestDomain.Employee.CONDITION));
+		nameDefinition = deserialized.columns().definition(TestDomain.Employee.NAME);
+		assertNull(nameDefinition.name());
+		assertNull(nameDefinition.expression());
 	}
 }
