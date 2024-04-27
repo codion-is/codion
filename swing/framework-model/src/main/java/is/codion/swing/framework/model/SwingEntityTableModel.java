@@ -78,6 +78,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
@@ -1115,9 +1116,15 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		public void accept(Map<Entity.Key, Entity> updated) {
 			updated.values().stream()
 							.collect(groupingBy(Entity::entityType, HashMap::new, toList()))
-							.forEach((entityType, entities) ->
-											entityDefinition().foreignKeys().get(entityType).forEach(foreignKey ->
-															replace(foreignKey, entities)));
+							.forEach(this::handleUpdate);
+		}
+
+		private void handleUpdate(EntityType entityType, List<Entity> entities) {
+			if (entityType.equals(entityType())) {
+				replace(entities);
+			}
+			entityDefinition().foreignKeys().get(entityType)
+							.forEach(foreignKey -> replace(foreignKey, entities));
 		}
 	}
 
@@ -1126,21 +1133,18 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		@Override
 		public void accept(Boolean handleEditEvents) {
 			if (handleEditEvents) {
-				addEditListeners();
+				entityTypes().forEach(entityType ->
+							EntityEditEvents.addUpdateConsumer(entityType, updateListener));
 			}
 			else {
-				removeEditListeners();
+				entityTypes().forEach(entityType ->
+							EntityEditEvents.removeUpdateConsumer(entityType, updateListener));
 			}
 		}
 
-		private void addEditListeners() {
-			entityDefinition().foreignKeys().get().forEach(foreignKey ->
-							EntityEditEvents.addUpdateConsumer(foreignKey.referencedType(), updateListener));
-		}
-
-		private void removeEditListeners() {
-			entityDefinition().foreignKeys().get().forEach(foreignKey ->
-							EntityEditEvents.removeUpdateConsumer(foreignKey.referencedType(), updateListener));
+		private Stream<EntityType> entityTypes() {
+			return Stream.concat(entityDefinition().foreignKeys().get().stream()
+							.map(ForeignKey::referencedType), Stream.of(entityType()));
 		}
 	}
 

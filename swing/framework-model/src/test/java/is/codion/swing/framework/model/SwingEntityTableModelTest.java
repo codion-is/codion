@@ -22,6 +22,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -29,6 +30,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -352,5 +354,23 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 							}
 						});
 		assertFalse(tableModel.columnModel().containsColumn(Employee.COMMISSION));
+	}
+
+	@Test
+	void editEvents() throws ValidationException, DatabaseException {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, testModel.connectionProvider());
+		tableModel.refresh();
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
+		editModel.set(tableModel.itemAt(0));
+		editModel.put(Department.NAME, "new name");
+		EntityConnection connection = tableModel.connectionProvider().connection();
+		connection.startTransaction();
+		try {
+			editModel.update();
+			assertEquals("new name", tableModel.itemAt(0).get(Department.NAME));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 	}
 }
