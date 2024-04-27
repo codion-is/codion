@@ -48,6 +48,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 
 import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.CSV;
 import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.JSON;
@@ -149,8 +150,9 @@ final class LookupTablePanel extends EntityTablePanel {
 							tableModel().visibleItems() :
 							tableModel().selectionModel().getSelectedItems();
 			Maps.paintWaypoints(entities.stream()
-							.filter(entity -> entity.isNotNull(Lookup.CITY_LOCATION))
-							.map(entity -> entity.get(Lookup.CITY_LOCATION))
+							.map(entity -> entity.optional(Lookup.CITY_LOCATION))
+							.filter(Optional::isPresent)
+							.map(Optional::get)
 							.collect(toSet()), mapKit.getMainMap());
 		}
 	}
