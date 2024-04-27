@@ -47,7 +47,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	private final DomainType domainType;
 	private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
-	private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
+	private transient boolean strictForeignKeys = STRICT_FOREIGN_KEYS.get();
 
 	/**
 	 * Instantiates a new DefaultEntities for the given domainType

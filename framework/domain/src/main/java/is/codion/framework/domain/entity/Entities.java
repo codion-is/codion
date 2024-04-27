@@ -37,6 +37,14 @@ import java.util.List;
 public interface Entities {
 
 	/**
+	 * Specifies whether it should be possible to define foreign keys referencing entities that have
+	 * not been defined, this can be disabled in cases where entities have circular references.<br>
+	 * Value type: Boolean<br>
+	 * Default value: true
+	 */
+	PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
+
+	/**
 	 * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>
 	 * is encountered during deserialization, an exception is thrown, instead of silently dropping the associated value.<br>
 	 * Value type: Boolean<br>
