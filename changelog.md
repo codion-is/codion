@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.44
+### is.codion.swing.common.ui
+- ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 ### is.codion.swing.framework.ui
 - EntityEditPanel, control configuration refactored, now consistent with EntityTablePanel.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.

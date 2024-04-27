@@ -22,7 +22,6 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.demos.world.model.CityTableModel.PopulateLocationTask;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -58,11 +57,9 @@ final class CityTablePanel extends ChartTablePanel {
 						.title("Populating locations")
 						.maximumProgress(task.maximumProgress())
 						.stringPainted(true)
-						.controls(Controls.builder()
-										.control(Control.builder(task::cancel)
-														.name("Cancel")
-														.enabled(task.cancelled().not()))
-										.build())
+						.control(Control.builder(task::cancel)
+										.name("Cancel")
+										.enabled(task.cancelled().not()))
 						.onException(this::displayPopulateException)
 						.execute();
 	}

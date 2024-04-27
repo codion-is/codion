@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -81,10 +81,16 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel);
 
 	/**
-	 * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
+	 * @param controlBuilder the control built by this builder will be added to the dialog as a button
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> controls(Controls controls);
+	ProgressWorkerDialogBuilder<T, V> control(Control.Builder<?, ?> controlBuilder);
+
+	/**
+	 * @param control this control will be added to the dialog as a button
+	 * @return this Builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> control(Control control);
 
 	/**
 	 * @param progressBarSize the size of the progress bar

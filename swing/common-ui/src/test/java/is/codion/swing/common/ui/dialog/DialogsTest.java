@@ -23,7 +23,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -149,9 +148,7 @@ public final class DialogsTest {
 						.stringPainted(true)
 						.northPanel(new JPanel())
 						.westPanel(new JPanel())
-						.controls(Controls.builder()
-										.control(Control.builder(() -> {}))
-										.build())
+						.control(Control.builder(() -> {}))
 						.build();
 	}
 

@@ -23,7 +23,7 @@ import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -98,8 +98,14 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> controls(Controls controls) {
-		progressDialogBuilder.controls(controls);
+	public ProgressWorkerDialogBuilder<T, V> control(Control.Builder<?, ?> controlBuilder) {
+		progressDialogBuilder.control(controlBuilder);
+		return this;
+	}
+
+	@Override
+	public ProgressWorkerDialogBuilder<T, V> control(Control control) {
+		progressDialogBuilder.control(control);
 		return this;
 	}
 

@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JDialog;
@@ -35,6 +36,7 @@ import java.awt.FlowLayout;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A dialog containing a progress bar.
@@ -170,10 +172,18 @@ public final class ProgressDialog extends JDialog {
 		Builder eastPanel(JPanel eastPanel);
 
 		/**
-		 * @param controls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
+		 * Adds a button based on the given control to the {@link BorderLayout#SOUTH} position
+		 * @param controlBuilder the builder for the control to add
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder controls(Controls controls);
+		Builder control(Control.Builder<?, ?> controlBuilder);
+
+		/**
+		 * Adds a button based on the given control to the {@link BorderLayout#SOUTH} position
+		 * @param control the control to add
+		 * @return this ProgressDialogBuilder instance
+		 */
+		Builder control(Control control);
 
 		/**
 		 * @param progressBarSize the progress bar size
@@ -195,13 +205,14 @@ public final class ProgressDialog extends JDialog {
 
 	static class DefaultBuilder extends AbstractDialogBuilder<Builder> implements Builder {
 
+		private final Controls controls = Controls.controls();
+
 		private int maximumProgress = 100;
 		private boolean indeterminate = true;
 		private boolean stringPainted = false;
 		private JPanel northPanel;
 		private JPanel westPanel;
 		private JPanel eastPanel;
-		private Controls controls;
 		private Dimension progressBarSize;
 		private Border border;
 
@@ -245,8 +256,13 @@ public final class ProgressDialog extends JDialog {
 		}
 
 		@Override
-		public Builder controls(Controls controls) {
-			this.controls = controls;
+		public Builder control(Control.Builder<?, ?> controlBuilder) {
+			return control(requireNonNull(controlBuilder).build());
+		}
+
+		@Override
+		public Builder control(Control control) {
+			this.controls.add(requireNonNull(control));
 			return this;
 		}
 
