@@ -99,7 +99,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
 		Collection<Entity> entities = ofReferencedType(updatedEntities.values());
 		detailModel().editModel().replace(foreignKey, entities);
-		if (detailModel().containsTableModel()) {
+		if (detailModel().containsTableModel() && detailModel().tableModel().editEvents().not().get()) {
 			detailModel().tableModel().replace(foreignKey, entities);
 		}
 	}

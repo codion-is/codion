@@ -45,6 +45,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
+import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -85,6 +86,7 @@ import static is.codion.swing.common.model.component.table.FilteredTableModel.su
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -104,6 +106,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 					.validator(new AttributeValidator())
 					.build();
 	private final State conditionRequired = State.state();
+	private final State editEvents = State.builder()
+					.consumer(new HandleEditEventsChanged())
+					.build();
 	private final State editable = State.state();
 	private final Value<Integer> limit = Value.value();
 	private final State queryHiddenColumns = State.state(EntityTableModel.QUERY_HIDDEN_COLUMNS.get());
@@ -116,6 +121,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	 */
 	private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
 	private final State conditionChanged = State.state();
+	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
 	private Select refreshCondition;
 
@@ -204,6 +210,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		this.refreshCondition = createSelect(conditionModel);
 		bindEvents();
 		applyPreferences();
+		editEvents.set(true);
 	}
 
 	@Override
@@ -254,6 +261,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	@Override
 	public final State removeDeleted() {
 		return removeDeleted;
+	}
+
+	@Override
+	public final State editEvents() {
+		return editEvents;
 	}
 
 	@Override
@@ -1094,6 +1106,41 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 					throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityType());
 				}
 			}
+		}
+	}
+
+	private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
+
+		@Override
+		public void accept(Map<Entity.Key, Entity> updated) {
+			updated.values().stream()
+							.collect(groupingBy(Entity::entityType, HashMap::new, toList()))
+							.forEach((entityType, entities) ->
+											entityDefinition().foreignKeys().get(entityType).forEach(foreignKey ->
+															replace(foreignKey, entities)));
+		}
+	}
+
+	private final class HandleEditEventsChanged implements Consumer<Boolean> {
+
+		@Override
+		public void accept(Boolean handleEditEvents) {
+			if (handleEditEvents) {
+				addEditListeners();
+			}
+			else {
+				removeEditListeners();
+			}
+		}
+
+		private void addEditListeners() {
+			entityDefinition().foreignKeys().get().forEach(foreignKey ->
+							EntityEditEvents.addUpdateConsumer(foreignKey.referencedType(), updateListener));
+		}
+
+		private void removeEditListeners() {
+			entityDefinition().foreignKeys().get().forEach(foreignKey ->
+							EntityEditEvents.removeUpdateConsumer(foreignKey.referencedType(), updateListener));
 		}
 	}
 
