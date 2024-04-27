@@ -748,18 +748,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Configures the popup menu.
-	 * @see #configurePopupMenu(Consumer)
-	 */
-	public interface PopupMenuConfig extends ControlConfig<TableControl, PopupMenuConfig> {}
-
-	/**
-	 * Configures the toolbar.
-	 * @see #configureToolBar(Consumer)
-	 */
-	public interface ToolBarConfig extends ControlConfig<TableControl, ToolBarConfig> {}
-
-	/**
 	 * Override to configure any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(TableControl)
@@ -1742,6 +1730,18 @@ public class EntityTablePanel extends JPanel {
 
 		return new Point(x, y + table.getRowHeight() / 2);
 	}
+
+	/**
+	 * Configures the popup menu.
+	 * @see #configurePopupMenu(Consumer)
+	 */
+	protected interface PopupMenuConfig extends ControlConfig<TableControl, PopupMenuConfig> {}
+
+	/**
+	 * Configures the toolbar.
+	 * @see #configureToolBar(Consumer)
+	 */
+	protected interface ToolBarConfig extends ControlConfig<TableControl, ToolBarConfig> {}
 
 	private final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
 

@@ -38,6 +38,7 @@ Codion Change Log
 - MenuConfig renamed ControlConfig, create() renamed createControls(), now public.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig added, related refactoring.
 - EntityTablePanel, popup menu and toolbar configuration refactored, overriding no longer required.
+- EntityTablePanel.PopupMenuConfig and ToolBarConfig now protected.
 
 ## 0.17.42
 ### is.codion.common.core
