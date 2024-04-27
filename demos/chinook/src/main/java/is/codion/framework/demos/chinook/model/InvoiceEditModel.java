@@ -34,19 +34,21 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 	}
 
 	private void setAddress(Entity customer) {
-		if (customer == null) {
-			put(Invoice.BILLINGADDRESS, null);
-			put(Invoice.BILLINGCITY, null);
-			put(Invoice.BILLINGPOSTALCODE, null);
-			put(Invoice.BILLINGSTATE, null);
-			put(Invoice.BILLINGCOUNTRY, null);
-		}
-		else {
-			put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
-			put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
-			put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
-			put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
-			put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
+		if (exists().not().get()) {
+			if (customer == null) {
+				put(Invoice.BILLINGADDRESS, null);
+				put(Invoice.BILLINGCITY, null);
+				put(Invoice.BILLINGPOSTALCODE, null);
+				put(Invoice.BILLINGSTATE, null);
+				put(Invoice.BILLINGCOUNTRY, null);
+			}
+			else {
+				put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
+				put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
+				put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
+				put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
+				put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
+			}
 		}
 	}
 }
