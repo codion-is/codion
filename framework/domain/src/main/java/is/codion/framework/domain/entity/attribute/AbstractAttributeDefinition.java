@@ -206,6 +206,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
+	public boolean denormalized() {
+		return false;
+	}
+
+	@Override
 	public final EntityType entityType() {
 		return attribute.entityType();
 	}

@@ -162,7 +162,7 @@ class DefaultEntity implements Entity, Serializable {
 
 	@Override
 	public final <T> T get(Attribute<T> attribute) {
-		return get(definition.attributes().definition(attribute));
+		return cached(definition.attributes().definition(attribute));
 	}
 
 	@Override
@@ -219,7 +219,7 @@ class DefaultEntity implements Entity, Serializable {
 			}
 		}
 
-		return attributeDefinition.string(get(attributeDefinition));
+		return attributeDefinition.string(cached(attributeDefinition));
 	}
 
 	@Override
@@ -413,6 +413,10 @@ class DefaultEntity implements Entity, Serializable {
 		return unmodifiableSet(originalValues.entrySet());
 	}
 
+	void clearDerivedCache() {
+		definition.attributes().get().forEach(this::clearDerivedCache);
+	}
+
 	private String createToString() {
 		String string = definition.stringFactory().apply(this);
 		if (string == null) {
@@ -454,7 +458,15 @@ class DefaultEntity implements Entity, Serializable {
 
 	private <T> T get(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition.derived()) {
-			return derivedValue((DerivedAttributeDefinition<T>) attributeDefinition, false);
+			return derived((DerivedAttributeDefinition<T>) attributeDefinition);
+		}
+
+		return (T) values.get(attributeDefinition.attribute());
+	}
+
+	private <T> T cached(AttributeDefinition<T> attributeDefinition) {
+		if (attributeDefinition.derived()) {
+			return derivedCached((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
 
 		return (T) values.get(attributeDefinition.attribute());
@@ -462,7 +474,7 @@ class DefaultEntity implements Entity, Serializable {
 
 	private <T> T original(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition.derived()) {
-			return derivedValue((DerivedAttributeDefinition<T>) attributeDefinition, true);
+			return derivedOriginal((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
 		if (isModified(attributeDefinition.attribute())) {
 			return (T) originalValues.get(attributeDefinition.attribute());
@@ -488,9 +500,18 @@ class DefaultEntity implements Entity, Serializable {
 		if (attributeDefinition instanceof ForeignKeyDefinition) {
 			updateReferencedColumns((ForeignKeyDefinition) attributeDefinition, (Entity) newValue);
 		}
+		clearDerivedCache(attribute);
 		toString = null;
 
 		return previousValue;
+	}
+
+	private void clearDerivedCache(Attribute<? extends Object> sourceAttribute) {
+		Collection<Attribute<?>> derivedFrom = definition.attributes().derivedFrom(sourceAttribute);
+		if (!derivedFrom.isEmpty()) {
+			derivedFrom.forEach(values::remove);
+			derivedFrom.forEach(this::clearDerivedCache);
+		}
 	}
 
 	private <T> boolean isNull(AttributeDefinition<T> attributeDefinition) {
@@ -498,7 +519,7 @@ class DefaultEntity implements Entity, Serializable {
 			return isReferenceNull(((ForeignKeyDefinition) attributeDefinition).attribute());
 		}
 
-		return get(attributeDefinition) == null;
+		return cached(attributeDefinition) == null;
 	}
 
 	private boolean isReferenceNull(ForeignKey foreignKey) {
@@ -711,11 +732,28 @@ class DefaultEntity implements Entity, Serializable {
 		return new DefaultKey(definition, keyValues, true);
 	}
 
-	private <T> T derivedValue(DerivedAttributeDefinition<T> derivedDefinition, boolean originalValue) {
-		return derivedDefinition.valueProvider().get(createSourceValues(derivedDefinition, originalValue));
+	private <T> T derivedCached(DerivedAttributeDefinition<T> attributeDefinition) {
+		if (values.containsKey(attributeDefinition.attribute())) {
+			return (T) values.get(attributeDefinition.attribute());
+		}
+		T derivedValue = derived(attributeDefinition);
+		if (!attributeDefinition.denormalized()) {
+			values.put(attributeDefinition.attribute(), derivedValue);
+		}
+
+		return derivedValue;
 	}
 
-	private DerivedAttribute.SourceValues createSourceValues(DerivedAttributeDefinition<?> derivedDefinition, boolean originalValue) {
+	private <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
+		return derivedDefinition.valueProvider().get(sourceValues(derivedDefinition, false));
+	}
+
+	private <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
+		return derivedDefinition.valueProvider().get(sourceValues(derivedDefinition, true));
+	}
+
+	private DerivedAttribute.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,
+																										 boolean originalValue) {
 		List<Attribute<?>> sourceAttributes = derivedDefinition.sourceAttributes();
 		if (sourceAttributes.isEmpty()) {
 			return new DefaultSourceValues(derivedDefinition.attribute(), emptyMap());
@@ -842,7 +880,7 @@ class DefaultEntity implements Entity, Serializable {
 
 		@Override
 		public boolean test(Map.Entry<Attribute<?>, Object> entry) {
-			return Objects.equals(entry.getValue(), get(entry.getKey()));
+			return Objects.equals(entry.getValue(), get(definition.attributes().definition(entry.getKey())));
 		}
 	}
 

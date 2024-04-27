@@ -53,6 +53,11 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		return true;
 	}
 
+	@Override
+	public boolean denormalized() {
+		return valueProvider instanceof DenormalizedValueProvider;
+	}
+
 	static final class DefaultDerivedAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
 

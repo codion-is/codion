@@ -19,6 +19,8 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Serializer;
+import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.CompositeDetail;
 import is.codion.framework.domain.TestDomain.CompositeMaster;
@@ -1008,6 +1010,37 @@ public class DefaultEntityTest {
 						.build();
 
 		assertEquals(-1, aron.compareTo(bjorn));
+	}
+
+	@Test
+	void cachedDerived() throws IOException, ClassNotFoundException {
+		DomainType domainType = DomainType.domainType("cached_derived");
+		EntityType type = domainType.entityType("derived");
+		Attribute<String> stringAttribute = type.stringAttribute("string");
+		Attribute<String> derivedAttribute = type.stringAttribute("derived");
+		class DerivedDomain extends DefaultDomain {
+			DerivedDomain() {
+				super(domainType);
+				add(type.define(
+								stringAttribute.define()
+												.attribute(),
+								derivedAttribute.define()
+												.derived(sourceValues ->
+																sourceValues.get(stringAttribute) + "-derived", stringAttribute)));
+			}
+		}
+		Entity entity = new DerivedDomain().entities().entity(type);
+		entity.put(stringAttribute, "hello");
+		String derivedValue = entity.get(derivedAttribute);
+		// Cached instance
+		assertSame(derivedValue, entity.get(derivedAttribute));
+		entity.put(stringAttribute, "hello hello");
+		derivedValue = entity.get(derivedAttribute);
+		assertSame(derivedValue, entity.get(derivedAttribute));
+
+		Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
+		// Cached values cleared before serializing
+		assertNotSame(derivedValue, deserialized.get(derivedAttribute));
 	}
 
 	private static Entity detailEntity(long id, Integer intValue, Double doubleValue,
