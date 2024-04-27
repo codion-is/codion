@@ -43,7 +43,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 		}
 		this.toggleControl = toggleControl;
 		action(toggleControl);
-		return (B) this;
+		return self();
 	}
 
 	@Override

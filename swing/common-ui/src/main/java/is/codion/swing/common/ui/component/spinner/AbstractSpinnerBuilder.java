@@ -48,13 +48,13 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	@Override
 	public final B editable(boolean editable) {
 		this.editable = editable;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B columns(int columns) {
 		this.columns = columns;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -63,7 +63,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 		if (mouseWheelScrolling) {
 			this.mouseWheelScrollingReversed = false;
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -72,13 +72,13 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 		if (mouseWheelScrollingReversed) {
 			this.mouseWheelScrolling = false;
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B horizontalAlignment(int horizontalAlignment) {
 		this.horizontalAlignment = horizontalAlignment;
-		return (B) this;
+		return self();
 	}
 
 	@Override

@@ -52,43 +52,43 @@ abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends
 	@Override
 	public final B visibleRowCount(int visibleRowCount) {
 		this.visibleRowCount = visibleRowCount;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B layoutOrientation(int layoutOrientation) {
 		this.layoutOrientation = layoutOrientation;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B fixedCellHeight(int fixedCellHeight) {
 		this.fixedCellHeight = fixedCellHeight;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B fixedCellWidth(int fixedCellWidth) {
 		this.fixedCellWidth = fixedCellWidth;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B cellRenderer(ListCellRenderer<T> cellRenderer) {
 		this.cellRenderer = requireNonNull(cellRenderer);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B selectionModel(ListSelectionModel selectionModel) {
 		this.selectionModel = requireNonNull(selectionModel);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B listSelectionListener(ListSelectionListener listSelectionListener) {
 		listSelectionListeners.add(requireNonNull(listSelectionListener));
-		return (B) this;
+		return self();
 	}
 
 	protected final JList<T> createList() {

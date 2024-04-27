@@ -61,7 +61,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	@Override
 	public final B columns(int columns) {
 		this.columns = columns;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -81,19 +81,19 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	@Override
 	public final B selector(SingleSelector<T> selector) {
 		this.selector = requireNonNull(selector);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B format(Format format) {
 		this.format = format;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B horizontalAlignment(int horizontalAlignment) {
 		this.horizontalAlignment = horizontalAlignment;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -102,7 +102,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 			throw new IllegalArgumentException("Hint is null or empty");
 		}
 		this.hint = hint;
-		return (B) this;
+		return self();
 	}
 
 	@Override

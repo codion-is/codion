@@ -55,25 +55,25 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 			throw new IllegalArgumentException("Unknown orientation value: " + orientation);
 		}
 		this.orientation = orientation;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B action(Action action) {
 		this.controls.add(requireNonNull(action));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B controls(Controls controls) {
 		this.controls.addAll(requireNonNull(controls));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B separator() {
 		this.controls.addSeparator();
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -82,7 +82,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		toggleButtonBuilder.includeText(includeButtonText);
 		checkBoxBuilder.includeText(includeButtonText);
 		radioButtonBuilder.includeText(includeButtonText);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -91,7 +91,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		toggleButtonBuilder.preferredSize(preferredButtonSize);
 		checkBoxBuilder.preferredSize(preferredButtonSize);
 		radioButtonBuilder.preferredSize(preferredButtonSize);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -100,37 +100,37 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		toggleButtonBuilder.focusable(buttonsFocusable);
 		checkBoxBuilder.focusable(buttonsFocusable);
 		radioButtonBuilder.focusable(buttonsFocusable);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B toggleButtonType(ToggleButtonType toggleButtonType) {
 		this.toggleButtonType = requireNonNull(toggleButtonType);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B buttonBuilder(Consumer<ButtonBuilder<?, ?, ?>> buttonBuilder) {
 		requireNonNull(buttonBuilder).accept(this.buttonBuilder);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B toggleButtonBuilder(Consumer<ToggleButtonBuilder<?, ?>> toggleButtonBuilder) {
 		requireNonNull(toggleButtonBuilder).accept(this.toggleButtonBuilder);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder) {
 		requireNonNull(checkBoxBuilder).accept(this.checkBoxBuilder);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder) {
 		requireNonNull(radioButtonBuilder).accept(this.radioButtonBuilder);
-		return (B) this;
+		return self();
 	}
 
 	@Override

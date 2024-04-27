@@ -285,7 +285,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter, "valueConverter");
 			this.fetcher = fetcher(this.type, (Column<Object>) attribute);
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -294,70 +294,70 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter, "valueConverter");
 			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher, "valueFetcher");
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B name(String name) {
 			this.name = requireNonNull(name, "name");
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public B expression(String expression) {
 			this.expression = requireNonNull(expression, "expression");
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B columnHasDefaultValue(boolean columnHasDefaultValue) {
 			this.columnHasDefaultValue = columnHasDefaultValue;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public B readOnly(boolean readOnly) {
 			this.insertable = !readOnly;
 			this.updatable = !readOnly;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public B insertable(boolean insertable) {
 			this.insertable = insertable;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public B updatable(boolean updatable) {
 			this.updatable = updatable;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B groupBy(boolean groupBy) {
 			this.groupBy = groupBy;
 			this.aggregate = !groupBy;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B aggregate(boolean aggregate) {
 			this.aggregate = aggregate;
 			this.groupBy = !aggregate;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B selectable(boolean selectable) {
 			this.selectable = selectable;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B lazy(boolean lazy) {
 			this.lazy = lazy;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -366,8 +366,12 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 				throw new IllegalStateException("Searchable columns must be String based: " + attribute);
 			}
 			this.searchable = searchable;
-			return (B) this;
+			return self();
 		}
+
+		private B self() {
+			return (B) this;
+		};
 
 		/**
 		 * Returns the default sql type for the given class.

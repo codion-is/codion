@@ -70,7 +70,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	@Override
 	public B action(Action action) {
 		controls.add(action);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -79,7 +79,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		if (!controls.actions().contains(defaultAction)) {
 			controls.add(defaultAction);
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -88,43 +88,43 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		if (!controls.actions().contains(escapeAction)) {
 			controls.add(escapeAction);
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B modal(boolean modal) {
 		this.modal = modal;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B resizable(boolean resizable) {
 		this.resizable = resizable;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B size(Dimension size) {
 		this.size = requireNonNull(size);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B buttonPanelConstraints(int buttonPanelConstraints) {
 		this.buttonPanelConstraints = buttonPanelConstraints;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B buttonPanelBorder(Border buttonPanelBorder) {
 		this.buttonPanelBorder = requireNonNull(buttonPanelBorder);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B onShown(Consumer<JDialog> onShown) {
 		this.onShown = onShown;
-		return (B) this;
+		return self();
 	}
 
 	@Override

@@ -83,145 +83,145 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	@Override
 	public final B text(String text) {
 		this.text = text;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B mnemonic(int mnemonic) {
 		this.mnemonic = mnemonic;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B includeText(boolean includeText) {
 		this.includeText = includeText;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B horizontalAlignment(int horizontalAlignment) {
 		this.horizontalAlignment = horizontalAlignment;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B verticalAlignment(int verticalAlignment) {
 		this.verticalAlignment = verticalAlignment;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B horizontalTextPosition(int horizontalTextPosition) {
 		this.horizontalTextPosition = horizontalTextPosition;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B verticalTextPosition(int verticalTextPosition) {
 		this.verticalTextPosition = verticalTextPosition;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B borderPainted(boolean borderPainted) {
 		this.borderPainted = borderPainted;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B contentAreaFilled(boolean contentAreaFilled) {
 		this.contentAreaFilled = contentAreaFilled;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B focusPainted(boolean focusPainted) {
 		this.focusPainted = focusPainted;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B rolloverEnabled(boolean rolloverEnabled) {
 		this.rolloverEnabled = rolloverEnabled;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B multiClickThreshold(long multiClickThreshold) {
 		this.multiClickThreshold = multiClickThreshold;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B icon(Icon icon) {
 		this.icon = icon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B pressedIcon(Icon pressedIcon) {
 		this.pressedIcon = pressedIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B selectedIcon(Icon selectedIcon) {
 		this.selectedIcon = selectedIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B rolloverIcon(Icon rolloverIcon) {
 		this.rolloverIcon = rolloverIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B rolloverSelectedIcon(Icon rolloverSelectedIcon) {
 		this.rolloverSelectedIcon = rolloverSelectedIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B disabledIcon(Icon disabledIcon) {
 		this.disabledIcon = disabledIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B disabledSelectedIcon(Icon disabledSelectedIcon) {
 		this.disabledSelectedIcon = disabledSelectedIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B iconTextGap(int iconTextGap) {
 		this.iconTextGap = iconTextGap;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B margin(Insets insets) {
 		this.insets = requireNonNull(insets);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B buttonGroup(ButtonGroup buttonGroup) {
 		this.buttonGroup = requireNonNull(buttonGroup);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B selected(boolean selected) {
 		this.selected = selected;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B action(Action action) {
 		this.action = action;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -237,7 +237,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	@Override
 	public final B actionListener(ActionListener actionListener) {
 		this.actionListeners.add(requireNonNull(actionListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override

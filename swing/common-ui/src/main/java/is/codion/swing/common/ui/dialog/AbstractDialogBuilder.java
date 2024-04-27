@@ -52,7 +52,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 		if (locationRelativeTo == null) {
 			locationRelativeTo = owner;
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -61,19 +61,19 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 		if (locationRelativeTo == null) {
 			locationRelativeTo = owner;
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B locationRelativeTo(Component locationRelativeTo) {
 		this.locationRelativeTo = locationRelativeTo;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B location(Point location) {
 		this.location = location;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -84,18 +84,22 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 	@Override
 	public final B titleProvider(ValueObserver<String> titleProvider) {
 		this.titleProvider = titleProvider;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B icon(ImageIcon icon) {
 		this.icon = icon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B keyEvent(KeyEvents.Builder keyEventBuilder) {
 		this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
+		return self();
+	}
+
+	protected final B self() {
 		return (B) this;
 	}
 }

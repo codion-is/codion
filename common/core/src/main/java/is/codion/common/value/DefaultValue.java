@@ -78,55 +78,55 @@ class DefaultValue<T> extends AbstractValue<T> {
 		@Override
 		public final B initialValue(T initialValue) {
 			this.initialValue = initialValue;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B notify(Notify notify) {
 			this.notify = requireNonNull(notify);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B validator(Validator<T> validator) {
 			this.validators.add(requireNonNull(validator));
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B link(Value<T> originalValue) {
 			this.linkedValues.add(requireNonNull(originalValue));
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B link(ValueObserver<T> originalValue) {
 			this.linkedObservers.add(requireNonNull(originalValue));
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B listener(Runnable listener) {
 			this.listeners.add(requireNonNull(listener));
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B consumer(Consumer<T> consumer) {
 			this.consumers.add(requireNonNull(consumer));
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B weakListener(Runnable weakListener) {
 			this.weakListeners.add(requireNonNull(weakListener));
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B weakConsumer(Consumer<T> weakConsumer) {
 			this.weakConsumers.add(requireNonNull(weakConsumer));
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -140,5 +140,9 @@ class DefaultValue<T> extends AbstractValue<T> {
 		protected T prepareInitialValue() {
 			return initialValue == null ? nullValue : initialValue;
 		}
+
+		private B self() {
+			return (B) this;
+		};
 	}
 }

@@ -198,37 +198,41 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		@Override
 		public final B user(User user) {
 			this.user = requireNonNull(user);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B domainType(DomainType domainType) {
 			this.domainType = requireNonNull(domainType);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B clientId(UUID clientId) {
 			this.clientId = requireNonNull(clientId);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B clientTypeId(String clientTypeId) {
 			this.clientTypeId = requireNonNull(clientTypeId);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B clientVersion(Version clientVersion) {
 			this.clientVersion = clientVersion;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B onClose(Consumer<EntityConnectionProvider> onClose) {
 			this.onClose = requireNonNull(onClose);
-			return (B) this;
+			return self();
 		}
+
+		private B self() {
+			return (B) this;
+		};
 	}
 }

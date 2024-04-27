@@ -69,25 +69,25 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	@Override
 	public final B editable(boolean editable) {
 		this.editable = editable;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B completionMode(Completion.Mode completionMode) {
 		this.completionMode = requireNonNull(completionMode);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B renderer(ListCellRenderer<T> renderer) {
 		this.renderer = requireNonNull(renderer);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B editor(ComboBoxEditor editor) {
 		this.editor = requireNonNull(editor);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		if (mouseWheelScrolling) {
 			this.mouseWheelScrollingWithWrapAround = false;
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -105,31 +105,31 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		if (mouseWheelScrollingWithWrapAround) {
 			this.mouseWheelScrolling = false;
 		}
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B maximumRowCount(int maximumRowCount) {
 		this.maximumRowCount = maximumRowCount;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection) {
 		this.moveCaretToFrontOnSelection = moveCaretToFrontOnSelection;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B popupWidth(int popupWidth) {
 		this.popupWidth = popupWidth;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B itemListener(ItemListener itemListener) {
 		this.itemListeners.add(requireNonNull(itemListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override

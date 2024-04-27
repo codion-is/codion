@@ -46,7 +46,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 		}
 		this.toggleControl = toggleControl;
 		action(toggleControl);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	@Override
 	public final B persistMenu(PersistMenu persistMenu) {
 		this.persistMenu = requireNonNull(persistMenu);
-		return (B) this;
+		return self();
 	}
 
 	protected abstract JMenuItem createMenuItem(PersistMenu persistMenu);

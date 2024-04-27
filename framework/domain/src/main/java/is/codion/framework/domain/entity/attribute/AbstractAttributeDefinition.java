@@ -520,7 +520,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		public final B caption(String caption) {
 			this.caption = caption;
 			this.hidden = caption == null;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -537,13 +537,13 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			}
 			this.captionResourceKey = captionResourceKey;
 			this.hidden = false;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B hidden(boolean hidden) {
 			this.hidden = hidden;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -557,13 +557,13 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				attribute.type().validateType(supplier.get());
 			}
 			this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public B nullable(boolean nullable) {
 			this.nullable = nullable;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -575,7 +575,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				throw new IllegalArgumentException("maximumLength must be a positive integer: " + attribute);
 			}
 			this.maximumLength = maximumLength;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -598,7 +598,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			}
 			this.minimumValue = minimumValue;
 			this.maximumValue = maximumValue;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -607,19 +607,19 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				throw new IllegalStateException("numberFormatGrouping is only applicable to numerical attributes: " + attribute);
 			}
 			((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B description(String description) {
 			this.description = description;
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B mnemonic(char mnemonic) {
 			this.mnemonic = mnemonic;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -632,7 +632,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal attributes: " + attribute);
 			}
 			this.format = format;
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -646,7 +646,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			}
 			this.dateTimePattern = dateTimePattern;
 			this.dateTimeFormatter = ofPattern(dateTimePattern);
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -661,8 +661,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			this.localeDateTimePattern = localeDateTimePattern;
 			this.dateTimePattern = localeDateTimePattern.dateTimePattern();
 			this.dateTimeFormatter = localeDateTimePattern.createFormatter();
-
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -671,7 +670,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				throw new IllegalStateException("maximumFractionDigits is only applicable to decimal attributes: " + attribute);
 			}
 			((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
-			return (B) this;
+			return self();
 		}
 
 		@Override
@@ -680,20 +679,24 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				throw new IllegalStateException("decimalRoundingMode is only applicable to decimal attributes: " + attribute);
 			}
 			this.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public B comparator(Comparator<T> comparator) {
 			this.comparator = requireNonNull(comparator);
-			return (B) this;
+			return self();
 		}
 
 		@Override
 		public final B items(List<Item<T>> items) {
 			this.items = validateItems(items);
-			return (B) this;
+			return self();
 		}
+
+		private B self() {
+			return (B) this;
+		};
 
 		private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
 			if (resourceBundleName == null) {

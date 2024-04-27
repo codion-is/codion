@@ -47,43 +47,43 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 	@Override
 	public final B name(String name) {
 		this.name = name;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B enabled(StateObserver enabled) {
 		this.enabled = enabled;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B mnemonic(char mnemonic) {
 		this.mnemonic = mnemonic;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B smallIcon(Icon smallIcon) {
 		this.smallIcon = smallIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B largeIcon(Icon largeIcon) {
 		this.largeIcon = largeIcon;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B description(String description) {
 		this.description = description;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B keyStroke(KeyStroke keyStroke) {
 		this.keyStroke = keyStroke;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -92,13 +92,13 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 			throw new IllegalArgumentException("Can not set the enabled property of a Control");
 		}
 		values.put(key, value);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B onException(Consumer<Exception> onException) {
 		this.onException = requireNonNull(onException);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -115,6 +115,10 @@ abstract class AbstractControlBuilder<C extends Control, B extends Control.Build
 	}
 
 	protected abstract C createControl();
+
+	protected final B self() {
+		return (B) this;
+	}
 
 	private static final class DefaultExceptionHandler implements Consumer<Exception> {
 

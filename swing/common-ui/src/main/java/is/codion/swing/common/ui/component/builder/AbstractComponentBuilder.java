@@ -125,94 +125,94 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B label(JLabel label) {
 		this.label = label;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B focusable(boolean focusable) {
 		this.focusable = focusable;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B preferredHeight(int preferredHeight) {
 		this.preferredHeight = preferredHeight;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B preferredWidth(int preferredWidth) {
 		this.preferredWidth = preferredWidth;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B preferredSize(Dimension preferredSize) {
 		this.preferredHeight = preferredSize == null ? 0 : preferredSize.height;
 		this.preferredWidth = preferredSize == null ? 0 : preferredSize.width;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B maximumHeight(int maximumHeight) {
 		this.maximumHeight = maximumHeight;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B maximumWidth(int maximumWidth) {
 		this.maximumWidth = maximumWidth;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B maximumSize(Dimension maximumSize) {
 		this.maximumHeight = maximumSize == null ? 0 : maximumSize.height;
 		this.maximumWidth = maximumSize == null ? 0 : maximumSize.width;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B minimumHeight(int minimumHeight) {
 		this.minimumHeight = minimumHeight;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B minimumWidth(int minimumWidth) {
 		this.minimumWidth = minimumWidth;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B minimumSize(Dimension minimumSize) {
 		this.minimumHeight = minimumSize == null ? 0 : minimumSize.height;
 		this.minimumWidth = minimumSize == null ? 0 : minimumSize.width;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B border(Border border) {
 		this.border = border;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B transferFocusOnEnter(boolean transferFocusOnEnter) {
 		this.transferFocusOnEnter = transferFocusOnEnter;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B enabled(boolean enabled) {
 		this.enabled = enabled;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B enabled(StateObserver enabled) {
 		this.enabledObserver = enabled;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -232,133 +232,133 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B popupMenu(Function<C, JPopupMenu> popupMenu) {
 		this.popupMenu = popupMenu;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B toolTipText(String toolTipText) {
 		this.toolTipText = toolTipText;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B font(Font font) {
 		this.font = font;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B foreground(Color foreground) {
 		this.foreground = foreground;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B background(Color background) {
 		this.background = background;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B opaque(boolean opaque) {
 		this.opaque = opaque;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B visible(boolean visible) {
 		this.visible = visible;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B componentOrientation(ComponentOrientation componentOrientation) {
 		this.componentOrientation = requireNonNull(componentOrientation);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B validator(Value.Validator<T> validator) {
 		this.validators.add(requireNonNull(validator));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B keyEvent(KeyEvents.Builder keyEventBuilder) {
 		this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B clientProperty(Object key, Object value) {
 		this.clientProperties.put(requireNonNull(key), value);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B focusListener(FocusListener focusListener) {
 		this.focusListeners.add(requireNonNull(focusListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B mouseListener(MouseListener mouseListener) {
 		this.mouseListeners.add(requireNonNull(mouseListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B mouseMotionListener(MouseMotionListener mouseMotionListener) {
 		this.mouseMotionListeners.add(requireNonNull(mouseMotionListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B mouseWheelListener(MouseWheelListener mouseWheelListener) {
 		this.mouseWheelListeners.add(requireNonNull(mouseWheelListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B keyListener(KeyListener keyListener) {
 		this.keyListeners.add(requireNonNull(keyListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B componentListener(ComponentListener componentListener) {
 		this.componentListeners.add(requireNonNull(componentListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B propertyChangeListener(PropertyChangeListener propertyChangeListener) {
 		this.propertyChangeListeners.add(requireNonNull(propertyChangeListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B propertyChangeListener(String propertyName, PropertyChangeListener propertyChangeListener) {
 		this.propertyChangeListenerMap.put(requireNonNull(propertyName), requireNonNull(propertyChangeListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B transferHandler(TransferHandler transferHandler) {
 		this.transferHandler = requireNonNull(transferHandler);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B focusCycleRoot(boolean focusCycleRoot) {
 		this.focusCycleRoot = focusCycleRoot;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B onSetVisible(Consumer<C> onSetVisible) {
 		this.onSetVisible = requireNonNull(onSetVisible);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -367,7 +367,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
 		this.linkedValues.add(linkedValue);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -376,13 +376,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
 		this.linkedValueObservers.add(linkedValueObserver);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B initialValue(T initialValue) {
 		this.initialValue = initialValue;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -393,7 +393,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B onBuild(Consumer<C> onBuild) {
 		buildEvent.addConsumer(requireNonNull(onBuild));
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -499,7 +499,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		component = null;
 		componentValue = null;
 
-		return (B) this;
+		return self();
 	}
 
 	/**
@@ -565,6 +565,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			setPreferredWidth(component, preferredWidth);
 		}
 	}
+
+	protected final B self() {
+		return (B) this;
+	};
 
 	private static final class OnSetVisible<C extends JComponent> implements AncestorListener {
 

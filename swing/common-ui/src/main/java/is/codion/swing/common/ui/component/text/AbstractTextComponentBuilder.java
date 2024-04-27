@@ -66,13 +66,13 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	@Override
 	public final B editable(boolean editable) {
 		this.editable = editable;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B updateOn(UpdateOn updateOn) {
 		this.updateOn = requireNonNull(updateOn);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -81,7 +81,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 			throw new IllegalArgumentException("Field is already lowercase");
 		}
 		this.upperCase = upperCase;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -90,49 +90,49 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 			throw new IllegalArgumentException("Field is already uppercase");
 		}
 		this.lowerCase = lowerCase;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B maximumLength(int maximumLength) {
 		this.maximumLength = maximumLength;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B margin(Insets margin) {
 		this.margin = margin;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B controlDeleteWord(boolean controlDeleteWord) {
 		this.controlDeleteWord = controlDeleteWord;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B disabledTextColor(Color disabledTextColor) {
 		this.disabledTextColor = requireNonNull(disabledTextColor);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B selectedTextColor(Color selectedTextColor) {
 		this.selectedTextColor = requireNonNull(selectedTextColor);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B selectionColor(Color selectionColor) {
 		this.selectionColor = requireNonNull(selectionColor);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B selectAllOnFocusGained(boolean selectAllOnFocusGained) {
 		this.selectAllOnFocusGained = selectAllOnFocusGained;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -141,7 +141,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 			throw new IllegalArgumentException("Caret is already set to move to start on focus gained");
 		}
 		this.moveCaretToEndOnFocusGained = moveCaretToEndOnFocusGained;
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -150,31 +150,31 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 			throw new IllegalArgumentException("Caret is already set to move to end on focus gained");
 		}
 		this.moveCaretToStartOnFocusGained = moveCaretToStartOnFocusGained;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B caretListener(CaretListener caretListener) {
 		this.caretListeners.add(requireNonNull(caretListener));
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B onTextChanged(Consumer<String> onTextChanged) {
 		this.onTextChanged = requireNonNull(onTextChanged);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B dragEnabled(boolean dragEnabled) {
 		this.dragEnabled = dragEnabled;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B focusAccelerator(char focusAcceleratorKey) {
 		this.focusAcceleratorKey = focusAcceleratorKey;
-		return (B) this;
+		return self();
 	}
 
 	@Override
