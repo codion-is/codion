@@ -71,7 +71,7 @@ public final class CountryReportDataSourceTest {
 							connection.select(where(Country.NAME.in("Denmark", "Iceland"))
 											.orderBy(ascending(Country.NAME))
 											.build());
-			CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries, connection, progressReporter);
+			CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries.iterator(), connection, progressReporter);
 			assertThrows(IllegalStateException.class, countryReportDataSource::cityDataSource);
 
 			countryReportDataSource.next();

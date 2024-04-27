@@ -21,7 +21,6 @@ package is.codion.framework.demos.world.ui;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -128,10 +127,9 @@ final class CountryEditPanel extends EntityEditPanel {
 
 	private EntityEditPanel createCapitalEditPanel() {
 		CityEditPanel capitalEditPanel = new CityEditPanel(new SwingEntityEditModel(City.TYPE, editModel().connectionProvider()));
-		Entity country = editModel().entity();
-		if (country.primaryKey().isNotNull()) {
-			//if a country is selected, then we don't allow it to be changed
-			capitalEditPanel.editModel().put(City.COUNTRY_FK, country);
+		if (editModel().exists().get()) {
+			//if an existing country is selected, then we don't allow it to be changed
+			capitalEditPanel.editModel().put(City.COUNTRY_FK, editModel().entity());
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
 			//disable the country selection component

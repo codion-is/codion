@@ -30,7 +30,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -42,9 +42,10 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
 	private final EntityConnection connection;
 
-	CountryReportDataSource(List<Entity> countries, EntityConnection connection,
+	CountryReportDataSource(Iterator<Entity> countryIterator,
+													EntityConnection connection,
 													ProgressReporter<String> progressReporter) {
-		super(countries.iterator(), new CountryValueProvider(),
+		super(countryIterator, new CountryValueProvider(),
 						new CountryReportProgressReporter(progressReporter));
 		this.connection = connection;
 	}

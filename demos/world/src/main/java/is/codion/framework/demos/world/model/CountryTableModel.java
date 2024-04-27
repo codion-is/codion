@@ -50,8 +50,9 @@ public final class CountryTableModel extends SwingEntityTableModel {
 	}
 
 	public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
-		CountryReportDataSource dataSource = new CountryReportDataSource(selectionModel().getSelectedItems(),
-						connection(), progressReporter);
+		CountryReportDataSource dataSource =
+						new CountryReportDataSource(selectionModel().getSelectedItems().iterator(),
+										connection(), progressReporter);
 
 		return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, reportParameters());
 	}
