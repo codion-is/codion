@@ -12,8 +12,6 @@ Codion provides a few classes with miscellanous utility functions.
 
 {url-javadoc}{common-core}/is/codion/common/Text.html[Text]
 
-{url-javadoc}{common-core}/is/codion/common/NullOrEmpty.html[NullOrEmpty]
-
 == UI
 
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/Components.html[Components]
