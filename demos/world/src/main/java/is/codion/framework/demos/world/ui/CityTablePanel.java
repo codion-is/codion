@@ -32,16 +32,11 @@ final class CityTablePanel extends ChartTablePanel {
 
 	CityTablePanel(CityTableModel tableModel) {
 		super(tableModel, tableModel.chartDataset(), "Cities", config ->
-						config.editable(attributes ->
-										attributes.remove(City.LOCATION)));
-	}
-
-	@Override
-	protected PopupMenuConfig configurePopupMenu() {
-		return super.configurePopupMenu().clear()
+						config.editable(attributes -> attributes.remove(City.LOCATION)));
+		configurePopupMenu(config -> config.clear()
 						.control(createPopulateLocationControl())
 						.separator()
-						.defaults();
+						.defaults());
 	}
 
 	private Control createPopulateLocationControl() {

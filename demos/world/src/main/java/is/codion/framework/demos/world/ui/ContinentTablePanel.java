@@ -28,11 +28,7 @@ final class ContinentTablePanel extends EntityTablePanel {
 	ContinentTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config.includeSouthPanel(false));
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-	}
-
-	@Override
-	protected PopupMenuConfig configurePopupMenu() {
-		return super.configurePopupMenu().clear()
-						.standard(TableControl.REFRESH);
+		configurePopupMenu(config -> config.clear()
+						.standard(TableControl.REFRESH));
 	}
 }

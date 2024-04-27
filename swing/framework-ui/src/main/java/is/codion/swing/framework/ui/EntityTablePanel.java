@@ -84,7 +84,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.text.NumberFormat;
@@ -293,7 +292,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Either a {@link Control} for displaying a dialog for selecting the visible table columns
 		 * or a {@link Controls} instance containing a {@link ToggleControl} for each columns visibility.
-		 * @see EntityTablePanel.Config#columnSelection(ColumnSelection)
+		 * @see Config#columnSelection(ColumnSelection)
 		 */
 		SELECT_COLUMNS,
 		/**
@@ -449,6 +448,8 @@ public class EntityTablePanel extends JPanel {
 	private final EntityEditPanel editPanel;
 	private final Map<TableControl, Value<Control>> controls = createControlsMap();
 	private final Config configuration;
+	private final PopupMenuConfig popupMenuConfiguration;
+	private final ToolBarConfig toolBarConfiguration;
 	private final SwingEntityTableModel tableModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
@@ -486,6 +487,8 @@ public class EntityTablePanel extends JPanel {
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
+		this.popupMenuConfiguration = new DefaultPopupMenuConfig();
+		this.toolBarConfiguration = new DefaultToolBarConfig();
 	}
 
 	/**
@@ -509,6 +512,8 @@ public class EntityTablePanel extends JPanel {
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
+		this.popupMenuConfiguration = new DefaultPopupMenuConfig();
+		this.toolBarConfiguration = new DefaultToolBarConfig();
 	}
 
 	/**
@@ -744,13 +749,13 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Configures the popup menu.
-	 * @see #configurePopupMenu()
+	 * @see #configurePopupMenu(Consumer)
 	 */
 	public interface PopupMenuConfig extends ControlConfig<TableControl, PopupMenuConfig> {}
 
 	/**
 	 * Configures the toolbar.
-	 * @see #configureToolBar()
+	 * @see #configureToolBar(Consumer)
 	 */
 	public interface ToolBarConfig extends ControlConfig<TableControl, ToolBarConfig> {}
 
@@ -813,7 +818,7 @@ public class EntityTablePanel extends JPanel {
 										.action(control)
 										.enable(table));
 		control(TableControl.EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control ->
-						KeyEvents.builder(configuration.shortcuts.keyStroke(KeyboardShortcut.EDIT_SELECTED_ATTRIBUTE).get())
+						KeyEvents.builder(configuration.shortcuts.keyStroke(EDIT_SELECTED_ATTRIBUTE).get())
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(control)
 										.enable(table));
@@ -834,49 +839,43 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Configures the toolbar menu controls. Override to customize.<br>
-	 * Note that this method returns the default configuration, which
-	 * must be cleared in order to start fresh.<br>
-	 * This method must return the original {@link ToolBarConfig} instance.
+	 * Configures the toolbar controls.<br>
+	 * Note that the {@link ToolBarConfig} instance has pre-configured defaults,
+	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
-	 *   Control control = createCustomControl();
-	 *
-	 *   ToolBarConfig config = super.configureToolBar();
-	 *   config.clear();
-	 *   config.standard(TableControl.REFRESH);
-	 *   config.separator();
-	 *   config.control(customControl);
-	 *
-	 *   return config;
+	 *   configureToolBar(config -> config.clear()
+	 *           .standard(TableControl.REFRESH)
+	 *           .separator()
+	 *           .control(createCustomControl())
+	 *           .separator()
+	 *           .defaults())
 	 * </pre>
-	 * @return the toolbar configuration
+	 * @param toolBarConfig provides access to the toolbar configuration
 	 * @see ControlConfig#clear()
 	 */
-	protected ToolBarConfig configureToolBar() {
-		return new DefaultToolBarConfig();
+	protected final void configureToolBar(Consumer<ToolBarConfig> toolBarConfig) {
+		throwIfInitialized();
+		requireNonNull(toolBarConfig).accept(this.toolBarConfiguration);
 	}
 
 	/**
-	 * Configures the toolbar menu controls. Override to customize.<br>
-	 * Note that this method returns the default configuration, which
-	 * must be cleared in order to start fresh.<br>
-	 * This method must return the original {@link PopupMenuConfig} instance.
+	 * Configures the popup menu controls.<br>
+	 * Note that the {@link PopupMenuConfig} instance has pre-configured defaults,
+	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
-	 *   Control control = createCustomControl();
-	 *
-	 *   PopupMenuConfig config = super.configurePopupMenu();
-	 *   config.clear();
-	 *   config.standard(TableControl.REFRESH);
-	 *   config.separator();
-	 *   config.control(customControl);
-	 *
-	 *   return config;
+	 *   configurePopupMenu(config -> config.clear()
+	 *           .standard(TableControl.REFRESH)
+	 *           .separator()
+	 *           .control(createCustomControl())
+	 *           .separator()
+	 *           .defaults())
 	 * </pre>
-	 * @return the popup menu configuration
+	 * @param popupMenuConfig provides access to the popup menu configuration
 	 * @see ControlConfig#clear()
 	 */
-	protected PopupMenuConfig configurePopupMenu() {
-		return new DefaultPopupMenuConfig();
+	protected final void configurePopupMenu(Consumer<PopupMenuConfig> popupMenuConfig) {
+		throwIfInitialized();
+		requireNonNull(popupMenuConfig).accept(this.popupMenuConfiguration);
 	}
 
 	/**
@@ -991,7 +990,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param exception the exception to display
 	 */
 	protected final void displayException(Exception exception) {
-		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner == null) {
 			focusOwner = EntityTablePanel.this;
 		}
@@ -1546,11 +1545,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void addTablePopupMenu() {
 		if (configuration.includePopupMenu) {
-			PopupMenuConfig popupMenuConfig = configurePopupMenu();
-			if (popupMenuConfig == null) {
-				throw new IllegalStateException("PopupMenuConfig is null2");
-			}
-			Controls popupControls = popupMenuConfig.createControls();
+			Controls popupControls = popupMenuConfiguration.createControls();
 			if (popupControls == null || popupControls.empty()) {
 				return;
 			}
@@ -2399,11 +2394,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private JToolBar createToolBar() {
-			ToolBarConfig toolBarConfig = configureToolBar();
-			if (toolBarConfig == null) {
-				throw new IllegalStateException("ToolBarConfig is null");
-			}
-			Controls toolbarControls = toolBarConfig.createControls();
+			Controls toolbarControls = toolBarConfiguration.createControls();
 			if (toolbarControls == null || toolbarControls.empty()) {
 				return null;
 			}

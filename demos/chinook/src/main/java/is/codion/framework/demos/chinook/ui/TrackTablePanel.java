@@ -46,17 +46,13 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
 						.tableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true))
 						.includeLimitMenu(true));
-	}
-
-	@Override
-	protected PopupMenuConfig configurePopupMenu() {
-		return super.configurePopupMenu().clear()
+		configurePopupMenu(config -> config.clear()
 						.control(Control.builder(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")
 										.enabled(tableModel().selectionModel().selectionNotEmpty())
 										.build())
 						.separator()
-						.defaults();
+						.defaults());
 	}
 
 	private void raisePriceOfSelected() throws DatabaseException {

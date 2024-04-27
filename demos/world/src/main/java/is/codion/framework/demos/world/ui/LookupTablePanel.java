@@ -81,6 +81,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		columnSelectionPanelVisible.addConsumer(this::setColumnSelectionPanelVisible);
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		conditionPanelVisible().set(true);
+		configurePopupMenuAndToolBar();
 		bindEvents();
 	}
 
@@ -103,8 +104,13 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected PopupMenuConfig configurePopupMenu() {
-		return super.configurePopupMenu().clear()
+	protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
+		super.layoutPanel(tableComponent, southPanel);
+		add(columnSelectionScrollPane, BorderLayout.EAST);
+	}
+
+	private void configurePopupMenuAndToolBar() {
+		configurePopupMenu(config -> config.clear()
 						.defaults(TableControl.COLUMN_CONTROLS)
 						.separator()
 						.control(Controls.builder()
@@ -124,21 +130,12 @@ final class LookupTablePanel extends EntityTablePanel {
 						.separator()
 						.control(toggleMapControl)
 						.separator()
-						.defaults();
-	}
+						.defaults());
 
-	@Override
-	protected ToolBarConfig configureToolBar() {
-		return super.configureToolBar().clear()
+		configureToolBar(config -> config.clear()
 						.control(toggleMapControl)
 						.separator()
-						.defaults();
-	}
-
-	@Override
-	protected void layoutPanel(JComponent tableComponent, JPanel southPanel) {
-		super.layoutPanel(tableComponent, southPanel);
-		add(columnSelectionScrollPane, BorderLayout.EAST);
+						.defaults());
 	}
 
 	private void bindEvents() {

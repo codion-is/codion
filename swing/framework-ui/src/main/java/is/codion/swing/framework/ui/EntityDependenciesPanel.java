@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityTablePanel.TableControl;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -143,16 +144,12 @@ public final class EntityDependenciesPanel extends JPanel {
 
 	private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
 		SwingEntityTableModel tableModel = SwingEntityTableModel.tableModel(entities, connectionProvider);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditionPanel(false)) {
-			@Override
-			protected PopupMenuConfig configurePopupMenu() {
-				return super.configurePopupMenu().clear()
-								.standard(TableControl.EDIT_ATTRIBUTE_CONTROLS)
-								.standard(TableControl.DELETE)
-								.separator()
-								.standard(TableControl.VIEW_DEPENDENCIES);
-			}
-		};
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditionPanel(false));
+		tablePanel.configurePopupMenu(config -> config.clear()
+						.standard(TableControl.EDIT_ATTRIBUTE_CONTROLS)
+						.standard(TableControl.DELETE)
+						.separator()
+						.standard(TableControl.VIEW_DEPENDENCIES));
 
 		return tablePanel.initialize();
 	}
