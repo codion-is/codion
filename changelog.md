@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityEditPanel, control configuration refactored, now consistent with EntityTablePanel.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.
+- ControlConfig.control() overloaded for Control.Builder.
 
 ## 0.17.43
 ### is.codion.common.core

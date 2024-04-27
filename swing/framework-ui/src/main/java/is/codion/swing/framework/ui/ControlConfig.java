@@ -46,6 +46,12 @@ public interface ControlConfig<T extends Enum<T>, C extends ControlConfig<T, C>>
 	C control(Control control);
 
 	/**
+	 * @param controlBuilder the builder for the control to add
+	 * @return this config instance
+	 */
+	C control(Control.Builder<?, ?> controlBuilder);
+
+	/**
 	 * Adds all remaining default controls
 	 * @return this config instance
 	 */

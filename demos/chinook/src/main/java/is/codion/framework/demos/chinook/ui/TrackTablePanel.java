@@ -49,8 +49,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		configurePopupMenu(config -> config.clear()
 						.control(Control.builder(this::raisePriceOfSelected)
 										.name(BUNDLE.getString("raise_price") + "...")
-										.enabled(tableModel().selectionModel().selectionNotEmpty())
-										.build())
+										.enabled(tableModel().selectionModel().selectionNotEmpty()))
 						.separator()
 						.defaults());
 	}

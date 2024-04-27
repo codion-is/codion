@@ -62,8 +62,7 @@ public final class CityEditPanel extends EntityEditPanel {
 										.enabled(State.and(active(),
 														editModel().isNull(City.LOCATION),
 														editModel().exists()))
-										.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
-										.build()));
+										.smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))));
 	}
 
 	@Override

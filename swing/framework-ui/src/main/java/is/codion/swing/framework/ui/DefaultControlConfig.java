@@ -67,6 +67,11 @@ abstract class DefaultControlConfig<T extends Enum<T>, C extends ControlConfig<T
 	}
 
 	@Override
+	public final C control(Control.Builder<?, ?> controlBuilder) {
+		return control(requireNonNull(controlBuilder).build());
+	}
+
+	@Override
 	public final C clear() {
 		items.clear();
 		return (C) this;
