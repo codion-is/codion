@@ -568,7 +568,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	protected final B self() {
 		return (B) this;
-	};
+	}
 
 	private static final class OnSetVisible<C extends JComponent> implements AncestorListener {
 

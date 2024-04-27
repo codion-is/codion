@@ -233,6 +233,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 		private B self() {
 			return (B) this;
-		};
+		}
 	}
 }

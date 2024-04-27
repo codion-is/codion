@@ -694,9 +694,9 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return self();
 		}
 
-		private B self() {
+		protected final B self() {
 			return (B) this;
-		};
+		}
 
 		private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
 			if (resourceBundleName == null) {

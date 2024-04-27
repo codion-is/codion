@@ -369,10 +369,6 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			return self();
 		}
 
-		private B self() {
-			return (B) this;
-		};
-
 		/**
 		 * Returns the default sql type for the given class.
 		 * @param clazz the class

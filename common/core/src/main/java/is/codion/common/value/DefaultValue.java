@@ -143,6 +143,6 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		private B self() {
 			return (B) this;
-		};
+		}
 	}
 }
