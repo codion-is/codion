@@ -239,10 +239,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 	State conditionRequired();
 
 	/**
-	 * @return the state controlling whether this table model handles entity edit events, by replacing foreign key values
+	 * @return the state controlling whether this table model handles entity edit events, by replacing updated entities
 	 * @see EntityEditEvents
 	 */
-	State editEvents();
+	State handleEditEvents();
 
 	/**
 	 * @return the Value controlling the action to perform when entities are inserted via the associated edit model

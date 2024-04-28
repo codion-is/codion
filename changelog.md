@@ -9,6 +9,8 @@ Codion Change Log
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
+### is.codion.framework.model
+- EntityEditModel.editEvents() renamed postEditEvents, EntityTableModel.editEvents() renamed handleEditEvents().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.

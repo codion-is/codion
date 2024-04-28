@@ -85,7 +85,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void editEvents() throws DatabaseException, ValidationException {
+	void postEditEvents() throws DatabaseException, ValidationException {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
@@ -98,7 +98,7 @@ public final class AbstractEntityEditModelTest {
 		EntityEditEvents.addUpdateConsumer(Employee.TYPE, updateConsumer);
 		EntityEditEvents.addDeleteConsumer(Employee.TYPE, deleteConsumer);
 
-		employeeEditModel.editEvents().set(true);
+		employeeEditModel.postEditEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();

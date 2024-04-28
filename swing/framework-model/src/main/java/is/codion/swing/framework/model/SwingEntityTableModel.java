@@ -107,7 +107,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 					.validator(new AttributeValidator())
 					.build();
 	private final State conditionRequired = State.state();
-	private final State editEvents = State.builder()
+	private final State handleEditEvents = State.builder()
 					.consumer(new HandleEditEventsChanged())
 					.build();
 	private final State editable = State.state();
@@ -211,7 +211,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		this.refreshCondition = createSelect(conditionModel);
 		bindEvents();
 		applyPreferences();
-		editEvents.set(true);
+		handleEditEvents.set(true);
 	}
 
 	@Override
@@ -265,8 +265,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	}
 
 	@Override
-	public final State editEvents() {
-		return editEvents;
+	public final State handleEditEvents() {
+		return handleEditEvents;
 	}
 
 	@Override

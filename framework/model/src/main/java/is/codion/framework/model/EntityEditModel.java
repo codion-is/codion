@@ -67,7 +67,7 @@ public interface EntityEditModel {
 	 * Value type: Boolean<br>
 	 * Default value: true
 	 */
-	PropertyValue<Boolean> EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.editEvents", true);
+	PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.postEditEvents", true);
 
 	/**
 	 * @return the type of the entity this edit model is based on
@@ -267,9 +267,9 @@ public interface EntityEditModel {
 	/**
 	 * @return a state controlling whether this edit model posts insert, update and delete events
 	 * on the {@link EntityEditEvents} event bus.
-	 * @see #EDIT_EVENTS
+	 * @see #POST_EDIT_EVENTS
 	 */
-	State editEvents();
+	State postEditEvents();
 
 	/**
 	 * Returns a State controlling whether the last used value for this attribute should persist when the model is cleared.
