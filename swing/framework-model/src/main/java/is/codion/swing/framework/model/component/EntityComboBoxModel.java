@@ -18,7 +18,9 @@
  */
 package is.codion.swing.framework.model.component;
 
+import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -56,6 +58,15 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
+	/**
+	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones<br>
+	 * Value type: Boolean<br>
+	 * Default value: true<br>
+	 * @see #handleEditEvents()
+	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
+	 */
+	public static final PropertyValue<Boolean> HANDLE_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityComboBoxModel.handleEditEvents", true);
+
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
 	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
@@ -91,7 +102,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		refresher().itemSupplier().set(this::performQuery);
 		itemValidator().set(new ItemValidator());
 		includeCondition().set(foreignKeyIncludeCondition);
-		handleEditEvents.set(true);
+		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
 	@Override

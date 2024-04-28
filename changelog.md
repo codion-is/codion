@@ -17,6 +17,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.
+- EntityComboBoxModel.HANDLE_EDIT_EVENTS configuration value added.
 ### is.codion.swing.framework.ui
 - EntityEditPanel, control configuration refactored, now consistent with EntityTablePanel.
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.
