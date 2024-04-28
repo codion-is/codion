@@ -358,19 +358,56 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Test
 	void editEvents() throws ValidationException, DatabaseException {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, testModel.connectionProvider());
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.refresh();
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
-		editModel.set(tableModel.itemAt(0));
-		editModel.put(Department.NAME, "new name");
+		SwingEntityEditModel employeeEditModel = new SwingEntityEditModel(Employee.TYPE, testModel.connectionProvider());
+		employeeEditModel.set(tableModel.itemAt(0));
+		String newName = "new name";
+		employeeEditModel.put(Employee.NAME, newName);
+		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
+		departmentEditModel.set(employeeEditModel.get(Employee.DEPARTMENT_FK));
+		departmentEditModel.put(Department.NAME, newName);
 		EntityConnection connection = tableModel.connectionProvider().connection();
 		connection.startTransaction();
 		try {
-			editModel.update();
-			assertEquals("new name", tableModel.itemAt(0).get(Department.NAME));
+			employeeEditModel.update();
+			assertEquals(newName, tableModel.itemAt(0).get(Employee.NAME));
+			departmentEditModel.update();
+			assertEquals(newName, tableModel.itemAt(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
 		}
 		finally {
 			connection.rollbackTransaction();
 		}
 	}
+
+//	@Test
+//	void replacePerformance() {
+//		Entities entities = testModel.connectionProvider().entities();
+//		List<Entity> items = IntStream.range(0, 100_000)
+//						.mapToObj(i -> entities.builder(Department.TYPE)
+//										.with(Department.ID, i)
+//										.with(Department.NAME, "dept" + i)
+//										.build())
+//						.toList();
+//		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, testModel.connectionProvider()) {
+//			@Override
+//			protected Collection<Entity> refreshItems() {
+//				return items;
+//			}
+//		};
+//		tableModel.refresh();
+//		Random random = new Random();
+//		List<Entity> listItems = new ArrayList<>(tableModel.visibleItems());
+//		while (true) {
+//			List<Entity> toReplace = IntStream.range(0, 1000)
+//							.mapToObj(i -> listItems.remove(random.nextInt(100_000 - i)))
+//							.toList();
+//			long millis = System.currentTimeMillis();
+//			tableModel.replace(toReplace);
+//			System.out.println(System.currentTimeMillis() - millis);
+//			tableModel.refresh();
+//			listItems.clear();
+//			listItems.addAll(tableModel.visibleItems());
+//		}
+//	}
 }

@@ -68,7 +68,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -964,23 +964,32 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 	 * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
 	 */
 	private void replaceEntitiesByKey(Map<Entity.Key, Entity> entitiesByKey) {
-		for (Entity entity : items()) {
-			Iterator<Map.Entry<Entity.Key, Entity>> iterator = entitiesByKey.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry<Entity.Key, Entity> entry = iterator.next();
-				if (entity.primaryKey().equals(entry.getKey())) {
-					iterator.remove();
-					entity.set(entry.getValue());
-					int index = indexOf(entity);
-					if (index >= 0) {
-						fireTableRowsUpdated(index, index);
-					}
+		Map<Entity.Key, Integer> keyIndexes = keyIndexes(new HashSet<>(entitiesByKey.keySet()));
+		keyIndexes.forEach((key, index) -> tableModel.setItemAt(index, entitiesByKey.remove(key)));
+		if (!entitiesByKey.isEmpty()) {
+			filteredItems().forEach(item -> {
+				Entity replacement = entitiesByKey.remove(item.primaryKey());
+				if (replacement != null) {
+					item.set(replacement);
+				}
+			});
+		}
+	}
+
+	private Map<Entity.Key, Integer> keyIndexes(Set<Entity.Key> keys) {
+		List<Entity> visibleItems = visibleItems();
+		Map<Entity.Key, Integer> keyIndexes = new HashMap<>();
+		for (int index = 0; index < visibleItems.size(); index++) {
+			Entity.Key primaryKey = visibleItems.get(index).primaryKey();
+			if (keys.remove(primaryKey)) {
+				keyIndexes.put(primaryKey, index);
+				if (keys.isEmpty()) {
+					break;
 				}
 			}
-			if (entitiesByKey.isEmpty()) {
-				break;
-			}
 		}
+
+		return keyIndexes;
 	}
 
 	private OrderBy orderByFromSortModel() {
@@ -1134,11 +1143,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		public void accept(Boolean handleEditEvents) {
 			if (handleEditEvents) {
 				entityTypes().forEach(entityType ->
-							EntityEditEvents.addUpdateConsumer(entityType, updateListener));
+								EntityEditEvents.addUpdateConsumer(entityType, updateListener));
 			}
 			else {
 				entityTypes().forEach(entityType ->
-							EntityEditEvents.removeUpdateConsumer(entityType, updateListener));
+								EntityEditEvents.removeUpdateConsumer(entityType, updateListener));
 			}
 		}
 
