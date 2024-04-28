@@ -84,6 +84,15 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 	PropertyValue<OnInsert> ON_INSERT = Configuration.enumValue("is.codion.framework.model.EntityTableModel.onInsert", OnInsert.class, OnInsert.ADD_TOP);
 
 	/**
+	 * Specifies whether table models handle entity edit events, by replacing updated entities<br>
+	 * Value type: Boolean<br>
+	 * Default value: true<br>
+	 * @see #handleEditEvents()
+	 * @see EntityEditModel#POST_EDIT_EVENTS
+	 */
+	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityTableModel.handleEditEvents", true);
+
+	/**
 	 * Defines the actions a table model can perform when entities are inserted via the associated edit model
 	 */
 	enum OnInsert {

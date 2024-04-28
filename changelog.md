@@ -13,6 +13,7 @@ Codion Change Log
 - EntityEditModel.editEvents() renamed postEditEvents, EntityTableModel.editEvents() renamed handleEditEvents().
 - EntityEditEvents.notifyInserted(), notifyUpdated() and notifyDelete() renamed inserted(), updated() and deleted() respectively.
 - EntityEditEvents, consumers now called listeners.
+- EntityTableModel.HANDLE_EDIT_EVENTS configuration value added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 - SwingEntityTableModel.replaceEntitiesByKey() now uses a key index map when looking up entities to replace, orders of magnitude faster.

@@ -65,7 +65,9 @@ public interface EntityEditModel {
 	/**
 	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
 	 * Value type: Boolean<br>
-	 * Default value: true
+	 * Default value: true<br>
+	 * @see #postEditEvents()
+	 * @see EntityTableModel#HANDLE_EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("is.codion.framework.model.EntityEditModel.postEditEvents", true);
 

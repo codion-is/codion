@@ -211,7 +211,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		this.refreshCondition = createSelect(conditionModel);
 		bindEvents();
 		applyPreferences();
-		handleEditEvents.set(true);
+		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
 	@Override
