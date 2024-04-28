@@ -220,7 +220,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public DatabaseException databaseException(SQLException exception, Operation operation) {
+	public DatabaseException exception(SQLException exception, Operation operation) {
 		requireNonNull(exception);
 		requireNonNull(operation);
 		if (isUniqueConstraintException(exception)) {

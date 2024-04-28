@@ -189,7 +189,7 @@ public interface Database extends ConnectionFactory {
 	 * @throws NullPointerException in case {@code exception} or {@code operation} is null
 	 * @see #errorMessage(SQLException, Operation)
 	 */
-	DatabaseException databaseException(SQLException exception, Operation operation);
+	DatabaseException exception(SQLException exception, Operation operation);
 
 	/**
 	 * Returns true if this exception represents a login credentials failure

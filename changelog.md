@@ -2,8 +2,13 @@ Codion Change Log
 ==================
 
 ## 0.17.44
+### is codion.common.db
+- Database.databaseException() renamed exception().
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
+- DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.UpdateListener now replaces updated entities.
 ### is.codion.swing.framework.ui

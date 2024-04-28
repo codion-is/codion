@@ -293,7 +293,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			catch (SQLException e) {
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-				throw database.databaseException(e, UPDATE);
+				throw database.exception(e, UPDATE);
 			}
 		}
 	}
@@ -316,7 +316,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			catch (SQLException e) {
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, e), e);
-				throw database.databaseException(e, DELETE);
+				throw database.exception(e, DELETE);
 			}
 		}
 	}
@@ -361,15 +361,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				}
 				commitIfTransactionIsNotOpen();
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(deleteQuery, condition == null ? emptyList() : statementValues, statementColumns, e), e);
-				throw database.databaseException(e, DELETE);
-			}
-			catch (DeleteException e) {
-				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, e), e);
-				throw e;
+				LOG.error(createLogMessage(deleteQuery, condition == null ? emptyList() : statementValues, statementColumns, exception), exception);
+				throwDatabaseException(exception, SELECT);
+				throw runtimeException(exception);
 			}
 			finally {
 				closeSilently(statement);
@@ -416,9 +412,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 				return result;
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				throw database.databaseException(e, SELECT);
+				throwDatabaseException(exception, SELECT);
+				throw runtimeException(exception);
 			}
 		}
 	}
@@ -440,9 +437,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 				return result;
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				throw database.databaseException(e, SELECT);
+				throwDatabaseException(exception, SELECT);
+				throw runtimeException(exception);
 			}
 		}
 	}
@@ -486,10 +484,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 				return result;
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
-				throw database.databaseException(e, SELECT);
+				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, exception), exception);
+				throwDatabaseException(exception, SELECT);
+				throw runtimeException(exception);
 			}
 		}
 	}
@@ -519,10 +518,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 				return result;
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, e), e);
-				throw database.databaseException(e, SELECT);
+				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, exception), exception);
+				throwDatabaseException(exception, SELECT);
+				throw runtimeException(exception);
 			}
 		}
 	}
@@ -550,9 +550,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				}
 				commitIfTransactionIsNotOpen();
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				throw database.databaseException(e, SELECT);
+				throwDatabaseException(exception, SELECT);
+				throw runtimeException(exception);
 			}
 		}
 
@@ -567,17 +568,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
 		requireNonNull(functionType, "functionType");
-		DatabaseException exception = null;
+		Exception exception = null;
+		logEntry(EXECUTE, functionType, argument);
 		try {
-			logEntry(EXECUTE, functionType, argument);
 			synchronized (connection) {
 				return domain.function(functionType).execute((C) this, argument);
 			}
 		}
-		catch (DatabaseException e) {
+		catch (Exception e) {
 			exception = e;
 			LOG.error(createLogMessage(functionType.name(), argument instanceof List ? (List<?>) argument : singletonList(argument), emptyList(), e), e);
-			throw e;
+			throwDatabaseException(e, OTHER);
+			throw runtimeException(e);
 		}
 		finally {
 			logExit(EXECUTE, exception);
@@ -592,17 +594,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
 		requireNonNull(procedureType, "procedureType");
-		DatabaseException exception = null;
+		Exception exception = null;
+		logEntry(EXECUTE, procedureType, argument);
 		try {
-			logEntry(EXECUTE, procedureType, argument);
 			synchronized (connection) {
 				domain.procedure(procedureType).execute((C) this, argument);
 			}
 		}
-		catch (DatabaseException e) {
+		catch (Exception e) {
 			exception = e;
+			rollbackQuietlyIfTransactionIsNotOpen();
 			LOG.error(createLogMessage(procedureType.name(), argument instanceof List ? (List<?>) argument : singletonList(argument), emptyList(), e), e);
-			throw e;
+			throwDatabaseException(e, OTHER);
+			throw runtimeException(e);
 		}
 		finally {
 			logExit(EXECUTE, exception);
@@ -610,28 +614,26 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws ReportException {
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
 		requireNonNull(reportType, REPORT);
 		Exception exception = null;
 		synchronized (connection) {
+			logEntry(REPORT, reportType, reportParameters);
 			try {
-				logEntry(REPORT, reportType, reportParameters);
 				R result = domain.report(reportType).fill(connection.getConnection(), reportParameters);
 				commitIfTransactionIsNotOpen();
 
 				return result;
 			}
-			catch (SQLException e) {
+			catch (Exception e) {
 				exception = e;
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
-				throw new ReportException(database.databaseException(e, SELECT));
-			}
-			catch (ReportException e) {
-				exception = e;
-				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
-				throw e;
+				if (e instanceof ReportException) {
+					throw (ReportException) e;
+				}
+				throwDatabaseException(e, SELECT);
+				throw runtimeException(e);
 			}
 			finally {
 				logExit(REPORT, exception);
@@ -656,7 +658,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				return resultIterator(select);
 			}
 			catch (SQLException e) {
-				throw database.databaseException(e, SELECT);
+				throw database.exception(e, SELECT);
 			}
 		}
 	}
@@ -732,10 +734,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 				return insertedKeys;
 			}
-			catch (SQLException e) {
+			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, e), e);
-				throw database.databaseException(e, INSERT);
+				LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, exception), exception);
+				throwDatabaseException(exception, INSERT);
+				throw runtimeException(exception);
 			}
 			finally {
 				closeSilently(statement);
@@ -794,20 +797,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				}
 				commitIfTransactionIsNotOpen();
 			}
-			catch (SQLException e) {
-				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-				throw database.databaseException(e, UPDATE);
-			}
-			catch (RecordModifiedException e) {
-				rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-				LOG.debug(e.getMessage(), e);
-				throw e;
-			}
-			catch (UpdateException e) {
-				rollbackQuietlyIfTransactionIsNotOpen();
-				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-				throw e;
+			catch (Exception exception) {
+				rollbackQuietlyIfTransactionIsNotOpen();//releases the select for update lock
+				if (exception instanceof RecordModifiedException) {
+					LOG.debug(exception.getMessage(), exception);
+					throw (RecordModifiedException) exception;
+				}
+				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), exception);
+				throwDatabaseException(exception, UPDATE);
+				throw runtimeException(exception);
 			}
 			finally {
 				closeSilently(statement);
@@ -1308,6 +1306,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		if (definition(entityType).readOnly()) {
 			throw new DatabaseException("Entities of type: " + entityType + " are read only");
 		}
+	}
+
+	private void throwDatabaseException(Exception exception, Operation operation) throws DatabaseException {
+		if (exception instanceof SQLException) {
+			throw database.exception((SQLException) exception, operation);
+		}
+		if (exception instanceof DatabaseException) {
+			throw (DatabaseException) exception;
+		}
+	}
+
+	private RuntimeException runtimeException(Exception exception) {
+		if (exception instanceof RuntimeException) {
+			return (RuntimeException) exception;
+		}
+
+		return new RuntimeException(exception);
 	}
 
 	private EntityDefinition definition(EntityType entityType) {
