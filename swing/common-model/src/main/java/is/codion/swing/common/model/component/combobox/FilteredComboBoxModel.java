@@ -520,7 +520,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		 * @param value the value to search for, never null
 		 * @return a {@link Predicate} based on the given value
 		 */
-		Predicate<T> createPredicate(V value);
+		Predicate<T> predicate(V value);
 
 		/**
 		 * Returns the first item in the given collection containing the given {@code value}. Only called for non-null {@code value}s.
@@ -532,7 +532,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 			requireNonNull(value);
 
 			return requireNonNull(items).stream()
-							.filter(createPredicate(value))
+							.filter(predicate(value))
 							.findFirst()
 							.orElse(null);
 		}

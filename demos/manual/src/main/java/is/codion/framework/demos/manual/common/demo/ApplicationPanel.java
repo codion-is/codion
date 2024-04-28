@@ -395,7 +395,7 @@ public final class ApplicationPanel extends JPanel {
 		}
 
 		@Override
-		public Predicate<Item<Integer>> createPredicate(Integer value) {
+		public Predicate<Item<Integer>> predicate(Integer value) {
 			return item -> Objects.equals(item.get(), value);
 		}
 	}

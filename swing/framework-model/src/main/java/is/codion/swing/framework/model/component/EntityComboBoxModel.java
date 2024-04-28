@@ -536,7 +536,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		}
 
 		@Override
-		public Predicate<Entity> createPredicate(T value) {
+		public Predicate<Entity> predicate(T value) {
 			return entity -> Objects.equals(entity.get(attribute), value);
 		}
 	}

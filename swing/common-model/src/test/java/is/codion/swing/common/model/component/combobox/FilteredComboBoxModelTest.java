@@ -274,7 +274,7 @@ public class FilteredComboBoxModelTest {
 			}
 
 			@Override
-			public Predicate<String> createPredicate(Character value) {
+			public Predicate<String> predicate(Character value) {
 				return item -> item.charAt(0) == value.charValue();
 			}
 		});

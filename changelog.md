@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.17.44
 ### is codion.common.db
 - Database.databaseException() renamed exception().
+### is.codion.swing.common.model
+- FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 ### is.codion.framework.db.local
