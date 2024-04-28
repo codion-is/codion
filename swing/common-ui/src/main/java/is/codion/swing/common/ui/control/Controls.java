@@ -18,8 +18,12 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.swing.common.ui.control.DefaultControls.DefaultConfig;
+
 import javax.swing.Action;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A collection of controls and separators, note that these can be nested controls.
@@ -154,6 +158,16 @@ public interface Controls extends Control {
 	}
 
 	/**
+	 * @param standarControls returns the standard control for the given identifier
+	 * @param defaults the default controls layout
+	 * @return a new Config instance
+	 * @param <T> the type identifying the available standard controls
+	 */
+	static <T extends Enum<T>> Config<T> config(Function<T, Optional<Control>> standarControls, List<T> defaults) {
+		return new DefaultConfig<>(standarControls, defaults);
+	}
+
+	/**
 	 * A builder for Controls
 	 * @see Controls#builder(Command)
 	 * @see Controls#actionControlBuilder(ActionCommand)
@@ -201,5 +215,67 @@ public interface Controls extends Control {
 		 * @return this Builder instance
 		 */
 		Builder separator();
+	}
+
+	/**
+	 * Configures controls.
+	 * @param <T> the type used to identify the available standard controls
+	 */
+	interface Config<T extends Enum<T>> {
+
+		/**
+		 * Adds a separator
+		 * @return this config instance
+		 */
+		Config<T> separator();
+
+		/**
+		 * Adds a standard control
+		 * @param identifier the control identifier
+		 * @return this config instance
+		 */
+		Config<T> standard(T identifier);
+
+		/**
+		 * @param control the control to add
+		 * @return this config instance
+		 */
+		Config<T> control(Control control);
+
+		/**
+		 * @param controlBuilder the builder for the control to add
+		 * @return this config instance
+		 */
+		Config<T> control(Control.Builder<?, ?> controlBuilder);
+
+		/**
+		 * @param action the Action to add
+		 * @return this config instance
+		 */
+		Config<T> action(Action action);
+
+		/**
+		 * Adds all remaining default controls
+		 * @return this config instance
+		 */
+		Config<T> defaults();
+
+		/**
+		 * Adds all remaining default controls, stopping before {@code stopBefore}
+		 * @param stopBefore the table control to stop before
+		 * @return this config instance
+		 */
+		Config<T> defaults(T stopBefore);
+
+		/**
+		 * Clears all controls from this config
+		 * @return this config instance
+		 */
+		Config<T> clear();
+
+		/**
+		 * @return a {@link Controls} instance based on this config
+		 */
+		Controls create();
 	}
 }

@@ -54,7 +54,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -140,7 +139,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final Config configuration;
-	private final ControlConfig<EditControl, ?> controlsConfiguration;
+	private final Controls.Config<EditControl> controlsConfiguration;
 	private final Map<EditControl, Value<Control>> controls;
 	private final State active;
 
@@ -181,7 +180,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
 		super(editModel, entityComponents);
 		this.configuration = configure(configuration);
-		this.controlsConfiguration = new DefaultControlsConfig<>();
+		this.controlsConfiguration = createControlsConfiguration();
 		this.active = State.state(!this.configuration.focusActivation);
 		this.controls = createControlsMap();
 		setupFocusActivation();
@@ -236,7 +235,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			throw new IllegalStateException("Method must be called after the panel is initialized");
 		}
 
-		return controlsConfiguration.createControls();
+		return controlsConfiguration.create();
 	}
 
 	/**
@@ -515,7 +514,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Configures the popup menu controls.<br>
-	 * Note that the {@link ControlConfig} instance has pre-configured defaults,
+	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configureControls(config -> config
@@ -523,9 +522,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *           .control(createCustomControl()))
 	 * </pre>
 	 * @param controlsConfig provides access to the controls configuration
-	 * @see ControlConfig#clear()
+	 * @see Controls.Config#clear()
 	 */
-	protected final void configureControls(Consumer<ControlConfig<EditControl, ?>> controlsConfig) {
+	protected final void configureControls(Consumer<Controls.Config<EditControl>> controlsConfig) {
 		requireNonNull(controlsConfig).accept(controlsConfiguration);
 	}
 
@@ -588,7 +587,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createInsertControl() {
-		boolean useSaveCaption = Config.USE_SAVE_CAPTION.get();
+		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.get();
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
 		return Control.builder(insertCommand(true))
@@ -651,6 +650,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
+	}
+
+	private Controls.Config<EditControl> createControlsConfiguration() {
+		return Controls.config(identifier -> control(identifier).optional(), asList(
+						EditControl.INSERT,
+						EditControl.UPDATE,
+						EditControl.DELETE,
+						EditControl.CLEAR
+		));
 	}
 
 	/**
@@ -728,7 +736,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @return the edit panel
 		 */
-		public EntityEditPanel editPanel () {
+		public EntityEditPanel editPanel() {
 			return editPanel;
 		}
 
@@ -865,24 +873,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		default boolean confirm(JComponent dialogOwner, String message, String title) {
 			return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
-		}
-	}
-
-	private final class DefaultControlsConfig<C extends ControlConfig<EditControl, C>>
-					extends DefaultControlConfig<EditControl, C> {
-
-		private DefaultControlsConfig() {
-			super(null, asList(
-							EditControl.INSERT,
-							EditControl.UPDATE,
-							EditControl.DELETE,
-							EditControl.CLEAR
-			));
-		}
-
-		@Override
-		protected Optional<Control> control(EditControl control) {
-			return Optional.of(EntityEditPanel.this.control(control).get());
 		}
 	}
 

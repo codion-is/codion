@@ -447,8 +447,8 @@ public class EntityTablePanel extends JPanel {
 	private final EntityEditPanel editPanel;
 	private final Map<TableControl, Value<Control>> controls = createControlsMap();
 	private final Config configuration;
-	private final ControlConfig<TableControl, ?> popupMenuConfiguration;
-	private final ControlConfig<TableControl, ?> toolBarConfiguration;
+	private final Controls.Config<TableControl> popupMenuConfiguration;
+	private final Controls.Config<TableControl> toolBarConfiguration;
 	private final SwingEntityTableModel tableModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
@@ -486,8 +486,8 @@ public class EntityTablePanel extends JPanel {
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
-		this.popupMenuConfiguration = new DefaultPopupMenuConfig();
-		this.toolBarConfiguration = new DefaultToolBarConfig();
+		this.popupMenuConfiguration = createPopupMenuConfiguration();
+		this.toolBarConfiguration = createToolBarConfiguration();
 	}
 
 	/**
@@ -511,8 +511,8 @@ public class EntityTablePanel extends JPanel {
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
-		this.popupMenuConfiguration = new DefaultPopupMenuConfig();
-		this.toolBarConfiguration = new DefaultToolBarConfig();
+		this.popupMenuConfiguration = createPopupMenuConfiguration();
+		this.toolBarConfiguration = createToolBarConfiguration();
 	}
 
 	/**
@@ -827,7 +827,7 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Configures the toolbar controls.<br>
-	 * Note that the {@link ControlConfig} instance has pre-configured defaults,
+	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configureToolBar(config -> config.clear()
@@ -838,16 +838,16 @@ public class EntityTablePanel extends JPanel {
 	 *           .defaults())
 	 * </pre>
 	 * @param toolBarConfig provides access to the toolbar configuration
-	 * @see ControlConfig#clear()
+	 * @see Controls.Config#clear()
 	 */
-	protected final void configureToolBar(Consumer<ControlConfig<TableControl, ?>> toolBarConfig) {
+	protected final void configureToolBar(Consumer<Controls.Config<TableControl>> toolBarConfig) {
 		throwIfInitialized();
 		requireNonNull(toolBarConfig).accept(this.toolBarConfiguration);
 	}
 
 	/**
 	 * Configures the popup menu controls.<br>
-	 * Note that the {@link ControlConfig} instance has pre-configured defaults,
+	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
 	 *   configurePopupMenu(config -> config.clear()
@@ -858,9 +858,9 @@ public class EntityTablePanel extends JPanel {
 	 *           .defaults())
 	 * </pre>
 	 * @param popupMenuConfig provides access to the popup menu configuration
-	 * @see ControlConfig#clear()
+	 * @see Controls.Config#clear()
 	 */
-	protected final void configurePopupMenu(Consumer<ControlConfig<TableControl, ?>> popupMenuConfig) {
+	protected final void configurePopupMenu(Consumer<Controls.Config<TableControl>> popupMenuConfig) {
 		throwIfInitialized();
 		requireNonNull(popupMenuConfig).accept(this.popupMenuConfiguration);
 	}
@@ -1532,7 +1532,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void addTablePopupMenu() {
 		if (configuration.includePopupMenu) {
-			Controls popupControls = popupMenuConfiguration.createControls();
+			Controls popupControls = popupMenuConfiguration.create();
 			if (popupControls == null || popupControls.empty()) {
 				return;
 			}
@@ -1637,6 +1637,57 @@ public class EntityTablePanel extends JPanel {
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
+	}
+
+	private Controls.Config<TableControl> createPopupMenuConfiguration() {
+		return Controls.config(identifier -> control(identifier).optional(), asList(
+						TableControl.REFRESH,
+						TableControl.CLEAR,
+						null,
+						TableControl.ADD,
+						TableControl.EDIT,
+						TableControl.DELETE,
+						null,
+						this.configuration.popupMenuEditAttributeControl(),
+						null,
+						TableControl.VIEW_DEPENDENCIES,
+						null,
+						TableControl.ADDITIONAL_POPUP_MENU_CONTROLS,
+						null,
+						TableControl.PRINT_CONTROLS,
+						null,
+						TableControl.COLUMN_CONTROLS,
+						null,
+						TableControl.SELECTION_MODE,
+						null,
+						TableControl.CONDITION_CONTROLS,
+						null,
+						TableControl.FILTER_CONTROLS,
+						null,
+						TableControl.COPY_CONTROLS
+		));
+	}
+
+	private Controls.Config<TableControl> createToolBarConfiguration() {
+		return Controls.config(identifier -> control(identifier).optional(), asList(
+						TableControl.TOGGLE_SUMMARY_PANEL,
+						TableControl.TOGGLE_CONDITION_PANEL,
+						TableControl.TOGGLE_FILTER_PANEL,
+						null,
+						TableControl.ADD,
+						TableControl.EDIT,
+						TableControl.DELETE,
+						null,
+						editPanel == null ? TableControl.EDIT_SELECTED_ATTRIBUTE : null,
+						null,
+						TableControl.PRINT,
+						TableControl.CLEAR_SELECTION,
+						null,
+						TableControl.MOVE_SELECTION_UP,
+						TableControl.MOVE_SELECTION_DOWN,
+						null,
+						TableControl.ADDITIONAL_TOOLBAR_CONTROLS
+		));
 	}
 
 	private final class DeleteCommand implements Control.Command {
@@ -2381,7 +2432,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private JToolBar createToolBar() {
-			Controls toolbarControls = toolBarConfiguration.createControls();
+			Controls toolbarControls = toolBarConfiguration.create();
 			if (toolbarControls == null || toolbarControls.empty()) {
 				return null;
 			}
@@ -2471,75 +2522,6 @@ public class EntityTablePanel extends JPanel {
 					return false;
 				}
 			}
-		}
-	}
-
-	private final class DefaultPopupMenuConfig<C extends ControlConfig<TableControl, C>>
-					extends DefaultControlConfig<TableControl, C> {
-
-		private DefaultPopupMenuConfig() {
-			super(TableControl.ADDITIONAL_POPUP_MENU_CONTROLS, asList(
-							TableControl.REFRESH,
-							TableControl.CLEAR,
-							null,
-							TableControl.ADD,
-							TableControl.EDIT,
-							TableControl.DELETE,
-							null,
-							configuration.popupMenuEditAttributeControl(),
-							null,
-							TableControl.VIEW_DEPENDENCIES,
-							null,
-							TableControl.ADDITIONAL_POPUP_MENU_CONTROLS,
-							null,
-							TableControl.PRINT_CONTROLS,
-							null,
-							TableControl.COLUMN_CONTROLS,
-							null,
-							TableControl.SELECTION_MODE,
-							null,
-							TableControl.CONDITION_CONTROLS,
-							null,
-							TableControl.FILTER_CONTROLS,
-							null,
-							TableControl.COPY_CONTROLS
-			));
-		}
-
-		@Override
-		protected Optional<Control> control(TableControl tableControl) {
-			return EntityTablePanel.this.control(tableControl).optional();
-		}
-	}
-
-	private final class DefaultToolBarConfig<C extends ControlConfig<TableControl, C>>
-					extends DefaultControlConfig<TableControl, C> {
-
-		private DefaultToolBarConfig() {
-			super(TableControl.ADDITIONAL_TOOLBAR_CONTROLS, asList(
-							TableControl.TOGGLE_SUMMARY_PANEL,
-							TableControl.TOGGLE_CONDITION_PANEL,
-							TableControl.TOGGLE_FILTER_PANEL,
-							null,
-							TableControl.ADD,
-							TableControl.EDIT,
-							TableControl.DELETE,
-							null,
-							editPanel == null ? TableControl.EDIT_SELECTED_ATTRIBUTE : null,
-							null,
-							TableControl.PRINT,
-							TableControl.CLEAR_SELECTION,
-							null,
-							TableControl.MOVE_SELECTION_UP,
-							TableControl.MOVE_SELECTION_DOWN,
-							null,
-							TableControl.ADDITIONAL_TOOLBAR_CONTROLS
-			));
-		}
-
-		@Override
-		protected Optional<Control> control(TableControl tableControl) {
-			return EntityTablePanel.this.control(tableControl).optional();
 		}
 	}
 }

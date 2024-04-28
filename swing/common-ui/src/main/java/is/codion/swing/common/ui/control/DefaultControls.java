@@ -25,7 +25,11 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -37,14 +41,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 	DefaultControls(String name, StateObserver enabledState, List<Action> controls) {
 		super(name, enabledState);
-		for (Action control : controls) {
-			if (control == SEPARATOR) {
-				addSeparator();
-			}
-			else {
-				add(control);
-			}
-		}
+		controls.forEach(this::add);
 	}
 
 	@Override
@@ -168,6 +165,174 @@ final class DefaultControls extends AbstractControl implements Controls {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			throw new UnsupportedOperationException(CONTROLS_SEPARATOR);
+		}
+	}
+
+	static final class DefaultConfig<T extends Enum<T>> implements Config<T> {
+
+		private static final ControlItem SEPARATOR = new Separator();
+
+		private final List<T> defaults;
+		private final Function<T, Optional<Control>> standardControls;
+		private final List<ControlItem> items = new ArrayList<>();
+
+		DefaultConfig(Function<T, Optional<Control>> standardControls, List<T> defaults) {
+			this.defaults = requireNonNull(defaults);
+			this.standardControls = requireNonNull(standardControls);
+			defaults();
+		}
+
+		@Override
+		public Config<T> separator() {
+			if (items.isEmpty() || items.get(items.size() - 1) != SEPARATOR) {
+				items.add(SEPARATOR);
+			}
+			return this;
+		}
+
+		@Override
+		public Config<T> standard(T identifier) {
+			add(requireNonNull(identifier));
+			return this;
+		}
+
+		@Override
+		public Config<T> control(Control control) {
+			items.add(new CustomAction(requireNonNull(control)));
+			return this;
+		}
+
+		@Override
+		public Config<T> control(Control.Builder<?, ?> controlBuilder) {
+			return control(requireNonNull(controlBuilder).build());
+		}
+
+		@Override
+		public Config<T> action(Action action) {
+			items.add(new CustomAction(requireNonNull(action)));
+			return this;
+		}
+
+		@Override
+		public Config<T> clear() {
+			items.clear();
+			return this;
+		}
+
+		@Override
+		public Config<T> defaults() {
+			return defaults(null);
+		}
+
+		@Override
+		public Config<T> defaults(T stopBefore) {
+			for (T control : defaults) {
+				if (stopBefore != null && control == stopBefore) {
+					return this;
+				}
+				if (control == null) {
+					separator();
+				}
+				else {
+					add(control);
+				}
+			}
+
+			return this;
+		}
+
+		@Override
+		public Controls create() {
+			Controls created = Controls.controls();
+			items.forEach(item -> item.addTo(created));
+
+			return created;
+		}
+
+		private void add(T controlIdentifier) {
+			StandardControl<T> standardControl = new StandardControl<>(controlIdentifier, standardControls);
+			if (!items.contains(standardControl)) {
+				items.add(standardControl);
+			}
+		}
+
+		private interface ControlItem {
+			void addTo(Controls controlsToAddTo);
+		}
+
+		private static final class StandardControl<T> implements ControlItem {
+
+			private final T tableControl;
+			private final Function<T, Optional<Control>> controlProvider;
+
+			private StandardControl(T tableControl, Function<T, Optional<Control>> controlProvider) {
+				this.tableControl = tableControl;
+				this.controlProvider = controlProvider;
+			}
+
+			@Override
+			public void addTo(Controls controlsToAddTo) {
+				controlProvider.apply(tableControl).ifPresent(control -> {
+					if (control instanceof Controls) {
+						Controls controls = (Controls) control;
+						if (controls.notEmpty()) {
+							if (nullOrEmpty(controls.getName())) {
+								controls.actions().stream()
+												.filter(action -> action != SEPARATOR)
+												.forEach(action -> new CustomAction(action).addTo(controlsToAddTo));
+							}
+							else {
+								controlsToAddTo.add(controls);
+							}
+						}
+					}
+					else {
+						controlsToAddTo.add(control);
+					}
+				});
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (this == object) {
+					return true;
+				}
+				if (!(object instanceof DefaultConfig.StandardControl)) {
+					return false;
+				}
+				StandardControl<?> that = (StandardControl<?>) object;
+				return tableControl == that.tableControl;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(tableControl);
+			}
+		}
+
+		private static final class CustomAction implements ControlItem {
+
+			private final Action action;
+
+			private CustomAction(Action action) {
+				this.action = action;
+			}
+
+			@Override
+			public void addTo(Controls controlsToAddTo) {
+				controlsToAddTo.add(action);
+			}
+		}
+
+		private static final class Separator implements ControlItem {
+
+			@Override
+			public void addTo(Controls controlsToAddTo) {
+				List<Action> actions = controlsToAddTo.actions();
+				if (actions.isEmpty() || actions.get(actions.size() - 1) != Controls.SEPARATOR) {
+					controlsToAddTo.addSeparator();
+				}
+			}
 		}
 	}
 }
