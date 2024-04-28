@@ -1002,7 +1002,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		@Override
 		public void accept(Collection<Entity> insertedEntities) {
 			if (states.postEditEvents.get()) {
-				EntityEditEvents.notifyInserted(insertedEntities);
+				EntityEditEvents.inserted(insertedEntities);
 			}
 		}
 	}
@@ -1012,7 +1012,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		@Override
 		public void accept(Map<Entity.Key, Entity> updatedEntities) {
 			if (states.postEditEvents.get()) {
-				EntityEditEvents.notifyUpdated(updatedEntities);
+				EntityEditEvents.updated(updatedEntities);
 			}
 		}
 	}
@@ -1022,7 +1022,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		@Override
 		public void accept(Collection<Entity> deletedEntities) {
 			if (states.postEditEvents.get()) {
-				EntityEditEvents.notifyDeleted(deletedEntities);
+				EntityEditEvents.deleted(deletedEntities);
 			}
 		}
 	}

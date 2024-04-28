@@ -112,7 +112,7 @@ public final class EntityEditEvents {
 	 * Notifies insert
 	 * @param insertedEntities the inserted entities
 	 */
-	public static void notifyInserted(Collection<Entity> insertedEntities) {
+	public static void inserted(Collection<Entity> insertedEntities) {
 		EDIT_LISTENER.notifyInserted(requireNonNull(insertedEntities));
 	}
 
@@ -120,7 +120,7 @@ public final class EntityEditEvents {
 	 * Notifies update
 	 * @param updatedEntities the updated entities mapped to their original primary key
 	 */
-	public static void notifyUpdated(Map<Entity.Key, Entity> updatedEntities) {
+	public static void updated(Map<Entity.Key, Entity> updatedEntities) {
 		EDIT_LISTENER.notifyUpdated(requireNonNull(updatedEntities));
 	}
 
@@ -128,7 +128,7 @@ public final class EntityEditEvents {
 	 * Notifies delete
 	 * @param deletedEntities the deleted entities
 	 */
-	public static void notifyDeleted(Collection<Entity> deletedEntities) {
+	public static void deleted(Collection<Entity> deletedEntities) {
 		EDIT_LISTENER.notifyDeleted(requireNonNull(deletedEntities));
 	}
 

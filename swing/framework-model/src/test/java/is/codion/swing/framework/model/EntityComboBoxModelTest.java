@@ -74,7 +74,7 @@ public final class EntityComboBoxModelTest {
 						.with(Employee.NAME, "Noname")
 						.build();
 
-		EntityEditEvents.notifyInserted(singletonList(temp));
+		EntityEditEvents.inserted(singletonList(temp));
 		assertTrue(comboBoxModel.visible(temp));
 
 		temp.put(Employee.NAME, "Newname");
@@ -83,15 +83,15 @@ public final class EntityComboBoxModelTest {
 		Map<Entity.Key, Entity> updated = new HashMap<>();
 		updated.put(temp.primaryKey(), temp);
 
-		EntityEditEvents.notifyUpdated(updated);
+		EntityEditEvents.updated(updated);
 		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElse(null).get(Employee.NAME));
 
-		EntityEditEvents.notifyDeleted(singletonList(temp));
+		EntityEditEvents.deleted(singletonList(temp));
 		assertFalse(comboBoxModel.visible(temp));
 
 		comboBoxModel.handleEditEvents().set(false);
 
-		EntityEditEvents.notifyInserted(singletonList(temp));
+		EntityEditEvents.inserted(singletonList(temp));
 		assertFalse(comboBoxModel.visible(temp));
 
 		comboBoxModel.refresh();
