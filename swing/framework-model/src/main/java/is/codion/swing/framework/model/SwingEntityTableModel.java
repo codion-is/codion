@@ -1143,11 +1143,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 		public void accept(Boolean handleEditEvents) {
 			if (handleEditEvents) {
 				entityTypes().forEach(entityType ->
-								EntityEditEvents.addUpdateConsumer(entityType, updateListener));
+								EntityEditEvents.addUpdateListener(entityType, updateListener));
 			}
 			else {
 				entityTypes().forEach(entityType ->
-								EntityEditEvents.removeUpdateConsumer(entityType, updateListener));
+								EntityEditEvents.removeUpdateListener(entityType, updateListener));
 			}
 		}
 

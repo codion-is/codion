@@ -90,13 +90,13 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
 
-		Consumer<Collection<Entity>> insertConsumer = inserted -> insertEvents.incrementAndGet();
-		Consumer<Map<Entity.Key, Entity>> updateConsumer = udpated -> updateEvents.incrementAndGet();
-		Consumer<Collection<Entity>> deleteConsumer = deleted -> deleteEvents.incrementAndGet();
+		Consumer<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
+		Consumer<Map<Entity.Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
+		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
-		EntityEditEvents.addInsertConsumer(Employee.TYPE, insertConsumer);
-		EntityEditEvents.addUpdateConsumer(Employee.TYPE, updateConsumer);
-		EntityEditEvents.addDeleteConsumer(Employee.TYPE, deleteConsumer);
+		EntityEditEvents.addInsertListener(Employee.TYPE, insertListener);
+		EntityEditEvents.addUpdateListener(Employee.TYPE, updateListener);
+		EntityEditEvents.addDeleteListener(Employee.TYPE, deleteListener);
 
 		employeeEditModel.postEditEvents().set(true);
 
@@ -118,9 +118,9 @@ public final class AbstractEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		EntityEditEvents.removeInsertConsumer(Employee.TYPE, insertConsumer);
-		EntityEditEvents.removeUpdateConsumer(Employee.TYPE, updateConsumer);
-		EntityEditEvents.removeDeleteConsumer(Employee.TYPE, deleteConsumer);
+		EntityEditEvents.removeInsertListener(Employee.TYPE, insertListener);
+		EntityEditEvents.removeUpdateListener(Employee.TYPE, updateListener);
+		EntityEditEvents.removeDeleteListener(Employee.TYPE, deleteListener);
 	}
 
 	@Test

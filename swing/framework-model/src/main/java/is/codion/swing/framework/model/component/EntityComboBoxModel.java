@@ -473,15 +473,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		}
 
 		private void addEditListeners() {
-			EntityEditEvents.addInsertConsumer(entityType, insertListener);
-			EntityEditEvents.addUpdateConsumer(entityType, updateListener);
-			EntityEditEvents.addDeleteConsumer(entityType, deleteListener);
+			EntityEditEvents.addInsertListener(entityType, insertListener);
+			EntityEditEvents.addUpdateListener(entityType, updateListener);
+			EntityEditEvents.addDeleteListener(entityType, deleteListener);
 		}
 
 		private void removeEditListeners() {
-			EntityEditEvents.removeInsertConsumer(entityType, insertListener);
-			EntityEditEvents.removeUpdateConsumer(entityType, updateListener);
-			EntityEditEvents.removeDeleteConsumer(entityType, deleteListener);
+			EntityEditEvents.removeInsertListener(entityType, insertListener);
+			EntityEditEvents.removeUpdateListener(entityType, updateListener);
+			EntityEditEvents.removeDeleteListener(entityType, deleteListener);
 		}
 	}
 
