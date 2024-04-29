@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
 import java.util.Iterator;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
@@ -50,14 +51,23 @@ public interface ConnectionPoolFactory {
 	 */
 	static ConnectionPoolFactory instance(String classname) {
 		requireNonNull(classname, "classname");
-		ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
-		for (ConnectionPoolFactory factory : loader) {
-			if (factory.getClass().getName().equals(classname)) {
-				return factory;
+		try {
+			ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
+			for (ConnectionPoolFactory factory : loader) {
+				if (factory.getClass().getName().equals(classname)) {
+					return factory;
+				}
 			}
-		}
 
-		throw new IllegalStateException("No connection pool factory of type: " + classname + " available");
+			throw new IllegalStateException("No connection pool factory of type: " + classname + " available");
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 
 	/**
@@ -66,12 +76,21 @@ public interface ConnectionPoolFactory {
 	 * @throws IllegalStateException in case no {@link ConnectionPoolFactory} implementation is available.
 	 */
 	static ConnectionPoolFactory instance() {
-		ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
-		Iterator<ConnectionPoolFactory> iterator = loader.iterator();
-		if (iterator.hasNext()) {
-			return iterator.next();
-		}
+		try {
+			ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
+			Iterator<ConnectionPoolFactory> iterator = loader.iterator();
+			if (iterator.hasNext()) {
+				return iterator.next();
+			}
 
-		throw new IllegalStateException("No connection pool factory available");
+			throw new IllegalStateException("No connection pool factory available");
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 }

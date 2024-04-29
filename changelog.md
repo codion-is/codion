@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.17.44
+### is.codion
+- ServiceConfigurationError caught, cause unwrapped and rethrown.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 ### is.codion.swing.common.model

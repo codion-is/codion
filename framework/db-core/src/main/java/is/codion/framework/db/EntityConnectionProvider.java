@@ -26,6 +26,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -146,13 +147,22 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 */
 	static Builder<?, ?> builder() {
 		String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
-		for (Builder<?, ?> builder : ServiceLoader.load(Builder.class)) {
-			if (builder.connectionType().equalsIgnoreCase(clientConnectionType)) {
-				return builder;
+		try {
+			for (Builder<?, ?> builder : ServiceLoader.load(Builder.class)) {
+				if (builder.connectionType().equalsIgnoreCase(clientConnectionType)) {
+					return builder;
+				}
 			}
-		}
 
-		throw new IllegalArgumentException("No connection provider builder available for requested client connection type: " + clientConnectionType);
+			throw new IllegalArgumentException("No connection provider builder available for requested client connection type: " + clientConnectionType);
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 
 	/**

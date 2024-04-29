@@ -20,6 +20,7 @@ package is.codion.common.db.database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
@@ -62,14 +63,23 @@ public interface DatabaseFactory {
 	 */
 	static DatabaseFactory instance(String url) throws SQLException {
 		String driver = driverClassName(url);
-		ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
-		for (DatabaseFactory factory : loader) {
-			if (factory.driverCompatible(driver)) {
-				return factory;
+		try {
+			ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
+			for (DatabaseFactory factory : loader) {
+				if (factory.driverCompatible(driver)) {
+					return factory;
+				}
 			}
-		}
 
-		throw new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver);
+			throw new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver);
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 
 	/**

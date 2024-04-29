@@ -23,6 +23,7 @@ import is.codion.common.rmi.server.exception.LoginException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 /**
@@ -69,11 +70,20 @@ public interface Authenticator {
 	 * @return a list containing all the authenticators registered with {@link ServiceLoader}.
 	 */
 	static List<Authenticator> authenticators() {
-		List<Authenticator> authenticators = new ArrayList<>();
-		for (Authenticator authenticator : ServiceLoader.load(Authenticator.class)) {
-			authenticators.add(authenticator);
-		}
+		try {
+			List<Authenticator> authenticators = new ArrayList<>();
+			for (Authenticator authenticator : ServiceLoader.load(Authenticator.class)) {
+				authenticators.add(authenticator);
+			}
 
-		return authenticators;
+			return authenticators;
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 }

@@ -21,6 +21,7 @@ package is.codion.framework.json.domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
@@ -55,14 +56,23 @@ public interface EntityObjectMapperFactory {
 	 */
 	static EntityObjectMapperFactory instance(DomainType domainType) {
 		requireNonNull(domainType);
-		ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
-		for (EntityObjectMapperFactory factory : loader) {
-			if (factory.compatibleWith(domainType)) {
-				return factory;
+		try {
+			ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
+			for (EntityObjectMapperFactory factory : loader) {
+				if (factory.compatibleWith(domainType)) {
+					return factory;
+				}
 			}
-		}
 
-		//compatible with all domain models
-		return mapperDomainType -> true;
+			//compatible with all domain models
+			return mapperDomainType -> true;
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 }

@@ -118,8 +118,8 @@ public interface Domain {
 	 * @return a list containing all the Domains registered with {@link ServiceLoader}.
 	 */
 	static List<Domain> domains() {
+		List<Domain> domains = new ArrayList<>();
 		try {
-			List<Domain> domains = new ArrayList<>();
 			ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
 			for (Domain domain : loader) {
 				domains.add(domain);

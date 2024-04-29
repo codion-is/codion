@@ -21,6 +21,7 @@ package is.codion.common.logging;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Collections.emptyList;
@@ -78,13 +79,22 @@ public interface LoggerProxy {
 	 * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.
 	 */
 	static LoggerProxy instance() {
-		ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
-		Iterator<LoggerProxy> proxyIterator = loader.iterator();
-		if (proxyIterator.hasNext()) {
-			return proxyIterator.next();
-		}
+		try {
+			ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
+			Iterator<LoggerProxy> proxyIterator = loader.iterator();
+			if (proxyIterator.hasNext()) {
+				return proxyIterator.next();
+			}
 
-		System.err.println("No LoggerProxy service implementation found");
-		return NULL_PROXY;
+			System.err.println("No LoggerProxy service implementation found");
+			return NULL_PROXY;
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 }

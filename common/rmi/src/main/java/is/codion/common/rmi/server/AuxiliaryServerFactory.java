@@ -19,6 +19,7 @@
 package is.codion.common.rmi.server;
 
 import java.rmi.Remote;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
@@ -49,12 +50,21 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
 	 */
 	static <C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> AuxiliaryServerFactory<C, A, T> instance(String classname) {
 		requireNonNull(classname, "classname");
-		for (AuxiliaryServerFactory<C, A, T> serverProvider : ServiceLoader.load(AuxiliaryServerFactory.class)) {
-			if (serverProvider.getClass().getName().equals(classname)) {
-				return serverProvider;
+		try {
+			for (AuxiliaryServerFactory<C, A, T> serverProvider : ServiceLoader.load(AuxiliaryServerFactory.class)) {
+				if (serverProvider.getClass().getName().equals(classname)) {
+					return serverProvider;
+				}
 			}
-		}
 
-		throw new IllegalStateException("No auxiliary server factory of type: " + classname + " available");
+			throw new IllegalStateException("No auxiliary server factory of type: " + classname + " available");
+		}
+		catch (ServiceConfigurationError e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new RuntimeException(cause);
+		}
 	}
 }
