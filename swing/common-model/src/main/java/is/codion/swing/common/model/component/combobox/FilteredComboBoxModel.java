@@ -307,7 +307,13 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 */
 	public final void sortItems() {
 		if (comparator.isNotNull() && !visibleItems.isEmpty()) {
+			if (includeNull.get()) {
+				visibleItems.remove(0);
+			}
 			visibleItems.sort(comparator.get());
+			if (includeNull.get()) {
+				visibleItems.add(0, null);
+			}
 			fireContentsChanged();
 		}
 	}

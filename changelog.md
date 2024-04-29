@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.
+- FilteredComboBoxModel.sortVisibleItems() bug fixed, now takes the null item into account.
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.
