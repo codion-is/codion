@@ -6,6 +6,7 @@ Codion Change Log
 - ServiceConfigurationError caught, cause unwrapped and rethrown.
 ### is codion.common.core
 - Text.SpaceAwareCollator bug fixed, now treats null values as an empty string.
+- Nulls utility class added.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 ### is.codion.swing.common.model
