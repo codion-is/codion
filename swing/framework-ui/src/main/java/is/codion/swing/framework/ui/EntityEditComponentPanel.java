@@ -94,6 +94,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -215,7 +216,7 @@ public class EntityEditComponentPanel extends JPanel {
 			componentBuilder.build();
 		}
 
-		return components.computeIfAbsent(attribute, k -> Value.value());
+		return components.computeIfAbsent(attribute, this::createComponentValue);
 	}
 
 	/**
@@ -989,6 +990,12 @@ public class EntityEditComponentPanel extends JPanel {
 						.anyMatch(comp -> sameOrParentOf(comp, component));
 	}
 
+	private Value<JComponent> createComponentValue(Attribute<?> attribute) {
+		return Value.<JComponent>nullable()
+						.consumer(new AddModifiedIndicator(attribute))
+						.build();
+	}
+
 	/**
 	 * Returns true if this component can be selected, that is,
 	 * if it is non-null, displayable, visible, focusable and enabled.
@@ -1140,10 +1147,7 @@ public class EntityEditComponentPanel extends JPanel {
 		@Override
 		public void accept(C component) {
 			componentBuilders.remove(attribute);
-			components.computeIfAbsent(attribute, k -> Value.value()).set(component);
-			if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
-				editModel.modified(attribute).addConsumer(new ModifiedIndicator(component));
-			}
+			component(attribute).set(component);
 		}
 	}
 
@@ -1158,6 +1162,22 @@ public class EntityEditComponentPanel extends JPanel {
 				if (parent != null && parent.isInputComponent(component)) {
 					parent.focusedInputComponent.set(component);
 				}
+			}
+		}
+	}
+
+	private final class AddModifiedIndicator implements Consumer<JComponent> {
+
+		private final Attribute<?> attribute;
+
+		private AddModifiedIndicator(Attribute<?> attribute) {
+			this.attribute = attribute;
+		}
+
+		@Override
+		public void accept(JComponent component) {
+			if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
+				editModel.modified(attribute).addConsumer(new ModifiedIndicator(component));
 			}
 		}
 	}
@@ -1177,13 +1197,25 @@ public class EntityEditComponentPanel extends JPanel {
 		public void accept(Boolean modified) {
 			JLabel label = (JLabel) component.getClientProperty(LABELED_BY_PROPERTY);
 			if (label != null) {
-				if (SwingUtilities.isEventDispatchThread()) {
-					setModifiedIndicator(label, modified);
-				}
-				else {
-					SwingUtilities.invokeLater(() -> setModifiedIndicator(label, modified));
-				}
+				SwingUtilities.invokeLater(() -> setModifiedIndicator(label, modified));
 			}
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (!(object instanceof ModifiedIndicator)) {
+				return false;
+			}
+			ModifiedIndicator that = (ModifiedIndicator) object;
+			return Objects.equals(component, that.component);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(component);
 		}
 
 		private static void setModifiedIndicator(JLabel label, boolean modified) {

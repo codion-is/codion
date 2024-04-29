@@ -32,6 +32,7 @@ Codion Change Log
 - EntityTablePanel.PopupMenuConfig and ToolBarConfig removed, quite unnecessary.
 - ControlConfig.control() overloaded for Control.Builder.
 - ControlConfig now Controls.Config, related refactoring.
+- EntityEditComponentPanel bug fixed, modified indicator now also added to labels of components set directly via component().set().
 
 ## 0.17.43
 ### is.codion.common.core
