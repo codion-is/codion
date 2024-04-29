@@ -8,6 +8,7 @@ Codion Change Log
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
+- ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.

@@ -100,7 +100,7 @@ public final class ProgressDialog extends JDialog {
 			basePanelBuilder.eastComponent(builder.eastPanel);
 		}
 		basePanelBuilder.centerComponent(progressBar);
-		if (builder.controls != null) {
+		if (builder.controls.notEmpty()) {
 			basePanelBuilder.southComponent(PanelBuilder.builder(flowLayout(FlowLayout.TRAILING))
 							.add(ButtonPanelBuilder.builder(builder.controls).build())
 							.build());
