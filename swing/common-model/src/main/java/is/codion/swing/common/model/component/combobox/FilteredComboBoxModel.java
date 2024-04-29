@@ -105,7 +105,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		itemValidator.addValidator(validator -> items().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
-		comparator.addListener(this::sortVisibleItems);
+		comparator.addListener(this::sortItems);
 		validSelectionPredicate.addValidator(predicate -> {
 			if (predicate != null && !predicate.test(selectedItem)) {
 				throw new IllegalArgumentException("The current selected item does not satisfy the valid selection predicate");
@@ -186,7 +186,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 				}
 			}
 		}
-		sortVisibleItems();
+		sortItems();
 		if (selectedItem != null && visibleItems.contains(selectedItem)) {
 			//update the selected item since the underlying data could have changed
 			selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
@@ -266,7 +266,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		if (includeCondition.isNull() || includeCondition.get().test(item)) {
 			if (!visibleItems.contains(item)) {
 				visibleItems.add(item);
-				sortVisibleItems();
+				sortItems();
 			}
 		}
 		else if (!filteredItems.contains(item)) {
@@ -299,6 +299,16 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		if (Objects.equals(selectedItem, item)) {
 			selectedItem = selectedItemTranslator.get().apply(null);
 			setSelectedItem(replacement);
+		}
+	}
+
+	/**
+	 * Sorts the items in this model
+	 */
+	public final void sortItems() {
+		if (comparator.isNotNull() && !visibleItems.isEmpty()) {
+			visibleItems.sort(comparator.get());
+			fireContentsChanged();
 		}
 	}
 
@@ -489,16 +499,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		}
 
 		return item;
-	}
-
-	/**
-	 * Sorts the items visible in this model
-	 */
-	private void sortVisibleItems() {
-		if (comparator.isNotNull() && !visibleItems.isEmpty()) {
-			visibleItems.sort(comparator.get());
-			fireContentsChanged();
-		}
 	}
 
 	/**
