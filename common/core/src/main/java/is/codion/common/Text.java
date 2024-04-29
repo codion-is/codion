@@ -195,7 +195,10 @@ public final class Text {
 
 		@Override
 		public int compare(T o1, T o2) {
-			return collator().compare(o1.toString().replace(SPACE, UNDERSCORE), o2.toString().replace(SPACE, UNDERSCORE));
+			String s1 = o1 == null ? "" : o1.toString();
+			String s2 = o2 == null ? "" : o2.toString();
+
+			return collator().compare(s1.replace(SPACE, UNDERSCORE), s2.replace(SPACE, UNDERSCORE));
 		}
 
 		private Collator collator() {
