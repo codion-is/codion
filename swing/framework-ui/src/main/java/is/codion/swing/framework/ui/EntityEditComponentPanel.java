@@ -940,7 +940,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
-		if (componentBuilders.containsKey(attribute) || components.containsKey(attribute)) {
+		if (componentBuilders.containsKey(attribute) || component(attribute).isNotNull()) {
 			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
 		}
 		componentBuilders.put(attribute, componentBuilder
