@@ -818,17 +818,19 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 							.collect(Collectors.toMap(ForeignKeyDefinition::attribute, Function.identity()));
 		}
 
-		private static List<ColumnDefinition<?>> foreignKeyColumnDefinitions(ForeignKey foreignKey, Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions) {
+		private static List<ColumnDefinition<?>> foreignKeyColumnDefinitions(ForeignKey foreignKey, Map<Attribute<?>,
+						AttributeDefinition<?>> attributeDefinitions) {
 			return foreignKey.references().stream()
-							.map(reference -> foreignKeyColumnDefinition(reference, attributeDefinitions))
+							.map(reference -> foreignKeyColumnDefinition(reference, attributeDefinitions, foreignKey))
 							.collect(toList());
 		}
 
-		private static ColumnDefinition<?> foreignKeyColumnDefinition(Reference<?> reference, Map<Attribute<?>, AttributeDefinition<?>> attributeMap) {
+		private static ColumnDefinition<?> foreignKeyColumnDefinition(Reference<?> reference, Map<Attribute<?>,
+						AttributeDefinition<?>> attributeMap, ForeignKey foreignKey) {
 			ColumnDefinition<?> definition = (ColumnDefinition<?>) attributeMap.get(reference.column());
 			if (definition == null) {
 				throw new IllegalArgumentException("Column definition based on column: " + reference.column()
-								+ " not found when initializing foreign key");
+								+ " not found when initializing foreign key: " + foreignKey);
 			}
 
 			return definition;

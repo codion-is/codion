@@ -50,6 +50,7 @@ Codion Change Log
 - EntityDefinition.STRICT_FOREIGN_KEY moved to Entities.
 - Domain.domains() now unwraps the ServiceConfigurationError thrown for a clearer error message.
 - Unused module dependency on slf4j removed.
+- DefaultEntityDefinition.EntityAttributes.foreignKeyColumnDefinition() error message now contains the foreign key.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.replace() now triggers multiple targeted table row updated events, instead of one for all rows.
 - SwingEntityTableModel.editEvents() removed, UpdateListener duplicated detail model link functionality by replacing foreign key values.
