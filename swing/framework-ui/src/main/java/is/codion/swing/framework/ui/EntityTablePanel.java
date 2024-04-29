@@ -266,27 +266,29 @@ public class EntityTablePanel extends JPanel {
 		 */
 		DELETE,
 		/**
-		 * A {@link Control} for viewing the dependencies of the selected rows.
+		 * A {@link Control} for viewing the dependencies of the selected entities.
 		 */
 		VIEW_DEPENDENCIES,
 		/**
-		 * A {@link Control} for adding a new entity. Requires an edit panel to be available.
+		 * A {@link Control} for adding a new entity. Requires an edit panel.
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
 		ADD,
 		/**
-		 * A {@link Control} for editing the selected entity. Requires an edit panel to be available.
+		 * A {@link Control} for editing the selected entity. Requires an edit panel.
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
 		EDIT,
 		/**
 		 * A {@link Controls} instance containing edit controls for all editable attributes.
+		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
 		EDIT_ATTRIBUTE_CONTROLS,
 		/**
 		 * A {@link Control} for editing the value of a single attribute for the selected entities.
+		 * @see Config#editAttributeSelection(EditAttributeSelection)
 		 */
 		EDIT_SELECTED_ATTRIBUTE,
 		/**
@@ -837,6 +839,26 @@ public class EntityTablePanel extends JPanel {
 	 *           .separator()
 	 *           .defaults())
 	 * </pre>
+	 * Defaults:
+	 * <ul>
+	 *   <li>{@link TableControl#TOGGLE_SUMMARY_PANEL TableControl#TOGGLE_SUMMARY_PANEL}</li>
+	 * 	 <li>{@link TableControl#TOGGLE_CONDITION_PANEL TableControl#TOGGLE_CONDITION_PANEL}</li>
+	 * 	 <li>{@link TableControl#TOGGLE_FILTER_PANEL TableControl#TOGGLE_FILTER_PANEL}</li>
+	 * 	 <li>Separator</li>
+	 * 	 <li>{@link TableControl#ADD TableControl#ADD} (If an EditPanel is available)</li>
+	 * 	 <li>{@link TableControl#EDIT TableControl#EDIT} (If an EditPanel is available)</li>
+	 * 	 <li>{@link TableControl#DELETE TableControl#DELETE}</li>
+	 * 	 <li>Separator</li>
+	 * 	 <li>{@link TableControl#EDIT_SELECTED_ATTRIBUTE TableControl#EDIT_SELECTED_ATTRIBUTE}</li>
+	 * 	 <li>Separator</li>
+	 * 	 <li>{@link TableControl#PRINT TableControl#PRINT}</li>
+	 * 	 <li>{@link TableControl#CLEAR_SELECTION TableControl#CLEAR_SELECTION}</li>
+	 * 	 <li>Separator</li>
+	 * 	 <li>{@link TableControl#MOVE_SELECTION_UP TableControl#MOVE_SELECTION_UP}</li>
+	 * 	 <li>{@link TableControl#MOVE_SELECTION_DOWN TableControl#MOVE_SELECTION_DOWN}</li>
+	 * 	 <li>Separator</li>
+	 * 	 <li>{@link TableControl#ADDITIONAL_TOOLBAR_CONTROLS TableControl#ADDITIONAL_TOOLBAR_CONTROLS}</li>
+	 * </ul>
 	 * @param toolBarConfig provides access to the toolbar configuration
 	 * @see Controls.Config#clear()
 	 */
@@ -857,6 +879,33 @@ public class EntityTablePanel extends JPanel {
 	 *           .separator()
 	 *           .defaults())
 	 * </pre>
+	 * Defaults:
+	 * <ul>
+	 *   <li>{@link TableControl#REFRESH TableControl#REFRESH}</li>
+	 *   <li>{@link TableControl#CLEAR TableControl#CLEAR}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#ADD TableControl#ADD} (If an EditPanel is available)</li>
+	 *   <li>{@link TableControl#EDIT TableControl#EDIT} (If an EditPanel is available)</li>
+	 *   <li>{@link TableControl#DELETE TableControl#DELETE}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#EDIT_SELECTED_ATTRIBUTE TableControl#EDIT_SELECTED_ATTRIBUTE} or {@link TableControl#EDIT_ATTRIBUTE_CONTROLS TableControl#EDIT_ATTRIBUTE_CONTROLS}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#VIEW_DEPENDENCIES TableControl#VIEW_DEPENDENCIES}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#ADDITIONAL_POPUP_MENU_CONTROLS TableControl#ADDITIONAL_POPUP_MENU_CONTROLS}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#PRINT_CONTROLS TableControl#PRINT_CONTROLS}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#COLUMN_CONTROLS TableControl#COLUMN_CONTROLS}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#SELECTION_MODE TableControl#SELECTION_MODE}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#CONDITION_CONTROLS TableControl#CONDITION_CONTROLS}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#FILTER_CONTROLS TableControl#FILTER_CONTROLS}</li>
+	 *   <li>Separator</li>
+	 *   <li>{@link TableControl#COPY_CONTROLS TableControl#COPY_CONTROLS}</li>
+	 * </ul>
 	 * @param popupMenuConfig provides access to the popup menu configuration
 	 * @see Controls.Config#clear()
 	 */

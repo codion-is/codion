@@ -151,20 +151,20 @@ public interface Controls extends Control {
 	}
 
 	/**
-	 * @return a new Controls.Builder instance
+	 * @return a new {@link Builder} instance
 	 */
 	static Builder builder() {
 		return new ControlsBuilder();
 	}
 
 	/**
-	 * @param standarControls returns the standard control for the given identifier
+	 * @param standardControls returns the standard control for the given identifier
 	 * @param defaults the default controls layout
-	 * @return a new Config instance
 	 * @param <T> the type identifying the available standard controls
+	 * @return a new Config instance
 	 */
-	static <T extends Enum<T>> Config<T> config(Function<T, Optional<Control>> standarControls, List<T> defaults) {
-		return new DefaultConfig<>(standarControls, defaults);
+	static <T extends Enum<T>> Config<T> config(Function<T, Optional<Control>> standardControls, List<T> defaults) {
+		return new DefaultConfig<>(standardControls, defaults);
 	}
 
 	/**
