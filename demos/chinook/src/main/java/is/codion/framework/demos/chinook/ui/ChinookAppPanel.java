@@ -187,8 +187,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		// Add a CTRL modifier to the DELETE key shortcut for table panels
 		EntityTablePanel.Config.KEYBOARD_SHORTCUTS.keyStroke(KeyboardShortcut.DELETE)
 						.map(keyStroke -> keyStroke(keyStroke.getKeyCode(), CTRL_DOWN_MASK));
-		FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityTablePanel.Config.COLUMN_SELECTION.set(EntityTablePanel.ColumnSelection.MENU);
+		EntityTablePanel.Config.INCLUDE_FILTER_PANEL.set(true);
+		FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
