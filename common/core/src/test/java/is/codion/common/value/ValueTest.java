@@ -404,14 +404,4 @@ public class ValueTest {
 		value.map(currentValue -> 42);
 		assertTrue(value.isNotNull());
 	}
-
-	@Test
-	void mapNull() {
-		Value<Integer> value = Value.nullable(1).build();
-		assertFalse(value.mapNull(() -> 2));
-		assertEquals(1, value.get());
-		value.clear();
-		assertTrue(value.mapNull(() -> 2));
-		assertEquals(2, value.get());
-	}
 }

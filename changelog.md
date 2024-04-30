@@ -9,6 +9,7 @@ Codion Change Log
 - Nulls utility class added.
 - MessageBundle added, Messages service provides a way to override default localization messages.
 - is.codion.common.resources renamed resource.
+- Value.mapNull() removed, no longer used.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 ### is.codion.swing.common.model
