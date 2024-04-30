@@ -328,7 +328,7 @@ public class EntityTablePanel extends JPanel {
 		 */
 		COPY_CONTROLS,
 		/**
-		 * A {@link Control} for copying the selected cell data.
+		 * A {@link Control} for copying the selected cell data.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
 		COPY_CELL(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
@@ -774,19 +774,16 @@ public class EntityTablePanel extends JPanel {
 		configuration.shortcuts.keyStroke(ADD).optional().ifPresent(keyStroke ->
 						control(ADD).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
-														.enable(this)));
+														.enable(table)));
 		configuration.shortcuts.keyStroke(EDIT).optional().ifPresent(keyStroke ->
 						control(EDIT).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
-														.enable(this)));
+														.enable(table)));
 		configuration.shortcuts.keyStroke(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(keyStroke ->
 						control(EDIT_SELECTED_ATTRIBUTE).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(table)));
 		configuration.shortcuts.keyStroke(DELETE).optional().ifPresent(keyStroke ->
@@ -797,13 +794,11 @@ public class EntityTablePanel extends JPanel {
 		configuration.shortcuts.keyStroke(MOVE_SELECTION_UP).optional().ifPresent(keyStroke ->
 						control(MOVE_SELECTION_UP).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(table)));
 		configuration.shortcuts.keyStroke(MOVE_SELECTION_DOWN).optional().ifPresent(keyStroke ->
 						control(MOVE_SELECTION_DOWN).optional().ifPresent(control ->
 										KeyEvents.builder(keyStroke)
-														.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 														.action(control)
 														.enable(table)));
 		configuration.shortcuts.keyStroke(DISPLAY_ENTITY_MENU).optional().ifPresent(keyStroke ->
