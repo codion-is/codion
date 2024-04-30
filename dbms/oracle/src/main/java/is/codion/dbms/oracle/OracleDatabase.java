@@ -19,20 +19,23 @@
 package is.codion.dbms.oracle;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.resources.MessageBundle;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Database implementation based on the Oracle database.
  */
 final class OracleDatabase extends AbstractDatabase {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(OracleDatabase.class, getBundle(OracleDatabase.class.getName()));
 
 	private static final String JDBC_URL_DRIVER_PREFIX = "jdbc:oracle:thin:";
 	private static final String JDBC_URL_PREFIX = JDBC_URL_DRIVER_PREFIX + "@";

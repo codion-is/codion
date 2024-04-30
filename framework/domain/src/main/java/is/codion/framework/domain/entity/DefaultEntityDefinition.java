@@ -54,6 +54,7 @@ import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -240,7 +241,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	public String caption() {
 		if (entityType.resourceBundleName() != null) {
 			if (resourceCaption == null) {
-				ResourceBundle bundle = ResourceBundle.getBundle(entityType.resourceBundleName());
+				ResourceBundle bundle = getBundle(entityType.resourceBundleName());
 				resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
 			}
 

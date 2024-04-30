@@ -38,10 +38,11 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.PRINT;
+import static java.util.ResourceBundle.getBundle;
 
 public final class CustomerTablePanel extends EntityTablePanel {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
+	private static final ResourceBundle BUNDLE = getBundle(CustomerTablePanel.class.getName());
 
 	public CustomerTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config

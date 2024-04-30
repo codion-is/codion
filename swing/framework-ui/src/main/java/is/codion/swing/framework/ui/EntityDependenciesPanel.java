@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.resources.MessageBundle;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -42,8 +43,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
@@ -55,6 +56,7 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
@@ -63,7 +65,8 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  */
 public final class EntityDependenciesPanel extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityDependenciesPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityDependenciesPanel.class, getBundle(EntityDependenciesPanel.class.getName()));
 
 	/**
 	 * The default keyboard shortcut keyStrokes.

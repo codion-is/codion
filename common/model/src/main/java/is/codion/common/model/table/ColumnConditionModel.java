@@ -30,9 +30,10 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -84,7 +85,7 @@ public interface ColumnConditionModel<C, T> {
 		private final String description;
 
 		AutomaticWildcard() {
-			this.description = ResourceBundle.getBundle(AutomaticWildcard.class.getName()).getString(this.toString());
+			this.description = messageBundle(AutomaticWildcard.class, getBundle(AutomaticWildcard.class.getName())).getString(this.toString());
 		}
 
 		/**

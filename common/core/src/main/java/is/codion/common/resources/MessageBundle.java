@@ -14,31 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2015 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui;
+package is.codion.common.resources;
 
-import is.codion.common.resources.MessageBundle;
+import java.util.ResourceBundle;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
-import static java.util.ResourceBundle.getBundle;
+import static java.util.Objects.requireNonNull;
 
 /**
- * Handles i18n for Swing components
+ * An overridable resource bundle.
+ * @see Messages
  */
-public final class SwingMessages {
-
-	private static final MessageBundle MESSAGES =
-					messageBundle(SwingMessages.class, getBundle(SwingMessages.class.getName()));
-
-	private SwingMessages() {}
+public interface MessageBundle {
 
 	/**
-	 * Retrieves the locale string associated with the given key
 	 * @param key the key
-	 * @return the string associated with the key
+	 * @return the string associated with the given key
 	 */
-	public static String get(String key) {
-		return MESSAGES.getString(key);
+	String getString(String key);
+
+	/**
+	 * @param resourceOwner the resource owner
+	 * @param bundle the resource bundle to override
+	 * @return a new {@link MessageBundle} instance
+	 */
+	static MessageBundle messageBundle(Class<?> resourceOwner, ResourceBundle bundle) {
+		return new DefaultMessageBundle(requireNonNull(resourceOwner), requireNonNull(bundle));
 	}
 }

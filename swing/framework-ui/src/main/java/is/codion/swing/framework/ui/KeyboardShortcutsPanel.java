@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.resources.MessageBundle;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -26,19 +27,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 final class KeyboardShortcutsPanel extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(KeyboardShortcutsPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(KeyboardShortcutsPanel.class, getBundle(KeyboardShortcutsPanel.class.getName()));
 
 	private static final int VERTICAL_UNIT_INCREMENT = 16;
 

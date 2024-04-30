@@ -20,22 +20,25 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import java.io.FileNotFoundException;
 import java.util.Collection;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialogBuilder>
 				implements ExceptionDialogBuilder {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultExceptionDialogBuilder.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(DefaultExceptionDialogBuilder.class, getBundle(DefaultExceptionDialogBuilder.class.getName()));
 
 	private static final int MAXIMUM_MESSAGE_LENGTH = 50;
 

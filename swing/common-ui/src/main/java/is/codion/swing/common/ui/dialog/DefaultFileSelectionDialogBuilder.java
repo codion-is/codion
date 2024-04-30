@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.resources.MessageBundle;
 import is.codion.swing.common.ui.Cursors;
 
 import javax.swing.JFileChooser;
@@ -31,16 +32,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<FileSelectionDialogBuilder>
 				implements FileSelectionDialogBuilder {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultFileSelectionDialogBuilder.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(DefaultFileSelectionDialogBuilder.class, getBundle(DefaultFileSelectionDialogBuilder.class.getName()));
 
 	/**
 	 * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives

@@ -16,6 +16,7 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
+
 /**
  * Common classes used throughout, such as:<br>
  * <br>
@@ -38,6 +39,7 @@ module is.codion.common.core {
 	exports is.codion.common.logging;
 	exports is.codion.common.property;
 	exports is.codion.common.proxy;
+	exports is.codion.common.resources;
 	exports is.codion.common.scheduler;
 	exports is.codion.common.state;
 	exports is.codion.common.user;
@@ -45,4 +47,5 @@ module is.codion.common.core {
 	exports is.codion.common.version;
 
 	uses is.codion.common.logging.LoggerProxy;
+	uses is.codion.common.resources.Messages;
 }

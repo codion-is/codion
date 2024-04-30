@@ -19,6 +19,7 @@
 package is.codion.dbms.h2;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.resources.MessageBundle;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,18 +30,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Set;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Database implementation based on the H2 database.
  */
 final class H2Database extends AbstractDatabase {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(H2Database.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(H2Database.class, getBundle(H2Database.class.getName()));
 
 	/**
 	 * The error code representing incorrect login credentials

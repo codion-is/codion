@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.UserPreferences;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
@@ -29,10 +30,11 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelectionDialogBuilder {
 
@@ -62,7 +64,9 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	@Override
 	public Control createControl() {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+		MessageBundle resourceBundle =
+						messageBundle(LookAndFeelProvider.class,
+										getBundle(LookAndFeelProvider.class.getName()));
 		String caption = resourceBundle.getString("select_look_and_feel");
 
 		return Control.builder(() -> selectLookAndFeel()
@@ -84,7 +88,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		State okPressed = State.state();
 		new DefaultOkCancelDialogBuilder(basePanel)
 						.owner(owner)
-						.title(ResourceBundle.getBundle(LookAndFeelProvider.class.getName()).getString("select_look_and_feel"))
+						.title(messageBundle(LookAndFeelProvider.class,
+										getBundle(LookAndFeelProvider.class.getName())).getString("select_look_and_feel"))
 						.onOk(() -> okPressed.set(true))
 						.show();
 		if (okPressed.get()) {

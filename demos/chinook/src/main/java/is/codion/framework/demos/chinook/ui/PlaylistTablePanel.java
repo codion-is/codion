@@ -33,10 +33,11 @@ import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.DELETE;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.EDIT_ATTRIBUTE_CONTROLS;
+import static java.util.ResourceBundle.getBundle;
 
 public final class PlaylistTablePanel extends EntityTablePanel {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(PlaylistTablePanel.class.getName());
+	private static final ResourceBundle BUNDLE = getBundle(PlaylistTablePanel.class.getName());
 
 	public PlaylistTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, new PlaylistEditPanel(tableModel.editModel()));

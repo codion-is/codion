@@ -60,6 +60,7 @@ import static is.codion.swing.common.ui.component.Components.radioButton;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.DELETE;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppModel> {
@@ -74,7 +75,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private static final String SELECT_LANGUAGE = "select_language";
 
 	/* Non-static so this is not initialized before main(), which sets the locale */
-	private final ResourceBundle bundle = ResourceBundle.getBundle(ChinookAppPanel.class.getName());
+	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
 		super(applicationModel);

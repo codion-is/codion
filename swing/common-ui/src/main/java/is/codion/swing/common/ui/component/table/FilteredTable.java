@@ -25,6 +25,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
@@ -74,12 +75,12 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.model.component.table.FilteredTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
@@ -94,6 +95,7 @@ import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A JTable implementation for {@link FilteredTableModel}.
@@ -105,7 +107,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilteredTable<R, C> extends JTable {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(FilteredTable.class, getBundle(FilteredTable.class.getName()));
 
 	/**
 	 * Specifies the default table column resize mode for tables in the application<br>

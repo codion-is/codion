@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -48,13 +49,14 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.TemporalField.TemporalFieldControl.*;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A JFormattedTextField for Temporal types.<br>
@@ -64,7 +66,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalField.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(TemporalField.class, getBundle(TemporalField.class.getName()));
 
 	/**
 	 * The default keyboard shortcut keyStrokes.

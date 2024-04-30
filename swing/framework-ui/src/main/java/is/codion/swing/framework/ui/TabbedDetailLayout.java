@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -53,8 +54,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
@@ -69,6 +70,7 @@ import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
@@ -98,7 +100,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 	public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
 					Configuration.booleanValue("is.codion.swing.framework.ui.TabbedPanelLayout.includeControls", true);
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedDetailLayout.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(TabbedDetailLayout.class, getBundle(TabbedDetailLayout.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**

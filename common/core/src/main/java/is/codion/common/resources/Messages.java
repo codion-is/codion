@@ -14,15 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
+package is.codion.common.resources;
+
 /**
- * Shared framework i18n messages.<br>
- * <br>
- * {@link is.codion.framework.i18n.FrameworkMessages}<br>
+ * Provides overidden resource messages.
  */
-module is.codion.framework.i18n {
-	requires transitive is.codion.common.core;
-	
-	exports is.codion.framework.i18n;
+public interface Messages {
+
+	/**
+	 * Returns a value for overriding the default resource value or the default string if no override is provided
+	 * @param baseBundleName the base resource bundle name
+	 * @param key the key
+	 * @param defaultString the default string
+	 * @return a value for overriding the default value or the default string if no override is provided
+	 */
+	String get(String baseBundleName, String key, String defaultString);
 }

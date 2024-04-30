@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
@@ -40,18 +41,20 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class ColumnSelectionPanel<C> extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSelectionPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(ColumnSelectionPanel.class, getBundle(ColumnSelectionPanel.class.getName()));
 
 	private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
 	private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;

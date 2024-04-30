@@ -20,10 +20,13 @@ package is.codion.common.model.table;
 
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
+import is.codion.common.resources.MessageBundle;
 
 import java.util.Objects;
 import java.util.OptionalDouble;
-import java.util.ResourceBundle;
+
+import static is.codion.common.resources.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * The summary types available to the default summary model
@@ -145,7 +148,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 		}
 	};
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName());
+	private static final MessageBundle MESSAGES = messageBundle(ColumnSummary.class, getBundle(ColumnSummary.class.getName()));
 
 	private static String addSubsetIndicator(String text, boolean subset) {
 		return text.isEmpty() ? text : text + (subset ? "*" : "");

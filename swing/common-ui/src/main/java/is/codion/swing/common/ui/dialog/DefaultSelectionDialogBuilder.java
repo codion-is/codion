@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
@@ -37,16 +38,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<SelectionDialogBuilder<T>>
 				implements SelectionDialogBuilder<T> {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultSelectionDialogBuilder.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(DefaultSelectionDialogBuilder.class, getBundle(DefaultSelectionDialogBuilder.class.getName()));
 
 	private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
 

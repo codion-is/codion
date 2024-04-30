@@ -49,6 +49,7 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
@@ -56,7 +57,7 @@ import static javax.swing.BorderFactory.createEtchedBorder;
  */
 final class CoverArtPanel extends JPanel {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CoverArtPanel.class.getName());
+	private static final ResourceBundle BUNDLE = getBundle(CoverArtPanel.class.getName());
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);

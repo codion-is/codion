@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
@@ -39,18 +40,20 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static java.awt.ComponentOrientation.getOrientation;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 final class EntityControls {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityControls.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityControls.class, getBundle(EntityControls.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	private EntityControls() {}

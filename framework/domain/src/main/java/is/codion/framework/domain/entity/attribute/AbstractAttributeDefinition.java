@@ -42,10 +42,12 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toMap;
 
 abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
@@ -55,7 +57,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
 	private static final String INVALID_ITEM_SUFFIX =
-					ResourceBundle.getBundle(AbstractAttributeDefinition.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
+					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName())).getString(INVALID_ITEM_SUFFIX_KEY);
 
 	private static final Comparator<?> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
@@ -317,7 +319,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	public final String caption() {
 		if (attribute.entityType().resourceBundleName() != null) {
 			if (resourceCaption == null) {
-				ResourceBundle bundle = ResourceBundle.getBundle(attribute.entityType().resourceBundleName());
+				ResourceBundle bundle = getBundle(attribute.entityType().resourceBundleName());
 				resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
 			}
 
@@ -703,7 +705,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 				return true;
 			}
 			try {
-				return !ResourceBundle.getBundle(resourceBundleName).containsKey(captionResourceKey);
+				return !getBundle(resourceBundleName).containsKey(captionResourceKey);
 			}
 			catch (MissingResourceException e) {
 				return true;

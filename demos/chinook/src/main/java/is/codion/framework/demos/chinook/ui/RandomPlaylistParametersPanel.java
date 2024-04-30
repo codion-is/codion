@@ -44,10 +44,11 @@ import static is.codion.framework.db.EntityConnection.Select.all;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.util.ResourceBundle.getBundle;
 
 final class RandomPlaylistParametersPanel extends JPanel {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(RandomPlaylistParametersPanel.class.getName());
+	private static final ResourceBundle BUNDLE = getBundle(RandomPlaylistParametersPanel.class.getName());
 
 	private final RandomPlaylistParametersModel model = new RandomPlaylistParametersModel();
 

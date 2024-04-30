@@ -36,10 +36,11 @@ import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
+import static java.util.ResourceBundle.getBundle;
 
 public final class TrackTablePanel extends EntityTablePanel {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
+	private static final ResourceBundle BUNDLE = getBundle(TrackTablePanel.class.getName());
 
 	public TrackTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config

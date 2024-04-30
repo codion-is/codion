@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.calendar;
 
 import is.codion.common.item.Item;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -61,11 +62,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.CalendarPanelControl.*;
@@ -78,6 +79,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 /**
@@ -93,7 +95,8 @@ import static javax.swing.BorderFactory.createTitledBorder;
  */
 public final class CalendarPanel extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(CalendarPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(CalendarPanel.class, getBundle(CalendarPanel.class.getName()));
 
 	/**
 	 * The default keyboard shortcut keyStrokes.

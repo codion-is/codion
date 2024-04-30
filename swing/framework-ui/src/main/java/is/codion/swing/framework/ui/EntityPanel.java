@@ -23,6 +23,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
@@ -60,10 +61,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
@@ -79,6 +80,7 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.SwingConstants.HORIZONTAL;
@@ -100,7 +102,8 @@ import static javax.swing.SwingConstants.VERTICAL;
  */
 public class EntityPanel extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**

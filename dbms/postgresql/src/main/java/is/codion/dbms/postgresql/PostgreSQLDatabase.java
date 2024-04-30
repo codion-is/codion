@@ -19,20 +19,23 @@
 package is.codion.dbms.postgresql;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.resources.MessageBundle;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Database implementation based on the PostgreSQL database.
  */
 final class PostgreSQLDatabase extends AbstractDatabase {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(PostgreSQLDatabase.class.getName());
+	private static final MessageBundle MESSAGES = 
+					messageBundle(PostgreSQLDatabase.class, getBundle(PostgreSQLDatabase.class.getName()));
 
 	private static final Map<String, String> ERROR_CODE_MAP = new HashMap<>();
 

@@ -18,16 +18,19 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 
-import java.util.ResourceBundle;
+import static is.codion.common.resources.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A {@link Value.Validator} restricting the maximum length of a string value.
  */
 final class StringLengthValidator implements Value.Validator<String> {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(StringLengthValidator.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(StringLengthValidator.class, getBundle(StringLengthValidator.class.getName()));
 
 	private int maximumLength;
 

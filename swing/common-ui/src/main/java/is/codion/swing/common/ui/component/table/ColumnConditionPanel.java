@@ -24,6 +24,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
@@ -58,9 +59,9 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -70,6 +71,7 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.SwingConstants.CENTER;
 
 /**
@@ -83,7 +85,8 @@ import static javax.swing.SwingConstants.CENTER;
  */
 public final class ColumnConditionPanel<C, T> extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(ColumnConditionPanel.class, getBundle(ColumnConditionPanel.class.getName()));
 
 	/**
 	 * The default keyboard shortcut keyStrokes.

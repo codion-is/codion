@@ -22,6 +22,7 @@ import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
@@ -94,12 +95,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -118,6 +119,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
@@ -138,7 +140,8 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  */
 public final class EntitySearchField extends HintTextField {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntitySearchField.class, getBundle(EntitySearchField.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**

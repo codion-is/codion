@@ -25,6 +25,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
@@ -47,26 +48,28 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadFactory;
 
 import static is.codion.common.Serializer.deserialize;
 import static is.codion.common.Serializer.serialize;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.lang.Runtime.getRuntime;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractHttpEntityConnection.class);
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(HttpEntityConnection.class, getBundle(HttpEntityConnection.class.getName()));
 
 	static final Executor DEFAULT_EXECUTOR = newFixedThreadPool(getRuntime().availableProcessors() + 1, new DaemonThreadFactory());
 

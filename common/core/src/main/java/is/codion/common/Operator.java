@@ -18,7 +18,8 @@
  */
 package is.codion.common;
 
-import java.util.ResourceBundle;
+import static is.codion.common.resources.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * Enumerating all the available operator types.
@@ -39,7 +40,7 @@ public enum Operator {
 	private final String description;
 
 	Operator() {
-		this.description = ResourceBundle.getBundle(Operator.class.getName()).getString(name().toLowerCase());
+		this.description = messageBundle(Operator.class, getBundle(Operator.class.getName())).getString(name().toLowerCase());
 	}
 
 	public String description() {

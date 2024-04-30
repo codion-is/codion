@@ -18,17 +18,21 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.ResourceBundle;
+
+import static is.codion.common.resources.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarDialogBuilder> implements CalendarDialogBuilder {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultCalendarDialogBuilder.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(DefaultCalendarDialogBuilder.class, getBundle(DefaultCalendarDialogBuilder.class.getName()));
 
 	private LocalDate initialDate;
 	private LocalDateTime initialDateTime;

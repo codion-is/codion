@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -33,10 +34,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A default {@link EntityValidator} implementation providing null validation for attributes marked as not null,
@@ -52,7 +54,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultEntityValidator.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(DefaultEntityValidator.class, getBundle(DefaultEntityValidator.class.getName()));
 
 	private static final String ENTITY_PARAM = "entity";
 	private static final String ATTRIBUTE_PARAM = "attribute";

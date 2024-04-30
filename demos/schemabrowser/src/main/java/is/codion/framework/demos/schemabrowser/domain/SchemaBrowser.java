@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static java.util.ResourceBundle.getBundle;
 
 public final class SchemaBrowser extends DefaultDomain {
 
@@ -44,7 +45,7 @@ public final class SchemaBrowser extends DefaultDomain {
 	static {
 		try {
 			String databaseFactoryClassName = DatabaseFactory.instance().getClass().getName();
-			bundle = ResourceBundle.getBundle(SchemaBrowser.class.getName(),
+			bundle = getBundle(SchemaBrowser.class.getName(),
 							new Locale(databaseFactoryClassName.substring(databaseFactoryClassName.lastIndexOf('.') + 1)));
 		}
 		catch (SQLException e) {

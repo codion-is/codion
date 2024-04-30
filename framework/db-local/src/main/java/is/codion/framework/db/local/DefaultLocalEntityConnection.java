@@ -34,6 +34,7 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
@@ -67,13 +68,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 import static is.codion.common.db.database.Database.Operation.*;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entity.*;
@@ -82,6 +83,7 @@ import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -91,7 +93,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(LocalEntityConnection.class, getBundle(LocalEntityConnection.class.getName()));
 	private static final String EXECUTE_UPDATE = "executeUpdate";
 	private static final String EXECUTE_QUERY = "executeQuery";
 	private static final String RECORD_MODIFIED = "record_modified";

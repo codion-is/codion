@@ -22,6 +22,7 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -93,7 +94,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,6 +101,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.menu;
@@ -121,6 +122,7 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
@@ -156,8 +158,10 @@ public class EntityTablePanel extends JPanel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
-	private static final ResourceBundle EDIT_PANEL_MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityTablePanel.class, getBundle(EntityTablePanel.class.getName()));
+	private static final MessageBundle EDIT_PANEL_MESSAGES =
+					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
 	/**

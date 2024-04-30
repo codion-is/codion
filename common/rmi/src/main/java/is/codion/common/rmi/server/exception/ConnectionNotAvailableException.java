@@ -18,14 +18,18 @@
  */
 package is.codion.common.rmi.server.exception;
 
-import java.util.ResourceBundle;
+import is.codion.common.resources.MessageBundle;
+
+import static is.codion.common.resources.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * An exception indicating that the server is not accepting new connections
  */
 public final class ConnectionNotAvailableException extends ServerException {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionNotAvailableException.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(ConnectionNotAvailableException.class, getBundle(ConnectionNotAvailableException.class.getName()));
 
 	/**
 	 * Instantiates a new {@link ConnectionNotAvailableException}

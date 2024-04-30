@@ -53,6 +53,7 @@ import java.util.regex.Pattern;
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.framework.domain.DomainType.domainType;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 public interface Chinook {
 
@@ -371,7 +372,7 @@ public interface Chinook {
 	final class EmailValidator extends DefaultEntityValidator {
 
 		private static final Pattern EMAIL_PATTERN = Pattern.compile("^(.+)@(.+)$");
-		private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Chinook.class.getName());
+		private static final ResourceBundle BUNDLE = getBundle(Chinook.class.getName());
 
 		private final Column<String> emailColumn;
 

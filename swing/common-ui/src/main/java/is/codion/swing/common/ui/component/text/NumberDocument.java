@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
@@ -35,9 +36,10 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Document implementation for numerical values
@@ -331,7 +333,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 	static final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocumentFilter<T> {
 
-		private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NumberParsingDocumentFilter.class.getName());
+		private static final MessageBundle MESSAGES =
+						messageBundle(NumberParsingDocumentFilter.class, getBundle(NumberParsingDocumentFilter.class.getName()));
 
 		private final NumberRangeValidator<T> rangeValidator;
 		private final NumberParser<T> parser;

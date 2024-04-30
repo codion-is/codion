@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -65,12 +66,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentDialog;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -80,6 +81,7 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -91,7 +93,8 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
  */
 public final class EntityDialogs {
 
-	private static final ResourceBundle EDIT_PANEL_MESSAGES = ResourceBundle.getBundle(EntityEditPanel.class.getName());
+	private static final MessageBundle EDIT_PANEL_MESSAGES =
+					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 
 	/**
 	 * @param editModel the edit model to use

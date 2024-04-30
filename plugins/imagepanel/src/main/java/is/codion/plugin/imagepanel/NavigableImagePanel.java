@@ -47,6 +47,7 @@ import java.util.Hashtable;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * {@code NavigableImagePanel} is a lightweight container displaying
@@ -131,7 +132,7 @@ import static java.util.Arrays.asList;
  */
 public class NavigableImagePanel extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NavigableImagePanel.class.getName());
+	private static final ResourceBundle MESSAGES = getBundle(NavigableImagePanel.class.getName());
 
 	/**
 	 * <p>Identifies a change to the zoom level.</p>

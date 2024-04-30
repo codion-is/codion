@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.swing.common.ui.Windows;
@@ -37,18 +38,20 @@ import java.awt.Window;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A detail layout which displays detail panels in a window, opened via the table popup menu.
  */
 public final class WindowDetailLayout implements DetailLayout {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TabbedDetailLayout.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(TabbedDetailLayout.class, getBundle(TabbedDetailLayout.class.getName()));
 
 	private static final String DETAIL_TABLES = "detail_tables";
 

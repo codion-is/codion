@@ -36,13 +36,13 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 final class DefaultEntityType implements EntityType, Serializable {
 
@@ -61,7 +61,7 @@ final class DefaultEntityType implements EntityType, Serializable {
 		}
 		this.name = name;
 		if (resourceBundleName != null) {
-			ResourceBundle.getBundle(resourceBundleName);
+			getBundle(resourceBundleName);
 		}
 		this.resourceBundleName = resourceBundleName;
 		this.hashCode = Objects.hash(name, domainType);

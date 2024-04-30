@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyStore;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -48,19 +49,21 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A Panel for displaying exception information.
  */
 final class ExceptionPanel extends JPanel {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionPanel.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(ExceptionPanel.class, getBundle(ExceptionPanel.class.getName()));
 
 	private static final int MESSAGE_AREA_WIDTH = 500;
 	private static final int SCROLL_PANE_WIDTH = 500;

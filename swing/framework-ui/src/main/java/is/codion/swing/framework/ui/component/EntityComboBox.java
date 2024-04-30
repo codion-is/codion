@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -42,9 +43,9 @@ import javax.swing.KeyStroke;
 import java.awt.event.FocusListener;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.ADD;
@@ -52,6 +53,7 @@ import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboB
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A UI component based on the {@link EntityComboBoxModel}.
@@ -59,7 +61,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityComboBox extends JComboBox<Entity> {
 
-	private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName());
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityComboBox.class, getBundle(EntityComboBox.class.getName()));
 
 	/**
 	 * The default keyboard shortcut keyStrokes.

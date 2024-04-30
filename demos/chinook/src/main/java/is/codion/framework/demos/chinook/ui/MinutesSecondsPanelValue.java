@@ -30,6 +30,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.integerField;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.util.ResourceBundle.getBundle;
 
 final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
@@ -56,7 +57,7 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
 	static final class MinutesSecondsPanel extends JPanel {
 
-		private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
+		private static final ResourceBundle BUNDLE = getBundle(MinutesSecondsPanel.class.getName());
 
 		final NumberField<Integer> minutesField = integerField()
 						.transferFocusOnEnter(true)

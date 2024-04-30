@@ -18,14 +18,18 @@
  */
 package is.codion.common.i18n;
 
-import java.util.ResourceBundle;
+import is.codion.common.resources.MessageBundle;
+
+import static is.codion.common.resources.MessageBundle.messageBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A class providing shared i18n messages.
  */
 public final class Messages {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Messages.class.getName());
+	private static final MessageBundle BUNDLE =
+					messageBundle(Messages.class, getBundle(Messages.class.getName()));
 
 	private static final String CANCEL = "cancel";
 	private static final String CANCEL_MNEMONIC = "cancel_mnemonic";

@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
+ * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-/**
- * Shared framework i18n messages.<br>
- * <br>
- * {@link is.codion.framework.i18n.FrameworkMessages}<br>
- */
-module is.codion.framework.i18n {
-	requires transitive is.codion.common.core;
-	
-	exports is.codion.framework.i18n;
+package is.codion.common.resources;
+
+public final class TestMessageBundle implements Messages {
+
+	@Override
+	public String get(String baseBundleName, String key, String defaultString) {
+		return defaultString + " override";
+	}
 }

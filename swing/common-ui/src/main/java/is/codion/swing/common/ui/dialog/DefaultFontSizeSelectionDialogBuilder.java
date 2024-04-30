@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.item.Item;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
@@ -38,10 +39,11 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.ResourceBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDialogBuilder {
@@ -62,7 +64,9 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 
 	@Override
 	public Control createControl() {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName());
+		MessageBundle resourceBundle =
+						messageBundle(DefaultFontSizeSelectionDialogBuilder.class,
+										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
 		String caption = resourceBundle.getString("select_font_size");
 
 		return Control.builder(() -> selectFontSize()
@@ -76,7 +80,8 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 
 	@Override
 	public OptionalInt selectFontSize() {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName());
+		MessageBundle resourceBundle = messageBundle(DefaultFileSelectionDialogBuilder.class,
+						getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
 		int currentFontSize = Integer.parseInt(UserPreferences.getUserPreference(userPreferencePropertyName, "100"));
 		FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(currentFontSize);
 		State okPressed = State.state();

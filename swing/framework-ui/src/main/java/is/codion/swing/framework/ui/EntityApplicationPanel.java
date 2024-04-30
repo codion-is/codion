@@ -27,6 +27,7 @@ import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.resources.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.ValueObserver;
@@ -93,15 +94,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
@@ -163,7 +165,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	private static final int DEFAULT_LOGO_SIZE = 68;
 
 	// Non-static so that Locale.setDefault(...) can be called in the main method of a subclass
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
+	private final MessageBundle resourceBundle =
+					messageBundle(EntityApplicationPanel.class, getBundle(EntityApplicationPanel.class.getName()));
 
 	private final String applicationDefaultUsernameProperty;
 	private final String applicationLookAndFeelProperty;

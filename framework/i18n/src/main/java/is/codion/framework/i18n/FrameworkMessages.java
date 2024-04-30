@@ -18,16 +18,19 @@
  */
 package is.codion.framework.i18n;
 
-import java.util.ResourceBundle;
+import is.codion.common.resources.MessageBundle;
 
+import static is.codion.common.resources.MessageBundle.messageBundle;
 import static java.text.MessageFormat.format;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * A class containing shared i18n messages used by the framework.
  */
 public final class FrameworkMessages {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(FrameworkMessages.class.getName());
+	private static final MessageBundle BUNDLE =
+					messageBundle(FrameworkMessages.class, getBundle(FrameworkMessages.class.getName()));
 
 	private static final String FILE = "file";
 	private static final String FILE_MNEMONIC = "file_mnemonic";

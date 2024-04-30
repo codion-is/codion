@@ -22,5 +22,7 @@
  * {@link is.codion.common.i18n.Messages}<br>
  */
 module is.codion.common.i18n {
+	requires transitive is.codion.common.core;
+
 	exports is.codion.common.i18n;
 }
