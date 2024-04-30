@@ -617,7 +617,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		return Control.builder(insertCommand(true))
 						.name(caption)
 						.enabled(State.and(active, editModel().insertEnabled()))
-						.description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
+						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
 						.smallIcon(ICONS.add())
 						.onException(this::onException)

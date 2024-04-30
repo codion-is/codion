@@ -42,6 +42,7 @@ Codion Change Log
 - EntityTablePanel, selection controls removed from default toolbar.
 - EntityTablePanel, keyboard shortcuts added for moving the selection.
 - EntityTablePanel.TableControl and EntityEditPanel.EditControl renamed EntityTablePanelControl and EntityEditPanelControl, merged with KeyboardShortcut, related refactoring.
+- KeyboardShortcutPanel bug fixed, now displays the correct Add mnemonic.
 
 ## 0.17.43
 ### is.codion.common.core
