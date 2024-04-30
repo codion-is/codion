@@ -44,6 +44,7 @@ Codion Change Log
 - EntityTablePanel, keyboard shortcuts added for moving the selection.
 - EntityTablePanel.TableControl and EntityEditPanel.EditControl renamed EntityTablePanelControl and EntityEditPanelControl, merged with KeyboardShortcut, related refactoring.
 - KeyboardShortcutPanel bug fixed, now displays the correct Add mnemonic.
+- EntityEditPanel.configureControls() renamed setupControls() to prevent confusion. EntityTablePanel.configureControls() renamed setupControls() as well, for consistency.
 
 ## 0.17.43
 ### is.codion.common.core

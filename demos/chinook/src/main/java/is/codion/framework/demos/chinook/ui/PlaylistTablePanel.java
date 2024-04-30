@@ -52,7 +52,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected void configureControls() {
+	protected void setupControls() {
 		// No need for the edit attribute controls in the popup menu
 		control(EDIT_ATTRIBUTE_CONTROLS).clear();
 	}

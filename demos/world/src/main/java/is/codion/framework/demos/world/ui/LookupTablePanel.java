@@ -94,7 +94,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	@Override
-	protected void configureControls() {
+	protected void setupControls() {
 		control(CLEAR).set(Control.builder(this::clearTableAndConditions)
 						.name("Clear")
 						.mnemonic('C')
