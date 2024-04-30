@@ -16,7 +16,6 @@
  *
  * Copyright (c) 2023 - 2024, Björn Darri Sigurðsson.
  */
-
 /**
  * Common classes used throughout, such as:<br>
  * <br>
