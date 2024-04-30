@@ -30,8 +30,7 @@ import java.awt.BorderLayout;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Album;
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class AlbumEditPanel extends EntityEditPanel {
@@ -55,17 +54,11 @@ public final class AlbumEditPanel extends EntityEditPanel {
 										.buildValue();
 		component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
 
-		JPanel centerPanel = borderLayoutPanel()
-						.westComponent(borderLayoutPanel()
-										.northComponent(gridLayoutPanel(2, 1)
-														.add(createInputPanel(Album.ARTIST_FK))
-														.add(createInputPanel(Album.TITLE))
-														.build())
-										.build())
-						.centerComponent(gridLayoutPanel(1, 2)
-										.add(createInputPanel(Album.TAGS, new AlbumTagPanel(tagsValue)))
-										.add(createInputPanel(Album.COVER))
-										.build())
+		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
+						.add(createInputPanel(Album.ARTIST_FK))
+						.add(createInputPanel(Album.TITLE))
+						.add(createInputPanel(Album.TAGS, new AlbumTagPanel(tagsValue)))
+						.add(createInputPanel(Album.COVER))
 						.build();
 
 		setLayout(borderLayout());

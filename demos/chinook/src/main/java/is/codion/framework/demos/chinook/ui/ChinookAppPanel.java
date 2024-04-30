@@ -127,7 +127,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 		EntityPanel.Builder customerPanelBuilder =
 						EntityPanel.builder(Customer.TYPE)
-										.editPanel(CustomerEditPanel.class)
 										.tablePanel(CustomerTablePanel.class);
 
 		SwingEntityModel.Builder employeeModelBuilder =
