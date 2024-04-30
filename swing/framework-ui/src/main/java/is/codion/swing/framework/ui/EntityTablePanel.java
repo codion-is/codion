@@ -121,6 +121,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
@@ -414,8 +415,9 @@ public class EntityTablePanel extends JPanel {
 	private final State filterPanelVisibleState = State.state(Config.FILTER_PANEL_VISIBLE.get());
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.get());
 
+	private final FilteredTable<Entity, Attribute<?>> table;
 	private final EntityEditPanel editPanel;
-	private final Map<EntityTablePanelControl, Value<Control>> controls = createControlsMap();
+	private final Map<EntityTablePanelControl, Value<Control>> controls;
 	private final Controls.Config<EntityTablePanelControl> popupMenuConfiguration;
 	private final Controls.Config<EntityTablePanelControl> toolBarConfiguration;
 	private final SwingEntityTableModel tableModel;
@@ -423,10 +425,6 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
-
-	final Config configuration;
-
-	private FilteredTable<Entity, Attribute<?>> table;
 	private StatusPanel statusPanel;
 	private JScrollPane tableScrollPane;
 	private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
@@ -435,6 +433,8 @@ public class EntityTablePanel extends JPanel {
 	private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
 	private JScrollPane summaryPanelScrollPane;
 	private TablePanel tablePanel;
+
+	final Config configuration;
 
 	private boolean initialized = false;
 
@@ -454,8 +454,10 @@ public class EntityTablePanel extends JPanel {
 	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = null;
+		this.table = createTable();
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
+		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuConfiguration = createPopupMenuConfiguration();
 		this.toolBarConfiguration = createToolBarConfiguration();
@@ -478,9 +480,11 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
+		this.table = createTable();
 		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
+		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuConfiguration = createPopupMenuConfiguration();
 		this.toolBarConfiguration = createToolBarConfiguration();
@@ -490,10 +494,6 @@ public class EntityTablePanel extends JPanel {
 	 * @return the table
 	 */
 	public final FilteredTable<Entity, Attribute<?>> table() {
-		if (table == null) {
-			table = createTable();
-		}
-
 		return table;
 	}
 
@@ -699,6 +699,7 @@ public class EntityTablePanel extends JPanel {
 		if (!initialized) {
 			try {
 				setupComponents();
+				setupControls();
 				setupStandardControls();
 				addTablePopupMenu();
 				layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
@@ -1299,7 +1300,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private Control createRequestSearchFieldFocusControl() {
-		return Control.control(table().searchField()::requestFocusInWindow);
+		return Control.control(table.searchField()::requestFocusInWindow);
 	}
 
 	private Controls createColumnControls() {
@@ -1487,67 +1488,80 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addValidator(new PanelAvailableValidator(summaryPanel, "summary"));
 	}
 
-	private void setupStandardControls() {
+	private Map<EntityTablePanelControl, Value<Control>> createControls() {
+		Value.Validator<Control> controlValueValidator = control -> {
+			if (initialized) {
+				throw new IllegalStateException("Controls must be configured before the panel is initialized");
+			}
+		};
+		Map<EntityTablePanelControl, Value<Control>> controlMap = Stream.of(values())
+						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
+										.validator(controlValueValidator)
+										.build()));
 		if (includeDeleteControl()) {
-			controls.get(DELETE).mapNull(this::createDeleteControl);
+			controlMap.get(DELETE).set(createDeleteControl());
 		}
 		if (includeAddControl()) {
-			controls.get(ADD).mapNull(this::createAddControl);
+			controlMap.get(ADD).set(createAddControl());
 		}
 		if (includeEditControl()) {
-			controls.get(EDIT).mapNull(this::createEditControl);
+			controlMap.get(EDIT).set(createEditControl());
 		}
 		if (includeEditAttributeControls()) {
-			controls.get(EDIT_ATTRIBUTE_CONTROLS).mapNull(this::createEditAttributeControls);
-			controls.get(EDIT_SELECTED_ATTRIBUTE).mapNull(this::createEditSelectedAttributeControl);
+			controlMap.get(EDIT_ATTRIBUTE_CONTROLS).set(createEditAttributeControls());
+			controlMap.get(EDIT_SELECTED_ATTRIBUTE).set(createEditSelectedAttributeControl());
 		}
 		if (configuration.includeClearControl) {
-			controls.get(CLEAR).mapNull(this::createClearControl);
+			controlMap.get(CLEAR).set(createClearControl());
 		}
-		controls.get(REFRESH).mapNull(this::createRefreshControl);
-		controls.get(SELECT_COLUMNS).mapNull(this::createColumnSelectionControl);
-		controls.get(RESET_COLUMNS).mapNull(table::createResetColumnsControl);
-		controls.get(COLUMN_AUTO_RESIZE_MODE).mapNull(table::createAutoResizeModeControl);
+		controlMap.get(REFRESH).set(createRefreshControl());
+		controlMap.get(SELECT_COLUMNS).set(createColumnSelectionControl());
+		controlMap.get(RESET_COLUMNS).set(table.createResetColumnsControl());
+		controlMap.get(COLUMN_AUTO_RESIZE_MODE).set(table.createAutoResizeModeControl());
 		if (includeViewDependenciesControl()) {
-			controls.get(VIEW_DEPENDENCIES).mapNull(this::createViewDependenciesControl);
+			controlMap.get(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
 		if (summaryPanelScrollPane != null) {
-			controls.get(TOGGLE_SUMMARY_PANEL).mapNull(this::createToggleSummaryPanelControl);
+			controlMap.get(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
 		}
 		if (configuration.includeConditionPanel && conditionPanel != null) {
-			controls.get(CONDITION_PANEL_VISIBLE).mapNull(this::createConditionPanelControl);
-			controls.get(TOGGLE_CONDITION_PANEL).mapNull(this::createToggleConditionPanelControl);
-			controls.get(SELECT_CONDITION_PANEL).mapNull(this::createSelectConditionPanelControl);
+			controlMap.get(CONDITION_PANEL_VISIBLE).set(createConditionPanelControl());
+			controlMap.get(TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
+			controlMap.get(SELECT_CONDITION_PANEL).set(createSelectConditionPanelControl());
 		}
 		if (configuration.includeFilterPanel) {
-			controls.get(FILTER_PANEL_VISIBLE).mapNull(this::createFilterPanelControl);
-			controls.get(TOGGLE_FILTER_PANEL).mapNull(this::createToggleFilterPanelControl);
-			controls.get(SELECT_FILTER_PANEL).mapNull(this::createSelectFilterPanelControl);
+			controlMap.get(FILTER_PANEL_VISIBLE).set(createFilterPanelControl());
+			controlMap.get(TOGGLE_FILTER_PANEL).set(createToggleFilterPanelControl());
+			controlMap.get(SELECT_FILTER_PANEL).set(createSelectFilterPanelControl());
 		}
-		controls.get(CLEAR_SELECTION).mapNull(this::createClearSelectionControl);
-		controls.get(MOVE_SELECTION_UP).mapNull(this::createMoveSelectionUpControl);
-		controls.get(MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionDownControl);
-		controls.get(COPY_CELL).mapNull(table::createCopyCellControl);
-		controls.get(COPY_ROWS).mapNull(this::createCopyRowsControl);
-		controls.get(COPY_CONTROLS).mapNull(this::createCopyControls);
+		controlMap.get(CLEAR_SELECTION).set(createClearSelectionControl());
+		controlMap.get(MOVE_SELECTION_UP).set(createMoveSelectionUpControl());
+		controlMap.get(MOVE_SELECTION_DOWN).set(createMoveSelectionDownControl());
+		controlMap.get(COPY_CELL).set(table.createCopyCellControl());
+		controlMap.get(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeEntityMenu) {
-			controls.get(DISPLAY_ENTITY_MENU).mapNull(() -> Control.control(this::showEntityMenu));
+			controlMap.get(DISPLAY_ENTITY_MENU).set(Control.control(this::showEntityMenu));
 		}
 		if (configuration.includePopupMenu) {
-			controls.get(DISPLAY_POPUP_MENU).mapNull(() -> Control.control(this::showPopupMenu));
+			controlMap.get(DISPLAY_POPUP_MENU).set(Control.control(this::showPopupMenu));
 		}
 		if (configuration.includeSelectionModeControl) {
-			controls.get(SELECTION_MODE).mapNull(table::createSingleSelectionModeControl);
+			controlMap.get(SELECTION_MODE).set(table.createSingleSelectionModeControl());
 		}
-		controls.get(REQUEST_TABLE_FOCUS).mapNull(this::createRequestTableFocusControl);
-		controls.get(REQUEST_SEARCH_FIELD_FOCUS).mapNull(this::createRequestSearchFieldFocusControl);
-		setupControls();
-		controls.get(ADDITIONAL_POPUP_MENU_CONTROLS).mapNull(this::createAdditionalPopupControls);
-		controls.get(ADDITIONAL_TOOLBAR_CONTROLS).mapNull(this::createAdditionalToolbarControls);
-		controls.get(PRINT_CONTROLS).mapNull(this::createPrintControls);
-		controls.get(CONDITION_CONTROLS).mapNull(this::createConditionControls);
-		controls.get(FILTER_CONTROLS).mapNull(this::createFilterControls);
-		controls.get(COLUMN_CONTROLS).mapNull(this::createColumnControls);
+		controlMap.get(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
+		controlMap.get(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
+
+		return unmodifiableMap(controlMap);
+	}
+
+	private void setupStandardControls() {
+		controls.get(ADDITIONAL_POPUP_MENU_CONTROLS).set(createAdditionalPopupControls());
+		controls.get(ADDITIONAL_TOOLBAR_CONTROLS).set(createAdditionalToolbarControls());
+		controls.get(PRINT_CONTROLS).set(createPrintControls());
+		controls.get(CONDITION_CONTROLS).set(createConditionControls());
+		controls.get(FILTER_CONTROLS).set(createFilterControls());
+		controls.get(COLUMN_CONTROLS).set(createColumnControls());
+		controls.get(COPY_CONTROLS).set(createCopyControls());
 	}
 
 	private boolean includeViewDependenciesControl() {
@@ -1638,19 +1652,6 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		return false;
-	}
-
-	private Map<EntityTablePanelControl, Value<Control>> createControlsMap() {
-		Value.Validator<Control> controlValueValidator = control -> {
-			if (initialized) {
-				throw new IllegalStateException("TablePanel has already been initialized");
-			}
-		};
-
-		return Stream.of(EntityTablePanelControl.values())
-						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
-										.validator(controlValueValidator)
-										.build()));
 	}
 
 	private EntityEditPanel validateEditModel(EntityEditPanel editPanel) {
@@ -1992,8 +1993,6 @@ public class EntityTablePanel extends JPanel {
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
 
-		final KeyboardShortcuts<EntityTablePanelControl> shortcuts;
-
 		private EntityConditionPanelFactory conditionPanelFactory;
 		private boolean includeSouthPanel = true;
 		private boolean includeConditionPanel = INCLUDE_CONDITION_PANEL.get();
@@ -2015,6 +2014,8 @@ public class EntityTablePanel extends JPanel {
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
 		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 		private Confirmer deleteConfirmer;
+
+		final KeyboardShortcuts<EntityTablePanelControl> shortcuts;
 
 		private Config(EntityTablePanel tablePanel) {
 			this.tablePanel = tablePanel;

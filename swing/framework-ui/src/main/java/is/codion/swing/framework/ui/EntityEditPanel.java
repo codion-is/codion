@@ -152,10 +152,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	private final Config configuration;
 	private final Controls.Config<EntityEditPanelControl> controlsConfiguration;
 	private final Map<EntityEditPanelControl, Value<Control>> controls;
 	private final State active;
+
+	final Config configuration;
 
 	private boolean initialized = false;
 
@@ -196,7 +197,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		this.configuration = configure(configuration);
 		this.controlsConfiguration = createControlsConfiguration();
 		this.active = State.state(!this.configuration.focusActivation);
-		this.controls = createControlsMap();
+		this.controls = createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
 		if (editModel.exists().not().get()) {
@@ -261,7 +262,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	public final EntityEditPanel initialize() {
 		if (!initialized) {
 			try {
-				setupStandardControls();
 				setupControls();
 				bindEvents();
 				initializeUI();
@@ -549,27 +549,35 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		requireNonNull(controlsConfig).accept(controlsConfiguration);
 	}
 
-	private void setupStandardControls() {
-		if (!editModel().readOnly().get()) {
-			setupEditControls();
-		}
-		controls.get(CLEAR).mapNull(this::createClearControl);
-		controls.get(SELECT_INPUT_FIELD).mapNull(this::createSelectInputComponentControl);
-		if (configuration.includeEntityMenu) {
-			controls.get(DISPLAY_ENTITY_MENU).mapNull(this::createShowEntityMenuControl);
-		}
-	}
+	private Map<EntityEditPanelControl, Value<Control>> createControls() {
+		Value.Validator<Control> controlValueValidator = control -> {
+			if (initialized) {
+				throw new IllegalStateException("Controls must be configured before the panel is initialized");
+			}
+		};
 
-	private void setupEditControls() {
-		if (editModel().insertEnabled().get()) {
-			controls.get(INSERT).mapNull(this::createInsertControl);
+		Map<EntityEditPanelControl, Value<Control>> controlMap = Stream.of(values())
+						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
+										.validator(controlValueValidator)
+										.build()));
+		if (!editModel().readOnly().get()) {
+			if (editModel().insertEnabled().get()) {
+				controlMap.get(INSERT).set(createInsertControl());
+			}
+			if (editModel().updateEnabled().get()) {
+				controlMap.get(UPDATE).set(createUpdateControl());
+			}
+			if (editModel().deleteEnabled().get()) {
+				controlMap.get(DELETE).set(createDeleteControl());
+			}
 		}
-		if (editModel().updateEnabled().get()) {
-			controls.get(UPDATE).mapNull(this::createUpdateControl);
+		controlMap.get(CLEAR).set(createClearControl());
+		controlMap.get(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
+		if (configuration.includeEntityMenu) {
+			controlMap.get(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
 		}
-		if (editModel().deleteEnabled().get()) {
-			controls.get(DELETE).mapNull(this::createDeleteControl);
-		}
+
+		return unmodifiableMap(controlMap);
 	}
 
 	private Control createDeleteControl() {
@@ -665,19 +673,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		new EntityPopupMenu(editModel().entity(), editModel().connection()).show(this, 0, 0);
 	}
 
-	private Map<EntityEditPanelControl, Value<Control>> createControlsMap() {
-		Value.Validator<Control> controlValueValidator = control -> {
-			if (initialized) {
-				throw new IllegalStateException("Controls must be configured before the panel has been initialized");
-			}
-		};
-
-		return unmodifiableMap(Stream.of(EntityEditPanelControl.values())
-						.collect(toMap(Function.identity(), controlCode -> Value.<Control>nullable()
-										.validator(controlValueValidator)
-										.build())));
-	}
-
 	private Config configure(Consumer<Config> configuration) {
 		Config config = new Config(this);
 		requireNonNull(configuration).accept(config);
@@ -733,7 +728,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
 		private final EntityEditPanel editPanel;
-		private final KeyboardShortcuts<EntityEditPanelControl> shortcuts;
 
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
@@ -744,6 +738,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
+
+		final KeyboardShortcuts<EntityEditPanelControl> shortcuts;
 
 		private Config(EntityEditPanel editPanel) {
 			this.editPanel = editPanel;

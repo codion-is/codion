@@ -71,6 +71,7 @@ import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKB
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.SELECT_INPUT_FIELD;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.EntityPanelControl.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
@@ -143,11 +144,6 @@ public class EntityPanel extends JPanel {
 		 * Default key stroke: CTRL-E
 		 */
 		REQUEST_EDIT_PANEL_FOCUS(keyStroke(VK_E, CTRL_DOWN_MASK)),
-		/**
-		 * Displays a dialog for selecting an input field.<br>
-		 * Default key stroke: CTRL-I
-		 */
-		SELECT_INPUT_FIELD(keyStroke(VK_I, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
@@ -364,7 +360,9 @@ public class EntityPanel extends JPanel {
 	 * @throws IllegalArgumentException if this panel already contains the given detail panel
 	 */
 	public final void addDetailPanel(EntityPanel detailPanel) {
-		throwIfInitialized();
+		if (initialized) {
+			throw new IllegalStateException("Detail panels must be added before the panel is initialized");
+		}
 		if (detailPanels.contains(requireNonNull(detailPanel))) {
 			throw new IllegalArgumentException("Panel already contains detail panel: " + detailPanel);
 		}
@@ -382,7 +380,7 @@ public class EntityPanel extends JPanel {
 		if (!initialized) {
 			try {
 				setFocusCycleRoot(true);
-				setupToggleEditPanelControl();
+				setupControls();
 				initializeUI();
 				initializeEditPanel();
 				initializeTablePanel();
@@ -798,11 +796,12 @@ public class EntityPanel extends JPanel {
 											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.action(createRequestEditPanelFocusControl())
 											.enable(this, editControlPanel));
-			configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).optional().ifPresent(keyStroke ->
-							KeyEvents.builder(keyStroke)
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(createSelectInputComponentControl())
-											.enable(this, editControlPanel));
+			editPanel.configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).optional().ifPresent(keyStroke ->
+							editPanel.control(SELECT_INPUT_FIELD).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this, editControlPanel)));
 			configuration.shortcuts.keyStroke(TOGGLE_EDIT_PANEL).optional().ifPresent(keyStroke ->
 							KeyEvents.builder(keyStroke)
 											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -837,13 +836,6 @@ public class EntityPanel extends JPanel {
 			navigateRight.enable(editControlPanel);
 			navigateLeft.enable(editControlPanel);
 		}
-	}
-
-	/**
-	 * @return a Control instance for selecting a input component
-	 */
-	protected final Control createSelectInputComponentControl() {
-		return Control.control(this::selectInputComponent);
 	}
 
 	/**
@@ -986,11 +978,15 @@ public class EntityPanel extends JPanel {
 						.build();
 	}
 
-	private void setupToggleEditPanelControl() {
+	private void setupControls() {
 		if (containsTablePanel() && containsEditPanel() && configuration.includeToggleEditPanelControl) {
 			tablePanel.addToolBarControls(Controls.builder()
 							.control(createToggleEditPanelControl())
 							.build());
+		}
+		if (containsEditPanel()) {
+			editPanel.control(SELECT_INPUT_FIELD).map(control ->
+							control.copy(this::selectInputComponent).build());
 		}
 	}
 
@@ -1077,12 +1073,6 @@ public class EntityPanel extends JPanel {
 		Window editPanelWindow = parentWindow(editControlPanel);
 		if (editPanelWindow != null) {
 			editPanelWindow.dispose();
-		}
-	}
-
-	private void throwIfInitialized() {
-		if (initialized) {
-			throw new IllegalStateException("Method must be called before the panel is initialized");
 		}
 	}
 
