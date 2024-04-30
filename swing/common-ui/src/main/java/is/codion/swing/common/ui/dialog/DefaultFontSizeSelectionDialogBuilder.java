@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.item.Item;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;

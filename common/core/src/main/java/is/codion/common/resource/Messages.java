@@ -16,30 +16,19 @@
  *
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.resources;
-
-import java.util.ResourceBundle;
-
-import static java.util.Objects.requireNonNull;
+package is.codion.common.resource;
 
 /**
- * An overridable resource bundle.
- * @see Messages
+ * Provides overidden resource messages.
  */
-public interface MessageBundle {
+public interface Messages {
 
 	/**
+	 * Returns a value for overriding the default resource value or the default string if no override is provided
+	 * @param baseBundleName the base resource bundle name
 	 * @param key the key
-	 * @return the string associated with the given key
+	 * @param defaultString the default string
+	 * @return a value for overriding the default value or the default string if no override is provided
 	 */
-	String getString(String key);
-
-	/**
-	 * @param resourceOwner the resource owner
-	 * @param bundle the resource bundle to override
-	 * @return a new {@link MessageBundle} instance
-	 */
-	static MessageBundle messageBundle(Class<?> resourceOwner, ResourceBundle bundle) {
-		return new DefaultMessageBundle(requireNonNull(resourceOwner), requireNonNull(bundle));
-	}
+	String get(String baseBundleName, String key, String defaultString);
 }

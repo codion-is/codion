@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.resources;
+package is.codion.common.resource;
 
 import java.util.Enumeration;
 import java.util.Iterator;

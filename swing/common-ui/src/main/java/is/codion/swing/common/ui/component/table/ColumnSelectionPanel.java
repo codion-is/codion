@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.VK_DOWN;

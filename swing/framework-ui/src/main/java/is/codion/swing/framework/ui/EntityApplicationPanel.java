@@ -27,7 +27,7 @@ import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.ValueObserver;
@@ -99,7 +99,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;

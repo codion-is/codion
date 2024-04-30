@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;

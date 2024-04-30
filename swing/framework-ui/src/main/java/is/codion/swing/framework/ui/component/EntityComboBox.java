@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -45,7 +45,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.ADD;

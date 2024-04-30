@@ -38,7 +38,7 @@ module is.codion.common.core {
 	exports is.codion.common.logging;
 	exports is.codion.common.property;
 	exports is.codion.common.proxy;
-	exports is.codion.common.resources;
+	exports is.codion.common.resource;
 	exports is.codion.common.scheduler;
 	exports is.codion.common.state;
 	exports is.codion.common.user;
@@ -46,5 +46,5 @@ module is.codion.common.core {
 	exports is.codion.common.version;
 
 	uses is.codion.common.logging.LoggerProxy;
-	uses is.codion.common.resources.Messages;
+	uses is.codion.common.resource.Messages;
 }

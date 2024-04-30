@@ -16,13 +16,13 @@
  *
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.resources;
+package is.codion.common.resource;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.ResourceBundle;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

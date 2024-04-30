@@ -19,13 +19,13 @@
 package is.codion.dbms.postgresql;
 
 import is.codion.common.db.database.AbstractDatabase;
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

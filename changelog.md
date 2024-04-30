@@ -8,6 +8,7 @@ Codion Change Log
 - Text.SpaceAwareCollator bug fixed, now treats null values as an empty string.
 - Nulls utility class added.
 - MessageBundle added, Messages service provides a way to override default localization messages.
+- is.codion.common.resources renamed resource.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 ### is.codion.swing.common.model

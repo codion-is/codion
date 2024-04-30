@@ -16,12 +16,30 @@
  *
  * Copyright (c) 2024, Björn Darri Sigurðsson.
  */
-package is.codion.common.resources;
+package is.codion.common.resource;
 
-public final class TestMessageBundle implements Messages {
+import java.util.ResourceBundle;
 
-	@Override
-	public String get(String baseBundleName, String key, String defaultString) {
-		return defaultString + " override";
+import static java.util.Objects.requireNonNull;
+
+/**
+ * An overridable resource bundle.
+ * @see Messages
+ */
+public interface MessageBundle {
+
+	/**
+	 * @param key the key
+	 * @return the string associated with the given key
+	 */
+	String getString(String key);
+
+	/**
+	 * @param resourceOwner the resource owner
+	 * @param bundle the resource bundle to override
+	 * @return a new {@link MessageBundle} instance
+	 */
+	static MessageBundle messageBundle(Class<?> resourceOwner, ResourceBundle bundle) {
+		return new DefaultMessageBundle(requireNonNull(resourceOwner), requireNonNull(bundle));
 	}
 }

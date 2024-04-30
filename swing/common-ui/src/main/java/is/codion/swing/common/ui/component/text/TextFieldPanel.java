@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
@@ -48,7 +48,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Optional;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.TextFieldPanelControl.DISPLAY_TEXT_AREA;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;

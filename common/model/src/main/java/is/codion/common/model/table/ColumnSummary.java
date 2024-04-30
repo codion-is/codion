@@ -20,12 +20,12 @@ package is.codion.common.model.table;
 
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
-import is.codion.common.resources.MessageBundle;
+import is.codion.common.resource.MessageBundle;
 
 import java.util.Objects;
 import java.util.OptionalDouble;
 
-import static is.codion.common.resources.MessageBundle.messageBundle;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**

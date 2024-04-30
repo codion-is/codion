@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.resources.Messages;
+import is.codion.common.resource.Messages;
 import is.codion.framework.i18n.FrameworkMessages;
 
 import java.util.Locale;
