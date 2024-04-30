@@ -23,6 +23,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
 
@@ -59,6 +60,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,7 +68,7 @@ import java.util.stream.IntStream;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.calendar.CalendarPanel.KeyboardShortcut.*;
+import static is.codion.swing.common.ui.component.calendar.CalendarPanel.CalendarPanelControl.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
@@ -96,83 +98,84 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<CalendarPanelControl> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(CalendarPanelControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The available controls.
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum CalendarPanelControl implements KeyboardShortcuts.Shortcut {
 
 		/**
 		 * Select the previous year.<br>
-		 * Default: CTRL-DOWN ARROW
+		 * Default key stroke: CTRL-DOWN ARROW
 		 */
 		PREVIOUS_YEAR(keyStroke(VK_DOWN, CTRL_DOWN_MASK)),
 		/**
 		 * Select the next year.<br>
-		 * Default: CTRL-UP ARROW
+		 * Default key stroke: CTRL-UP ARROW
 		 */
 		NEXT_YEAR(keyStroke(VK_UP, CTRL_DOWN_MASK)),
 		/**
 		 * Select the previous month.<br>
-		 * Default: SHIFT-DOWN ARROW
+		 * Default key stroke: SHIFT-DOWN ARROW
 		 */
 		PREVIOUS_MONTH(keyStroke(VK_DOWN, SHIFT_DOWN_MASK)),
 		/**
 		 * Select the next month.<br>
-		 * Default: SHIFT-UP ARROW
+		 * Default key stroke: SHIFT-UP ARROW
 		 */
 		NEXT_MONTH(keyStroke(VK_UP, SHIFT_DOWN_MASK)),
 		/**
 		 * Select the previous week.<br>
-		 * Default: ALT-UP ARROW
+		 * Default key stroke: ALT-UP ARROW
 		 */
 		PREVIOUS_WEEK(keyStroke(VK_UP, ALT_DOWN_MASK)),
 		/**
 		 * Select the next week.<br>
-		 * Default: ALT-DOWN ARROW
+		 * Default key stroke: ALT-DOWN ARROW
 		 */
 		NEXT_WEEK(keyStroke(VK_DOWN, ALT_DOWN_MASK)),
 		/**
 		 * Select the previous day.<br>
-		 * Default: ALT-LEFT ARROW
+		 * Default key stroke: ALT-LEFT ARROW
 		 */
 		PREVIOUS_DAY(keyStroke(VK_LEFT, ALT_DOWN_MASK)),
 		/**
 		 * Select the next day.<br>
-		 * Default: ALT-RIGHT ARROW
+		 * Default key stroke: ALT-RIGHT ARROW
 		 */
 		NEXT_DAY(keyStroke(VK_RIGHT, ALT_DOWN_MASK)),
 		/**
 		 * Select the previous hour.<br>
-		 * Default: SHIFT-ALT-DOWN ARROW
+		 * Default key stroke: SHIFT-ALT-DOWN ARROW
 		 */
 		PREVIOUS_HOUR(keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Select the next hour.<br>
-		 * Default: SHIFT-ALT-UP ARROW
+		 * Default key stroke: SHIFT-ALT-UP ARROW
 		 */
 		NEXT_HOUR(keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Select the previous minute.<br>
-		 * Default: CTRL-ALT-DOWN ARROW
+		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
 		PREVIOUS_MINUTE(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Select the next minute.<br>
-		 * Default: CTRL-ALT-UP ARROW
+		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
 		NEXT_MINUTE(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		CalendarPanelControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -353,11 +356,11 @@ public final class CalendarPanel extends JPanel {
 		Builder includeTodayButton(boolean includeTodayButton);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @param control the calendar control
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		Builder keyStroke(CalendarPanelControl control, KeyStroke keyStroke);
 
 		/**
 		 * @return a new {@link CalendarPanel} based on this builder
@@ -367,7 +370,7 @@ public final class CalendarPanel extends JPanel {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final KeyboardShortcuts<CalendarPanelControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private LocalDateTime initialValue;
 		private boolean includeTime = false;
@@ -398,8 +401,8 @@ public final class CalendarPanel extends JPanel {
 		}
 
 		@Override
-		public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+		public Builder keyStroke(CalendarPanelControl control, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(control).set(keyStroke);
 			return this;
 		}
 
@@ -647,47 +650,40 @@ public final class CalendarPanel extends JPanel {
 		formattedDateLabel.setText(dateFormatter.format(getLocalDateTime()) + (includeTime ? ", " + timeFormatter.format(getLocalDateTime()) : ""));
 	}
 
-	private void addKeyEvents(KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts) {
-		KeyEvents.Builder keyEvent = KeyEvents.builder()
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_YEAR).get())
-						.action(control(this::previousYear))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_YEAR).get())
-						.action(control(this::nextYear))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_MONTH).get())
-						.action(control(this::previousMonth))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_MONTH).get())
-						.action(control(this::nextMonth))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_WEEK).get())
-						.action(control(this::previousWeek))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_WEEK).get())
-						.action(control(this::nextWeek))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_DAY).get())
-						.action(control(this::previousDay))
-						.enable(this);
-		keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_DAY).get())
-						.action(control(this::nextDay))
-						.enable(this);
+	private void addKeyEvents(KeyboardShortcuts<CalendarPanelControl> keyboardShortcuts) {
+		keyboardShortcuts.keyStroke(PREVIOUS_YEAR).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::previousYear)));
+		keyboardShortcuts.keyStroke(NEXT_YEAR).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::nextYear)));
+		keyboardShortcuts.keyStroke(PREVIOUS_MONTH).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::previousMonth)));
+		keyboardShortcuts.keyStroke(NEXT_MONTH).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::nextMonth)));
+		keyboardShortcuts.keyStroke(PREVIOUS_WEEK).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::previousWeek)));
+		keyboardShortcuts.keyStroke(NEXT_WEEK).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::nextWeek)));
+		keyboardShortcuts.keyStroke(PREVIOUS_DAY).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::previousDay)));
+		keyboardShortcuts.keyStroke(NEXT_DAY).optional().ifPresent(keyStroke ->
+						addKeyEvent(keyStroke, control(this::nextDay)));
 		if (includeTime) {
-			keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_HOUR).get())
-							.action(control(this::previousHour))
-							.enable(this);
-			keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_HOUR).get())
-							.action(control(this::nextHour))
-							.enable(this);
-			keyEvent.keyStroke(keyboardShortcuts.keyStroke(PREVIOUS_MINUTE).get())
-							.action(control(this::previousMinute))
-							.enable(this);
-			keyEvent.keyStroke(keyboardShortcuts.keyStroke(NEXT_MINUTE).get())
-							.action(control(this::nextMinute))
-							.enable(this);
+			keyboardShortcuts.keyStroke(PREVIOUS_HOUR).optional().ifPresent(keyStroke ->
+							addKeyEvent(keyStroke, control(this::previousHour)));
+			keyboardShortcuts.keyStroke(NEXT_HOUR).optional().ifPresent(keyStroke ->
+							addKeyEvent(keyStroke, control(this::nextHour)));
+			keyboardShortcuts.keyStroke(PREVIOUS_MINUTE).optional().ifPresent(keyStroke ->
+							addKeyEvent(keyStroke, control(this::previousMinute)));
+			keyboardShortcuts.keyStroke(NEXT_MINUTE).optional().ifPresent(keyStroke ->
+							addKeyEvent(keyStroke, control(this::nextMinute)));
 		}
+	}
+
+	private void addKeyEvent(KeyStroke keyStroke, Control control) {
+		KeyEvents.builder(keyStroke)
+						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+						.action(control)
+						.enable(this);
 	}
 
 	private JSpinner createYearSpinner() {

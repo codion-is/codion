@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.PRINT;
+
 // tag::customerTablePanel[]
 public class CustomerTablePanel extends EntityTablePanel {
 
@@ -43,7 +45,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 		// associate a custom Control with the PRINT control code,
 		// which calls the viewCustomerReport method in this class,
 		// enabled only when the selection is not empty
-		control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
+		control(PRINT).set(Control.builder(this::viewCustomerReport)
 						.name("Customer report")
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selectionModel().selectionNotEmpty())

@@ -85,7 +85,7 @@ import static is.codion.swing.common.model.component.table.FilteredTableSortMode
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
-import static is.codion.swing.common.ui.component.table.FilteredTable.KeyboardShortcut.*;
+import static is.codion.swing.common.ui.component.table.FilteredTable.FilteredTableControl.*;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
@@ -126,37 +126,38 @@ public final class FilteredTable<R, C> extends JTable {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> DEFAULT_KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<FilteredTableControl> DEFAULT_KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(FilteredTableControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The controls.
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum FilteredTableControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
-		 * Default: CTRL-ALT-C
+		 * Default key stroke: CTRL-ALT-C
 		 */
 		COPY_CELL(keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Toggles the sort on the selected column.<br>
-		 * Default: ALT-DOWN ARROW
+		 * Default key stroke: ALT-DOWN ARROW
 		 */
 		TOGGLE_SORT_COLUMN(keyStroke(VK_DOWN, ALT_DOWN_MASK)),
 		/**
 		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
-		 * Default: ALT-UP ARROW
+		 * Default key stroke: ALT-UP ARROW
 		 */
 		TOGGLE_SORT_COLUMN_ADD(keyStroke(VK_UP, ALT_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		FilteredTableControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -528,6 +529,16 @@ public final class FilteredTable<R, C> extends JTable {
 	}
 
 	/**
+	 * @return a Control for copying the contents of the selected cell
+	 */
+	public Control createCopyCellControl() {
+		return Control.builder(this::copySelectedCell)
+						.name(MESSAGES.getString("copy_cell"))
+						.enabled(tableModel.selectionModel().selectionNotEmpty())
+						.build();
+	}
+
+	/**
 	 * A convenience method for setting the client property 'JTable.autoStartsEdit'.
 	 * @param autoStartsEdit the value
 	 */
@@ -728,7 +739,7 @@ public final class FilteredTable<R, C> extends JTable {
 		addMouseListener(new FilteredTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener());
 		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(COPY_CELL).get())
-						.action(control(this::copySelectedCell))
+						.action(createCopyCellControl())
 						.enable(this);
 		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_SORT_COLUMN_ADD).get())
 						.action(control(() -> toggleColumnSorting(getSelectedColumn(), true)))

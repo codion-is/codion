@@ -25,11 +25,11 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityEditPanel.EditControl;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {
@@ -63,10 +63,10 @@ public final class EntityEditPanelTest {
 		assertFalse(editModel.exists().get());
 		assertEquals(7, editPanel.attributes().size());
 
-		assertNotNull(editPanel.control(EditControl.INSERT));
-		assertNotNull(editPanel.control(EditControl.UPDATE));
-		assertNotNull(editPanel.control(EditControl.DELETE));
-		assertNotNull(editPanel.control(EditControl.CLEAR));
+		assertNotNull(editPanel.control(INSERT));
+		assertNotNull(editPanel.control(UPDATE));
+		assertNotNull(editPanel.control(DELETE));
+		assertNotNull(editPanel.control(CLEAR));
 	}
 
 	private static final class TestEditPanel extends EntityEditPanel {

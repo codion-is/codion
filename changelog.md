@@ -17,6 +17,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.
+- KeyboardShortcut.Shortcut.keyStroke() now returns Optional.
+- Control keyboard shortcut handling refactored.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
@@ -38,6 +40,7 @@ Codion Change Log
 - EntityEditComponentPanel bug fixed, createLabel() no longer prevents subsequent component creation.
 - EntityTablePanel, selection controls removed from default toolbar.
 - EntityTablePanel, keyboard shortcuts added for moving the selection.
+- EntityTablePanel.TableControl and EntityEditPanel.EditControl renamed EntityTablePanelControl and EntityEditPanelControl, merged with KeyboardShortcut, related refactoring.
 
 ## 0.17.43
 ### is.codion.common.core

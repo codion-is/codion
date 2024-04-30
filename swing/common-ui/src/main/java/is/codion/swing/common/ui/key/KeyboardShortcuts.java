@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.key;
 import is.codion.common.value.Value;
 
 import javax.swing.KeyStroke;
+import java.util.Optional;
 
 import static javax.swing.KeyStroke.getKeyStroke;
 
@@ -48,9 +49,9 @@ public interface KeyboardShortcuts<T extends Enum<T> & KeyboardShortcuts.Shortcu
 	interface Shortcut {
 
 		/**
-		 * @return the default keystroke for this shortcut
+		 * @return the default keystroke for this shortcut, an empty Optional if none is available
 		 */
-		KeyStroke defaultKeystroke();
+		Optional<KeyStroke> defaultKeystroke();
 	}
 
 	/**

@@ -37,7 +37,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTablePanel.TableControl;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
@@ -72,9 +71,11 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
-import static is.codion.swing.framework.ui.EntityPanel.KeyboardShortcut.*;
+import static is.codion.swing.framework.ui.EntityPanel.EntityPanelControl.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static java.awt.event.InputEvent.*;
+import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -131,86 +132,54 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * The keyboard shortcuts available for {@link EntityPanel}s.
-	 * Note that changing the shortcut keystroke after the panel
-	 * has been initialized has no effect.
+	 * The standard controls available in a entity panel
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
-		/**
-		 * Requests focus for the table.<br>
-		 * Default: CTRL-T
-		 */
-		REQUEST_TABLE_FOCUS(keyStroke(VK_T, CTRL_DOWN_MASK)),
-		/**
-		 * Toggles the condition panel between hidden, visible and advanced.<br>
-		 * Default: CTRL-ALT-S
-		 */
-		TOGGLE_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
-		/**
-		 * Displays a dialog for selecting a column condition panel.<br>
-		 * Default: CTRL-S
-		 */
-		SELECT_CONDITION_PANEL(keyStroke(VK_S, CTRL_DOWN_MASK)),
-		/**
-		 * Toggles the filter panel between hidden, visible and advanced.<br>
-		 * Default: CTRL-ALT-F
-		 */
-		TOGGLE_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
-		/**
-		 * Displays a dialog for selecting a column filter panel.<br>
-		 * Default: CTRL-SHIFT-F
-		 */
-		SELECT_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
-		/**
-		 * Requests focus for the table search field.<br>
-		 * Default: CTRL-F
-		 */
-		REQUEST_SEARCH_FIELD_FOCUS(keyStroke(VK_F, CTRL_DOWN_MASK)),
+	public enum EntityPanelControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Requests focus for the edit panel (intial focus component).<br>
-		 * Default: CTRL-E
+		 * Default key stroke: CTRL-E
 		 */
 		REQUEST_EDIT_PANEL_FOCUS(keyStroke(VK_E, CTRL_DOWN_MASK)),
 		/**
 		 * Displays a dialog for selecting an input field.<br>
-		 * Default: CTRL-I
+		 * Default key stroke: CTRL-I
 		 */
 		SELECT_INPUT_FIELD(keyStroke(VK_I, CTRL_DOWN_MASK)),
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
-		 * Default: CTRL-ALT-E
+		 * Default key stroke: CTRL-ALT-E
 		 */
 		TOGGLE_EDIT_PANEL(keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
-		 * Default: CTRL-ALT-UP ARROW
+		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
 		NAVIGATE_UP(keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
-		 * Default: CTRL-ALT-DOWN ARROW
+		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
 		NAVIGATE_DOWN(keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
-		 * Default: CTRL-ALT-RIGHT ARROW
+		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
 		NAVIGATE_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK)),
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
-		 * Default: CTRL-ALT-LEFT ARROW
+		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
 		NAVIGATE_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		EntityPanelControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -746,80 +715,96 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Sets up the keyboard actions.
-	 * @see KeyboardShortcut
+	 * @see EntityPanelControl
 	 */
 	protected final void setupKeyboardActions() {
 		if (containsTablePanel()) {
-			tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-							KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(control)
-											.enable(this));
-			tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-							KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(control)
-											.enable(this));
-			tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-							KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(control)
-											.enable(this));
-			tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-							KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(control)
-											.enable(this));
-			tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-							KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(control)
-											.enable(this));
-			KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_SEARCH_FIELD_FOCUS).get())
-							.action(createRequestTableSearchFieldControl())
-							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.enable(this);
+			tablePanel.configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).optional().ifPresent(keyStroke ->
+							tablePanel.control(REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this)));
+			tablePanel.configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).optional().ifPresent(keyStroke ->
+							tablePanel.control(TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this)));
+			tablePanel.configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).optional().ifPresent(keyStroke ->
+							tablePanel.control(SELECT_CONDITION_PANEL).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this)));
+			tablePanel.configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).optional().ifPresent(keyStroke ->
+							tablePanel.control(TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this)));
+			tablePanel.configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).optional().ifPresent(keyStroke ->
+							tablePanel.control(SELECT_FILTER_PANEL).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this)));
+			tablePanel.configuration.shortcuts.keyStroke(REQUEST_SEARCH_FIELD_FOCUS).optional().ifPresent(keyStroke ->
+							tablePanel.control(REQUEST_SEARCH_FIELD_FOCUS).optional().ifPresent(control ->
+											KeyEvents.builder(keyStroke)
+															.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+															.action(control)
+															.enable(this)));
 			if (containsEditPanel()) {
-				tablePanel.control(TableControl.REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
-								KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).get())
-												.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.action(control)
-												.enable(editControlPanel));
-				tablePanel.control(TableControl.TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
-								KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).get())
-												.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.action(control)
-												.enable(editControlPanel));
-				tablePanel.control(TableControl.SELECT_CONDITION_PANEL).optional().ifPresent(control ->
-								KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).get())
-												.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.action(control)
-												.enable(editControlPanel));
-				tablePanel.control(TableControl.TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
-								KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).get())
-												.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.action(control)
-												.enable(editControlPanel));
-				tablePanel.control(TableControl.SELECT_FILTER_PANEL).optional().ifPresent(control ->
-								KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).get())
-												.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.action(control)
-												.enable(editControlPanel));
+				tablePanel.configuration.shortcuts.keyStroke(REQUEST_TABLE_FOCUS).optional().ifPresent(keyStroke ->
+								tablePanel.control(REQUEST_TABLE_FOCUS).optional().ifPresent(control ->
+												KeyEvents.builder(keyStroke)
+																.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+																.action(control)
+																.enable(editControlPanel)));
+
+				tablePanel.configuration.shortcuts.keyStroke(TOGGLE_CONDITION_PANEL).optional().ifPresent(keyStroke ->
+								tablePanel.control(TOGGLE_CONDITION_PANEL).optional().ifPresent(control ->
+												KeyEvents.builder(keyStroke)
+																.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+																.action(control)
+																.enable(editControlPanel)));
+				tablePanel.configuration.shortcuts.keyStroke(SELECT_CONDITION_PANEL).optional().ifPresent(keyStroke ->
+								tablePanel.control(SELECT_CONDITION_PANEL).optional().ifPresent(control ->
+												KeyEvents.builder(keyStroke)
+																.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+																.action(control)
+																.enable(editControlPanel)));
+				tablePanel.configuration.shortcuts.keyStroke(TOGGLE_FILTER_PANEL).optional().ifPresent(keyStroke ->
+								tablePanel.control(TOGGLE_FILTER_PANEL).optional().ifPresent(control ->
+												KeyEvents.builder(keyStroke)
+																.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+																.action(control)
+																.enable(editControlPanel)));
+				tablePanel.configuration.shortcuts.keyStroke(SELECT_FILTER_PANEL).optional().ifPresent(keyStroke ->
+								tablePanel.control(SELECT_FILTER_PANEL).optional().ifPresent(control ->
+												KeyEvents.builder(keyStroke)
+																.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+																.action(control)
+																.enable(editControlPanel)));
 			}
 		}
 		if (containsEditPanel()) {
-			KeyEvents.builder(configuration.shortcuts.keyStroke(REQUEST_EDIT_PANEL_FOCUS).get())
-							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.action(createRequestEditPanelFocusControl())
-							.enable(this);
-			KeyEvents.builder(configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).get())
-							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.action(createSelectInputComponentControl())
-							.enable(this, editControlPanel);
-			KeyEvents.builder(configuration.shortcuts.keyStroke(TOGGLE_EDIT_PANEL).get())
-							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-							.action(createToggleEditPanelControl())
-							.enable(this, editControlPanel);
+			configuration.shortcuts.keyStroke(REQUEST_EDIT_PANEL_FOCUS).optional().ifPresent(keyStroke ->
+							KeyEvents.builder(keyStroke)
+											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.action(createRequestEditPanelFocusControl())
+											.enable(this, editControlPanel));
+			configuration.shortcuts.keyStroke(SELECT_INPUT_FIELD).optional().ifPresent(keyStroke ->
+							KeyEvents.builder(keyStroke)
+											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.action(createSelectInputComponentControl())
+											.enable(this, editControlPanel));
+			configuration.shortcuts.keyStroke(TOGGLE_EDIT_PANEL).optional().ifPresent(keyStroke ->
+							KeyEvents.builder(keyStroke)
+											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+											.action(createToggleEditPanelControl())
+											.enable(this, editControlPanel));
 		}
 		if (configuration.useKeyboardNavigation) {
 			setupNavigation();
@@ -863,13 +848,6 @@ public class EntityPanel extends JPanel {
 	 */
 	protected final Control createRequestEditPanelFocusControl() {
 		return Control.control(this::requestEditPanelFocus);
-	}
-
-	/**
-	 * @return a Control instance for requesting table search field focus
-	 */
-	protected final Control createRequestTableSearchFieldControl() {
-		return Control.control(tablePanel.table().searchField()::requestFocusInWindow);
 	}
 
 	/**
@@ -1241,10 +1219,11 @@ public class EntityPanel extends JPanel {
 		/**
 		 * The default keyboard shortcut keyStrokes.
 		 */
-		public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+		public static final KeyboardShortcuts<EntityPanelControl> KEYBOARD_SHORTCUTS =
+						keyboardShortcuts(EntityPanelControl.class);
 
 		private final EntityPanel entityPanel;
-		private final KeyboardShortcuts<KeyboardShortcut> shortcuts;
+		private final KeyboardShortcuts<EntityPanelControl> shortcuts;
 
 		private Function<EntityPanel, DetailLayout> detailLayout = new DefaultDetailLayout();
 		private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
@@ -1414,7 +1393,7 @@ public class EntityPanel extends JPanel {
 		 * @param shortcuts provides this panels {@link KeyboardShortcuts} instance.
 		 * @return this Config instance
 		 */
-		public Config keyStrokes(Consumer<KeyboardShortcuts<KeyboardShortcut>> shortcuts) {
+		public Config keyStrokes(Consumer<KeyboardShortcuts<EntityPanelControl>> shortcuts) {
 			requireNonNull(shortcuts).accept(this.shortcuts);
 			return this;
 		}

@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.KeyboardShortcut.*;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ColumnConditionPanelControl.*;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -88,37 +88,38 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<ColumnConditionPanelControl> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(ColumnConditionPanelControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The condition controls.
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum ColumnConditionPanelControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Toggle the enabled status on/off.<br>
-		 * Default: CTRL-ENTER
+		 * Default key stroke: CTRL-ENTER
 		 */
 		TOGGLE_ENABLED(keyStroke(VK_ENTER, CTRL_DOWN_MASK)),
 		/**
 		 * Select the previous condition operator.<br>
-		 * Default: CTRL-UP ARROW
+		 * Default key stroke: CTRL-UP ARROW
 		 */
 		PREVIOUS_OPERATOR(keyStroke(VK_UP, CTRL_DOWN_MASK)),
 		/**
 		 * Select the next condition operator.<br>
-		 * Default: CTRL-DOWN ARROW
+		 * Default key stroke: CTRL-DOWN ARROW
 		 */
 		NEXT_OPERATOR(keyStroke(VK_DOWN, CTRL_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		ColumnConditionPanelControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 

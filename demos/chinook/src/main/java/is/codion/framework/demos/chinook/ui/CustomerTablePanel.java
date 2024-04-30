@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.PRINT;
+
 public final class CustomerTablePanel extends EntityTablePanel {
 
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
@@ -48,7 +50,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void configureControls() {
-		control(TableControl.PRINT).set(Control.builder(this::viewCustomerReport)
+		control(PRINT).set(Control.builder(this::viewCustomerReport)
 						.name(BUNDLE.getString("customer_report"))
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selectionModel().selectionNotEmpty())

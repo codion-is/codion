@@ -166,33 +166,34 @@ public final class EntitySearchField extends HintTextField {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<EntitySearchFieldControl> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(EntitySearchFieldControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum EntitySearchFieldControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Displays a dialog for adding a new record.<br>
-		 * Default: INSERT
+		 * Default key stroke: INSERT
 		 */
 		ADD(keyStroke(VK_INSERT)),
 		/**
 		 * Displays a dialog for editing the selected record.<br>
-		 * Default: CTRL-INSERT
+		 * Default key stroke: CTRL-INSERT
 		 */
 		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		EntitySearchFieldControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -220,9 +221,9 @@ public final class EntitySearchField extends HintTextField {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
 		model = requireNonNull(builder.searchModel);
 		addControl = createAddControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get());
+						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.ADD).get());
 		editControl = createEditControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get());
+						builder.keyboardShortcuts.keyStroke(EntitySearchFieldControl.EDIT).get());
 		if (builder.columns != -1) {
 			setColumns(builder.columns);
 		}
@@ -452,11 +453,11 @@ public final class EntitySearchField extends HintTextField {
 		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @param control the control
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		Builder keyStroke(EntitySearchFieldControl control, KeyStroke keyStroke);
 
 		/**
 		 * @param limit the search result limit
@@ -1072,7 +1073,7 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultEntitySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, Builder> implements Builder {
 
 		private final EntitySearchModel searchModel;
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final KeyboardShortcuts<EntitySearchFieldControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private int columns = -1;
 		private boolean upperCase;
@@ -1149,8 +1150,8 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+		public Builder keyStroke(EntitySearchFieldControl control, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(control).set(keyStroke);
 			return this;
 		}
 

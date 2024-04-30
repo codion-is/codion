@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
@@ -43,8 +44,8 @@ public final class KeyboardShortcutsTest {
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 

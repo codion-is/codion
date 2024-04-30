@@ -50,7 +50,7 @@ import java.time.temporal.Temporal;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.component.text.TemporalField.KeyboardShortcut.*;
+import static is.codion.swing.common.ui.component.text.TemporalField.TemporalFieldControl.*;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.KeyEvent.*;
@@ -69,37 +69,37 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<TemporalFieldControl> KEYBOARD_SHORTCUTS = keyboardShortcuts(TemporalFieldControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The controls.
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum TemporalFieldControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Display a calendar for date/time input.<br>
-		 * Default: INSERT
+		 * Default key stroke: INSERT
 		 */
 		DISPLAY_CALENDAR(keyStroke(VK_INSERT)),
 		/**
 		 * Increments the date component under the cursor.<br>
-		 * Default: UP ARROW
+		 * Default key stroke: UP ARROW
 		 */
 		INCREMENT(keyStroke(VK_UP)),
 		/**
 		 * Decrements the date component under the cursor.<br>
-		 * Default: DOWN ARROW
+		 * Default key stroke: DOWN ARROW
 		 */
 		DECREMENT(keyStroke(VK_DOWN));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		TemporalFieldControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -130,22 +130,22 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		setFocusLostBehavior(builder.focusLostBehaviour);
 		getDocument().addDocumentListener(new TemporalDocumentListener());
 		if (builder.incrementDecrementEnabled) {
-			KeyEvents.builder(builder.keyboardShortcuts.keyStroke(INCREMENT).get())
+			builder.keyboardShortcuts.keyStroke(INCREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
 							.action(Control.builder(this::increment)
 											.enabled(valueNull.not())
 											.build())
-							.enable(this);
-			KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DECREMENT).get())
+							.enable(this));
+			builder.keyboardShortcuts.keyStroke(DECREMENT).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
 							.action(Control.builder(this::decrement)
 											.enabled(valueNull.not())
 											.build())
-							.enable(this);
+							.enable(this));
 		}
 		calendarControl = createCalendarControl();
 		if (calendarControl != null) {
-			KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DISPLAY_CALENDAR).get())
+			builder.keyboardShortcuts.keyStroke(DISPLAY_CALENDAR).optional().ifPresent(keyStroke -> KeyEvents.builder(keyStroke)
 							.action(calendarControl)
-							.enable(this);
+							.enable(this));
 		}
 	}
 
@@ -369,11 +369,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @param control the control
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder<T> keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		Builder<T> keyStroke(TemporalFieldControl control, KeyStroke keyStroke);
 	}
 
 	/**
@@ -398,7 +398,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private final Class<T> temporalClass;
 		private final String dateTimePattern;
 		private final String mask;
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final KeyboardShortcuts<TemporalFieldControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private DateTimeFormatter dateTimeFormatter;
 		private DateTimeParser<T> dateTimeParser;
@@ -446,8 +446,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		@Override
-		public Builder<T> keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+		public Builder<T> keyStroke(TemporalFieldControl control, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(control).set(keyStroke);
 			return this;
 		}
 

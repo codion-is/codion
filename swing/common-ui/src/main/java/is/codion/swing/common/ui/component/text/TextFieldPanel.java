@@ -45,10 +45,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
-import static is.codion.swing.common.ui.component.text.TextFieldPanel.KeyboardShortcut.DISPLAY_TEXT_AREA;
+import static is.codion.swing.common.ui.component.text.TextFieldPanel.TextFieldPanelControl.DISPLAY_TEXT_AREA;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -66,27 +67,28 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<TextFieldPanelControl> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(TextFieldPanelControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The available controls.
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum TextFieldPanelControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Displays a text area for longer text input.<br>
-		 * Default: INSERT
+		 * Default key stroke: INSERT
 		 */
 		DISPLAY_TEXT_AREA(keyStroke(VK_INSERT));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		TextFieldPanelControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -258,11 +260,11 @@ public final class TextFieldPanel extends JPanel {
 		Builder maximumLength(int maximumLength);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @param control the control
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		Builder keyStroke(TextFieldPanelControl control, KeyStroke keyStroke);
 	}
 
 	private Control createTextAreaControl(DefaultBuilder builder) {
@@ -273,10 +275,11 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private JTextField createTextField(DefaultBuilder builder) {
-		return builder.textFieldBuilder
-						.keyEvent(KeyEvents.builder(builder.keyboardShortcuts.keyStroke(DISPLAY_TEXT_AREA).get())
-										.action(textAreaControl))
-						.build();
+		builder.keyboardShortcuts.keyStroke(DISPLAY_TEXT_AREA).optional().ifPresent(keyStroke ->
+						builder.textFieldBuilder.keyEvent(KeyEvents.builder(keyStroke)
+										.action(textAreaControl)));
+
+		return builder.textFieldBuilder.build();
 	}
 
 	private void initializeUI(boolean buttonFocusable) {
@@ -321,7 +324,7 @@ public final class TextFieldPanel extends JPanel {
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
 		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final KeyboardShortcuts<TextFieldPanelControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private boolean buttonFocusable;
 		private ImageIcon buttonIcon;
@@ -402,8 +405,8 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		public TextFieldPanel.Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+		public TextFieldPanel.Builder keyStroke(TextFieldPanelControl control, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(control).set(keyStroke);
 			return this;
 		}
 

@@ -70,8 +70,6 @@ public final class FrameworkMessages {
 	private static final String SEARCH = "search";
 	private static final String FILTER = "filter";
 	private static final String SEARCH_MNEMONIC = "search_mnemonic";
-
-	private static final String COPY_CELL = "copy_cell";
 	private static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
 	private static final String SETTINGS = "settings";
@@ -367,13 +365,6 @@ public final class FrameworkMessages {
 	 */
 	public static char searchMnemonic() {
 		return get(SEARCH_MNEMONIC).charAt(0);
-	}
-
-	/**
-	 * @return copy cell
-	 */
-	public static String copyCell() {
-		return get(COPY_CELL);
 	}
 
 	/**

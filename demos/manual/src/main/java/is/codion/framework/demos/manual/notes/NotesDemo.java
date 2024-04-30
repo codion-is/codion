@@ -64,6 +64,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.CLEAR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -132,8 +133,10 @@ public final class NotesDemo {
 	private static final class NoteEditPanel extends EntityEditPanel {
 
 		private NoteEditPanel(NoteEditModel editModel) {
+			super(editModel);
 			// CLEAR is the only standard control we require, for clearing the UI
-			super(editModel, config -> config.editControls(EditControl.CLEAR));
+			configureControls(config -> config.clear()
+							.standard(CLEAR));
 		}
 
 		@Override
@@ -149,7 +152,7 @@ public final class NotesDemo {
 			setLayout(Layouts.borderLayout());
 			add(component(Note.NOTE).get(), BorderLayout.CENTER);
 			// Add a button based on the CLEAR control
-			add(new JButton(control(EditControl.CLEAR).get()), BorderLayout.EAST);
+			add(new JButton(control(CLEAR).get()), BorderLayout.EAST);
 		}
 
 		private void insertDeleteOrUpdate() {

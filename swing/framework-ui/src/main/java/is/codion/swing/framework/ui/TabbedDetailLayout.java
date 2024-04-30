@@ -62,8 +62,8 @@ import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static is.codion.swing.framework.ui.TabbedDetailLayout.KeyboardShortcut.RESIZE_LEFT;
-import static is.codion.swing.framework.ui.TabbedDetailLayout.KeyboardShortcut.RESIZE_RIGHT;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.TabbedDetailLayoutControl.RESIZE_LEFT;
+import static is.codion.swing.framework.ui.TabbedDetailLayout.TabbedDetailLayoutControl.RESIZE_RIGHT;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -104,32 +104,33 @@ public final class TabbedDetailLayout implements DetailLayout {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<TabbedDetailLayoutControl> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(TabbedDetailLayoutControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The controls.
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum TabbedDetailLayoutControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Resizes this panel to the right.<br>
-		 * Default: SHIFT-ALT-RIGHT ARROW
+		 * Default key stroke: SHIFT-ALT-RIGHT ARROW
 		 */
 		RESIZE_RIGHT(keyStroke(VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
 		 * Resizes this panel to the left.<br>
-		 * Default: SHIFT-ALT-LEFT ARROW
+		 * Default key stroke: SHIFT-ALT-LEFT ARROW
 		 */
 		RESIZE_LEFT(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		TabbedDetailLayoutControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -143,7 +144,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private final TabbedDetailController detailController;
 	private final boolean includeControls;
 	private final double splitPaneResizeWeight;
-	private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts;
+	private final KeyboardShortcuts<TabbedDetailLayoutControl> keyboardShortcuts;
 	private final WindowType windowType;
 
 	private JTabbedPane tabbedPane;
@@ -226,11 +227,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 		Builder includeControls(boolean includeControls);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @param control the control
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		Builder keyStroke(TabbedDetailLayoutControl control, KeyStroke keyStroke);
 
 		/**
 		 * @return a new {@link TabbedDetailLayout} instance based on this builder
@@ -240,12 +241,14 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private void bindEvents(EntityPanel detailPanel) {
 		detailPanel.activateEvent().addConsumer(detailController::activated);
-		detailPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_RIGHT).get())
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(new ResizeHorizontally(detailPanel, true)));
-		detailPanel.addKeyEvent(KeyEvents.builder(keyboardShortcuts.keyStroke(RESIZE_LEFT).get())
-						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-						.action(new ResizeHorizontally(detailPanel, false)));
+		keyboardShortcuts.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
+						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(new ResizeHorizontally(detailPanel, true))));
+		keyboardShortcuts.keyStroke(RESIZE_LEFT).optional().ifPresent(keyStroke ->
+						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(new ResizeHorizontally(detailPanel, false))));
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -257,14 +260,14 @@ public final class TabbedDetailLayout implements DetailLayout {
 											.description(MESSAGES.getString("toggle_detail")))
 							.build());
 			tablePanel.addPopupMenuControls(Controls.builder()
-								.name(MESSAGES.getString(DETAIL_TABLES))
-								.smallIcon(ICONS.detail())
-								.controls(entityPanel.detailPanels().stream()
-												.map(detailPanel -> Control.builder(new ActivateDetailPanel(detailPanel))
-																.name(detailPanel.caption())
-																.build())
-												.toArray(Control[]::new))
-								.build());
+							.name(MESSAGES.getString(DETAIL_TABLES))
+							.smallIcon(ICONS.detail())
+							.controls(entityPanel.detailPanels().stream()
+											.map(detailPanel -> Control.builder(new ActivateDetailPanel(detailPanel))
+															.name(detailPanel.caption())
+															.build())
+											.toArray(Control[]::new))
+							.build());
 		}
 	}
 
@@ -519,7 +522,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final KeyboardShortcuts<TabbedDetailLayoutControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private final EntityPanel entityPanel;
 
@@ -558,8 +561,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+		public Builder keyStroke(TabbedDetailLayoutControl control, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(control).set(keyStroke);
 			return this;
 		}
 

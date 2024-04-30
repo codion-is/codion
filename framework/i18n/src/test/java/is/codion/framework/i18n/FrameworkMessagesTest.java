@@ -66,7 +66,6 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.search();
 		FrameworkMessages.filter();
 		FrameworkMessages.searchMnemonic();
-		FrameworkMessages.copyCell();
 		FrameworkMessages.copyTableWithHeader();
 		FrameworkMessages.settings();
 		FrameworkMessages.selectInputField();

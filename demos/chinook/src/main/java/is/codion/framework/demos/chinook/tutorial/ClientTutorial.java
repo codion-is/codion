@@ -50,6 +50,7 @@ import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.INSERT;
 import static java.util.Collections.singletonList;
 
 /**
@@ -150,7 +151,7 @@ public final class ClientTutorial {
 			createForeignKeySearchField(Album.ARTIST_FK)
 							.columns(15);
 			createTextField(Album.TITLE)
-							.action(control(EditControl.INSERT).get())
+							.action(control(INSERT).get())
 							.columns(15);
 			setLayout(gridLayout(2, 1));
 			addInputPanel(Album.ARTIST_FK);

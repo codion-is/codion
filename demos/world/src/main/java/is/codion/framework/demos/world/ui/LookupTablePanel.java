@@ -54,6 +54,7 @@ import static is.codion.framework.demos.world.model.LookupTableModel.ExportForma
 import static is.codion.framework.demos.world.model.LookupTableModel.ExportFormat.JSON;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.component.Components.toolBar;
+import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.*;
 import static java.util.stream.Collectors.toSet;
 
 final class LookupTablePanel extends EntityTablePanel {
@@ -94,12 +95,12 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void configureControls() {
-		control(TableControl.CLEAR).set(Control.builder(this::clearTableAndConditions)
+		control(CLEAR).set(Control.builder(this::clearTableAndConditions)
 						.name("Clear")
 						.mnemonic('C')
 						.smallIcon(ICONS.clear())
 						.build());
-		control(TableControl.SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
+		control(SELECT_COLUMNS).set(ToggleControl.builder(columnSelectionPanelVisible)
 						.name("Select")
 						.build());
 	}
@@ -112,8 +113,8 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void configurePopupMenuAndToolBar() {
 		configurePopupMenu(config -> config.clear()
-						.standard(TableControl.REFRESH)
-						.standard(TableControl.CLEAR)
+						.standard(REFRESH)
+						.standard(CLEAR)
 						.separator()
 						.control(Controls.builder()
 										.name("Export")

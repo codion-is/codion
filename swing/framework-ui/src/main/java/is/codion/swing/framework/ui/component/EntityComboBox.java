@@ -47,6 +47,8 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyStroke;
 import static is.codion.swing.common.ui.key.KeyboardShortcuts.keyboardShortcuts;
+import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.ADD;
+import static is.codion.swing.framework.ui.component.EntityComboBox.EntityComboBoxControl.EDIT;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
@@ -62,33 +64,34 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	/**
 	 * The default keyboard shortcut keyStrokes.
 	 */
-	public static final KeyboardShortcuts<KeyboardShortcut> KEYBOARD_SHORTCUTS = keyboardShortcuts(KeyboardShortcut.class);
+	public static final KeyboardShortcuts<EntityComboBoxControl> KEYBOARD_SHORTCUTS =
+					keyboardShortcuts(EntityComboBoxControl.class);
 
 	/**
-	 * The available keyboard shortcuts.
+	 * The available controls.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public enum KeyboardShortcut implements KeyboardShortcuts.Shortcut {
+	public enum EntityComboBoxControl implements KeyboardShortcuts.Shortcut {
 		/**
 		 * Displays a dialog for adding a new record.<br>
-		 * Default: INSERT
+		 * Default key stroke: INSERT
 		 */
 		ADD(keyStroke(VK_INSERT)),
 		/**
 		 * Displays a dialog for editing the selected record.<br>
-		 * Default: CTRL-INSERT
+		 * Default key stroke: CTRL-INSERT
 		 */
 		EDIT(keyStroke(VK_INSERT, CTRL_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
-		KeyboardShortcut(KeyStroke defaultKeystroke) {
+		EntityComboBoxControl(KeyStroke defaultKeystroke) {
 			this.defaultKeystroke = defaultKeystroke;
 		}
 
 		@Override
-		public KeyStroke defaultKeystroke() {
-			return defaultKeystroke;
+		public Optional<KeyStroke> defaultKeystroke() {
+			return Optional.ofNullable(defaultKeystroke);
 		}
 	}
 
@@ -98,9 +101,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	private EntityComboBox(DefaultBuilder builder) {
 		super(builder.comboBoxModel());
 		addControl = createAddControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.ADD).get());
+						builder.keyboardShortcuts.keyStroke(ADD).get());
 		editControl = createEditControl(builder.editPanel,
-						builder.keyboardShortcuts.keyStroke(KeyboardShortcut.EDIT).get());
+						builder.keyboardShortcuts.keyStroke(EDIT).get());
 	}
 
 	@Override
@@ -266,11 +269,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		Builder editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
-		 * @param keyboardShortcut the keyboard shortcut key
-		 * @param keyStroke the keyStroke to assign to the given shortcut key, null resets to the default one
+		 * @param control the combo box control
+		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(KeyboardShortcut keyboardShortcut, KeyStroke keyStroke);
+		Builder keyStroke(EntityComboBoxControl control, KeyStroke keyStroke);
 	}
 
 	private Control createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke) {
@@ -294,7 +297,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private final KeyboardShortcuts<KeyboardShortcut> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
+		private final KeyboardShortcuts<EntityComboBoxControl> keyboardShortcuts = KEYBOARD_SHORTCUTS.copy();
 
 		private Supplier<EntityEditPanel> editPanel;
 
@@ -314,8 +317,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 
 		@Override
-		public Builder keyStroke(EntityComboBox.KeyboardShortcut keyboardShortcut, KeyStroke keyStroke) {
-			keyboardShortcuts.keyStroke(keyboardShortcut).set(keyStroke);
+		public Builder keyStroke(EntityComboBoxControl control, KeyStroke keyStroke) {
+			keyboardShortcuts.keyStroke(control).set(keyStroke);
 			return this;
 		}
 

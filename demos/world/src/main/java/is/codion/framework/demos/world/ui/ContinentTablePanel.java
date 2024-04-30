@@ -23,12 +23,14 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 
+import static is.codion.swing.framework.ui.EntityTablePanel.EntityTablePanelControl.REFRESH;
+
 final class ContinentTablePanel extends EntityTablePanel {
 
 	ContinentTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config.includeSouthPanel(false));
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		configurePopupMenu(config -> config.clear()
-						.standard(TableControl.REFRESH));
+						.standard(REFRESH));
 	}
 }

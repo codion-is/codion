@@ -158,10 +158,11 @@ final class EntityControls {
 						.description(MESSAGES.getString("add_new"))
 						.enabled(createComponentEnabledState(component))
 						.build();
-
-		KeyEvents.builder(keyStroke)
-						.action(control)
-						.enable(component);
+		if (keyStroke != null) {
+			KeyEvents.builder(keyStroke)
+							.action(control)
+							.enable(component);
+		}
 
 		return control;
 	}
@@ -173,10 +174,11 @@ final class EntityControls {
 						.description(MESSAGES.getString("edit_selected"))
 						.enabled(State.and(createComponentEnabledState(component), selectionNonEmptyState))
 						.build();
-
-		KeyEvents.builder(keyStroke)
-						.action(control)
-						.enable(component);
+		if (keyStroke != null) {
+			KeyEvents.builder(keyStroke)
+							.action(control)
+							.enable(component);
+		}
 
 		return control;
 	}

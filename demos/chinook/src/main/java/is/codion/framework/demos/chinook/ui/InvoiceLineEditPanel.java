@@ -32,6 +32,8 @@ import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutP
 import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.INSERT;
+import static is.codion.swing.framework.ui.EntityEditPanel.EntityEditPanelControl.UPDATE;
 
 public final class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -53,11 +55,11 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 		createTextField(InvoiceLine.QUANTITY)
 						.selectAllOnFocusGained(true)
 						.columns(2)
-						.action(control(EditControl.INSERT).get());
+						.action(control(INSERT).get());
 
 		JToolBar updateToolBar = toolBar()
 						.floatable(false)
-						.action(control(EditControl.UPDATE).get())
+						.action(control(UPDATE).get())
 						.preferredHeight(preferredTextFieldHeight())
 						.build();
 
