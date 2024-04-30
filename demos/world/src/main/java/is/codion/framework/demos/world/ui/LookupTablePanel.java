@@ -112,7 +112,8 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void configurePopupMenuAndToolBar() {
 		configurePopupMenu(config -> config.clear()
-						.defaults(TableControl.COLUMN_CONTROLS)
+						.standard(TableControl.REFRESH)
+						.standard(TableControl.CLEAR)
 						.separator()
 						.control(Controls.builder()
 										.name("Export")

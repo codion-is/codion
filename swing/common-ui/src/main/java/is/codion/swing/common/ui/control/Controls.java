@@ -261,11 +261,11 @@ public interface Controls extends Control {
 		Config<T> defaults();
 
 		/**
-		 * Adds all remaining default controls, stopping before {@code stopBefore}
-		 * @param stopBefore the table control to stop before
+		 * Adds all remaining default controls, up until and including {@code stopAt}
+		 * @param stopAt the table control to stop at (inclusive)
 		 * @return this config instance
 		 */
-		Config<T> defaults(T stopBefore);
+		Config<T> defaults(T stopAt);
 
 		/**
 		 * Clears all controls from this config

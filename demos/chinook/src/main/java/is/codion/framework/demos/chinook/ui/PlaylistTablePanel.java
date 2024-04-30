@@ -38,7 +38,8 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	public PlaylistTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, new PlaylistEditPanel(tableModel.editModel()));
 		configurePopupMenu(config -> config.clear()
-						.defaults(TableControl.VIEW_DEPENDENCIES)
+						.defaults(TableControl.DELETE)
+						.separator()
 						.control(Control.builder(this::randomPlaylist)
 										.name(BUNDLE.getString("random_playlist"))
 										.smallIcon(FrameworkIcons.instance().add()))

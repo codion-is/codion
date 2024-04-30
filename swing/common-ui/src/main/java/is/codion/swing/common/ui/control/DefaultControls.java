@@ -225,16 +225,16 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Config<T> defaults(T stopBefore) {
+		public Config<T> defaults(T stopAt) {
 			for (T control : defaults) {
-				if (stopBefore != null && control == stopBefore) {
-					return this;
-				}
 				if (control == null) {
 					separator();
 				}
 				else {
 					add(control);
+				}
+				if (stopAt != null && control == stopAt) {
+					break;
 				}
 			}
 
