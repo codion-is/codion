@@ -527,7 +527,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	protected abstract void initializeUI();
 
 	/**
-	 * Configures the popup menu controls.<br>
+	 * Configures the controls.<br>
 	 * Note that the {@link Controls.Config} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
 	 * <pre>
@@ -535,6 +535,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *           .separator()
 	 *           .control(createCustomControl()))
 	 * </pre>
+	 * Defaults:
+	 * <ul>
+	 *   <li>{@link EntityEditPanelControl#INSERT EntityEditPanelControl#INSERT}</li>
+	 *   <li>{@link EntityEditPanelControl#UPDATE EntityEditPanelControl#UPDATE}</li>
+	 *   <li>{@link EntityEditPanelControl#DELETE EntityEditPanelControl#DELETE}</li>
+	 *   <li>{@link EntityEditPanelControl#CLEAR EntityEditPanelControl#CLEAR}</li>
+	 * </ul>
 	 * @param controlsConfig provides access to the controls configuration
 	 * @see Controls.Config#clear()
 	 */
