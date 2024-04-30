@@ -852,10 +852,6 @@ public class EntityTablePanel extends JPanel {
 	 * 	 <li>{@link TableControl#EDIT_SELECTED_ATTRIBUTE TableControl#EDIT_SELECTED_ATTRIBUTE}</li>
 	 * 	 <li>Separator</li>
 	 * 	 <li>{@link TableControl#PRINT TableControl#PRINT}</li>
-	 * 	 <li>{@link TableControl#CLEAR_SELECTION TableControl#CLEAR_SELECTION}</li>
-	 * 	 <li>Separator</li>
-	 * 	 <li>{@link TableControl#MOVE_SELECTION_UP TableControl#MOVE_SELECTION_UP}</li>
-	 * 	 <li>{@link TableControl#MOVE_SELECTION_DOWN TableControl#MOVE_SELECTION_DOWN}</li>
 	 * 	 <li>Separator</li>
 	 * 	 <li>{@link TableControl#ADDITIONAL_TOOLBAR_CONTROLS TableControl#ADDITIONAL_TOOLBAR_CONTROLS}</li>
 	 * </ul>
@@ -1730,10 +1726,6 @@ public class EntityTablePanel extends JPanel {
 						editPanel == null ? TableControl.EDIT_SELECTED_ATTRIBUTE : null,
 						null,
 						TableControl.PRINT,
-						TableControl.CLEAR_SELECTION,
-						null,
-						TableControl.MOVE_SELECTION_UP,
-						TableControl.MOVE_SELECTION_DOWN,
 						null,
 						TableControl.ADDITIONAL_TOOLBAR_CONTROLS
 		));
