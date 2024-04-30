@@ -135,6 +135,7 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
 |kbd:[Ctrl + Shift + &#x2190;/&#x2192;]|Move selected column
 |kbd:[Ctrl + &#x002B;/&#x2212;]|Resize selected column
+|kbd:[Alt + Shift + &#x2191;/&#x2193;]|Move selection
 |kbd:[Ctrl + G]|Show popup menu
 |kbd:[Ctrl + P]|Print (if available)
 |kbd:[F5]|Refresh, when condition panel is visible and button is enabled

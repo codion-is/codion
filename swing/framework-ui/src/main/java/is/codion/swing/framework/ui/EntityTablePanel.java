@@ -207,6 +207,16 @@ public class EntityTablePanel extends JPanel {
 		 */
 		SELECT_FILTER_PANEL(keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
+		 * Moves the selection up.<br>
+		 * Default: ALT-SHIFT-UP
+		 */
+		MOVE_SELECTION_UP(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
+		/**
+		 * Moves the selection down.<br>
+		 * Default: ALT-SHIFT-DOWN
+		 */
+		MOVE_SELECTION_DOWN(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
+		/**
 		 * Triggers the {@link TableControl#PRINT} control.<br>
 		 * Default: CTRL-P
 		 */
@@ -815,6 +825,16 @@ public class EntityTablePanel extends JPanel {
 						KeyEvents.builder(configuration.shortcuts.keyStroke(DELETE).get())
 										.action(control)
 										.enable(table));
+		control(TableControl.MOVE_SELECTION_UP).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(MOVE_SELECTION_UP).get())
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(control)
+										.enable(tablePanel));
+		control(TableControl.MOVE_SELECTION_DOWN).optional().ifPresent(control ->
+						KeyEvents.builder(configuration.shortcuts.keyStroke(MOVE_SELECTION_DOWN).get())
+										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.action(control)
+										.enable(tablePanel));
 		if (configuration.includeEntityMenu) {
 			KeyEvents.builder(configuration.shortcuts.keyStroke(DISPLAY_ENTITY_MENU).get())
 							.action(Control.control(this::showEntityMenu))
@@ -1542,8 +1562,8 @@ public class EntityTablePanel extends JPanel {
 			controls.get(TableControl.SELECT_FILTER_PANEL).mapNull(this::createSelectFilterPanelControl);
 		}
 		controls.get(TableControl.CLEAR_SELECTION).mapNull(this::createClearSelectionControl);
-		controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionDownControl);
-		controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionUpControl);
+		controls.get(TableControl.MOVE_SELECTION_UP).mapNull(this::createMoveSelectionUpControl);
+		controls.get(TableControl.MOVE_SELECTION_DOWN).mapNull(this::createMoveSelectionDownControl);
 		controls.get(TableControl.COPY_CELL).mapNull(this::createCopyCellControl);
 		controls.get(TableControl.COPY_ROWS).mapNull(this::createCopyRowsControl);
 		controls.get(TableControl.COPY_CONTROLS).mapNull(this::createCopyControls);

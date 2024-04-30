@@ -37,6 +37,7 @@ Codion Change Log
 - EntityEditComponentPanel bug fixed, modified indicator now also added to labels of components set directly via component().set().
 - EntityEditComponentPanel bug fixed, createLabel() no longer prevents subsequent component creation.
 - EntityTablePanel, selection controls removed from default toolbar.
+- EntityTablePanel, keyboard shortcuts added for moving the selection.
 
 ## 0.17.43
 ### is.codion.common.core

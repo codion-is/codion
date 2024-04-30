@@ -809,6 +809,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |increment_decrement|Increment/decrement based to cursor position|Hækka/læækka út frá staðsetningu bendils
 |move_focus_to_table|Move focus to table|Færa fókus í töflu
 |move_selected_column|Move selected column|Færa valinn dálk
+|move_selection|Move selection|Færa val
 |navigate_left_right|Navigate left/right|Flakka hægri/vinstri
 |navigate_up_down|Navigate up/down|Flakka upp/niður
 |navigation|Navigation|Flakk

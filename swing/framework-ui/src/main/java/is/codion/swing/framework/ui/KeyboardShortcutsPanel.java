@@ -126,6 +126,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.addAll(new JLabel(MESSAGES.getString("copy_selected_cell")), new JLabel(CTRL + ALT + "C"))
 						.addAll(new JLabel(MESSAGES.getString("move_selected_column")), new JLabel(CTRL + SHIFT + LEFT_RIGHT))
 						.addAll(new JLabel(MESSAGES.getString("resize_selected_column")), new JLabel(CTRL + "+/-"))
+						.addAll(new JLabel(MESSAGES.getString("move_selection")), new JLabel(ALT + SHIFT + UP + "/" + DOWN))
 						.addAll(new JLabel(MESSAGES.getString("show_popup_menu")), new JLabel(CTRL + "G"))
 						.addAll(new JLabel(MESSAGES.getString("print")), new JLabel(CTRL + "P"))
 						.addAll(new JLabel(MESSAGES.getString("refresh_button")), new JLabel("F5"))
