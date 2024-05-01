@@ -81,7 +81,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/model/TrackTableModel.ja
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookMessages.java[lines=19..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookResources.java[lines=19..-1]
 ----
 
 [#_main_application_model]

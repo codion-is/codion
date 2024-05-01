@@ -23,10 +23,10 @@ tasks.register("copyModuleDependencyGraphs") {
     }
 }
 
-tasks.register("generateI18nPage") {
+tasks.register("generateI18nValuesPage") {
     group "documentation"
     doLast {
-        def file = file("src/docs/asciidoc/technical/i18n.adoc")
+        def file = file("src/docs/asciidoc/technical/i18n-values.adoc")
         def moduleFiles = new LinkedHashMap<>()
         frameworkModules.each {
             def files = new ArrayList<>()
@@ -44,7 +44,7 @@ tasks.register("generateI18nPage") {
 }
 
 asciidoctor {
-    dependsOn copyModuleDependencyGraphs, generateI18nPage
+    dependsOn copyModuleDependencyGraphs, generateI18nValuesPage
     // since the sources included in the docs may have changed, there"s definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"))

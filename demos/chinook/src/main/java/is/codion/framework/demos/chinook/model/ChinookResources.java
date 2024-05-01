@@ -28,10 +28,11 @@ import java.util.Locale;
  */
 public final class ChinookResources implements Resources {
 
-	private static final Locale LOCALE_EN = new Locale("en", "EN");
-	private static final String FRAMEWORK_MESSAGES = FrameworkMessages.class.getName();
+	private static final String FRAMEWORK_MESSAGES =
+					FrameworkMessages.class.getName();
 
-	private final boolean english = Locale.getDefault().equals(LOCALE_EN);
+	private final boolean english = Locale.getDefault()
+					.equals(new Locale("en", "EN"));
 
 	@Override
 	public String getString(String baseBundleName, String key, String defaultString) {

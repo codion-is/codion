@@ -37,7 +37,7 @@ public final class I18n {
 
 	public String toAsciidoc() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("= Internationalization (i18n)\n\n");
+		builder.append("= Values\n\n");
 		builder.append("Overview of the available i18n properties files and their keys and values.\n\n");
 		moduleResources.forEach((module, resources) -> {
 			builder.append("== ").append(module).append("\n\n");
