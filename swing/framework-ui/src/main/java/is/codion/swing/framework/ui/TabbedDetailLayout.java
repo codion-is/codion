@@ -52,7 +52,10 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -256,19 +259,19 @@ public final class TabbedDetailLayout implements DetailLayout {
 		keyboardShortcuts.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(new ResizeHorizontally(detailPanel, true, false))));
+										.action(new ResizeAction(detailPanel, true, false))));
 		keyboardShortcuts.keyStroke(RESIZE_LEFT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(new ResizeHorizontally(detailPanel, false, false))));
+										.action(new ResizeAction(detailPanel, false, false))));
 		keyboardShortcuts.keyStroke(COLLAPSE).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(new ResizeHorizontally(detailPanel, true, true))));
+										.action(new ResizeAction(detailPanel, true, true))));
 		keyboardShortcuts.keyStroke(EXPAND).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.action(new ResizeHorizontally(detailPanel, false, true))));
+										.action(new ResizeAction(detailPanel, false, true))));
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -317,6 +320,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 						.dividerSize(GAP.get() * 2)
 						.resizeWeight(splitPaneResizeWeight)
 						.leftComponent(mainPanel)
+						.propertyChangeListener(new ActivateWhenDetailHidden())
 						.build();
 	}
 
@@ -364,13 +368,28 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 	}
 
-	private static final class ResizeHorizontally extends AbstractAction {
+	private final class ActivateWhenDetailHidden implements PropertyChangeListener {
+
+		private static final String DIVIDER_LOCATION = "dividerLocation";
+
+		@Override
+		public void propertyChange(PropertyChangeEvent changeEvent) {
+			if (DIVIDER_LOCATION.equals(changeEvent.getPropertyName())) {
+				JSplitPane splitPane = (JSplitPane) changeEvent.getSource();
+				if (Objects.equals(changeEvent.getNewValue(), splitPane.getMaximumDividerLocation())) {
+					entityPanel.activate();
+				}
+			}
+		}
+	}
+
+	private static final class ResizeAction extends AbstractAction {
 
 		private final EntityPanel panel;
 		private final boolean right;
 		private final boolean expand;
 
-		private ResizeHorizontally(EntityPanel panel, boolean right, boolean expand) {
+		private ResizeAction(EntityPanel panel, boolean right, boolean expand) {
 			super("Resize " + (right ? "right" : "left"));
 			this.panel = panel;
 			this.right = right;
@@ -383,8 +402,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 							resizePanel(parentPanel, right, expand));
 		}
 
-		private static void resizePanel(EntityPanel panel, boolean right, boolean expand) {
-			TabbedDetailLayout detailLayout = panel.detailLayout();
+		private static void resizePanel(EntityPanel parentPanel, boolean right, boolean expand) {
+			TabbedDetailLayout detailLayout = parentPanel.detailLayout();
 			JSplitPane splitPane = detailLayout.splitPane;
 			if (expand) {
 				expand(splitPane, right);
