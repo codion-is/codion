@@ -2031,6 +2031,7 @@ public class EntityTablePanel extends JPanel {
 			this.referentialIntegrityErrorHandling = ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 			this.refreshButtonVisible = RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE;
 			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selectionModel());
+			this.includeSummaryPanel = includeSummaryPanel && containsSummaryModels(tablePanel.tableModel);
 		}
 
 		private Config(Config config) {
@@ -2316,6 +2317,13 @@ public class EntityTablePanel extends JPanel {
 			return editAttributeSelection == EditAttributeSelection.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
 							EDIT_SELECTED_ATTRIBUTE;
+		}
+
+		private boolean containsSummaryModels(SwingEntityTableModel tableModel) {
+			return tableModel.columnModel().columns().stream()
+							.map(FilteredTableColumn::getIdentifier)
+							.map(tableModel.summaryModel()::summaryModel)
+							.anyMatch(Optional::isPresent);
 		}
 
 		private static final class EditMenuAttributeValidator implements Value.Validator<Set<Attribute<?>>> {
