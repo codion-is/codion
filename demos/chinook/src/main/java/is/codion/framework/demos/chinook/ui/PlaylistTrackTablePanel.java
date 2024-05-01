@@ -20,6 +20,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
@@ -29,7 +30,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory())
 						// No confirmation needed when deleting
-						.deleteConfirmer(dialogOwner -> true)
+						.deleteConfirmer(Confirmer.NONE)
 						.includeEditControl(false));
 		configureTrackConditionPanel();
 	}
