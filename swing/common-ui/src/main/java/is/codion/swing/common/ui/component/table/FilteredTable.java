@@ -1029,14 +1029,24 @@ public final class FilteredTable<R, C> extends JTable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT)) {
+			if (move(e)) {
 				moveSelectedColumn(e.getKeyCode() == VK_LEFT);
 				e.consume();
 			}
-			else if (e.isControlDown() && (RESIZE_KEYS.contains(e.getKeyCode()))) {
+			else if (resize(e)) {
 				resizeSelectedColumn(e.getKeyCode() == VK_PLUS || e.getKeyCode() == VK_ADD);
 				e.consume();
 			}
+		}
+
+		private static boolean move(KeyEvent e) {
+			return e.isControlDown() && e.isShiftDown() && !e.isAltDown() &&
+							(e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT);
+		}
+
+		private static boolean resize(KeyEvent e) {
+			return e.isControlDown() && !e.isShiftDown() && !e.isAltDown() &&
+							(RESIZE_KEYS.contains(e.getKeyCode()));
 		}
 
 		private void moveSelectedColumn(boolean left) {
