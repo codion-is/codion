@@ -220,10 +220,10 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
 	 * @param entityModel the EntityModel
-	 * @param configuration provides access to the panel configuration
+	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, Consumer<Config> configuration) {
-		this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, configuration);
+	public EntityPanel(SwingEntityModel entityModel, Consumer<Config> config) {
+		this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, config);
 	}
 
 	/**
@@ -239,10 +239,10 @@ public class EntityPanel extends JPanel {
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
 	 * @param entityModel the EntityModel
 	 * @param editPanel the edit panel
-	 * @param configuration provides access to the panel configuration
+	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
-		this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, configuration);
+	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, Consumer<Config> config) {
+		this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, config);
 	}
 
 	/**
@@ -258,10 +258,10 @@ public class EntityPanel extends JPanel {
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
 	 * @param entityModel the EntityModel
 	 * @param tablePanel the table panel
-	 * @param configuration provides access to the panel configuration
+	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, Consumer<Config> configuration) {
-		this(entityModel, null, tablePanel, configuration);
+	public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, Consumer<Config> config) {
+		this(entityModel, null, tablePanel, config);
 	}
 
 	/**
@@ -279,10 +279,10 @@ public class EntityPanel extends JPanel {
 	 * @param entityModel the EntityModel
 	 * @param editPanel the edit panel
 	 * @param tablePanel the table panel
-	 * @param configuration provides access to the panel configuration
+	 * @param config provides access to the panel configuration
 	 */
 	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
-										 Consumer<Config> configuration) {
+										 Consumer<Config> config) {
 		requireNonNull(entityModel, "entityModel");
 		this.entityModel = entityModel;
 		this.editPanel = editPanel;
@@ -291,8 +291,8 @@ public class EntityPanel extends JPanel {
 		this.mainPanel = borderLayoutPanel()
 						.minimumSize(new Dimension(0, 0))
 						.build();
-		this.configuration = configure(configuration);
-		this.detailLayout = this.configuration.detailLayout.apply(this);
+		this.configuration = configure(config);
+		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
 		this.editPanelState = Value.nonNull(EMBEDDED)
 						.initialValue(this.configuration.editPanelState)

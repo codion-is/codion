@@ -45,8 +45,8 @@ abstract class ChartTablePanel extends EntityTablePanel {
 	}
 
 	protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
-														String chartTitle, Consumer<Config> configuration) {
-		super(tableModel, configuration);
+														String chartTitle, Consumer<Config> config) {
+		super(tableModel, config);
 		setPreferredSize(new Dimension(200, 200));
 		chartPanel = createPieChartPanel(this, chartDataset, chartTitle);
 	}

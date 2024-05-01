@@ -180,23 +180,23 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
 	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
-	 * @param configuration provides access to the panel configuration
+	 * @param config provides access to the panel configuration
 	 */
-	public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> configuration) {
-		this(editModel, new EntityComponents(editModel.entityDefinition()), configuration);
+	public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
+		this(editModel, new EntityComponents(editModel.entityDefinition()), config);
 	}
 
 	/**
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
 	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
 	 * @param entityComponents the entity components instance to use when creating components
-	 * @param configuration provides access to the panel configuration
+	 * @param config provides access to the panel configuration
 	 */
-	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> configuration) {
+	public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, Consumer<Config> config) {
 		super(editModel, entityComponents);
-		this.configuration = configure(configuration);
+		this.configuration = configure(config);
 		this.controlsConfiguration = createControlsConfiguration();
-		this.active = State.state(!this.configuration.focusActivation);
+		this.active = State.state(!configuration.focusActivation);
 		this.controls = createControls();
 		setupFocusActivation();
 		setupKeyboardActions();

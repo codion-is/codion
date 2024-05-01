@@ -449,14 +449,14 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Initializes a new EntityTablePanel instance
 	 * @param tableModel the SwingEntityTableModel instance
-	 * @param configuration provides access to the table panel configuration
+	 * @param config provides access to the table panel configuration
 	 */
-	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
+	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = null;
 		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(configuration);
-		this.table = this.configuration.tableBuilder.build();
+		this.configuration = configure(config);
+		this.table = configuration.tableBuilder.build();
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuConfiguration = createPopupMenuConfiguration();
@@ -476,14 +476,14 @@ public class EntityTablePanel extends JPanel {
 	 * Initializes a new EntityTablePanel instance
 	 * @param tableModel the SwingEntityTableModel instance
 	 * @param editPanel the edit panel
-	 * @param configuration provides access to the table panel configuration
+	 * @param config provides access to the table panel configuration
 	 */
-	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
+	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> config) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
 		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(configuration);
-		this.table = this.configuration.tableBuilder.build();
+		this.configuration = configure(config);
+		this.table = configuration.tableBuilder.build();
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuConfiguration = createPopupMenuConfiguration();
