@@ -281,7 +281,7 @@ public final class FilteredTable<R, C> extends JTable {
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder.cellRendererFactory);
 		configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
-		bindEvents();
+		bindEvents(builder.shortcuts);
 	}
 
 	@Override
@@ -754,22 +754,33 @@ public final class FilteredTable<R, C> extends JTable {
 		return autoResizeComboBoxModel;
 	}
 
-	private void bindEvents() {
+	private void bindEvents(KeyboardShortcuts<FilteredTableControl> shortcuts) {
 		tableModel.selectionModel().selectedIndexesEvent().addConsumer(new ScrollToSelected());
 		tableModel.filterModel().conditionChangedEvent().addListener(getTableHeader()::repaint);
 		tableModel.searchModel().currentResult().addListener(this::repaint);
 		tableModel.sortModel().sortingChangedEvent().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilteredTableMouseListener());
-		addKeyListener(new MoveResizeColumnKeyListener());
-		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(COPY_CELL).get())
-						.action(createCopyCellControl())
-						.enable(this);
-		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_SORT_COLUMN_ADD).get())
-						.action(control(() -> toggleColumnSorting(getSelectedColumn(), true)))
-						.enable(this);
-		KeyEvents.builder(DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(TOGGLE_SORT_COLUMN).get())
-						.action(control(() -> toggleColumnSorting(getSelectedColumn(), false)))
-						.enable(this);
+		addKeyListener(new MoveResizeColumnKeyListener(shortcuts));
+		shortcuts.keyStroke(COPY_CELL).optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(createCopyCellControl())
+										.enable(this));
+		shortcuts.keyStroke(TOGGLE_SORT_COLUMN_ADD).optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(createToggleSortColumnAddControl())
+										.enable(this));
+		shortcuts.keyStroke(TOGGLE_SORT_COLUMN).optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(createToggleSortColumnControl())
+										.enable(this));
+	}
+
+	private Control createToggleSortColumnAddControl() {
+		return control(() -> toggleColumnSorting(getSelectedColumn(), true));
+	}
+
+	private Control createToggleSortColumnControl() {
+		return control(() -> toggleColumnSorting(getSelectedColumn(), false));
 	}
 
 	private static Stream<JComponent> columnComponents(FilteredTableColumn<?> column) {
@@ -939,6 +950,12 @@ public final class FilteredTable<R, C> extends JTable {
 		 * @return this builder instance
 		 */
 		Builder<R, C> autoResizeMode(int autoResizeMode);
+
+		/**
+		 * @param shortcuts provides this tables {@link KeyboardShortcuts} instance.
+		 * @return this builder instance
+		 */
+		Builder<R, C> keyStrokes(Consumer<KeyboardShortcuts<FilteredTableControl>> shortcuts);
 	}
 
 	private static final class DefaultBuilder<R, C>
@@ -946,6 +963,7 @@ public final class FilteredTable<R, C> extends JTable {
 					implements Builder<R, C> {
 
 		private final FilteredTableModel<R, C> tableModel;
+		private final KeyboardShortcuts<FilteredTableControl> shortcuts = DEFAULT_KEYBOARD_SHORTCUTS.copy();
 
 		private ColumnConditionPanel.Factory<C> filterPanelFactory;
 		private FilteredTableCellRendererFactory<C> cellRendererFactory;
@@ -1032,6 +1050,12 @@ public final class FilteredTable<R, C> extends JTable {
 		}
 
 		@Override
+		public Builder<R, C> keyStrokes(Consumer<KeyboardShortcuts<FilteredTableControl>> shortcuts) {
+			requireNonNull(shortcuts).accept(this.shortcuts);
+			return this;
+		}
+
+		@Override
 		protected FilteredTable<R, C> createComponent() {
 			return new FilteredTable<>(this);
 		}
@@ -1047,10 +1071,17 @@ public final class FilteredTable<R, C> extends JTable {
 
 	private final class MoveResizeColumnKeyListener extends KeyAdapter {
 
-		private final KeyStroke moveLeft = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(MOVE_COLUMN_LEFT).get();
-		private final KeyStroke moveRight = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(MOVE_COLUMN_RIGHT).get();
-		private final KeyStroke increaseSize = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(INCREASE_COLUMN_SIZE).get();
-		private final KeyStroke decreaseSize = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(DECREASE_COLUMN_SIZE).get();
+		private final KeyStroke moveLeft;
+		private final KeyStroke moveRight;
+		private final KeyStroke increaseSize;
+		private final KeyStroke decreaseSize;
+
+		private MoveResizeColumnKeyListener(KeyboardShortcuts<FilteredTableControl> shortcuts) {
+			moveLeft = shortcuts.keyStroke(MOVE_COLUMN_LEFT).get();
+			moveRight = shortcuts.keyStroke(MOVE_COLUMN_RIGHT).get();
+			increaseSize = shortcuts.keyStroke(INCREASE_COLUMN_SIZE).get();
+			decreaseSize = shortcuts.keyStroke(DECREASE_COLUMN_SIZE).get();
+		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
