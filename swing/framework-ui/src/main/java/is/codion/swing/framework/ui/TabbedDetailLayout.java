@@ -186,6 +186,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		if (splitPane != null) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
 		}
+		entityPanel.activateEvent().addListener(new ShowIfHidden());
 		entityPanel.detailPanels().forEach(this::bindEvents);
 		splitPane = createSplitPane(entityPanel.mainPanel());
 		tabbedPane = createTabbedPane(entityPanel.detailPanels());
@@ -334,6 +335,16 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		return builder.build();
+	}
+
+	private final class ShowIfHidden implements Runnable {
+
+		@Override
+		public void run() {
+			if (splitPane.getDividerLocation() == splitPane.getMinimumDividerLocation()) {
+				splitPane.setDividerLocation(splitPaneResizeWeight);
+			}
+		}
 	}
 
 	private final class ActivateDetailPanel implements Control.Command {

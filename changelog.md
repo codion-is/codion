@@ -53,6 +53,7 @@ Codion Change Log
 - TabbedDetailLayout, now shows the detail panel if hidden when activated.
 - EntityTablePanel.createControls() bug fixed, now only relies on configuration.
 - EntityTablePanel.Config bug fixed, now initializes includeSummaryPanel to false if no summary models are available.
+- TabbedDetailLayout, now shows the parent panel if hidden when activated.
 
 ## 0.17.43
 ### is.codion.common.core
