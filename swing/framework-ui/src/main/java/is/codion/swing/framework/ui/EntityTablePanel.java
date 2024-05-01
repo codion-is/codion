@@ -454,9 +454,9 @@ public class EntityTablePanel extends JPanel {
 	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> configuration) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
 		this.editPanel = null;
-		this.table = createTable();
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
+		this.table = this.configuration.tableBuilder.build();
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuConfiguration = createPopupMenuConfiguration();
@@ -480,10 +480,10 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> configuration) {
 		this.tableModel = requireNonNull(tableModel, "tableModel");
-		this.table = createTable();
 		this.editPanel = validateEditModel(requireNonNull(editPanel, "editPanel"));
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(configuration);
+		this.table = this.configuration.tableBuilder.build();
 		this.controls = createControls();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuConfiguration = createPopupMenuConfiguration();
@@ -494,6 +494,10 @@ public class EntityTablePanel extends JPanel {
 	 * @return the table
 	 */
 	public final FilteredTable<Entity, Attribute<?>> table() {
+		if (table == null) {
+			throw new IllegalStateException("The table is not initialized until after configuration has finished");
+		}
+
 		return table;
 	}
 
@@ -895,15 +899,6 @@ public class EntityTablePanel extends JPanel {
 	protected final void configurePopupMenu(Consumer<Controls.Config<EntityTablePanelControl>> popupMenuConfig) {
 		throwIfInitialized();
 		requireNonNull(popupMenuConfig).accept(this.popupMenuConfiguration);
-	}
-
-	/**
-	 * Creates a TableCellRenderer to use for the given attribute in this EntityTablePanel
-	 * @param attribute the attribute
-	 * @return the TableCellRenderer for the given attribute
-	 */
-	protected TableCellRenderer createTableCellRenderer(Attribute<?> attribute) {
-		return EntityTableCellRenderer.builder(tableModel, attribute).build();
 	}
 
 	/**
@@ -1371,13 +1366,6 @@ public class EntityTablePanel extends JPanel {
 		return !tableModel.editModel().readOnly().get() && tableModel.editModel().deleteEnabled().get();
 	}
 
-	private FilteredTable<Entity, Attribute<?>> createTable() {
-		return FilteredTable.builder(tableModel)
-						.cellRendererFactory(new EntityTableCellRendererFactory())
-						.onBuild(filteredTable -> filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT))
-						.build();
-	}
-
 	private Control createConditionRefreshControl() {
 		return Control.builder(tableModel::refresh)
 						.enabled(tableModel.conditionChanged())
@@ -1813,14 +1801,6 @@ public class EntityTablePanel extends JPanel {
 		return new Point(x, y + table.getRowHeight() / 2);
 	}
 
-	private final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
-
-		@Override
-		public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
-			return createTableCellRenderer(column.getIdentifier());
-		}
-	}
-
 	private final class HeaderRenderer implements TableCellRenderer {
 
 		private final TableCellRenderer wrappedRenderer;
@@ -1844,6 +1824,20 @@ public class EntityTablePanel extends JPanel {
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
 			return component;
+		}
+	}
+
+	private static final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
+
+		private final SwingEntityTableModel tableModel;
+
+		private EntityTableCellRendererFactory(SwingEntityTableModel tableModel) {
+			this.tableModel = tableModel;
+		}
+
+		@Override
+		public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
+			return EntityTableCellRenderer.builder(tableModel, column.getIdentifier()).build();
 		}
 	}
 
@@ -1992,6 +1986,7 @@ public class EntityTablePanel extends JPanel {
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editComponentFactories;
 		private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> cellEditorComponentFactories;
+		private final FilteredTable.Builder<Entity, Attribute<?>> tableBuilder;
 
 		private EntityConditionPanelFactory conditionPanelFactory;
 		private boolean includeSouthPanel = true;
@@ -2020,6 +2015,9 @@ public class EntityTablePanel extends JPanel {
 		private Config(EntityTablePanel tablePanel) {
 			this.tablePanel = tablePanel;
 			this.entityDefinition = tablePanel.tableModel.entityDefinition();
+			this.tableBuilder = FilteredTable.builder(tablePanel.tableModel)
+							.cellRendererFactory(new EntityTableCellRendererFactory(tablePanel.tableModel))
+							.onBuild(filteredTable -> filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.shortcuts = KEYBOARD_SHORTCUTS.copy();
 			this.conditionPanelFactory = new EntityConditionPanelFactory(entityDefinition);
 			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
@@ -2037,6 +2035,7 @@ public class EntityTablePanel extends JPanel {
 		private Config(Config config) {
 			this.tablePanel = config.tablePanel;
 			this.entityDefinition = config.entityDefinition;
+			this.tableBuilder = config.tableBuilder;
 			this.shortcuts = config.shortcuts.copy();
 			this.editable = valueSet(config.editable.get());
 			this.conditionPanelFactory = config.conditionPanelFactory;
@@ -2069,6 +2068,16 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public EntityTablePanel tablePanel() {
 			return tablePanel;
+		}
+
+		/**
+		 * Provides access to the builder for the underlying {@link FilteredTable}
+		 * @param tableBuilder the table builder
+		 * @return this Config instance
+		 */
+		public Config configureTable(Consumer<FilteredTable.Builder<Entity, Attribute<?>>> tableBuilder) {
+			requireNonNull(tableBuilder).accept(this.tableBuilder);
+			return this;
 		}
 
 		/**

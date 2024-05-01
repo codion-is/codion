@@ -58,6 +58,7 @@ Codion Change Log
 - EntityTablePanel.Config bug fixed, now initializes includeSummaryPanel to false if no summary models are available.
 - TabbedDetailLayout, now shows the parent panel if hidden when activated.
 - TabbedDetailLayout.TabbedDetailLayoutControl.EXPAND_RIGHT and EXPAND_LEFT renamed COLLAPSE and EXPAND respectively, CTRL added to key event button combination, otherwise the table seemed to consume the key events.
+- EntityTablePanel.Config.configureTable() added, createTableCellRenderer() removed.
 
 ## 0.17.43
 ### is.codion.common.core
