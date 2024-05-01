@@ -27,6 +27,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
@@ -51,6 +52,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	protected void setupControls() {
 		control(PRINT).set(Control.builder(this::viewEmployeeReport)
 						.name("Employee Report")
+						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selectionModel().selectionNotEmpty())
 						.build());
 	}
