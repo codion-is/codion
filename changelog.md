@@ -49,6 +49,7 @@ Codion Change Log
 - KeyboardShortcutPanel bug fixed, now displays the correct Add mnemonic.
 - EntityEditPanel.configureControls() renamed setupControls() to prevent confusion. EntityTablePanel.configureControls() renamed setupControls() as well, for consistency.
 - EntityEditPanel, EntityTablePanel, EntityPanel, control setup refactored.
+- TabbedDetailLayout, keyboard shortcuts added for expanding the detail panel.
 
 ## 0.17.43
 ### is.codion.common.core

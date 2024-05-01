@@ -280,7 +280,6 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |confirm_exit_title|Exit?|Hætta?
 |confirm_insert|Insert record?|Vista færslu?
 |confirm_update|Update record?|Uppfæra færslu?
-|copy_cell|Copy Cell|Afrita Reit
 |copy_table_with_header|Copy Table With Header|Afrita Töflu Með Dálkaheitum
 |delete|Delete|Eyða
 |delete_current_tip|Delete current record|Eyða færslu
@@ -468,6 +467,7 @@ is/codion/swing/common/ui/component/table/FilteredTable_is_IS.properties
 
 |auto_resize|Auto-resize|Stærðarjafna
 |case_sensitive_search|Case-sensitive|Hástafanæmni
+|copy_cell|Copy Cell|Afrita Reit
 |regular_expression_search|Regular expression search|Leita með reglulegum segðum
 |reset|Reset|Frumstilla
 |reset_columns_description|Reset columns to their original location|Frumstilla dálka í upphaflega stöðu
@@ -802,6 +802,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |edit_value|Edit value|Breyta gildi
 |enable_disable_condition|Enable/disable column condition|Virkja/afvirkja leitarreit dálks
 |entity_field|Entity field (combo box or search field) with a new item or edit item control|Færslureitur (flettilisti eða leitarreitur) með aðgerð til að búa til nýja eða breyta færslu
+|expand_collapse|Expand/collapse|Stækka/minnka alveg
 |find_and_select_next|Find and select next|Finna og velja næstu
 |find_and_select_previous|Find and select previous|Finna og velja síðustu
 |find_next|Find next|Finna næstu
