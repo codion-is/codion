@@ -95,7 +95,7 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 2+|Resizing
 
 |kbd:[Shift + Alt + &#x2190;/&#x2192;]|Resize left/right
-|kbd:[Shift + Alt + &#x2191;/&#x2193;]|Expand/collapse
+|kbd:[Ctrl + Shift + Alt + SHIFT + &#x2190;/&#x2192;]|Expand/collapse
 |kbd:[Ctrl + Alt + E]|Toggle edit panel
 |===
 

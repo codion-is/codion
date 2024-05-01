@@ -123,15 +123,15 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 */
 		RESIZE_LEFT(keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
-		 * Expands the detail panel all the way to the right.<br>
-		 * Default key stroke: SHIFT-ALT-DOWN ARROW
+		 * Collapses the detail panel all the way to the right, hiding it.<br>
+		 * Default key stroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
-		EXPAND_RIGHT(keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
+		COLLAPSE(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK)),
 		/**
-		 * Expands the detail panel all the way to the left.<br>
-		 * Default key stroke: SHIFT-ALT-UP ARROW
+		 * Expands the detail panel all the way to the left, hiding the parent.<br>
+		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
-		EXPAND_LEFT(keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		EXPAND(keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 
 		private final KeyStroke defaultKeystroke;
 
@@ -261,11 +261,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeHorizontally(detailPanel, false, false))));
-		keyboardShortcuts.keyStroke(EXPAND_RIGHT).optional().ifPresent(keyStroke ->
+		keyboardShortcuts.keyStroke(COLLAPSE).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeHorizontally(detailPanel, true, true))));
-		keyboardShortcuts.keyStroke(EXPAND_LEFT).optional().ifPresent(keyStroke ->
+		keyboardShortcuts.keyStroke(EXPAND).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeHorizontally(detailPanel, false, true))));
@@ -368,32 +368,32 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		private final EntityPanel panel;
 		private final boolean right;
-		private final boolean expand;
+		private final boolean expandCollapse;
 
-		private ResizeHorizontally(EntityPanel panel, boolean right, boolean expand) {
+		private ResizeHorizontally(EntityPanel panel, boolean right, boolean expandCollapse) {
 			super("Resize " + (right ? "right" : "left"));
 			this.panel = panel;
 			this.right = right;
-			this.expand = expand;
+			this.expandCollapse = expandCollapse;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			panel.parentPanel().ifPresent(parentPanel ->
-							resizePanel(parentPanel, right, expand));
+							resizePanel(parentPanel, right, expandCollapse));
 		}
 
-		private static void resizePanel(EntityPanel panel, boolean right, boolean fully) {
+		private static void resizePanel(EntityPanel panel, boolean right, boolean expandCollapse) {
 			JSplitPane splitPane = panel.<TabbedDetailLayout>detailLayout().splitPane;
-			splitPane.setDividerLocation(newLocation(right, fully, splitPane));
+			splitPane.setDividerLocation(newLocation(right, expandCollapse, splitPane));
 		}
 
-		private static int newLocation(boolean right, boolean expand, JSplitPane splitPane) {
+		private static int newLocation(boolean right, boolean expandCollapse, JSplitPane splitPane) {
 			if (right) {
-				return expand ? splitPane.getMaximumDividerLocation() :
+				return expandCollapse ? splitPane.getMaximumDividerLocation() :
 								Math.min(splitPane.getDividerLocation() + RESIZE_AMOUNT, splitPane.getMaximumDividerLocation());
 			}
-			return expand ? splitPane.getMinimumDividerLocation() :
+			return expandCollapse ? splitPane.getMinimumDividerLocation() :
 							Math.max(splitPane.getDividerLocation() - RESIZE_AMOUNT, 0);
 		}
 	}
