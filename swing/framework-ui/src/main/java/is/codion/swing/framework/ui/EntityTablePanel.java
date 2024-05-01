@@ -2319,7 +2319,7 @@ public class EntityTablePanel extends JPanel {
 							EDIT_SELECTED_ATTRIBUTE;
 		}
 
-		private boolean containsSummaryModels(SwingEntityTableModel tableModel) {
+		private static boolean containsSummaryModels(SwingEntityTableModel tableModel) {
 			return tableModel.columnModel().columns().stream()
 							.map(FilteredTableColumn::getIdentifier)
 							.map(tableModel.summaryModel()::summaryModel)

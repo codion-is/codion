@@ -1040,13 +1040,15 @@ public final class FilteredTable<R, C> extends JTable {
 		}
 
 		private static boolean move(KeyEvent e) {
-			return e.isControlDown() && e.isShiftDown() && !e.isAltDown() &&
-							(e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT);
+			boolean modifiers = e.isControlDown() && e.isShiftDown() && !e.isAltDown();
+
+			return modifiers && (e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT);
 		}
 
 		private static boolean resize(KeyEvent e) {
-			return e.isControlDown() && !e.isShiftDown() && !e.isAltDown() &&
-							(RESIZE_KEYS.contains(e.getKeyCode()));
+			boolean modifiers = e.isControlDown() && !e.isShiftDown() && !e.isAltDown();
+
+			return modifiers && (RESIZE_KEYS.contains(e.getKeyCode()));
 		}
 
 		private void moveSelectedColumn(boolean left) {
