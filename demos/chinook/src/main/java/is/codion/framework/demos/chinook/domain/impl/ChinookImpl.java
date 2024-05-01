@@ -114,7 +114,10 @@ public final class ChinookImpl extends DefaultDomain {
 																		"WHERE track.albumid = album.albumid"),
 										Album.TAGS.define()
 														.column()
-														.columnClass(Array.class, new TagsConverter(), ResultSet::getArray))
+														.columnClass(Array.class, new TagsConverter(), ResultSet::getArray),
+										Album.RATING.define()
+														.subquery("SELECT AVG(rating) FROM chinook.track " +
+																		"WHERE track.albumid = album.albumid"))
 						.tableName("chinook.album")
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
@@ -313,6 +316,10 @@ public final class ChinookImpl extends DefaultDomain {
 										Track.BYTES.define()
 														.column()
 														.format(NumberFormat.getIntegerInstance()),
+										Track.RATING.define()
+														.column()
+														.nullable(false)
+														.valueRange(1, 10),
 										Track.UNITPRICE.define()
 														.column()
 														.nullable(false)

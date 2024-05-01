@@ -71,6 +71,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 		createIntegerField(Track.BYTES)
 						.columns(6);
+		createIntegerSpinner(Track.RATING)
+						.columns(2);
 		createTextField(Track.UNITPRICE)
 						.columns(4);
 
@@ -86,6 +88,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.build();
 
 		JPanel unitPricePanel = borderLayoutPanel()
+						.westComponent(createInputPanel(Track.RATING))
 						.eastComponent(createInputPanel(Track.UNITPRICE))
 						.build();
 

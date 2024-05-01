@@ -31,7 +31,9 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
+import is.codion.swing.framework.ui.component.EntityComponents;
 
+import javax.swing.JSpinner;
 import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
@@ -44,8 +46,11 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	public TrackTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
+						.editComponentFactory(Track.RATING, new RatingComponentFactory())
 						.editComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false))
 						.tableCellEditorFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true))
+						.configureTable(tableBuilder -> tableBuilder
+										.cellRendererFactory(new RatingCellRendererFactory(tableModel, Track.RATING)))
 						.includeLimitMenu(true));
 		configurePopupMenu(config -> config.clear()
 						.control(Control.builder(this::raisePriceOfSelected)
@@ -72,6 +77,19 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.title(BUNDLE.getString("amount"))
 						.validator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)
 						.show();
+	}
+
+	private static final class RatingComponentFactory
+					extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, JSpinner> {
+
+		@Override
+		public ComponentValue<Integer, JSpinner> componentValue(Attribute<Integer> attribute,
+																														SwingEntityEditModel editModel,
+																														Integer initialValue) {
+			EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
+
+			return inputComponents.integerSpinner(attribute).buildValue();
+		}
 	}
 
 	private static final class MinutesSecondsComponentFactory
