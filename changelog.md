@@ -51,6 +51,7 @@ Codion Change Log
 - EntityEditPanel, EntityTablePanel, EntityPanel, control setup refactored.
 - TabbedDetailLayout, keyboard shortcuts added for expanding the detail panel.
 - TabbedDetailLayout, now shows the detail panel if hidden when activated.
+- EntityTablePanel.createControls() bug fixed, now only relies on configuration.
 
 ## 0.17.43
 ### is.codion.common.core

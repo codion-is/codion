@@ -1521,10 +1521,10 @@ public class EntityTablePanel extends JPanel {
 		if (includeViewDependenciesControl()) {
 			controlMap.get(VIEW_DEPENDENCIES).set(createViewDependenciesControl());
 		}
-		if (summaryPanelScrollPane != null) {
+		if (configuration.includeSummaryPanel) {
 			controlMap.get(TOGGLE_SUMMARY_PANEL).set(createToggleSummaryPanelControl());
 		}
-		if (configuration.includeConditionPanel && conditionPanel != null) {
+		if (configuration.includeConditionPanel) {
 			controlMap.get(CONDITION_PANEL_VISIBLE).set(createConditionPanelControl());
 			controlMap.get(TOGGLE_CONDITION_PANEL).set(createToggleConditionPanelControl());
 			controlMap.get(SELECT_CONDITION_PANEL).set(createSelectConditionPanelControl());
