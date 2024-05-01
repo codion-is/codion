@@ -30,5 +30,5 @@ public interface Resources {
 	 * @param defaultString the default string
 	 * @return a value for overriding the default string or the default string if no override is provided
 	 */
-	String get(String baseBundleName, String key, String defaultString);
+	String getString(String baseBundleName, String key, String defaultString);
 }

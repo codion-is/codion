@@ -53,7 +53,7 @@ final class DefaultMessageBundle extends ResourceBundle implements MessageBundle
 							baseBundleName + ", key " + key, baseBundleName, key);
 		}
 
-		return RESOURCES.get(baseBundleName, key, bundle.getString(key));
+		return RESOURCES.getString(baseBundleName, key, bundle.getString(key));
 	}
 
 	private static Resources resources() {
@@ -78,7 +78,7 @@ final class DefaultMessageBundle extends ResourceBundle implements MessageBundle
 	private static final class DefaultResources implements Resources {
 
 		@Override
-		public String get(String baseBundleName, String key, String defaultString) {
+		public String getString(String baseBundleName, String key, String defaultString) {
 			return defaultString;
 		}
 	}

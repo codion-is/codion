@@ -21,7 +21,7 @@ package is.codion.common.resource;
 public final class TestResources implements Resources {
 
 	@Override
-	public String get(String baseBundleName, String key, String defaultString) {
+	public String getString(String baseBundleName, String key, String defaultString) {
 		return defaultString + " override";
 	}
 }

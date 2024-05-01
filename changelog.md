@@ -11,6 +11,7 @@ Codion Change Log
 - is.codion.common.resources renamed resource.
 - Value.mapNull() removed, no longer used.
 - Messages renamed Resources. DefaultMessageBundle now throws correct exception in case of a missing resource.
+- Resources.get() renamed getString(), consistent with ResourceBundle.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 ### is.codion.swing.common.model

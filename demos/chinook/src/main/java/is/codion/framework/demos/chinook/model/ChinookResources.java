@@ -34,7 +34,7 @@ public final class ChinookResources implements Resources {
 	private final boolean english = Locale.getDefault().equals(LOCALE_EN);
 
 	@Override
-	public String get(String baseBundleName, String key, String defaultString) {
+	public String getString(String baseBundleName, String key, String defaultString) {
 		if (english && baseBundleName.equals(FRAMEWORK_MESSAGES)) {
 			switch (key) {
 				case "insert":
