@@ -96,6 +96,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 
 /**
  * A JTable implementation for {@link FilteredTableModel}.
@@ -136,6 +137,26 @@ public final class FilteredTable<R, C> extends JTable {
 	 * The controls.
 	 */
 	public enum FilteredTableControl implements KeyboardShortcuts.Shortcut {
+		/**
+		 * Moves the selected column to the left.<br>
+		 * Default key stroke: CTRL-SHIFT-LEFT
+		 */
+		MOVE_COLUMN_LEFT(keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
+		/**
+		 * Moves the selected column to the right.<br>
+		 * Default key stroke: CTRL-SHIFT-RIGHT
+		 */
+		MOVE_COLUMN_RIGHT(keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK)),
+		/**
+		 * Decreases the size of the selected column.<br>
+		 * Default key stroke: CTRL-SUBTRACT
+		 */
+		DECREASE_COLUMN_SIZE(keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK)),
+		/**
+		 * Increases the size of the selected column.<br>
+		 * Default key stroke: CTRL-ADD
+		 */
+		INCREASE_COLUMN_SIZE(keyStroke(VK_ADD, CTRL_DOWN_MASK)),
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C
@@ -199,7 +220,6 @@ public final class FilteredTable<R, C> extends JTable {
 	private static final String RESIZE_ALL_COLUMNS = "resize_all_columns";
 	private static final int SEARCH_FIELD_MINIMUM_WIDTH = 100;
 	private static final int COLUMN_RESIZE_AMOUNT = 10;
-	private static final List<Integer> RESIZE_KEYS = asList(VK_PLUS, VK_ADD, VK_MINUS, VK_SUBTRACT);
 
 	/**
 	 * The table model
@@ -1027,28 +1047,31 @@ public final class FilteredTable<R, C> extends JTable {
 
 	private final class MoveResizeColumnKeyListener extends KeyAdapter {
 
+		private final KeyStroke moveLeft = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(MOVE_COLUMN_LEFT).get();
+		private final KeyStroke moveRight = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(MOVE_COLUMN_RIGHT).get();
+		private final KeyStroke increaseSize = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(INCREASE_COLUMN_SIZE).get();
+		private final KeyStroke decreaseSize = DEFAULT_KEYBOARD_SHORTCUTS.keyStroke(DECREASE_COLUMN_SIZE).get();
+
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (move(e)) {
-				moveSelectedColumn(e.getKeyCode() == VK_LEFT);
+				moveSelectedColumn(e.getKeyCode() == moveLeft.getKeyCode());
 				e.consume();
 			}
 			else if (resize(e)) {
-				resizeSelectedColumn(e.getKeyCode() == VK_PLUS || e.getKeyCode() == VK_ADD);
+				resizeSelectedColumn(e.getKeyCode() == increaseSize.getKeyCode());
 				e.consume();
 			}
 		}
 
-		private static boolean move(KeyEvent e) {
-			boolean modifiers = e.isControlDown() && e.isShiftDown() && !e.isAltDown();
-
-			return modifiers && (e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT);
+		private boolean move(KeyEvent e) {
+			return (moveLeft != null && moveLeft.equals(getKeyStrokeForEvent(e))) ||
+							(moveRight != null && moveRight.equals(getKeyStrokeForEvent(e)));
 		}
 
-		private static boolean resize(KeyEvent e) {
-			boolean modifiers = e.isControlDown() && !e.isShiftDown() && !e.isAltDown();
-
-			return modifiers && (RESIZE_KEYS.contains(e.getKeyCode()));
+		private boolean resize(KeyEvent e) {
+			return (decreaseSize != null && decreaseSize.equals(getKeyStrokeForEvent(e))) ||
+							(increaseSize != null && increaseSize.equals(getKeyStrokeForEvent(e)));
 		}
 
 		private void moveSelectedColumn(boolean left) {

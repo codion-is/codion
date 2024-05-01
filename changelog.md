@@ -25,6 +25,7 @@ Codion Change Log
 - Control keyboard shortcut handling refactored.
 - AbstractComponentBuilder bug fixed, now able to set size values to zero, validates size values.
 - FilteredTable.MoveResizeColumnKeyListener bug fixed, now longer triggers when modifiers are added, restricted to the correct keys.
+- FilteredTable, move and resize column controls added, default key stroke now configurable.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.report() exception handling improved, now throws DatabaseException in case of an SQLException.
 - DefaultLocalEntityConnection exception handling refactored in order to guarantee rollbacks in case of RuntimeExceptions.
