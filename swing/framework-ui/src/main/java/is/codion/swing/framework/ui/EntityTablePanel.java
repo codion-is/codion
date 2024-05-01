@@ -46,7 +46,6 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilteredTableConditionPanel;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -1824,20 +1823,6 @@ public class EntityTablePanel extends JPanel {
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
 			return component;
-		}
-	}
-
-	private static final class EntityTableCellRendererFactory implements FilteredTableCellRendererFactory<Attribute<?>> {
-
-		private final SwingEntityTableModel tableModel;
-
-		private EntityTableCellRendererFactory(SwingEntityTableModel tableModel) {
-			this.tableModel = tableModel;
-		}
-
-		@Override
-		public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
-			return EntityTableCellRenderer.builder(tableModel, column.getIdentifier()).build();
 		}
 	}
 

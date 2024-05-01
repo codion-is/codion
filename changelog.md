@@ -63,6 +63,7 @@ Codion Change Log
 - TabbedDetailLayout, expand/collapse improved, now stops in the middle when expanding/collapsing from the opposite extreme.
 - TabbedDetailLayout now activates parent panel when detail panel is collapsed.
 - EntityEditPanel, crud operation builders added, EntityDialogs refactored.
+- EntityTableCellRendererFactory added, related refactoring.
 
 ## 0.17.43
 ### is.codion.common.core

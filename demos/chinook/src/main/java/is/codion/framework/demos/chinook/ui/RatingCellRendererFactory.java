@@ -19,37 +19,34 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.Text;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactory;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellRenderer;
+import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
 
-import javax.swing.table.TableCellRenderer;
 import java.util.function.Function;
 
-final class RatingCellRendererFactory
-				implements FilteredTableCellRendererFactory<Attribute<?>> {
+final class RatingCellRendererFactory extends EntityTableCellRendererFactory {
 
-	private final SwingEntityTableModel tableModel;
 	private final Column<Integer> ratingColumn;
 
 	RatingCellRendererFactory(SwingEntityTableModel tableModel, Column<Integer> ratingColumn) {
-		this.tableModel = tableModel;
+		super(tableModel);
 		this.ratingColumn = ratingColumn;
 	}
 
 	@Override
-	public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
+	protected Builder<Entity, Attribute<?>> builder(FilteredTableColumn<Attribute<?>> column) {
+		Builder<Entity, Attribute<?>> builder = super.builder(column);
 		if (column.getIdentifier().equals(ratingColumn)) {
-			return EntityTableCellRenderer.builder(tableModel, column.getIdentifier())
-							.displayValueProvider(new RatingDisplayValueProvider())
-							.toolTipData(true)
-							.build();
+			builder.displayValueProvider(new RatingDisplayValueProvider())
+							.toolTipData(true);
 		}
 
-		return EntityTableCellRenderer.builder(tableModel, column.getIdentifier()).build();
+		return builder;
 	}
 
 	private static class RatingDisplayValueProvider implements Function<Object, Object> {
