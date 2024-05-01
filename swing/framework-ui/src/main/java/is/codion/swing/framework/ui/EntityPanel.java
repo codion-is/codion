@@ -288,7 +288,9 @@ public class EntityPanel extends JPanel {
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
 		this.editControlPanel = createEditControlPanel();
-		this.mainPanel = borderLayoutPanel().build();
+		this.mainPanel = borderLayoutPanel()
+						.minimumSize(new Dimension(0, 0))
+						.build();
 		this.configuration = configure(configuration);
 		this.detailLayout = this.configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
@@ -710,7 +712,6 @@ public class EntityPanel extends JPanel {
 		if (tablePanel != null && mainPanel.getComponents().length == 0) {
 			mainPanel.add(tablePanel, BorderLayout.CENTER);
 		}
-		mainPanel.setMinimumSize(new Dimension(0, 0));
 
 		return mainPanel;
 	}
