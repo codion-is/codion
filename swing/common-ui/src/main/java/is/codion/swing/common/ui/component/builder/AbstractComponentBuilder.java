@@ -84,12 +84,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	private JLabel label;
 	private boolean focusable = true;
-	private int preferredHeight;
-	private int preferredWidth;
-	private int minimumHeight;
-	private int minimumWidth;
-	private int maximumHeight;
-	private int maximumWidth;
+	private int preferredHeight = -1;
+	private int preferredWidth = -1;
+	private int minimumHeight = -1;
+	private int minimumWidth = -1;
+	private int maximumHeight = -1;
+	private int maximumWidth = -1;
 	private boolean opaque = false;
 	private boolean visible = true;
 	private Border border;
@@ -136,58 +136,58 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final B preferredHeight(int preferredHeight) {
-		this.preferredHeight = preferredHeight;
+		this.preferredHeight = validatePositiveInteger(preferredHeight);
 		return self();
 	}
 
 	@Override
 	public final B preferredWidth(int preferredWidth) {
-		this.preferredWidth = preferredWidth;
+		this.preferredWidth = validatePositiveInteger(preferredWidth);
 		return self();
 	}
 
 	@Override
 	public final B preferredSize(Dimension preferredSize) {
-		this.preferredHeight = preferredSize == null ? 0 : preferredSize.height;
-		this.preferredWidth = preferredSize == null ? 0 : preferredSize.width;
+		this.preferredHeight = preferredSize == null ? -1 : preferredSize.height;
+		this.preferredWidth = preferredSize == null ? -1 : preferredSize.width;
 		return self();
 	}
 
 	@Override
 	public final B maximumHeight(int maximumHeight) {
-		this.maximumHeight = maximumHeight;
+		this.maximumHeight = validatePositiveInteger(maximumHeight);
 		return self();
 	}
 
 	@Override
 	public final B maximumWidth(int maximumWidth) {
-		this.maximumWidth = maximumWidth;
+		this.maximumWidth = validatePositiveInteger(maximumWidth);
 		return self();
 	}
 
 	@Override
 	public final B maximumSize(Dimension maximumSize) {
-		this.maximumHeight = maximumSize == null ? 0 : maximumSize.height;
-		this.maximumWidth = maximumSize == null ? 0 : maximumSize.width;
+		this.maximumHeight = maximumSize == null ? -1 : maximumSize.height;
+		this.maximumWidth = maximumSize == null ? -1 : maximumSize.width;
 		return self();
 	}
 
 	@Override
 	public final B minimumHeight(int minimumHeight) {
-		this.minimumHeight = minimumHeight;
+		this.minimumHeight = validatePositiveInteger(minimumHeight);
 		return self();
 	}
 
 	@Override
 	public final B minimumWidth(int minimumWidth) {
-		this.minimumWidth = minimumWidth;
+		this.minimumWidth = validatePositiveInteger(minimumWidth);
 		return self();
 	}
 
 	@Override
 	public final B minimumSize(Dimension minimumSize) {
-		this.minimumHeight = minimumSize == null ? 0 : minimumSize.height;
-		this.minimumWidth = minimumSize == null ? 0 : minimumSize.width;
+		this.minimumHeight = minimumSize == null ? -1 : minimumSize.height;
+		this.minimumWidth = minimumSize == null ? -1 : minimumSize.width;
 		return self();
 	}
 
@@ -546,28 +546,36 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	private void setSizes(C component) {
-		if (minimumHeight > 0) {
+		if (minimumHeight != -1) {
 			setMinimumHeight(component, minimumHeight);
 		}
-		if (minimumWidth > 0) {
+		if (minimumWidth != -1) {
 			setMinimumWidth(component, minimumWidth);
 		}
-		if (maximumHeight > 0) {
+		if (maximumHeight != -1) {
 			setMaximumHeight(component, maximumHeight);
 		}
-		if (maximumWidth > 0) {
+		if (maximumWidth != -1) {
 			setMaximumWidth(component, maximumWidth);
 		}
-		if (preferredHeight > 0) {
+		if (preferredHeight != -1) {
 			setPreferredHeight(component, preferredHeight);
 		}
-		if (preferredWidth > 0) {
+		if (preferredWidth != -1) {
 			setPreferredWidth(component, preferredWidth);
 		}
 	}
 
 	protected final B self() {
 		return (B) this;
+	}
+
+	private static int validatePositiveInteger(int value) {
+		if (value < 0) {
+			throw new IllegalArgumentException("Value must be positive");
+		}
+
+		return value;
 	}
 
 	private static final class OnSetVisible<C extends JComponent> implements AncestorListener {
