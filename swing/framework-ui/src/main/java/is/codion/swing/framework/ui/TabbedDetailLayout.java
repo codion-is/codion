@@ -342,7 +342,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		@Override
 		public void run() {
 			if (splitPane.getDividerLocation() == splitPane.getMinimumDividerLocation()) {
-				splitPane.setDividerLocation(splitPaneResizeWeight);
+				splitPane.resetToPreferredSizes();
 			}
 		}
 	}
@@ -368,33 +368,52 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		private final EntityPanel panel;
 		private final boolean right;
-		private final boolean expandCollapse;
+		private final boolean expand;
 
-		private ResizeHorizontally(EntityPanel panel, boolean right, boolean expandCollapse) {
+		private ResizeHorizontally(EntityPanel panel, boolean right, boolean expand) {
 			super("Resize " + (right ? "right" : "left"));
 			this.panel = panel;
 			this.right = right;
-			this.expandCollapse = expandCollapse;
+			this.expand = expand;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			panel.parentPanel().ifPresent(parentPanel ->
-							resizePanel(parentPanel, right, expandCollapse));
+							resizePanel(parentPanel, right, expand));
 		}
 
-		private static void resizePanel(EntityPanel panel, boolean right, boolean expandCollapse) {
-			JSplitPane splitPane = panel.<TabbedDetailLayout>detailLayout().splitPane;
-			splitPane.setDividerLocation(newLocation(right, expandCollapse, splitPane));
-		}
-
-		private static int newLocation(boolean right, boolean expandCollapse, JSplitPane splitPane) {
-			if (right) {
-				return expandCollapse ? splitPane.getMaximumDividerLocation() :
-								Math.min(splitPane.getDividerLocation() + RESIZE_AMOUNT, splitPane.getMaximumDividerLocation());
+		private static void resizePanel(EntityPanel panel, boolean right, boolean expand) {
+			TabbedDetailLayout detailLayout = panel.detailLayout();
+			JSplitPane splitPane = detailLayout.splitPane;
+			if (expand) {
+				expand(splitPane, right);
 			}
-			return expandCollapse ? splitPane.getMinimumDividerLocation() :
-							Math.max(splitPane.getDividerLocation() - RESIZE_AMOUNT, 0);
+			else {
+				resize(splitPane, right);
+			}
+		}
+
+		private static void expand(JSplitPane splitPane, boolean right) {
+			boolean expandedOrCollapsed =
+							splitPane.getDividerLocation() == splitPane.getMinimumDividerLocation() ||
+											splitPane.getDividerLocation() == splitPane.getMaximumDividerLocation();
+			if (expandedOrCollapsed) {
+				splitPane.resetToPreferredSizes();
+			}
+			else {
+				splitPane.setDividerLocation(right ? splitPane.getMaximumDividerLocation() : splitPane.getMinimumDividerLocation());
+			}
+		}
+
+		private static void resize(JSplitPane splitPane, boolean right) {
+			if (right) {
+				splitPane.setDividerLocation(Math.min(splitPane.getDividerLocation() + RESIZE_AMOUNT,
+								splitPane.getMaximumDividerLocation()));
+			}
+			else {
+				splitPane.setDividerLocation(Math.max(splitPane.getDividerLocation() - RESIZE_AMOUNT, 0));
+			}
 		}
 	}
 
@@ -431,7 +450,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			tabbedPane.setSelectedComponent(detailPanel);
 			tabbedPane.setFocusable(false);
 			if (splitPane.getDividerLocation() == splitPane.getMaximumDividerLocation()) {
-				splitPane.setDividerLocation(splitPaneResizeWeight);
+				splitPane.resetToPreferredSizes();
 			}
 			activateDetailModelLink(detailPanel.model());
 		}

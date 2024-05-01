@@ -60,6 +60,7 @@ Codion Change Log
 - TabbedDetailLayout, now shows the parent panel if hidden when activated.
 - TabbedDetailLayout.TabbedDetailLayoutControl.EXPAND_RIGHT and EXPAND_LEFT renamed COLLAPSE and EXPAND respectively, CTRL added to key event button combination, otherwise the table seemed to consume the key events.
 - EntityTablePanel.Config.configureTable() added, createTableCellRenderer() removed.
+- TabbedDetailLayout, expand/collapse improved, now stops in the middle when expanding/collapsing from the opposite extreme.
 
 ## 0.17.43
 ### is.codion.common.core
