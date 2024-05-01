@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -95,6 +94,8 @@ public final class EntityDialogs {
 
 	private static final MessageBundle EDIT_PANEL_MESSAGES =
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
+
+	private EntityDialogs() {}
 
 	/**
 	 * @param editModel the edit model to use
@@ -614,7 +615,7 @@ public final class EntityDialogs {
 
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 
-		private Consumer<Entity> onInsert;
+		private Consumer<Entity> onInsert = emptyConsumer();
 		private boolean closeDialog = true;
 
 		private DefaultAddEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
@@ -638,21 +639,19 @@ public final class EntityDialogs {
 			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			Consumer<Collection<Entity>> insertConsumer = new InsertConsumer(disposeDialog);
-			editModel.afterInsertEvent().addConsumer(insertConsumer);
 			Dialogs.actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
 											.build())
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
-							.defaultAction(createInsertControl(editPanel))
+							.defaultAction(createInsertControl(editPanel,
+											new InsertConsumer(disposeDialog)))
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.add() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
 							.onShown(new ClearAndRequestFocus(editPanel))
 							.show();
-			editModel.afterInsertEvent().removeConsumer(insertConsumer);
 		}
 
 		private final class InsertConsumer implements Consumer<Collection<Entity>> {
@@ -665,17 +664,19 @@ public final class EntityDialogs {
 
 			@Override
 			public void accept(Collection<Entity> inserted) {
-				if (onInsert != null) {
-					onInsert.accept(inserted.iterator().next());
-				}
+				onInsert.accept(inserted.iterator().next());
 				if (closeDialog) {
 					disposeDialog.run();
 				}
 			}
 		}
 
-		private static Control createInsertControl(EntityEditPanel editPanel) {
-			return Control.builder(editPanel.insertCommand(false))
+		private static Control createInsertControl(EntityEditPanel editPanel,
+																							 Consumer<Collection<Entity>> onInsert) {
+			return Control.builder(editPanel.insertCommand()
+											.confirm(false)
+											.onInsert(onInsert)
+											.build())
 							.name(FrameworkMessages.insert())
 							.mnemonic(FrameworkMessages.insertMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
@@ -689,7 +690,7 @@ public final class EntityDialogs {
 		private final Supplier<EntityEditPanel> editPanelSupplier;
 
 		private Supplier<Entity> entity;
-		private Consumer<Entity> onUpdate;
+		private Consumer<Entity> onUpdate = emptyConsumer();
 
 		private DefaultEditEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
 			this.editPanelSupplier = requireNonNull(editPanelSupplier);
@@ -713,21 +714,19 @@ public final class EntityDialogs {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			Consumer<Map<Entity.Key, Entity>> updateConsumer = new UpdateConsumer(disposeDialog);
-			editModel.afterUpdateEvent().addConsumer(updateConsumer);
 			Dialogs.actionDialog(borderLayoutPanel()
 											.centerComponent(editPanel)
 											.border(emptyBorder())
 											.build())
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)
-							.defaultAction(createUpdateControl(editPanel))
+							.defaultAction(createUpdateControl(editPanel,
+											new UpdateConsumer(disposeDialog)))
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.edit() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
 							.onShown(new RequestFocus(editPanel))
 							.show();
-			editModel.afterUpdateEvent().removeConsumer(updateConsumer);
 		}
 
 		private void initializeEditModel(SwingEntityEditModel editModel) {
@@ -739,7 +738,7 @@ public final class EntityDialogs {
 			}
 		}
 
-		private final class UpdateConsumer implements Consumer<Map<Entity.Key, Entity>> {
+		private final class UpdateConsumer implements Consumer<Collection<Entity>> {
 
 			private final Runnable disposeDialog;
 
@@ -748,16 +747,17 @@ public final class EntityDialogs {
 			}
 
 			@Override
-			public void accept(Map<Entity.Key, Entity> updated) {
-				if (onUpdate != null) {
-					onUpdate.accept(updated.values().iterator().next());
-				}
+			public void accept(Collection<Entity> updated) {
+	  		onUpdate.accept(updated.iterator().next());
 				disposeDialog.run();
 			}
 		}
 
-		private static Control createUpdateControl(EntityEditPanel editPanel) {
-			return Control.builder(editPanel.updateCommand(false))
+		private static Control createUpdateControl(EntityEditPanel editPanel,
+																							 Consumer<Collection<Entity>> onUpdate) {
+			return Control.builder(editPanel.updateCommand()
+											.onUpdate(onUpdate)
+											.build())
 							.name(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
@@ -771,6 +771,11 @@ public final class EntityDialogs {
 						.name(Messages.cancel())
 						.mnemonic(Messages.cancelMnemonic())
 						.build();
+	}
+
+	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
+	private static <T> Consumer<T> emptyConsumer() {
+		return (Consumer<T>) EMPTY_CONSUMER;
 	}
 
 	private static final class EditPanelExceptionHandler implements Consumer<Exception> {

@@ -26,6 +26,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -34,6 +35,7 @@ import is.codion.framework.model.EntityEditModel.Insert;
 import is.codion.framework.model.EntityEditModel.Update;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.KeyboardShortcuts;
@@ -52,6 +54,7 @@ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -422,30 +425,27 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Returns an async insert command
-	 * @param confirm true if confirmation should be performed
-	 * @return a new async insert command
+	 * Returns an async insert command builder
+	 * @return a new async insert command builder
 	 */
-	protected final Control.Command insertCommand(boolean confirm) {
-		return new InsertCommand(confirm);
+	protected final InsertCommandBuilder insertCommand() {
+		return new DefaultInsertCommandBuilder();
 	}
 
 	/**
-	 * Returns an async update command
-	 * @param confirm true if confirmation should be performed
-	 * @return a new async update command
+	 * Returns an async update command builder
+	 * @return a new async update command builder
 	 */
-	protected final Control.Command updateCommand(boolean confirm) {
-		return new UpdateCommand(confirm);
+	protected final UpdateCommandBuilder updateCommand() {
+		return new DefaultUpdateCommandBuilder();
 	}
 
 	/**
-	 * Returns an async delete command
-	 * @param confirm true if confirmation should be performed
-	 * @return a new async delete command
+	 * Returns an async delete command builder
+	 * @return a new async delete command builder
 	 */
-	protected final Control.Command deleteCommand(boolean confirm) {
-		return new DeleteCommand(confirm);
+	protected final DeleteCommandBuilder deleteCommand() {
+		return new DefaultDeleteCommandBuilder();
 	}
 
 	/**
@@ -581,7 +581,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createDeleteControl() {
-		return Control.builder(deleteCommand(true))
+		return Control.builder(deleteCommand()
+										.confirm(true)
+										.build())
 						.name(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editModel().deleteEnabled(),
@@ -612,7 +614,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private Control createUpdateControl() {
-		return Control.builder(updateCommand(true))
+		return Control.builder(updateCommand()
+										.confirm(true)
+										.build())
 						.name(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
@@ -629,7 +633,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.get();
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
-		return Control.builder(insertCommand(true))
+		return Control.builder(insertCommand()
+										.confirm(true)
+										.build())
 						.name(caption)
 						.enabled(State.and(active, editModel().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
@@ -881,12 +887,83 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 	}
 
-	private final class InsertCommand implements Control.Command {
+	/**
+	 * Builds an async insert command
+	 */
+	public interface InsertCommandBuilder {
+
+		/**
+		 * @param confirm true if confirmation should be performed, default false
+		 * @return this builder instance
+		 */
+		InsertCommandBuilder confirm(boolean confirm);
+
+		/**
+		 * @param onInsert called after a successful insert
+		 * @return this builder instance
+		 */
+		InsertCommandBuilder onInsert(Consumer<Collection<Entity>> onInsert);
+
+		/**
+		 * @return the command
+		 */
+		Command build();
+	}
+
+	/**
+	 * Builds an async update command
+	 */
+	public interface UpdateCommandBuilder {
+
+		/**
+		 * @param confirm true if confirmation should be performed, default true
+		 * @return this builder instance
+		 */
+		UpdateCommandBuilder confirm(boolean confirm);
+
+		/**
+		 * @param onUpdate called after a successful update
+		 * @return this builder instance
+		 */
+		UpdateCommandBuilder onUpdate(Consumer<Collection<Entity>> onUpdate);
+
+		/**
+		 * @return the command
+		 */
+		Command build();
+	}
+
+	/**
+	 * Builds an async delete command
+	 */
+	public interface DeleteCommandBuilder {
+
+		/**
+		 * @param confirm true if confirmation should be performed, default true
+		 * @return this builder instance
+		 */
+		DeleteCommandBuilder confirm(boolean confirm);
+
+		/**
+		 * @param onDelete called after a successful delete
+		 * @return this builder instance
+		 */
+		DeleteCommandBuilder onDelete(Consumer<Collection<Entity>> onDelete);
+
+		/**
+		 * @return the command
+		 */
+		Command build();
+	}
+
+	private final class InsertCommand implements Command {
 
 		private final boolean confirm;
+		private final Consumer<Collection<Entity>> onInsert;
 
-		private InsertCommand(boolean confirm) {
-			this.confirm = confirm;
+		private InsertCommand(DefaultInsertCommandBuilder builder) {
+			this.confirm = builder.confirm;
+			this.onInsert = builder.onInsert;
 		}
 
 		@Override
@@ -902,7 +979,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		private void handleResult(Insert.Result result) {
-			result.handle();
+			onInsert.accept(result.handle());
 			if (configuration.clearAfterInsert) {
 				editModel().defaults();
 			}
@@ -917,12 +994,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 	}
 
-	private final class UpdateCommand implements Control.Command {
+	private final class UpdateCommand implements Command {
 
 		private final boolean confirm;
+		private final Consumer<Collection<Entity>> onUpdate;
 
-		private UpdateCommand(boolean confirm) {
-			this.confirm = confirm;
+		private UpdateCommand(DefaultUpdateCommandBuilder builder) {
+			this.confirm = builder.confirm;
+			this.onUpdate = builder.onUpdate;
 		}
 
 		@Override
@@ -938,7 +1017,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		private void handleResult(Update.Result result) {
-			result.handle();
+			onUpdate.accept(result.handle());
 			requestAfterUpdateFocus();
 		}
 
@@ -948,12 +1027,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 	}
 
-	private final class DeleteCommand implements Control.Command {
+	private final class DeleteCommand implements Command {
 
 		private final boolean confirm;
+		private final Consumer<Collection<Entity>> onDelete;
 
-		private DeleteCommand(boolean confirm) {
-			this.confirm = confirm;
+		private DeleteCommand(DefaultDeleteCommandBuilder builder) {
+			this.confirm = builder.confirm;
+			this.onDelete = builder.onDelete;
 		}
 
 		@Override
@@ -969,7 +1050,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		private void handleResult(Delete.Result result) {
-			result.handle();
+			onDelete.accept(result.handle());
 			requestInitialFocus();
 		}
 
@@ -977,6 +1058,80 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			LOG.error(exception.getMessage(), exception);
 			EntityEditPanel.this.onException(exception);
 		}
+	}
+
+	private final class DefaultInsertCommandBuilder implements InsertCommandBuilder {
+
+		private boolean confirm;
+		private Consumer<Collection<Entity>> onInsert = emptyConsumer();
+
+		@Override
+		public InsertCommandBuilder confirm(boolean confirm) {
+			this.confirm = confirm;
+			return this;
+		}
+
+		@Override
+		public InsertCommandBuilder onInsert(Consumer<Collection<Entity>> onInsert) {
+			this.onInsert = requireNonNull(onInsert);
+			return this;
+		}
+
+		@Override
+		public Command build() {
+			return new InsertCommand(this);
+		}
+	}
+
+	private final class DefaultUpdateCommandBuilder implements UpdateCommandBuilder {
+
+		private boolean confirm = true;
+		private Consumer<Collection<Entity>> onUpdate = emptyConsumer();
+
+		@Override
+		public UpdateCommandBuilder confirm(boolean confirm) {
+			this.confirm = confirm;
+			return this;
+		}
+
+		@Override
+		public UpdateCommandBuilder onUpdate(Consumer<Collection<Entity>> onUpdate) {
+			this.onUpdate = requireNonNull(onUpdate);
+			return this;
+		}
+
+		@Override
+		public Command build() {
+			return new UpdateCommand(this);
+		}
+	}
+
+	private final class DefaultDeleteCommandBuilder implements DeleteCommandBuilder {
+
+		private boolean confirm = true;
+		private Consumer<Collection<Entity>> onDelete = emptyConsumer();
+
+		@Override
+		public DeleteCommandBuilder confirm(boolean confirm) {
+			this.confirm = confirm;
+			return this;
+		}
+
+		@Override
+		public DeleteCommandBuilder onDelete(Consumer<Collection<Entity>> onDelete) {
+			this.onDelete = requireNonNull(onDelete);
+			return this;
+		}
+
+		@Override
+		public Command build() {
+			return new DeleteCommand(this);
+		}
+	}
+
+	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
+	private static <T> Consumer<T> emptyConsumer() {
+		return (Consumer<T>) EMPTY_CONSUMER;
 	}
 
 	private static final class FocusActivationListener implements PropertyChangeListener {
