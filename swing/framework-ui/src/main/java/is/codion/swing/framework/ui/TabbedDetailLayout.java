@@ -419,6 +419,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 			tabbedPane.setFocusable(true);
 			tabbedPane.setSelectedComponent(detailPanel);
 			tabbedPane.setFocusable(false);
+			if (splitPane.getDividerLocation() == splitPane.getMaximumDividerLocation()) {
+				splitPane.setDividerLocation(splitPaneResizeWeight);
+			}
 			activateDetailModelLink(detailPanel.model());
 		}
 
