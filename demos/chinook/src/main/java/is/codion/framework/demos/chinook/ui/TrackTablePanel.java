@@ -88,7 +88,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 																														Integer initialValue) {
 			EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
 
-			return inputComponents.integerSpinner(attribute).buildValue();
+			return inputComponents.integerSpinner(attribute)
+							.initialValue(initialValue)
+							.buildValue();
 		}
 	}
 
