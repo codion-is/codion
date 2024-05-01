@@ -10,6 +10,7 @@ Codion Change Log
 - MessageBundle added, Messages service provides a way to override default localization messages.
 - is.codion.common.resources renamed resource.
 - Value.mapNull() removed, no longer used.
+- Messages renamed Resources. DefaultMessageBundle now throws correct exception in case of a missing resource.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
 ### is.codion.swing.common.model

@@ -20,11 +20,13 @@ package is.codion.common.resource;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MessageBundleTest {
 
@@ -35,10 +37,15 @@ public class MessageBundleTest {
 	private final MessageBundle messageBundle = messageBundle(MessageBundleTest.class, resourceBundle);
 
 	@Test
-	void test() {
+	void getString() {
 		assertEquals("Test one", resourceBundle.getString(TEST_ONE));
 		assertEquals("Test two", resourceBundle.getString(TEST_TWO));
 		assertEquals("Test one override", messageBundle.getString(TEST_ONE));
 		assertEquals("Test two override", messageBundle.getString(TEST_TWO));
+	}
+
+	@Test
+	void missingResource() {
+		assertThrows(MissingResourceException.class, () -> resourceBundle.getString("missing_resource"));
 	}
 }

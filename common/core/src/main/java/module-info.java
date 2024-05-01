@@ -29,6 +29,7 @@
  * Configuration values:<br>
  * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
  * @uses is.codion.common.logging.LoggerProxy
+ * @uses is.codion.common.resource.Resources
  */
 module is.codion.common.core {
 	exports is.codion.common;
@@ -46,5 +47,5 @@ module is.codion.common.core {
 	exports is.codion.common.version;
 
 	uses is.codion.common.logging.LoggerProxy;
-	uses is.codion.common.resource.Messages;
+	uses is.codion.common.resource.Resources;
 }

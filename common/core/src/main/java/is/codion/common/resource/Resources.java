@@ -18,10 +18,17 @@
  */
 package is.codion.common.resource;
 
-public final class TestMessageBundle implements Messages {
+/**
+ * Provides overidden resource messages.
+ */
+public interface Resources {
 
-	@Override
-	public String get(String baseBundleName, String key, String defaultString) {
-		return defaultString + " override";
-	}
+	/**
+	 * Returns a value for overriding the default resource value or the default string if no override is provided
+	 * @param baseBundleName the base resource bundle name
+	 * @param key the key
+	 * @param defaultString the default string
+	 * @return a value for overriding the default string or the default string if no override is provided
+	 */
+	String get(String baseBundleName, String key, String defaultString);
 }

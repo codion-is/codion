@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An overridable resource bundle.
- * @see Messages
+ * @see Resources
  */
 public interface MessageBundle {
 
@@ -40,6 +40,6 @@ public interface MessageBundle {
 	 * @return a new {@link MessageBundle} instance
 	 */
 	static MessageBundle messageBundle(Class<?> resourceOwner, ResourceBundle bundle) {
-		return new DefaultMessageBundle(requireNonNull(resourceOwner), requireNonNull(bundle));
+		return new DefaultMessageBundle(requireNonNull(resourceOwner).getName(), requireNonNull(bundle));
 	}
 }

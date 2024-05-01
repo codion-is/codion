@@ -20,6 +20,7 @@ package is.codion.common.resource;
 
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -28,15 +29,14 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultMessageBundle extends ResourceBundle implements MessageBundle {
 
-	private static final Messages DEFAULT = new DefaultMessages();
+	private static final Resources DEFAULT = new DefaultResources();
+	private static final Resources RESOURCES = resources();
 
-	private static final Messages INSTANCE = instance();
-
-	private final Class<?> resourceOwner;
+	private final String baseBundleName;
 	private final ResourceBundle bundle;
 
-	DefaultMessageBundle(Class<?> resourceOwner, ResourceBundle bundle) {
-		this.resourceOwner = resourceOwner;
+	DefaultMessageBundle(String baseBundleName, ResourceBundle bundle) {
+		this.baseBundleName = requireNonNull(baseBundleName);
 		this.bundle = bundle;
 	}
 
@@ -49,17 +49,17 @@ final class DefaultMessageBundle extends ResourceBundle implements MessageBundle
 	protected Object handleGetObject(String key) {
 		requireNonNull(key);
 		if (!bundle.containsKey(key)) {
-			throw new IllegalArgumentException("Invalid resource key: '" + key
-							+ "' for bundle: " + bundle.getBaseBundleName());
+			throw new MissingResourceException("Can't find resource for bundle " +
+							baseBundleName + ", key " + key, baseBundleName, key);
 		}
 
-		return INSTANCE.get(resourceOwner.getName(), key, bundle.getString(key));
+		return RESOURCES.get(baseBundleName, key, bundle.getString(key));
 	}
 
-	private static Messages instance() {
+	private static Resources resources() {
 		try {
-			ServiceLoader<Messages> loader = ServiceLoader.load(Messages.class);
-			Iterator<Messages> iterator = loader.iterator();
+			ServiceLoader<Resources> loader = ServiceLoader.load(Resources.class);
+			Iterator<Resources> iterator = loader.iterator();
 			if (iterator.hasNext()) {
 				return iterator.next();
 			}
@@ -75,7 +75,7 @@ final class DefaultMessageBundle extends ResourceBundle implements MessageBundle
 		}
 	}
 
-	private static final class DefaultMessages implements Messages {
+	private static final class DefaultResources implements Resources {
 
 		@Override
 		public String get(String baseBundleName, String key, String defaultString) {

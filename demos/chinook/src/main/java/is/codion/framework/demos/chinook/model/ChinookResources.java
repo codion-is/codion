@@ -18,7 +18,7 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.resource.Messages;
+import is.codion.common.resource.Resources;
 import is.codion.framework.i18n.FrameworkMessages;
 
 import java.util.Locale;
@@ -26,7 +26,7 @@ import java.util.Locale;
 /**
  * Replace the english insert caption/mnemonic Add/A with Insert/I.
  */
-public final class ChinookMessages implements Messages {
+public final class ChinookResources implements Resources {
 
 	private static final Locale LOCALE_EN = new Locale("en", "EN");
 	private static final String FRAMEWORK_MESSAGES = FrameworkMessages.class.getName();
