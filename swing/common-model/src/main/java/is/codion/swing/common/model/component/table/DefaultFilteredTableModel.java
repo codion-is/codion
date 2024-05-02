@@ -23,7 +23,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
@@ -647,12 +646,16 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public ColumnSummaryModel.SummaryValues<T> values() {
-			FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
-			boolean subset = tableSelectionModel.selectionNotEmpty().get() &&
-							tableSelectionModel.selectionCount() != tableModel.visibleCount();
+		public Collection<T> values() {
+			return subset() ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier);
+		}
 
-			return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);
+		@Override
+		public boolean subset() {
+			FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
+
+			return tableSelectionModel.selectionNotEmpty().get() &&
+							tableSelectionModel.selectionCount() != tableModel.visibleCount();
 		}
 	}
 

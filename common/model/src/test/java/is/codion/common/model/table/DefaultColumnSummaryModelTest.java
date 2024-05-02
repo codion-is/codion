@@ -21,12 +21,12 @@ package is.codion.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
-import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 
 import org.junit.jupiter.api.Test;
 
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,8 +40,13 @@ public class DefaultColumnSummaryModelTest {
 		public String format(Object value) {return numberFormat.format(value);}
 
 		@Override
-		public SummaryValues<Integer> values() {
-			return ColumnSummaryModel.summaryValues(asList(1, 2, 3, null, 4, 5), false);
+		public Collection<Integer> values() {
+			return asList(1, 2, 3, null, 4, 5);
+		}
+
+		@Override
+		public boolean subset() {
+			return false;
 		}
 
 		@Override
@@ -55,8 +60,13 @@ public class DefaultColumnSummaryModelTest {
 		public String format(Object value) {return numberFormat.format(value);}
 
 		@Override
-		public SummaryValues<Double> values() {
-			return ColumnSummaryModel.summaryValues(asList(1.1, 2.2, 3.3, null, 4.4, 5.5), false);
+		public Collection<Double> values() {
+			return asList(1.1, 2.2, 3.3, null, 4.4, 5.5);
+		}
+
+		@Override
+		public boolean subset() {
+			return false;
 		}
 
 		@Override

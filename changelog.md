@@ -14,6 +14,8 @@ Codion Change Log
 - Resources.get() renamed getString(), consistent with ResourceBundle.
 ### is codion.common.db
 - Database.databaseException() renamed exception().
+### is codion.common.model
+- ColumnSummaryModel.SummaryValues removed, related refactoring.
 ### is.codion.swing.common.model
 - FilteredComboBoxModel.ItemFinder.createPredicate() renamed predicate().
 - FilteredComboBoxModel.sortVisibleItems() renamed sortItems(), now public.

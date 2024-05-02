@@ -19,7 +19,6 @@
 package is.codion.common.model.table;
 
 import is.codion.common.event.EventObserver;
-import is.codion.common.model.table.DefaultColumnSummaryModel.DefaultSummaryValues;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -28,8 +27,6 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import static java.util.Collections.unmodifiableCollection;
 
 /**
  * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.<br>
@@ -83,17 +80,6 @@ public interface ColumnSummaryModel {
 	}
 
 	/**
-	 * Instantiates a new {@link SummaryValues}.
-	 * @param values the values
-	 * @param subset true if the values are a subset of the available values
-	 * @param <T> the value type
-	 * @return a new {@link SummaryValues} instance.
-	 */
-	static <T extends Number> SummaryValues<T> summaryValues(Collection<T> values, boolean subset) {
-		return new DefaultSummaryValues<>(unmodifiableCollection(values), subset);
-	}
-
-	/**
 	 * Provides the values on which to base the summary .
 	 * @param <T> the value type
 	 */
@@ -108,7 +94,12 @@ public interface ColumnSummaryModel {
 		/**
 		 * @return the values to base the summary on
 		 */
-		SummaryValues<T> values();
+		Collection<T> values();
+
+		/**
+		 * @return true if the values provided by {@link #values()} is a subset of the total available values
+		 */
+		boolean subset();
 
 		/**
 		 * @return an observer notified when underlying data changes, requiring a summary refresh
@@ -128,23 +119,5 @@ public interface ColumnSummaryModel {
 			 */
 			<T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format);
 		}
-	}
-
-	/**
-	 * The values to base a summary on.
-	 * For instances use the {@link ColumnSummaryModel#summaryValues(Collection, boolean)} factory method.
-	 * @see ColumnSummaryModel#summaryValues(Collection, boolean)
-	 */
-	interface SummaryValues<T extends Number> {
-
-		/**
-		 * @return the values to base the summary on
-		 */
-		Collection<T> values();
-
-		/**
-		 * @return true if the values provided by {@link #values()} is a subset of the total available values
-		 */
-		boolean subset();
 	}
 }

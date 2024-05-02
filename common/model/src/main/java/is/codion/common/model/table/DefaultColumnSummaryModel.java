@@ -22,7 +22,6 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -74,26 +73,5 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 
 	private void updateSummary() {
 		summaryText.set(summary().get().summary(valueProvider));
-	}
-
-	static final class DefaultSummaryValues<T extends Number> implements ColumnSummaryModel.SummaryValues<T> {
-
-		private final Collection<T> values;
-		private final boolean subset;
-
-		DefaultSummaryValues(Collection<T> values, boolean subset) {
-			this.values = requireNonNull(values, "values");
-			this.subset = subset;
-		}
-
-		@Override
-		public Collection<T> values() {
-			return values;
-		}
-
-		@Override
-		public boolean subset() {
-			return subset;
-		}
 	}
 }
