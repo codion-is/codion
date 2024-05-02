@@ -901,6 +901,19 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
+	 * @param <T> the edit panel type
+	 * @return the edit panel
+	 * @throws IllegalStateException in case no edit panel is available
+	 */
+	protected final <T extends EntityEditPanel> T editPanel() {
+		if (editPanel == null) {
+			throw new IllegalStateException("No editPanel is available");
+		}
+
+		return (T) editPanel;
+	}
+
+	/**
 	 * Creates a TableCellEditor for the given attribute, returns null if no editor is available,
 	 * such as for non-editable attributes.
 	 * @param attribute the attribute
