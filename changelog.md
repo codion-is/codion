@@ -21,6 +21,7 @@ Codion Change Log
 - Controls.Builder.defaults(stopAt) now includes the specified stopAt control instead of stopping before it.
 - DialogBuilder, FrameBuilder.titleProvider() renamed title().
 - LookAndFeelProvider.addLookAndFeelProvider() renamed addLookAndFeel().
+- FilteredTableCellRenderer.Builder.columnShadingEnabled() renamed columnShading().
 ### is.codion.swing.common.ui
 - ProgressDialog.Builder, ProgressWorkerDialogBuilder.controls() replaced with control().
 - ProgressDialog bug fixed, no longer adds an empty south panel when no controls are specified.

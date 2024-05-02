@@ -41,7 +41,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 
 	int horizontalAlignment;
 	boolean toolTipData;
-	boolean columnShadingEnabled = true;
+	boolean columnShading = true;
 	boolean alternateRowColoring = FilteredTableCellRenderer.ALTERNATE_ROW_COLORING.get();
 	int leftPadding = FilteredTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
 	int rightPadding = FilteredTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
@@ -86,8 +86,8 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
 	}
 
 	@Override
-	public final FilteredTableCellRenderer.Builder<R, C> columnShadingEnabled(boolean columnShadingEnabled) {
-		this.columnShadingEnabled = columnShadingEnabled;
+	public final FilteredTableCellRenderer.Builder<R, C> columnShading(boolean columnShading) {
+		this.columnShading = columnShading;
 		return this;
 	}
 

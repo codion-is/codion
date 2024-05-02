@@ -41,7 +41,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	private final FilteredTableModel<R, C> tableModel;
 	private final C columnIdentifier;
 	private final boolean toolTipData;
-	private final boolean columnShadingEnabled;
+	private final boolean columnShading;
 	private final boolean alternateRowColoring;
 	private final Function<Object, Object> displayValueProvider;
 	private final CellColorProvider<C> cellColorProvider;
@@ -56,7 +56,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		this.settings.updateColors();
 		this.columnIdentifier = builder.columnIdentifier;
 		this.toolTipData = builder.toolTipData;
-		this.columnShadingEnabled = builder.columnShadingEnabled;
+		this.columnShading = builder.columnShading;
 		this.alternateRowColoring = builder.alternateRowColoring;
 		this.displayValueProvider = builder.displayValueProvider;
 		this.cellColorProvider = builder.cellColorProvider;
@@ -72,8 +72,8 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 	}
 
 	@Override
-	public boolean columnShadingEnabled() {
-		return columnShadingEnabled;
+	public boolean columnShading() {
+		return columnShading;
 	}
 
 	@Override
@@ -91,7 +91,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 																								 boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		setForeground(settings.foregroundColor(cellColorProvider.foregroundColor(row, columnIdentifier, value, isSelected)));
-		setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShadingEnabled, isSelected,
+		setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 						cellColorProvider.backgroundColor(row, columnIdentifier, value, isSelected)));
 		setBorder(hasFocus || isSearchResult(tableModel, row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 		if (toolTipData) {
@@ -131,7 +131,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		private final Settings<C> settings;
 		private final FilteredTableModel<R, C> tableModel;
 		private final C columnIdentifier;
-		private final boolean columnShadingEnabled;
+		private final boolean columnShading;
 		private final boolean alternateRowColoring;
 		private final CellColorProvider<C> cellColorProvider;
 
@@ -145,7 +145,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 			this.settings = requireNonNull(settings);
 			this.settings.updateColors();
 			this.columnIdentifier = requireNonNull(builder.columnIdentifier);
-			this.columnShadingEnabled = builder.columnShadingEnabled;
+			this.columnShading = builder.columnShading;
 			this.alternateRowColoring = builder.alternateRowColoring;
 			this.cellColorProvider = builder.cellColorProvider;
 			setHorizontalAlignment(builder.horizontalAlignment);
@@ -161,8 +161,8 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 		}
 
 		@Override
-		public boolean columnShadingEnabled() {
-			return columnShadingEnabled;
+		public boolean columnShading() {
+			return columnShading;
 		}
 
 		@Override
@@ -180,7 +180,7 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
 																									 boolean hasFocus, int row, int column) {
 			getNullableModel().setState((Boolean) value);
 			setForeground(settings.foregroundColor(cellColorProvider.foregroundColor(row, columnIdentifier, value, isSelected)));
-			setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShadingEnabled, isSelected,
+			setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, columnShading, isSelected,
 							cellColorProvider.backgroundColor(row, columnIdentifier, value, isSelected)));
 			setBorder(hasFocus || isSearchResult(tableModel, row, column) ? settings.focusedCellBorder() : settings.defaultCellBorder());
 

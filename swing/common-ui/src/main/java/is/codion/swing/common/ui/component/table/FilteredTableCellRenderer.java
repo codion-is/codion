@@ -98,7 +98,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 	/**
 	 * @return true if column shading is enabled
 	 */
-	boolean columnShadingEnabled();
+	boolean columnShading();
 
 	/**
 	 * @return true if alternate row coloring is enabled
@@ -170,10 +170,10 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 		Builder<R, C> toolTipData(boolean toolTipData);
 
 		/**
-		 * @param columnShadingEnabled true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
+		 * @param columnShading true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
 		 * @return this builder instance
 		 */
-		Builder<R, C> columnShadingEnabled(boolean columnShadingEnabled);
+		Builder<R, C> columnShading(boolean columnShading);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
@@ -287,10 +287,10 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 			focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
 		}
 
-		protected final Color backgroundColor(FilteredTableModel<?, C> tableModel, int row, C columnIdentifier, boolean columnShadingEnabled,
+		protected final Color backgroundColor(FilteredTableModel<?, C> tableModel, int row, C columnIdentifier, boolean columnShading,
 																					boolean selected, Color cellBackgroundColor) {
 			cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
-			if (columnShadingEnabled) {
+			if (columnShading) {
 				cellBackgroundColor = backgroundColorShaded(tableModel, row, columnIdentifier, cellBackgroundColor);
 			}
 			if (cellBackgroundColor != null) {
