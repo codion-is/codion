@@ -90,6 +90,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
 
 	/**
 	 * The controls available for {@link EntityEditPanel}s.
@@ -1129,7 +1130,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 	}
 
-	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
 	private static <T> Consumer<T> emptyConsumer() {
 		return (Consumer<T>) EMPTY_CONSUMER;
 	}

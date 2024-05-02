@@ -94,6 +94,7 @@ public final class EntityDialogs {
 
 	private static final MessageBundle EDIT_PANEL_MESSAGES =
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
+	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
 
 	private EntityDialogs() {}
 
@@ -773,7 +774,6 @@ public final class EntityDialogs {
 						.build();
 	}
 
-	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
 	private static <T> Consumer<T> emptyConsumer() {
 		return (Consumer<T>) EMPTY_CONSUMER;
 	}

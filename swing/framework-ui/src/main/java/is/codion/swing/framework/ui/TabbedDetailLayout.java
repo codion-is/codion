@@ -375,8 +375,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 		@Override
 		public void propertyChange(PropertyChangeEvent changeEvent) {
 			if (DIVIDER_LOCATION.equals(changeEvent.getPropertyName())) {
-				JSplitPane splitPane = (JSplitPane) changeEvent.getSource();
-				if (Objects.equals(changeEvent.getNewValue(), splitPane.getMaximumDividerLocation())) {
+				JSplitPane pane = (JSplitPane) changeEvent.getSource();
+				if (Objects.equals(changeEvent.getNewValue(), pane.getMaximumDividerLocation())) {
 					entityPanel.activate();
 				}
 			}
