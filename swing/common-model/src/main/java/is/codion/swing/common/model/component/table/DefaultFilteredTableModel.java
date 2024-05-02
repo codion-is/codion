@@ -71,7 +71,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 	private final TableConditionModel<C> filterModel;
 	private final TableSummaryModel<C> summaryModel;
 	private final CombinedIncludeCondition combinedIncludeCondition;
-	private final Predicate<R> itemValidator;
+	private final Predicate<R> validator;
 	private final DefaultRefresher refresher;
 	private final RemoveSelectionListener removeSelectionListener;
 
@@ -89,7 +89,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		this.refresher = new DefaultRefresher(builder.items == null ? this::items : builder.items);
 		this.refresher.async().set(builder.asyncRefresh);
 		this.refresher.refreshStrategy.set(builder.refreshStrategy);
-		this.itemValidator = builder.itemValidator;
+		this.validator = builder.validator;
 		this.removeSelectionListener = new RemoveSelectionListener();
 		bindEventsInternal();
 	}
@@ -480,7 +480,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
 	private void validate(R item) {
 		requireNonNull(item);
-		if (!itemValidator.test(item)) {
+		if (!validator.test(item)) {
 			throw new IllegalArgumentException("Invalid item: " + item);
 		}
 	}
@@ -665,7 +665,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		private final ColumnValues<R, C> columnValues;
 
 		private Supplier<Collection<R>> items;
-		private Predicate<R> itemValidator = new ValidPredicate<>();
+		private Predicate<R> validator = new ValidPredicate<>();
 		private ColumnConditionModel.Factory<C> filterModelFactory;
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
@@ -695,8 +695,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 		}
 
 		@Override
-		public Builder<R, C> itemValidator(Predicate<R> itemValidator) {
-			this.itemValidator = requireNonNull(itemValidator);
+		public Builder<R, C> validator(Predicate<R> validator) {
+			this.validator = requireNonNull(validator);
 			return this;
 		}
 

@@ -348,10 +348,10 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
 		/**
 		 * Items failing validation can not be added to the model.
-		 * @param itemValidator the item validator
+		 * @param validator the item validator
 		 * @return this builder instance
 		 */
-		Builder<R, C> itemValidator(Predicate<R> itemValidator);
+		Builder<R, C> validator(Predicate<R> validator);
 
 		/**
 		 * @param refreshStrategy the refresh strategy to use

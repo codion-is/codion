@@ -1185,7 +1185,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 						.filterModelFactory(new EntityFilterModelFactory(entityDefinition))
 						.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, this))
 						.items(new EntityItems(this))
-						.itemValidator(new EntityItemValidator(entityDefinition.entityType()))
+						.validator(new EntityItemValidator(entityDefinition.entityType()))
 						.build();
 	}
 

@@ -100,7 +100,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 		this.conditionSupplier = Value.nonNull((Supplier<Condition>) new DefaultConditionSupplier()).build();
 		selectedItemTranslator().set(new SelectedItemTranslator());
 		refresher().items().set(this::performQuery);
-		itemValidator().set(new ItemValidator());
+		validator().set(new ItemValidator());
 		includeCondition().set(foreignKeyIncludeCondition);
 		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}

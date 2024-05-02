@@ -64,7 +64,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 */
 	public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
 
-	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultItemValidator<>();
+	private static final Predicate<?> DEFAULT_ITEM_VALIDATOR = new DefaultValidator<>();
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 	private static final Predicate<?> DEFAULT_VALID_SELECTION_PREDICATE = new DefaultValidSelectionPredicate<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
@@ -78,7 +78,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	private final List<T> filteredItems = new ArrayList<>();
 	private final Refresher<T> refresher;
 	private final Value<Predicate<T>> includeCondition = Value.value();
-	private final Value<Predicate<T>> itemValidator = Value.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR).build();
+	private final Value<Predicate<T>> validator = Value.nonNull((Predicate<T>) DEFAULT_ITEM_VALIDATOR).build();
 	private final Value<Function<Object, T>> selectedItemTranslator = Value.nonNull((Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR).build();
 	private final Value<Predicate<T>> validSelectionPredicate = Value.nonNull((Predicate<T>) DEFAULT_VALID_SELECTION_PREDICATE).build();
 	private final Value<Comparator<T>> comparator = Value.nullable((Comparator<T>) DEFAULT_COMPARATOR).build();
@@ -102,7 +102,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	public FilteredComboBoxModel() {
 		this.refresher = new DefaultRefresher(new DefaultItems());
 		includeCondition.addListener(this::filterItems);
-		itemValidator.addValidator(validator -> items().stream()
+		validator.addValidator(validator -> items().stream()
 						.filter(Objects::nonNull)
 						.forEach(validator::test));
 		comparator.addListener(this::sortItems);
@@ -157,7 +157,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 * @param items the items to display in this combo box model
 	 * @throws IllegalArgumentException in case an item fails validation
 	 * @see #cleared()
-	 * @see #itemValidator()
+	 * @see #validator()
 	 */
 	public final void setItems(Collection<T> items) {
 		requireNonNull(items);
@@ -339,8 +339,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	 * Note that any translation of the selected item is done before validation.
 	 * @return the Value controlling the item validator
 	 */
-	public final Value<Predicate<T>> itemValidator() {
-		return itemValidator;
+	public final Value<Predicate<T>> validator() {
+		return validator;
 	}
 
 	/**
@@ -500,7 +500,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 	}
 
 	private T validate(T item) {
-		if (!itemValidator.get().test(item)) {
+		if (!validator.get().test(item)) {
 			throw new IllegalArgumentException("Invalid item: " + item);
 		}
 
@@ -588,7 +588,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 		}
 	}
 
-	private static final class DefaultItemValidator<T> implements Predicate<T> {
+	private static final class DefaultValidator<T> implements Predicate<T> {
 
 		@Override
 		public boolean test(T item) {
