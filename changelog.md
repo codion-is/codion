@@ -79,6 +79,7 @@ Codion Change Log
 - EntityTableCellRendererFactory added, related refactoring.
 - EntityTablePanel.StatusPanel.configureLimit() bug fixed, dialog now centered on table.
 - EntityTablePanel.editPanel() added.
+- EntityPanel control configuration refactored, now consistent with EntityEditPanel and EntityTablePanel.
 
 ## 0.17.43
 ### is.codion.common.core
